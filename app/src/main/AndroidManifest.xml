@@ -10,11 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.dashboard.SelectDevice2"
+            android:name=".screens.dashboard.SelectDevice2"
             android:label="@string/title_activity_select_device2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".screens.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.dashboard.SelectDeviceActivity" />
+        <activity android:name=".screens.dashboard.SelectDeviceActivity" />
     </application>
 
 </manifest>

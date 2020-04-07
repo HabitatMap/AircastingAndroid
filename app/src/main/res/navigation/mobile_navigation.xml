@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="io.lunarlogic.aircasting.ui.dashboard.DashboardFragment"
+        android:name="io.lunarlogic.aircasting.screens.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_lets_start" />
 
     <fragment
         android:id="@+id/navigation_lets_start"
-        android:name="io.lunarlogic.aircasting.ui.lets_start.LetsStartFragment"
+        android:name="io.lunarlogic.aircasting.screens.lets_start.LetsStartFragment"
         android:label="@string/title_lets_start"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="io.lunarlogic.aircasting.ui.settings.SettingsFragment"
+        android:name="io.lunarlogic.aircasting.screens.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

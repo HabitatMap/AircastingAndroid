@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.ui.lets_start
+package io.lunarlogic.aircasting.screens.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import io.lunarlogic.aircasting.R
 
-class LetsStartFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
-    private lateinit var letsStartViewModel: LetsStartViewModel
+    private lateinit var settingsViewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        letsStartViewModel =
-            ViewModelProviders.of(this).get(LetsStartViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_lets_start, container, false)
-        val textView: TextView = root.findViewById(R.id.text_lets_start)
-        letsStartViewModel.text.observe(this, Observer {
+        settingsViewModel =
+            ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_settings, container, false)
+        val textView: TextView = root.findViewById(R.id.text_settings)
+        settingsViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root
