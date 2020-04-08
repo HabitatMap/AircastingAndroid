@@ -10,10 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".screens.dashboard.SelectDevice2"
-            android:label="@string/title_activity_select_device2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
             android:name=".screens.MainActivity"
             android:label="@string/app_name">
             <intent-filter>

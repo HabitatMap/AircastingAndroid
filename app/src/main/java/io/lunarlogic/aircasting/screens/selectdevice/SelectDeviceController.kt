@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.selectdevice
 
 import android.content.Context
 import io.lunarlogic.aircasting.devices.Device
+import io.lunarlogic.aircasting.screens.selectdevice.items.DeviceItem
 
 class SelectDeviceController(
     private val mContext: Context?,
@@ -11,7 +12,7 @@ class SelectDeviceController(
     fun onStart() {
         mViewMvc.registerListener(this)
 
-        val devices = listOf(Device("Add new device", "add-new-device"), Device("AirBeam2", ":0018961070D6"))
+        val devices = listOf(Device("AirBeam2", ":0018961070D6"))
         mViewMvc.bindDevices(devices)
     }
 
@@ -19,7 +20,7 @@ class SelectDeviceController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onDeviceSelected(device: Device) {
-        System.out.println("onDeviceSelected! " + device.name)
+    override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+        System.out.println("onDeviceSelected! " + deviceItem.title)
     }
 }
