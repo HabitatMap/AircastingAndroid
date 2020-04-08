@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screens.dashboard.SelectDeviceActivity" />
+        <activity android:name=".screens.selectdevice.SelectDeviceActivity" />
     </application>
 
 </manifest>
