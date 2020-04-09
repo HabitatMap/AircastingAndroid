@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class SelectDeviceFragment : Fragment() {
+class SelectDeviceFragment(private val mListener: SelectDeviceViewMvc.Listener) : Fragment() {
     private var mSelectDeviceController: SelectDeviceController? = null
 
     override fun onCreateView(
@@ -31,11 +31,12 @@ class SelectDeviceFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        mSelectDeviceController!!.onStart()
+        mSelectDeviceController!!.bindDevices()
+        mSelectDeviceController!!.registerListener(mListener)
     }
 
     override fun onStop() {
         super.onStop()
-        mSelectDeviceController!!.onStop()
+        mSelectDeviceController!!.unregisterListener(mListener)
     }
 }
