@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.select_device
+package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.devices.Device
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
 class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc,

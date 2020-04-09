@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.select_device
+package io.lunarlogic.aircasting.screens.new_session.select_device
 
 interface NewSessionObservableFragment<ListenerType> {
     fun registerListener(listener: ListenerType)

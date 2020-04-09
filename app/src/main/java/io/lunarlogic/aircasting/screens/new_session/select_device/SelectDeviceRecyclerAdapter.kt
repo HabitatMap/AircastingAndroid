@@ -1,10 +1,10 @@
-package io.lunarlogic.aircasting.screens.select_device
+package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.devices.Device
-import io.lunarlogic.aircasting.screens.select_device.items.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.items.*
 
 class SelectDeviceRecyclerAdapter(private val mInflater: LayoutInflater, private val mListener: Listener): RecyclerView.Adapter<SelectDeviceRecyclerAdapter.MyViewHolder>(),
     SelectDeviceViewMvc.Listener {

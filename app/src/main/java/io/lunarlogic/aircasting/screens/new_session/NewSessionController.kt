@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.select_device.SelectDeviceFragment
-import io.lunarlogic.aircasting.screens.select_device.SelectDeviceViewMvc
-import io.lunarlogic.aircasting.screens.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
 class NewSessionController(
     private val mContext: Context?,

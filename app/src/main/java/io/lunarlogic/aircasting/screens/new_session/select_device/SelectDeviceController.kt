@@ -1,8 +1,7 @@
-package io.lunarlogic.aircasting.screens.select_device
+package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.content.Context
 import io.lunarlogic.aircasting.devices.Device
-import io.lunarlogic.aircasting.screens.select_device.items.DeviceItem
 
 class SelectDeviceController(
     private val mContext: Context?,
