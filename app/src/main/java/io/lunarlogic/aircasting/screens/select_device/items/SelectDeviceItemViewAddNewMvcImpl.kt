@@ -1,12 +1,11 @@
-package io.lunarlogic.aircasting.screens.selectdevice.items
+package io.lunarlogic.aircasting.screens.select_device.items
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.selectdevice.SelectDeviceViewMvc
+import io.lunarlogic.aircasting.screens.select_device.SelectDeviceViewMvc
 
 class SelectDeviceItemViewAddNewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceItemViewMvc {

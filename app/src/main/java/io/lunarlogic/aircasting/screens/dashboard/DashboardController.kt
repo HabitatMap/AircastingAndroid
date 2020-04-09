@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
-import io.lunarlogic.aircasting.screens.selectdevice.SelectDeviceActivity
+import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 
 class DashboardController(
     private val mContext: Context?,
@@ -17,7 +17,6 @@ class DashboardController(
     }
 
     override fun onRecordNewSessionClicked() {
-        SelectDeviceActivity.start(mContext)
+        NewSessionActivity.start(mContext)
     }
-
 }

@@ -1,14 +1,13 @@
-package io.lunarlogic.aircasting.screens.selectdevice
+package io.lunarlogic.aircasting.screens.select_device
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.devices.Device
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.selectdevice.items.DeviceItem
+import io.lunarlogic.aircasting.screens.select_device.items.DeviceItem
 
 class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc,
@@ -20,7 +19,7 @@ class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listen
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
-        this.rootView = inflater.inflate(R.layout.activity_select_device, parent, false)
+        this.rootView = inflater.inflate(R.layout.fragment_select_device, parent, false)
 
         mRecyclerDevices = findViewById(R.id.recycler_devices)
         mRecyclerDevices?.setLayoutManager(GridLayoutManager(rootView!!.context, columnsSpan))

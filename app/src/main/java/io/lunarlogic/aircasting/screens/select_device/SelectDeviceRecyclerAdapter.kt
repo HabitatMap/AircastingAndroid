@@ -1,11 +1,10 @@
-package io.lunarlogic.aircasting.screens.selectdevice
+package io.lunarlogic.aircasting.screens.select_device
 
-import java.util.Collections
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.devices.Device
-import io.lunarlogic.aircasting.screens.selectdevice.items.*
+import io.lunarlogic.aircasting.screens.select_device.items.*
 
 class SelectDeviceRecyclerAdapter(private val mInflater: LayoutInflater, private val mListener: Listener): RecyclerView.Adapter<SelectDeviceRecyclerAdapter.MyViewHolder>(),
     SelectDeviceViewMvc.Listener {
@@ -35,7 +34,6 @@ class SelectDeviceRecyclerAdapter(private val mInflater: LayoutInflater, private
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        System.out.println("ANIA viewType: " + viewType)
         val viewMvc =
             mDeviceItemViewFactory.get(
                 viewType,

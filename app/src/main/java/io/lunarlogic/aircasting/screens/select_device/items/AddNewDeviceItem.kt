@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.selectdevice.items
+package io.lunarlogic.aircasting.screens.select_device.items
 
 class AddNewDeviceItem : DeviceItem {
     override val title: String get() = "Add new"

@@ -1,7 +1,7 @@
-package io.lunarlogic.aircasting.screens.selectdevice.items
+package io.lunarlogic.aircasting.screens.select_device.items
 
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
-import io.lunarlogic.aircasting.screens.selectdevice.SelectDeviceViewMvc
+import io.lunarlogic.aircasting.screens.select_device.SelectDeviceViewMvc
 
 interface SelectDeviceItemViewMvc : ObservableViewMvc<SelectDeviceViewMvc.Listener> {
     interface Listener {
