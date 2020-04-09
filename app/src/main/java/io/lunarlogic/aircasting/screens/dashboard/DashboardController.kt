@@ -1,10 +1,11 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
+import io.lunarlogic.aircasting.screens.selectdevice.SelectDeviceActivity
 
 class DashboardController(
     private val mContext: Context?,
-    private var mViewMvc: DashboardViewMvcImpl
+    private val mViewMvc: DashboardViewMvc
 ) : DashboardViewMvc.Listener {
 
     fun onStart() {
