@@ -5,3 +5,6 @@ interface DeviceItem {
     val id: String?
     val viewType: Int
 }
+
+val ADD_NEW_DEVICE_VIEW_TYPE = 0
+val SELECT_AIRBEAM2_VIEW_TYPE = 1

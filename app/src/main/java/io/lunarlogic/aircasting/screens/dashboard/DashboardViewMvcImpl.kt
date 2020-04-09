@@ -17,7 +17,7 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
         }
     }
 
-    fun onRecordNewSessionClicked() {
+    private fun onRecordNewSessionClicked() {
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
         }

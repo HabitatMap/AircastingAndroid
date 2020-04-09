@@ -6,7 +6,7 @@ import android.view.ViewGroup
 class SelectDeviceItemViewFactory {
     fun get(viewType: Int, inflater: LayoutInflater, parent: ViewGroup): SelectDeviceItemViewMvc? {
         return when (viewType) {
-            0 -> SelectDeviceItemViewAddNewMvcImpl(inflater, parent)
+            ADD_NEW_DEVICE_VIEW_TYPE -> SelectDeviceItemViewAddNewMvcImpl(inflater, parent)
             else -> SelectDeviceItemViewAirBeam2MvcImpl(inflater, parent)
         }
     }

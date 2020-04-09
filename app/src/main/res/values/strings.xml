@@ -8,4 +8,7 @@
     <string name="add_new_device">Add new device</string>
     <string name="airbeam2">AirBeam2</string>
     <string name="select_device_header">Select a device</string>
+    <string name="turn_airbeam_header">Turn your AirBeam on</string>
+    <string name="turn_airbeam_description">Press the buttom at the bottom of your AirBeam to turn it on.</string>
+    <string name="ready_button">Ready</string>
 </resources>
