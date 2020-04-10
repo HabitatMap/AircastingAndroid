@@ -31,4 +31,9 @@ class NewSessionActivity : AppCompatActivity() {
 
         mNewSessionController!!.onStart()
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        mNewSessionController!!.onBackPressed()
+    }
 }
