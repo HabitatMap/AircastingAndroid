@@ -26,6 +26,6 @@ class ConnectAirbeamInstrumentedTest {
         onView(withId(R.id.dashboard_record_new_session_button))
             .perform(click())
 
-        intended(hasComponent(hasShortClassName(".screens.dashboard.SelectDeviceActivity")))
+        intended(hasComponent(hasShortClassName(".screens.selectdevice.SelectDeviceActivity")))
     }
 }
