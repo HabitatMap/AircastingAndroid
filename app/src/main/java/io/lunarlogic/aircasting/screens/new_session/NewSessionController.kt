@@ -5,8 +5,8 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnAirBeamFragment
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnAirBeamViewMvc
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamFragment
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.ADD_NEW_DEVICE_VIEW_TYPE
@@ -16,7 +16,7 @@ class NewSessionController(
     private val mContext: Context?,
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
-) : SelectDeviceViewMvc.Listener, TurnAirBeamViewMvc.Listener {
+) : SelectDeviceViewMvc.Listener, TurnOnAirBeamViewMvc.Listener {
 
     val STEP_PROGRESS = 10
     var currentProgress = STEP_PROGRESS
@@ -42,7 +42,7 @@ class NewSessionController(
     }
 
     private fun goToTurnOnAirBeam() {
-        goToFragment(TurnAirBeamFragment(this))
+        goToFragment(TurnOnAirBeamFragment(this))
     }
 
     private fun setProgress(progress: Int) {

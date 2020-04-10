@@ -6,7 +6,7 @@ import android.widget.Button
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
-class TurnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnAirBeamViewMvc.Listener>, TurnAirBeamViewMvc {
+class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.Listener>, TurnOnAirBeamViewMvc {
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {

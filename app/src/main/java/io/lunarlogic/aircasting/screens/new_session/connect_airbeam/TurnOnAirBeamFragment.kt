@@ -6,35 +6,35 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class TurnAirBeamFragment(private val mListener: TurnAirBeamViewMvc.Listener) : Fragment() {
-    private var mTurnAirBeamController: TurnAirBeamController? = null
+class TurnOnAirBeamFragment(private val mListener: TurnOnAirBeamViewMvc.Listener) : Fragment() {
+    private var mTurnOnAirBeamController: TurnOnAirBeamController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val turnAirBeamView =
-            TurnAirBeamViewMvcImpl(
+        val turnOnAirBeamView =
+            TurnOnAirBeamViewMvcImpl(
                 layoutInflater,
                 null
             )
-        mTurnAirBeamController =
-            TurnAirBeamController(
+        mTurnOnAirBeamController =
+            TurnOnAirBeamController(
                 context,
-                turnAirBeamView
+                turnOnAirBeamView
             )
 
-        return turnAirBeamView.rootView
+        return turnOnAirBeamView.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        mTurnAirBeamController!!.registerListener(mListener)
+        mTurnOnAirBeamController!!.registerListener(mListener)
     }
 
     override fun onStop() {
         super.onStop()
-        mTurnAirBeamController!!.unregisterListener(mListener)
+        mTurnOnAirBeamController!!.unregisterListener(mListener)
     }
 }
