@@ -8,7 +8,10 @@
     <string name="add_new_device">Add new device</string>
     <string name="airbeam2">AirBeam2</string>
     <string name="select_device_header">Select a device</string>
-    <string name="turn_airbeam_header">Turn your AirBeam on</string>
-    <string name="turn_airbeam_description">Press the buttom at the bottom of your AirBeam to turn it on.</string>
-    <string name="ready_button">Ready</string>
+    <string name="turn_on_airbeam_header">Turn your AirBeam on</string>
+    <string name="turn_on_airbeam_description">Press the buttom at the bottom of your AirBeam to turn it on.</string>
+    <string name="turn_on_airbeam_ready_button">Ready</string>
+    <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
+    <string name="turn_on_bluetooth_description">Turn on Bluetooth to enable your phone to connect to the AirBeam.</string>
+    <string name="turn_on_bluetooth_ready_button">Got it!</string>
 </resources>

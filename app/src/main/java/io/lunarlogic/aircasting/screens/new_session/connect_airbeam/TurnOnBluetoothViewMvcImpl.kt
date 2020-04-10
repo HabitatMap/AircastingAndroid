@@ -6,12 +6,12 @@ import android.widget.Button
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
-class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.Listener>, TurnOnAirBeamViewMvc {
+class TurnOnBluetoothViewMvcImpl : BaseObservableViewMvc<TurnOnBluetoothViewMvc.Listener>, TurnOnBluetoothViewMvc {
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
-        this.rootView = inflater.inflate(R.layout.fragment_turn_on_airbeam, parent, false)
-        val button = rootView?.findViewById<Button>(R.id.turn_on_airbeam_ready_button)
+        this.rootView = inflater.inflate(R.layout.fragment_turn_on_bluetooth, parent, false)
+        val button = rootView?.findViewById<Button>(R.id.turn_on_bluetooth_ready_button)
         button?.setOnClickListener {
             onReadyClicked()
         }
@@ -19,7 +19,7 @@ class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.List
 
     private fun onReadyClicked() {
         for (listener in listeners) {
-            listener.onTurnOnAirBeamReadyClicked()
+            listener.onTurnOnBluetoothReadyClicked()
         }
     }
 }

@@ -6,35 +6,35 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class TurnOnAirBeamFragment(private val mListener: TurnOnAirBeamViewMvc.Listener) : Fragment() {
-    private var mTurnOnAirBeamController: TurnOnAirBeamController? = null
+class TurnOnBluetoothFragment(private val mListener: TurnOnBluetoothViewMvc.Listener) : Fragment() {
+    private var mTurnOnBluetoothController: TurnOnBluetoothController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val turnAirBeamView =
-            TurnOnAirBeamViewMvcImpl(
+        val turnOnBluetoothView =
+            TurnOnBluetoothViewMvcImpl(
                 layoutInflater,
                 null
             )
-        mTurnOnAirBeamController =
-            TurnOnAirBeamController(
+        mTurnOnBluetoothController =
+            TurnOnBluetoothController(
                 context,
-                turnAirBeamView
+                turnOnBluetoothView
             )
 
-        return turnAirBeamView.rootView
+        return turnOnBluetoothView.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        mTurnOnAirBeamController!!.registerListener(mListener)
+        mTurnOnBluetoothController!!.registerListener(mListener)
     }
 
     override fun onStop() {
         super.onStop()
-        mTurnOnAirBeamController!!.unregisterListener(mListener)
+        mTurnOnBluetoothController!!.unregisterListener(mListener)
     }
 }
