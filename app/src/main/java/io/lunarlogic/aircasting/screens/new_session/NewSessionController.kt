@@ -27,7 +27,7 @@ val AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH = 7
 val AIRCASTING_REQUEST_BLUETOOTH_ENABLE = 8
 
 class NewSessionController(
-    private val mActivity: AppCompatActivity?,
+    private val mActivity: NewSessionActivity?,
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
 ) : SelectDeviceViewMvc.Listener, TurnOnAirBeamViewMvc.Listener, TurnOnBluetoothViewMvc.Listener {
@@ -57,22 +57,26 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothReadyClicked() {
-        if (ContextCompat.checkSelfPermission(mActivity!!,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-
+        val permission1 = ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permission2 = ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (permission1 != PackageManager.PERMISSION_GRANTED || permission2 != PackageManager.PERMISSION_GRANTED) {
             println("Bluetooth granting permissions")
 
             ActivityCompat.requestPermissions(mActivity!!,
-                    arrayOf(Manifest.permission.BLUETOOTH),
+                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
                     AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH)
         } else {
             println("Bluetooth permissions were already grandted")
-            val adapter = BluetoothAdapter.getDefaultAdapter()
-            if (!adapter.isEnabled()) {
-                println("Bluetooth Turning on")
-                val intent = Intent(BluetoothDevice.ACTION_FOUND)
-                mActivity.startActivityForResult(intent, AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (bluetoothAdapter == null) {
+                // TODO: handle that device does not support Bluetooth
+            }
+
+            if (bluetoothAdapter?.isEnabled == true) {
+                mActivity!!.startDiscovery()
+            } else {
+                val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                mActivity!!.startActivityForResult(intent, AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
             }
         }
     }
