@@ -1,7 +1,13 @@
 package io.lunarlogic.aircasting.screens.new_session
 
-import android.content.Context
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.pm.PackageManager
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -13,9 +19,15 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFr
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.ADD_NEW_DEVICE_VIEW_TYPE
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import android.content.Intent
+
+
+
+val AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH = 7
+val AIRCASTING_REQUEST_BLUETOOTH_ENABLE = 8
 
 class NewSessionController(
-    private val mContext: Context?,
+    private val mActivity: AppCompatActivity?,
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
 ) : SelectDeviceViewMvc.Listener, TurnOnAirBeamViewMvc.Listener, TurnOnBluetoothViewMvc.Listener {
@@ -45,7 +57,24 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothReadyClicked() {
-        println("Ready!")
+        if (ContextCompat.checkSelfPermission(mActivity!!,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+
+            println("Bluetooth granting permissions")
+
+            ActivityCompat.requestPermissions(mActivity!!,
+                    arrayOf(Manifest.permission.BLUETOOTH),
+                    AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH)
+        } else {
+            println("Bluetooth permissions were already grandted")
+            val adapter = BluetoothAdapter.getDefaultAdapter()
+            if (!adapter.isEnabled()) {
+                println("Bluetooth Turning on")
+                val intent = Intent(BluetoothDevice.ACTION_FOUND)
+                mActivity.startActivityForResult(intent, AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+            }
+        }
     }
 
     private fun goToTurnOnAirBeam() {
