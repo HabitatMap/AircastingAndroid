@@ -20,7 +20,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.ADD_NEW_DEVICE_VIEW_TYPE
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import android.content.Intent
-
+import io.lunarlogic.aircasting.permissions.PermissionsManager
 
 
 val AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH = 7
@@ -34,6 +34,8 @@ class NewSessionController(
 
     val STEP_PROGRESS = 10
     var currentProgress = STEP_PROGRESS
+
+    val permissionsManager = PermissionsManager()
 
     fun onStart() {
         setProgress(1 * STEP_PROGRESS)
@@ -57,15 +59,7 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothReadyClicked() {
-        val permission1 = ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.ACCESS_COARSE_LOCATION)
-        val permission2 = ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.ACCESS_FINE_LOCATION)
-        if (permission1 != PackageManager.PERMISSION_GRANTED || permission2 != PackageManager.PERMISSION_GRANTED) {
-            println("Bluetooth granting permissions")
-
-            ActivityCompat.requestPermissions(mActivity!!,
-                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
-                    AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH)
-        } else {
+        if (permissionsManager.bluetoothPermissionsGranted(mActivity!!)) {
             println("Bluetooth permissions were already grandted")
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             if (bluetoothAdapter == null) {
@@ -78,7 +72,10 @@ class NewSessionController(
                 val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 mActivity!!.startActivityForResult(intent, AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
             }
+        } else {
+            permissionsManager.requestBluetoothPermissions(mActivity!!)
         }
+
     }
 
     private fun goToTurnOnAirBeam() {
