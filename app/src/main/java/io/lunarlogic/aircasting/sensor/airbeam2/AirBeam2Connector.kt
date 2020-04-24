@@ -1,8 +1,9 @@
-package io.lunarlogic.aircasting.airbeam2
+package io.lunarlogic.aircasting.sensor.airbeam2
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import io.lunarlogic.aircasting.bluetooth.BluetoothService
 import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionCloseFailed
 import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionOpenFailed
 import io.lunarlogic.aircasting.exceptions.ExceptionHandler
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class AirBeam2Connector(private val mExceptionHandler: ExceptionHandler) {
     val connectionStarted = AtomicBoolean(false)
     val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+    val bluetoothService = BluetoothService()
 
     fun connect(device: BluetoothDevice) {
         if (connectionStarted.get() == false) {
@@ -38,10 +40,7 @@ class AirBeam2Connector(private val mExceptionHandler: ExceptionHandler) {
                 mmSocket?.use { socket ->
                     socket.connect()
 
-                    // The connection attempt succeeded. Perform work associated with
-                    // the connection in a separate thread.
-                    // manageMyConnectedSocket(socket)
-                    println("Bluetooth CONNECTION SUCCEDED!")
+                    bluetoothService.run(socket)
                 }
             } catch(e: IOException) {
                 val message = mExceptionHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))

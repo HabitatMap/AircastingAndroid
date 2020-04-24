@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import io.lunarlogic.aircasting.airbeam2.AirBeam2Connector
+import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.exceptions.ExceptionHandler
 
 class BluetoothDeviceFoundReceiver(mExceptionHandler: ExceptionHandler): BroadcastReceiver() {
