@@ -9,15 +9,16 @@ import io.lunarlogic.aircasting.exceptions.ExceptionHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class AirBeam2Connector(private val mExceptionHandler: ExceptionHandler) {
-    var connectionStarted = false
+    val connectionStarted = AtomicBoolean(false)
     val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     fun connect(device: BluetoothDevice) {
-        if (connectionStarted == false) {
-            connectionStarted = true
+        if (connectionStarted.get() == false) {
+            connectionStarted.set(true)
             val thread = ConnectThread(device)
             thread.start()
         }
@@ -50,7 +51,7 @@ class AirBeam2Connector(private val mExceptionHandler: ExceptionHandler) {
         }
 
         fun cancel() {
-            connectionStarted = false
+            connectionStarted.set(false)
             try {
                 mmSocket?.close()
             } catch (e: IOException) {
