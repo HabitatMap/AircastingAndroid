@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.bluetooth
 
 import android.app.Activity
+import io.lunarlogic.aircasting.exceptions.BluetoothPermissionsRequiredException
 import io.lunarlogic.aircasting.exceptions.BluetoothRequiredException
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 
@@ -19,10 +20,11 @@ class BluetoothConnector(private val mActivity: BluetoothActivity) {
     fun onRequestPermissionsResult(grantResults: IntArray) {
         if (permissionsManager.permissionsGranted(grantResults)) {
             startDiscovery()
+        } else {
+            throw BluetoothPermissionsRequiredException()
         }
     }
 
-    @Throws(BluetoothRequiredException::class)
     fun onActivityResult(resultCode: Int) {
        if (isBluetoothEnabled(resultCode)) {
            startDiscovery()

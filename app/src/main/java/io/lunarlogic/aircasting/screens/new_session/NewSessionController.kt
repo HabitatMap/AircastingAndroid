@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session
 
+import android.content.Context
 import android.content.Intent
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -15,9 +16,15 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.items.ADD_NEW_
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothConnector
+import io.lunarlogic.aircasting.bluetooth.BluetoothDeviceFoundReceiver
+import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
+import io.lunarlogic.aircasting.exceptions.BluetoothPermissionsRequiredException
+import io.lunarlogic.aircasting.exceptions.BluetoothRequiredException
+import io.lunarlogic.aircasting.exceptions.ExceptionHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 
 class NewSessionController(
+    mContext: Context,
     private val mActivity: BluetoothActivity,
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
@@ -26,6 +33,16 @@ class NewSessionController(
     val STEP_PROGRESS = 10
     var currentProgress = STEP_PROGRESS
     val bluetoothConnector = BluetoothConnector(mActivity)
+    val exceptionHandler = ExceptionHandler(mContext)
+    val bluetoothDeviceFoundReceiver = BluetoothDeviceFoundReceiver(exceptionHandler)
+
+    fun onCreate() {
+        mActivity.registerBluetoothDeviceFoundReceiver(bluetoothDeviceFoundReceiver)
+    }
+
+    fun onDestroy() {
+        mActivity.unregisterBluetoothDeviceFoundReceiver(bluetoothDeviceFoundReceiver)
+    }
 
     fun onStart() {
         setProgress(1 * STEP_PROGRESS)
@@ -49,28 +66,42 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothReadyClicked() {
-        bluetoothConnector.connect()
+        try {
+            bluetoothConnector.connect()
+        } catch(exception: BluetoothNotSupportedException) {
+            exceptionHandler.handleAndDisplay(exception)
+        }
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
-        when (requestCode) {
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
-                bluetoothConnector.onRequestPermissionsResult(grantResults)
+        try {
+            when (requestCode) {
+                ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
+                    bluetoothConnector.onRequestPermissionsResult(grantResults)
+                }
+                else -> {
+                    // Ignore all other requests.
+                }
             }
-            else -> {
-                // Ignore all other requests.
-            }
+        } catch(exception: BluetoothNotSupportedException) {
+            exceptionHandler.handleAndDisplay(exception)
+        } catch(exception: BluetoothPermissionsRequiredException) {
+            exceptionHandler.handleAndDisplay(exception)
         }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
-                bluetoothConnector.onActivityResult(resultCode)
+        try {
+            when (requestCode) {
+                ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
+                    bluetoothConnector.onActivityResult(resultCode)
+                }
+                else -> {
+                    // Ignore all other requests.
+                }
             }
-            else -> {
-                // Ignore all other requests.
-            }
+        } catch(exception: BluetoothRequiredException) {
+            exceptionHandler.handleAndDisplay(exception)
         }
     }
 
