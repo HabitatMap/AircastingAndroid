@@ -23,6 +23,9 @@ jobs:
           name: Test with Firebase Test Lab
           command: >
             sudo gcloud firebase test android run \
+              --device version=21 --device model=hwALE-H \
+              --device version=28 --device model=Pixel2 \
+              --device version=29 --device model=blueline \
               --app ~/project/app/build/outputs/apk/debug/app-debug.apk \
               --test ~/project/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
