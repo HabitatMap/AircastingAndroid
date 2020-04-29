@@ -1,13 +1,13 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 
-class SelectDeviceFragment(private val mListener: SelectDeviceViewMvc.Listener) : Fragment() {
+class SelectDeviceFragment(private val mListener: SelectDeviceViewMvc.Listener, private val bluetoothManager: BluetoothManager) : Fragment() {
     private var mSelectDeviceController: SelectDeviceController? = null
 
     override fun onCreateView(
@@ -23,7 +23,9 @@ class SelectDeviceFragment(private val mListener: SelectDeviceViewMvc.Listener) 
         mSelectDeviceController =
             SelectDeviceController(
                 context,
-                selectDeviceView
+                selectDeviceView,
+                bluetoothManager,
+                mListener
             )
 
         return selectDeviceView.rootView
@@ -31,12 +33,11 @@ class SelectDeviceFragment(private val mListener: SelectDeviceViewMvc.Listener) 
 
     override fun onStart() {
         super.onStart()
-        mSelectDeviceController!!.bindDevices()
-        mSelectDeviceController!!.registerListener(mListener)
+        mSelectDeviceController!!.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        mSelectDeviceController!!.unregisterListener(mListener)
+        mSelectDeviceController!!.onStop()
     }
 }

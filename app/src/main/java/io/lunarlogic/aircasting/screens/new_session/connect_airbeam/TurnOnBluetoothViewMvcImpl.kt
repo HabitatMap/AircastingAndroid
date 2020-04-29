@@ -11,15 +11,15 @@ class TurnOnBluetoothViewMvcImpl : BaseObservableViewMvc<TurnOnBluetoothViewMvc.
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
         this.rootView = inflater.inflate(R.layout.fragment_turn_on_bluetooth, parent, false)
-        val button = rootView?.findViewById<Button>(R.id.turn_on_bluetooth_ready_button)
+        val button = rootView?.findViewById<Button>(R.id.turn_on_bluetooth_ok_button)
         button?.setOnClickListener {
-            onReadyClicked()
+            onOkClicked()
         }
     }
 
-    private fun onReadyClicked() {
+    private fun onOkClicked() {
         for (listener in listeners) {
-            listener.onTurnOnBluetoothReadyClicked()
+            listener.onTurnOnBluetoothOkClicked()
         }
     }
 }

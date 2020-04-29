@@ -1,73 +1,51 @@
 package io.lunarlogic.aircasting.screens.new_session
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamFragment
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothFragment
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.ADD_NEW_DEVICE_VIEW_TYPE
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
-import io.lunarlogic.aircasting.bluetooth.BluetoothConnector
-import io.lunarlogic.aircasting.bluetooth.BluetoothDeviceFoundReceiver
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.BluetoothPermissionsRequiredException
 import io.lunarlogic.aircasting.exceptions.BluetoothRequiredException
 import io.lunarlogic.aircasting.exceptions.ExceptionHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 
 class NewSessionController(
     mContext: Context,
     private val mActivity: BluetoothActivity,
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
-) : SelectDeviceViewMvc.Listener, TurnOnAirBeamViewMvc.Listener, TurnOnBluetoothViewMvc.Listener {
+) : SelectDeviceViewMvc.Listener,
+    TurnOnAirBeamViewMvc.Listener,
+    TurnOnBluetoothViewMvc.Listener,
+    ConnectingAirBeamController.Listener {
 
     val STEP_PROGRESS = 10
     var currentProgress = STEP_PROGRESS
-    val bluetoothConnector = BluetoothConnector(mActivity)
+    val bluetoothManager = BluetoothManager(mActivity)
     val exceptionHandler = ExceptionHandler(mContext)
-    val bluetoothDeviceFoundReceiver = BluetoothDeviceFoundReceiver(exceptionHandler)
-
-    fun onCreate() {
-        mActivity.registerBluetoothDeviceFoundReceiver(bluetoothDeviceFoundReceiver)
-    }
-
-    fun onDestroy() {
-        mActivity.unregisterBluetoothDeviceFoundReceiver(bluetoothDeviceFoundReceiver)
-    }
 
     fun onStart() {
-        setProgress(1 * STEP_PROGRESS)
-        replaceFragment(SelectDeviceFragment(this))
+        setProgressStep(1)
+        replaceFragment(TurnOnBluetoothFragment(this))
     }
 
     fun onBackPressed() {
         setProgress(currentProgress - STEP_PROGRESS)
     }
 
-    override fun onDeviceItemSelected(deviceItem: DeviceItem) {
-        setProgress(2 * STEP_PROGRESS)
-        when (deviceItem.viewType) {
-            ADD_NEW_DEVICE_VIEW_TYPE -> goToTurnOnAirBeam()
-        }
-    }
-
-    override fun onTurnOnAirBeamReadyClicked() {
-        setProgress(3 * STEP_PROGRESS)
-        goToTurnOnBluetooth()
-    }
-
-    override fun onTurnOnBluetoothReadyClicked() {
+    override fun onTurnOnBluetoothOkClicked() {
         try {
-            bluetoothConnector.connect()
+            bluetoothManager.enableBluetooth()
         } catch(exception: BluetoothNotSupportedException) {
             exceptionHandler.handleAndDisplay(exception)
         }
@@ -77,7 +55,12 @@ class NewSessionController(
         try {
             when (requestCode) {
                 ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
-                    bluetoothConnector.onRequestPermissionsResult(grantResults)
+                    if (bluetoothManager.permissionsGranted(grantResults)) {
+                        mActivity.requestBluetoothEnable()
+                    } else {
+                        // TODO: change this exception flow
+                        throw BluetoothPermissionsRequiredException()
+                    }
                 }
                 else -> {
                     // Ignore all other requests.
@@ -94,7 +77,9 @@ class NewSessionController(
         try {
             when (requestCode) {
                 ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
-                    bluetoothConnector.onActivityResult(resultCode)
+                    if (resultCode == Activity.RESULT_OK) {
+                        goToTurnOnAirBeam()
+                    }
                 }
                 else -> {
                     // Ignore all other requests.
@@ -106,11 +91,34 @@ class NewSessionController(
     }
 
     private fun goToTurnOnAirBeam() {
+        setProgressStep(2)
         goToFragment(TurnOnAirBeamFragment(this))
     }
 
-    private fun goToTurnOnBluetooth() {
-        goToFragment(TurnOnBluetoothFragment(this))
+    override fun onTurnOnAirBeamReadyClicked() {
+        goToSelectDevice()
+    }
+
+    fun goToSelectDevice() {
+        setProgressStep(3)
+        goToFragment(SelectDeviceFragment(this, bluetoothManager))
+    }
+
+    override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+        goToConnecting(deviceItem)
+    }
+
+    fun goToConnecting(deviceItem: DeviceItem) {
+        setProgressStep(4)
+        goToFragment(ConnectingAirBeamFragment(deviceItem, this))
+    }
+
+    override fun onConnectionSuccessful() {
+        println("ANIA Connected!")
+    }
+
+    private fun setProgressStep(step: Int) {
+        setProgress(step * STEP_PROGRESS)
     }
 
     private fun setProgress(progress: Int) {

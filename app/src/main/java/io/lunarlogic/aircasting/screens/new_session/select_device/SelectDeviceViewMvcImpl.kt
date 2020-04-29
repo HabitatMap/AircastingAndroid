@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.devices.Device
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
@@ -30,8 +29,12 @@ class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listen
         mRecyclerDevices?.setAdapter(mAdapter)
     }
 
-    override fun bindDevices(devices: List<Device>) {
-        mAdapter.bindDevices(devices)
+    override fun bindDeviceItems(deviceItems: List<DeviceItem>) {
+        mAdapter.bindDeviceItems(deviceItems)
+    }
+
+    override fun addDeviceItem(deviceItem: DeviceItem) {
+        mAdapter.addDeviceItem(deviceItem)
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {

@@ -12,6 +12,8 @@
     <string name="turn_on_airbeam_description">Press the buttom at the bottom of your AirBeam to turn it on.</string>
     <string name="turn_on_airbeam_ready_button">Ready</string>
     <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
-    <string name="turn_on_bluetooth_description">Turn on Bluetooth to enable your phone to connect to the AirBeam.</string>
-    <string name="turn_on_bluetooth_ready_button">Got it!</string>
+    <string name="turn_on_bluetooth_description">To communicate with AirBeam, the app needs Bluetooth.</string>
+    <string name="turn_on_bluetooth_ok_button">Turn the Bluetooth on</string>
+    <string name="connecting_airbeam_header">Connecting</string>
+    <string name="connecting_airbeam_description">Make sure your AirBeam\'s connection indicator is lit green.</string>
 </resources>
