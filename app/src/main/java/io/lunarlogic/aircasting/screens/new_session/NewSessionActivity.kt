@@ -4,18 +4,22 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Messenger
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.dashboard.DashboardHandler
 
 class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
     private var mNewSessionController: NewSessionController? = null
 
     companion object {
-        fun start(context: Context?) {
+        fun start(context: Context?, messanger: Messenger) {
             context?.let{
                 val intent = Intent(it, NewSessionActivity::class.java)
+                intent.putExtra("messanger", messanger)
                 it.startActivity(intent)
             }
         }
@@ -23,9 +27,10 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val messanger = intent.extras?.get("messanger") as Messenger
 
         val newSessionView = NewSessionViewMvcImpl(layoutInflater, null)
-        mNewSessionController = NewSessionController(this, this, newSessionView, supportFragmentManager)
+        mNewSessionController = NewSessionController(this, this, newSessionView, supportFragmentManager, messanger)
 
         setContentView(newSessionView.rootView)
     }

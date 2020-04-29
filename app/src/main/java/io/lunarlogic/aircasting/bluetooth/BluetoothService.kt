@@ -1,15 +1,18 @@
 package io.lunarlogic.aircasting.bluetooth
 
 import android.bluetooth.BluetoothSocket
+import android.os.Message
+import android.os.Messenger
 import com.google.common.io.CharStreams
 import com.google.common.io.LineProcessor
+import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.sensor.ResponseParser
 import io.lunarlogic.aircasting.sensor.SensorEvent
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class BluetoothService {
+class BluetoothService(private val mMessenger: Messenger) {
 //    fun perform(socket: BluetoothSocket) {
 //        val thread = ServiceThread(socket)
 //        thread.start()
@@ -33,7 +36,10 @@ class BluetoothService {
                 @Throws(IOException::class)
                 override fun processLine(line: String): Boolean {
                     val sensorEvent = process(line)
-                    println("READING: sensorEvent: " + sensorEvent.debug())
+                    mMessenger.send(Message.obtain().apply {
+                        what = ResultCodes.AIRCASTING_AIR_BEAM2_EVENT
+                        obj = sensorEvent
+                    })
                     return !Thread.interrupted()
                 }
 

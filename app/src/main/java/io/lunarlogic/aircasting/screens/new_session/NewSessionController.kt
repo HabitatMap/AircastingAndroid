@@ -3,7 +3,9 @@ package io.lunarlogic.aircasting.screens.new_session
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Messenger
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -20,10 +22,11 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 
 class NewSessionController(
-    mContext: Context,
+    private val mContextActivity: AppCompatActivity,
     private val mActivity: BluetoothActivity,
     private val mViewMvc: NewSessionViewMvc,
-    private val mFragmentManager: FragmentManager
+    private val mFragmentManager: FragmentManager,
+    private val mMessanger: Messenger
 ) : SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -32,7 +35,7 @@ class NewSessionController(
     val STEP_PROGRESS = 10
     var currentProgress = STEP_PROGRESS
     val bluetoothManager = BluetoothManager(mActivity)
-    val exceptionHandler = ExceptionHandler(mContext)
+    val exceptionHandler = ExceptionHandler(mContextActivity)
 
     fun onStart() {
         setProgressStep(1)
@@ -110,11 +113,11 @@ class NewSessionController(
 
     fun goToConnecting(deviceItem: DeviceItem) {
         setProgressStep(4)
-        goToFragment(ConnectingAirBeamFragment(deviceItem, this))
+        goToFragment(ConnectingAirBeamFragment(deviceItem, this, mMessanger))
     }
 
     override fun onConnectionSuccessful() {
-        println("ANIA Connected!")
+        mContextActivity.finish()
     }
 
     private fun setProgressStep(step: Int) {
