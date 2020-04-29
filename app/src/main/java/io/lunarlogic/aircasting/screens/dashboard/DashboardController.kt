@@ -8,19 +8,19 @@ import android.os.Messenger
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.sensor.SensorEvent
 
-class DashboardHandler: Handler(Looper.getMainLooper()) {
-    override fun handleMessage(message: Message) {
-        val sensorEvent = message.obj as SensorEvent
-        println(sensorEvent.debug())
-    }
-}
 
 class DashboardController(
     private val mContext: Context?,
     private val mViewMvc: DashboardViewMvc
 ) : DashboardViewMvc.Listener {
 
-    private val mMessanger = Messenger(DashboardHandler())
+    private val mHandler = object : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(message: Message) {
+            val sensorEvent = message.obj as SensorEvent
+            mViewMvc.updateMeasurements(sensorEvent)
+        }
+    }
+    private val mMessanger = Messenger(mHandler)
 
     fun onStart() {
         mViewMvc.registerListener(this)

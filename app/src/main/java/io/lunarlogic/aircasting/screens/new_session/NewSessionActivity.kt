@@ -4,13 +4,11 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.os.Messenger
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.dashboard.DashboardHandler
 
 class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
     private var mNewSessionController: NewSessionController? = null

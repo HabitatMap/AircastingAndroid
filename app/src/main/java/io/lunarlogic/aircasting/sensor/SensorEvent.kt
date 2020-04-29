@@ -4,8 +4,8 @@ import java.util.*
 
 class SensorEvent(
     private val packageName: String,
-    private val sensorName: String?,
-    private val measurementType: String?,
+    private val mSensorName: String?,
+    private val mMeasurementType: String?,
     private val shortMeasurementType: String?,
     private val unit: String?,
     private val symbol: String?,
@@ -14,11 +14,14 @@ class SensorEvent(
     private val mid: Int?,
     private val high: Int?,
     private val veryHigh: Int?,
-    private val measuredValue: Double?) {
+    private val mMeasuredValue: Double?) {
 
     private var creationTime = Date().time
     private var address = "none"
 
+    val sensorName get() = mSensorName
+    val measurementType get() = mMeasurementType
+    val measuredValue get() = mMeasuredValue
 
     fun debug(): String {
         return "SensorEvent{" +
