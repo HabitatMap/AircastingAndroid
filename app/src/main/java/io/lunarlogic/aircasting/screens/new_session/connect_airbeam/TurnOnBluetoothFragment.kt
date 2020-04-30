@@ -7,34 +7,34 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class TurnOnBluetoothFragment(private val mListener: TurnOnBluetoothViewMvc.Listener) : Fragment() {
-    private var mTurnOnBluetoothController: TurnOnBluetoothController? = null
+    private var controller: TurnOnBluetoothController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val turnOnBluetoothView =
+        val view =
             TurnOnBluetoothViewMvcImpl(
                 layoutInflater,
                 null
             )
-        mTurnOnBluetoothController =
+        controller =
             TurnOnBluetoothController(
                 context,
-                turnOnBluetoothView
+                view
             )
 
-        return turnOnBluetoothView.rootView
+        return view.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        mTurnOnBluetoothController!!.registerListener(mListener)
+        controller!!.registerListener(mListener)
     }
 
     override fun onStop() {
         super.onStop()
-        mTurnOnBluetoothController!!.unregisterListener(mListener)
+        controller!!.unregisterListener(mListener)
     }
 }

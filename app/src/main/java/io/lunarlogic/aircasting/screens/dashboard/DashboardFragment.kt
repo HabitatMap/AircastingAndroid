@@ -7,26 +7,26 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class DashboardFragment : Fragment() {
-    private var mDashboardController: DashboardController? = null
+    private var controller: DashboardController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val dashboardView = DashboardViewMvcImpl(inflater, container)
-        mDashboardController = DashboardController(context, dashboardView)
+        val view = DashboardViewMvcImpl(inflater, container)
+        controller = DashboardController(context, view)
 
-        return dashboardView.rootView
+        return view.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        mDashboardController!!.onStart()
+        controller!!.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        mDashboardController!!.onStop()
+        controller!!.onStop()
     }
 }

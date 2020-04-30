@@ -16,5 +16,8 @@
     <string name="turn_on_bluetooth_ok_button">Turn the Bluetooth on</string>
     <string name="connecting_airbeam_header">Connecting</string>
     <string name="connecting_airbeam_description">Make sure your AirBeam\'s connection indicator is lit green.</string>
+    <string name="airbeam_connected_header">AirBeam connected</string>
+    <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
+    <string name="airbeam_connected_continue_button">Continue</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
 </resources>

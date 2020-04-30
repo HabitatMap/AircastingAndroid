@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 
 class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
-    private var mNewSessionController: NewSessionController? = null
+    private var controller: NewSessionController? = null
 
     companion object {
         fun start(context: Context?, messanger: Messenger) {
@@ -27,10 +27,10 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
         super.onCreate(savedInstanceState)
         val messanger = intent.extras?.get("messanger") as Messenger
 
-        val newSessionView = NewSessionViewMvcImpl(layoutInflater, null)
-        mNewSessionController = NewSessionController(this, this, newSessionView, supportFragmentManager, messanger)
+        val view = NewSessionViewMvcImpl(layoutInflater, null)
+        controller = NewSessionController(this, this, view, supportFragmentManager, messanger)
 
-        setContentView(newSessionView.rootView)
+        setContentView(view.rootView)
     }
 
     override fun requestBluetoothPermissions(permissionsManager: PermissionsManager) {
@@ -48,21 +48,21 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
 
     override fun onStart() {
         super.onStart()
-        mNewSessionController!!.onStart()
+        controller!!.onStart()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        mNewSessionController!!.onBackPressed()
+        controller!!.onBackPressed()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
-        mNewSessionController!!.onRequestPermissionsResult(requestCode, grantResults)
+        controller!!.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        mNewSessionController!!.onActivityResult(requestCode, resultCode, data)
+        controller!!.onActivityResult(requestCode, resultCode, data)
     }
 }

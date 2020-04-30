@@ -27,7 +27,8 @@ class NewSessionController(
 ) : SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
-    ConnectingAirBeamController.Listener {
+    ConnectingAirBeamController.Listener,
+    AirBeamConnectedViewMvc.Listener {
 
     val STEP_PROGRESS = 10
     var currentProgressStep = 1
@@ -117,6 +118,15 @@ class NewSessionController(
     }
 
     override fun onConnectionSuccessful() {
+        goToAirBeamConnected()
+    }
+
+    private fun goToAirBeamConnected() {
+        incrementStepProgress()
+        goToFragment(AirBeamConnectedFragment(this))
+    }
+
+    override fun onContinueClicked() {
         mContextActivity.finish()
     }
 
@@ -131,8 +141,8 @@ class NewSessionController(
     }
 
     private fun updateProgressBarView() {
-        val prograssBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-        prograssBar?.progress = currentProgressStep * STEP_PROGRESS
+        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar?.progress = currentProgressStep * STEP_PROGRESS
     }
 
     private fun replaceFragment(fragment: Fragment) {
