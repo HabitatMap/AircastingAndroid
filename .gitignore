@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+aircasting.keystore
+app/google-services.json
+app/release
+private_key.pepk
