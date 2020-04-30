@@ -52,6 +52,7 @@ class ResponseParser {
 
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
+            // TODO: handle
             println("READING: parsing error :(")
         }
 
