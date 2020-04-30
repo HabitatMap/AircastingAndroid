@@ -4,8 +4,6 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
-import io.lunarlogic.aircasting.exceptions.BluetoothPermissionsRequiredException
-import io.lunarlogic.aircasting.exceptions.BluetoothRequiredException
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 
 class BluetoothManager(private val mActivity: BluetoothActivity) {

@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Messenger
 import android.widget.ProgressBar
@@ -14,9 +13,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceIt
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
-import io.lunarlogic.aircasting.exceptions.BluetoothPermissionsRequiredException
-import io.lunarlogic.aircasting.exceptions.BluetoothRequiredException
-import io.lunarlogic.aircasting.exceptions.ExceptionHandler
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
@@ -33,68 +30,71 @@ class NewSessionController(
     ConnectingAirBeamController.Listener {
 
     val STEP_PROGRESS = 10
-    var currentProgress = STEP_PROGRESS
+    var currentProgressStep = 1
     val bluetoothManager = BluetoothManager(mActivity)
-    val exceptionHandler = ExceptionHandler(mContextActivity)
+    val errorHandler = ErrorHandler(mContextActivity)
 
     fun onStart() {
-        setProgressStep(1)
-        replaceFragment(TurnOnBluetoothFragment(this))
+        showFirstStep()
+    }
+
+    private fun showFirstStep() {
+        replaceFragment(getFirstFragment())
+        updateProgressBarView()
+    }
+
+    private fun getFirstFragment() : Fragment {
+        try {
+            if (bluetoothManager.isBluetoothEnabled()) {
+                return TurnOnAirBeamFragment(this)
+            }
+        } catch(exception: BluetoothNotSupportedException) {
+            errorHandler.showError(exception.messageToDisplay)
+        }
+
+        return TurnOnBluetoothFragment(this)
     }
 
     fun onBackPressed() {
-        setProgress(currentProgress - STEP_PROGRESS)
+        decrementStepProgress()
     }
 
     override fun onTurnOnBluetoothOkClicked() {
-        try {
-            bluetoothManager.enableBluetooth()
-        } catch(exception: BluetoothNotSupportedException) {
-            exceptionHandler.handleAndDisplay(exception)
-        }
+        bluetoothManager.enableBluetooth()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
-        try {
-            when (requestCode) {
-                ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
-                    if (bluetoothManager.permissionsGranted(grantResults)) {
-                        mActivity.requestBluetoothEnable()
-                    } else {
-                        // TODO: change this exception flow
-                        throw BluetoothPermissionsRequiredException()
-                    }
-                }
-                else -> {
-                    // Ignore all other requests.
+        when (requestCode) {
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
+                if (bluetoothManager.permissionsGranted(grantResults)) {
+                    mActivity.requestBluetoothEnable()
+                } else {
+                    errorHandler.showError(R.string.errors_bluetooth_required)
                 }
             }
-        } catch(exception: BluetoothNotSupportedException) {
-            exceptionHandler.handleAndDisplay(exception)
-        } catch(exception: BluetoothPermissionsRequiredException) {
-            exceptionHandler.handleAndDisplay(exception)
+            else -> {
+                // Ignore all other requests.
+            }
         }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        try {
-            when (requestCode) {
-                ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
-                    if (resultCode == Activity.RESULT_OK) {
-                        goToTurnOnAirBeam()
-                    }
-                }
-                else -> {
-                    // Ignore all other requests.
+        when (requestCode) {
+            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    goToTurnOnAirBeam()
+                } else {
+                    errorHandler.showError(R.string.errors_bluetooth_required)
                 }
             }
-        } catch(exception: BluetoothRequiredException) {
-            exceptionHandler.handleAndDisplay(exception)
+            else -> {
+                // Ignore all other requests.
+            }
         }
     }
 
     private fun goToTurnOnAirBeam() {
-        setProgressStep(2)
+        incrementStepProgress()
         goToFragment(TurnOnAirBeamFragment(this))
     }
 
@@ -102,8 +102,8 @@ class NewSessionController(
         goToSelectDevice()
     }
 
-    fun goToSelectDevice() {
-        setProgressStep(3)
+    private fun goToSelectDevice() {
+        incrementStepProgress()
         goToFragment(SelectDeviceFragment(this, bluetoothManager))
     }
 
@@ -111,8 +111,8 @@ class NewSessionController(
         goToConnecting(deviceItem)
     }
 
-    fun goToConnecting(deviceItem: DeviceItem) {
-        setProgressStep(4)
+    private fun goToConnecting(deviceItem: DeviceItem) {
+        incrementStepProgress()
         goToFragment(ConnectingAirBeamFragment(deviceItem, this, mMessanger))
     }
 
@@ -120,14 +120,19 @@ class NewSessionController(
         mContextActivity.finish()
     }
 
-    private fun setProgressStep(step: Int) {
-        setProgress(step * STEP_PROGRESS)
+    private fun incrementStepProgress() {
+        currentProgressStep += 1
+        updateProgressBarView()
     }
 
-    private fun setProgress(progress: Int) {
+    private fun decrementStepProgress() {
+        currentProgressStep -= 1
+        updateProgressBarView()
+    }
+
+    private fun updateProgressBarView() {
         val prograssBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-        prograssBar?.progress = progress
-        currentProgress = progress
+        prograssBar?.progress = currentProgressStep * STEP_PROGRESS
     }
 
     private fun replaceFragment(fragment: Fragment) {

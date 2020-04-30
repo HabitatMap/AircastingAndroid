@@ -7,7 +7,8 @@ import android.os.Messenger
 import io.lunarlogic.aircasting.bluetooth.BluetoothService
 import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionCloseFailed
 import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionOpenFailed
-import io.lunarlogic.aircasting.exceptions.ExceptionHandler
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.exceptions.UnknownError
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import java.io.IOException
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 
 class AirBeam2Connector(
-    private val mExceptionHandler: ExceptionHandler,
+    private val mErrorHandler: ErrorHandler,
     private val mListener: ConnectingAirBeamController.Listener,
     private val mMessenger: Messenger
 ) {
@@ -50,7 +51,11 @@ class AirBeam2Connector(
                     bluetoothService.run(socket)
                 }
             } catch(e: IOException) {
-                val message = mExceptionHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))
+                val message = mErrorHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))
+                message.sendToTarget()
+                cancel()
+            } catch(e: Exception) {
+                val message = mErrorHandler.obtainMessage(ResultCodes.AIRCASTING_UNKNOWN_ERROR, UnknownError(e))
                 message.sendToTarget()
                 cancel()
             }
@@ -61,7 +66,7 @@ class AirBeam2Connector(
             try {
                 mmSocket?.close()
             } catch (e: IOException) {
-                mExceptionHandler.handle(AirBeam2ConnectionCloseFailed(e))
+                mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
             }
         }
     }

@@ -6,7 +6,7 @@ import android.os.Looper
 import android.os.Message
 import android.widget.Toast
 
-class ExceptionHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
+class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
     override fun handleMessage(message: Message) {
         val exception = message.obj as BaseException
         handleAndDisplay(exception)
@@ -19,7 +19,18 @@ class ExceptionHandler(private val mContext: Context): Handler(Looper.getMainLoo
 
     fun handleAndDisplay(exception: BaseException) {
         handle(exception)
-        val toast = Toast.makeText(mContext, exception.messageToDisplay, Toast.LENGTH_LONG)
-        toast.show()
+        showError(exception.messageToDisplay)
+    }
+
+    fun showError(message: String?) {
+        message?.let {
+            val toast = Toast.makeText(mContext, it, Toast.LENGTH_LONG)
+            toast.show()
+        }
+    }
+
+    fun showError(messageResId: Int) {
+        val message = mContext.getString(messageResId)
+        showError(message)
     }
 }
