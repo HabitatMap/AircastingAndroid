@@ -7,5 +7,17 @@
     <string name="record_new_session">Record new session</string>
     <string name="add_new_device">Add new device</string>
     <string name="airbeam2">AirBeam2</string>
-    <string name="select_device_header">Select device</string>
+    <string name="select_device_header">Select a device</string>
+    <string name="turn_on_airbeam_header">Turn your AirBeam on</string>
+    <string name="turn_on_airbeam_description">Press the buttom at the bottom of your AirBeam to turn it on.</string>
+    <string name="turn_on_airbeam_ready_button">Ready</string>
+    <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
+    <string name="turn_on_bluetooth_description">To communicate with AirBeam, the app needs Bluetooth.</string>
+    <string name="turn_on_bluetooth_ok_button">Turn the Bluetooth on</string>
+    <string name="connecting_airbeam_header">Connecting</string>
+    <string name="connecting_airbeam_description">Make sure your AirBeam\'s connection indicator is lit green.</string>
+    <string name="airbeam_connected_header">AirBeam connected</string>
+    <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
+    <string name="airbeam_connected_continue_button">Continue</string>
+    <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
 </resources>
