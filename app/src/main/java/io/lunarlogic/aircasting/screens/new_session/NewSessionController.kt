@@ -22,8 +22,7 @@ class NewSessionController(
     private val mContextActivity: AppCompatActivity,
     private val mActivity: BluetoothActivity,
     private val mViewMvc: NewSessionViewMvc,
-    private val mFragmentManager: FragmentManager,
-    private val mMessanger: Messenger
+    private val mFragmentManager: FragmentManager
 ) : SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -114,7 +113,7 @@ class NewSessionController(
 
     private fun goToConnecting(deviceItem: DeviceItem) {
         incrementStepProgress()
-        goToFragment(ConnectingAirBeamFragment(deviceItem, this, mMessanger))
+        goToFragment(ConnectingAirBeamFragment(deviceItem, this))
     }
 
     override fun onConnectionSuccessful() {

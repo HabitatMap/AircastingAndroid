@@ -9,15 +9,14 @@ import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 class ConnectingAirBeamController(
     mContext: Context,
     private val deviceItem: DeviceItem,
-    private val mListener: Listener,
-    private val mMessenger: Messenger
+    private val mListener: Listener
 ) {
     interface Listener {
         fun onConnectionSuccessful()
     }
 
     val exceptionHandler = ErrorHandler(mContext)
-    val airbeam2Connector = AirBeam2Connector(exceptionHandler, mListener, mMessenger)
+    val airbeam2Connector = AirBeam2Connector(exceptionHandler, mListener)
 
     fun onStart() {
         airbeam2Connector.connect(deviceItem.bluetoothDevice)

@@ -18,12 +18,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class AirBeam2Connector(
     private val mErrorHandler: ErrorHandler,
-    private val mListener: ConnectingAirBeamController.Listener,
-    private val mMessenger: Messenger
+    private val mListener: ConnectingAirBeamController.Listener
 ) {
     val connectionStarted = AtomicBoolean(false)
     val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    val bluetoothService = BluetoothService(mMessenger)
+    val bluetoothService = BluetoothService()
 
     fun connect(device: BluetoothDevice) {
         if (connectionStarted.get() == false) {

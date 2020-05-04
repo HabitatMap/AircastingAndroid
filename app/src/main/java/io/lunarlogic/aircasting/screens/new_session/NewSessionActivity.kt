@@ -14,10 +14,9 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
     private var controller: NewSessionController? = null
 
     companion object {
-        fun start(context: Context?, messenger: Messenger) {
+        fun start(context: Context?) {
             context?.let{
                 val intent = Intent(it, NewSessionActivity::class.java)
-                intent.putExtra("messenger", messenger)
                 it.startActivity(intent)
             }
         }
@@ -26,10 +25,8 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val messenger = intent.extras?.get("messenger") as Messenger
-
         val view = NewSessionViewMvcImpl(layoutInflater, null)
-        controller = NewSessionController(this, this, view, supportFragmentManager, messenger)
+        controller = NewSessionController(this, this, view, supportFragmentManager)
 
         setContentView(view.rootView)
     }
