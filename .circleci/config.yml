@@ -7,6 +7,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Store google-services.json
+          command: echo $GCLOUD_SERVICES_JSON > ${HOME}/project/app/google-services.json
+      - run:
           name: Build debug APK and release APK
           command: |
             ./gradlew :app:assembleDebug

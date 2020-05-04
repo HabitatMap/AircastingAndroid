@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 
 class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
     override fun handleMessage(message: Message) {
@@ -13,8 +14,9 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
     }
 
     fun handle(exception: BaseException) {
-        // TODO: crashlytics and logging
         exception.cause?.printStackTrace()
+        exception.messageToDisplay?.let { Crashlytics.log(it) }
+        exception.cause?.let { Crashlytics.logException(exception.cause) }
     }
 
     fun handleAndDisplay(exception: BaseException) {
