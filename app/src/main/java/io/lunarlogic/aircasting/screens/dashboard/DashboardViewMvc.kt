@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
-import io.lunarlogic.aircasting.sensor.SensorEvent
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
 
 
 interface DashboardViewMvc : ObservableViewMvc<DashboardViewMvc.Listener> {
@@ -10,5 +10,5 @@ interface DashboardViewMvc : ObservableViewMvc<DashboardViewMvc.Listener> {
         fun onRecordNewSessionClicked()
     }
 
-    fun updateMeasurements(sensorEvent: SensorEvent)
+    fun updateMeasurements(newMeasurementEvent: NewMeasurementEvent)
 }

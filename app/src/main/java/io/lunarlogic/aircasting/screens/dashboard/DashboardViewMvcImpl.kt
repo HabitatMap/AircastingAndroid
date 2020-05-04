@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.SensorEvent
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
 
 class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, DashboardViewMvc {
     constructor(
@@ -19,10 +19,10 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
         }
     }
 
-    override fun updateMeasurements(sensorEvent: SensorEvent) {
+    override fun updateMeasurements(newMeasurementEvent: NewMeasurementEvent) {
         val textView = rootView?.findViewById<TextView>(R.id.text_dashboard)
-        if (sensorEvent.sensorName == "AirBeam2-PM2.5") {
-            textView?.text = "Current PM 2.5: " + sensorEvent.measuredValue
+        if (newMeasurementEvent.sensorName == "AirBeam2-PM2.5") {
+            textView?.text = "Current PM 2.5: " + newMeasurementEvent.measuredValue
         }
     }
 

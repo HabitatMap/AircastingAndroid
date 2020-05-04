@@ -6,31 +6,32 @@ import android.os.Looper
 import android.os.Message
 import android.os.Messenger
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
-import io.lunarlogic.aircasting.sensor.SensorEvent
-
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class DashboardController(
     private val mContext: Context?,
     private val mViewMvc: DashboardViewMvc
 ) : DashboardViewMvc.Listener {
 
-    private val mHandler = object : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(message: Message) {
-            val sensorEvent = message.obj as SensorEvent
-            mViewMvc.updateMeasurements(sensorEvent)
-        }
-    }
-    private val mMessenger = Messenger(mHandler)
-
     fun onStart() {
         mViewMvc.registerListener(this)
+        EventBus.getDefault().register(this);
     }
 
     fun onStop() {
         mViewMvc.unregisterListener(this)
+        EventBus.getDefault().unregister(this);
     }
 
     override fun onRecordNewSessionClicked() {
-        NewSessionActivity.start(mContext, mMessenger)
+        NewSessionActivity.start(mContext)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: NewMeasurementEvent) {
+        mViewMvc.updateMeasurements(event)
     }
 }

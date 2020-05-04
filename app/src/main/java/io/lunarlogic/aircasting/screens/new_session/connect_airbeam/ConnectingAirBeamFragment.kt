@@ -10,8 +10,8 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceIt
 
 class ConnectingAirBeamFragment(
     private val deviceItem: DeviceItem,
-    private val mListener: ConnectingAirBeamController.Listener,
-    private val mMessenger: Messenger) : Fragment() {
+    private val mListener: ConnectingAirBeamController.Listener
+) : Fragment() {
 
     private var controller: ConnectingAirBeamController? = null
 
@@ -26,7 +26,7 @@ class ConnectingAirBeamFragment(
                 null
             )
         controller =
-            ConnectingAirBeamController(context!!, deviceItem, mListener, mMessenger)
+            ConnectingAirBeamController(context!!, deviceItem, mListener)
 
         return view.rootView
     }

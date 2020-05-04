@@ -1,8 +1,8 @@
-package io.lunarlogic.aircasting.sensor
+package io.lunarlogic.aircasting.events
 
 import java.util.*
 
-class SensorEvent(
+class NewMeasurementEvent(
     private val packageName: String,
     private val mSensorName: String?,
     private val mMeasurementType: String?,
@@ -24,7 +24,7 @@ class SensorEvent(
     val measuredValue get() = mMeasuredValue
 
     fun debug(): String {
-        return "SensorEvent{" +
+        return "NewMeasurementEvent{" +
                 "packageName='" + packageName + '\''.toString() +
                 ", sensorName='" + sensorName + '\''.toString() +
                 ", measurementType='" + measurementType + '\''.toString() +
