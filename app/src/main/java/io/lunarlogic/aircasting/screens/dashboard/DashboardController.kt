@@ -20,7 +20,7 @@ class DashboardController(
             mViewMvc.updateMeasurements(sensorEvent)
         }
     }
-    private val mMessanger = Messenger(mHandler)
+    private val mMessenger = Messenger(mHandler)
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -31,6 +31,6 @@ class DashboardController(
     }
 
     override fun onRecordNewSessionClicked() {
-        NewSessionActivity.start(mContext, mMessanger)
+        NewSessionActivity.start(mContext, mMessenger)
     }
 }
