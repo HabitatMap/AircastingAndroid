@@ -14,6 +14,8 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.screens.dashboard.SelectDeviceTypeFragment
+import io.lunarlogic.aircasting.screens.dashboard.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 
@@ -26,36 +28,52 @@ class NewSessionController(
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
     ConnectingAirBeamController.Listener,
-    AirBeamConnectedViewMvc.Listener {
+    AirBeamConnectedViewMvc.Listener,
+    SelectDeviceTypeViewMvc.Listener {
 
-    val STEP_PROGRESS = 10
-    var currentProgressStep = 1
-    val bluetoothManager = BluetoothManager(mActivity)
-    val errorHandler = ErrorHandler(mContextActivity)
+    private val STEP_PROGRESS = 10
+    private var currentProgressStep = 1
+    private val bluetoothManager = BluetoothManager(mActivity)
+    private val errorHandler = ErrorHandler(mContextActivity)
 
     fun onStart() {
         showFirstStep()
     }
 
     private fun showFirstStep() {
-        replaceFragment(getFirstFragment())
+        val fragment = SelectDeviceTypeFragment()
+        fragment.listener = this
+        replaceFragment(fragment)
         updateProgressBarView()
     }
 
-    private fun getFirstFragment() : Fragment {
+    private fun getBluetoothDeviceFragment() : Fragment {
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
-                return TurnOnAirBeamFragment(this)
+                val fragment = TurnOnAirBeamFragment()
+                fragment.listener = this
+                return fragment
             }
         } catch(exception: BluetoothNotSupportedException) {
             errorHandler.showError(exception.messageToDisplay)
         }
 
-        return TurnOnBluetoothFragment(this)
+        val fragment = TurnOnBluetoothFragment()
+        fragment.listener = this
+        return fragment
     }
 
     fun onBackPressed() {
         decrementStepProgress()
+    }
+
+    override fun onBluetoothDeviceSelected() {
+        goToBluetoothDeviceFragment()
+    }
+
+    fun goToBluetoothDeviceFragment() {
+        incrementStepProgress()
+        goToFragment(getBluetoothDeviceFragment())
     }
 
     override fun onTurnOnBluetoothOkClicked() {
@@ -94,7 +112,9 @@ class NewSessionController(
 
     private fun goToTurnOnAirBeam() {
         incrementStepProgress()
-        goToFragment(TurnOnAirBeamFragment(this))
+        val fragment = TurnOnAirBeamFragment()
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
@@ -103,7 +123,10 @@ class NewSessionController(
 
     private fun goToSelectDevice() {
         incrementStepProgress()
-        goToFragment(SelectDeviceFragment(this, bluetoothManager))
+        val fragment = SelectDeviceFragment()
+        fragment.bluetoothManager = bluetoothManager
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {
@@ -112,7 +135,10 @@ class NewSessionController(
 
     private fun goToConnecting(deviceItem: DeviceItem) {
         incrementStepProgress()
-        goToFragment(ConnectingAirBeamFragment(deviceItem, this))
+        val fragment = ConnectingAirBeamFragment()
+        fragment.deviceItem = deviceItem
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onConnectionSuccessful() {
@@ -121,7 +147,9 @@ class NewSessionController(
 
     private fun goToAirBeamConnected() {
         incrementStepProgress()
-        goToFragment(AirBeamConnectedFragment(this))
+        val fragment = AirBeamConnectedFragment()
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onContinueClicked() {
