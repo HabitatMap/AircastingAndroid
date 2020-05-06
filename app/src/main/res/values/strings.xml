@@ -23,7 +23,11 @@
     <string name="airbeam_connected_continue_button">Continue</string>
     <string name="mobile_session_details_header">New session details</string>
     <string name="mobile_session_details_session_name_hint">Session name</string>
-    <string name="mobile_session_details_tags_hint">Tags</string>
+    <string name="mobile_session_details_session_tags_hint">Tags</string>
     <string name="mobile_session_details_continue_button">Connect</string>
+    <string name="mobile_session_confirmation_header">Are you ready?</string>
+    <string name="mobile_session_confirmation_description">Your mobile session %1$s is ready to start gathering data.</string>
+    <string name="mobile_session_confirmation_instructions">Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.</string>
+    <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
 </resources>

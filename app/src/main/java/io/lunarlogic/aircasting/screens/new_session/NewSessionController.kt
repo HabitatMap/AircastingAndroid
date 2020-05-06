@@ -13,10 +13,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.screens.dashboard.SelectDeviceTypeFragment
-import io.lunarlogic.aircasting.screens.dashboard.SelectDeviceTypeViewMvc
-import io.lunarlogic.aircasting.screens.dashboard.SessionDetailsFragment
-import io.lunarlogic.aircasting.screens.dashboard.SessionDetailsViewMvc
+import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 
@@ -31,7 +28,8 @@ class NewSessionController(
     TurnOnBluetoothViewMvc.Listener,
     ConnectingAirBeamController.Listener,
     AirBeamConnectedViewMvc.Listener,
-    SessionDetailsViewMvc.Listener {
+    SessionDetailsViewMvc.Listener,
+    ConfirmationViewMvc.Listener {
 
     private val STEP_PROGRESS = 10
     private var currentProgressStep = 1
@@ -146,6 +144,14 @@ class NewSessionController(
     }
 
     override fun onSessionDetailsContinueClicked(sessionName: String?, sessionTags: List<String>) {
+        incrementStepProgress()
+        val fragment = ConfirmationFragment()
+        fragment.listener = this
+        fragment.sessionName = sessionName
+        goToFragment(fragment)
+    }
+
+    override fun onStartRecordingClicked() {
         mContextActivity.finish()
     }
 
