@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Messenger
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.lib.ResultCodes

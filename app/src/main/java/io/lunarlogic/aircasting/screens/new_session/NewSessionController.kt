@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Messenger
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

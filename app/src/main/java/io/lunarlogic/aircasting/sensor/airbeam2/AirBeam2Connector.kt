@@ -3,14 +3,16 @@ package io.lunarlogic.aircasting.sensor.airbeam2
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.os.Messenger
 import io.lunarlogic.aircasting.bluetooth.BluetoothService
+import io.lunarlogic.aircasting.events.ApplicationClosed
 import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionCloseFailed
 import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionOpenFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnknownError
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -20,15 +22,17 @@ class AirBeam2Connector(
     private val mErrorHandler: ErrorHandler,
     private val mListener: ConnectingAirBeamController.Listener
 ) {
-    val connectionStarted = AtomicBoolean(false)
-    val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    val bluetoothService = BluetoothService()
+    private val connectionStarted = AtomicBoolean(false)
+    private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+    private val mBluetoothService = BluetoothService()
+    private var mThread: ConnectThread? = null
 
     fun connect(device: BluetoothDevice) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
-            val thread = ConnectThread(device)
-            thread.start()
+            EventBus.getDefault().register(this);
+            mThread = ConnectThread(device)
+            mThread?.start()
         }
     }
 
@@ -47,7 +51,7 @@ class AirBeam2Connector(
                     socket.connect()
 
                     mListener.onConnectionSuccessful()
-                    bluetoothService.run(socket)
+                    mBluetoothService.run(socket)
                 }
             } catch(e: IOException) {
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))
@@ -62,11 +66,17 @@ class AirBeam2Connector(
 
         fun cancel() {
             connectionStarted.set(false)
+            EventBus.getDefault().unregister(this);
             try {
                 mmSocket?.close()
             } catch (e: IOException) {
                 mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
             }
         }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: ApplicationClosed) {
+        mThread?.cancel()
     }
 }
