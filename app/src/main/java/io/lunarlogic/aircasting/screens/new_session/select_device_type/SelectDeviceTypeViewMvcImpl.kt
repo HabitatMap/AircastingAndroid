@@ -3,10 +3,8 @@ package io.lunarlogic.aircasting.screens.dashboard
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
 
 class SelectDeviceTypeViewMvcImpl : BaseObservableViewMvc<SelectDeviceTypeViewMvc.Listener>, SelectDeviceTypeViewMvc {
     constructor(

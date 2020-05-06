@@ -60,6 +60,6 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        controller!!.onActivityResult(requestCode, resultCode, data)
+        controller!!.onActivityResult(requestCode, resultCode)
     }
 }

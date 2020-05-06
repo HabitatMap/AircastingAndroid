@@ -2,16 +2,16 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
 
-class SelectDeviceTypeController(
+class SessionDetailsController(
     private val mContext: Context?,
-    private val mViewMvc: SelectDeviceTypeViewMvc
+    private val mViewMvc: SessionDetailsViewMvc
 ) {
 
-    fun registerListener(listener: SelectDeviceTypeViewMvc.Listener) {
+    fun registerListener(listener: SessionDetailsViewMvc.Listener) {
         mViewMvc.registerListener(listener)
     }
 
-    fun unregisterListener(listener: SelectDeviceTypeViewMvc.Listener) {
+    fun unregisterListener(listener: SessionDetailsViewMvc.Listener) {
         mViewMvc.unregisterListener(listener)
     }
 }

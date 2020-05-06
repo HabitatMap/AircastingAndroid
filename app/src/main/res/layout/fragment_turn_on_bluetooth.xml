@@ -32,7 +32,7 @@
         android:id="@+id/turn_on_bluetooth_ok_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
         android:text="@string/turn_on_bluetooth_ok_button"
         app:layout_constraintTop_toBottomOf="@id/turn_bluetooth_description"
         app:layout_constraintLeft_toLeftOf="parent"

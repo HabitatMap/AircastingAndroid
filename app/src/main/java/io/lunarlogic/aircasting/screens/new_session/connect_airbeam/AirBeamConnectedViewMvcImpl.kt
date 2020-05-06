@@ -14,13 +14,13 @@ class AirBeamConnectedViewMvcImpl : BaseObservableViewMvc<AirBeamConnectedViewMv
         this.rootView = inflater.inflate(R.layout.fragment_airbeam_connected, parent, false)
         val button = rootView?.findViewById<Button>(R.id.airbeam_connected_continue_button)
         button?.setOnClickListener {
-            onContinueClicked()
+            onAirBeamConnectedContinueClicked()
         }
     }
 
-    private fun onContinueClicked() {
+    private fun onAirBeamConnectedContinueClicked() {
         for (listener in listeners) {
-            listener.onContinueClicked()
+            listener.onAirBeamConnectedContinueClicked()
         }
     }
 }
