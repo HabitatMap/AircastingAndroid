@@ -1,19 +1,16 @@
 package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
 
 import android.os.Bundle
-import android.os.Messenger
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
-class ConnectingAirBeamFragment(
-    private val deviceItem: DeviceItem,
-    private val mListener: ConnectingAirBeamController.Listener
-) : Fragment() {
-
+class ConnectingAirBeamFragment() : Fragment() {
     private var controller: ConnectingAirBeamController? = null
+    var deviceItem: DeviceItem? = null
+    var listener: ConnectingAirBeamController.Listener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,19 +22,17 @@ class ConnectingAirBeamFragment(
                 layoutInflater,
                 null
             )
-        controller =
-            ConnectingAirBeamController(context!!, deviceItem, mListener)
+
+        if (deviceItem != null && listener != null) {
+            controller =
+                ConnectingAirBeamController(context!!, deviceItem!!, listener!!)
+        }
 
         return view.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        controller!!.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        controller!!.onStop()
+        controller?.onStart()
     }
 }

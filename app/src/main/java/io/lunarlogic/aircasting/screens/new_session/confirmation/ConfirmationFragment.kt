@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
+package io.lunarlogic.aircasting.screens.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,23 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class AirBeamConnectedFragment() : Fragment() {
-
-    private var controller: AirBeamConnectedController? = null
-    var listener: AirBeamConnectedViewMvc.Listener? = null
+class ConfirmationFragment() : Fragment() {
+    private var controller: ConfirmationController? = null
+    var listener: ConfirmationViewMvc.Listener? = null
+    var sessionName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
-            AirBeamConnectedViewMvcImpl(
-                layoutInflater,
-                null
-            )
-        controller =
-            AirBeamConnectedController(context!!, view)
+        val view = ConfirmationViewMvcImpl(inflater, container, sessionName)
+        controller = ConfirmationController(context, view)
 
         return view.rootView
     }
@@ -30,6 +25,7 @@ class AirBeamConnectedFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         listener?.let { controller?.registerListener(it) }
+
     }
 
     override fun onStop() {

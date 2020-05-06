@@ -1,8 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
-import android.content.Intent
-import android.os.Messenger
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -15,6 +13,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 
@@ -23,40 +22,54 @@ class NewSessionController(
     private val mActivity: BluetoothActivity,
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
-) : SelectDeviceViewMvc.Listener,
+) : SelectDeviceTypeViewMvc.Listener,
+    SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
     ConnectingAirBeamController.Listener,
-    AirBeamConnectedViewMvc.Listener {
+    AirBeamConnectedViewMvc.Listener,
+    SessionDetailsViewMvc.Listener,
+    ConfirmationViewMvc.Listener {
 
-    val STEP_PROGRESS = 10
-    var currentProgressStep = 1
-    val bluetoothManager = BluetoothManager(mActivity)
-    val errorHandler = ErrorHandler(mContextActivity)
+    private val STEP_PROGRESS = 10
+    private var currentProgressStep = 1
+    private val bluetoothManager = BluetoothManager(mActivity)
+    private val errorHandler = ErrorHandler(mContextActivity)
 
     fun onStart() {
         showFirstStep()
     }
 
     private fun showFirstStep() {
-        replaceFragment(getFirstFragment())
+        val fragment = SelectDeviceTypeFragment()
+        fragment.listener = this
+        replaceFragment(fragment)
         updateProgressBarView()
     }
 
-    private fun getFirstFragment() : Fragment {
+    private fun getBluetoothDeviceFragment() : Fragment {
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
-                return TurnOnAirBeamFragment(this)
+                val fragment = TurnOnAirBeamFragment()
+                fragment.listener = this
+                return fragment
             }
         } catch(exception: BluetoothNotSupportedException) {
             errorHandler.showError(exception.messageToDisplay)
         }
 
-        return TurnOnBluetoothFragment(this)
+        val fragment = TurnOnBluetoothFragment()
+        fragment.listener = this
+        return fragment
     }
 
     fun onBackPressed() {
         decrementStepProgress()
+    }
+
+    override fun onBluetoothDeviceSelected() {
+        incrementStepProgress()
+        goToFragment(getBluetoothDeviceFragment())
     }
 
     override fun onTurnOnBluetoothOkClicked() {
@@ -78,7 +91,7 @@ class NewSessionController(
         }
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun onActivityResult(requestCode: Int, resultCode: Int) {
         when (requestCode) {
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -95,37 +108,50 @@ class NewSessionController(
 
     private fun goToTurnOnAirBeam() {
         incrementStepProgress()
-        goToFragment(TurnOnAirBeamFragment(this))
+        val fragment = TurnOnAirBeamFragment()
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
-        goToSelectDevice()
-    }
-
-    private fun goToSelectDevice() {
         incrementStepProgress()
-        goToFragment(SelectDeviceFragment(this, bluetoothManager))
+        val fragment = SelectDeviceFragment()
+        fragment.bluetoothManager = bluetoothManager
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {
-        goToConnecting(deviceItem)
-    }
-
-    private fun goToConnecting(deviceItem: DeviceItem) {
         incrementStepProgress()
-        goToFragment(ConnectingAirBeamFragment(deviceItem, this))
+        val fragment = ConnectingAirBeamFragment()
+        fragment.deviceItem = deviceItem
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onConnectionSuccessful() {
-        goToAirBeamConnected()
-    }
-
-    private fun goToAirBeamConnected() {
         incrementStepProgress()
-        goToFragment(AirBeamConnectedFragment(this))
+        val fragment = AirBeamConnectedFragment()
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
-    override fun onContinueClicked() {
+    override fun onAirBeamConnectedContinueClicked() {
+        incrementStepProgress()
+        val fragment = SessionDetailsFragment()
+        fragment.listener = this
+        goToFragment(fragment)
+    }
+
+    override fun onSessionDetailsContinueClicked(sessionName: String?, sessionTags: List<String>) {
+        incrementStepProgress()
+        val fragment = ConfirmationFragment()
+        fragment.listener = this
+        fragment.sessionName = sessionName
+        goToFragment(fragment)
+    }
+
+    override fun onStartRecordingClicked() {
         mContextActivity.finish()
     }
 

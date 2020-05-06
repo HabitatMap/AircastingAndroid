@@ -1,10 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
-import android.os.Messenger
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import org.greenrobot.eventbus.EventBus

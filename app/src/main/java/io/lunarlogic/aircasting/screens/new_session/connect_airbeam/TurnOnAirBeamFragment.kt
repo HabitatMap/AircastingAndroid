@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class TurnOnAirBeamFragment(private val mListener: TurnOnAirBeamViewMvc.Listener) : Fragment() {
+class TurnOnAirBeamFragment() : Fragment() {
     private var controller: TurnOnAirBeamController? = null
+    var listener: TurnOnAirBeamViewMvc.Listener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,11 +31,11 @@ class TurnOnAirBeamFragment(private val mListener: TurnOnAirBeamViewMvc.Listener
 
     override fun onStart() {
         super.onStart()
-        controller!!.registerListener(mListener)
+        listener?.let { controller?.registerListener(it) }
     }
 
     override fun onStop() {
         super.onStop()
-        controller!!.unregisterListener(mListener)
+        listener?.let { controller?.unregisterListener(it) }
     }
 }
