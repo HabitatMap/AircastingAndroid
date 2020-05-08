@@ -7,20 +7,27 @@ class Session(private var mName: String, private var mTags: List<String>) {
 
     val name get() = mName
     val tags get() = mTags
-    val notes = listOf<String>() // TODO: change to Note later
-    val start_time = Date()
-    var end_time: Date? = null
+    val startTime = Date()
+    private var mEndTime: Date? = null
+    val endTime get() = mEndTime
 
     private var mStreams = hashMapOf<String, MeasurementStream>()
+    val streams get() = mStreams
 
     fun addMeasurement(measurement: Measurement) {
-        var stream = mStreams[measurement.sensorName]
+        measurement.sensorName?.let { sensorName ->
+            var stream = mStreams[sensorName]
 
-        if (stream == null) {
-            stream = MeasurementStream(measurement)
-            mStreams[stream.sensorName] = stream
+            if (stream == null) {
+                stream = MeasurementStream(measurement)
+                mStreams[sensorName] = stream
+            }
+
+            stream.addMeasurement(measurement)
         }
+    }
 
-        stream.addMeasurement(measurement)
+    fun stop() {
+        mEndTime = Date()
     }
 }

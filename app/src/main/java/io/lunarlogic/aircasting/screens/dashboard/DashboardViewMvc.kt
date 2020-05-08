@@ -8,7 +8,9 @@ interface DashboardViewMvc : ObservableViewMvc<DashboardViewMvc.Listener> {
 
     interface Listener {
         fun onRecordNewSessionClicked()
+        fun onStopSessionClicked()
     }
 
+    fun updateButtons()
     fun updateMeasurements(measurement: Measurement)
 }

@@ -1,38 +1,35 @@
 package io.lunarlogic.aircasting.sensor
 
-class MeasurementStream(measurement: Measurement) {
-    private var mSensorPackageName: String? = null
-    private var mSensorName: String? = null
-    private var mMeasurementType: String? = null
-    private var mMeasurementShortType: String? = null
-    private var mUnitName: String? = null
-    private var mUnitSymbol: String? = null
-    private var mThresholdVeryLow: Int? = null
-    private var mThresholdLow: Int? = null
-    private var mThresholdMedium: Int? = null
-    private var mThresholdHigh: Int? = null
-    private var mThresholdVeryHigh: Int? = null
-
-    private val mMeasurements = arrayListOf<Measurement>()
-
-    init {
-        mSensorPackageName = measurement.packageName
-        mSensorName = measurement.sensorName
-        mMeasurementType = measurement.measurementType
-        mMeasurementShortType = measurement.measurementShortType
-        mUnitName = measurement.unitName
-        mUnitSymbol = measurement.unitSymbol
-        mThresholdVeryLow = measurement.thresholdVeryLow
-        mThresholdLow = measurement.thresholdLow
-        mThresholdMedium = measurement.thresholdMedium
-        mThresholdHigh = measurement.thresholdHigh
-        mThresholdVeryHigh = measurement.thresholdVeryHigh
+class MeasurementStream {
+    constructor(measurement: Measurement) {
+        this.sensorPackageName = measurement.packageName
+        this.sensorName = measurement.sensorName
+        this.measurementType = measurement.measurementType
+        this.measurementShortType = measurement.measurementShortType
+        this.unitName = measurement.unitName
+        this.unitSymbol = measurement.unitSymbol
+        this.thresholdVeryLow = measurement.thresholdVeryLow
+        this.thresholdLow = measurement.thresholdLow
+        this.thresholdMedium = measurement.thresholdMedium
+        this.thresholdHigh = measurement.thresholdHigh
+        this.thresholdVeryHigh = measurement.thresholdVeryHigh
     }
 
-    val sensorName: String get() = mSensorName!!
-    val measurements: ArrayList<Measurement> get() = mMeasurements
+    val sensorPackageName: String
+    val sensorName: String?
+    val measurementType: String?
+    val measurementShortType: String?
+    val unitName: String?
+    val unitSymbol: String?
+    val thresholdVeryLow: Int?
+    val thresholdLow: Int?
+    val thresholdMedium: Int?
+    val thresholdHigh: Int?
+    val thresholdVeryHigh: Int?
+    val measurements = arrayListOf<Measurement>()
+
 
     fun addMeasurement(measurement: Measurement) {
-        mMeasurements.add(measurement)
+        measurements.add(measurement)
     }
 }

@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -9,14 +10,26 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Measurement
 
 class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, DashboardViewMvc {
+    private var mRecordSessionButton: Button? = null
+    private var mStopSessionButton: Button? = null
+
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
 
-        val button = rootView?.findViewById<Button>(R.id.dashboard_record_new_session_button)
-        button?.setOnClickListener {
+        mRecordSessionButton = rootView?.findViewById(R.id.dashboard_record_new_session_button)
+        mRecordSessionButton?.setOnClickListener {
             onRecordNewSessionClicked()
         }
+        mStopSessionButton = rootView?.findViewById(R.id.dashboard_stop_session_button)
+        mStopSessionButton?.setOnClickListener {
+            onStopSessionClicked()
+        }
+    }
+
+    override fun updateButtons() {
+        mRecordSessionButton?.visibility = View.INVISIBLE
+        mStopSessionButton?.visibility = View.VISIBLE
     }
 
     override fun updateMeasurements(measurement: Measurement) {
@@ -29,6 +42,12 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
     private fun onRecordNewSessionClicked() {
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
+        }
+    }
+
+    private fun onStopSessionClicked() {
+        for (listener in listeners) {
+            listener.onStopSessionClicked()
         }
     }
 }

@@ -3,34 +3,22 @@ package io.lunarlogic.aircasting.sensor
 import java.util.*
 
 class Measurement(
-    private val mPackageName: String,
-    private val mSensorName: String?,
-    private val mMeasurementType: String?,
-    private val mMeasurementShortType: String?,
-    private val mUnitName: String?,
-    private val mUnitSymbol: String?,
-    private val mThresholdVeryLow: Int?,
-    private val mThresholdLow: Int?,
-    private val mThresholdMedium: Int?,
-    private val mThresholdHigh: Int?,
-    private val mThresholdVeryHigh: Int?,
-    private val mMeasuredValue: Double?) {
+    val packageName: String,
+    val sensorName: String?,
+    val measurementType: String?,
+    val measurementShortType: String?,
+    val unitName: String?,
+    val unitSymbol: String?,
+    val thresholdVeryLow: Int?,
+    val thresholdLow: Int?,
+    val thresholdMedium: Int?,
+    val thresholdHigh: Int?,
+    val thresholdVeryHigh: Int?,
+    val measuredValue: Double?) {
 
-    private var creationTime = Date().time
-    private var address = "none"
+    val creationTime = Date().time
+    val address = "none"
 
-    val packageName get() = mPackageName
-    val sensorName get() = mSensorName
-    val measurementType get() = mMeasurementType
-    val measurementShortType get() = mMeasurementShortType
-    val unitName get() = mUnitName
-    val unitSymbol get() = mUnitSymbol
-    val thresholdVeryLow get() = mThresholdVeryLow
-    val thresholdLow get() = mThresholdLow
-    val thresholdMedium get() = mThresholdMedium
-    val thresholdHigh get() = mThresholdHigh
-    val thresholdVeryHigh get() = mThresholdVeryHigh
-    val measuredValue get() = mMeasuredValue
 
     override fun toString(): String {
         return "NewMeasurementEvent{" +

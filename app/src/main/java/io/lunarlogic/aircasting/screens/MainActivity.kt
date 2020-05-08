@@ -9,9 +9,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
 
 class MainActivity : AppCompatActivity() {
+    private val sessionManager = SessionManager() // TODO: move to controller
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +32,14 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        sessionManager.registerToEventBus()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
+        sessionManager.unregisterFromEventBus()
         EventBus.getDefault().post(ApplicationClosed())
     }
 }
