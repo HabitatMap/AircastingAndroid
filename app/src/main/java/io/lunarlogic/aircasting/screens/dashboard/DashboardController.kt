@@ -28,6 +28,6 @@ class DashboardController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        mViewMvc.updateMeasurements(event)
+        mViewMvc.updateMeasurements(event.measurement)
     }
 }

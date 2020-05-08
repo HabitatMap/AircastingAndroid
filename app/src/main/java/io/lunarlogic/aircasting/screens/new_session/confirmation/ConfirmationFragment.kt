@@ -5,18 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.sensor.Session
 
 class ConfirmationFragment() : Fragment() {
     private var controller: ConfirmationController? = null
     var listener: ConfirmationViewMvc.Listener? = null
-    var sessionName: String? = null
+    var session: Session? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ConfirmationViewMvcImpl(inflater, container, sessionName)
+        val view = ConfirmationViewMvcImpl(inflater, container, session!!)
         controller = ConfirmationController(context, view)
 
         return view.rootView

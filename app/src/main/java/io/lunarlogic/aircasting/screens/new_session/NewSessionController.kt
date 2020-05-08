@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.sensor.SessionManager
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
@@ -35,6 +37,7 @@ class NewSessionController(
     private var currentProgressStep = 1
     private val bluetoothManager = BluetoothManager(mActivity)
     private val errorHandler = ErrorHandler(mContextActivity)
+    private val sessionManager = SessionManager()
 
     fun onStart() {
         showFirstStep()
@@ -143,15 +146,16 @@ class NewSessionController(
         goToFragment(fragment)
     }
 
-    override fun onSessionDetailsContinueClicked(sessionName: String?, sessionTags: List<String>) {
+    override fun onSessionDetailsContinueClicked(sessionName: String, sessionTags: List<String>) {
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = this
-        fragment.sessionName = sessionName
+        fragment.session = Session(sessionName, sessionTags)
         goToFragment(fragment)
     }
 
-    override fun onStartRecordingClicked() {
+    override fun onStartRecordingClicked(session: Session) {
+        sessionManager.startRecording(session)
         mContextActivity.finish()
     }
 
