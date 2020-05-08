@@ -31,7 +31,7 @@ class BluetoothManager(private val mActivity: BluetoothActivity) {
             throw BluetoothNotSupportedException()
         }
 
-        return adapter?.isEnabled == true
+        return adapter.isEnabled == true
     }
 
     fun startDiscovery() {

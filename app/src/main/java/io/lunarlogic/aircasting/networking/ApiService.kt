@@ -62,7 +62,6 @@ class AuthenticationInterceptor(private val authToken: String) : Interceptor {
 
         val builder = original.newBuilder()
             .header("Authorization", authToken)
-            .header("Accept", "application/json"); // TODO: needed?
 
         val request = builder.build()
         return chain.proceed(request)

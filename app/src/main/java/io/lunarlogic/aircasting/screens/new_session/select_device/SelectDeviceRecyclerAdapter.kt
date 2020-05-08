@@ -28,10 +28,8 @@ class SelectDeviceRecyclerAdapter(private val mInflater: LayoutInflater, private
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc = SelectDeviceItemViewMvcImpl(mInflater, parent)
-        viewMvc!!.registerListener(this)
-        return MyViewHolder(
-            viewMvc!!
-        )
+        viewMvc.registerListener(this)
+        return MyViewHolder(viewMvc)
     }
 
     fun bindDeviceItems(deviceItems: List<DeviceItem>) {

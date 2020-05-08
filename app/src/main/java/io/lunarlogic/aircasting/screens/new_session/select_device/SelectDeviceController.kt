@@ -31,10 +31,10 @@ class SelectDeviceController(
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action) {
             BluetoothDevice.ACTION_FOUND -> {
-                val device: BluetoothDevice =
+                val device: BluetoothDevice? =
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
-                mViewMvc.addDeviceItem(DeviceItem(device))
+                device?.let { mViewMvc.addDeviceItem(DeviceItem(it)) }
             }
         }
     }
