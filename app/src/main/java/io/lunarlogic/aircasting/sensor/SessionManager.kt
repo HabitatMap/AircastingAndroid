@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class SessionManager {
     private var mCurrentSession: Session? = null
-    private val apiService = ApiServiceFactory().get()
+    private val apiService = ApiServiceFactory.get("Eqha7roSkYfgKvyLYHHx")
 
     fun registerToEventBus() {
         EventBus.getDefault().register(this);

@@ -20,39 +20,41 @@ interface ApiService {
 }
 
 class ApiServiceFactory {
-    private val BASE_URL = "http://aircasting.org/"
-    private var apiService: ApiService?
+    companion object {
+        private val BASE_URL = "http://aircasting.org/"
 
-    init {
-        val logging = HttpLoggingInterceptor()
-        if (BuildConfig.DEBUG) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        fun get(login: String, password: String): ApiService {
+            val logging = HttpLoggingInterceptor()
+            if (BuildConfig.DEBUG) {
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            } else {
+                logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            }
+
+            val credentials = "${login}:${password}"
+            val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
+            val authToken = "Basic ${encodedCredentials}"
+
+            val auth = AuthenticationInterceptor(authToken)
+
+            val httpClient = OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .addInterceptor(auth)
+                .build()
+
+
+            val retrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .baseUrl(BASE_URL)
+                .build()
+
+            return retrofit.create<ApiService>(ApiService::class.java)
         }
 
-        val credentials = "Eqha7roSkYfgKvyLYHHx" + ":" + "X"
-        val authToken = "Basic " + Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
-
-        val auth = AuthenticationInterceptor(authToken)
-
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .addInterceptor(auth)
-            .build()
-
-
-        val retrofit = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient)
-            .baseUrl(BASE_URL)
-            .build()
-
-        apiService = retrofit.create<ApiService>(ApiService::class.java)
-    }
-
-    fun get(): ApiService {
-        return apiService!!
+        fun get(authToken: String): ApiService {
+            return get(authToken, "X")
+        }
     }
 }
 
