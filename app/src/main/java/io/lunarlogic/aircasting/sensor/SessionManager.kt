@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.sensor
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.CreateSessionBody
 import io.lunarlogic.aircasting.networking.GzippedSession
@@ -13,9 +14,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SessionManager {
+class SessionManager(private val settings: Settings) {
     private var mCurrentSession: Session? = null
-    private val apiService = ApiServiceFactory.get("Eqha7roSkYfgKvyLYHHx")
+    private val apiService = ApiServiceFactory.get(settings.getAuthToken()!!)
 
     fun registerToEventBus() {
         EventBus.getDefault().register(this);

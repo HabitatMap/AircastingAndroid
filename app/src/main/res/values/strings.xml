@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">AircastingAndroid</string>
+    <string name="login_header">Login</string>
+    <string name="login_description">to record and map your environment</string>
+    <string name="username_hint">username</string>
+    <string name="password_hint">password</string>
+    <string name="login_button">Login</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_lets_start">Lets start</string>
     <string name="title_settings">Settings</string>

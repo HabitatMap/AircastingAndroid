@@ -25,6 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".screens.new_session.LoginActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true"
+            android:excludeFromRecents="true">
+        </activity>
         <activity android:name=".screens.new_session.NewSessionActivity" android:screenOrientation="portrait" />
     </application>
 
