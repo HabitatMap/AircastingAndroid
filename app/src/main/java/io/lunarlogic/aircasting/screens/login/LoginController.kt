@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.content.Context
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.screens.MainActivity
+import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
 
 class LoginController(
