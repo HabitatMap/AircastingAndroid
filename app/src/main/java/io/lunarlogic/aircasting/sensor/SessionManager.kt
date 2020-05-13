@@ -49,24 +49,19 @@ class SessionManager(private val settings: Settings) {
     private fun stopRecording() {
         val session = mCurrentSession!!
         session.stop()
-        try {
-            val sessionParams = SessionParams(session)
-            val sessionBody = CreateSessionBody(GzippedSession.get(sessionParams))
-            val call = apiService.createSession(sessionBody)
-            call.enqueue(object : Callback<Session> {
-                override fun onResponse(call: Call<Session>, response: Response<Session>) {
-                    println("ANIA: SUCCESS!")
-                    println(response.message())
-                }
 
-                override fun onFailure(call: Call<Session>, t: Throwable) {
-                    // TODO: handle
-                }
+        val sessionParams = SessionParams(session)
+        val sessionBody = CreateSessionBody(GzippedSession.get(sessionParams))
+        val call = apiService.createSession(sessionBody)
+        call.enqueue(object : Callback<Session> {
+            override fun onResponse(call: Call<Session>, response: Response<Session>) {
+                println("ANIA: SUCCESS!")
+                println(response.message())
+            }
 
-            })
-        } catch(e: Exception) {
-            // TODO handle?
-            e.printStackTrace()
-        }
+            override fun onFailure(call: Call<Session>, t: Throwable) {
+                // TODO: handle
+            }
+        })
     }
 }
