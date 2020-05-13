@@ -20,3 +20,9 @@ class SensorResponseParsingError(cause: Exception?):
 
 class AirBeam2ConnectionCloseFailed(cause: Exception):
     BaseException(cause, null)
+
+class InternalAPIError():
+    BaseException(null, "Something went wrong, please contact our support.")
+
+class UnexpectedAPIError(t: Throwable):
+    BaseException(Exception(t), "Something went wrong, please contact our support.")
