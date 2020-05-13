@@ -5,6 +5,7 @@ import com.google.common.io.CharStreams
 import com.google.common.io.LineProcessor
 import io.lunarlogic.aircasting.sensor.ResponseParser
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.sensor.Measurement
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream
@@ -27,13 +28,14 @@ class BluetoothService() {
         return object : LineProcessor<Void> {
             @Throws(IOException::class)
             override fun processLine(line: String): Boolean {
-                val newMeasurementEvent = process(line)
+                val newMeasurement = process(line)
+                val newMeasurementEvent = NewMeasurementEvent(newMeasurement)
                 EventBus.getDefault().post(newMeasurementEvent)
 
                 return !Thread.interrupted()
             }
 
-            fun process(line: String): NewMeasurementEvent {
+            fun process(line: String): Measurement {
                 return responseParser.parse(line)
             }
 

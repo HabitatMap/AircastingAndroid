@@ -6,16 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
+import org.greenrobot.eventbus.EventBus
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -143,15 +146,18 @@ class NewSessionController(
         goToFragment(fragment)
     }
 
-    override fun onSessionDetailsContinueClicked(sessionName: String?, sessionTags: List<String>) {
+    override fun onSessionDetailsContinueClicked(sessionName: String, sessionTags: List<String>) {
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = this
-        fragment.sessionName = sessionName
+        fragment.session = Session(sessionName, sessionTags)
         goToFragment(fragment)
     }
 
-    override fun onStartRecordingClicked() {
+    override fun onStartRecordingClicked(session: Session) {
+        val event = StartRecordingEvent(session)
+        EventBus.getDefault().post(event)
+
         mContextActivity.finish()
     }
 

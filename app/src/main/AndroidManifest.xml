@@ -13,9 +13,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".screens.MainActivity"
+            android:name=".screens.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -23,6 +24,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".screens.new_session.LoginActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true"
+            android:excludeFromRecents="true">
         </activity>
         <activity android:name=".screens.new_session.NewSessionActivity" android:screenOrientation="portrait" />
     </application>

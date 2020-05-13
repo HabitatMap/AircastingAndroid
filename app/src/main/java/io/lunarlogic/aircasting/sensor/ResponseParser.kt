@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.sensor
 
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
 
 class ResponseParser {
     /**
@@ -25,7 +24,7 @@ class ResponseParser {
         THRESHOLD_VERY_HIGH
     }
 
-    fun parse(line: String): NewMeasurementEvent {
+    fun parse(line: String): Measurement {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (parts.size < Fields.values().size) {
             // TODO: handle throw ParseException("Field count is wrong")
@@ -58,7 +57,7 @@ class ResponseParser {
             println("READING: parsing error :(")
         }
 
-        return NewMeasurementEvent(
+        return Measurement(
             packageName,
             sensorName,
             measurementType,

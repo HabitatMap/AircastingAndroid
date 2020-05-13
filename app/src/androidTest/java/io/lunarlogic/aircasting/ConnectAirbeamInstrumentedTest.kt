@@ -8,7 +8,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.lunarlogic.aircasting.screens.MainActivity
+import io.lunarlogic.aircasting.screens.main.MainActivity
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +19,8 @@ import org.junit.Rule
 class ConnectAirbeamInstrumentedTest {
 
     @get:Rule
-    var intentsRule: IntentsTestRule<MainActivity> = IntentsTestRule(MainActivity::class.java)
+    var intentsRule: IntentsTestRule<MainActivity> = IntentsTestRule(
+        MainActivity::class.java)
 
     @Test
     fun verifySelectDeviceFlow() {
