@@ -60,7 +60,7 @@ class SessionManager(private val settings: Settings) {
                 }
 
                 override fun onFailure(call: Call<Session>, t: Throwable) {
-                    println("ANIA: ERROR! :(")
+                    // TODO: handle
                 }
 
             })

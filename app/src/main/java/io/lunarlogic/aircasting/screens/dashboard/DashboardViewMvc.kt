@@ -11,6 +11,5 @@ interface DashboardViewMvc : ObservableViewMvc<DashboardViewMvc.Listener> {
         fun onStopSessionClicked()
     }
 
-    fun updateButtons()
     fun updateMeasurements(measurement: Measurement)
 }

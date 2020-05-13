@@ -27,11 +27,6 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
         }
     }
 
-    override fun updateButtons() {
-        mRecordSessionButton?.visibility = View.INVISIBLE
-        mStopSessionButton?.visibility = View.VISIBLE
-    }
-
     override fun updateMeasurements(measurement: Measurement) {
         val textView = rootView?.findViewById<TextView>(R.id.text_dashboard)
         if (measurement.sensorName == "AirBeam2-PM2.5") {
@@ -40,14 +35,28 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
     }
 
     private fun onRecordNewSessionClicked() {
+        showStopButton()
+
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
         }
     }
 
     private fun onStopSessionClicked() {
+        showRecordNewSessionButton()
+
         for (listener in listeners) {
             listener.onStopSessionClicked()
         }
+    }
+
+    private fun showStopButton() {
+        mRecordSessionButton?.visibility = View.INVISIBLE
+        mStopSessionButton?.visibility = View.VISIBLE
+    }
+
+    private fun showRecordNewSessionButton() {
+        mRecordSessionButton?.visibility = View.VISIBLE
+        mStopSessionButton?.visibility = View.INVISIBLE
     }
 }

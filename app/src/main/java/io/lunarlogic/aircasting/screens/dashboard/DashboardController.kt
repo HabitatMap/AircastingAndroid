@@ -24,7 +24,6 @@ class DashboardController(
     }
 
     override fun onRecordNewSessionClicked() {
-        mViewMvc.updateButtons()
         NewSessionActivity.start(mContext)
     }
 
