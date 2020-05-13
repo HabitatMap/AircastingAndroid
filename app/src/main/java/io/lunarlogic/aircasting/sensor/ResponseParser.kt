@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
+import io.lunarlogic.aircasting.exceptions.SensorResponseParsingError
+
 
 class ResponseParser {
     /**
@@ -27,8 +29,7 @@ class ResponseParser {
     fun parse(line: String): Measurement {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (parts.size < Fields.values().size) {
-            // TODO: handle throw ParseException("Field count is wrong")
-            println("READING: parsing field cound error :(")
+            throw SensorResponseParsingError(null)
         }
 
         val packageName = parts[Fields.SENSOR_PACKAGE_NAME.ordinal]
@@ -53,8 +54,7 @@ class ResponseParser {
 
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
-            // TODO: handle
-            println("READING: parsing error :(")
+            throw SensorResponseParsingError(e)
         }
 
         return Measurement(

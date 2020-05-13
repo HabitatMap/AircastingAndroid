@@ -5,10 +5,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import io.lunarlogic.aircasting.bluetooth.BluetoothService
 import io.lunarlogic.aircasting.events.ApplicationClosed
-import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionCloseFailed
-import io.lunarlogic.aircasting.exceptions.AirBeam2ConnectionOpenFailed
-import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.exceptions.UnknownError
+import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import org.greenrobot.eventbus.EventBus
@@ -55,6 +52,10 @@ class AirBeam2Connector(
                 }
             } catch(e: IOException) {
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))
+                message.sendToTarget()
+                cancel()
+            } catch(e: SensorResponseParsingError) {
+                val message = mErrorHandler.obtainMessage(ResultCodes.SENSOR_RESPONSE_PARSING_ERROR, e)
                 message.sendToTarget()
                 cancel()
             } catch(e: Exception) {
