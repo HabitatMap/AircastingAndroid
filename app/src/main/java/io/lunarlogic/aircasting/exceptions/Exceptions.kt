@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.exceptions
 import java.lang.Exception
 
 abstract class BaseException(private val mCause: Exception?, private val mMessageToDisplay: String?): Exception(mCause) {
-    val couse: Exception? get() = mCause
     val messageToDisplay: String? get() = mMessageToDisplay
 }
 
@@ -16,5 +15,14 @@ class UnknownError(cause: Exception):
 class AirBeam2ConnectionOpenFailed(cause: Exception):
     BaseException(cause, "AirBeam2 connection failed. If you agreed on pairing and still see this error, please contact support")
 
+class SensorResponseParsingError(cause: Exception?):
+    BaseException(cause, "There was a problem while parsing response from the sensor. Please make sure that you follow the required protocol.")
+
 class AirBeam2ConnectionCloseFailed(cause: Exception):
     BaseException(cause, null)
+
+class InternalAPIError():
+    BaseException(null, "Something went wrong, please contact our support.")
+
+class UnexpectedAPIError(t: Throwable? = null):
+    BaseException(Exception(t), "Something went wrong, please contact our support.")

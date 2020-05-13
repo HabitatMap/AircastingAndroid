@@ -1,5 +1,8 @@
 package io.lunarlogic.aircasting.sensor
 
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.exceptions.SensorResponseParsingError
+
 
 class ResponseParser {
     /**
@@ -24,11 +27,10 @@ class ResponseParser {
         THRESHOLD_VERY_HIGH
     }
 
-    fun parse(line: String): Measurement {
+    fun parse(line: String): NewMeasurementEvent {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (parts.size < Fields.values().size) {
-            // TODO: handle throw ParseException("Field count is wrong")
-            println("READING: parsing field cound error :(")
+            throw SensorResponseParsingError(null)
         }
 
         val packageName = parts[Fields.SENSOR_PACKAGE_NAME.ordinal]
@@ -38,12 +40,12 @@ class ResponseParser {
         val unit = parts[Fields.MEASUREMENT_UNIT.ordinal]
         val symbol = parts[Fields.MEASUREMENT_SYMBOL.ordinal]
 
-        var veryLow: Int? = null
-        var low: Int? = null
-        var mid: Int? = null
-        var high: Int? = null
-        var veryHigh: Int? = null
-        var measuredValue: Double? = null
+        var veryLow: Int?
+        var low: Int?
+        var mid: Int?
+        var high: Int?
+        var veryHigh: Int?
+        var measuredValue: Double?
         try {
             veryLow = Integer.parseInt(parts[Fields.THRESHOLD_VERY_LOW.ordinal])
             low = Integer.parseInt(parts[Fields.THRESHOLD_LOW.ordinal])
@@ -53,11 +55,10 @@ class ResponseParser {
 
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
-            // TODO: handle
-            println("READING: parsing error :(")
+            throw SensorResponseParsingError(e)
         }
 
-        return Measurement(
+        return NewMeasurementEvent(
             packageName,
             sensorName,
             measurementType,

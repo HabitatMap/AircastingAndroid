@@ -5,7 +5,7 @@ import java.util.*
 
 class MeasurementParams {
     constructor(measurement: Measurement) {
-        this.value = measurement.measuredValue
+        this.value = measurement.value
     }
 
     val longitude = 19.9263968 // TODO: handle

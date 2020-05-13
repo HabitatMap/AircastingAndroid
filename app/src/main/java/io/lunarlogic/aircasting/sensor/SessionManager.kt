@@ -1,8 +1,13 @@
 package io.lunarlogic.aircasting.sensor
 
+import android.content.Context
+import android.widget.Toast
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.exceptions.InternalAPIError
+import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.CreateSessionBody
@@ -14,7 +19,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SessionManager(private val settings: Settings) {
+class SessionManager(private val mContext: Context, private val settings: Settings) {
+    private val mErrorHandler = ErrorHandler(mContext)
     private var mCurrentSession: Session? = null
     private val apiService = ApiServiceFactory.get(settings.getAuthToken()!!)
 
@@ -39,7 +45,7 @@ class SessionManager(private val settings: Settings) {
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         // TODO: handle multiple sessions
-        mCurrentSession?.addMeasurement(event.measurement)
+        mCurrentSession?.addMeasurement(event)
     }
 
     private fun startRecording(session: Session) {
@@ -49,24 +55,25 @@ class SessionManager(private val settings: Settings) {
     private fun stopRecording() {
         val session = mCurrentSession!!
         session.stop()
-        try {
-            val sessionParams = SessionParams(session)
-            val sessionBody = CreateSessionBody(GzippedSession.get(sessionParams))
-            val call = apiService.createSession(sessionBody)
-            call.enqueue(object : Callback<Session> {
-                override fun onResponse(call: Call<Session>, response: Response<Session>) {
-                    println("ANIA: SUCCESS!")
-                    println(response.message())
-                }
 
-                override fun onFailure(call: Call<Session>, t: Throwable) {
-                    // TODO: handle
+        val sessionParams = SessionParams(session)
+        val sessionBody = CreateSessionBody(GzippedSession.get(sessionParams))
+        val call = apiService.createSession(sessionBody)
+        call.enqueue(object : Callback<Session> {
+            override fun onResponse(call: Call<Session>, response: Response<Session>) {
+                println(response.message())
+                if (response.isSuccessful) {
+                    val message = "Session created successfully! Check http://aircasting.habitatmap.org/mobile_map"
+                    val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
+                    toast.show()
+                } else {
+                    mErrorHandler.handleAndDisplay(UnexpectedAPIError())
                 }
+            }
 
-            })
-        } catch(e: Exception) {
-            // TODO handle?
-            e.printStackTrace()
-        }
+            override fun onFailure(call: Call<Session>, t: Throwable) {
+                mErrorHandler.handleAndDisplay(UnexpectedAPIError(t))
+            }
+        })
     }
 }

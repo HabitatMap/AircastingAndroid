@@ -28,10 +28,10 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     private fun getUsername(): String {
-        return rootView?.findViewById<EditText>(R.id.username)?.text.toString()
+        return rootView?.findViewById<EditText>(R.id.username)?.text.toString().trim()
     }
 
     private fun getPassword(): String {
-        return rootView?.findViewById<EditText>(R.id.password)?.text.toString()
+        return rootView?.findViewById<EditText>(R.id.password)?.text.toString().trim()
     }
 }

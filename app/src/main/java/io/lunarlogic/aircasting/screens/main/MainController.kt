@@ -16,7 +16,7 @@ class MainController(private val rootActivity: AppCompatActivity, private val mV
             LoginActivity.start(rootActivity)
             rootActivity.finish()
         } else {
-            sessionManager = SessionManager(settings)
+            sessionManager = SessionManager(rootActivity, settings)
         }
 
         sessionManager?.registerToEventBus()
