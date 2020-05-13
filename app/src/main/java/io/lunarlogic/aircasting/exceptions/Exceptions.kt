@@ -24,5 +24,5 @@ class AirBeam2ConnectionCloseFailed(cause: Exception):
 class InternalAPIError():
     BaseException(null, "Something went wrong, please contact our support.")
 
-class UnexpectedAPIError(t: Throwable):
+class UnexpectedAPIError(t: Throwable? = null):
     BaseException(Exception(t), "Something went wrong, please contact our support.")

@@ -29,8 +29,7 @@ class BluetoothService() {
         return object : LineProcessor<Void> {
             @Throws(IOException::class, SensorResponseParsingError::class)
             override fun processLine(line: String): Boolean {
-                val newMeasurement = responseParser.parse(line)
-                val newMeasurementEvent = NewMeasurementEvent(newMeasurement)
+                val newMeasurementEvent = responseParser.parse(line)
                 EventBus.getDefault().post(newMeasurementEvent)
 
                 return !Thread.interrupted()

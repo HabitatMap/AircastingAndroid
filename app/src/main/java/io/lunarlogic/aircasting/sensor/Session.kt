@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.sensor
 
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import java.util.*
 
 class Session(private var mName: String, private var mTags: List<String>) {
@@ -14,15 +15,16 @@ class Session(private var mName: String, private var mTags: List<String>) {
     private var mStreams = hashMapOf<String, MeasurementStream>()
     val streams get() = mStreams
 
-    fun addMeasurement(measurement: Measurement) {
-        measurement.sensorName?.let { sensorName ->
+    fun addMeasurement(measurementEvent: NewMeasurementEvent) {
+        measurementEvent.sensorName?.let { sensorName ->
             var stream = mStreams[sensorName]
 
             if (stream == null) {
-                stream = MeasurementStream(measurement)
+                stream = MeasurementStream(measurementEvent)
                 mStreams[sensorName] = stream
             }
 
+            val measurement = Measurement(measurementEvent.measuredValue, Date(measurementEvent.creationTime))
             stream.addMeasurement(measurement)
         }
     }

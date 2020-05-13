@@ -1,18 +1,20 @@
 package io.lunarlogic.aircasting.sensor
 
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
+
 class MeasurementStream {
-    constructor(measurement: Measurement) {
-        this.sensorPackageName = measurement.packageName
-        this.sensorName = measurement.sensorName
-        this.measurementType = measurement.measurementType
-        this.measurementShortType = measurement.measurementShortType
-        this.unitName = measurement.unitName
-        this.unitSymbol = measurement.unitSymbol
-        this.thresholdVeryLow = measurement.thresholdVeryLow
-        this.thresholdLow = measurement.thresholdLow
-        this.thresholdMedium = measurement.thresholdMedium
-        this.thresholdHigh = measurement.thresholdHigh
-        this.thresholdVeryHigh = measurement.thresholdVeryHigh
+    constructor(measurementEvent: NewMeasurementEvent) {
+        this.sensorPackageName = measurementEvent.packageName
+        this.sensorName = measurementEvent.sensorName
+        this.measurementType = measurementEvent.measurementType
+        this.measurementShortType = measurementEvent.measurementShortType
+        this.unitName = measurementEvent.unitName
+        this.unitSymbol = measurementEvent.unitSymbol
+        this.thresholdVeryLow = measurementEvent.thresholdVeryLow
+        this.thresholdLow = measurementEvent.thresholdLow
+        this.thresholdMedium = measurementEvent.thresholdMedium
+        this.thresholdHigh = measurementEvent.thresholdHigh
+        this.thresholdVeryHigh = measurementEvent.thresholdVeryHigh
     }
 
     val sensorPackageName: String
