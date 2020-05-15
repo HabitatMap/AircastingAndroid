@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
 class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     constructor(
@@ -34,6 +35,6 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
 
     private fun getSessionTags(): List<String> {
         val sessionTagsField = rootView?.findViewById<EditText>(R.id.session_tags)
-        return sessionTagsField?.text.toString().split(" ")
+        return sessionTagsField?.text.toString().split(TAGS_SEPARATOR)
     }
 }

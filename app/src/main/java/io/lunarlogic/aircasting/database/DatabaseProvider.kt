@@ -4,10 +4,19 @@ import android.content.Context
 import androidx.room.*
 
 
-@Database(entities = arrayOf(Measurement::class), version = 3)
-@TypeConverters(DateConverter::class)
+@Database(
+    entities = arrayOf(
+        Session::class,
+        MeasurementStream::class,
+        Measurement::class
+    ),
+    version = 4
+)
+@TypeConverters(DateConverter::class, TagsConverter::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun measurementDao(): MeasurementDao
+    abstract fun sessions(): SessionDao
+    abstract fun measurementStreams(): MeasurementStreamDao
+    abstract fun measurements(): MeasurementDao
 }
 
 class DatabaseProvider {

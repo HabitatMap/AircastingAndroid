@@ -3,6 +3,8 @@ package io.lunarlogic.aircasting.sensor
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import java.util.*
 
+val TAGS_SEPARATOR = " "
+
 class Session(private var mName: String, private var mTags: List<String>) {
     val uuid = UUID.randomUUID()
 
