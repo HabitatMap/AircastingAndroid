@@ -35,4 +35,6 @@ class NewMeasurementEvent(
                 ", measuredValue=" + measuredValue +
                 '}'.toString()
     }
+
+    val deviceId get(): String = packageName.split(':').component2()
 }

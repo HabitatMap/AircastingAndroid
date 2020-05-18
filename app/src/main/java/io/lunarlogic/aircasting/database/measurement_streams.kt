@@ -1,10 +1,9 @@
 package io.lunarlogic.aircasting.database
 
 import androidx.room.*
-import java.util.*
 
 @Entity(tableName = "measurement_streams")
-data class MeasurementStream(
+data class MeasurementStreamDBObject(
     @ColumnInfo(name = "session_id") val sessionId: Long,
     @ColumnInfo(name = "sensor_package_name") val sensorPackageName: String,
     @ColumnInfo(name = "sensor_name") val sensorName: String?,
@@ -25,7 +24,7 @@ data class MeasurementStream(
 @Entity(
     foreignKeys = arrayOf(
         ForeignKey(
-            entity = Session::class,
+            entity = SessionDBObject::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("session_id"),
             onDelete = ForeignKey.CASCADE
@@ -36,8 +35,8 @@ data class MeasurementStream(
 @Dao
 interface MeasurementStreamDao {
     @Query("SELECT * FROM measurement_streams")
-    fun getAll(): List<MeasurementStream>
+    fun getAll(): List<MeasurementStreamDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(measurementStream: MeasurementStream): Long
+    fun insert(measurementStream: MeasurementStreamDBObject): Long
 }

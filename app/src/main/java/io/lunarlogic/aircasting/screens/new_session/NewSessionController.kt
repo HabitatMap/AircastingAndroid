@@ -38,6 +38,7 @@ class NewSessionController(
     private var currentProgressStep = 1
     private val bluetoothManager = BluetoothManager(mActivity)
     private val errorHandler = ErrorHandler(mContextActivity)
+    private var mDeviceItem: DeviceItem? = null
 
     fun onStart() {
         showFirstStep()
@@ -125,6 +126,8 @@ class NewSessionController(
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+        mDeviceItem = deviceItem
+
         incrementStepProgress()
         val fragment = ConnectingAirBeamFragment()
         fragment.deviceItem = deviceItem
@@ -150,7 +153,7 @@ class NewSessionController(
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = this
-        fragment.session = Session(sessionName, sessionTags)
+        fragment.session = Session(mDeviceItem!!.id, sessionName, sessionTags)
         goToFragment(fragment)
     }
 

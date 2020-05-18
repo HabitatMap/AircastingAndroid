@@ -4,7 +4,7 @@ import androidx.room.*
 import java.util.*
 
 @Entity(tableName = "measurements")
-data class Measurement(
+data class MeasurementDBObject(
     @ColumnInfo(name = "measurement_stream_id") val measurementStreamId: Long,
     @ColumnInfo(name = "value") val value: Double?,
     @ColumnInfo(name = "time") val time: Date?
@@ -16,7 +16,7 @@ data class Measurement(
 @Entity(
     foreignKeys = arrayOf(
         ForeignKey(
-            entity = MeasurementStream::class,
+            entity = MeasurementStreamDBObject::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("measurement_stream_id"),
             onDelete = ForeignKey.CASCADE
@@ -27,8 +27,8 @@ data class Measurement(
 @Dao
 interface MeasurementDao {
     @Query("SELECT * FROM measurements")
-    fun getAll(): List<Measurement>
+    fun getAll(): List<MeasurementDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(measurement: Measurement): Long
+    fun insert(measurement: MeasurementDBObject): Long
 }

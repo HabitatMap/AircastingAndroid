@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.database
+package io.lunarlogic.aircasting.database.converters
 
 import androidx.room.TypeConverter
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
