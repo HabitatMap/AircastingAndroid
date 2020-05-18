@@ -37,4 +37,5 @@
     <string name="mobile_session_confirmation_instructions">Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.</string>
     <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
+    <string name="session_measurements_description">Most recent measurement:</string>
 </resources>

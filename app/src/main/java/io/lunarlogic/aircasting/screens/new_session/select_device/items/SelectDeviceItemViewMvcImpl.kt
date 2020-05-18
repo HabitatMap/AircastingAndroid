@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 class SelectDeviceItemViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceItemViewMvc {
     private var mTxtName: TextView
-    private var mTxtId: TextView
+    private var mTxtAddress: TextView
 
     private var mDeviceItem: DeviceItem? = null
 
@@ -19,7 +19,7 @@ class SelectDeviceItemViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Li
         this.rootView = inflater.inflate(R.layout.select_device_item, parent, false)
 
         mTxtName = findViewById(R.id.device_name)
-        mTxtId = findViewById(R.id.device_id)
+        mTxtAddress = findViewById(R.id.device_address)
         rootView?.setOnClickListener(View.OnClickListener {
             for (listener in listeners) {
                 listener.onDeviceItemSelected(mDeviceItem!!)
@@ -30,6 +30,6 @@ class SelectDeviceItemViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Li
     override fun bindDeviceItem(deviceItem: DeviceItem) {
         mDeviceItem = deviceItem
         mTxtName.setText(deviceItem.name)
-        mTxtId.setText(deviceItem.id)
+        mTxtAddress.setText(deviceItem.address)
     }
 }

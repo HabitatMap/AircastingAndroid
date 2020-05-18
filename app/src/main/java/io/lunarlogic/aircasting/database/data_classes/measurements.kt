@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.database
+package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.room.*
 import java.util.*
@@ -6,11 +6,11 @@ import java.util.*
 @Entity(tableName = "measurements")
 data class MeasurementDBObject(
     @ColumnInfo(name = "measurement_stream_id") val measurementStreamId: Long,
-    @ColumnInfo(name = "value") val value: Double?,
-    @ColumnInfo(name = "time") val time: Date?
+    @ColumnInfo(name = "value") val value: Double,
+    @ColumnInfo(name = "time") val time: Date
 ) {
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
+    var id: Long = 0
 }
 
 @Entity(

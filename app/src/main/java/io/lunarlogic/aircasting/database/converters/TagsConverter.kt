@@ -5,12 +5,12 @@ import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
 class TagsConverter {
     @TypeConverter
-    fun fromString(value: String?): List<String>? {
-        return value?.let { value.split(TAGS_SEPARATOR) }
+    fun fromString(value: String): ArrayList<String> {
+        return ArrayList(value.split(TAGS_SEPARATOR))
     }
 
     @TypeConverter
-    fun tagsToString(tags: List<String>?): String? {
-        return tags?.joinToString(TAGS_SEPARATOR)
+    fun tagsToString(tags: ArrayList<String>): String {
+        return tags.joinToString(TAGS_SEPARATOR)
     }
 }

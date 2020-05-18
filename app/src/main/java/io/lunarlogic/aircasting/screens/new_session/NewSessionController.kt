@@ -149,11 +149,11 @@ class NewSessionController(
         goToFragment(fragment)
     }
 
-    override fun onSessionDetailsContinueClicked(sessionName: String, sessionTags: List<String>) {
+    override fun onSessionDetailsContinueClicked(sessionName: String, sessionTags: ArrayList<String>) {
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = this
-        fragment.session = Session(mDeviceItem!!.id, sessionName, sessionTags)
+        fragment.session = Session(mDeviceItem!!.id, sessionName, sessionTags, Session.Status.NEW)
         goToFragment(fragment)
     }
 

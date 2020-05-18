@@ -1,37 +1,60 @@
 package io.lunarlogic.aircasting.sensor
 
+import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 
-class MeasurementStream {
-    constructor(measurementEvent: NewMeasurementEvent) {
-        this.sensorPackageName = measurementEvent.packageName
-        this.sensorName = measurementEvent.sensorName
-        this.measurementType = measurementEvent.measurementType
-        this.measurementShortType = measurementEvent.measurementShortType
-        this.unitName = measurementEvent.unitName
-        this.unitSymbol = measurementEvent.unitSymbol
-        this.thresholdVeryLow = measurementEvent.thresholdVeryLow
-        this.thresholdLow = measurementEvent.thresholdLow
-        this.thresholdMedium = measurementEvent.thresholdMedium
-        this.thresholdHigh = measurementEvent.thresholdHigh
-        this.thresholdVeryHigh = measurementEvent.thresholdVeryHigh
+class MeasurementStream(
+    val sensorPackageName: String,
+    val sensorName: String,
+    val measurementType: String,
+    val measurementShortType: String,
+    val unitName: String,
+    val unitSymbol: String,
+    val thresholdVeryLow: Int,
+    val thresholdLow: Int,
+    val thresholdMedium: Int,
+    val thresholdHigh: Int,
+    val thresholdVeryHigh: Int
+) {
+    constructor(measurementEvent: NewMeasurementEvent): this(
+        measurementEvent.packageName,
+        measurementEvent.sensorName,
+        measurementEvent.measurementType,
+        measurementEvent.measurementShortType,
+        measurementEvent.unitName,
+        measurementEvent.unitSymbol,
+        measurementEvent.thresholdVeryLow,
+        measurementEvent.thresholdLow,
+        measurementEvent.thresholdMedium,
+        measurementEvent.thresholdHigh,
+        measurementEvent.thresholdVeryHigh
+    )
+
+    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject): this(
+        streamWithMeasurementsDBObject.stream.sensorPackageName,
+        streamWithMeasurementsDBObject.stream.sensorName,
+        streamWithMeasurementsDBObject.stream.measurementType,
+        streamWithMeasurementsDBObject.stream.measurementShortType,
+        streamWithMeasurementsDBObject.stream.unitName,
+        streamWithMeasurementsDBObject.stream.unitSymbol,
+        streamWithMeasurementsDBObject.stream.thresholdVeryLow,
+        streamWithMeasurementsDBObject.stream.thresholdLow,
+        streamWithMeasurementsDBObject.stream.thresholdMedium,
+        streamWithMeasurementsDBObject.stream.thresholdHigh,
+        streamWithMeasurementsDBObject.stream.thresholdVeryHigh
+    ) {
+        this.mMeasurements = streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
+            Measurement(measurementDBObject)
+        }
     }
 
-    val sensorPackageName: String
-    val sensorName: String?
-    val measurementType: String?
-    val measurementShortType: String?
-    val unitName: String?
-    val unitSymbol: String?
-    val thresholdVeryLow: Int?
-    val thresholdLow: Int?
-    val thresholdMedium: Int?
-    val thresholdHigh: Int?
-    val thresholdVeryHigh: Int?
-    val measurements = arrayListOf<Measurement>()
+    val detailedType: String
+
+    private var mMeasurements = listOf<Measurement>()
+    val measurements get() = mMeasurements
 
 
-    fun addMeasurement(measurement: Measurement) {
-        measurements.add(measurement)
+    init {
+        detailedType = sensorName.split("-").component2()
     }
 }

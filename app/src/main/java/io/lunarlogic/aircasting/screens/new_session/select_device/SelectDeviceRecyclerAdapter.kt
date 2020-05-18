@@ -38,7 +38,7 @@ class SelectDeviceRecyclerAdapter(private val mInflater: LayoutInflater, private
     }
 
     fun addDeviceItem(deviceItem: DeviceItem) {
-        val existingDevice = mDeviceItems.find { it.id == deviceItem.id }
+        val existingDevice = mDeviceItems.find { it.address == deviceItem.address }
         if (existingDevice == null) {
             mDeviceItems.add(deviceItem)
             notifyDataSetChanged()

@@ -33,8 +33,8 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         return sessionNameField?.text.toString()
     }
 
-    private fun getSessionTags(): List<String> {
+    private fun getSessionTags(): ArrayList<String> {
         val sessionTagsField = rootView?.findViewById<EditText>(R.id.session_tags)
-        return sessionTagsField?.text.toString().split(TAGS_SEPARATOR)
+        return ArrayList(sessionTagsField?.text.toString().split(TAGS_SEPARATOR))
     }
 }

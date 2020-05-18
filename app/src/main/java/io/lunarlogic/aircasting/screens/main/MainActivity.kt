@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.database.DatabaseProvider
 
 class MainActivity : AppCompatActivity() {
     private var controller: MainController? = null
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DatabaseProvider.setup(applicationContext)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
         controller = MainController(this, view)
