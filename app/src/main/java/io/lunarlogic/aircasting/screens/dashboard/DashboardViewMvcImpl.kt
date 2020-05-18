@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Measurement
+import java.util.*
 
 class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, DashboardViewMvc {
     private var mRecordSessionButton: Button? = null
@@ -30,6 +31,7 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
 
     override fun updateMeasurements(measurementEvent: NewMeasurementEvent) {
         val textView = rootView?.findViewById<TextView>(R.id.text_dashboard)
+
         if (measurementEvent.sensorName == "AirBeam2-PM2.5") {
             textView?.text = "Current PM 2.5: " + measurementEvent.measuredValue
         }
@@ -47,7 +49,8 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
         showRecordNewSessionButton()
 
         for (listener in listeners) {
-            listener.onStopSessionClicked()
+            // TODO: change after interface change
+            listener.onStopSessionClicked(UUID.randomUUID())
         }
     }
 

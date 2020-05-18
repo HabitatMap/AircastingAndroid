@@ -1,18 +1,16 @@
-package io.lunarlogic.aircasting.bluetooth
+package io.lunarlogic.aircasting.sensor.airbeam2
 
 import android.bluetooth.BluetoothSocket
 import com.google.common.io.CharStreams
 import com.google.common.io.LineProcessor
 import io.lunarlogic.aircasting.sensor.ResponseParser
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.SensorResponseParsingError
-import io.lunarlogic.aircasting.sensor.Measurement
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class BluetoothService() {
+class AirBeam2Reader() {
     val responseParser = ResponseParser()
 
     fun run(mmSocket: BluetoothSocket) {

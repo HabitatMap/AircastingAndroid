@@ -1,3 +1,5 @@
 package io.lunarlogic.aircasting.events
 
-class StopRecordingEvent
+import java.util.*
+
+class StopRecordingEvent(val sessionUUID: UUID)

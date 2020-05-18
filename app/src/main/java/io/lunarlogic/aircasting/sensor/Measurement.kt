@@ -9,7 +9,7 @@ class Measurement(
     val value get() = mValue
 
     override fun toString(): String {
-        return "Measurement{" +
+        return "MeasurementDBObject{" +
                 "value='" + value + '\''.toString() +
                 ", time='" + time + '\''.toString() +
                 '}'.toString()

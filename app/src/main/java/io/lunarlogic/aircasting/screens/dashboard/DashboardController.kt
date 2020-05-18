@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.events.StopRecordingEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 
 class DashboardController(
     private val mContext: Context?,
@@ -27,8 +28,8 @@ class DashboardController(
         NewSessionActivity.start(mContext)
     }
 
-    override fun onStopSessionClicked() {
-        val event = StopRecordingEvent()
+    override fun onStopSessionClicked(sessionUUID: UUID) {
+        val event = StopRecordingEvent(sessionUUID)
         EventBus.getDefault().post(event)
     }
 
