@@ -3,7 +3,9 @@ package io.lunarlogic.aircasting.database
 import android.content.Context
 import androidx.room.*
 import io.lunarlogic.aircasting.database.converters.DateConverter
+import io.lunarlogic.aircasting.database.converters.SessionStatusConverter
 import io.lunarlogic.aircasting.database.converters.TagsConverter
+import io.lunarlogic.aircasting.database.data_classes.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -15,9 +17,13 @@ import kotlinx.coroutines.launch
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class
     ),
-    version = 5
+    version = 7
 )
-@TypeConverters(DateConverter::class, TagsConverter::class)
+@TypeConverters(
+    DateConverter::class,
+    TagsConverter::class,
+    SessionStatusConverter::class
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessions(): SessionDao
     abstract fun measurementStreams(): MeasurementStreamDao
@@ -28,12 +34,17 @@ class DatabaseProvider {
     companion object {
         private val DB_NAME = "aircasting"
 
+        private lateinit var mContext: Context
         var mAppDatabase: AppDatabase? = null
 
-        fun get(context: Context): AppDatabase {
+        fun setup(context: Context) {
+            mContext = context
+        }
+
+        fun get(): AppDatabase {
             if (mAppDatabase == null) {
                 mAppDatabase = Room.databaseBuilder(
-                    context,
+                    mContext,
                     AppDatabase::class.java, DB_NAME
                 ).fallbackToDestructiveMigration().build()
             }

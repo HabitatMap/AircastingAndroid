@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.main
 
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.ApplicationClosed
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
@@ -18,7 +19,7 @@ class MainController(private val rootActivity: AppCompatActivity, private val mV
         } else {
             sessionManager = SessionManager(rootActivity, settings)
         }
-
+        
         sessionManager?.registerToEventBus()
     }
 

@@ -11,12 +11,12 @@ class SessionParams {
         this.end_time = session.endTime!!
         this.tag_list = session.tags
 
-        session.streams.forEach {(sensorName, stream) ->
-            streams[sensorName] = MeasurementStreamParams(stream)
+        session.streams.forEach { stream ->
+            streams[stream.sensorName!!] = MeasurementStreamParams(stream)
         }
     }
 
-    val uuid: UUID
+    val uuid: String
     val title: String
     val tag_list: List<String>
     val start_time: Date
