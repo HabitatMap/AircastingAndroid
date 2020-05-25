@@ -39,7 +39,13 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
         mSession = session
         mDateTextView.setText(session.startTime.toString())
         mNameTextView.setText(session.name)
-        mTagsTextView.setText(session.tags.joinToString(", ") + tempTag(session))
+        mTagsTextView.setText(session.tags.joinToString(", "))
+
+        if (session.isRecording()) {
+            showStopButton()
+        } else {
+            hideStopButton()
+        }
 
         // TODO: handle
         val measurementsString = session.streams.map { stream ->
@@ -48,11 +54,11 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
         mMeasurementsTextView.setText(measurementsString)
     }
 
-    private fun tempTag(session: Session): String {
-        if (session.isActive()) {
-            return ", active"
-        } else {
-            return ""
-        }
+    private fun showStopButton() {
+        mStopSesssionButton.visibility = View.VISIBLE
+    }
+
+    private fun hideStopButton() {
+        mStopSesssionButton.visibility = View.INVISIBLE
     }
 }

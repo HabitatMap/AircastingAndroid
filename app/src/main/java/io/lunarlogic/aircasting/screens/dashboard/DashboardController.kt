@@ -19,7 +19,9 @@ class DashboardController(
     fun onCreate() {
         mSessionsViewModel.loadAllWithMeasurements().observe(mLifecycleOwner, Observer { sessions ->
             if (sessions.size > 0) {
-                mViewMvc.showSessionsView(sessions.map { session -> Session(session) })
+                mViewMvc.showSessionsView(sessions.map { session ->
+                    Session(session)
+                })
             } else {
                 mViewMvc.showEmptyView()
             }

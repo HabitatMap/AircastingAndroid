@@ -4,14 +4,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
 class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
+    private var sessionUUID: String
+
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        sessionUUID: String
+    ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_session_details, parent, false)
+        this.sessionUUID = sessionUUID
 
         val blueToothDeviceButton = rootView?.findViewById<Button>(R.id.continue_button)
         blueToothDeviceButton?.setOnClickListener {
@@ -23,8 +30,22 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         val sessionName = getSessionName()
         val sessionTags = getSessionTags()
 
+        if (sessionName.isEmpty()) {
+            notifyAboutValidationError()
+        } else {
+            notifyAboutSuccess(sessionName, sessionTags)
+        }
+    }
+
+    private fun notifyAboutValidationError() {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(sessionName, sessionTags)
+            listener.validationFailed()
+        }
+    }
+
+    private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
+        for (listener in listeners) {
+            listener.onSessionDetailsContinueClicked(sessionUUID, sessionName, sessionTags)
         }
     }
 

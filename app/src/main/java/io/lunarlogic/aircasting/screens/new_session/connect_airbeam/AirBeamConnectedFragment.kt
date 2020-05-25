@@ -8,8 +8,9 @@ import androidx.fragment.app.Fragment
 
 class AirBeamConnectedFragment() : Fragment() {
 
-    private var controller: AirBeamConnectedController? = null
-    var listener: AirBeamConnectedViewMvc.Listener? = null
+    private lateinit var controller: AirBeamConnectedController
+    lateinit var listener: AirBeamConnectedViewMvc.Listener
+    lateinit var sessionUUID: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,7 +20,8 @@ class AirBeamConnectedFragment() : Fragment() {
         val view =
             AirBeamConnectedViewMvcImpl(
                 layoutInflater,
-                null
+                null,
+                sessionUUID
             )
         controller =
             AirBeamConnectedController(context!!, view)

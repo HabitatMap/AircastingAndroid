@@ -8,27 +8,24 @@ import kotlin.collections.ArrayList
 val TAGS_SEPARATOR = " "
 
 class Session(
-    val deviceId: String,
+    val uuid: String,
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
-    val uuid: String = UUID.randomUUID().toString()
+    private val mStartTime: Date = Date(),
+    private var mEndTime: Date? = null
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
-        sessionDBObject.deviceId,
+        sessionDBObject.uuid,
         sessionDBObject.name,
         sessionDBObject.tags,
         sessionDBObject.status,
-        sessionDBObject.uuid
+        sessionDBObject.startTime,
+        sessionDBObject.endTime
     )
 
-    constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject): this(
-        sessionWithStreamsDBObject.session.deviceId,
-        sessionWithStreamsDBObject.session.name,
-        sessionWithStreamsDBObject.session.tags,
-        sessionWithStreamsDBObject.session.status,
-        sessionWithStreamsDBObject.session.uuid
-    ) {
+    constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
+            this(sessionWithStreamsDBObject.session) {
         this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
@@ -37,14 +34,12 @@ class Session(
     public enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
-        INTERRUPTED(1),
-        FINISHED(2)
+        FINISHED(1)
     }
 
     val name get() = mName
     val tags get() = mTags
-    val startTime = Date()
-    private var mEndTime: Date? = null
+    val startTime get() = mStartTime
     val endTime get() = mEndTime
 
     val status get() = mStatus
@@ -61,7 +56,13 @@ class Session(
         mStatus = Status.FINISHED
     }
 
-    fun isActive(): Boolean {
-        return mStatus != Status.FINISHED
+    fun isRecording(): Boolean {
+        return status == Status.RECORDING
+    }
+
+    companion object {
+        fun generateUUID(): String {
+            return UUID.randomUUID().toString()
+        }
     }
 }

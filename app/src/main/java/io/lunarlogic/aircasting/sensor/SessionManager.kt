@@ -47,7 +47,7 @@ class SessionManager(private val mContext: Context, private val settings: Settin
         val measurement = Measurement(event)
 
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getIdByDeviceId(event.deviceId)
+            val sessionId = sessionsRespository.getActiveSessionIdByByUUID(event.sessionUUID)
             sessionId?.let {
                 val measurementStreamId = measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                 measurementsRepository.insert(measurementStreamId, measurement)

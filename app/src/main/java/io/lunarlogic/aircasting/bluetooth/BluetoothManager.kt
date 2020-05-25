@@ -15,9 +15,15 @@ class BluetoothManager(private val mActivity: BluetoothActivity) {
     }
 
     fun enableBluetooth() {
-        if (mActivity.bluetoothPermissionsGranted(permissionsManager)) {
+        if (permissionsGranted()) {
             mActivity.requestBluetoothEnable()
         } else {
+            mActivity.requestBluetoothPermissions(permissionsManager)
+        }
+    }
+
+    fun requestBluetoothPermissions() {
+        if (!permissionsGranted()) {
             mActivity.requestBluetoothPermissions(permissionsManager)
         }
     }
@@ -40,5 +46,9 @@ class BluetoothManager(private val mActivity: BluetoothActivity) {
 
     fun cancelDiscovery() {
         adapter?.cancelDiscovery()
+    }
+
+    private fun permissionsGranted(): Boolean {
+        return mActivity.bluetoothPermissionsGranted(permissionsManager)
     }
 }

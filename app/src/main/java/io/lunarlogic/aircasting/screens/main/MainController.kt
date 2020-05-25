@@ -19,7 +19,7 @@ class MainController(private val rootActivity: AppCompatActivity, private val mV
         } else {
             sessionManager = SessionManager(rootActivity, settings)
         }
-        
+
         sessionManager?.registerToEventBus()
     }
 

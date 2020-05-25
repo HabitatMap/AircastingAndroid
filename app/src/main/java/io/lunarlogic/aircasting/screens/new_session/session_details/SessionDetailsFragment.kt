@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class SessionDetailsFragment() : Fragment() {
-    private var controller: SessionDetailsController? = null
-    var listener: SessionDetailsViewMvc.Listener? = null
+    private lateinit var controller: SessionDetailsController
+    lateinit var listener: SessionDetailsViewMvc.Listener
+    lateinit var sessionUUID: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = SessionDetailsViewMvcImpl(inflater, container)
+        val view = SessionDetailsViewMvcImpl(inflater, container, sessionUUID)
         controller = SessionDetailsController(context, view)
 
         return view.rootView
@@ -23,12 +24,12 @@ class SessionDetailsFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        listener?.let { controller?.registerListener(it) }
+        listener.let { controller.registerListener(it) }
 
     }
 
     override fun onStop() {
         super.onStop()
-        listener?.let { controller?.unregisterListener(it) }
+        listener.let { controller.unregisterListener(it) }
     }
 }
