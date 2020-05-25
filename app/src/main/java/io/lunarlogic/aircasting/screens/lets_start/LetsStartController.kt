@@ -1,10 +1,10 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
-import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 
 class LetsStartController(
-    private val mContext: Context?,
+    private val mActivity: FragmentActivity?,
     private val mViewMvc: LetsStartViewMvc): LetsStartViewMvc.Listener  {
 
     fun onCreate() {
@@ -12,6 +12,7 @@ class LetsStartController(
     }
 
     override fun onRecordNewSessionClicked() {
-        NewSessionActivity.start(mContext)
+        mActivity?.supportFragmentManager?.popBackStack()
+        NewSessionActivity.start(mActivity)
     }
 }
