@@ -13,8 +13,8 @@ class SessionsRepository {
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
-    fun getSessionIdByByUUID(uuid: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByByUUID(uuid)
+    fun getActiveSessionIdByByUUID(uuid: String): Long? {
+        val sessionDBObject = mDatabase.sessions().loadSessionByByUUIDAndStatus(uuid, Session.Status.RECORDING)
 
         if (sessionDBObject != null) {
             return sessionDBObject.id
