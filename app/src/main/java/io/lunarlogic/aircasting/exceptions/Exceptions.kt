@@ -13,7 +13,7 @@ class UnknownError(cause: Exception):
     BaseException(cause, "Something went wrong, please contact our support")
 
 class AirBeam2ConnectionOpenFailed(cause: Exception):
-    BaseException(cause, "AirBeam2 connection failed. If you agreed on pairing and still see this error, please contact support")
+    BaseException(cause, "AirBeam connection failed. If you agreed on pairing and still see this error, please contact support")
 
 class SensorResponseParsingError(cause: Exception?):
     BaseException(cause, "There was a problem while parsing response from the sensor. Please make sure that you follow the required protocol.")
