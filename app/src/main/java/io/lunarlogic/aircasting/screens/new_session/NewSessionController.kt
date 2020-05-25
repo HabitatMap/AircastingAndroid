@@ -51,29 +51,29 @@ class NewSessionController(
         updateProgressBarView()
     }
 
-    private fun getBluetoothDeviceFragment() : Fragment {
-        try {
-            if (bluetoothManager.isBluetoothEnabled()) {
-                val fragment = TurnOnAirBeamFragment()
-                fragment.listener = this
-                return fragment
-            }
-        } catch(exception: BluetoothNotSupportedException) {
-            errorHandler.showError(exception.messageToDisplay)
-        }
-
-        val fragment = TurnOnBluetoothFragment()
-        fragment.listener = this
-        return fragment
-    }
-
     fun onBackPressed() {
         decrementStepProgress()
     }
 
     override fun onBluetoothDeviceSelected() {
+        try {
+            if (bluetoothManager.isBluetoothEnabled()) {
+                bluetoothManager.requestBluetoothPermissions()
+                goToTurnOnAirBeam()
+                return
+            }
+        } catch(exception: BluetoothNotSupportedException) {
+            errorHandler.showError(exception.messageToDisplay)
+        }
+
+        goToTurnOnBluetooth()
+    }
+
+    private fun goToTurnOnBluetooth() {
         incrementStepProgress()
-        goToFragment(getBluetoothDeviceFragment())
+        val fragment = TurnOnBluetoothFragment()
+        fragment.listener = this
+        goToFragment(fragment)
     }
 
     override fun onTurnOnBluetoothOkClicked() {
