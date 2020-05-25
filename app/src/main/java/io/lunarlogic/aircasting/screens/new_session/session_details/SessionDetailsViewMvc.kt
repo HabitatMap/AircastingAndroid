@@ -7,5 +7,6 @@ interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listen
 
     interface Listener {
         fun onSessionDetailsContinueClicked(sessionUUID: String, sessionName: String, sessionTags: ArrayList<String>)
+        fun validationFailed()
     }
 }

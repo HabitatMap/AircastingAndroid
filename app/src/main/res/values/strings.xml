@@ -38,4 +38,5 @@
     <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="session_measurements_description">Most recent measurement:</string>
+    <string name="session_name_required">Session name can\'t be blank.</string>
 </resources>

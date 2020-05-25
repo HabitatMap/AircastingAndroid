@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
@@ -29,6 +30,20 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         val sessionName = getSessionName()
         val sessionTags = getSessionTags()
 
+        if (sessionName.isEmpty()) {
+            notifyAboutValidationError()
+        } else {
+            notifyAboutSuccess(sessionName, sessionTags)
+        }
+    }
+
+    private fun notifyAboutValidationError() {
+        for (listener in listeners) {
+            listener.validationFailed()
+        }
+    }
+
+    private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
             listener.onSessionDetailsContinueClicked(sessionUUID, sessionName, sessionTags)
         }

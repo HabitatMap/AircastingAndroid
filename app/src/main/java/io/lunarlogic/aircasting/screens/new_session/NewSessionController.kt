@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -147,6 +148,12 @@ class NewSessionController(
         fragment.listener = this
         fragment.sessionUUID = sessionUUID
         goToFragment(fragment)
+    }
+
+    override fun validationFailed() {
+        val validationError = mContextActivity.getString(R.string.session_name_required)
+        val toast = Toast.makeText(mContextActivity, validationError, Toast.LENGTH_LONG)
+        toast.show()
     }
 
     override fun onSessionDetailsContinueClicked(sessionUUID: String, sessionName: String, sessionTags: ArrayList<String>) {
