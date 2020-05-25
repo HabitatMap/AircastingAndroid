@@ -72,7 +72,7 @@ interface SessionDao {
     fun loadSessionByDeviceId(deviceId: String): SessionDBObject?
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
-    fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Int)
+    fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
 
     @Query("DELETE FROM sessions")
     fun delete_all()

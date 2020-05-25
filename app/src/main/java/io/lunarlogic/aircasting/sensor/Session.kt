@@ -12,6 +12,8 @@ class Session(
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
+    private val mStartTime: Date = Date(),
+    private var mEndTime: Date? = null,
     val uuid: String = UUID.randomUUID().toString()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
@@ -19,16 +21,13 @@ class Session(
         sessionDBObject.name,
         sessionDBObject.tags,
         sessionDBObject.status,
+        sessionDBObject.startTime,
+        sessionDBObject.endTime,
         sessionDBObject.uuid
     )
 
-    constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject): this(
-        sessionWithStreamsDBObject.session.deviceId,
-        sessionWithStreamsDBObject.session.name,
-        sessionWithStreamsDBObject.session.tags,
-        sessionWithStreamsDBObject.session.status,
-        sessionWithStreamsDBObject.session.uuid
-    ) {
+    constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
+            this(sessionWithStreamsDBObject.session) {
         this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
@@ -37,14 +36,12 @@ class Session(
     public enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
-        INTERRUPTED(1),
-        FINISHED(2)
+        FINISHED(1)
     }
 
     val name get() = mName
     val tags get() = mTags
-    val startTime = Date()
-    private var mEndTime: Date? = null
+    val startTime get() = mStartTime
     val endTime get() = mEndTime
 
     val status get() = mStatus
@@ -61,7 +58,7 @@ class Session(
         mStatus = Status.FINISHED
     }
 
-    fun isActive(): Boolean {
-        return mStatus != Status.FINISHED
+    fun isRecording(): Boolean {
+        return status == Status.RECORDING
     }
 }

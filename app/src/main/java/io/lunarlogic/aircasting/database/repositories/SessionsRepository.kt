@@ -35,6 +35,6 @@ class SessionsRepository {
 
     fun update(session: Session) {
         mDatabase.sessions().update(session.uuid, session.name, session.tags,
-            session.endTime!!, session.status.value)
+            session.endTime!!, session.status)
     }
 }
