@@ -4,6 +4,7 @@ import java.util.*
 
 
 class NewMeasurementEvent(
+    val sessionUUID: String,
     val packageName: String,
     val sensorName: String,
     val measurementType: String,
@@ -18,6 +19,4 @@ class NewMeasurementEvent(
     val measuredValue: Double
 ) {
     val creationTime = Date().time
-
-    val deviceId get(): String = packageName.split(':').component2()
 }

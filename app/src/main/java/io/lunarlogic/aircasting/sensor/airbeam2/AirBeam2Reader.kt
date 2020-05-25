@@ -11,22 +11,23 @@ import java.io.InputStream
 import java.io.InputStreamReader
 
 class AirBeam2Reader() {
-    val responseParser = ResponseParser()
-
-    fun run(mmSocket: BluetoothSocket) {
+    fun run(mmSocket: BluetoothSocket, sessionUUID: String) {
         val mInputStream: InputStream = mmSocket.inputStream
         val inputStreamReader = InputStreamReader(mInputStream)
 
         CharStreams.readLines(
             inputStreamReader,
-            lineProcessor()
+            lineProcessor(sessionUUID)
         )
     }
 
-    private fun lineProcessor(): LineProcessor<Void> {
+    private fun lineProcessor(sessionUUID: String): LineProcessor<Void> {
+        val responseParser = ResponseParser(sessionUUID)
+
         return object : LineProcessor<Void> {
             @Throws(IOException::class, SensorResponseParsingError::class)
             override fun processLine(line: String): Boolean {
+
                 val newMeasurementEvent = responseParser.parse(line)
                 EventBus.getDefault().post(newMeasurementEvent)
 

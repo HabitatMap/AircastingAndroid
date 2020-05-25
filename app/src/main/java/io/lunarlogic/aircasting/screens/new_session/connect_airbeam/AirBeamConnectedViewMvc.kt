@@ -4,6 +4,6 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 
 interface AirBeamConnectedViewMvc : ObservableViewMvc<AirBeamConnectedViewMvc.Listener> {
     interface Listener {
-        fun onAirBeamConnectedContinueClicked()
+        fun onAirBeamConnectedContinueClicked(sessionUUID: String)
     }
 }

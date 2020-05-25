@@ -23,16 +23,16 @@ class AirBeam2Connector(
     private val mAirBeam2Reader = AirBeam2Reader()
     private var mThread: ConnectThread? = null
 
-    fun connect(device: BluetoothDevice) {
+    fun connect(device: BluetoothDevice, sessionUUID: String) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
             EventBus.getDefault().register(this);
-            mThread = ConnectThread(device)
+            mThread = ConnectThread(device, sessionUUID)
             mThread?.start()
         }
     }
 
-    private inner class ConnectThread(device: BluetoothDevice) : Thread() {
+    private inner class ConnectThread(device: BluetoothDevice, private val sessionUUID: String) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             device.createRfcommSocketToServiceRecord(SPP_SERIAL)
         }
@@ -46,8 +46,8 @@ class AirBeam2Connector(
                 mmSocket?.use { socket ->
                     socket.connect()
 
-                    mListener.onConnectionSuccessful()
-                    mAirBeam2Reader.run(socket)
+                    mListener.onConnectionSuccessful(sessionUUID)
+                    mAirBeam2Reader.run(socket, sessionUUID)
                 }
             } catch(e: IOException) {
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))

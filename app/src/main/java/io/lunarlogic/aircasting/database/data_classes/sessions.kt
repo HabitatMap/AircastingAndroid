@@ -13,7 +13,6 @@ data class SessionDBObject(
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
     @ColumnInfo(name = "end_time") val endTime: Date?,
-    @ColumnInfo(name = "device_id") val deviceId: String,
     @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -26,7 +25,6 @@ data class SessionDBObject(
                 session.tags,
                 session.startTime,
                 session.endTime,
-                session.deviceId,
                 session.status
             )
 }
@@ -68,8 +66,8 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid")
     fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsDBObject?
 
-    @Query("SELECT * FROM sessions WHERE device_id=:deviceId")
-    fun loadSessionByDeviceId(deviceId: String): SessionDBObject?
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid")
+    fun loadSessionByByUUID(uuid: String): SessionDBObject?
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)

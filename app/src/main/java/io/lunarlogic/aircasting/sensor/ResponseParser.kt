@@ -4,7 +4,7 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.SensorResponseParsingError
 
 
-class ResponseParser {
+class ResponseParser(private val sessionUUID: String) {
     /**
      * This has to match what Arduino produces
      * Value;Sensor package name;Sensor name;Type of measurement;Short type of measurement;Unit name;Unit symbol/abbreviation;T1;T2;T3;T4;T5
@@ -59,6 +59,7 @@ class ResponseParser {
         }
 
         return NewMeasurementEvent(
+            sessionUUID,
             packageName,
             sensorName,
             measurementType,

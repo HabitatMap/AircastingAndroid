@@ -9,9 +9,15 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
 class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
+    private var sessionUUID: String
+
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        sessionUUID: String
+    ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_session_details, parent, false)
+        this.sessionUUID = sessionUUID
 
         val blueToothDeviceButton = rootView?.findViewById<Button>(R.id.continue_button)
         blueToothDeviceButton?.setOnClickListener {
@@ -24,7 +30,7 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         val sessionTags = getSessionTags()
 
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(sessionUUID, sessionName, sessionTags)
         }
     }
 

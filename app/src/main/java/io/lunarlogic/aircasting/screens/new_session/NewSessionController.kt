@@ -19,6 +19,7 @@ import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import org.greenrobot.eventbus.EventBus
+import java.util.*
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -38,7 +39,6 @@ class NewSessionController(
     private var currentProgressStep = 1
     private val bluetoothManager = BluetoothManager(mActivity)
     private val errorHandler = ErrorHandler(mContextActivity)
-    private var mDeviceItem: DeviceItem? = null
 
     fun onStart() {
         showFirstStep()
@@ -126,8 +126,6 @@ class NewSessionController(
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {
-        mDeviceItem = deviceItem
-
         incrementStepProgress()
         val fragment = ConnectingAirBeamFragment()
         fragment.deviceItem = deviceItem
@@ -135,25 +133,27 @@ class NewSessionController(
         goToFragment(fragment)
     }
 
-    override fun onConnectionSuccessful() {
+    override fun onConnectionSuccessful(sessionUUID: String) {
         incrementStepProgress()
         val fragment = AirBeamConnectedFragment()
         fragment.listener = this
+        fragment.sessionUUID = sessionUUID
         goToFragment(fragment)
     }
 
-    override fun onAirBeamConnectedContinueClicked() {
+    override fun onAirBeamConnectedContinueClicked(sessionUUID: String) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = this
+        fragment.sessionUUID = sessionUUID
         goToFragment(fragment)
     }
 
-    override fun onSessionDetailsContinueClicked(sessionName: String, sessionTags: ArrayList<String>) {
+    override fun onSessionDetailsContinueClicked(sessionUUID: String, sessionName: String, sessionTags: ArrayList<String>) {
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = this
-        fragment.session = Session(mDeviceItem!!.id, sessionName, sessionTags, Session.Status.NEW)
+        fragment.session = Session(sessionUUID, sessionName, sessionTags, Session.Status.NEW)
         goToFragment(fragment)
     }
 
