@@ -29,7 +29,8 @@ class AirBeam2Reader() {
             override fun processLine(line: String): Boolean {
 
                 val newMeasurementEvent = responseParser.parse(line)
-                EventBus.getDefault().post(newMeasurementEvent)
+                newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
+
 
                 return !Thread.interrupted()
             }

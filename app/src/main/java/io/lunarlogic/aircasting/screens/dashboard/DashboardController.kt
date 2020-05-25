@@ -20,7 +20,6 @@ class DashboardController(
         mSessionsViewModel.loadAllWithMeasurements().observe(mLifecycleOwner, Observer { sessions ->
             if (sessions.size > 0) {
                 mViewMvc.showSessionsView(sessions.map { session ->
-                    println("ANIA: " + session.session.status)
                     Session(session)
                 })
             } else {

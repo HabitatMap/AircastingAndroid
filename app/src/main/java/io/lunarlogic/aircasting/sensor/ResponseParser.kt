@@ -27,10 +27,10 @@ class ResponseParser(private val sessionUUID: String) {
         THRESHOLD_VERY_HIGH
     }
 
-    fun parse(line: String): NewMeasurementEvent {
+    fun parse(line: String): NewMeasurementEvent? {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (parts.size < Fields.values().size) {
-            throw SensorResponseParsingError(null)
+            return null
         }
 
         val packageName = parts[Fields.SENSOR_PACKAGE_NAME.ordinal]
@@ -56,6 +56,7 @@ class ResponseParser(private val sessionUUID: String) {
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
             throw SensorResponseParsingError(e)
+            return null
         }
 
         return NewMeasurementEvent(
