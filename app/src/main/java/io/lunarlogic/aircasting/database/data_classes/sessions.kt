@@ -14,7 +14,9 @@ data class SessionDBObject(
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
     @ColumnInfo(name = "end_time") val endTime: Date?,
-    @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW
+    @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW,
+    @ColumnInfo(name = "deleted") val deleted: Boolean = false,
+    @ColumnInfo(name = "version") val version: Int? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -61,6 +63,9 @@ class StreamWithMeasurementsDBObject {
 interface SessionDao {
     @Query("SELECT * FROM sessions ORDER BY start_time DESC")
     fun loadAllWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE status=:status")
+    fun byStatus(status: Session.Status): List<SessionDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(session: SessionDBObject): Long

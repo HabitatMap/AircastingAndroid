@@ -14,7 +14,9 @@ class Session(
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
     private var mEndTime: Date? = null,
-    val uuid: String = UUID.randomUUID().toString()
+    val uuid: String = UUID.randomUUID().toString(),
+    var deleted: Boolean = false,
+    var version: Int? = null
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.deviceId,
@@ -23,7 +25,8 @@ class Session(
         sessionDBObject.status,
         sessionDBObject.startTime,
         sessionDBObject.endTime,
-        sessionDBObject.uuid
+        sessionDBObject.uuid,
+        sessionDBObject.deleted
     )
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):

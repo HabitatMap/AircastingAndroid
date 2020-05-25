@@ -45,4 +45,9 @@ class SessionsRepository {
     fun stopSessions() {
         mDatabase.sessions().updateStatus(Session.Status.FINISHED)
     }
+
+    fun finishedSessions(): List<Session> {
+        return mDatabase.sessions().byStatus(Session.Status.FINISHED)
+            .map { dbObject -> Session(dbObject) }
+    }
 }

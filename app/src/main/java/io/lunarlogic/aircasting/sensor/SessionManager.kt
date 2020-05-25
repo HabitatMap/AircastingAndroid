@@ -10,12 +10,13 @@ import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.SessionCreator
+import io.lunarlogic.aircasting.networking.services.SyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val settings: Settings) {
-    private val sessionCreator =
-        SessionCreator(mContext, settings)
+//    private val sessionCreator = SessionCreator(mContext, settings)
+    private val sessionSyncService = SyncService(settings)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -83,7 +84,8 @@ class SessionManager(private val mContext: Context, private val settings: Settin
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
-                sessionCreator.create(it)
+//                sessionCreator.create(it)
+                sessionSyncService.sync()
             }
         }
     }
