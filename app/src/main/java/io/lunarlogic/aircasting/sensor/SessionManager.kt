@@ -9,12 +9,13 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.*
+import io.lunarlogic.aircasting.networking.services.SessionCreator
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val settings: Settings) {
-    private val sessionCreator = SessionCreator(mContext, settings)
+    private val sessionCreator =
+        SessionCreator(mContext, settings)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()

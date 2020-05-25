@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.networking
+package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.sensor.Session
@@ -10,6 +10,8 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
+import io.lunarlogic.aircasting.networking.params.CreateSessionBody
+import io.lunarlogic.aircasting.networking.responses.UserResponse
 import retrofit2.http.*
 
 
@@ -49,17 +51,35 @@ class ApiServiceFactory {
         }
 
         fun get(username: String, password: String): ApiService {
-            val credentialsEncoded = encodedCredentials(username, password)
-            val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
+            val credentialsEncoded =
+                encodedCredentials(
+                    username,
+                    password
+                )
+            val authInterceptor =
+                AuthenticationInterceptor(
+                    credentialsEncoded
+                )
 
-            return get(listOf(authInterceptor))
+            return get(
+                listOf(authInterceptor)
+            )
         }
 
         fun get(authToken: String): ApiService {
-            val credentialsEncoded = encodedCredentials(authToken, "X")
-            val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
+            val credentialsEncoded =
+                encodedCredentials(
+                    authToken,
+                    "X"
+                )
+            val authInterceptor =
+                AuthenticationInterceptor(
+                    credentialsEncoded
+                )
 
-            return get(listOf(authInterceptor))
+            return get(
+                listOf(authInterceptor)
+            )
         }
 
         private fun encodedCredentials(username: String, password: String): String {

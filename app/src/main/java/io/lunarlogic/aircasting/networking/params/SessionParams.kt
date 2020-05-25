@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.networking
+package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.sensor.Session
 import java.util.*
@@ -12,7 +12,8 @@ class SessionParams {
         this.tag_list = session.tags
 
         session.streams.forEach { stream ->
-            streams[stream.sensorName!!] = MeasurementStreamParams(stream)
+            streams[stream.sensorName!!] =
+                MeasurementStreamParams(stream)
         }
     }
 
