@@ -57,7 +57,7 @@ class StreamWithMeasurementsDBObject {
 
 @Dao
 interface SessionDao {
-    @Query("SELECT * FROM sessions")
+    @Query("SELECT * FROM sessions ORDER BY start_time DESC")
     fun loadAllWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
