@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.screens.new_session.NewSessionController
+import io.lunarlogic.aircasting.screens.new_session.NewSessionWizardNavigator
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
-class ConnectingAirBeamFragment() : Fragment(), NewSessionController.BackPressedListener {
+class ConnectingAirBeamFragment() : Fragment(), NewSessionWizardNavigator.BackPressedListener {
     private var controller: ConnectingAirBeamController? = null
     var deviceItem: DeviceItem? = null
     var listener: ConnectingAirBeamController.Listener? = null

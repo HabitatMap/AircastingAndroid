@@ -1,10 +1,8 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Session
@@ -19,7 +17,6 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -30,8 +27,8 @@ import java.util.*
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
     private val mActivity: BluetoothActivity,
-    private val mViewMvc: NewSessionViewMvc,
-    private val mFragmentManager: FragmentManager
+    mViewMvc: NewSessionViewMvc,
+    mFragmentManager: FragmentManager
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -41,52 +38,32 @@ class NewSessionController(
     SessionDetailsViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
-    private val STEP_PROGRESS = 10
-    private var currentProgressStep = 1
+
+    private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private val bluetoothManager = BluetoothManager(mActivity)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
-    private var backPressedListener: BackPressedListener? = null
-
-    interface BackPressedListener {
-        fun onBackPressed()
-    }
 
     fun onStart() {
-        showFirstStep()
-    }
-
-    private fun showFirstStep() {
-        val fragment = SelectDeviceTypeFragment()
-        fragment.listener = this
-        replaceFragment(fragment)
-        updateProgressBarView()
+        wizardNavigator.showFirstStep(this)
     }
 
     fun onBackPressed() {
-        decrementStepProgress()
-        backPressedListener?.onBackPressed()
+        wizardNavigator.onBackPressed()
     }
 
     override fun onBluetoothDeviceSelected() {
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
                 bluetoothManager.requestBluetoothPermissions()
-                goToTurnOnAirBeam()
+                wizardNavigator.goToTurnOnAirBeam(this)
                 return
             }
         } catch(exception: BluetoothNotSupportedException) {
             errorHandler.showError(exception.messageToDisplay)
         }
 
-        goToTurnOnBluetooth()
-    }
-
-    private fun goToTurnOnBluetooth() {
-        incrementStepProgress()
-        val fragment = TurnOnBluetoothFragment()
-        fragment.listener = this
-        goToFragment(fragment)
+        wizardNavigator.goToTurnOnBluetooth(this)
     }
 
     override fun onTurnOnBluetoothOkClicked() {
@@ -112,7 +89,7 @@ class NewSessionController(
         when (requestCode) {
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    goToTurnOnAirBeam()
+                    wizardNavigator.goToTurnOnAirBeam(this)
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)
                 }
@@ -123,22 +100,12 @@ class NewSessionController(
         }
     }
 
-    private fun goToTurnOnAirBeam() {
-        incrementStepProgress()
-        val fragment = TurnOnAirBeamFragment()
-        fragment.listener = this
-        goToFragment(fragment)
-    }
-
     override fun onTurnOnAirBeamReadyClicked() {
-        incrementStepProgress()
-        val fragment = SelectDeviceFragment()
-        fragment.bluetoothManager = bluetoothManager
-        fragment.listener = this
-        goToFragment(fragment)
+        wizardNavigator.goToSelectDevice(bluetoothManager, this)
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+        val listener = this
         GlobalScope.launch(Dispatchers.Main) {
             var existing: Boolean = false
             val query = GlobalScope.async(Dispatchers.IO) {
@@ -148,38 +115,17 @@ class NewSessionController(
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
-                goToConnectingAirBeam(deviceItem)
+                wizardNavigator.goToConnectingAirBeam(deviceItem, listener)
             }
         }
     }
 
-    fun registerBackPressed(listener: BackPressedListener) {
-        backPressedListener = listener
-    }
-
-    fun goToConnectingAirBeam(deviceItem: DeviceItem) {
-        incrementStepProgress()
-        val fragment = ConnectingAirBeamFragment()
-        fragment.listener = this
-        fragment.deviceItem = deviceItem
-        registerBackPressed(fragment)
-        goToFragment(fragment)
-    }
-
     override fun onConnectionSuccessful(deviceId: String) {
-        incrementStepProgress()
-        val fragment = AirBeamConnectedFragment()
-        fragment.listener = this
-        fragment.deviceId = deviceId
-        goToFragment(fragment)
+        wizardNavigator.goToAirBeamConnected(deviceId, this)
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {
-        incrementStepProgress()
-        val fragment = SessionDetailsFragment()
-        fragment.listener = this
-        fragment.deviceId = deviceId
-        goToFragment(fragment)
+        wizardNavigator.goToSessionDetails(deviceId, this)
     }
 
     override fun validationFailed() {
@@ -189,11 +135,8 @@ class NewSessionController(
     }
 
     override fun onSessionDetailsContinueClicked(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
-        incrementStepProgress()
-        val fragment = ConfirmationFragment()
-        fragment.listener = this
-        fragment.session = Session(deviceId, sessionName, sessionTags, Session.Status.NEW)
-        goToFragment(fragment)
+        val session = Session(deviceId, sessionName, sessionTags, Session.Status.NEW)
+        wizardNavigator.goToConfirmation(session, this)
     }
 
     override fun onStartRecordingClicked(session: Session) {
@@ -201,33 +144,5 @@ class NewSessionController(
         EventBus.getDefault().post(event)
 
         mContextActivity.finish()
-    }
-
-    private fun incrementStepProgress() {
-        currentProgressStep += 1
-        updateProgressBarView()
-    }
-
-    private fun decrementStepProgress() {
-        currentProgressStep -= 1
-        updateProgressBarView()
-    }
-
-    private fun updateProgressBarView() {
-        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-        progressBar?.progress = currentProgressStep * STEP_PROGRESS
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentTransaction = mFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.new_session_fragment_container, fragment)
-        fragmentTransaction.commit()
-    }
-
-    private fun goToFragment(fragment: Fragment) {
-        val fragmentTransaction = mFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.new_session_fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
     }
 }

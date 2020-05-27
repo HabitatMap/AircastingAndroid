@@ -1,0 +1,125 @@
+package io.lunarlogic.aircasting.screens.new_session
+
+import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.screens.dashboard.*
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.sensor.Session
+
+class NewSessionWizardNavigator(
+    private val mViewMvc: NewSessionViewMvc,
+    private val mFragmentManager: FragmentManager
+) {
+    private val STEP_PROGRESS = 10
+    private var currentProgressStep = 1
+    private var backPressedListener: BackPressedListener? = null
+
+    interface BackPressedListener {
+        fun onBackPressed()
+    }
+
+    fun showFirstStep(listener: SelectDeviceTypeViewMvc.Listener) {
+        val fragment = SelectDeviceTypeFragment()
+        fragment.listener = listener
+        replaceFragment(fragment)
+        updateProgressBarView()
+    }
+
+    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = SelectDeviceFragment()
+        fragment.bluetoothManager = bluetoothManager
+        fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun goToTurnOnBluetooth(listener: TurnOnBluetoothViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = TurnOnBluetoothFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun goToTurnOnAirBeam(listener: TurnOnAirBeamViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = TurnOnAirBeamFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun goToConnectingAirBeam(deviceItem: DeviceItem, listener: ConnectingAirBeamController.Listener) {
+        incrementStepProgress()
+        val fragment = ConnectingAirBeamFragment()
+        fragment.listener = listener
+        fragment.deviceItem = deviceItem
+        registerBackPressed(fragment)
+        goToFragment(fragment)
+    }
+
+    fun goToAirBeamConnected(deviceId: String, listener: AirBeamConnectedViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = AirBeamConnectedFragment()
+        fragment.listener = listener
+        fragment.deviceId = deviceId
+        goToFragment(fragment)
+    }
+
+    fun goToSessionDetails(deviceId: String, listener: SessionDetailsViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = SessionDetailsFragment()
+        fragment.listener = listener
+        fragment.deviceId = deviceId
+        goToFragment(fragment)
+    }
+
+    fun goToConfirmation(session: Session, listener: ConfirmationViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = ConfirmationFragment()
+        fragment.listener = listener
+        fragment.session = session
+        goToFragment(fragment)
+    }
+
+    private fun registerBackPressed(listener: BackPressedListener) {
+        backPressedListener = listener
+    }
+
+    fun onBackPressed() {
+        decrementStepProgress()
+        backPressedListener?.onBackPressed()
+    }
+
+    private fun incrementStepProgress() {
+        currentProgressStep += 1
+        updateProgressBarView()
+    }
+
+    private fun decrementStepProgress() {
+        currentProgressStep -= 1
+        updateProgressBarView()
+    }
+
+    private fun updateProgressBarView() {
+        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar?.progress = currentProgressStep * STEP_PROGRESS
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentTransaction = mFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.new_session_fragment_container, fragment)
+        fragmentTransaction.commit()
+    }
+
+    private fun goToFragment(fragment: Fragment) {
+        val fragmentTransaction = mFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.new_session_fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
+}
