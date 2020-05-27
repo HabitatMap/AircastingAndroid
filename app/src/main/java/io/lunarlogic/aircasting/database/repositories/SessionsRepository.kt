@@ -13,8 +13,8 @@ class SessionsRepository {
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
-    fun getActiveSessionIdByByUUID(uuid: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByByUUIDAndStatus(uuid, Session.Status.RECORDING)
+    fun getActiveSessionIdByDeviceId(deviceId: String): Long? {
+        val sessionDBObject = mDatabase.sessions().loadSessionByByDeviceIdAndStatus(deviceId, Session.Status.RECORDING)
 
         if (sessionDBObject != null) {
             return sessionDBObject.id
@@ -36,5 +36,9 @@ class SessionsRepository {
     fun update(session: Session) {
         mDatabase.sessions().update(session.uuid, session.name, session.tags,
             session.endTime!!, session.status)
+    }
+
+    fun alreadyExistsForDeviceId(deviceId: String): Boolean {
+        return mDatabase.sessions().loadSessionByByDeviceIdAndStatus(deviceId, Session.Status.RECORDING) != null
     }
 }

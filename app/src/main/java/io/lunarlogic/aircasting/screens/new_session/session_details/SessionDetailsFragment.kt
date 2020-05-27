@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 class SessionDetailsFragment() : Fragment() {
     private lateinit var controller: SessionDetailsController
     lateinit var listener: SessionDetailsViewMvc.Listener
-    lateinit var sessionUUID: String
+    lateinit var deviceId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = SessionDetailsViewMvcImpl(inflater, container, sessionUUID)
+        val view = SessionDetailsViewMvcImpl(inflater, container, deviceId)
         controller = SessionDetailsController(context, view)
 
         return view.rootView

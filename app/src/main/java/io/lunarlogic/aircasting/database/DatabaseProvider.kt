@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class
     ),
-    version = 8
+    version = 9
 )
 @TypeConverters(
     DateConverter::class,

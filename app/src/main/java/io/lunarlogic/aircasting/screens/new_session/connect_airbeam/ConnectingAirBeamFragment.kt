@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.new_session.NewSessionController
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
-class ConnectingAirBeamFragment() : Fragment() {
+class ConnectingAirBeamFragment() : Fragment(), NewSessionController.BackPressedListener {
     private var controller: ConnectingAirBeamController? = null
     var deviceItem: DeviceItem? = null
     var listener: ConnectingAirBeamController.Listener? = null
@@ -34,5 +35,9 @@ class ConnectingAirBeamFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         controller?.onStart()
+    }
+
+    override fun onBackPressed() {
+        controller?.onBackPressed()
     }
 }

@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -19,6 +20,10 @@ import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -40,6 +45,12 @@ class NewSessionController(
     private var currentProgressStep = 1
     private val bluetoothManager = BluetoothManager(mActivity)
     private val errorHandler = ErrorHandler(mContextActivity)
+    private val sessionsRepository = SessionsRepository()
+    private var backPressedListener: BackPressedListener? = null
+
+    interface BackPressedListener {
+        fun onBackPressed()
+    }
 
     fun onStart() {
         showFirstStep()
@@ -54,6 +65,7 @@ class NewSessionController(
 
     fun onBackPressed() {
         decrementStepProgress()
+        backPressedListener?.onBackPressed()
     }
 
     override fun onBluetoothDeviceSelected() {
@@ -127,26 +139,46 @@ class NewSessionController(
     }
 
     override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+        GlobalScope.launch(Dispatchers.Main) {
+            var existing: Boolean = false
+            val query = GlobalScope.async(Dispatchers.IO) {
+                existing = sessionsRepository.alreadyExistsForDeviceId(deviceItem.id)
+            }
+            query.await()
+            if (existing) {
+                errorHandler.showError(R.string.active_session_already_exists)
+            } else {
+                goToConnectingAirBeam(deviceItem)
+            }
+        }
+    }
+
+    fun registerBackPressed(listener: BackPressedListener) {
+        backPressedListener = listener
+    }
+
+    fun goToConnectingAirBeam(deviceItem: DeviceItem) {
         incrementStepProgress()
         val fragment = ConnectingAirBeamFragment()
-        fragment.deviceItem = deviceItem
         fragment.listener = this
+        fragment.deviceItem = deviceItem
+        registerBackPressed(fragment)
         goToFragment(fragment)
     }
 
-    override fun onConnectionSuccessful(sessionUUID: String) {
+    override fun onConnectionSuccessful(deviceId: String) {
         incrementStepProgress()
         val fragment = AirBeamConnectedFragment()
         fragment.listener = this
-        fragment.sessionUUID = sessionUUID
+        fragment.deviceId = deviceId
         goToFragment(fragment)
     }
 
-    override fun onAirBeamConnectedContinueClicked(sessionUUID: String) {
+    override fun onAirBeamConnectedContinueClicked(deviceId: String) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = this
-        fragment.sessionUUID = sessionUUID
+        fragment.deviceId = deviceId
         goToFragment(fragment)
     }
 
@@ -156,11 +188,11 @@ class NewSessionController(
         toast.show()
     }
 
-    override fun onSessionDetailsContinueClicked(sessionUUID: String, sessionName: String, sessionTags: ArrayList<String>) {
+    override fun onSessionDetailsContinueClicked(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = this
-        fragment.session = Session(sessionUUID, sessionName, sessionTags, Session.Status.NEW)
+        fragment.session = Session(deviceId, sessionName, sessionTags, Session.Status.NEW)
         goToFragment(fragment)
     }
 

@@ -10,15 +10,15 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
 class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
-    private var sessionUUID: String
+    private var deviceId: String
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        sessionUUID: String
+        deviceId: String
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_session_details, parent, false)
-        this.sessionUUID = sessionUUID
+        this.deviceId = deviceId
 
         val blueToothDeviceButton = rootView?.findViewById<Button>(R.id.continue_button)
         blueToothDeviceButton?.setOnClickListener {
@@ -33,7 +33,7 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         if (sessionName.isEmpty()) {
             notifyAboutValidationError()
         } else {
-            notifyAboutSuccess(sessionName, sessionTags)
+            notifyAboutSuccess(deviceId, sessionName, sessionTags)
         }
     }
 
@@ -43,9 +43,9 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         }
     }
 
-    private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
+    private fun notifyAboutSuccess(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(sessionUUID, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(deviceId, sessionName, sessionTags)
         }
     }
 

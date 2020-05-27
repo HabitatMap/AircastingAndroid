@@ -10,7 +10,7 @@ class AirBeamConnectedFragment() : Fragment() {
 
     private lateinit var controller: AirBeamConnectedController
     lateinit var listener: AirBeamConnectedViewMvc.Listener
-    lateinit var sessionUUID: String
+    lateinit var deviceId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,7 +21,7 @@ class AirBeamConnectedFragment() : Fragment() {
             AirBeamConnectedViewMvcImpl(
                 layoutInflater,
                 null,
-                sessionUUID
+                deviceId
             )
         controller =
             AirBeamConnectedController(context!!, view)

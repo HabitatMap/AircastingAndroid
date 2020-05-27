@@ -8,20 +8,22 @@ import kotlin.collections.ArrayList
 val TAGS_SEPARATOR = " "
 
 class Session(
-    val uuid: String,
+    val deviceId: String,
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
-    private var mEndTime: Date? = null
+    private var mEndTime: Date? = null,
+    val uuid: String = UUID.randomUUID().toString()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
-        sessionDBObject.uuid,
+        sessionDBObject.deviceId,
         sessionDBObject.name,
         sessionDBObject.tags,
         sessionDBObject.status,
         sessionDBObject.startTime,
-        sessionDBObject.endTime
+        sessionDBObject.endTime,
+        sessionDBObject.uuid
     )
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
@@ -58,11 +60,5 @@ class Session(
 
     fun isRecording(): Boolean {
         return status == Status.RECORDING
-    }
-
-    companion object {
-        fun generateUUID(): String {
-            return UUID.randomUUID().toString()
-        }
     }
 }

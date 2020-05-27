@@ -1,12 +1,12 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import io.lunarlogic.aircasting.events.ApplicationClosed
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
+import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
@@ -23,17 +23,22 @@ class AirBeam2Connector(
     private val mAirBeam2Reader = AirBeam2Reader()
     private var mThread: ConnectThread? = null
 
-    fun connect(device: BluetoothDevice, sessionUUID: String) {
+    fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
             EventBus.getDefault().register(this);
-            mThread = ConnectThread(device, sessionUUID)
+            mThread = ConnectThread(deviceItem)
             mThread?.start()
         }
     }
 
-    private inner class ConnectThread(device: BluetoothDevice, private val sessionUUID: String) : Thread() {
+    fun cancel() {
+        mThread?.cancel()
+    }
+
+    private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            val device = deviceItem.bluetoothDevice
             device.createRfcommSocketToServiceRecord(SPP_SERIAL)
         }
 
@@ -46,8 +51,8 @@ class AirBeam2Connector(
                 mmSocket?.use { socket ->
                     socket.connect()
 
-                    mListener.onConnectionSuccessful(sessionUUID)
-                    mAirBeam2Reader.run(socket, sessionUUID)
+                    mListener.onConnectionSuccessful(deviceItem.id)
+                    mAirBeam2Reader.run(socket)
                 }
             } catch(e: IOException) {
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))

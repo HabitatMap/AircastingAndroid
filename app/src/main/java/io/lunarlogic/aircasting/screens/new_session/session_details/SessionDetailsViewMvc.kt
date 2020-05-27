@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listener> {
 
     interface Listener {
-        fun onSessionDetailsContinueClicked(sessionUUID: String, sessionName: String, sessionTags: ArrayList<String>)
+        fun onSessionDetailsContinueClicked(deviceId: String, sessionName: String, sessionTags: ArrayList<String>)
         fun validationFailed()
     }
 }

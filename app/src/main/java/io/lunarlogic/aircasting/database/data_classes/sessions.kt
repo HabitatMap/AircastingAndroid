@@ -9,6 +9,7 @@ import kotlin.collections.ArrayList
 @Entity(tableName = "sessions")
 data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
+    @ColumnInfo(name = "device_id") val deviceId: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
@@ -21,6 +22,7 @@ data class SessionDBObject(
     constructor(session: Session):
             this(
                 session.uuid,
+                session.deviceId,
                 session.name,
                 session.tags,
                 session.startTime,
@@ -66,8 +68,8 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid")
     fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsDBObject?
 
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND status=:status")
-    fun loadSessionByByUUIDAndStatus(uuid: String, status: Session.Status): SessionDBObject?
+    @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status")
+    fun loadSessionByByDeviceIdAndStatus(deviceId: String, status: Session.Status): SessionDBObject?
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
