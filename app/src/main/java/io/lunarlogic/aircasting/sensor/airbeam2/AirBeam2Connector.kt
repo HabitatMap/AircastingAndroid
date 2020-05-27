@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.sensor.airbeam2
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
@@ -19,6 +20,7 @@ class AirBeam2Connector(
     private val mListener: ConnectingAirBeamController.Listener
 ) {
     private val connectionStarted = AtomicBoolean(false)
+    private val cancelStarted = AtomicBoolean(false)
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private val mAirBeam2Reader = AirBeam2Reader()
     private var mThread: ConnectThread? = null
@@ -55,9 +57,14 @@ class AirBeam2Connector(
                     mAirBeam2Reader.run(socket)
                 }
             } catch(e: IOException) {
-                val message = mErrorHandler.obtainMessage(ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED, AirBeam2ConnectionOpenFailed(e))
-                message.sendToTarget()
-                cancel()
+                if (cancelStarted.get() == false) {
+                    val message = mErrorHandler.obtainMessage(
+                        ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED,
+                        AirBeam2ConnectionOpenFailed(e)
+                    )
+                    message.sendToTarget()
+                    cancel()
+                }
             } catch(e: SensorResponseParsingError) {
                 val message = mErrorHandler.obtainMessage(ResultCodes.SENSOR_RESPONSE_PARSING_ERROR, e)
                 message.sendToTarget()
@@ -69,18 +76,26 @@ class AirBeam2Connector(
         }
 
         fun cancel() {
-            connectionStarted.set(false)
-            EventBus.getDefault().unregister(this);
-            try {
-                mmSocket?.close()
-            } catch (e: IOException) {
-                mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
+            if (cancelStarted.get() == false) {
+                cancelStarted.set(true)
+                connectionStarted.set(false)
+                EventBus.getDefault().unregister(this);
+                try {
+                    mmSocket?.close()
+                } catch (e: IOException) {
+                    mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
+                }
             }
         }
     }
 
     @Subscribe
     fun onMessageEvent(event: ApplicationClosed) {
-        mThread?.cancel()
+        cancel()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: StopRecordingEvent) {
+        cancel()
     }
 }
