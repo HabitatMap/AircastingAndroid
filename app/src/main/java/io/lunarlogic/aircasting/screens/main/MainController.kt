@@ -20,11 +20,11 @@ class MainController(private val rootActivity: AppCompatActivity, private val mV
             sessionManager = SessionManager(rootActivity, settings)
         }
 
-        sessionManager?.registerToEventBus()
+        sessionManager?.onStart()
     }
 
     fun onDestroy() {
-        sessionManager?.unregisterFromEventBus()
+        sessionManager?.onStop()
         EventBus.getDefault().post(ApplicationClosed())
     }
 }
