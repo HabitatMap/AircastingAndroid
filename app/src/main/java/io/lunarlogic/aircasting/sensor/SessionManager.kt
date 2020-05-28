@@ -19,14 +19,6 @@ class SessionManager(private val mContext: Context, private val settings: Settin
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
 
-    fun registerToEventBus() {
-        EventBus.getDefault().register(this);
-    }
-
-    fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
-    }
-
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
         startRecording(event.session)
@@ -40,6 +32,27 @@ class SessionManager(private val mContext: Context, private val settings: Settin
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
+    }
+
+    fun onStart() {
+        registerToEventBus()
+        stopSessions()
+    }
+
+    fun onStop() {
+        unregisterFromEventBus()
+    }
+
+    private fun registerToEventBus() {
+        EventBus.getDefault().register(this);
+    }
+
+    private fun unregisterFromEventBus() {
+        EventBus.getDefault().unregister(this);
+    }
+
+    private fun stopSessions() {
+        DatabaseProvider.runQuery { sessionsRespository.stopSessions() }
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {

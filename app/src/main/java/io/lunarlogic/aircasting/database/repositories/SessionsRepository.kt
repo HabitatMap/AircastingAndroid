@@ -41,4 +41,8 @@ class SessionsRepository {
     fun alreadyExistsForDeviceId(deviceId: String): Boolean {
         return mDatabase.sessions().loadSessionByByDeviceIdAndStatus(deviceId, Session.Status.RECORDING) != null
     }
+
+    fun stopSessions() {
+        mDatabase.sessions().updateStatus(Session.Status.FINISHED)
+    }
 }

@@ -74,6 +74,9 @@ interface SessionDao {
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
 
+    @Query("UPDATE sessions SET status=:status")
+    fun updateStatus(status: Session.Status)
+
     @Query("DELETE FROM sessions")
     fun delete_all()
 }
