@@ -15,7 +15,7 @@ import retrofit2.http.*
 
 interface ApiService {
     @POST("/api/sessions")
-    fun createSession(@Body body: CreateSessionBody): Call<Session>
+    fun createSession(@Body body: CreateSessionBody): Call<CreateSessionResponse>
 
     @GET("/api/user.json")
     fun login(): Call<UserResponse>
