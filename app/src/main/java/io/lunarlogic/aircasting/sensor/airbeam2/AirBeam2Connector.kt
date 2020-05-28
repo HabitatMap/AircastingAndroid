@@ -22,6 +22,7 @@ class AirBeam2Connector(
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+    private val mAirBeamConfigurator = AirBeam2Configurator()
     private val mAirBeam2Reader = AirBeam2Reader()
     private var mThread: ConnectThread? = null
 
@@ -52,6 +53,9 @@ class AirBeam2Connector(
             try {
                 mmSocket?.use { socket ->
                     socket.connect()
+
+                    val outputStream = socket.outputStream
+                    mAirBeamConfigurator.configureBluetooth(outputStream)
 
                     mListener.onConnectionSuccessful(deviceItem.id)
                     mAirBeam2Reader.run(socket)
