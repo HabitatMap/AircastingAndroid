@@ -7,7 +7,7 @@ import android.widget.Toast
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.CreateSessionResponse
+import io.lunarlogic.aircasting.networking.responses.CreateSessionResponse
 import io.lunarlogic.aircasting.networking.GzippedSession
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SessionParams

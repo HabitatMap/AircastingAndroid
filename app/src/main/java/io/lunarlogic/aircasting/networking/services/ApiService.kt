@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.BuildConfig
-import io.lunarlogic.aircasting.sensor.Session
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -12,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
+import io.lunarlogic.aircasting.networking.responses.CreateSessionResponse
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.networking.responses.UserResponse
 import retrofit2.http.*
