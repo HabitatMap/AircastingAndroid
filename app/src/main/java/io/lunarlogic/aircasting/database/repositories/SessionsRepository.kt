@@ -50,4 +50,8 @@ class SessionsRepository {
         return mDatabase.sessions().byStatus(Session.Status.FINISHED)
             .map { dbObject -> Session(dbObject) }
     }
+
+    fun delete(uuids: List<String>) {
+        mDatabase.sessions().delete(uuids)
+    }
 }

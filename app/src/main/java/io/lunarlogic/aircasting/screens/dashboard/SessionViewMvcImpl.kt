@@ -50,7 +50,7 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
 
         // TODO: handle
         val measurementsString = session.streams.map { stream ->
-            val measurement: Measurement? = stream.measurements.last()
+            val measurement = stream.measurements.lastOrNull()
             "${stream.detailedType}: ${measurement?.value} ${stream.unitSymbol}"
         }.joinToString("\n")
         mMeasurementsTextView.setText(measurementsString)

@@ -24,5 +24,8 @@ class AirBeam2ConnectionCloseFailed(cause: Exception):
 class InternalAPIError():
     BaseException(null, "Something went wrong, please contact our support.")
 
+class SyncError(t: Throwable? = null):
+    BaseException(Exception(t), "Session sync failed, check your network connection.")
+
 class UnexpectedAPIError(t: Throwable? = null):
     BaseException(Exception(t), "Something went wrong, please contact our support.")

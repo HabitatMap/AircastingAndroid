@@ -15,8 +15,8 @@ class Session(
     private val mStartTime: Date = Date(),
     private var mEndTime: Date? = null,
     val uuid: String = UUID.randomUUID().toString(),
-    var deleted: Boolean = false,
-    var version: Int? = null
+    var version: Int = 0,
+    var deleted: Boolean = false
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.deviceId,
@@ -26,6 +26,7 @@ class Session(
         sessionDBObject.startTime,
         sessionDBObject.endTime,
         sessionDBObject.uuid,
+        sessionDBObject.version,
         sessionDBObject.deleted
     )
 
@@ -63,5 +64,10 @@ class Session(
 
     fun isRecording(): Boolean {
         return status == Status.RECORDING
+    }
+
+    fun isUploadable(): Boolean {
+        // TODO: handle false if mobile && locationless
+        return true
     }
 }

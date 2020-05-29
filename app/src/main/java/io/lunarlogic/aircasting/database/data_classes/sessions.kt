@@ -15,8 +15,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "start_time") val startTime: Date,
     @ColumnInfo(name = "end_time") val endTime: Date?,
     @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW,
-    @ColumnInfo(name = "deleted") val deleted: Boolean = false,
-    @ColumnInfo(name = "version") val version: Int? = null
+    @ColumnInfo(name = "version") val version: Int = 0,
+    @ColumnInfo(name = "deleted") val deleted: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -83,5 +83,8 @@ interface SessionDao {
     fun updateStatus(status: Session.Status)
 
     @Query("DELETE FROM sessions")
-    fun delete_all()
+    fun deleteAll()
+
+    @Query("DELETE FROM sessions WHERE uuid in (:uuids)")
+    fun delete(uuids: List<String>)
 }

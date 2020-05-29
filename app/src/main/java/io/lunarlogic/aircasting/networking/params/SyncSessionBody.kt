@@ -1,3 +1,3 @@
 package io.lunarlogic.aircasting.networking.params
 
-class SyncSessionBody(val data: List<SyncSessionParams>)
+class SyncSessionBody(val data: String)
