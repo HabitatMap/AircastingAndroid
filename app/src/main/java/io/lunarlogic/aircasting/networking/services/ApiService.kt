@@ -10,12 +10,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
-import io.lunarlogic.aircasting.networking.params.SessionParams
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.responses.SessionResponse
 import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.networking.responses.UserResponse
+import okhttp3.HttpUrl
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
@@ -36,7 +36,7 @@ interface ApiService {
 
 class ApiServiceFactory {
     companion object {
-        private val BASE_URL = "http://aircasting.org/"
+        var baseUrl: HttpUrl = HttpUrl.get("http://aircasting.org/")
         private val READ_TIMEOUT_SECONDS: Long = 60
 
         fun get(interceptors: List<Interceptor>): ApiService {
@@ -58,7 +58,7 @@ class ApiServiceFactory {
             val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient)
-                .baseUrl(BASE_URL)
+                .baseUrl(baseUrl)
                 .build()
 
             return retrofit.create<ApiService>(ApiService::class.java)
