@@ -37,4 +37,8 @@ class SessionsRecyclerAdapter(private val mInflater: LayoutInflater, private val
     override fun onSessionStopClicked(session: Session) {
         mListener.onSessionStopClicked(session)
     }
+
+    override fun onSessionDeleteClicked(session: Session) {
+        mListener.onSessionDeleteClicked(session)
+    }
 }

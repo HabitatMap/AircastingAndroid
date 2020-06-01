@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.database.repositories
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.sensor.Session
+import java.util.*
 
 class SessionsRepository {
     private val mDatabase = DatabaseProvider.get()
@@ -43,7 +44,7 @@ class SessionsRepository {
     }
 
     fun stopSessions() {
-        mDatabase.sessions().updateStatus(Session.Status.FINISHED)
+        mDatabase.sessions().updateStatusAndEndTime(Session.Status.FINISHED, Date())
     }
 
     fun finishedSessions(): List<Session> {
@@ -52,6 +53,25 @@ class SessionsRepository {
     }
 
     fun delete(uuids: List<String>) {
-        mDatabase.sessions().delete(uuids)
+        if (!uuids.isEmpty()) {
+            mDatabase.sessions().delete(uuids)
+        }
+    }
+
+    fun markForRemoval(uuids: List<String>) {
+        mDatabase.sessions().markForRemoval(uuids)
+    }
+
+    fun deleteMarkedForRemoval() {
+        mDatabase.sessions().deleteMarkedForRemoval()
+    }
+
+    fun updateOrCreate(session: Session) {
+        val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
+        if (sessionDbObject == null) {
+            insert(session)
+        } else {
+            update(session)
+        }
     }
 }

@@ -10,7 +10,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
+import io.lunarlogic.aircasting.networking.params.SessionParams
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
+import io.lunarlogic.aircasting.networking.responses.SessionResponse
 import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.networking.responses.UserResponse
@@ -20,6 +22,9 @@ import retrofit2.http.*
 interface ApiService {
     @POST("/api/sessions")
     fun createSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @GET("/api/user/sessions/empty.json")
+    fun show(@Query("uuid") uuid: String): Call<SessionResponse>
 
     @POST("/api/user/sessions/sync_with_versioning.json")
     fun sync(@Body body: SyncSessionBody): Call<SyncResponse>

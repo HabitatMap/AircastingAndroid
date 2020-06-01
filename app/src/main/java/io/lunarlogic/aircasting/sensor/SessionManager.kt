@@ -5,6 +5,7 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -33,6 +34,11 @@ class SessionManager(private val mContext: Context, private val settings: Settin
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: DeleteSessionEvent) {
+        deleteSession(event.sessionUUID)
     }
 
     fun onStart() {
@@ -85,6 +91,12 @@ class SessionManager(private val mContext: Context, private val settings: Settin
                 sessionsRespository.update(it)
                 sessionSyncService.sync()
             }
+        }
+    }
+
+    private fun deleteSession(sessionUUID: String) {
+        DatabaseProvider.runQuery {
+            sessionsRespository.markForRemoval(listOf(sessionUUID))
         }
     }
 }

@@ -15,7 +15,7 @@ import retrofit2.Response
 class UploadService(private val settings: Settings, private val errorHandler: ErrorHandler) {
     private val apiService = ApiServiceFactory.get(settings.getAuthToken()!!)
 
-    fun upload(session: Session) {
+    fun upload(session: Session, successCallback: () -> Unit) {
         val sessionParams = SessionParams(session)
         val sessionBody = CreateSessionBody(
             GzippedSession.get(sessionParams)
@@ -23,9 +23,8 @@ class UploadService(private val settings: Settings, private val errorHandler: Er
         val call = apiService.createSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
-                println(response.message())
                 if (response.isSuccessful) {
-                    // TODO: handle update notes etc
+                    successCallback()
                 } else {
                     errorHandler.handle(UnexpectedAPIError())
                 }

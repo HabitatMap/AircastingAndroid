@@ -2,13 +2,14 @@ package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.networking.responses.SessionResponse
 import java.util.*
 import kotlin.collections.ArrayList
 
 val TAGS_SEPARATOR = " "
 
 class Session(
-    val deviceId: String,
+    val deviceId: String?,
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
@@ -36,6 +37,18 @@ class Session(
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
+
+    constructor(sessionParams: SessionResponse): this(
+        null,
+        sessionParams.title,
+        ArrayList(sessionParams.tag_list.split(TAGS_SEPARATOR)),
+        Status.FINISHED,
+        sessionParams.start_time,
+        sessionParams.end_time,
+        sessionParams.uuid,
+        sessionParams.version,
+        sessionParams.deleted
+    )
 
     public enum class Status(val value: Int){
         NEW(-1),

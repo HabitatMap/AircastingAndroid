@@ -58,4 +58,10 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
             listener.onStopSessionClicked(session.uuid)
         }
     }
+
+    override fun onSessionDeleteClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onDeleteSessionClicked(session.uuid)
+        }
+    }
 }

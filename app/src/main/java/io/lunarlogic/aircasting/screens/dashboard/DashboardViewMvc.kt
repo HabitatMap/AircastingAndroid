@@ -12,6 +12,7 @@ interface DashboardViewMvc : ObservableViewMvc<DashboardViewMvc.Listener> {
     interface Listener {
         fun onRecordNewSessionClicked()
         fun onStopSessionClicked(sessionUUID: String)
+        fun onDeleteSessionClicked(sessionUUID: String)
     }
 
     fun showSessionsView(sessions: List<Session>)

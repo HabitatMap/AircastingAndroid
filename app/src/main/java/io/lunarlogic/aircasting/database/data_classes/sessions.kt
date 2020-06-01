@@ -9,7 +9,7 @@ import kotlin.collections.ArrayList
 @Entity(tableName = "sessions")
 data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
-    @ColumnInfo(name = "device_id") val deviceId: String,
+    @ColumnInfo(name = "device_id") val deviceId: String?,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
@@ -61,7 +61,7 @@ class StreamWithMeasurementsDBObject {
 
 @Dao
 interface SessionDao {
-    @Query("SELECT * FROM sessions ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 ORDER BY start_time DESC")
     fun loadAllWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE status=:status")
@@ -70,20 +70,29 @@ interface SessionDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(session: SessionDBObject): Long
 
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid")
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsDBObject?
 
-    @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status")
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionByUUID(uuid: String): SessionDBObject?
+
+    @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND deleted=0")
     fun loadSessionByByDeviceIdAndStatus(deviceId: String, status: Session.Status): SessionDBObject?
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
 
-    @Query("UPDATE sessions SET status=:status")
-    fun updateStatus(status: Session.Status)
+    @Query("UPDATE sessions SET status=:status, end_time=:endTime")
+    fun updateStatusAndEndTime(status: Session.Status, endTime: Date)
 
     @Query("DELETE FROM sessions")
     fun deleteAll()
+
+    @Query("UPDATE sessions SET deleted=1 WHERE uuid in (:uuids)")
+    fun markForRemoval(uuids: List<String>)
+
+    @Query("DELETE FROM sessions WHERE deleted=1")
+    fun deleteMarkedForRemoval()
 
     @Query("DELETE FROM sessions WHERE uuid in (:uuids)")
     fun delete(uuids: List<String>)

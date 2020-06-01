@@ -9,12 +9,14 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
+import io.lunarlogic.aircasting.sensor.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
     private val uploadService = UploadService(settings, errorHandler)
+    private val downloadService = DownloadService(settings, errorHandler)
 
     private val sessionRepository = SessionsRepository()
     private val apiService =
@@ -29,12 +31,11 @@ class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
 
         call.enqueue(object : Callback<SyncResponse> {
             override fun onResponse(call: Call<SyncResponse>, response: Response<SyncResponse>) {
-                println("ANIA: " + response.message())
-
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
                         DatabaseProvider.runQuery {
+                            deleteMarkedForRemoval()
                             delete(body.deleted)
                             upload(body.upload)
                             download(body.download)
@@ -51,6 +52,10 @@ class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
         })
     }
 
+    private fun deleteMarkedForRemoval() {
+        sessionRepository.deleteMarkedForRemoval()
+    }
+
     private fun delete(uuids: List<String>) {
         sessionRepository.delete(uuids)
     }
@@ -59,12 +64,20 @@ class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
         uuids.forEach { uuid ->
             val session = sessionRepository.loadSessionAndMeasurementsByUUID(uuid)
             if (session != null && session.isUploadable()) {
-                uploadService.upload(session)
+                val onUploadSuccess = {
+                    // TODO: handle update notes etc
+                }
+                uploadService.upload(session, onUploadSuccess)
             }
         }
     }
 
     private fun download(uuids: List<String>) {
-        // TODO: handle
+        uuids.forEach { uuid ->
+            val onDownloadSuccess = { session: Session ->
+                DatabaseProvider.runQuery { sessionRepository.updateOrCreate(session) }
+            }
+            downloadService.download(uuid, onDownloadSuccess)
+        }
     }
 }

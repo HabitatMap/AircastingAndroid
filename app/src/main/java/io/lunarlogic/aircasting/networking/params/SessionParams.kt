@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 import java.util.*
 
 class SessionParams {
@@ -9,7 +10,7 @@ class SessionParams {
         this.title = session.name
         this.start_time = session.startTime
         this.end_time = session.endTime!!
-        this.tag_list = session.tags
+        this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
 
         session.streams.forEach { stream ->
             streams[stream.sensorName!!] =
@@ -19,7 +20,7 @@ class SessionParams {
 
     val uuid: String
     val title: String
-    val tag_list: List<String>
+    val tag_list: String
     val start_time: Date
     val end_time: Date
     val calibration = 100 // handle
@@ -28,9 +29,9 @@ class SessionParams {
     val is_indoor = false // handle
     val latitude = 0.0 // handle
     val longitude = 0.0 // handle
-    val deleted = false // handle
+    val deleted = false
     val notes = listOf<String>() // handle
     val type = "MobileSession" // handle
-    val version = 0 // handle
+    val version = 0
     val streams = hashMapOf<String, MeasurementStreamParams>()
 }

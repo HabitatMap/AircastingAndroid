@@ -59,4 +59,12 @@
         android:text="@string/stop_session"
         android:visibility="invisible" />
 
+    <Button
+        android:id="@+id/delete_session_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginTop="80dp"
+        android:text="@string/delete_session" />
+
 </LinearLayout>
