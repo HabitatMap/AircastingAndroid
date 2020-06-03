@@ -24,32 +24,37 @@ class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
     private val gson = Gson()
 
     fun sync() {
-        val sessions = sessionRepository.finishedSessions()
-        val syncParams = sessions.map { session -> SyncSessionParams(session) }
-        val jsonData = gson.toJson(syncParams)
-        val call = apiService.sync(SyncSessionBody(jsonData))
+        DatabaseProvider.runQuery {
+            val sessions = sessionRepository.finishedSessions()
+            val syncParams = sessions.map { session -> SyncSessionParams(session) }
+            val jsonData = gson.toJson(syncParams)
+            val call = apiService.sync(SyncSessionBody(jsonData))
 
-        call.enqueue(object : Callback<SyncResponse> {
-            override fun onResponse(call: Call<SyncResponse>, response: Response<SyncResponse>) {
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    body?.let {
-                        DatabaseProvider.runQuery {
-                            deleteMarkedForRemoval()
-                            delete(body.deleted)
-                            upload(body.upload)
-                            download(body.download)
+            call.enqueue(object : Callback<SyncResponse> {
+                override fun onResponse(
+                    call: Call<SyncResponse>,
+                    response: Response<SyncResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        body?.let {
+                            DatabaseProvider.runQuery {
+                                deleteMarkedForRemoval()
+                                delete(body.deleted)
+                                upload(body.upload)
+                                download(body.download)
+                            }
                         }
+                    } else {
+                        errorHandler.handleAndDisplay(SyncError())
                     }
-                } else {
-                    errorHandler.handleAndDisplay(SyncError())
                 }
-            }
 
-            override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
-                errorHandler.handleAndDisplay(SyncError(t))
-            }
-        })
+                override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
+                    errorHandler.handleAndDisplay(SyncError(t))
+                }
+            })
+        }
     }
 
     private fun deleteMarkedForRemoval() {
