@@ -30,8 +30,7 @@ class AirBeam2Reader() {
                 val newMeasurementEvent = responseParser.parse(line)
                 newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
 
-
-                return !Thread.interrupted()
+                return true
             }
 
             override fun getResult(): Void? {

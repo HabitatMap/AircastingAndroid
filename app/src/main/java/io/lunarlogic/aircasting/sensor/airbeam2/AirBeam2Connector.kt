@@ -55,7 +55,11 @@ class AirBeam2Connector(
                     socket.connect()
 
                     val outputStream = socket.outputStream
-                    mAirBeamConfigurator.configureBluetooth(outputStream)
+                    try {
+                        mAirBeamConfigurator.configureBluetooth(outputStream)
+                    } catch (e: IOException) {
+                        mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
+                    }
 
                     mListener.onConnectionSuccessful(deviceItem.id)
                     mAirBeam2Reader.run(socket)
