@@ -22,7 +22,7 @@ class SyncService(private val apiService: ApiService, private val errorHandler: 
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
 
-    fun sync() {
+    fun sync(callback: (() -> Unit)? = null) {
         if (syncStarted.get()) {
             return
         }
@@ -40,6 +40,7 @@ class SyncService(private val apiService: ApiService, private val errorHandler: 
                     response: Response<SyncResponse>
                 ) {
                     syncStarted.set(false)
+                    callback?.invoke()
 
                     if (response.isSuccessful) {
                         val body = response.body()
@@ -58,6 +59,7 @@ class SyncService(private val apiService: ApiService, private val errorHandler: 
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
+                    callback?.invoke()
                     errorHandler.handleAndDisplay(SyncError(t))
                 }
             })
