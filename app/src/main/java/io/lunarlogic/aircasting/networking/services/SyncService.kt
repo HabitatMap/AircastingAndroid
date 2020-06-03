@@ -5,7 +5,6 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SyncError
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
@@ -13,17 +12,22 @@ import io.lunarlogic.aircasting.sensor.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.atomic.AtomicBoolean
 
-class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
-    private val uploadService = UploadService(settings, errorHandler)
-    private val downloadService = DownloadService(settings, errorHandler)
+class SyncService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+    private val uploadService = UploadService(apiService, errorHandler)
+    private val downloadService = DownloadService(apiService, errorHandler)
 
     private val sessionRepository = SessionsRepository()
-    private val apiService =
-        ApiServiceFactory.get(settings.getAuthToken()!!)
     private val gson = Gson()
+    private val syncStarted = AtomicBoolean(false)
 
     fun sync() {
+        if (syncStarted.get()) {
+            return
+        }
+
+        syncStarted.set(true)
         DatabaseProvider.runQuery {
             val sessions = sessionRepository.finishedSessions()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
@@ -35,6 +39,8 @@ class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
                 ) {
+                    syncStarted.set(false)
+
                     if (response.isSuccessful) {
                         val body = response.body()
                         body?.let {
@@ -51,6 +57,7 @@ class SyncService(settings: Settings, private val errorHandler: ErrorHandler) {
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
+                    syncStarted.set(false)
                     errorHandler.handleAndDisplay(SyncError(t))
                 }
             })

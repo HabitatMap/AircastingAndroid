@@ -5,10 +5,10 @@ import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.SyncService
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
-import kotlinx.android.synthetic.main.fragment_airbeam_connected.view.*
 
 class LoginController(
     private val mContext: Context,
@@ -28,8 +28,7 @@ class LoginController(
 
     override fun onLoginClicked(username: String, password: String) {
         val successCallback = {
-            val sessionSyncService = SyncService(mSettings, mErrorHandler)
-            sessionSyncService.sync()
+            performSessionSync()
             MainActivity.start(mContext)
         }
         val message = mContext.getString(R.string.invalid_credentials_message)
@@ -38,5 +37,11 @@ class LoginController(
             toast.show()
         }
         mLoginService.performLogin(username, password, successCallback, errorCallback)
+    }
+
+    private fun performSessionSync() {
+        val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
+        val sessionSyncService = SyncService(apiService, mErrorHandler)
+        sessionSyncService.sync()
     }
 }

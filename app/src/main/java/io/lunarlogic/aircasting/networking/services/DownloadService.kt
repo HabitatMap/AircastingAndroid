@@ -9,9 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DownloadService(private val settings: Settings, private val errorHandler: ErrorHandler) {
-    private val apiService = ApiServiceFactory.get(settings.getAuthToken()!!)
-
+class DownloadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     fun download(uuid: String, successCallback: (Session) -> Unit) {
         val call = apiService.show(uuid)
         call.enqueue(object : Callback<SessionResponse> {

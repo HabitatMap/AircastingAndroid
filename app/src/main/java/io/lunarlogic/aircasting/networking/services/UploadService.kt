@@ -12,9 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UploadService(private val settings: Settings, private val errorHandler: ErrorHandler) {
-    private val apiService = ApiServiceFactory.get(settings.getAuthToken()!!)
-
+class UploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     fun upload(session: Session, successCallback: () -> Unit) {
         val sessionParams = SessionParams(session)
         val sessionBody = CreateSessionBody(
