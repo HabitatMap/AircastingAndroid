@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.networking.services
 
 import com.google.gson.Gson
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SyncError
@@ -19,6 +20,7 @@ class SyncService(private val apiService: ApiService, private val errorHandler: 
     private val downloadService = DownloadService(apiService, errorHandler)
 
     private val sessionRepository = SessionsRepository()
+    private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
 
@@ -89,7 +91,10 @@ class SyncService(private val apiService: ApiService, private val errorHandler: 
     private fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
             val onDownloadSuccess = { session: Session ->
-                DatabaseProvider.runQuery { sessionRepository.updateOrCreate(session) }
+                DatabaseProvider.runQuery {
+                    val sessionId = sessionRepository.updateOrCreate(session)
+                    sessionId?.let { measurementStreamsRepository.insert(sessionId, session.streams) }
+                }
             }
             downloadService.download(uuid, onDownloadSuccess)
         }

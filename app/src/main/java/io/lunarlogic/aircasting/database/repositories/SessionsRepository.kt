@@ -66,12 +66,14 @@ class SessionsRepository {
         mDatabase.sessions().deleteMarkedForRemoval()
     }
 
-    fun updateOrCreate(session: Session) {
+    fun updateOrCreate(session: Session): Long? {
         val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
         if (sessionDbObject == null) {
-            insert(session)
+            return insert(session)
+
         } else {
             update(session)
+            return null
         }
     }
 }

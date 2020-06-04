@@ -19,4 +19,11 @@ class MeasurementStreamsRepository {
         )
         return mDatabase.measurementStreams().insert(streamDBObject)
     }
+
+    fun insert(sessionId: Long, streams: List<MeasurementStream>) {
+        streams.forEach { stream ->
+            val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
+            mDatabase.measurementStreams().insert(streamDBObject)
+        }
+    }
 }

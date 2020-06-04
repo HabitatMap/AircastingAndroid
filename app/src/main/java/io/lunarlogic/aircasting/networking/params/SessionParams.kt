@@ -12,6 +12,7 @@ class SessionParams {
         this.start_time = DateConverter.toUTCDateString(session.startTime)
         this.end_time = DateConverter.toUTCDateString(session.endTime!!)
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
+        this.version = session.version
 
         session.streams.forEach { stream ->
             streams[stream.sensorName!!] =
@@ -24,15 +25,14 @@ class SessionParams {
     val tag_list: String
     val start_time: String
     val end_time: String
-    val calibration = 100 // handle
-    val contribute = true // handle
-    val drawable = 2_131_165_443 // handle
-    val is_indoor = false // handle
+    val calibration = 100 // TODO: handle for microphone session only
+    val contribute = true // TODO: handle from settings
+    val is_indoor = false // TODO: handle for fixed sessions
     val latitude = 0.0 // handle
     val longitude = 0.0 // handle
     val deleted = false
-    val notes = listOf<String>() // handle
-    val type = "MobileSession" // handle
-    val version = 0
+    val notes = listOf<String>() // TODO: handle after adding notes
+    val type = "MobileSession" // TODO: handle for fixed session
+    val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
 }

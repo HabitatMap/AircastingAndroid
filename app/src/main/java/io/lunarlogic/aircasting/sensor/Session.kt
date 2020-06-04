@@ -49,7 +49,11 @@ class Session(
         sessionParams.uuid,
         sessionParams.version,
         sessionParams.deleted
-    )
+    ) {
+        mStreams = sessionParams.streams.values.map { stream ->
+            MeasurementStream(stream)
+        }
+    }
 
     enum class Status(val value: Int){
         NEW(-1),

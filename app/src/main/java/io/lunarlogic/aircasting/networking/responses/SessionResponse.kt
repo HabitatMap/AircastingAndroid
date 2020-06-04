@@ -7,5 +7,6 @@ class SessionResponse(
     val start_time: String,
     val end_time: String,
     val deleted: Boolean,
-    val version: Int
+    val version: Int,
+    val streams: HashMap<String, SessionStreamResponse>
 )
