@@ -3,7 +3,20 @@ package io.lunarlogic.aircasting.database.data_classes
 import androidx.room.*
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 
-@Entity(tableName = "measurement_streams")
+@Entity(
+    tableName = "measurement_streams",
+    foreignKeys = [
+        ForeignKey(
+            entity = SessionDBObject::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("session_id"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index("session_id")
+    ]
+)
 data class MeasurementStreamDBObject(
     @ColumnInfo(name = "session_id") val sessionId: Long,
     @ColumnInfo(name = "sensor_package_name") val sensorPackageName: String,
@@ -36,17 +49,6 @@ data class MeasurementStreamDBObject(
         measurementStream.thresholdVeryHigh
     )
 }
-
-@Entity(
-    foreignKeys = arrayOf(
-        ForeignKey(
-            entity = SessionDBObject::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("session_id"),
-            onDelete = ForeignKey.CASCADE
-        )
-    )
-)
 
 @Dao
 interface MeasurementStreamDao {

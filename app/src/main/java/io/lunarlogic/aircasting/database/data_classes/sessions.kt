@@ -6,7 +6,12 @@ import io.lunarlogic.aircasting.sensor.Session
 import java.util.*
 import kotlin.collections.ArrayList
 
-@Entity(tableName = "sessions")
+@Entity(
+    tableName = "sessions",
+    indices = [
+        Index("device_id")
+    ]
+)
 data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
     @ColumnInfo(name = "device_id") val deviceId: String?,
