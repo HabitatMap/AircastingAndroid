@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.networking.responses.SessionResponse
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,14 +44,14 @@ class Session(
         sessionParams.title,
         ArrayList(sessionParams.tag_list.split(TAGS_SEPARATOR)),
         Status.FINISHED,
-        sessionParams.start_time,
-        sessionParams.end_time,
+        DateConverter.fromUTCString(sessionParams.start_time),
+        DateConverter.fromUTCString(sessionParams.end_time),
         sessionParams.uuid,
         sessionParams.version,
         sessionParams.deleted
     )
 
-    public enum class Status(val value: Int){
+    enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
         FINISHED(1)

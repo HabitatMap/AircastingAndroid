@@ -1,13 +1,11 @@
 package io.lunarlogic.aircasting.networking.responses
 
-import java.util.*
-
 class SessionResponse(
     val uuid: String,
     val title: String,
     val tag_list: String,
-    val start_time: Date,
-    val end_time: Date,
+    val start_time: String,
+    val end_time: String,
     val deleted: Boolean,
     val version: Int
 )
