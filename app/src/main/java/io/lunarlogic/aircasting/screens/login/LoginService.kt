@@ -21,7 +21,11 @@ class LoginService(val mSettings: Settings, private val mErrorHandler: ErrorHand
         call.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {
-                    response.body()?.authentication_token?.let { mSettings.setAuthToken(it) }
+                    val body = response.body()
+                    body?.let {
+                        mSettings.setEmail(body.email)
+                        mSettings.setAuthToken(body.authentication_token)
+                    }
                     successCallback()
                 } else if(response.code() == 401) {
                     errorCallback()

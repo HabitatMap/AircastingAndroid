@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.main
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
@@ -14,6 +15,7 @@ class MainController(private val rootActivity: AppCompatActivity, private val mV
     private var mSessionManager: SessionManager? = null
     private val mSettings = Settings(rootActivity)
     private var mConnectivityManager: ConnectivityManager? = null
+    val errorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
         if (mSettings.getAuthToken() == null) {
@@ -37,6 +39,8 @@ class MainController(private val rootActivity: AppCompatActivity, private val mV
     }
 
     private fun setupDashboard() {
+        errorHandler.registerUser(mSettings.getEmail())
+        
         val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService)
 

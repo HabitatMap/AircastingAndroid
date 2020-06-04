@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -20,9 +19,10 @@ class DashboardController(
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner
 ) : DashboardViewMvc.Listener {
-    val mSettings = Settings(mContext!!)
-    val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    val sessionSyncService = SyncService(apiService, ErrorHandler(mContext!!))
+    private val mSettings = Settings(mContext!!)
+    private val mErrorHandler = ErrorHandler(mContext!!)
+    private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
 
     fun onCreate() {
         mSessionsViewModel.loadAllWithMeasurements().observe(mLifecycleOwner, Observer { sessions ->
@@ -57,6 +57,6 @@ class DashboardController(
     }
 
     override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        sessionSyncService.sync(callback)
+        mSessionSyncService.sync(callback)
     }
 }

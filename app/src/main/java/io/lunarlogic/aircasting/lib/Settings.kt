@@ -5,21 +5,34 @@ import android.content.SharedPreferences
 
 class Settings(val mContext: Context) {
     private val PRIVATE_MODE = 0
-    private val PREFERENCES_NAME = "auth_token"
+    private val PREFERENCES_NAME = "settings"
     private val AUTH_TOKEN_KEY = "auth_token"
+    private val EMAIL_KEY = "email"
     private val sharedPreferences: SharedPreferences
 
     init {
         sharedPreferences = mContext.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
     }
 
+    fun getEmail(): String? {
+        return sharedPreferences.getString(EMAIL_KEY, null)
+    }
+
     fun getAuthToken(): String? {
         return sharedPreferences.getString(AUTH_TOKEN_KEY, null)
     }
 
+    fun setEmail(email: String) {
+        saveToSettings(EMAIL_KEY, email)
+    }
+
     fun setAuthToken(authToken: String) {
+        saveToSettings(AUTH_TOKEN_KEY, authToken)
+    }
+
+    private fun saveToSettings(key: String, value: String) {
         val editor = sharedPreferences.edit()
-        editor.putString(AUTH_TOKEN_KEY, authToken)
+        editor.putString(key, value)
         editor.commit()
     }
 }

@@ -35,4 +35,8 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
         val message = mContext.getString(messageResId)
         showError(message)
     }
+
+    fun registerUser(email: String?) {
+        email?.let { Crashlytics.setUserEmail(it) }
+    }
 }
