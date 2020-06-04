@@ -2,19 +2,23 @@ package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.lib.DateConverter
+import io.lunarlogic.aircasting.networking.responses.SessionResponse
 import java.util.*
 import kotlin.collections.ArrayList
 
 val TAGS_SEPARATOR = " "
 
 class Session(
-    val deviceId: String,
+    val deviceId: String?,
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
     private var mEndTime: Date? = null,
-    val uuid: String = UUID.randomUUID().toString()
+    val uuid: String = UUID.randomUUID().toString(),
+    var version: Int = 0,
+    var deleted: Boolean = false
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.deviceId,
@@ -23,7 +27,9 @@ class Session(
         sessionDBObject.status,
         sessionDBObject.startTime,
         sessionDBObject.endTime,
-        sessionDBObject.uuid
+        sessionDBObject.uuid,
+        sessionDBObject.version,
+        sessionDBObject.deleted
     )
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
@@ -33,7 +39,19 @@ class Session(
         }
     }
 
-    public enum class Status(val value: Int){
+    constructor(sessionParams: SessionResponse): this(
+        null,
+        sessionParams.title,
+        ArrayList(sessionParams.tag_list.split(TAGS_SEPARATOR)),
+        Status.FINISHED,
+        DateConverter.fromUTCString(sessionParams.start_time),
+        DateConverter.fromUTCString(sessionParams.end_time),
+        sessionParams.uuid,
+        sessionParams.version,
+        sessionParams.deleted
+    )
+
+    enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
         FINISHED(1)
@@ -60,5 +78,10 @@ class Session(
 
     fun isRecording(): Boolean {
         return status == Status.RECORDING
+    }
+
+    fun isUploadable(): Boolean {
+        // TODO: handle false if mobile && locationless
+        return true
     }
 }

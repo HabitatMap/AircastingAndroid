@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.networking
+package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 
@@ -15,7 +15,11 @@ class MeasurementStreamParams {
         this.threshold_medium = stream.thresholdMedium
         this.threshold_low = stream.thresholdLow
         this.threshold_very_low = stream.thresholdVeryLow
-        this.measurements = stream.measurements.map { MeasurementParams(it) }
+        this.measurements = stream.measurements.map {
+            MeasurementParams(
+                it
+            )
+        }
     }
 
     val deleted = false // TODO: handle

@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.networking
+package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.sensor.Measurement
 import java.util.*

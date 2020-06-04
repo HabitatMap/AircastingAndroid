@@ -17,6 +17,7 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
     private var mTagsTextView: TextView
     private var mMeasurementsTextView: TextView
     private var mStopSesssionButton: Button
+    private var mDeleteSesssionButton: Button
 
     private var mSession: Session? = null
 
@@ -28,10 +29,17 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
         mTagsTextView = findViewById(R.id.session_tags)
         mMeasurementsTextView = findViewById(R.id.session_measurements)
         mStopSesssionButton = findViewById(R.id.stop_session_button)
+        mDeleteSesssionButton = findViewById(R.id.delete_session_button)
 
         mStopSesssionButton?.setOnClickListener(View.OnClickListener {
             for (listener in listeners) {
                 listener.onSessionStopClicked(mSession!!)
+            }
+        })
+
+        mDeleteSesssionButton?.setOnClickListener(View.OnClickListener {
+            for (listener in listeners) {
+                listener.onSessionDeleteClicked(mSession!!)
             }
         })
     }
@@ -50,7 +58,7 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
 
         // TODO: handle
         val measurementsString = session.streams.map { stream ->
-            val measurement: Measurement? = stream.measurements.last()
+            val measurement = stream.measurements.lastOrNull()
             "${stream.detailedType}: ${measurement?.value} ${stream.unitSymbol}"
         }.joinToString("\n")
         mMeasurementsTextView.setText(measurementsString)

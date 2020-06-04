@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.sensor.Session
 interface SessionViewMvc: ObservableViewMvc<SessionViewMvc.Listener> {
     interface Listener {
         fun onSessionStopClicked(session: Session)
+        fun onSessionDeleteClicked(session: Session)
     }
     fun bindSession(session: Session)
 }

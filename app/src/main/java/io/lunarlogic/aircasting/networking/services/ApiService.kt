@@ -1,7 +1,6 @@
-package io.lunarlogic.aircasting.networking
+package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.BuildConfig
-import io.lunarlogic.aircasting.sensor.Session
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -10,12 +9,25 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
+import io.lunarlogic.aircasting.networking.params.CreateSessionBody
+import io.lunarlogic.aircasting.networking.params.SessionParams
+import io.lunarlogic.aircasting.networking.params.SyncSessionBody
+import io.lunarlogic.aircasting.networking.responses.SessionResponse
+import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
+import io.lunarlogic.aircasting.networking.responses.SyncResponse
+import io.lunarlogic.aircasting.networking.responses.UserResponse
 import retrofit2.http.*
 
 
 interface ApiService {
     @POST("/api/sessions")
-    fun createSession(@Body body: CreateSessionBody): Call<CreateSessionResponse>
+    fun createSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @GET("/api/user/sessions/empty.json")
+    fun show(@Query("uuid") uuid: String): Call<SessionResponse>
+
+    @POST("/api/user/sessions/sync_with_versioning.json")
+    fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
 
     @GET("/api/user.json")
     fun login(): Call<UserResponse>
@@ -49,17 +61,35 @@ class ApiServiceFactory {
         }
 
         fun get(username: String, password: String): ApiService {
-            val credentialsEncoded = encodedCredentials(username, password)
-            val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
+            val credentialsEncoded =
+                encodedCredentials(
+                    username,
+                    password
+                )
+            val authInterceptor =
+                AuthenticationInterceptor(
+                    credentialsEncoded
+                )
 
-            return get(listOf(authInterceptor))
+            return get(
+                listOf(authInterceptor)
+            )
         }
 
         fun get(authToken: String): ApiService {
-            val credentialsEncoded = encodedCredentials(authToken, "X")
-            val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
+            val credentialsEncoded =
+                encodedCredentials(
+                    authToken,
+                    "X"
+                )
+            val authInterceptor =
+                AuthenticationInterceptor(
+                    credentialsEncoded
+                )
 
-            return get(listOf(authInterceptor))
+            return get(
+                listOf(authInterceptor)
+            )
         }
 
         private fun encodedCredentials(username: String, password: String): String {

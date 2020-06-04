@@ -5,16 +5,18 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.*
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.networking.services.ApiService
+import io.lunarlogic.aircasting.networking.services.SyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class SessionManager(private val mContext: Context, private val settings: Settings) {
-    private val sessionCreator = SessionCreator(mContext, settings)
+class SessionManager(private val mContext: Context, private val apiService: ApiService) {
+    private val sessionSyncService = SyncService(apiService, ErrorHandler(mContext))
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -32,6 +34,11 @@ class SessionManager(private val mContext: Context, private val settings: Settin
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: DeleteSessionEvent) {
+        deleteSession(event.sessionUUID)
     }
 
     fun onStart() {
@@ -82,8 +89,14 @@ class SessionManager(private val mContext: Context, private val settings: Settin
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
-                sessionCreator.create(it)
+                sessionSyncService.sync()
             }
+        }
+    }
+
+    private fun deleteSession(sessionUUID: String) {
+        DatabaseProvider.runQuery {
+            sessionsRespository.markForRemoval(listOf(sessionUUID))
         }
     }
 }

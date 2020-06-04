@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.networking
 
 import android.util.Base64OutputStream
 import com.google.gson.Gson
+import io.lunarlogic.aircasting.networking.params.SessionParams
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
 import java.util.zip.GZIPOutputStream

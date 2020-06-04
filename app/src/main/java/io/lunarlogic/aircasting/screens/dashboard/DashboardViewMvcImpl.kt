@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Session
@@ -34,11 +35,23 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
             this
         )
         mRecyclerSessions?.setAdapter(mAdapter)
+
+        val swipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
+        swipeRefreshLayout?.setOnRefreshListener {
+            val callback = { swipeRefreshLayout?.isRefreshing = false }
+            onSwipeToRefreshTriggered(callback)
+        }
     }
 
     private fun onRecordNewSessionClicked() {
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
+        }
+    }
+
+    private fun onSwipeToRefreshTriggered(callback: () -> Unit) {
+        for (listener in listeners) {
+            listener.onSwipeToRefreshTriggered(callback)
         }
     }
 
@@ -56,6 +69,12 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
     override fun onSessionStopClicked(session: Session) {
         for (listener in listeners) {
             listener.onStopSessionClicked(session.uuid)
+        }
+    }
+
+    override fun onSessionDeleteClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onDeleteSessionClicked(session.uuid)
         }
     }
 }
