@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting.sensor
 
+import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject
 import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
 
 class MeasurementStream(
     val sensorPackageName: String,
@@ -30,23 +32,40 @@ class MeasurementStream(
         measurementEvent.thresholdVeryHigh
     )
 
-    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject): this(
-        streamWithMeasurementsDBObject.stream.sensorPackageName,
-        streamWithMeasurementsDBObject.stream.sensorName,
-        streamWithMeasurementsDBObject.stream.measurementType,
-        streamWithMeasurementsDBObject.stream.measurementShortType,
-        streamWithMeasurementsDBObject.stream.unitName,
-        streamWithMeasurementsDBObject.stream.unitSymbol,
-        streamWithMeasurementsDBObject.stream.thresholdVeryLow,
-        streamWithMeasurementsDBObject.stream.thresholdLow,
-        streamWithMeasurementsDBObject.stream.thresholdMedium,
-        streamWithMeasurementsDBObject.stream.thresholdHigh,
-        streamWithMeasurementsDBObject.stream.thresholdVeryHigh
-    ) {
+    constructor(streamDbObject: MeasurementStreamDBObject): this(
+        streamDbObject.sensorPackageName,
+        streamDbObject.sensorName,
+        streamDbObject.measurementType,
+        streamDbObject.measurementShortType,
+        streamDbObject.unitName,
+        streamDbObject.unitSymbol,
+        streamDbObject.thresholdVeryLow,
+        streamDbObject.thresholdLow,
+        streamDbObject.thresholdMedium,
+        streamDbObject.thresholdHigh,
+        streamDbObject.thresholdVeryHigh
+    )
+
+    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject):
+            this(streamWithMeasurementsDBObject.stream) {
         this.mMeasurements = streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
             Measurement(measurementDBObject)
         }
     }
+
+    constructor(sessionStreamResponse: SessionStreamResponse): this(
+        sessionStreamResponse.sensor_package_name,
+        sessionStreamResponse.sensor_name,
+        sessionStreamResponse.measurement_type,
+        sessionStreamResponse.measurement_short_type,
+        sessionStreamResponse.unit_name,
+        sessionStreamResponse.unit_symbol,
+        sessionStreamResponse.threshold_very_low,
+        sessionStreamResponse.threshold_low,
+        sessionStreamResponse.threshold_medium,
+        sessionStreamResponse.threshold_high,
+        sessionStreamResponse.threshold_very_high
+    )
 
     val detailedType: String
 
