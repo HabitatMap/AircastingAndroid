@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.networking.responses.UserResponse
 import retrofit2.http.*
+import java.util.concurrent.TimeUnit
 
 
 interface ApiService {
@@ -36,6 +37,7 @@ interface ApiService {
 class ApiServiceFactory {
     companion object {
         private val BASE_URL = "http://aircasting.org/"
+        private val READ_TIMEOUT_SECONDS: Long = 60
 
         fun get(interceptors: List<Interceptor>): ApiService {
             val logging = HttpLoggingInterceptor()
@@ -48,7 +50,9 @@ class ApiServiceFactory {
             val httpClientBuilder = OkHttpClient.Builder()
             httpClientBuilder.addInterceptor(logging)
             interceptors.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
-            val httpClient = httpClientBuilder.build()
+            val httpClient = httpClientBuilder
+                .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .build()
 
 
             val retrofit = Retrofit.Builder()
