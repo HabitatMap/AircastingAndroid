@@ -101,5 +101,6 @@ class AirBeam2Configurator {
 
     private fun sendMessage(bytes: ByteArray, outputStream: OutputStream) {
         outputStream.write(bytes)
+        outputStream.flush()
     }
 }

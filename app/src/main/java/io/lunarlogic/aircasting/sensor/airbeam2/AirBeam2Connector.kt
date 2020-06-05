@@ -25,6 +25,7 @@ class AirBeam2Connector(
     private val mAirBeamConfigurator = AirBeam2Configurator()
     private val mAirBeam2Reader = AirBeam2Reader()
     private var mThread: ConnectThread? = null
+    private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
     fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
@@ -53,6 +54,8 @@ class AirBeam2Connector(
             try {
                 mmSocket?.use { socket ->
                     socket.connect()
+                    // wait until connection is finished before sending anything to AirBeam
+                    sleep(ESTIMATED_CONNECTING_TIME_SECONDS)
 
                     val outputStream = socket.outputStream
                     try {
