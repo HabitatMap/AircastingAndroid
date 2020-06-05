@@ -19,5 +19,5 @@ class NewMeasurementEvent(
 ) {
     val creationTime = Date().time
 
-    val deviceId get(): String = packageName.split(':').component2()
+    val deviceId get(): String? = packageName.split(':').lastOrNull()
 }

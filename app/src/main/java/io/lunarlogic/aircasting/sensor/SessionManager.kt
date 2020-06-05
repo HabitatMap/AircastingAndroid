@@ -66,8 +66,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         val measurementStream = MeasurementStream(event)
         val measurement = Measurement(event)
 
+        if (event.deviceId == null) return
+
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getActiveSessionIdByDeviceId(event.deviceId)
+            val sessionId = sessionsRespository.getActiveSessionIdByDeviceId(event.deviceId!!)
             sessionId?.let {
                 val measurementStreamId = measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                 measurementsRepository.insert(measurementStreamId, measurement)
