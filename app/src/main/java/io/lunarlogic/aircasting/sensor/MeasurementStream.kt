@@ -67,13 +67,14 @@ class MeasurementStream(
         sessionStreamResponse.threshold_very_high
     )
 
-    val detailedType: String
+    val detailedType: String?
 
     private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
 
     init {
-        detailedType = sensorName.split("-").component2()
+        val splitted = sensorName.split("-")
+        detailedType = splitted.lastOrNull()
     }
 }
