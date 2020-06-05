@@ -6,6 +6,7 @@ import android.os.Looper
 import android.os.Message
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
+import io.lunarlogic.aircasting.BuildConfig
 
 class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
     override fun handleMessage(message: Message) {
@@ -15,8 +16,11 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun handle(exception: BaseException) {
         exception.cause?.printStackTrace()
-        exception.messageToDisplay?.let { Crashlytics.log(it) }
-        exception.cause?.let { Crashlytics.logException(exception.cause) }
+
+        if (!BuildConfig.DEBUG) {
+            exception.messageToDisplay?.let { Crashlytics.log(it) }
+            exception.cause?.let { Crashlytics.logException(exception.cause) }
+        }
     }
 
     fun handleAndDisplay(exception: BaseException) {
@@ -37,6 +41,8 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
     }
 
     fun registerUser(email: String?) {
-        email?.let { Crashlytics.setUserEmail(it) }
+        if (!BuildConfig.DEBUG) {
+            email?.let { Crashlytics.setUserEmail(it) }
+        }
     }
 }
