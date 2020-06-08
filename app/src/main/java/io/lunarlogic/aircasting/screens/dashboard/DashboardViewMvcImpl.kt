@@ -38,7 +38,7 @@ class DashboardViewMvcImpl : BaseObservableViewMvc<DashboardViewMvc.Listener>, D
 
         val swipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
         swipeRefreshLayout?.setOnRefreshListener {
-            val callback = { swipeRefreshLayout?.isRefreshing = false }
+            val callback = { swipeRefreshLayout.isRefreshing = false }
             onSwipeToRefreshTriggered(callback)
         }
     }

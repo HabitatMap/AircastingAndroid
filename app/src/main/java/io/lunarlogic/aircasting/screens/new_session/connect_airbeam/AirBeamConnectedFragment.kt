@@ -31,11 +31,11 @@ class AirBeamConnectedFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        listener?.let { controller?.registerListener(it) }
+        listener.let { controller.registerListener(it) }
     }
 
     override fun onStop() {
         super.onStop()
-        listener?.let { controller?.unregisterListener(it) }
+        listener.let { controller.unregisterListener(it) }
     }
 }

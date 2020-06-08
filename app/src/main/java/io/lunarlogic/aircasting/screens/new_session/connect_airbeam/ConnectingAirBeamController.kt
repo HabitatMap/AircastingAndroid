@@ -11,7 +11,7 @@ class ConnectingAirBeamController(
     mListener: Listener
 ) {
     interface Listener {
-        fun onConnectionSuccessful(sessionUUID: String)
+        fun onConnectionSuccessful(deviceId: String)
     }
 
     val exceptionHandler = ErrorHandler(mContext)

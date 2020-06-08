@@ -32,13 +32,13 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
         mStopSesssionButton = findViewById(R.id.stop_session_button)
         mDeleteSesssionButton = findViewById(R.id.delete_session_button)
 
-        mStopSesssionButton?.setOnClickListener(View.OnClickListener {
+        mStopSesssionButton.setOnClickListener(View.OnClickListener {
             for (listener in listeners) {
                 listener.onSessionStopClicked(mSession!!)
             }
         })
 
-        mDeleteSesssionButton?.setOnClickListener(View.OnClickListener {
+        mDeleteSesssionButton.setOnClickListener(View.OnClickListener {
             for (listener in listeners) {
                 listener.onSessionDeleteClicked(mSession!!)
             }
