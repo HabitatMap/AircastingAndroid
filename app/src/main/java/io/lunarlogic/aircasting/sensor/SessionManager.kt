@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiService
 import io.lunarlogic.aircasting.networking.services.SyncService
 import org.greenrobot.eventbus.EventBus
@@ -20,6 +21,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
+    private val locationHelper = LocationHelper(mContext)
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
@@ -44,10 +46,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     fun onStart() {
         registerToEventBus()
         stopSessions()
+        locationHelper.start()
     }
 
     fun onStop() {
         unregisterFromEventBus()
+        locationHelper.stop()
     }
 
     private fun registerToEventBus() {
@@ -64,12 +68,14 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun addMeasurement(event: NewMeasurementEvent) {
         val measurementStream = MeasurementStream(event)
-        val measurement = Measurement(event)
 
-        if (event.deviceId == null) return
+        val location = locationHelper.lastLocation
+        val measurement = Measurement(event, location?.latitude , location?.longitude)
+
+        val deviceId = event.deviceId ?: return
 
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getActiveSessionIdByDeviceId(event.deviceId!!)
+            val sessionId = sessionsRespository.getActiveSessionIdByDeviceId(deviceId)
             sessionId?.let {
                 val measurementStreamId = measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                 measurementsRepository.insert(measurementStreamId, measurement)

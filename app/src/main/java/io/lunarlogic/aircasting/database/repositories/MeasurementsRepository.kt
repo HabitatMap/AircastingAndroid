@@ -12,7 +12,9 @@ class MeasurementsRepository {
             MeasurementDBObject(
                 measurementStreamId,
                 measurement.value,
-                measurement.time
+                measurement.time,
+                measurement.latitude,
+                measurement.longitude
             )
         return mDatabase.measurements().insert(measurementDBObject)
     }

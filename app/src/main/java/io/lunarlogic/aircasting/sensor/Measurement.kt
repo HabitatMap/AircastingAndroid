@@ -5,12 +5,18 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import java.util.*
 
 class Measurement(
-    private var mValue: Double,
-    private var mTime: Date) {
+    val value: Double,
+    val time: Date,
+    val latitude: Double?,
+    val longitude: Double?) {
 
-    constructor(event: NewMeasurementEvent) : this(event.measuredValue, Date(event.creationTime))
-    constructor(measurementDBObject: MeasurementDBObject): this(measurementDBObject.value, measurementDBObject.time)
-
-    val value get() = mValue
-    val time get() = mTime
+    constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?):
+            this(event.measuredValue, Date(event.creationTime), latitude, longitude)
+    constructor(measurementDBObject: MeasurementDBObject):
+            this(
+                measurementDBObject.value,
+                measurementDBObject.time,
+                measurementDBObject.latitude,
+                measurementDBObject.longitude
+            )
 }

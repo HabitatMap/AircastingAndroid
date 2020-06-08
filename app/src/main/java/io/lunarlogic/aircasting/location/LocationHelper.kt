@@ -1,0 +1,42 @@
+package io.lunarlogic.aircasting.location
+
+import android.content.Context
+import android.location.Location
+import android.os.Looper
+import com.google.android.gms.location.*
+
+class LocationHelper(private val mContext: Context) {
+    private var mLastLocation: Location? = null
+    val lastLocation get() = mLastLocation
+
+    private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
+
+    private var locationRequest: LocationRequest = createLocationRequest()
+
+    private var locationCallback: LocationCallback = object: LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            locationResult ?: return
+            for (location in locationResult.locations) {
+                mLastLocation = location
+            }
+        }
+    }
+
+    fun start() {
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+    }
+
+    fun stop() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+    companion object {
+        private fun createLocationRequest(): LocationRequest {
+            val locationRequest = LocationRequest.create()
+            locationRequest.interval = 1000
+            locationRequest.fastestInterval = 1000
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            return locationRequest
+        }
+    }
+}
