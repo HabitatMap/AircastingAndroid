@@ -7,19 +7,10 @@ class DateConverter {
     companion object {
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
-        fun fromUTCString(dateString: String): Date {
-            val timeZone = TimeZone.getTimeZone("UTC")
+        fun fromString(dateString: String): Date? {
             val parser = SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.getDefault())
-            parser.timeZone = timeZone
+            parser.timeZone = TimeZone.getDefault()
             return parser.parse(dateString)
-        }
-
-        fun toUTCDateString(date: Date): String {
-            return toDateString(date, TimeZone.getTimeZone("UTC"))
-        }
-
-        fun toLocalDateString(date: Date): String {
-            return toDateString(date)
         }
 
         fun toDateString(

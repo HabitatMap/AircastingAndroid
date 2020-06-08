@@ -9,13 +9,13 @@ class SessionParams {
     constructor(session: Session) {
         this.uuid = session.uuid
         this.title = session.name
-        this.start_time = DateConverter.toUTCDateString(session.startTime)
-        this.end_time = DateConverter.toUTCDateString(session.endTime!!)
+        this.start_time = DateConverter.toDateString(session.startTime)
+        this.end_time = DateConverter.toDateString(session.endTime!!)
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
 
         session.streams.forEach { stream ->
-            streams[stream.sensorName!!] =
+            streams[stream.sensorName] =
                 MeasurementStreamParams(stream)
         }
     }

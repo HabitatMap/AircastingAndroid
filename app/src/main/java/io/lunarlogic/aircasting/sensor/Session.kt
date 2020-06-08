@@ -18,7 +18,8 @@ class Session(
     private var mEndTime: Date? = null,
     val uuid: String = UUID.randomUUID().toString(),
     var version: Int = 0,
-    var deleted: Boolean = false
+    var deleted: Boolean = false,
+    private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.deviceId,
@@ -39,22 +40,6 @@ class Session(
         }
     }
 
-    constructor(sessionParams: SessionResponse): this(
-        null,
-        sessionParams.title,
-        ArrayList(sessionParams.tag_list.split(TAGS_SEPARATOR)),
-        Status.FINISHED,
-        DateConverter.fromUTCString(sessionParams.start_time),
-        DateConverter.fromUTCString(sessionParams.end_time),
-        sessionParams.uuid,
-        sessionParams.version,
-        sessionParams.deleted
-    ) {
-        mStreams = sessionParams.streams.values.map { stream ->
-            MeasurementStream(stream)
-        }
-    }
-
     enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
@@ -67,8 +52,6 @@ class Session(
     val endTime get() = mEndTime
 
     val status get() = mStatus
-
-    private var mStreams = listOf<MeasurementStream>()
     val streams get() = mStreams
 
     fun startRecording() {
