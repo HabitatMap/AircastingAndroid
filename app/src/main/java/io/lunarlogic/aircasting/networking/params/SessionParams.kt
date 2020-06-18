@@ -28,8 +28,6 @@ class SessionParams {
     val calibration = 100 // TODO: handle for microphone session only
     val contribute = true // TODO: handle from settings
     val is_indoor = false // TODO: handle for fixed sessions
-    val latitude = 0.0 // handle
-    val longitude = 0.0 // handle
     val deleted = false
     val notes = listOf<String>() // TODO: handle after adding notes
     val type = "MobileSession" // TODO: handle for fixed session
