@@ -6,6 +6,5 @@ class ResultCodes {
         val AIRCASTING_REQUEST_BLUETOOTH_ENABLE = 1
         val AIRCASTING_UNKNOWN_ERROR = 3
         val AIR_BEAM2_CONNECTION_OPEN_FAILED = 4
-        val SENSOR_RESPONSE_PARSING_ERROR = 5
     }
 }

@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.lib.ResultCodes
 
 class PermissionsManager {
-    val BLUETOOTH_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+    val BLUETOOTH_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
