@@ -1,14 +1,13 @@
 package io.lunarlogic.aircasting.bluetooth
 
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
+import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 
-class BluetoothManager(private val mActivity: BluetoothActivity) {
+class BluetoothManager(private val mActivity: PermissionsActivity, private val permissionsManager: PermissionsManager) {
     val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-    val permissionsManager = PermissionsManager()
 
     fun pairedDevices(): Set<BluetoothDevice> {
         return adapter?.bondedDevices?: setOf()

@@ -8,15 +8,17 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
-import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
+import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -26,7 +28,7 @@ import java.util.*
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
-    private val mActivity: BluetoothActivity,
+    private val mActivity: PermissionsActivity,
     mViewMvc: NewSessionViewMvc,
     mFragmentManager: FragmentManager
 ) : SelectDeviceTypeViewMvc.Listener,
@@ -38,9 +40,9 @@ class NewSessionController(
     SessionDetailsViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
-
     private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
-    private val bluetoothManager = BluetoothManager(mActivity)
+    private val permissionsManager = PermissionsManager()
+    private val bluetoothManager = BluetoothManager(mActivity, permissionsManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
 
@@ -66,6 +68,15 @@ class NewSessionController(
         wizardNavigator.goToTurnOnBluetooth(this)
     }
 
+    override fun onMicrophoneDeviceSelected() {
+        mActivity.requestAudioPermissions(permissionsManager)
+    }
+
+    private fun startMicrophoneSession() {
+        val reader = MicrophoneReader()
+        reader.start()
+    }
+
     override fun onTurnOnBluetoothOkClicked() {
         bluetoothManager.enableBluetooth()
     }
@@ -75,6 +86,13 @@ class NewSessionController(
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
                 if (bluetoothManager.permissionsGranted(grantResults)) {
                     mActivity.requestBluetoothEnable()
+                } else {
+                    errorHandler.showError(R.string.errors_bluetooth_required)
+                }
+            }
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO -> {
+                if (permissionsManager.permissionsGranted(grantResults)) {
+                    startMicrophoneSession()
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)
                 }

@@ -7,5 +7,6 @@ interface SelectDeviceTypeViewMvc : ObservableViewMvc<SelectDeviceTypeViewMvc.Li
 
     interface Listener {
         fun onBluetoothDeviceSelected()
+        fun onMicrophoneDeviceSelected()
     }
 }
