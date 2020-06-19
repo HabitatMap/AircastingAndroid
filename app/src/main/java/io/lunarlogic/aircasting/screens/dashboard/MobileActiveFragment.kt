@@ -8,7 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 
 
-class DashboardFragment : Fragment() {
+class MobileActiveFragment : Fragment() {
+    private var controller: MobileActiveController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
 
     override fun onCreateView(
@@ -16,7 +17,15 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
+        val view = MobileActiveViewMvcImpl(layoutInflater, null)
+        controller = MobileActiveController(context, view, sessionsViewModel, viewLifecycleOwner)
+        controller!!.onCreate()
+
         return view.rootView
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controller!!.onDestroy()
     }
 }
