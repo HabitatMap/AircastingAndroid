@@ -1,19 +1,13 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 
-class DashboardViewMvcImpl: BaseObservableViewMvc<DashboardViewMvc.Listener>, DashboardViewMvc {
+class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?,
         fragmentManager: FragmentManager?

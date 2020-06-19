@@ -2,7 +2,9 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -15,26 +17,17 @@ import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
     private val mContext: Context?,
-    private val mViewMvc: MobileDormantViewMvc,
+    private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner
-) : MobileDormantViewMvc.Listener {
-    private val mSettings = Settings(mContext!!)
-    private val mErrorHandler = ErrorHandler(mContext!!)
-    private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
+): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner), SessionsViewMvc.Listener {
+
+    override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mSessionsViewModel.loadDormantSessionsWithMeasurements()
+    }
 
     fun onCreate() {
-        mSessionsViewModel.loadDormantSessionsWithMeasurements().observe(mLifecycleOwner, Observer { sessions ->
-            if (sessions.size > 0) {
-                mViewMvc.showSessionsView(sessions.map { session ->
-                    Session(session)
-                })
-            } else {
-                mViewMvc.showEmptyView()
-            }
-        })
-
+        registerSessionsObserver()
         mViewMvc.registerListener(this)
     }
 
@@ -42,16 +35,12 @@ class MobileDormantController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onRecordNewSessionClicked() {
-        NewSessionActivity.start(mContext)
-    }
-    
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
     }
 
-    override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        mSessionSyncService.sync(callback)
+    override fun onStopSessionClicked(sessionUUID: String) {
+        // do nothing
     }
 }
