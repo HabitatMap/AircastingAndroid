@@ -8,14 +8,5 @@ import java.util.*
 
 
 interface DashboardViewMvc : ObservableViewMvc<DashboardViewMvc.Listener> {
-
-    interface Listener {
-        fun onRecordNewSessionClicked()
-        fun onStopSessionClicked(sessionUUID: String)
-        fun onDeleteSessionClicked(sessionUUID: String)
-        fun onSwipeToRefreshTriggered(callback: () -> Unit)
-    }
-
-    fun showSessionsView(sessions: List<Session>)
-    fun showEmptyView()
+    interface Listener {}
 }

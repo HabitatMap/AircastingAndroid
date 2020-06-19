@@ -11,36 +11,28 @@ import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
-class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
-    SessionViewMvc {
+class ActiveSessionViewMvcImpl: BaseObservableViewMvc<ActiveSessionViewMvc.Listener>,
+    ActiveSessionViewMvc {
     private var mDateTextView: TextView
     private var mNameTextView: TextView
     private var mTagsTextView: TextView
     private var mMeasurementsTextView: TextView
     private var mStopSesssionButton: Button
-    private var mDeleteSesssionButton: Button
 
     private var mSession: Session? = null
 
     constructor(inflater: LayoutInflater, parent: ViewGroup) {
-        this.rootView = inflater.inflate(R.layout.session, parent, false)
+        this.rootView = inflater.inflate(R.layout.active_session, parent, false)
 
         mDateTextView = findViewById(R.id.session_date)
         mNameTextView = findViewById(R.id.session_name)
         mTagsTextView = findViewById(R.id.session_tags)
         mMeasurementsTextView = findViewById(R.id.session_measurements)
         mStopSesssionButton = findViewById(R.id.stop_session_button)
-        mDeleteSesssionButton = findViewById(R.id.delete_session_button)
 
         mStopSesssionButton.setOnClickListener(View.OnClickListener {
             for (listener in listeners) {
                 listener.onSessionStopClicked(mSession!!)
-            }
-        })
-
-        mDeleteSesssionButton.setOnClickListener(View.OnClickListener {
-            for (listener in listeners) {
-                listener.onSessionDeleteClicked(mSession!!)
             }
         })
     }
@@ -50,12 +42,6 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
         mDateTextView.setText(session.startTime.toString())
         mNameTextView.setText(session.name)
         mTagsTextView.setText(session.tags.joinToString(", "))
-
-        if (session.isRecording()) {
-            showStopButton()
-        } else {
-            hideStopButton()
-        }
 
         // TODO: handle
         val measurementsString = session.streams.map { stream ->
@@ -71,13 +57,5 @@ class SessionViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>,
         }
 
         return "${measurement.value} ${stream.unitSymbol}"
-    }
-
-    private fun showStopButton() {
-        mStopSesssionButton.visibility = View.VISIBLE
-    }
-
-    private fun hideStopButton() {
-        mStopSesssionButton.visibility = View.INVISIBLE
     }
 }

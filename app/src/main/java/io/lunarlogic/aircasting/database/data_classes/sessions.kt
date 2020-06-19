@@ -66,8 +66,8 @@ class StreamWithMeasurementsDBObject {
 
 @Dao
 interface SessionDao {
-    @Query("SELECT * FROM sessions WHERE deleted=0 ORDER BY start_time DESC")
-    fun loadAllWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND status=:status ORDER BY start_time DESC")
+    fun loadAllByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE status=:status")
     fun byStatus(status: Session.Status): List<SessionDBObject>

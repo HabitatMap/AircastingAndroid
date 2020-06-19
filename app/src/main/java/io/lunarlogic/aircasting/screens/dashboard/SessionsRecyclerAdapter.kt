@@ -1,16 +1,17 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.sensor.Session
 
 
-class SessionsRecyclerAdapter(private val mInflater: LayoutInflater, private val mListener: SessionViewMvc.Listener):
-    RecyclerView.Adapter<SessionsRecyclerAdapter.MyViewHolder>(), SessionViewMvc.Listener {
-    class MyViewHolder(private val mViewMvc: SessionViewMvc) :
+abstract class SessionsRecyclerAdapter<ListenerType>(
+    private val mInflater: LayoutInflater
+): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
+
+    inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
-        val view: SessionViewMvc get() = mViewMvc
+        val view: SessionViewMvc<ListenerType> get() = mViewMvc
     }
 
     private var mSessions: List<Session> = emptyList()
@@ -23,22 +24,8 @@ class SessionsRecyclerAdapter(private val mInflater: LayoutInflater, private val
         return mSessions.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val viewMvc = SessionViewMvcImpl(mInflater, parent)
-        viewMvc.registerListener(this)
-        return MyViewHolder(viewMvc)
-    }
-
     fun bindSessions(sessions: List<Session>) {
         mSessions = sessions
         notifyDataSetChanged()
-    }
-
-    override fun onSessionStopClicked(session: Session) {
-        mListener.onSessionStopClicked(session)
-    }
-
-    override fun onSessionDeleteClicked(session: Session) {
-        mListener.onSessionDeleteClicked(session)
     }
 }

@@ -19,44 +19,12 @@ class DashboardController(
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner
 ) : DashboardViewMvc.Listener {
-    private val mSettings = Settings(mContext!!)
-    private val mErrorHandler = ErrorHandler(mContext!!)
-    private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
 
     fun onCreate() {
-        mSessionsViewModel.loadAllWithMeasurements().observe(mLifecycleOwner, Observer { sessions ->
-            if (sessions.size > 0) {
-                mViewMvc.showSessionsView(sessions.map { session ->
-                    Session(session)
-                })
-            } else {
-                mViewMvc.showEmptyView()
-            }
-        })
-
         mViewMvc.registerListener(this)
     }
 
     fun onDestroy() {
         mViewMvc.unregisterListener(this)
-    }
-
-    override fun onRecordNewSessionClicked() {
-        NewSessionActivity.start(mContext)
-    }
-
-    override fun onStopSessionClicked(sessionUUID: String) {
-        val event = StopRecordingEvent(sessionUUID)
-        EventBus.getDefault().post(event)
-    }
-
-    override fun onDeleteSessionClicked(sessionUUID: String) {
-        val event = DeleteSessionEvent(sessionUUID)
-        EventBus.getDefault().post(event)
-    }
-
-    override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        mSessionSyncService.sync(callback)
     }
 }
