@@ -16,7 +16,7 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = DashboardViewMvcImpl(layoutInflater, null, activity?.supportFragmentManager)
+        val view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
         return view.rootView
     }
 }

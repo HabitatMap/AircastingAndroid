@@ -16,14 +16,16 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
             0 -> mContext.getString(R.string.dashboard_tabs_mobile_active)
-            else -> mContext.getString(R.string.dashboard_tabs_mobile_dormant)
+            1 -> mContext.getString(R.string.dashboard_tabs_mobile_dormant)
+            else -> ""
         }
     }
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> MobileActiveFragment()
-            else -> MobileDormantFragment()
+            1 -> MobileDormantFragment()
+            else -> Fragment()
         }
     }
 }
