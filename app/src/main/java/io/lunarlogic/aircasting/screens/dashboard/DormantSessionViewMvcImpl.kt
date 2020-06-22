@@ -7,8 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
 class DormantSessionViewMvcImpl: BaseObservableViewMvc<DormantSessionViewMvc.Listener>,
@@ -45,17 +43,8 @@ class DormantSessionViewMvcImpl: BaseObservableViewMvc<DormantSessionViewMvc.Lis
 
         // TODO: handle
         val measurementsString = session.streams.map { stream ->
-            val measurement = stream.measurements.lastOrNull()
-            "${stream.detailedType}: ${measurementString(measurement, stream)}"
+            stream.detailedType
         }.joinToString("\n")
         mMeasurementsTextView.setText(measurementsString)
-    }
-
-    private fun measurementString(measurement: Measurement?, stream: MeasurementStream): String {
-        if (measurement == null) {
-            return ""
-        }
-
-        return "${measurement.value} ${stream.unitSymbol}"
     }
 }
