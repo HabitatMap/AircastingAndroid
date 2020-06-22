@@ -1,10 +1,12 @@
 package io.lunarlogic.aircasting.sensor.microphone
 
+val DEFAULT_CALIBRATION = 100
+
 class CalibrationHelper {
     val OFFSET_POINT = 60.0
 
     fun calibrate(value: Double): Double {
-        val calibration = 100 // TODO: take from settings - 100 is default
+        val calibration = DEFAULT_CALIBRATION // TODO: take from settings
 
         return calibrate(value, calibration)
     }

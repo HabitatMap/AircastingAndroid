@@ -6,12 +6,32 @@ import android.os.Looper
 import com.google.android.gms.location.*
 
 class LocationHelper(private val mContext: Context) {
+    companion object {
+        private lateinit var singleton: LocationHelper
+
+        fun setup(context: Context) {
+            singleton = LocationHelper(context)
+        }
+
+        fun start() {
+            singleton.start()
+        }
+
+        fun stop() {
+            singleton.stop()
+        }
+
+        fun lastLocation(): Location? {
+            return singleton.lastLocation
+        }
+    }
+
     private var mLastLocation: Location? = null
-    val lastLocation get() = mLastLocation
+    private val lastLocation get() = mLastLocation
 
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
 
-    private var locationRequest: LocationRequest = createLocationRequest()
+    private var locationRequest: LocationRequest? = null
 
     private var locationCallback: LocationCallback = object: LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -23,20 +43,22 @@ class LocationHelper(private val mContext: Context) {
     }
 
     fun start() {
+        if (locationRequest != null) return
+
+        locationRequest = createLocationRequest()
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
     fun stop() {
+        locationRequest = null
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-    companion object {
-        private fun createLocationRequest(): LocationRequest {
-            val locationRequest = LocationRequest.create()
-            locationRequest.interval = 1000
-            locationRequest.fastestInterval = 1000
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            return locationRequest
-        }
+    private fun createLocationRequest(): LocationRequest {
+        val locationRequest = LocationRequest.create()
+        locationRequest.interval = 1000
+        locationRequest.fastestInterval = 1000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        return locationRequest
     }
 }

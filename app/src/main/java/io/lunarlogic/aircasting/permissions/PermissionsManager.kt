@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.lib.ResultCodes
 
 class PermissionsManager {
-    val BLUETOOTH_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    val LOCATION_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
@@ -20,23 +20,23 @@ class PermissionsManager {
     }
 
     fun bluetoothPermissionsGranted(context: Context): Boolean {
-        return permissionsGranted(BLUETOOTH_PERMISSIONS, context)
+        return permissionsGranted(LOCATION_PERMISSIONS, context)
     }
 
     fun audioPermissionsGranted(context: Context): Boolean {
-        return permissionsGranted(AUDIO_PERMISSIONS, context)
+        return permissionsGranted(AUDIO_PERMISSIONS.plus(LOCATION_PERMISSIONS), context)
     }
 
     fun requestBluetoothPermissions(activity: Activity) {
         ActivityCompat.requestPermissions(activity,
-            BLUETOOTH_PERMISSIONS,
+            LOCATION_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH
         )
     }
 
     fun requestAudioPermissions(activity: Activity) {
         ActivityCompat.requestPermissions(activity,
-            AUDIO_PERMISSIONS,
+            AUDIO_PERMISSIONS.plus(LOCATION_PERMISSIONS),
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO
         )
     }

@@ -15,6 +15,7 @@ import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
@@ -45,6 +46,7 @@ class NewSessionController(
     private val bluetoothManager = BluetoothManager(mActivity, permissionsManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
+    private val microphoneReader = MicrophoneReader()
 
     fun onStart() {
         wizardNavigator.showFirstStep(this)
@@ -73,8 +75,8 @@ class NewSessionController(
     }
 
     private fun startMicrophoneSession() {
-        val reader = MicrophoneReader()
-        reader.start()
+        microphoneReader.start()
+        wizardNavigator.goToSessionDetails(MicrophoneReader.deviceId, this)
     }
 
     override fun onTurnOnBluetoothOkClicked() {
@@ -158,6 +160,7 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
+        LocationHelper.start()
         val event = StartRecordingEvent(session)
         EventBus.getDefault().post(event)
 

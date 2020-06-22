@@ -3,7 +3,7 @@ package io.lunarlogic.aircasting.networking.params
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
-import java.util.*
+import io.lunarlogic.aircasting.sensor.microphone.DEFAULT_CALIBRATION
 
 class SessionParams {
     constructor(session: Session) {
@@ -25,7 +25,7 @@ class SessionParams {
     val tag_list: String
     val start_time: String
     val end_time: String
-    val calibration = 100 // TODO: handle for microphone session only
+    val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only
     val contribute = true // TODO: handle from settings
     val is_indoor = false // TODO: handle for fixed sessions
     val deleted = false

@@ -21,7 +21,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
-    private val locationHelper = LocationHelper(mContext)
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
@@ -46,12 +45,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     fun onStart() {
         registerToEventBus()
         stopSessions()
-        locationHelper.start()
     }
 
     fun onStop() {
         unregisterFromEventBus()
-        locationHelper.stop()
     }
 
     private fun registerToEventBus() {
@@ -69,7 +66,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun addMeasurement(event: NewMeasurementEvent) {
         val measurementStream = MeasurementStream(event)
 
-        val location = locationHelper.lastLocation
+        val location = LocationHelper.lastLocation()
         val measurement = Measurement(event, location?.latitude , location?.longitude)
 
         val deviceId = event.deviceId ?: return

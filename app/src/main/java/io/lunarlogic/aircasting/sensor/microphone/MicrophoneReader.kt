@@ -11,7 +11,11 @@ class MicrophoneReader: AudioReader.Listener() {
     private val MEASUREMENT_TYPE = "Sound Level"
     private val SHORT_TYPE = "dB"
     private val SENSOR_NAME = "Phone Microphone"
-    private val SENSOR_PACKAGE_NAME = "Builtin"
+    private val SENSOR_PACKAGE_NAME = deviceId
+
+    companion object {
+        val deviceId = "Builtin"
+    }
 
     private val VERY_LOW = 20
     private val LOW = 60
@@ -43,7 +47,6 @@ class MicrophoneReader: AudioReader.Listener() {
                 VERY_LOW, LOW, MID, HIGH, VERY_HIGH, calibrated
             )
 
-            println("AudioReader " + event.measuredValue)
             EventBus.getDefault().post(event)
         }
     }
