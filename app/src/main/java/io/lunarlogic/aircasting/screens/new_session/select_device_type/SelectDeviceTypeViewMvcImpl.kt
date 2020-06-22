@@ -15,11 +15,22 @@ class SelectDeviceTypeViewMvcImpl : BaseObservableViewMvc<SelectDeviceTypeViewMv
         blueToothDeviceButton?.setOnClickListener {
             onBluetoothDeviceSelected()
         }
+
+        val microphoneDeviceButton = rootView?.findViewById<Button>(R.id.microphone_button)
+        microphoneDeviceButton?.setOnClickListener {
+            onMicrophoneDeviceSelected()
+        }
     }
 
     private fun onBluetoothDeviceSelected() {
         for (listener in listeners) {
             listener.onBluetoothDeviceSelected()
+        }
+    }
+
+    private fun onMicrophoneDeviceSelected() {
+        for (listener in listeners) {
+            listener.onMicrophoneDeviceSelected()
         }
     }
 }

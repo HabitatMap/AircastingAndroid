@@ -5,11 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.lunarlogic.aircasting.bluetooth.BluetoothActivity
+import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 
-class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
+class NewSessionActivity : AppCompatActivity(),
+    PermissionsActivity {
     private var controller: NewSessionController? = null
 
     companion object {
@@ -41,6 +42,14 @@ class NewSessionActivity : AppCompatActivity(), BluetoothActivity {
     override fun requestBluetoothEnable() {
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+    }
+
+    override fun requestAudioPermissions(permissionsManager: PermissionsManager) {
+        permissionsManager.requestAudioPermissions(this)
+    }
+
+    override fun audioPermissionsGranted(permissionsManager: PermissionsManager): Boolean {
+        return permissionsManager.audioPermissionsGranted(this)
     }
 
     override fun onStart() {

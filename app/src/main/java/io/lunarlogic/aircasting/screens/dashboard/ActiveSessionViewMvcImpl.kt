@@ -56,6 +56,6 @@ class ActiveSessionViewMvcImpl: BaseObservableViewMvc<ActiveSessionViewMvc.Liste
             return ""
         }
 
-        return "${measurement.value} ${stream.unitSymbol}"
+        return "%.2f %s".format(measurement.value, stream.unitSymbol)
     }
 }
