@@ -9,6 +9,9 @@ abstract class BaseException(private val mCause: Exception?, private val mMessag
 class BluetoothNotSupportedException():
     BaseException(null, "Bluetooth is not supported on this device")
 
+class AudioReaderError(errorCode: Int):
+    BaseException(Exception("Audio reader error code: ${errorCode}"), "Unexpected error while reading audio")
+
 class UnknownError(cause: Exception):
     BaseException(cause, "Something went wrong, please contact our support")
 

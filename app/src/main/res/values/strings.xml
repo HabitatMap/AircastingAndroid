@@ -41,7 +41,8 @@
     <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
     <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
     <string name="fixed_session_choose_location_continue_button">Continue</string>
-    <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
+    <string name="errors_bluetooth_required">Bluetooth and location services are required to continue</string>
+    <string name="errors_audio_required">Audio and location permissions are required to continue</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_name_required">Session name can\'t be blank.</string>
     <string name="active_session_already_exists">Active session already exists for this device.</string>

@@ -51,7 +51,7 @@ class NewSessionController(
     private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
-    private val microphoneReader = MicrophoneReader()
+    private val microphoneReader = MicrophoneReader(errorHandler)
 
     fun onStart() {
         wizardNavigator.showFirstStep(this)
@@ -101,7 +101,7 @@ class NewSessionController(
                 if (permissionsManager.permissionsGranted(grantResults)) {
                     startMicrophoneSession()
                 } else {
-                    errorHandler.showError(R.string.errors_bluetooth_required)
+                    errorHandler.showError(R.string.errors_audio_required)
                 }
             }
             else -> {

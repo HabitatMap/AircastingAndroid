@@ -7,5 +7,6 @@ class ResultCodes {
         val AIRCASTING_UNKNOWN_ERROR = 3
         val AIR_BEAM2_CONNECTION_OPEN_FAILED = 4
         val AIRCASTING_PERMISSIONS_REQUEST_AUDIO = 5
+        val AUDIO_READER_ERROR = 6
     }
 }
