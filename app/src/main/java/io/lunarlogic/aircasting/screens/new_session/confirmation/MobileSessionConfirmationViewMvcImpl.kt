@@ -8,7 +8,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
-class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc {
+class MobileSessionConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc {
     private var session: Session? = null
 
     constructor(

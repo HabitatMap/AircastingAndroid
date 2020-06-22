@@ -37,8 +37,8 @@ class NewSessionController(
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val airBeam2Connector: AirBeam2Connector
-
-) : SelectDeviceTypeViewMvc.Listener,
+) : SelectSessionTypeViewMvc.Listener,
+    SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -52,6 +52,7 @@ class NewSessionController(
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
     private val microphoneReader = MicrophoneReader(errorHandler)
+    private var sessionType: Session.Type? = null
 
     fun onStart() {
         wizardNavigator.showFirstStep(this)
@@ -59,6 +60,15 @@ class NewSessionController(
 
     fun onBackPressed() {
         wizardNavigator.onBackPressed()
+    }
+
+    override fun onFixedSessionSelected() {
+        sessionType = Session.Type.FIXED
+        wizardNavigator.goToSelectDeviceType(this)
+    }
+    override fun onMobileSessionSelected() {
+        sessionType = Session.Type.MOBILE
+        wizardNavigator.goToSelectDeviceType(this)
     }
 
     override fun onBluetoothDeviceSelected() {
@@ -81,7 +91,7 @@ class NewSessionController(
 
     private fun startMicrophoneSession() {
         microphoneReader.start()
-        wizardNavigator.goToSessionDetails(MicrophoneReader.deviceId, this)
+        wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
     }
 
     override fun onTurnOnBluetoothOkClicked() {
@@ -150,7 +160,7 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {
-        wizardNavigator.goToSessionDetails(deviceId, this)
+        wizardNavigator.goToSessionDetails(sessionType!!, deviceId, this)
     }
 
     override fun validationFailed() {
@@ -159,8 +169,8 @@ class NewSessionController(
         toast.show()
     }
 
-    override fun onSessionDetailsContinueClicked(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
-        val session = Session(deviceId, sessionName, sessionTags, Session.Status.NEW)
+    override fun onSessionDetailsContinueClicked(deviceId: String, sessionType: Session.Type, sessionName: String, sessionTags: ArrayList<String>) {
+        val session = Session(deviceId, sessionType, sessionName, sessionTags, Session.Status.NEW)
         wizardNavigator.goToConfirmation(session, this)
     }
 

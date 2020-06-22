@@ -9,6 +9,7 @@ val TAGS_SEPARATOR = " "
 
 class Session(
     val deviceId: String?,
+    private val mType: Type,
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
@@ -21,6 +22,7 @@ class Session(
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.deviceId,
+        sessionDBObject.type,
         sessionDBObject.name,
         sessionDBObject.tags,
         sessionDBObject.status,
@@ -38,12 +40,18 @@ class Session(
         }
     }
 
+    enum class Type(val value: Int){
+        MOBILE(0),
+        FIXED(1)
+    }
+
     enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
         FINISHED(1)
     }
 
+    val type get() = mType
     val name get() = mName
     val tags get() = mTags
     val startTime get() = mStartTime
@@ -59,10 +67,6 @@ class Session(
     fun stopRecording() {
         mEndTime = Date()
         mStatus = Status.FINISHED
-    }
-
-    fun isRecording(): Boolean {
-        return status == Status.RECORDING
     }
 
     fun isUploadable(): Boolean {

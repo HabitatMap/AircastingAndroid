@@ -44,6 +44,7 @@ class DownloadService(private val apiService: ApiService, private val errorHandl
 
         val session = Session(
             null,
+            Session.Type.MOBILE,
             sessionResponse.title,
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,

@@ -14,6 +14,7 @@ import kotlin.collections.ArrayList
 )
 data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
+    @ColumnInfo(name = "type") val type: Session.Type,
     @ColumnInfo(name = "device_id") val deviceId: String?,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
@@ -29,6 +30,7 @@ data class SessionDBObject(
     constructor(session: Session):
             this(
                 session.uuid,
+                session.type,
                 session.deviceId,
                 session.name,
                 session.tags,

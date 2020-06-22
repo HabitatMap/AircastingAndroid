@@ -27,10 +27,18 @@ class NewSessionWizardNavigator(
         fun onBackPressed()
     }
 
-    fun showFirstStep(listener: SelectDeviceTypeViewMvc.Listener) {
-        val fragment = SelectDeviceTypeFragment()
+    fun showFirstStep(listener: SelectSessionTypeViewMvc.Listener) {
+        val fragment = SelectSessionTypeFragment()
         fragment.listener = listener
         replaceFragment(fragment)
+        updateProgressBarView()
+    }
+
+    fun goToSelectDeviceType(listener: SelectDeviceTypeViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = SelectDeviceTypeFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
         updateProgressBarView()
     }
 
@@ -74,11 +82,12 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToSessionDetails(deviceId: String, listener: SessionDetailsViewMvc.Listener) {
+    fun goToSessionDetails(sessionType: Session.Type, deviceId: String, listener: SessionDetailsViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = listener
         fragment.deviceId = deviceId
+        fragment.sessionType = sessionType
         goToFragment(fragment)
     }
 

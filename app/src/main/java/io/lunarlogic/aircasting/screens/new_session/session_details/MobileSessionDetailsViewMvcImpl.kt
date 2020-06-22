@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
-class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
+class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     private var deviceId: String
 
     constructor(
@@ -17,11 +17,11 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
         parent: ViewGroup?,
         deviceId: String
     ): super() {
-        this.rootView = inflater.inflate(R.layout.fragment_session_details, parent, false)
+        this.rootView = inflater.inflate(R.layout.fragment_mobile_session_details, parent, false)
         this.deviceId = deviceId
 
-        val blueToothDeviceButton = rootView?.findViewById<Button>(R.id.continue_button)
-        blueToothDeviceButton?.setOnClickListener {
+        val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
+        continueButton?.setOnClickListener {
             onSessionDetailsContinueClicked()
         }
     }
@@ -45,7 +45,7 @@ class SessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Li
 
     private fun notifyAboutSuccess(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(deviceId, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(deviceId, Session.Type.MOBILE, sessionName, sessionTags)
         }
     }
 
