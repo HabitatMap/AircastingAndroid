@@ -12,6 +12,7 @@
     <string name="dashboard_empty">You haven\'t added any sessions to your Dashboard yet.</string>
     <string name="dashboard_tabs_mobile_active">Mobile active</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
+    <string name="dashboard_tabs_fixed">Fixed</string>
     <string name="record_new_session">Record new session</string>
     <string name="stop_session">Stop session</string>
     <string name="delete_session">Delete session</string>

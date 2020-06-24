@@ -43,8 +43,8 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByByDeviceIdAndStatus(deviceId, Session.Status.RECORDING) != null
     }
 
-    fun stopSessions() {
-        mDatabase.sessions().updateStatusAndEndTime(Session.Status.FINISHED, Date())
+    fun stopMobileSessions() {
+        mDatabase.sessions().updateStatusAndEndTimeForSessionType(Session.Status.FINISHED, Date(), Session.Type.MOBILE)
     }
 
     fun finishedSessions(): List<Session> {

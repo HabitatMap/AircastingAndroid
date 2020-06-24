@@ -44,7 +44,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStart() {
         registerToEventBus()
-        stopSessions()
+        stopMobileSessions()
     }
 
     fun onStop() {
@@ -59,8 +59,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().unregister(this);
     }
 
-    private fun stopSessions() {
-        DatabaseProvider.runQuery { sessionsRespository.stopSessions() }
+    private fun stopMobileSessions() {
+        DatabaseProvider.runQuery { sessionsRespository.stopMobileSessions() }
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {

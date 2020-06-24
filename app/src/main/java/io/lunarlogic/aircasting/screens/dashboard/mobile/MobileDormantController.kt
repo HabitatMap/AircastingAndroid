@@ -1,30 +1,27 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.mobile
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
-import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.SyncService
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.screens.dashboard.SessionsController
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import org.greenrobot.eventbus.EventBus
 
-class MobileActiveController(
+class MobileDormantController(
     private val mContext: Context?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
-): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings), SessionsViewMvc.Listener {
+): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
+    SessionsViewMvc.Listener {
 
     override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
-        return mSessionsViewModel.loadActiveSessionsWithMeasurements()
+        return mSessionsViewModel.loadMobileDormantSessionsWithMeasurements()
     }
 
     fun onCreate() {
@@ -36,12 +33,12 @@ class MobileActiveController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onStopSessionClicked(sessionUUID: String) {
-        val event = StopRecordingEvent(sessionUUID)
+    override fun onDeleteSessionClicked(sessionUUID: String) {
+        val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
     }
 
-    override fun onDeleteSessionClicked(sessionUUID: String) {
+    override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
 }

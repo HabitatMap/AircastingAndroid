@@ -1,16 +1,18 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.mobile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
 
 class MobileActiveViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?
-): SessionsViewMvcImpl<ActiveSessionViewMvc.Listener>(inflater, parent), ActiveSessionViewMvc.Listener {
+): SessionsViewMvcImpl<MobileActiveSessionViewMvc.Listener>(inflater, parent),
+    MobileActiveSessionViewMvc.Listener {
 
-    override fun buildAdapter(inflater: LayoutInflater): SessionsRecyclerAdapter<ActiveSessionViewMvc.Listener> {
+    override fun buildAdapter(inflater: LayoutInflater): SessionsRecyclerAdapter<MobileActiveSessionViewMvc.Listener> {
         return MobileActiveRecyclerAdapter(
             inflater,
             this
