@@ -3,14 +3,18 @@ package io.lunarlogic.aircasting.sensor.airbeam2
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.events.ConfigureSession
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
+import java.io.OutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -23,16 +27,17 @@ open class AirBeam2Connector(
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+
     private var mThread: ConnectThread? = null
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
     lateinit var listener: ConnectingAirBeamController.Listener
 
-    open fun connect(deviceItem: DeviceItem) {
+    open fun connect(deviceItem: DeviceItem, sessionType: Session.Type) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
             EventBus.getDefault().register(this);
-            mThread = ConnectThread(deviceItem)
+            mThread = ConnectThread(deviceItem, sessionType)
             mThread?.start()
         }
     }
@@ -41,11 +46,17 @@ open class AirBeam2Connector(
         mThread?.cancel()
     }
 
-    private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
+    fun configureSession(session: Session) {
+        mThread?.configureSession(session)
+    }
+
+    private inner class ConnectThread(private val deviceItem: DeviceItem, private val sessionType: Session.Type) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
             device.createRfcommSocketToServiceRecord(SPP_SERIAL)
         }
+
+        private lateinit var mOutputStream: OutputStream
 
         override fun run() {
             // Cancel discovery because it otherwise slows down the connection.
@@ -58,12 +69,7 @@ open class AirBeam2Connector(
                     // wait until connection is finished before sending anything to AirBeam
                     sleep(ESTIMATED_CONNECTING_TIME_SECONDS)
 
-                    val outputStream = socket.outputStream
-                    try {
-                        mAirBeamConfigurator.configureBluetooth(outputStream)
-                    } catch (e: IOException) {
-                        mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
-                    }
+                    mOutputStream = socket.outputStream
 
                     listener.onConnectionSuccessful(deviceItem.id)
                     mAirBeam2Reader.run(socket.inputStream)
@@ -98,6 +104,28 @@ open class AirBeam2Connector(
                 }
             }
         }
+
+        fun configureSession(session: Session) {
+            try {
+                mAirBeamConfigurator.configureSessionType(session, mOutputStream)
+                if (session.isFixed()) {
+                    mAirBeamConfigurator.configureFixedSessionDetails(
+                        session.location!!,
+                        session.streamingMethod!!,
+                        "slimaki-guest",
+                        "testtest",
+                        mOutputStream
+                    )
+                }
+            } catch (e: IOException) {
+                mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
+            }
+        }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: ConfigureSession) {
+        configureSession(event.session)
     }
 
     @Subscribe

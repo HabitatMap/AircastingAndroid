@@ -19,7 +19,7 @@ class SessionDetailsFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = SessionDetailsViewFactory.get(sessionType, inflater, container, deviceId)
+        val view = SessionDetailsViewFactory.get(inflater, container, deviceId, sessionType)
         controller = SessionDetailsController(context, view)
 
         return view.rootView

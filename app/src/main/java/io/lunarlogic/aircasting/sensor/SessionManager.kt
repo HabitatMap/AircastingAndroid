@@ -5,10 +5,7 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
-import io.lunarlogic.aircasting.events.DeleteSessionEvent
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
-import io.lunarlogic.aircasting.events.StartRecordingEvent
-import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiService
@@ -81,6 +78,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun startRecording(session: Session) {
+        EventBus.getDefault().post(ConfigureSession(session))
+
         session.startRecording()
 
         DatabaseProvider.runQuery {

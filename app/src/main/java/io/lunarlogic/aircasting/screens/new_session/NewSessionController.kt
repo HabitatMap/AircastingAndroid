@@ -150,7 +150,7 @@ class NewSessionController(
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
-                wizardNavigator.goToConnectingAirBeam(deviceItem, listener, airBeam2Connector)
+                wizardNavigator.goToConnectingAirBeam(deviceItem, sessionType!!, listener, airBeam2Connector)
             }
         }
     }
@@ -169,8 +169,25 @@ class NewSessionController(
         toast.show()
     }
 
-    override fun onSessionDetailsContinueClicked(deviceId: String, sessionType: Session.Type, sessionName: String, sessionTags: ArrayList<String>) {
-        val session = Session(deviceId, sessionType, sessionName, sessionTags, Session.Status.NEW)
+    override fun onSessionDetailsContinueClicked(
+        deviceId: String,
+        sessionType: Session.Type,
+        sessionName: String,
+        sessionTags: ArrayList<String>,
+        indoor: Boolean?,
+        streamingMethod: Session.StreamingMethod?
+    ) {
+        val location = LocationHelper.lastLocation()!! // TODO: handle
+        val session = Session(
+            deviceId,
+            sessionType,
+            sessionName,
+            sessionTags,
+            Session.Status.NEW,
+            indoor,
+            streamingMethod,
+            location
+        )
         wizardNavigator.goToConfirmation(session, this)
     }
 

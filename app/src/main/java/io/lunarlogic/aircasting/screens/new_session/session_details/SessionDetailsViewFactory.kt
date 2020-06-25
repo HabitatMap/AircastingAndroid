@@ -10,10 +10,10 @@ import io.lunarlogic.aircasting.sensor.Session
 class SessionDetailsViewFactory() {
     companion object {
         fun get(
-            sessionType: Session.Type,
             inflater: LayoutInflater,
             parent: ViewGroup?,
-            deviceId: String
+            deviceId: String,
+            sessionType: Session.Type
         ): SessionDetailsViewMvc {
             return when(sessionType) {
                 Session.Type.MOBILE -> MobileSessionDetailsViewMvcImpl(inflater, parent, deviceId)

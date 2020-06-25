@@ -4,13 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Switch
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
+import android.widget.CompoundButton
+
 
 class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     private var deviceId: String
+    private var indoor = true
+    private var streamingMethod = Session.StreamingMethod.CELLULAR
 
     constructor(
         inflater: LayoutInflater,
@@ -23,6 +28,20 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
             onSessionDetailsContinueClicked()
+        }
+
+        val indoorToggle = rootView?.findViewById<Switch>(R.id.indoor_toggle)
+        indoorToggle?.setOnCheckedChangeListener { _, isChecked ->
+            indoor = isChecked
+        }
+
+        val streamingMethofToggle = rootView?.findViewById<Switch>(R.id.streaming_method_toggle)
+        streamingMethofToggle?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                streamingMethod = Session.StreamingMethod.CELLULAR
+            } else {
+                streamingMethod = Session.StreamingMethod.WIFI
+            }
         }
     }
 
@@ -45,7 +64,14 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
 
     private fun notifyAboutSuccess(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(deviceId, Session.Type.FIXED, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(
+                deviceId,
+                Session.Type.FIXED,
+                sessionName,
+                sessionTags,
+                indoor,
+                streamingMethod
+            )
         }
     }
 
