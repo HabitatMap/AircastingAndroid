@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.main
 
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.ApplicationClosed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
@@ -27,6 +28,8 @@ class MainController(
         } else {
             setupDashboard()
         }
+
+        DatabaseProvider.runQuery { DatabaseProvider.get().sessions().deleteAll() }
 
         mSessionManager?.onStart()
     }

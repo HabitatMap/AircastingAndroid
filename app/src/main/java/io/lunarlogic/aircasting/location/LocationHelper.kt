@@ -55,6 +55,7 @@ class LocationHelper(private val mContext: Context) {
     }
 
     private fun createLocationRequest(): LocationRequest {
+        println("ANIA createLocationRequest")
         val locationRequest = LocationRequest.create()
         locationRequest.interval = 1000
         locationRequest.fastestInterval = 1000

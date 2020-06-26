@@ -10,14 +10,17 @@ import io.lunarlogic.aircasting.sensor.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
-class UploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    fun upload(session: Session, successCallback: () -> Unit) {
+class FixedSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+    fun upload(session: Session, successCallback: () -> Unit = {}) {
+        session.endTime = Date()
+
         val sessionParams = SessionParams(session)
         val sessionBody = CreateSessionBody(
             GzippedSession.get(sessionParams)
         )
-        val call = apiService.createSession(sessionBody)
+        val call = apiService.createFixedSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {

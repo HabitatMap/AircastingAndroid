@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.sensor
 
-import android.location.Location
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import java.util.*
@@ -15,7 +14,7 @@ class Session(
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
-    private var mEndTime: Date? = null,
+    var endTime: Date? = null,
     val uuid: String = generateUUID(),
     var version: Int = 0,
     var deleted: Boolean = false,
@@ -78,11 +77,12 @@ class Session(
         WIFI(1)
     }
 
+    class Location(val latitude: Double, val longitude: Double)
+
     val type get() = mType
     val name get() = mName
     val tags get() = mTags
     val startTime get() = mStartTime
-    val endTime get() = mEndTime
 
     private var mIndoor: Boolean? = null
     private var mStreamingMethod: StreamingMethod? = null
@@ -99,7 +99,7 @@ class Session(
     }
 
     fun stopRecording() {
-        mEndTime = Date()
+        endTime = Date()
         mStatus = Status.FINISHED
     }
 

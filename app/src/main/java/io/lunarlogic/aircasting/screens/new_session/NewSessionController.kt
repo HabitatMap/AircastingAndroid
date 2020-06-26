@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
+import android.location.Location
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -177,7 +178,10 @@ class NewSessionController(
         indoor: Boolean?,
         streamingMethod: Session.StreamingMethod?
     ) {
-        val location = LocationHelper.lastLocation()!! // TODO: handle
+
+        println("ANIA lastLocation null?" + LocationHelper.lastLocation())
+        val location = Session.Location(50.058191, 19.9263968)
+        //val location = LocationHelper.lastLocation()//!! // TODO: handle
         val session = Session(
             deviceId,
             sessionType,
@@ -196,7 +200,9 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
+        println("ANIA LocationHelper.start")
         LocationHelper.start()
+
         val event = StartRecordingEvent(session)
         EventBus.getDefault().post(event)
 

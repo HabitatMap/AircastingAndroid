@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
-import android.location.Location
 import io.lunarlogic.aircasting.lib.Settings
 import java.io.OutputStream
 import io.lunarlogic.aircasting.sensor.Session
@@ -17,7 +16,7 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     }
 
     fun configureFixedSessionDetails(
-        location: Location,
+        location: Session.Location,
         streamingMethod: Session.StreamingMethod,
         wifiSSID: String?,
         wifiPassword: String?,
