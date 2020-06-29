@@ -24,7 +24,7 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     ) {
         println("ANIA configureFixedSessionDetails " + location.latitude + ", " + location.longitude + " " + wifiSSID + ", " + wifiPassword)
         configureLocation(location.latitude, location.longitude, outputStream)
-        sleepFor(2000)
+        sleepFor(3000)
         configureStreamingMethod(streamingMethod, wifiSSID, wifiPassword, outputStream)
     }
 
@@ -33,9 +33,10 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     }
 
     private fun configureFixedSession(session: Session, outputStream: OutputStream) {
-        println("ANIA configureFixedSession uuid" + session.uuid)
-        println("ANIA configureFixedSession authToken" + mSettings.getAuthToken())
+        println("ANIA configureFixedSession uuid " + session.uuid)
+        println("ANIA configureFixedSession authToken " + mSettings.getAuthToken())
         sendUUID(session.uuid, outputStream)
+        sleepFor(3000)
         sendAuthToken(mSettings.getAuthToken()!!, outputStream)
     }
 

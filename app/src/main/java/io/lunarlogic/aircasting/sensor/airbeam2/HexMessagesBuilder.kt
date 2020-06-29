@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
+import android.util.Base64
 import io.lunarlogic.aircasting.lib.TimezoneHelper
-import io.lunarlogic.aircasting.lib.base64.Base64
 import java.io.UnsupportedEncodingException
 
 class HexMessagesBuilder {
@@ -27,22 +27,29 @@ class HexMessagesBuilder {
     }
 
     fun authTokenMessage(authToken: String): ByteArray {
-        var data = ByteArray(0)
-
+//        var data = ByteArray(0)
+//
         val rawAuthToken = "$authToken:X"
 
-        try {
-            data = rawAuthToken.toByteArray(charset("UTF-8"))
-        } catch (e: UnsupportedEncodingException) {
-        }
+        println("ANIA rawAuthToken" + rawAuthToken)
+//
+//        try {
+//            data = rawAuthToken.toByteArray(charset("UTF-8"))
+//        } catch (e: UnsupportedEncodingException) {
+//        }
+//
+//        val base64 = Base64.encodeBase64String(data);
 
-        val base64 = Base64.encodeBase64String(data);
+        val encodedCredentials = Base64.encodeToString(rawAuthToken.toByteArray(), Base64.NO_WRAP)
 
-        return buildMessage(base64, AUTH_TOKEN_CODE)
+        println("ANIA encodedCredentials" + encodedCredentials)
+
+        return buildMessage(encodedCredentials, AUTH_TOKEN_CODE)
     }
 
     fun locationMessage(lat: Double, lng: Double): ByteArray {
         val rawLatLngStr = "${lng},${lat}"
+        println("ANIA rawLatLngStr" + rawLatLngStr)
         return buildMessage(rawLatLngStr, LAT_LNG_CODE)
     }
 

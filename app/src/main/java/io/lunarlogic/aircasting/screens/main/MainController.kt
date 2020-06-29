@@ -30,6 +30,7 @@ class MainController(
         }
 
         DatabaseProvider.runQuery { DatabaseProvider.get().sessions().deleteAll() }
+        println("ANIA MAIN")
 
         mSessionManager?.onStart()
     }
