@@ -23,6 +23,7 @@ class AirBeam2Configurator(private val mSettings: Settings) {
         outputStream: OutputStream
     ) {
         println("ANIA configureFixedSessionDetails " + location.latitude + ", " + location.longitude + " " + wifiSSID + ", " + wifiPassword)
+        sleepFor(3000)
         configureLocation(location.latitude, location.longitude, outputStream)
         sleepFor(3000)
         configureStreamingMethod(streamingMethod, wifiSSID, wifiPassword, outputStream)
