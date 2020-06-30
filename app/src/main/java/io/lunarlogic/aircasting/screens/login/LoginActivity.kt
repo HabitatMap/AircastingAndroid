@@ -22,7 +22,7 @@ class LoginActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val view = LoginViewMvcImpl(layoutInflater, null)
-        val settings = Settings(this)
+        val settings = Settings()
         controller = LoginController(this, view, settings)
 
         setContentView(view.rootView)

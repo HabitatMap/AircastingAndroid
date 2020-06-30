@@ -21,10 +21,10 @@ abstract class SessionsController(
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner
 ) : SessionsViewMvc.Listener {
-    private val mSettings = Settings(mContext!!)
+//    private val mSettings = Settings(mContext!!)
     private val mErrorHandler = ErrorHandler(mContext!!)
-    private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
+//    private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
+//    private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
 
     fun registerSessionsObserver() {
         loadSessions().observe(mLifecycleOwner, Observer { sessions ->
@@ -45,6 +45,6 @@ abstract class SessionsController(
     }
 
     override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        mSessionSyncService.sync(callback)
+//        mSessionSyncService.sync(callback)
     }
 }
