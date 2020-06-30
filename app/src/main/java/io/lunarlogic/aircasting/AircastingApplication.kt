@@ -9,7 +9,8 @@ class AircastingApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule())
+            .appModule(AppModule(this))
             .build()
+        appComponent.inject(this)
     }
 }

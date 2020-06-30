@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.lib
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import javax.inject.Inject
@@ -8,7 +9,7 @@ interface SettingsInterface {
     fun getAuthToken(): String?
 }
 
-class Settings @Inject constructor(): SettingsInterface {
+class Settings(application: Application): SettingsInterface {
     override fun getAuthToken(): String? {
         return "real auth token"
     }

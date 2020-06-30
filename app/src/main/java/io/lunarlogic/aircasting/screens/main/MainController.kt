@@ -12,18 +12,18 @@ import io.lunarlogic.aircasting.lib.SettingsInterface
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
-import javax.inject.Inject
 
-class MainController(private val rootActivity: AppCompatActivity, private val mViewMvc: MainViewMvc) {
+class MainController(
+    private val rootActivity: AppCompatActivity,
+    private val mViewMvc: MainViewMvc,
+    private val settings: SettingsInterface
+) {
     private var mSessionManager: SessionManager? = null
 //    private val mSettings = Settings(rootActivity)
     private var mConnectivityManager: ConnectivityManager? = null
     val errorHandler = ErrorHandler(rootActivity)
 
     private var sessionManager: SessionManager? = null
-
-    @Inject
-    lateinit var settings: SettingsInterface
 
     fun onCreate() {
         println("ANIA " + settings.getAuthToken())

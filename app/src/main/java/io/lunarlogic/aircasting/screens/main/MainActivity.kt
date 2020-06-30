@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val application = (application as AircastingApplication)
-//        application.appComponent.inject(application)
         (application as AircastingApplication)
             .appComponent.inject(this)
         println("ANIA activity " + settings.getAuthToken())
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         LocationHelper.setup(applicationContext)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
-//        controller = MainController(this, view)
+        controller = MainController(this, view, settings)
 
         controller?.onCreate()
 

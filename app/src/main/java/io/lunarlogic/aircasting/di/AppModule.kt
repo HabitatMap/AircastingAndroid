@@ -2,11 +2,12 @@ package io.lunarlogic.aircasting.di
 
 import dagger.Module
 import dagger.Provides
-import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.lib.SettingsInterface
+import io.lunarlogic.aircasting.AircastingApplication
+import javax.inject.Singleton
 
 @Module
-class AppModule {
+class AppModule(private val app: AircastingApplication) {
     @Provides
-    fun providesSettings(): SettingsInterface = Settings()
+    @Singleton
+    fun provideApp(): AircastingApplication = app
 }

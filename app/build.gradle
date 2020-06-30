@@ -57,11 +57,15 @@ dependencies {
 
     def daggerVer = 2.27
     implementation "com.google.dagger:dagger:$daggerVer"
-    kapt  "com.google.dagger:dagger-compiler:$daggerVer"
+    kapt "com.google.dagger:dagger-compiler:$daggerVer"
+    kaptTest "com.google.dagger:dagger-compiler:$daggerVer"
     implementation "com.google.dagger:dagger-android:$daggerVer"
-    kapt  "com.google.dagger:dagger-android-processor:$daggerVer"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVer"
+    kaptTest "com.google.dagger:dagger-android-processor:$daggerVer"
     implementation "com.google.dagger:dagger-android-support:$daggerVer"
-    kapt  "com.google.dagger:dagger-android-support:$daggerVer"
+    kapt "com.google.dagger:dagger-android-support:$daggerVer"
+    kaptTest "com.google.dagger:dagger-android-support:$daggerVer"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVer"
 
     implementation 'com.google.firebase:firebase-analytics:17.4.0'
     implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
