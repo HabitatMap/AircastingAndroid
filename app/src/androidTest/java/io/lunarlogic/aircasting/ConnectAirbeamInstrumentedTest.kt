@@ -1,20 +1,16 @@
 package io.lunarlogic.aircasting
 
-import android.app.Application
 import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import okhttp3.mockwebserver.MockResponse
 import com.google.gson.Gson
-import dagger.Module
-import dagger.Provides
 import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.SettingsModule
-import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.lib.SettingsInterface
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import org.junit.Before
@@ -25,18 +21,7 @@ import org.junit.runner.RunWith
 import org.junit.Rule
 import java.net.HttpURLConnection
 import javax.inject.Inject
-import javax.inject.Singleton
 
-
-class FakeSettings(application: Application): SettingsInterface {
-    override fun getAuthToken(): String? {
-        return "fake!"
-    }
-}
-
-class TestSettingsModule: SettingsModule() {
-    override fun providesSettings(application: AircastingApplication): SettingsInterface = FakeSettings(application)
-}
 
 @RunWith(AndroidJUnit4::class)
 class ConnectAirbeamInstrumentedTest {
@@ -64,7 +49,7 @@ class ConnectAirbeamInstrumentedTest {
 
     @Before
     fun setup() {
-        val app = InstrumentationRegistry.getTargetContext().applicationContext as AircastingApplication
+        val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
