@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting
 
-import androidx.test.InstrumentationRegistry
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -12,7 +11,7 @@ import com.google.gson.Gson
 import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.di.AppModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
-import io.lunarlogic.aircasting.lib.SettingsInterface
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import org.junit.Before
 
@@ -30,7 +29,7 @@ class ConnectAirbeamInstrumentedTest {
     private lateinit var testAppComponent: TestAppComponent
 
     @Inject
-    lateinit var settings: SettingsInterface
+    lateinit var settings: Settings
 
     val gson = Gson()
     val body = mapOf(
@@ -65,16 +64,7 @@ class ConnectAirbeamInstrumentedTest {
 
     @Test
     fun verifySelectDeviceFlow() {
-        whenever(settings.getAuthToken()).thenReturn("TOKEN1")
-
-        testRule.launchActivity(null)
-
-        onView(withId(R.id.login_button)).perform(click())
-    }
-
-    @Test
-    fun verifySelectDeviceFlow2() {
-        whenever(settings.getAuthToken()).thenReturn("TOKEN2")
+        whenever(settings.getAuthToken()).thenReturn("FAKE TOKEN")
 
         testRule.launchActivity(null)
 

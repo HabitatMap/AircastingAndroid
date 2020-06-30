@@ -7,14 +7,14 @@ import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.location.LocationHelper
-import io.lunarlogic.aircasting.lib.SettingsInterface
+import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private var controller: MainController? = null
 
     @Inject
-    lateinit var settings: SettingsInterface
+    lateinit var settings: Settings
 
     companion object {
         fun start(context: Context?) {
