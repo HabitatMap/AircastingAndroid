@@ -55,17 +55,17 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
-    def daggerVer = 2.27
-    implementation "com.google.dagger:dagger:$daggerVer"
-    kapt "com.google.dagger:dagger-compiler:$daggerVer"
-    kaptTest "com.google.dagger:dagger-compiler:$daggerVer"
-    implementation "com.google.dagger:dagger-android:$daggerVer"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVer"
-    kaptTest "com.google.dagger:dagger-android-processor:$daggerVer"
-    implementation "com.google.dagger:dagger-android-support:$daggerVer"
-    kapt "com.google.dagger:dagger-android-support:$daggerVer"
-    kaptTest "com.google.dagger:dagger-android-support:$daggerVer"
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVer"
+    def daggerVersion = 2.27
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kaptTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-support:$daggerVersion"
+    kaptTest "com.google.dagger:dagger-android-support:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
 
     implementation 'com.google.firebase:firebase-analytics:17.4.0'
     implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
@@ -89,4 +89,9 @@ dependencies {
 
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:2.8.1"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.8.0"
+
+    def mockitoVersion = '2.6.3'
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
+    androidTestImplementation 'com.nhaarman:mockito-kotlin:1.5.0'
 }

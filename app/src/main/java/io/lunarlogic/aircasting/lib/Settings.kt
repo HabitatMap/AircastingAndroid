@@ -9,7 +9,7 @@ interface SettingsInterface {
     fun getAuthToken(): String?
 }
 
-class Settings(application: Application): SettingsInterface {
+open class Settings(application: Application): SettingsInterface {
     override fun getAuthToken(): String? {
         return "real auth token"
     }

@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import okhttp3.mockwebserver.MockResponse
 import com.google.gson.Gson
+import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.di.AppModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.lib.SettingsInterface
@@ -19,15 +20,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Rule
+import org.mockito.MockitoAnnotations
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
 class ConnectAirbeamInstrumentedTest {
+    private lateinit var testAppComponent: TestAppComponent
+
     @Inject
     lateinit var settings: SettingsInterface
-
 
     val gson = Gson()
     val body = mapOf(
@@ -49,18 +52,30 @@ class ConnectAirbeamInstrumentedTest {
 
     @Before
     fun setup() {
+        MockitoAnnotations.initMocks(this)
+
         val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-        val testAppComponent = DaggerTestAppComponent.builder()
+        testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
-        println("==== TestAppComponent injected")
     }
 
     @Test
     fun verifySelectDeviceFlow() {
+        whenever(settings.getAuthToken()).thenReturn("TOKEN1")
+
+        testRule.launchActivity(null)
+
+        onView(withId(R.id.login_button)).perform(click())
+    }
+
+    @Test
+    fun verifySelectDeviceFlow2() {
+        whenever(settings.getAuthToken()).thenReturn("TOKEN2")
+
         testRule.launchActivity(null)
 
         onView(withId(R.id.login_button)).perform(click())
