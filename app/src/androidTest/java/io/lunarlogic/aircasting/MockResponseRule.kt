@@ -23,7 +23,7 @@ class MockResponseRule(private val mockResponse: MockResponse) : TestRule {
             mockWebServer.enqueue(mockResponse)
 
             try {
-                base.evaluate() // This executes your tests
+                base.evaluate()
             } finally {
                 mockWebServer.shutdown()
             }

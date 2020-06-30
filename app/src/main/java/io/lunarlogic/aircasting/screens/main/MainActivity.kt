@@ -27,9 +27,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         (application as AircastingApplication)
             .appComponent.inject(this)
-        println("ANIA activity " + settings.getAuthToken())
 
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)

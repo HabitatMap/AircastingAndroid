@@ -8,5 +8,5 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AppModule::class, SettingsModule::class])
 interface TestAppComponent: AppComponent {
-    fun inject(test: ConnectAirbeamInstrumentedTest)
+    fun inject(test: LoginTest)
 }

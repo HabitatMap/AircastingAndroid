@@ -3,7 +3,8 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import okhttp3.mockwebserver.MockResponse
@@ -25,7 +26,8 @@ import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
-class ConnectAirbeamInstrumentedTest {
+class LoginTest {
+    private val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
     private lateinit var testAppComponent: TestAppComponent
 
     @Inject
@@ -53,7 +55,6 @@ class ConnectAirbeamInstrumentedTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
         testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
@@ -63,11 +64,14 @@ class ConnectAirbeamInstrumentedTest {
     }
 
     @Test
-    fun verifySelectDeviceFlow() {
-        whenever(settings.getAuthToken()).thenReturn("FAKE TOKEN")
+    fun loginTest() {
+        whenever(settings.getAuthToken()).thenReturn(null)
 
         testRule.launchActivity(null)
 
+        whenever(settings.getAuthToken()).thenReturn("TOKEN")
+
         onView(withId(R.id.login_button)).perform(click())
+        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
     }
 }

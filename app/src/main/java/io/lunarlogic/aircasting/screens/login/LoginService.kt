@@ -11,22 +11,21 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LoginService(val mSettings: Settings, private val mErrorHandler: ErrorHandler) {
-    val apiService = ApiServiceFactory.get("", "")
-
     fun performLogin(username: String, password: String,
                      successCallback: () -> Unit,
                      errorCallback: () -> Unit
     ) {
+        val apiService = ApiServiceFactory.get(username, password)
         val call = apiService.login()
 
         call.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {
-//                    val body = response.body()
-//                    body?.let {
-//                        mSettings.setEmail(body.email)
-//                        mSettings.setAuthToken(body.authentication_token)
-//                    }
+                    val body = response.body()
+                    body?.let {
+                        mSettings.setEmail(body.email)
+                        mSettings.setAuthToken(body.authentication_token)
+                    }
                     successCallback()
                 } else if(response.code() == 401) {
                     errorCallback()
