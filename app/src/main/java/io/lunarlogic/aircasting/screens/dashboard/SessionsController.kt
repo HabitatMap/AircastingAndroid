@@ -19,9 +19,9 @@ abstract class SessionsController(
     private val mContext: Context?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mLifecycleOwner: LifecycleOwner
+    private val mLifecycleOwner: LifecycleOwner,
+    private val mSettings: Settings
 ) : SessionsViewMvc.Listener {
-    private val mSettings = Settings(mContext!!)
     private val mErrorHandler = ErrorHandler(mContext!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
     private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
