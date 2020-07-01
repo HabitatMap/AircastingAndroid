@@ -19,8 +19,9 @@ class MobileDormantController(
     private val mContext: Context?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mLifecycleOwner: LifecycleOwner
-): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner), SessionsViewMvc.Listener {
+    private val mLifecycleOwner: LifecycleOwner,
+    mSettings: Settings
+): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings), SessionsViewMvc.Listener {
 
     override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
         return mSessionsViewModel.loadDormantSessionsWithMeasurements()

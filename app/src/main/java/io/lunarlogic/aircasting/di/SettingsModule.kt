@@ -11,5 +11,4 @@ open class SettingsModule {
     @Provides
     @Singleton
     open fun providesSettings(application: AircastingApplication): Settings = Settings(application)
-
 }
