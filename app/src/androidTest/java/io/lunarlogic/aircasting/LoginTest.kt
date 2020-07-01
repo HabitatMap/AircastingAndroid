@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.di.AppModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.main.MainActivity
+import org.junit.Assert.assertEquals
 import org.junit.Before
 
 import org.junit.Test
@@ -65,13 +66,10 @@ class LoginTest {
 
     @Test
     fun loginTest() {
-        whenever(settings.getAuthToken()).thenReturn(null)
-
         testRule.launchActivity(null)
-
-        whenever(settings.getAuthToken()).thenReturn("TOKEN")
 
         onView(withId(R.id.login_button)).perform(click())
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
+        assertEquals(settings.getAuthToken(), "XYZ123FAKETOKEN")
     }
 }
