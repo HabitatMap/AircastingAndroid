@@ -10,7 +10,7 @@ class MockWebServerDispatcher {
         fun set(config: Map<String, MockResponse>, mockWebServer: MockWebServer) {
             val dispatcher = object : Dispatcher() {
                 override fun dispatch(request: RecordedRequest): MockResponse {
-                    return config.getOrDefault(request.path, MockResponse().setResponseCode(404))
+                    return config[request.path] ?: MockResponse().setResponseCode(404)
                 }
             }
             mockWebServer.setDispatcher(dispatcher)
