@@ -15,9 +15,8 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-class AirBeam2Connector(
-    private val mErrorHandler: ErrorHandler,
-    private val mListener: ConnectingAirBeamController.Listener
+open class AirBeam2Connector(
+    private val mErrorHandler: ErrorHandler
 ) {
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
@@ -27,7 +26,9 @@ class AirBeam2Connector(
     private var mThread: ConnectThread? = null
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
-    fun connect(deviceItem: DeviceItem) {
+    lateinit var listener: ConnectingAirBeamController.Listener
+
+    open fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
             EventBus.getDefault().register(this);
@@ -64,8 +65,8 @@ class AirBeam2Connector(
                         mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
                     }
 
-                    mListener.onConnectionSuccessful(deviceItem.id)
-                    mAirBeam2Reader.run(socket)
+                    listener.onConnectionSuccessful(deviceItem.id)
+                    mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
                 if (cancelStarted.get() == false) {

@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFr
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,
@@ -53,11 +54,12 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToConnectingAirBeam(deviceItem: DeviceItem, listener: ConnectingAirBeamController.Listener) {
+    fun goToConnectingAirBeam(deviceItem: DeviceItem, listener: ConnectingAirBeamController.Listener, airBeam2Connector: AirBeam2Connector) {
         incrementStepProgress()
         val fragment = ConnectingAirBeamFragment()
         fragment.listener = listener
         fragment.deviceItem = deviceItem
+        fragment.airbeam2Connector = airBeam2Connector
         registerBackPressed(fragment)
         goToFragment(fragment)
     }

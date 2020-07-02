@@ -19,6 +19,7 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,7 +32,11 @@ class NewSessionController(
     private val mContextActivity: AppCompatActivity,
     private val mActivity: PermissionsActivity,
     mViewMvc: NewSessionViewMvc,
-    mFragmentManager: FragmentManager
+    mFragmentManager: FragmentManager,
+    private val permissionsManager: PermissionsManager,
+    private val bluetoothManager: BluetoothManager,
+    private val airBeam2Connector: AirBeam2Connector
+
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -42,8 +47,6 @@ class NewSessionController(
     ConfirmationViewMvc.Listener {
 
     private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
-    private val permissionsManager = PermissionsManager()
-    private val bluetoothManager = BluetoothManager(mActivity, permissionsManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
     private val microphoneReader = MicrophoneReader()
@@ -135,7 +138,7 @@ class NewSessionController(
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
-                wizardNavigator.goToConnectingAirBeam(deviceItem, listener)
+                wizardNavigator.goToConnectingAirBeam(deviceItem, listener, airBeam2Connector)
             }
         }
     }

@@ -36,7 +36,7 @@ interface ApiService {
 
 class ApiServiceFactory {
     companion object {
-        var baseUrl: HttpUrl = HttpUrl.get("http://aircasting.org/")
+        var baseUrl: HttpUrl = HttpUrl.get("http://io.lunarlogic.aircasting.org/")
         private val READ_TIMEOUT_SECONDS: Long = 60
 
         fun get(interceptors: List<Interceptor>): ApiService {

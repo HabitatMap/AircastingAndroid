@@ -5,38 +5,47 @@ import android.bluetooth.BluetoothDevice
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
-class BluetoothManager(private val mActivity: PermissionsActivity, private val permissionsManager: PermissionsManager) {
+open class BluetoothManager {
     val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private val mActivity: PermissionsActivity
+    private val mPermissionsManager: PermissionsManager
 
-    fun pairedDevices(): Set<BluetoothDevice> {
-        return adapter?.bondedDevices?: setOf()
+    constructor(activity: PermissionsActivity, permissionsManager: PermissionsManager) {
+        this.mActivity = activity
+        this.mPermissionsManager = permissionsManager
+    }
+
+    open fun pairedDeviceItems(): List<DeviceItem> {
+        val devices = adapter?.bondedDevices?: setOf()
+        return devices.map { DeviceItem(it) }
     }
 
     fun enableBluetooth() {
         if (permissionsGranted()) {
             mActivity.requestBluetoothEnable()
         } else {
-            mActivity.requestBluetoothPermissions(permissionsManager)
+            mActivity.requestBluetoothPermissions(mPermissionsManager)
         }
     }
 
-    fun requestBluetoothPermissions() {
+    open fun requestBluetoothPermissions() {
         if (!permissionsGranted()) {
-            mActivity.requestBluetoothPermissions(permissionsManager)
+            mActivity.requestBluetoothPermissions(mPermissionsManager)
         }
     }
 
     fun permissionsGranted(grantResults: IntArray) : Boolean {
-        return permissionsManager.permissionsGranted(grantResults)
+        return mPermissionsManager.permissionsGranted(grantResults)
     }
 
-    fun isBluetoothEnabled() : Boolean {
+    open fun isBluetoothEnabled() : Boolean {
         if (adapter == null) {
             throw BluetoothNotSupportedException()
         }
 
-        return adapter.isEnabled == true
+        return adapter.isEnabled
     }
 
     fun startDiscovery() {
@@ -48,6 +57,6 @@ class BluetoothManager(private val mActivity: PermissionsActivity, private val p
     }
 
     private fun permissionsGranted(): Boolean {
-        return mActivity.bluetoothPermissionsGranted(permissionsManager)
+        return mActivity.bluetoothPermissionsGranted(mPermissionsManager)
     }
 }

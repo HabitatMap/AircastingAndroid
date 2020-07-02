@@ -40,8 +40,7 @@ class SelectDeviceController(
     }
 
     private fun bindDevices() {
-        val devices = bluetoothManager.pairedDevices()
-        val deviceItems = devices.map { DeviceItem(it) }
+        val deviceItems = bluetoothManager.pairedDeviceItems()
         mViewMvc.bindDeviceItems(deviceItems)
     }
 
