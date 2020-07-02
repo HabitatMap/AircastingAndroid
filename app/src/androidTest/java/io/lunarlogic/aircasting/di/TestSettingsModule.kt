@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.di
 
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
-import org.mockito.Mockito
 
 class FakeSettings(application: AircastingApplication): Settings(application) {
     private var token: String? = null

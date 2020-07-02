@@ -9,5 +9,6 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AppModule::class, SettingsModule::class, MockWebServerModule::class])
 interface TestAppComponent: AppComponent {
-    fun inject(test: LoginTest)
+//    fun inject(test: LoginTest)
+    fun inject(test: MobileSessionTest)
 }

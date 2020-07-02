@@ -32,11 +32,11 @@ class BluetoothManager(private val mActivity: PermissionsActivity, private val p
     }
 
     fun isBluetoothEnabled() : Boolean {
-        if (adapter == null) {
-            throw BluetoothNotSupportedException()
-        }
+//        if (adapter == null) {
+//            throw BluetoothNotSupportedException()
+//        }
 
-        return adapter.isEnabled == true
+        return adapter?.isEnabled == true
     }
 
     fun startDiscovery() {

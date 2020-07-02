@@ -49,6 +49,7 @@ class NewSessionController(
     private val microphoneReader = MicrophoneReader()
 
     fun onStart() {
+        println("ANIA --------- " + bluetoothManager.isBluetoothEnabled())
         wizardNavigator.showFirstStep(this)
     }
 

@@ -6,6 +6,10 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-kapt'
 
 android {
+    packagingOptions {
+        exclude "META-INF/LICENSE*"
+    }
+
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
@@ -15,6 +19,7 @@ android {
         versionCode 1
         versionName "1.12"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument "runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }
     buildTypes {
         debug {
@@ -82,16 +87,18 @@ dependencies {
 
     implementation 'commons-codec:commons-codec:1.14'
 
-    testImplementation 'junit:junit:4.12'
+    androidTestImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation "androidx.test:runner:1.1.1"
+//    androidTestImplementation "org.junit.jupiter:junit-jupiter-api:5.4.1"
+    androidTestImplementation "de.mannodermaus.junit5:android-test-core:1.0.0"
+    androidTestRuntimeOnly "de.mannodermaus.junit5:android-test-runner:1.0.0"
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
 
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:2.8.1"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.8.0"
 
-    def mockitoVersion = '2.6.3'
-    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
-    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
-    androidTestImplementation 'com.nhaarman:mockito-kotlin:1.5.0'
+    androidTestImplementation "io.mockk:mockk-android:1.10.0"
 }
