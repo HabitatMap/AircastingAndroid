@@ -5,13 +5,34 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.di.AppModule
+import io.lunarlogic.aircasting.di.PermissionsModule
+import io.lunarlogic.aircasting.di.SettingsModule
 import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
+import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity(),
     PermissionsActivity {
-    private var controller: NewSessionController? = null
+
+    private lateinit var controller: NewSessionController
+
+    @Inject
+    lateinit var permissionsManager: PermissionsManager
+
+    @Inject
+    lateinit var settings: Settings
+
+    @Inject
+    lateinit var bluetoothManager: BluetoothManager
+
+    @Inject
+    lateinit var airbeam2Connector: AirBeam2Connector
 
     companion object {
         fun start(context: Context?) {
@@ -25,8 +46,21 @@ class NewSessionActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val app = application as AircastingApplication
+        app.permissionsModule.permissionsActivity = this
+        val appComponent = app.appComponent
+        appComponent.inject(this)
+
         val view = NewSessionViewMvcImpl(layoutInflater, null)
-        controller = NewSessionController(this, this, view, supportFragmentManager)
+        controller = NewSessionController(
+            this,
+            this,
+            view,
+            supportFragmentManager,
+            permissionsManager,
+            bluetoothManager,
+            airbeam2Connector
+        )
 
         setContentView(view.rootView)
     }
@@ -54,21 +88,21 @@ class NewSessionActivity : AppCompatActivity(),
 
     override fun onStart() {
         super.onStart()
-        controller!!.onStart()
+        controller.onStart()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        controller!!.onBackPressed()
+        controller.onBackPressed()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
-        controller!!.onRequestPermissionsResult(requestCode, grantResults)
+        controller.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        controller!!.onActivityResult(requestCode, resultCode)
+        controller.onActivityResult(requestCode, resultCode)
     }
 }

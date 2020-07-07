@@ -10,7 +10,7 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
     private var controller: MainController? = null
 
     @Inject
