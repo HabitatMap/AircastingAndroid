@@ -113,8 +113,8 @@ class MobileSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(typeText("Ania's session"))
-        onView(withId(R.id.session_tags)).perform(typeText("tag1 tag2"))
+        onView(withId(R.id.session_name)).perform(replaceText("Ania's session"))
+        onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
