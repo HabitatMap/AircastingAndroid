@@ -1,11 +1,13 @@
 package io.lunarlogic.aircasting
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -113,6 +115,7 @@ class MobileSessionTest {
 
         onView(withId(R.id.session_name)).perform(typeText("Ania's session"))
         onView(withId(R.id.session_tags)).perform(typeText("tag1 tag2"))
+        Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.start_recording_button)).perform(click())
@@ -120,13 +123,16 @@ class MobileSessionTest {
         Thread.sleep(2000)
 
         val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
-        checkMeasurement(measurementsView, "1.00 F")
+        checkMeasurement(measurementsView, "F: 1.00 F")
         checkMeasurement(measurementsView, "RH: 2.00 %")
         checkMeasurement(measurementsView,"PM1: 3.00 µg/m³");
         checkMeasurement(measurementsView,"PM2.5: 4.00 µg/m³");
         checkMeasurement(measurementsView,"PM10: 5.00 µg/m³");
 
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
+
+        Thread.sleep(2000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
 

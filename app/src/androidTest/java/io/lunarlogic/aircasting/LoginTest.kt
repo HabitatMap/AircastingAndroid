@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting
 
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -62,7 +64,6 @@ class LoginTest {
     }
 
     @Test
-    @Ignore
     fun testLogin() {
         val loginResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -86,7 +87,14 @@ class LoginTest {
 
         testRule.launchActivity(null)
 
+        onView(withId(R.id.username)).perform(ViewActions.typeText("ania@example.org"))
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.password)).perform(ViewActions.typeText("secret"))
+        Espresso.closeSoftKeyboard()
         onView(withId(R.id.login_button)).perform(click())
+
+        Thread.sleep(2000)
+
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         assertEquals(settings.getAuthToken(), "XYZ123FAKETOKEN")
     }
