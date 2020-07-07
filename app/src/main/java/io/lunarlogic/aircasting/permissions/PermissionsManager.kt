@@ -7,9 +7,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.lib.ResultCodes
-import javax.inject.Singleton
 
-@Singleton
 class PermissionsManager {
     val LOCATION_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)

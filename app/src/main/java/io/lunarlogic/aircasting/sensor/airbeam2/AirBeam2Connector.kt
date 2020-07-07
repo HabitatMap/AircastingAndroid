@@ -16,13 +16,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 
 open class AirBeam2Connector(
-    private val mErrorHandler: ErrorHandler
+    private val mErrorHandler: ErrorHandler,
+    private val mAirBeamConfigurator: AirBeam2Configurator,
+    private val mAirBeam2Reader: AirBeam2Reader
 ) {
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    private val mAirBeamConfigurator = AirBeam2Configurator()
-    private val mAirBeam2Reader = AirBeam2Reader()
     private var mThread: ConnectThread? = null
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
