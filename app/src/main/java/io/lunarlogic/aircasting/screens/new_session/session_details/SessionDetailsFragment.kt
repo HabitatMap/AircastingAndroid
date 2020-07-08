@@ -25,7 +25,6 @@ class SessionDetailsFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         listener.let { controller.registerListener(it) }
-
     }
 
     override fun onStop() {

@@ -14,5 +14,6 @@
 .cxx
 aircasting.keystore
 app/google-services.json
+secure.properties
 app/release
 private_key.pepk
