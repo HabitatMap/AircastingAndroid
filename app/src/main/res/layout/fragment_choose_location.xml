@@ -17,14 +17,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
+    <fragment android:id="@+id/autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <fragment android:id="@+id/map"
         android:name="com.google.android.libraries.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        tools:context="io.lunarlogic.aircasting.screens.new_session.NewSessionActivity"
-        app:layout_constraintTop_toBottomOf="@id/header" />
+        app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment" />
 
     <Button
         android:id="@+id/continue_button"

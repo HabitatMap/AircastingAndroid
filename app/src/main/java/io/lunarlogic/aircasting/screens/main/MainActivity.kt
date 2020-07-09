@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.libraries.places.api.Places
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.BuildConfig
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
@@ -33,6 +36,7 @@ class MainActivity: AppCompatActivity() {
 
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
+        Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
         controller = MainController(this, view, settings)
