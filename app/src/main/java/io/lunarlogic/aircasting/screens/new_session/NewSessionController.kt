@@ -54,8 +54,7 @@ class NewSessionController(
     private val microphoneReader = MicrophoneReader()
 
     fun onStart() {
-//        wizardNavigator.showFirstStep(this)
-        wizardNavigator.goToChooseLocation(this)
+        wizardNavigator.showFirstStep(this)
     }
 
     fun onBackPressed() {

@@ -40,9 +40,6 @@ class MobileSessionTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var permissionsManager: PermissionsManager
-
-    @Inject
     lateinit var bluetoothManager: BluetoothManager
 
     @Inject

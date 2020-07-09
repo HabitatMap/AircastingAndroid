@@ -1,16 +1,10 @@
 package io.lunarlogic.aircasting.screens.new_session.choose_location
 
-import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.MarkerOptions
-import io.lunarlogic.aircasting.R
 
 class ChooseLocationFragment() : Fragment() {
     private lateinit var controller: ChooseLocationController
