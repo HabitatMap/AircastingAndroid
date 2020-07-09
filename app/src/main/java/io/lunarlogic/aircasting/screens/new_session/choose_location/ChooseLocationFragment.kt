@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.new_session.choose_location
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class SessionDetailsFragment() : Fragment() {
-    private lateinit var controller: SessionDetailsController
-    lateinit var listener: SessionDetailsViewMvc.Listener
+class ChooseLocationFragment() : Fragment() {
+    private lateinit var controller: ChooseLocationController
+    lateinit var listener: ChooseLocationViewMvc.Listener
     lateinit var deviceId: String
 
     override fun onCreateView(
@@ -16,8 +16,8 @@ class SessionDetailsFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = SessionDetailsViewMvcImpl(inflater, container, deviceId)
-        controller = SessionDetailsController(context, view)
+        val view = ChooseLocationViewMvcImpl(inflater, container, childFragmentManager)
+        controller = ChooseLocationController(context, view)
 
         return view.rootView
     }

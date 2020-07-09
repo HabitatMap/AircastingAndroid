@@ -18,6 +18,7 @@ import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.*
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
@@ -44,6 +45,7 @@ class NewSessionController(
     ConnectingAirBeamController.Listener,
     AirBeamConnectedViewMvc.Listener,
     SessionDetailsViewMvc.Listener,
+    ChooseLocationViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
     private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
@@ -160,6 +162,10 @@ class NewSessionController(
     override fun onSessionDetailsContinueClicked(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
         val session = Session(deviceId, sessionName, sessionTags, Session.Status.NEW)
         wizardNavigator.goToConfirmation(session, this)
+    }
+
+    override fun onContinueClicked() {
+        // TODO
     }
 
     override fun onStartRecordingClicked(session: Session) {

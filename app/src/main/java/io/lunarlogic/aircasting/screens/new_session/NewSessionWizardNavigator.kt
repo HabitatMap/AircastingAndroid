@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.screens.dashboard.*
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
@@ -77,6 +79,13 @@ class NewSessionWizardNavigator(
         val fragment = SessionDetailsFragment()
         fragment.listener = listener
         fragment.deviceId = deviceId
+        goToFragment(fragment)
+    }
+
+    fun goToChooseLocation(listener: ChooseLocationViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = ChooseLocationFragment()
+        fragment.listener = listener
         goToFragment(fragment)
     }
 

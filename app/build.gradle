@@ -15,6 +15,15 @@ android {
         versionCode 1
         versionName "1.12"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Read the API key from ./secure.properties into R.string.maps_api_key
+        def secureProps = new Properties()
+        if (file("../secure.properties").exists()) {
+            file("../secure.properties")?.withInputStream { secureProps.load(it) }
+            println(secureProps)
+        }
+        resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
+        buildConfigField "String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\"")
     }
     buildTypes {
         debug {
@@ -54,6 +63,12 @@ dependencies {
     implementation "com.google.guava:guava:29.0-android"
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+
+    // for google places api
+    implementation(name:'places-maps-sdk-3.1.0-beta', ext:'aar')
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation 'com.google.auto.value:auto-value-annotations:1.6.2'
 
     def daggerVersion = 2.27
     implementation "com.google.dagger:dagger:$daggerVersion"
