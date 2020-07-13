@@ -27,29 +27,14 @@ class HexMessagesBuilder {
     }
 
     fun authTokenMessage(authToken: String): ByteArray {
-//        var data = ByteArray(0)
-//
         val rawAuthToken = "$authToken:X"
-
-        println("ANIA rawAuthToken" + rawAuthToken)
-//
-//        try {
-//            data = rawAuthToken.toByteArray(charset("UTF-8"))
-//        } catch (e: UnsupportedEncodingException) {
-//        }
-//
-//        val base64 = Base64.encodeBase64String(data);
-
         val encodedCredentials = Base64.encodeToString(rawAuthToken.toByteArray(), Base64.NO_WRAP)
-
-        println("ANIA encodedCredentials" + encodedCredentials)
 
         return buildMessage(encodedCredentials, AUTH_TOKEN_CODE)
     }
 
     fun locationMessage(lat: Double, lng: Double): ByteArray {
         val rawLatLngStr = "${lng},${lat}"
-        println("ANIA rawLatLngStr" + rawLatLngStr)
         return buildMessage(rawLatLngStr, LAT_LNG_CODE)
     }
 

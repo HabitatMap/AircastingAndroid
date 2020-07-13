@@ -20,7 +20,6 @@ android {
         def secureProps = new Properties()
         if (file("../secure.properties").exists()) {
             file("../secure.properties")?.withInputStream { secureProps.load(it) }
-            println(secureProps)
         }
         resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
         buildConfigField "String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\"")

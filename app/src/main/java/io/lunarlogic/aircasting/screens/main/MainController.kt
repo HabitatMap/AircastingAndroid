@@ -29,8 +29,6 @@ class MainController(
             setupDashboard()
         }
 
-        DatabaseProvider.runQuery { DatabaseProvider.get().sessions().deleteAll() }
-
         mSessionManager?.onStart()
     }
 

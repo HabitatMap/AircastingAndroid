@@ -8,7 +8,6 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     private val mHexMessagesBuilder = HexMessagesBuilder()
 
     fun configureSessionType(session: Session, outputStream: OutputStream) {
-        println("ANIA configureSessionType " + session.type.toString())
         when(session.type) {
             Session.Type.MOBILE -> configureMobileSession(outputStream)
             Session.Type.FIXED -> configureFixedSession(session, outputStream)
@@ -22,7 +21,6 @@ class AirBeam2Configurator(private val mSettings: Settings) {
         wifiPassword: String?,
         outputStream: OutputStream
     ) {
-        println("ANIA configureFixedSessionDetails " + location.latitude + ", " + location.longitude + " " + wifiSSID + ", " + wifiPassword)
         sleepFor(3000)
         configureLocation(location.latitude, location.longitude, outputStream)
         sleepFor(3000)
@@ -34,8 +32,6 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     }
 
     private fun configureFixedSession(session: Session, outputStream: OutputStream) {
-        println("ANIA configureFixedSession uuid " + session.uuid)
-        println("ANIA configureFixedSession authToken " + mSettings.getAuthToken())
         sendUUID(session.uuid, outputStream)
         sleepFor(3000)
         sendAuthToken(mSettings.getAuthToken()!!, outputStream)
