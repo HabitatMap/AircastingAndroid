@@ -184,9 +184,7 @@ class NewSessionController(
         streamingMethod: Session.StreamingMethod?
     ) {
 
-        println("ANIA lastLocation null?" + LocationHelper.lastLocation())
-        val currentLocation = Session.Location(50.058191, 19.9263968)
-        //val currentLocation = LocationHelper.lastLocation()//!! // TODO: handle
+        val currentLocation = Session.Location.get(LocationHelper.lastLocation())
         val session = sessionBuilder.build(
             deviceId,
             sessionType,
@@ -210,9 +208,6 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        println("ANIA LocationHelper.start")
-        LocationHelper.start()
-
         val event = StartRecordingEvent(session)
         EventBus.getDefault().post(event)
 

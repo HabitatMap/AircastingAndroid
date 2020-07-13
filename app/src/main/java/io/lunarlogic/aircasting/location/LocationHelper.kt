@@ -9,11 +9,8 @@ class LocationHelper(private val mContext: Context) {
     companion object {
         private lateinit var singleton: LocationHelper
 
-        fun setup(context: Context) {
+        fun start(context: Context) {
             singleton = LocationHelper(context)
-        }
-
-        fun start() {
             singleton.start()
         }
 
@@ -55,7 +52,6 @@ class LocationHelper(private val mContext: Context) {
     }
 
     private fun createLocationRequest(): LocationRequest {
-        println("ANIA createLocationRequest")
         val locationRequest = LocationRequest.create()
         locationRequest.interval = 1000
         locationRequest.fastestInterval = 1000

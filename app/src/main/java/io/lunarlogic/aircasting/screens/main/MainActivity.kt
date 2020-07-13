@@ -35,7 +35,7 @@ class MainActivity: AppCompatActivity() {
             .appComponent.inject(this)
 
         DatabaseProvider.setup(applicationContext)
-        LocationHelper.setup(applicationContext)
+        LocationHelper.start(applicationContext)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)

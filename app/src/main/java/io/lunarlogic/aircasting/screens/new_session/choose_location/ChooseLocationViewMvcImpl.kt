@@ -48,9 +48,9 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
         this.session = session
 
-        mDefaultLatitude = session.location?.latitude ?: 40.7128
-        mDefaultLongitude = session.location?.longitude ?: 74.0060
-        
+        mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
+        mDefaultLongitude = session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
+
         val autocompleteFragment =
             supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
                     as AutocompleteSupportFragment
