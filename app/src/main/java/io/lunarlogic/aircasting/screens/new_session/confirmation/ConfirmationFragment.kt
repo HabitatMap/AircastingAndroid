@@ -1,11 +1,10 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.new_session.confirmation
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewFactory
 import io.lunarlogic.aircasting.sensor.Session
 
 class ConfirmationFragment() : Fragment() {

@@ -18,9 +18,12 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.dashboard.*
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
+import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
+import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeViewMvc
+import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import kotlinx.coroutines.Dispatchers

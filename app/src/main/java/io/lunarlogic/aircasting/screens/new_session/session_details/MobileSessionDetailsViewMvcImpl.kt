@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.new_session.session_details
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
