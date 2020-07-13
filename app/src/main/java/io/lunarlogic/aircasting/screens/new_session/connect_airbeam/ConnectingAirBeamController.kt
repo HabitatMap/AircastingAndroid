@@ -8,7 +8,6 @@ import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 class ConnectingAirBeamController(
     mContext: Context,
     private val deviceItem: DeviceItem,
-    private val sessionType: Session.Type,
     private val airbeam2Connector: AirBeam2Connector,
     mListener: Listener
 ) {
@@ -21,7 +20,7 @@ class ConnectingAirBeamController(
     }
 
     fun onStart() {
-        airbeam2Connector.connect(deviceItem, sessionType)
+        airbeam2Connector.connect(deviceItem)
     }
 
     fun onBackPressed() {

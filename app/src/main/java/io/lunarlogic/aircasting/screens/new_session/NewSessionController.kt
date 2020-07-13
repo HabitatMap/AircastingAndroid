@@ -151,7 +151,7 @@ class NewSessionController(
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
-                wizardNavigator.goToConnectingAirBeam(deviceItem, sessionType!!, listener, airBeam2Connector)
+                wizardNavigator.goToConnectingAirBeam(deviceItem, listener, airBeam2Connector)
             }
         }
     }

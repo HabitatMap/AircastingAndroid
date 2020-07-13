@@ -33,11 +33,11 @@ open class AirBeam2Connector(
 
     lateinit var listener: ConnectingAirBeamController.Listener
 
-    open fun connect(deviceItem: DeviceItem, sessionType: Session.Type) {
+    open fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
             EventBus.getDefault().register(this);
-            mThread = ConnectThread(deviceItem, sessionType)
+            mThread = ConnectThread(deviceItem)
             mThread?.start()
         }
     }
@@ -50,7 +50,7 @@ open class AirBeam2Connector(
         mThread?.configureSession(session)
     }
 
-    private inner class ConnectThread(private val deviceItem: DeviceItem, private val sessionType: Session.Type) : Thread() {
+    private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
             device.createRfcommSocketToServiceRecord(SPP_SERIAL)

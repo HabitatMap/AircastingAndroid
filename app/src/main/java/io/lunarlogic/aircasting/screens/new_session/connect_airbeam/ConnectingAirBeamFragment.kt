@@ -13,7 +13,6 @@ import io.lunarlogic.aircasting.sensor.Session
 class ConnectingAirBeamFragment() : Fragment(), NewSessionWizardNavigator.BackPressedListener {
     lateinit private var controller: ConnectingAirBeamController
     lateinit var deviceItem: DeviceItem
-    lateinit var sessionType: Session.Type
     lateinit var listener: ConnectingAirBeamController.Listener
     lateinit var airbeam2Connector: AirBeam2Connector
 
@@ -28,7 +27,7 @@ class ConnectingAirBeamFragment() : Fragment(), NewSessionWizardNavigator.BackPr
                 null
             )
 
-        controller = ConnectingAirBeamController(context!!, deviceItem, sessionType, airbeam2Connector, listener)
+        controller = ConnectingAirBeamController(context!!, deviceItem, airbeam2Connector, listener)
 
         return view.rootView
     }
