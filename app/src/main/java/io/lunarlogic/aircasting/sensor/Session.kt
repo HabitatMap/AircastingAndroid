@@ -45,7 +45,7 @@ class Session(
     ): this(deviceId, mType, mName, mTags, mStatus) {
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
-        this.mLocation = location
+        this.location = location
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
@@ -77,7 +77,11 @@ class Session(
         WIFI(1)
     }
 
-    class Location(val latitude: Double, val longitude: Double)
+    class Location(val latitude: Double, val longitude: Double) {
+        companion object {
+            val INDOOR_FAKE_LOCATION = Location(200.0, 200.0)
+        }
+    }
 
     val type get() = mType
     val name get() = mName
@@ -86,13 +90,12 @@ class Session(
 
     private var mIndoor: Boolean? = null
     private var mStreamingMethod: StreamingMethod? = null
-    private var mLocation: Location? = null
+    var location: Location? = null
 
     val status get() = mStatus
     val streams get() = mStreams
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
-    val location get() = mLocation
 
     fun startRecording() {
         mStatus = Status.RECORDING

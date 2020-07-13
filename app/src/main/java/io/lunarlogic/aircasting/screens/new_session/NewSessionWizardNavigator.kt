@@ -98,9 +98,10 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToChooseLocation(listener: ChooseLocationViewMvc.Listener) {
+    fun goToChooseLocation(session: Session, listener: ChooseLocationViewMvc.Listener) {
         incrementStepProgress()
         val fragment = ChooseLocationFragment()
+        fragment.session = session
         fragment.listener = listener
         goToFragment(fragment)
     }

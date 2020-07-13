@@ -24,6 +24,7 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
+import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,8 @@ class NewSessionController(
     mFragmentManager: FragmentManager,
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
-    private val airBeam2Connector: AirBeam2Connector
+    private val airBeam2Connector: AirBeam2Connector,
+    private val sessionBuilder: SessionBuilder
 ) : SelectSessionTypeViewMvc.Listener,
     SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
@@ -183,9 +185,9 @@ class NewSessionController(
     ) {
 
         println("ANIA lastLocation null?" + LocationHelper.lastLocation())
-        val location = Session.Location(50.058191, 19.9263968)
-        //val location = LocationHelper.lastLocation()//!! // TODO: handle
-        val session = Session(
+        val currentLocation = Session.Location(50.058191, 19.9263968)
+        //val currentLocation = LocationHelper.lastLocation()//!! // TODO: handle
+        val session = sessionBuilder.build(
             deviceId,
             sessionType,
             sessionName,
@@ -193,13 +195,18 @@ class NewSessionController(
             Session.Status.NEW,
             indoor,
             streamingMethod,
-            location
+            currentLocation
         )
-        wizardNavigator.goToConfirmation(session, this)
+
+        if (sessionType == Session.Type.MOBILE || indoor == true) {
+            wizardNavigator.goToConfirmation(session, this)
+        } else {
+            wizardNavigator.goToChooseLocation(session, this)
+        }
     }
 
-    override fun onContinueClicked() {
-        // TODO
+    override fun onContinueClicked(session: Session) {
+        wizardNavigator.goToConfirmation(session, this)
     }
 
     override fun onStartRecordingClicked(session: Session) {
