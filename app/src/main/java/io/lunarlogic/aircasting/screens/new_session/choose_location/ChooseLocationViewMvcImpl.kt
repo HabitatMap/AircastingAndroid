@@ -18,6 +18,8 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.maps.model.Marker
 import android.view.View
+import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.sensor.Session
 
 
@@ -43,7 +45,8 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         inflater: LayoutInflater,
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?,
-        session: Session
+        session: Session,
+        errorHandler: ErrorHandler
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
         this.session = session
@@ -66,7 +69,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
             }
 
             override fun onError(status: Status) {
-                println("ANIA ERROR :(!") // TODO: handle
+                errorHandler.handle(ChooseAirBeamLocationSelectingPlaceError())
             }
         })
 

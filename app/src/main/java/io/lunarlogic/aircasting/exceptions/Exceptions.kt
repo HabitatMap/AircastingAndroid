@@ -35,3 +35,6 @@ class SyncError(t: Throwable? = null):
 
 class UnexpectedAPIError(t: Throwable? = null):
     BaseException(Exception(t), "Something went wrong, please contact our support.")
+
+class ChooseAirBeamLocationSelectingPlaceError(t: Throwable? = null):
+    BaseException(Exception(t))

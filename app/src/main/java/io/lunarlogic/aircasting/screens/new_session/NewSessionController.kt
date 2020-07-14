@@ -204,7 +204,7 @@ class NewSessionController(
         if (sessionType == Session.Type.MOBILE || indoor == true) {
             wizardNavigator.goToConfirmation(session, this)
         } else {
-            wizardNavigator.goToChooseLocation(session, this)
+            wizardNavigator.goToChooseLocation(session, this, errorHandler)
         }
     }
 

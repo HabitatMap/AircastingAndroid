@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
@@ -98,11 +99,12 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToChooseLocation(session: Session, listener: ChooseLocationViewMvc.Listener) {
+    fun goToChooseLocation(session: Session, listener: ChooseLocationViewMvc.Listener, errorHandler: ErrorHandler) {
         incrementStepProgress()
         val fragment = ChooseLocationFragment()
         fragment.session = session
         fragment.listener = listener
+        fragment.errorHandler = errorHandler
         goToFragment(fragment)
     }
 
