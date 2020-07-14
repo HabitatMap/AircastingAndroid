@@ -7,7 +7,6 @@ import io.lunarlogic.aircasting.events.ConfigureSession
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import io.lunarlogic.aircasting.sensor.Session
@@ -37,7 +36,7 @@ open class AirBeam2Connector(
     open fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
-            EventBus.getDefault().register(this);
+            registerToEventBus()
             mThread = ConnectThread(deviceItem)
             mThread?.start()
         }
@@ -94,10 +93,11 @@ open class AirBeam2Connector(
         }
 
         fun cancel() {
+            unregisterFromEventBus()
+
             if (cancelStarted.get() == false) {
                 cancelStarted.set(true)
                 connectionStarted.set(false)
-                EventBus.getDefault().unregister(this);
                 try {
                     mmSocket?.close()
                 } catch (e: IOException) {
@@ -137,5 +137,15 @@ open class AirBeam2Connector(
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
         cancel()
+    }
+
+    private fun registerToEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    private fun unregisterFromEventBus() {
+        EventBus.getDefault().unregister(this);
     }
 }
