@@ -85,6 +85,7 @@ class MobileSessionTest {
     fun testMobileSessionRecording() {
         settings.setAuthToken("TOKEN")
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(bluetoothManager.permissionsGranted()).thenReturn(false)
         whenever(bluetoothManager.requestBluetoothPermissions()).then({})
 
         val deviceItem = Mockito.mock(DeviceItem::class.java)

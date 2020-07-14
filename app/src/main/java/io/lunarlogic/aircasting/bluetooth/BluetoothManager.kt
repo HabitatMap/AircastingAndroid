@@ -34,7 +34,7 @@ open class BluetoothManager {
         mActivity.requestBluetoothPermissions(mPermissionsManager)
     }
 
-    fun permissionsGranted(): Boolean {
+    open fun permissionsGranted(): Boolean {
         return mActivity.bluetoothPermissionsGranted(mPermissionsManager)
     }
 
