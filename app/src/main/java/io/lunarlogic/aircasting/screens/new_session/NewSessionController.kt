@@ -80,7 +80,11 @@ class NewSessionController(
     override fun onBluetoothDeviceSelected() {
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
-                bluetoothManager.requestBluetoothPermissions()
+                if (bluetoothManager.permissionsGranted()) {
+                    LocationHelper.start()
+                } else {
+                    bluetoothManager.requestBluetoothPermissions()
+                }
                 wizardNavigator.goToTurnOnAirBeam(this)
                 return
             }
@@ -130,6 +134,7 @@ class NewSessionController(
         when (requestCode) {
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    LocationHelper.start()
                     wizardNavigator.goToTurnOnAirBeam(this)
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)

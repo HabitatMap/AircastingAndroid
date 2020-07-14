@@ -9,8 +9,11 @@ class LocationHelper(private val mContext: Context) {
     companion object {
         private lateinit var singleton: LocationHelper
 
-        fun start(context: Context) {
+        fun setup(context: Context) {
             singleton = LocationHelper(context)
+        }
+
+        fun start() {
             singleton.start()
         }
 

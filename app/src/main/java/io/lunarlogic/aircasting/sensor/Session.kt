@@ -84,7 +84,7 @@ class Session(
             val INDOOR_FAKE_LOCATION = Location(200.0, 200.0)
 
             // if for some reason current location is not available
-            val DEFAULT_LOCATION = Location(40.7128, 74.0060)
+            val DEFAULT_LOCATION = Location(40.7128, -74.0060)
 
             fun get(location: android.location.Location?): Location {
                 if (location == null) {

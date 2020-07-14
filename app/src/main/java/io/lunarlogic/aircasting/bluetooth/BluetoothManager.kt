@@ -31,9 +31,11 @@ open class BluetoothManager {
     }
 
     open fun requestBluetoothPermissions() {
-        if (!permissionsGranted()) {
-            mActivity.requestBluetoothPermissions(mPermissionsManager)
-        }
+        mActivity.requestBluetoothPermissions(mPermissionsManager)
+    }
+
+    fun permissionsGranted(): Boolean {
+        return mActivity.bluetoothPermissionsGranted(mPermissionsManager)
     }
 
     fun permissionsGranted(grantResults: IntArray) : Boolean {
@@ -54,9 +56,5 @@ open class BluetoothManager {
 
     fun cancelDiscovery() {
         adapter?.cancelDiscovery()
-    }
-
-    private fun permissionsGranted(): Boolean {
-        return mActivity.bluetoothPermissionsGranted(mPermissionsManager)
     }
 }
