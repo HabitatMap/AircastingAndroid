@@ -1,30 +1,27 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.fixed
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
-import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.SyncService
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.screens.dashboard.SessionsController
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import org.greenrobot.eventbus.EventBus
 
-class MobileDormantController(
+class FixedController(
     private val mContext: Context?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
-): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings), SessionsViewMvc.Listener {
+): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
+    SessionsViewMvc.Listener {
 
     override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
-        return mSessionsViewModel.loadDormantSessionsWithMeasurements()
+        return mSessionsViewModel.loadFixedSessionsWithMeasurements()
     }
 
     fun onCreate() {

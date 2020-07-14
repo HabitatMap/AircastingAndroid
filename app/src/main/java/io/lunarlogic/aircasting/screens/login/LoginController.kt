@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.SyncService
+import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
 
@@ -41,7 +41,7 @@ class LoginController(
 
     private fun performSessionSync() {
         val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-        val sessionSyncService = SyncService(apiService, mErrorHandler)
+        val sessionSyncService = MobileSessionsSyncService(apiService, mErrorHandler)
         sessionSyncService.sync()
     }
 }

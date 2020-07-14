@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.fixed
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import javax.inject.Inject
 
 
-class MobileDormantFragment : Fragment() {
-    private var controller: MobileDormantController? = null
+class FixedFragment : Fragment() {
+    private lateinit var controller: FixedController
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
 
     @Inject
@@ -26,15 +27,24 @@ class MobileDormantFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = MobileDormantViewMvcImpl(layoutInflater, null)
-        controller = MobileDormantController(context, view, sessionsViewModel, viewLifecycleOwner, settings)
-        controller!!.onCreate()
+        val view = FixedViewMvcImpl(
+            layoutInflater,
+            null
+        )
+        controller = FixedController(
+            context,
+            view,
+            sessionsViewModel,
+            viewLifecycleOwner,
+            settings
+        )
+        controller.onCreate()
 
         return view.rootView
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        controller!!.onDestroy()
+        controller.onDestroy()
     }
 }

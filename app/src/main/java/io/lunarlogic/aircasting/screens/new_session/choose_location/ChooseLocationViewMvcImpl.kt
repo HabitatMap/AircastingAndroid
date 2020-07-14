@@ -18,10 +18,15 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.maps.model.Marker
 import android.view.View
+import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.sensor.Session
 
 
 class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Listener>, ChooseLocationViewMvc,
     OnMapReadyCallback {
+
+    private val session: Session
 
     private val MAX_ZOOM = 20.0f
     private val MIN_ZOOM = 5.0f
@@ -29,12 +34,8 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     // TODO: handle?
     private var mZoom = 13f
 
-    // TODO: change for current location
-    private val mDefaultLatitude = 50.058191
-    private val mDefaultLongitude = 19.9263968
-
-    private var mLatitude = mDefaultLatitude
-    private var mLongitude = mDefaultLongitude
+    private val mDefaultLatitude: Double
+    private val mDefaultLongitude: Double
 
     private lateinit var mMarker: Marker
 
@@ -43,9 +44,15 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?
+        supportFragmentManager: FragmentManager?,
+        session: Session,
+        errorHandler: ErrorHandler
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
+        this.session = session
+
+        mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
+        mDefaultLongitude = session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
 
         val autocompleteFragment =
             supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
@@ -56,15 +63,13 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 place.latLng?.let {
-                    mLatitude = it.latitude
-                    mLongitude = it.longitude
-                    updateMarkerPosition()
+                    updateMarkerPosition(it.latitude, it.longitude)
                     updateMapCamera()
                 }
             }
 
             override fun onError(status: Status) {
-                println("ANIA ERROR :(!") // TODO: handle
+                errorHandler.handle(ChooseAirBeamLocationSelectingPlaceError())
             }
         })
 
@@ -95,8 +100,12 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     }
 
     private fun onContinueClicked() {
+        val latitude = mMarker.position.latitude
+        val longitude = mMarker.position.longitude
+        session.location = Session.Location(latitude, longitude)
+
         for (listener in listeners) {
-            listener.onContinueClicked()
+            listener.onContinueClicked(session)
         }
     }
 
@@ -106,28 +115,24 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     }
 
     private fun addMarkerToMap() {
-        val location = LatLng(mLatitude, mLongitude)
+        val location = LatLng(mDefaultLatitude, mDefaultLongitude)
         mMarker = mMap.addMarker(
             MarkerOptions()
-                .position(location)
-                .title("Marker"))
+                .position(location))
         mMarker.setDraggable(true)
     }
 
     private fun updateMapCamera() {
-        val newLocation = LatLng(mLatitude, mLongitude)
+        val newLocation = LatLng(mMarker.position.latitude, mMarker.position.longitude)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, mZoom))
     }
 
-    private fun updateMarkerPosition() {
-        mMarker.position = LatLng(mLatitude, mLongitude)
+    private fun updateMarkerPosition(latitude: Double, longitude: Double) {
+        mMarker.position = LatLng(latitude, longitude)
     }
 
     private fun resetMapToDefaults() {
-        mLatitude = mDefaultLatitude
-        mLongitude = mDefaultLongitude
-
-        updateMarkerPosition()
+        updateMarkerPosition(mDefaultLatitude, mDefaultLongitude)
         updateMapCamera()
     }
 }

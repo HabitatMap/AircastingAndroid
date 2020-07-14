@@ -5,15 +5,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
-import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
-import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.SyncService
+import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
 import io.lunarlogic.aircasting.sensor.Session
-import org.greenrobot.eventbus.EventBus
 
 abstract class SessionsController(
     private val mContext: Context?,
@@ -24,7 +21,7 @@ abstract class SessionsController(
 ) : SessionsViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mContext!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mSessionSyncService = SyncService(mApiService, mErrorHandler)
+    private val mMobileSessionsSyncService = MobileSessionsSyncService(mApiService, mErrorHandler)
 
     fun registerSessionsObserver() {
         loadSessions().observe(mLifecycleOwner, Observer { sessions ->
@@ -45,6 +42,6 @@ abstract class SessionsController(
     }
 
     override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        mSessionSyncService.sync(callback)
+        mMobileSessionsSyncService.sync(callback)
     }
 }

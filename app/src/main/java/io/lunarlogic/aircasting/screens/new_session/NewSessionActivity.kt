@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import javax.inject.Inject
 
@@ -33,6 +34,9 @@ class NewSessionActivity : AppCompatActivity(),
 
     @Inject
     lateinit var airbeam2Connector: AirBeam2Connector
+
+    @Inject
+    lateinit var sessionBuilder: SessionBuilder
 
     companion object {
         fun start(context: Context?) {
@@ -59,7 +63,8 @@ class NewSessionActivity : AppCompatActivity(),
             supportFragmentManager,
             permissionsManager,
             bluetoothManager,
-            airbeam2Connector
+            airbeam2Connector,
+            sessionBuilder
         )
 
         setContentView(view.rootView)

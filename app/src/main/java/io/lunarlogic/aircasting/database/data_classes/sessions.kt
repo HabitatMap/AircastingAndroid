@@ -14,6 +14,7 @@ import kotlin.collections.ArrayList
 )
 data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
+    @ColumnInfo(name = "type") val type: Session.Type,
     @ColumnInfo(name = "device_id") val deviceId: String?,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
@@ -29,6 +30,7 @@ data class SessionDBObject(
     constructor(session: Session):
             this(
                 session.uuid,
+                session.type,
                 session.deviceId,
                 session.name,
                 session.tags,
@@ -66,8 +68,11 @@ class StreamWithMeasurementsDBObject {
 
 @Dao
 interface SessionDao {
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND status=:status ORDER BY start_time DESC")
-    fun loadAllByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
+    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
+    fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE status=:status")
     fun byStatus(status: Session.Status): List<SessionDBObject>
@@ -87,8 +92,8 @@ interface SessionDao {
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
 
-    @Query("UPDATE sessions SET status=:status, end_time=:endTime")
-    fun updateStatusAndEndTime(status: Session.Status, endTime: Date)
+    @Query("UPDATE sessions SET status=:status, end_time=:endTime WHERE type=:type")
+    fun updateStatusAndEndTimeForSessionType(status: Session.Status, endTime: Date, type: Session.Type)
 
     @Query("DELETE FROM sessions")
     fun deleteAll()

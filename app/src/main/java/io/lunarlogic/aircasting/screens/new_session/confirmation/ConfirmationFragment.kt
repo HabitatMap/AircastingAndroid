@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.new_session.confirmation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +17,7 @@ class ConfirmationFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ConfirmationViewMvcImpl(inflater, container, session!!)
+        val view = ConfirmationViewFactory.get(inflater, container, session!!)
         controller = ConfirmationController(context, view)
 
         return view.rootView

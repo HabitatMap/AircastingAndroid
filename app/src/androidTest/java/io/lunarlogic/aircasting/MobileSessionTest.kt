@@ -85,6 +85,7 @@ class MobileSessionTest {
     fun testMobileSessionRecording() {
         settings.setAuthToken("TOKEN")
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(bluetoothManager.permissionsGranted()).thenReturn(false)
         whenever(bluetoothManager.requestBluetoothPermissions()).then({})
 
         val deviceItem = Mockito.mock(DeviceItem::class.java)
@@ -97,6 +98,8 @@ class MobileSessionTest {
 
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
+
+        onView(withId(R.id.mobile_session_button)).perform(click())
 
         onView(withId(R.id.bluetooth_device_button)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();

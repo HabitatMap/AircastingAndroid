@@ -3,14 +3,18 @@ package io.lunarlogic.aircasting.sensor.airbeam2
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.events.ConfigureSession
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
+import java.io.OutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -23,6 +27,7 @@ open class AirBeam2Connector(
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+
     private var mThread: ConnectThread? = null
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
@@ -31,7 +36,7 @@ open class AirBeam2Connector(
     open fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
-            EventBus.getDefault().register(this);
+            registerToEventBus()
             mThread = ConnectThread(deviceItem)
             mThread?.start()
         }
@@ -41,11 +46,17 @@ open class AirBeam2Connector(
         mThread?.cancel()
     }
 
+    fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        mThread?.configureSession(session, wifiSSID, wifiPassword)
+    }
+
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
             device.createRfcommSocketToServiceRecord(SPP_SERIAL)
         }
+
+        private lateinit var mOutputStream: OutputStream
 
         override fun run() {
             // Cancel discovery because it otherwise slows down the connection.
@@ -58,12 +69,7 @@ open class AirBeam2Connector(
                     // wait until connection is finished before sending anything to AirBeam
                     sleep(ESTIMATED_CONNECTING_TIME_SECONDS)
 
-                    val outputStream = socket.outputStream
-                    try {
-                        mAirBeamConfigurator.configureBluetooth(outputStream)
-                    } catch (e: IOException) {
-                        mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
-                    }
+                    mOutputStream = socket.outputStream
 
                     listener.onConnectionSuccessful(deviceItem.id)
                     mAirBeam2Reader.run(socket.inputStream)
@@ -87,10 +93,11 @@ open class AirBeam2Connector(
         }
 
         fun cancel() {
+            unregisterFromEventBus()
+
             if (cancelStarted.get() == false) {
                 cancelStarted.set(true)
                 connectionStarted.set(false)
-                EventBus.getDefault().unregister(this);
                 try {
                     mmSocket?.close()
                 } catch (e: IOException) {
@@ -98,6 +105,28 @@ open class AirBeam2Connector(
                 }
             }
         }
+
+        fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+            try {
+                mAirBeamConfigurator.configureSessionType(session, mOutputStream)
+                if (session.isFixed()) {
+                    mAirBeamConfigurator.configureFixedSessionDetails(
+                        session.location!!,
+                        session.streamingMethod!!,
+                        wifiSSID,
+                        wifiPassword,
+                        mOutputStream
+                    )
+                }
+            } catch (e: IOException) {
+                mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    fun onMessageEvent(event: ConfigureSession) {
+        configureSession(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
@@ -108,5 +137,15 @@ open class AirBeam2Connector(
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
         cancel()
+    }
+
+    private fun registerToEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    private fun unregisterFromEventBus() {
+        EventBus.getDefault().unregister(this);
     }
 }

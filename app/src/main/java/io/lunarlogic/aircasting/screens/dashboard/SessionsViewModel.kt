@@ -9,15 +9,19 @@ import io.lunarlogic.aircasting.sensor.Session
 class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()
 
-    fun loadActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        return loadAllByStatusWithMeasurements(Session.Status.RECORDING)
+    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return loadAllMobileByStatusWithMeasurements(Session.Status.RECORDING)
     }
 
-    fun loadDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        return loadAllByStatusWithMeasurements(Session.Status.FINISHED)
+    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return loadAllMobileByStatusWithMeasurements(Session.Status.FINISHED)
     }
 
-    private fun loadAllByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions().loadAllByStatusWithMeasurements(status)
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
+    }
+
+    private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, status)
     }
 }

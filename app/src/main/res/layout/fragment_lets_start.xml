@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="@string/mobile_session_confirmation_start_recording_button"
+        android:text="@string/session_confirmation_start_recording_button"
         app:layout_constraintTop_toBottomOf="@id/text_lets_start"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

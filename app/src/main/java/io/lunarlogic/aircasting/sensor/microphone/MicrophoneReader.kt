@@ -1,10 +1,12 @@
 package io.lunarlogic.aircasting.sensor.microphone
 
-import io.lunarlogic.aircasting.events.AudioReaderErrorEvent
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.exceptions.AudioReaderError
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.ResultCodes
 import org.greenrobot.eventbus.EventBus
 
-class MicrophoneReader: AudioReader.Listener() {
+class MicrophoneReader(private val mErrorHandler: ErrorHandler): AudioReader.Listener() {
     private val SAMPLE_RATE = 44100
     private val SYMBOL = "dB"
     private val UNIT = "decibels"
@@ -52,6 +54,7 @@ class MicrophoneReader: AudioReader.Listener() {
     }
 
     override fun onReadError(error: Int) {
-        EventBus.getDefault().post(AudioReaderErrorEvent())
+        val message = mErrorHandler.obtainMessage(ResultCodes.AUDIO_READER_ERROR, AudioReaderError(error))
+        message.sendToTarget()
     }
 }

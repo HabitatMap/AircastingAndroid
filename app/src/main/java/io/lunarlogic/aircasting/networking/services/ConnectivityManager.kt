@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 
 class ConnectivityManager(apiService: ApiService, context: Context): BroadcastReceiver() {
-    val sessionSyncService = SyncService(apiService, ErrorHandler(context))
+    val sessionSyncService = MobileSessionsSyncService(apiService, ErrorHandler(context))
 
     companion object {
         val ACTION = ConnectivityManager.CONNECTIVITY_ACTION

@@ -5,26 +5,26 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
-import io.lunarlogic.aircasting.events.DeleteSessionEvent
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
-import io.lunarlogic.aircasting.events.StartRecordingEvent
-import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiService
-import io.lunarlogic.aircasting.networking.services.SyncService
+import io.lunarlogic.aircasting.networking.services.FixedSessionUploadService
+import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService) {
-    private val sessionSyncService = SyncService(apiService, ErrorHandler(mContext))
+    private val errorHandler = ErrorHandler(mContext)
+    private val mobileSessionsSyncService = MobileSessionsSyncService(apiService, errorHandler)
+    private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
-        startRecording(event.session)
+        startRecording(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
@@ -44,7 +44,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStart() {
         registerToEventBus()
-        stopSessions()
+        stopMobileSessions()
     }
 
     fun onStop() {
@@ -59,8 +59,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().unregister(this);
     }
 
-    private fun stopSessions() {
-        DatabaseProvider.runQuery { sessionsRespository.stopSessions() }
+    private fun stopMobileSessions() {
+        DatabaseProvider.runQuery { sessionsRespository.stopMobileSessions() }
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {
@@ -80,8 +80,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
-    private fun startRecording(session: Session) {
+    private fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
+
         session.startRecording()
+        if (session.isFixed()) {
+            fixedSessionUploadService.upload(session)
+        }
 
         DatabaseProvider.runQuery {
             sessionsRespository.insert(session)
@@ -94,7 +99,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
-                sessionSyncService.sync()
+                mobileSessionsSyncService.sync()
             }
         }
     }

@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:textSize="@dimen/header1_text_size"
         android:text="@string/fixed_session_choose_location_header"
         android:layout_margin="20dp"

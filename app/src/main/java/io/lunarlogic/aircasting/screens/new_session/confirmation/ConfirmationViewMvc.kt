@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.new_session.confirmation
 
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc

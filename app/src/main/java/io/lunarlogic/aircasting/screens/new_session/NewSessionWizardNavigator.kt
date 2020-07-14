@@ -5,13 +5,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.screens.dashboard.*
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
+import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
+import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeFragment
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeFragment
+import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeViewMvc
+import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
+import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 
@@ -27,10 +35,18 @@ class NewSessionWizardNavigator(
         fun onBackPressed()
     }
 
-    fun showFirstStep(listener: SelectDeviceTypeViewMvc.Listener) {
-        val fragment = SelectDeviceTypeFragment()
+    fun showFirstStep(listener: SelectSessionTypeViewMvc.Listener) {
+        val fragment = SelectSessionTypeFragment()
         fragment.listener = listener
         replaceFragment(fragment)
+        updateProgressBarView()
+    }
+
+    fun goToSelectDeviceType(listener: SelectDeviceTypeViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = SelectDeviceTypeFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
         updateProgressBarView()
     }
 
@@ -74,18 +90,21 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToSessionDetails(deviceId: String, listener: SessionDetailsViewMvc.Listener) {
+    fun goToSessionDetails(sessionType: Session.Type, deviceId: String, listener: SessionDetailsViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = listener
         fragment.deviceId = deviceId
+        fragment.sessionType = sessionType
         goToFragment(fragment)
     }
 
-    fun goToChooseLocation(listener: ChooseLocationViewMvc.Listener) {
+    fun goToChooseLocation(session: Session, listener: ChooseLocationViewMvc.Listener, errorHandler: ErrorHandler) {
         incrementStepProgress()
         val fragment = ChooseLocationFragment()
+        fragment.session = session
         fragment.listener = listener
+        fragment.errorHandler = errorHandler
         goToFragment(fragment)
     }
 

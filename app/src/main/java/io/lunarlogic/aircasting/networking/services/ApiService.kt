@@ -22,7 +22,10 @@ import java.util.concurrent.TimeUnit
 
 interface ApiService {
     @POST("/api/sessions")
-    fun createSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @POST("/api/realtime/sessions.json")
+    fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
     @GET("/api/user/sessions/empty.json")
     fun show(@Query("uuid") uuid: String): Call<SessionResponse>

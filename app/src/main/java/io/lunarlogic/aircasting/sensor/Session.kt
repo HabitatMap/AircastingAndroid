@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.sensor
 
+import android.location.Location
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import java.util.*
@@ -9,18 +10,20 @@ val TAGS_SEPARATOR = " "
 
 class Session(
     val deviceId: String?,
+    private val mType: Type,
     private var mName: String,
     private var mTags: ArrayList<String>,
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
-    private var mEndTime: Date? = null,
-    val uuid: String = UUID.randomUUID().toString(),
+    var endTime: Date? = null,
+    val uuid: String = generateUUID(),
     var version: Int = 0,
     var deleted: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.deviceId,
+        sessionDBObject.type,
         sessionDBObject.name,
         sessionDBObject.tags,
         sessionDBObject.status,
@@ -31,11 +34,37 @@ class Session(
         sessionDBObject.deleted
     )
 
+    constructor(
+        deviceId: String?,
+        mType: Type,
+        mName: String,
+        mTags: ArrayList<String>,
+        mStatus: Status,
+        indoor: Boolean?,
+        streamingMethod: StreamingMethod?,
+        location: Location?
+    ): this(deviceId, mType, mName, mTags, mStatus) {
+        this.mIndoor = indoor
+        this.mStreamingMethod = streamingMethod
+        this.location = location
+    }
+
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
             this(sessionWithStreamsDBObject.session) {
         this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
+    }
+
+    companion object {
+        fun generateUUID(): String {
+            return UUID.randomUUID().toString()
+        }
+    }
+
+    enum class Type(val value: Int){
+        MOBILE(0),
+        FIXED(1)
     }
 
     enum class Status(val value: Int){
@@ -44,29 +73,58 @@ class Session(
         FINISHED(1)
     }
 
+    enum class StreamingMethod(val value: Int) {
+        CELLULAR(0),
+        WIFI(1)
+    }
+
+    class Location(val latitude: Double, val longitude: Double) {
+        companion object {
+            // for indoor fixed sessions
+            val INDOOR_FAKE_LOCATION = Location(200.0, 200.0)
+
+            // if for some reason current location is not available
+            val DEFAULT_LOCATION = Location(40.7128, -74.0060)
+
+            fun get(location: android.location.Location?): Location {
+                if (location == null) {
+                    return DEFAULT_LOCATION
+                }
+
+                return Location(location.latitude, location.longitude)
+            }
+        }
+    }
+
+    val type get() = mType
     val name get() = mName
     val tags get() = mTags
     val startTime get() = mStartTime
-    val endTime get() = mEndTime
+
+    private var mIndoor: Boolean? = null
+    private var mStreamingMethod: StreamingMethod? = null
+    var location: Location? = null
 
     val status get() = mStatus
     val streams get() = mStreams
+    val indoor get() = mIndoor
+    val streamingMethod get() = mStreamingMethod
 
     fun startRecording() {
         mStatus = Status.RECORDING
     }
 
     fun stopRecording() {
-        mEndTime = Date()
+        endTime = Date()
         mStatus = Status.FINISHED
-    }
-
-    fun isRecording(): Boolean {
-        return status == Status.RECORDING
     }
 
     fun isUploadable(): Boolean {
         // TODO: handle false if mobile && locationless
         return true
+    }
+
+    fun isFixed(): Boolean {
+        return type == Type.FIXED
     }
 }

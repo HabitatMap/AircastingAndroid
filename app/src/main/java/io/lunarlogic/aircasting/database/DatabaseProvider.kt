@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.*
 import io.lunarlogic.aircasting.database.converters.DateConverter
 import io.lunarlogic.aircasting.database.converters.SessionStatusConverter
+import io.lunarlogic.aircasting.database.converters.SessionTypeConverter
 import io.lunarlogic.aircasting.database.converters.TagsConverter
 import io.lunarlogic.aircasting.database.data_classes.*
 import kotlinx.coroutines.Dispatchers
@@ -17,12 +18,13 @@ import kotlinx.coroutines.launch
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class
     ),
-    version = 15
+    version = 16
 )
 @TypeConverters(
     DateConverter::class,
     TagsConverter::class,
-    SessionStatusConverter::class
+    SessionStatusConverter::class,
+    SessionTypeConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessions(): SessionDao
