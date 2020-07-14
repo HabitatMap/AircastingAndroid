@@ -72,7 +72,7 @@ class NewSessionController(
 
     override fun onFixedSessionSelected() {
         sessionType = Session.Type.FIXED
-        wizardNavigator.goToSelectDeviceType(this)
+        onBluetoothDeviceSelected()
     }
     override fun onMobileSessionSelected() {
         sessionType = Session.Type.MOBILE
