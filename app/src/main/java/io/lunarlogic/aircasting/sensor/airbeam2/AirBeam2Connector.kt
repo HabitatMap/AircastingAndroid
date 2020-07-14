@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceIt
 import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
@@ -123,7 +124,7 @@ open class AirBeam2Connector(
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: ConfigureSession) {
         configureSession(event.session, event.wifiSSID, event.wifiPassword)
     }
