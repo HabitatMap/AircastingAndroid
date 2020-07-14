@@ -36,8 +36,8 @@
     <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
     <string name="airbeam_connected_continue_button">Continue</string>
     <string name="mobile_session_details_header">New session details</string>
-    <string name="mobile_session_details_session_name_hint">Session name</string>
-    <string name="mobile_session_details_session_tags_hint">Tags</string>
+    <string name="session_details_session_name_hint">Session name</string>
+    <string name="session_details_session_tags_hint">Tags</string>
     <string name="session_details_continue_button">Continue</string>
     <string name="fixed_session_details_indoor_toggle_header">Where will you place your AirBeam?</string>
     <string name="fixed_session_details_indoor">Indoor</string>
@@ -45,6 +45,8 @@
     <string name="fixed_session_details_streaming_method_header">Data transmission:</string>
     <string name="fixed_session_details_cellular">Cellular</string>
     <string name="fixed_session_details_wifi">Wi-Fi</string>
+    <string name="fixed_session_details_wifi_name_hint">Wi-Fi name</string>
+    <string name="fixed_session_details_wifi_password_hint">Wi-Fi password</string>
     <string name="session_confirmation_header">Are you ready?</string>
     <string name="session_confirmation_start_recording_button">Start recording</string>
     <string name="mobile_session_confirmation_description">Your mobile session %1$s is ready to start gathering data.</string>
@@ -58,5 +60,6 @@
     <string name="errors_audio_required">Audio and location permissions are required to continue</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_name_required">Session name can\'t be blank.</string>
+    <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
     <string name="active_session_already_exists">Active session already exists for this device.</string>
 </resources>

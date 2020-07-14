@@ -59,6 +59,8 @@ class NewSessionController(
     private val sessionsRepository = SessionsRepository()
     private val microphoneReader = MicrophoneReader(errorHandler)
     private var sessionType: Session.Type? = null
+    private var wifiSSID: String? = null
+    private var wifiPassword: String? = null
 
     fun onStart() {
         wizardNavigator.showFirstStep(this)
@@ -174,9 +176,8 @@ class NewSessionController(
         wizardNavigator.goToSessionDetails(sessionType!!, deviceId, this)
     }
 
-    override fun validationFailed() {
-        val validationError = mContextActivity.getString(R.string.session_name_required)
-        val toast = Toast.makeText(mContextActivity, validationError, Toast.LENGTH_LONG)
+    override fun validationFailed(errorMessage: String) {
+        val toast = Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG)
         toast.show()
     }
 
@@ -186,7 +187,9 @@ class NewSessionController(
         sessionName: String,
         sessionTags: ArrayList<String>,
         indoor: Boolean?,
-        streamingMethod: Session.StreamingMethod?
+        streamingMethod: Session.StreamingMethod?,
+        wifiSSID: String?,
+        wifiPassword: String?
     ) {
 
         val currentLocation = Session.Location.get(LocationHelper.lastLocation())
@@ -200,6 +203,8 @@ class NewSessionController(
             streamingMethod,
             currentLocation
         )
+        this.wifiSSID = wifiSSID
+        this.wifiPassword = wifiPassword
 
         if (sessionType == Session.Type.MOBILE || indoor == true) {
             wizardNavigator.goToConfirmation(session, this)
@@ -213,7 +218,7 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        val event = StartRecordingEvent(session)
+        val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
 
         mContextActivity.finish()

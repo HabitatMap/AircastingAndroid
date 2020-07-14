@@ -5,7 +5,6 @@ import io.lunarlogic.aircasting.sensor.Session
 
 
 interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listener> {
-
     interface Listener {
         fun onSessionDetailsContinueClicked(
             deviceId: String,
@@ -13,8 +12,10 @@ interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listen
             sessionName: String,
             sessionTags: ArrayList<String>,
             indoor: Boolean? = null,
-            streamingMethod: Session.StreamingMethod? = null
+            streamingMethod: Session.StreamingMethod? = null,
+            wifiName: String? = null,
+            wifiPassword: String? = null
         )
-        fun validationFailed()
+        fun validationFailed(errorMessage: String)
     }
 }

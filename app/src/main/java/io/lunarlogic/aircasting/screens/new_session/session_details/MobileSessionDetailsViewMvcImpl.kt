@@ -27,19 +27,21 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getSessionName()
+        val sessionName = getInputValue(R.id.session_name)
         val sessionTags = getSessionTags()
 
-        if (sessionName.isEmpty()) {
-            notifyAboutValidationError()
-        } else {
+        val errorMessage = validate(sessionName)
+
+        if (errorMessage == null) {
             notifyAboutSuccess(deviceId, sessionName, sessionTags)
+        } else {
+            notifyAboutValidationError(errorMessage)
         }
     }
 
-    private fun notifyAboutValidationError() {
+    private fun notifyAboutValidationError(errorMessage: String) {
         for (listener in listeners) {
-            listener.validationFailed()
+            listener.validationFailed(errorMessage)
         }
     }
 
@@ -49,13 +51,16 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         }
     }
 
-    private fun getSessionName(): String {
-        val sessionNameField = rootView?.findViewById<EditText>(R.id.session_name)
-        return sessionNameField?.text.toString()
+    private fun getSessionTags(): ArrayList<String> {
+        val string = getInputValue(R.id.session_tags)
+        return ArrayList(string.split(TAGS_SEPARATOR))
     }
 
-    private fun getSessionTags(): ArrayList<String> {
-        val sessionTagsField = rootView?.findViewById<EditText>(R.id.session_tags)
-        return ArrayList(sessionTagsField?.text.toString().split(TAGS_SEPARATOR))
+    private fun validate(sessionName: String): String? {
+        if (sessionName.isEmpty()) {
+            return getString(R.string.session_name_required)
+        }
+
+        return null
     }
 }

@@ -24,7 +24,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
-        startRecording(event.session)
+        startRecording(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
@@ -80,8 +80,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
-    private fun startRecording(session: Session) {
-        EventBus.getDefault().post(ConfigureSession(session))
+    private fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
         session.startRecording()
         if (session.isFixed()) {

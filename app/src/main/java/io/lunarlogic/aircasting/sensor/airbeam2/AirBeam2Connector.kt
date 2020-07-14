@@ -46,8 +46,8 @@ open class AirBeam2Connector(
         mThread?.cancel()
     }
 
-    fun configureSession(session: Session) {
-        mThread?.configureSession(session)
+    fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
@@ -105,15 +105,15 @@ open class AirBeam2Connector(
             }
         }
 
-        fun configureSession(session: Session) {
+        fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
             try {
                 mAirBeamConfigurator.configureSessionType(session, mOutputStream)
                 if (session.isFixed()) {
                     mAirBeamConfigurator.configureFixedSessionDetails(
                         session.location!!,
                         session.streamingMethod!!,
-                        "slimaki-guest",
-                        "testtest",
+                        wifiSSID,
+                        wifiPassword,
                         mOutputStream
                     )
                 }
@@ -125,7 +125,7 @@ open class AirBeam2Connector(
 
     @Subscribe
     fun onMessageEvent(event: ConfigureSession) {
-        configureSession(event.session)
+        configureSession(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
