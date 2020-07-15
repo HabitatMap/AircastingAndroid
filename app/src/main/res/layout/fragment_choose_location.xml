@@ -23,10 +23,12 @@
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         app:layout_constraintTop_toBottomOf="@id/header" />
 
-    <fragment android:id="@+id/map"
+    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
         android:name="com.google.android.libraries.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        map:uiZoomControls="true"
         app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment" />
 
     <Button

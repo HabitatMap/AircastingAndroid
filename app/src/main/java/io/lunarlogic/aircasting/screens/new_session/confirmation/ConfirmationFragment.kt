@@ -17,7 +17,7 @@ class ConfirmationFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ConfirmationViewFactory.get(inflater, container, session!!)
+        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session!!)
         controller = ConfirmationController(context, view)
 
         return view.rootView
