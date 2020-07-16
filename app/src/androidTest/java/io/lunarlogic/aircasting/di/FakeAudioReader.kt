@@ -8,6 +8,11 @@ import java.nio.ByteOrder
 
 
 class FakeAudioReader(private val app: AircastingApplication): AudioReader() {
+    override fun startReader(rate: Int, block: Int, listener: Listener) {
+        inputListener = listener
+        val thread = Thread(Runnable { readerRun() }, "Audio Reader")
+        thread.start()
+    }
     override fun readerRun() {
         while (true) {
             val bytes = app.resources.openRawResource(R.raw.airbeam2_stream).readBytes()

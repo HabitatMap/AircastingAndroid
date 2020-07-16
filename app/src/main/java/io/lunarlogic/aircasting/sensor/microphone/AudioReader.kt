@@ -62,7 +62,7 @@ open class AudioReader {
     private var sleepTime: Long = 0
 
     // Listener for input.
-    private var inputListener: Listener? = null
+    protected var inputListener: Listener? = null
 
     // Flag whether the thread should be running.
     @Volatile
@@ -122,7 +122,7 @@ open class AudioReader {
      * buffer size.
      * @param listener Listener to be notified on each completed read.
      */
-    fun startReader(rate: Int, block: Int, listener: Listener) {
+    open fun startReader(rate: Int, block: Int, listener: Listener) {
         Log.i(TAG, "Reader: Start Thread")
         synchronized(this) {
             // Calculate the required I/O buffer size.

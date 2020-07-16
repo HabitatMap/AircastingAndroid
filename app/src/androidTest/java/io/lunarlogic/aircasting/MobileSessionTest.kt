@@ -114,7 +114,7 @@ class MobileSessionTest {
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.start_recording_button)).perform(click())
+        onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(2000)
 
@@ -125,7 +125,8 @@ class MobileSessionTest {
         checkMeasurement(measurementsView,"PM2.5: 4.00 µg/m³");
         checkMeasurement(measurementsView,"PM10: 5.00 µg/m³");
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(2000)
@@ -161,7 +162,7 @@ class MobileSessionTest {
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.start_recording_button)).perform(click())
+        onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(2000)
 

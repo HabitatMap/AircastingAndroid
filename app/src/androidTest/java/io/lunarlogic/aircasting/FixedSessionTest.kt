@@ -1,11 +1,13 @@
 package io.lunarlogic.aircasting
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -108,7 +110,10 @@ class FixedSessionTest {
 
         onView(withId(R.id.wifi_credentials)).check(matches(not(isDisplayed())))
         onView(withId(R.id.streaming_method_toggle)).perform(click())
+
         onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
+        onView(withId(R.id.continue_button)).perform(scrollTo())
+
         onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
@@ -117,11 +122,12 @@ class FixedSessionTest {
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.continue_button), isDescendantOfA(withId(R.id.choose_location))))
-            .perform(click())
+            .perform(scrollTo(), click())
 
         onView(allOf(withId(R.id.map), isDescendantOfA(withId(R.id.confirmation))))
             .check(matches(isDisplayed()))
-        onView(withId(R.id.start_recording_button)).perform(click())
+
+        onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(2000)
 
@@ -164,6 +170,8 @@ class FixedSessionTest {
         // not touching indoor_toogle - default is indoor
 
         onView(withId(R.id.wifi_credentials)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.continue_button)).perform(scrollTo())
+
         onView(withId(R.id.streaming_method_toggle)).perform(click())
         onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
         onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
@@ -173,7 +181,7 @@ class FixedSessionTest {
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.start_recording_button)).perform(click())
+        onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(2000)
 
