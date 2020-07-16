@@ -110,6 +110,7 @@ class NewSessionController(
     }
 
     private fun startMicrophoneSession() {
+        LocationHelper.start()
         microphoneReader.start()
     }
 
