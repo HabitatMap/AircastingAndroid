@@ -8,7 +8,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.lib.ResultCodes
 
-class PermissionsManager {
+open class PermissionsManager {
     val LOCATION_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
@@ -23,7 +23,7 @@ class PermissionsManager {
         return permissionsGranted(LOCATION_PERMISSIONS, context)
     }
 
-    fun audioPermissionsGranted(context: Context): Boolean {
+    open fun audioPermissionsGranted(context: Context): Boolean {
         return permissionsGranted(AUDIO_PERMISSIONS.plus(LOCATION_PERMISSIONS), context)
     }
 

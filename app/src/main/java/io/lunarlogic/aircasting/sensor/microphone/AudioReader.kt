@@ -41,7 +41,7 @@ import java.util.Arrays
 /**
  * Create an AudioReader instance.
  */
-class AudioReader {
+open class AudioReader {
 
     // ******************************************************************** //
     // Private Data.
@@ -194,7 +194,7 @@ class AudioReader {
     /**
      * Main loop of the builtin reader.  This runs in our own thread.
      */
-    private fun readerRun() {
+    open protected fun readerRun() {
         var buffer: ShortArray
         var index: Int
         var readSize: Int
@@ -302,7 +302,7 @@ class AudioReader {
      *
      * @param buffer Buffer containing the data.
      */
-    private fun readDone(buffer: ShortArray) {
+    protected fun readDone(buffer: ShortArray) {
         inputListener!!.onReadComplete(buffer)
     }
 

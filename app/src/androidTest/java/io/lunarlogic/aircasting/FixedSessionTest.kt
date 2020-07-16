@@ -1,18 +1,15 @@
 package io.lunarlogic.aircasting
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
@@ -20,16 +17,13 @@ import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubBluetooth
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
