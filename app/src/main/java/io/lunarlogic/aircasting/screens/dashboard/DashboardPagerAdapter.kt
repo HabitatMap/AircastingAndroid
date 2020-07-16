@@ -14,7 +14,7 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
     companion object {
         val MOBILE_ACTIVE_TAB_INDEX = 0
         val MOBILE_DORMANT_TAB_INDEX = 1
-        val FIXED = 2
+        val FIXED_TAB_INDEX = 2
     }
 
     override fun getCount(): Int {
@@ -25,7 +25,7 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         return when (position) {
             MOBILE_ACTIVE_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_mobile_active)
             MOBILE_DORMANT_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_mobile_dormant)
-            FIXED -> mContext.getString(R.string.dashboard_tabs_fixed)
+            FIXED_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_fixed)
             else -> ""
         }
     }
@@ -34,7 +34,7 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         return when (position) {
             MOBILE_ACTIVE_TAB_INDEX -> MobileActiveFragment()
             MOBILE_DORMANT_TAB_INDEX -> MobileDormantFragment()
-            FIXED -> FixedFragment()
+            FIXED_TAB_INDEX -> FixedFragment()
             else -> Fragment()
         }
     }

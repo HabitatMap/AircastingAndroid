@@ -41,7 +41,7 @@ import java.util.Arrays
 /**
  * Create an AudioReader instance.
  */
-class AudioReader {
+open class AudioReader {
 
     // ******************************************************************** //
     // Private Data.
@@ -62,7 +62,7 @@ class AudioReader {
     private var sleepTime: Long = 0
 
     // Listener for input.
-    private var inputListener: Listener? = null
+    protected var inputListener: Listener? = null
 
     // Flag whether the thread should be running.
     @Volatile
@@ -122,7 +122,7 @@ class AudioReader {
      * buffer size.
      * @param listener Listener to be notified on each completed read.
      */
-    fun startReader(rate: Int, block: Int, listener: Listener) {
+    open fun startReader(rate: Int, block: Int, listener: Listener) {
         Log.i(TAG, "Reader: Start Thread")
         synchronized(this) {
             // Calculate the required I/O buffer size.
@@ -194,7 +194,7 @@ class AudioReader {
     /**
      * Main loop of the builtin reader.  This runs in our own thread.
      */
-    private fun readerRun() {
+    open protected fun readerRun() {
         var buffer: ShortArray
         var index: Int
         var readSize: Int
@@ -302,7 +302,7 @@ class AudioReader {
      *
      * @param buffer Buffer containing the data.
      */
-    private fun readDone(buffer: ShortArray) {
+    protected fun readDone(buffer: ShortArray) {
         inputListener!!.onReadComplete(buffer)
     }
 

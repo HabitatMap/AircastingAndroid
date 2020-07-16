@@ -22,6 +22,6 @@ abstract class BaseViewMvc : ViewMvc {
 
     protected fun getInputValue(id: Int): String {
         val field = rootView?.findViewById<EditText>(id)
-        return field?.text.toString()
+        return field?.text.toString().trim()
     }
 }

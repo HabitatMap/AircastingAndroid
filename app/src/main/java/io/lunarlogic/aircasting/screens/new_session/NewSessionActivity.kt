@@ -7,15 +7,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.PermissionsModule
-import io.lunarlogic.aircasting.di.SettingsModule
 import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
+import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity(),
@@ -34,6 +32,9 @@ class NewSessionActivity : AppCompatActivity(),
 
     @Inject
     lateinit var airbeam2Connector: AirBeam2Connector
+
+    @Inject
+    lateinit var audioReader: AudioReader
 
     @Inject
     lateinit var sessionBuilder: SessionBuilder
@@ -64,6 +65,7 @@ class NewSessionActivity : AppCompatActivity(),
             permissionsManager,
             bluetoothManager,
             airbeam2Connector,
+            audioReader,
             sessionBuilder
         )
 

@@ -26,6 +26,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSe
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
+import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -42,6 +43,7 @@ class NewSessionController(
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val airBeam2Connector: AirBeam2Connector,
+    audioReader: AudioReader,
     private val sessionBuilder: SessionBuilder
 ) : SelectSessionTypeViewMvc.Listener,
     SelectDeviceTypeViewMvc.Listener,
@@ -57,7 +59,7 @@ class NewSessionController(
     private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
-    private val microphoneReader = MicrophoneReader(errorHandler)
+    private val microphoneReader = MicrophoneReader(audioReader, errorHandler)
     private var sessionType: Session.Type? = null
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
@@ -98,12 +100,18 @@ class NewSessionController(
     }
 
     override fun onMicrophoneDeviceSelected() {
-        mActivity.requestAudioPermissions(permissionsManager)
+        wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
+
+        if (mActivity.audioPermissionsGranted(permissionsManager)) {
+            startMicrophoneSession()
+        } else {
+            mActivity.requestAudioPermissions(permissionsManager)
+        }
     }
 
     private fun startMicrophoneSession() {
+        LocationHelper.start()
         microphoneReader.start()
-        wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
     }
 
     override fun onTurnOnBluetoothOkClicked() {

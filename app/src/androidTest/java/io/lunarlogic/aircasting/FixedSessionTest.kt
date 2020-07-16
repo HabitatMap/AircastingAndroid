@@ -11,7 +11,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.verify
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
@@ -19,12 +19,10 @@ import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubBluetooth
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.*
 import org.junit.*
 
 import org.junit.runner.RunWith
@@ -34,15 +32,12 @@ import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
-class MobileSessionTest {
+class FixedSessionTest {
     @Inject
     lateinit var settings: Settings
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
-
-    @Inject
-    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var mockWebServer: MockWebServer
@@ -84,7 +79,7 @@ class MobileSessionTest {
     }
 
     @Test
-    fun testBluetoothMobileSessionRecording() {
+    fun testFixedOutdoorSessionRecording() {
         settings.setAuthToken("TOKEN")
         stubBluetooth(bluetoothManager)
         stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", "00:18:96:10:70:D6")
@@ -94,9 +89,7 @@ class MobileSessionTest {
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
 
-        onView(withId(R.id.mobile_session_button)).perform(click())
-
-        onView(withId(R.id.bluetooth_device_button)).perform(click())
+        onView(withId(R.id.fixed_session_button)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
@@ -108,56 +101,82 @@ class MobileSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile bluetooth session"))
+        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
+        Espresso.closeSoftKeyboard()
+
+        // change to outdoor
+        onView(withId(R.id.indoor_toggle)).perform(click())
+
+        onView(withId(R.id.wifi_credentials)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.streaming_method_toggle)).perform(click())
+
+        onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
+        onView(withId(R.id.continue_button)).perform(scrollTo())
+
+        onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.continue_button), isDescendantOfA(withId(R.id.choose_location))))
+            .perform(scrollTo(), click())
+
+        onView(allOf(withId(R.id.map), isDescendantOfA(withId(R.id.confirmation))))
+            .check(matches(isDisplayed()))
+
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(2000)
 
-        val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
-        checkMeasurement(measurementsView, "F: 1.00 F")
-        checkMeasurement(measurementsView, "RH: 2.00 %")
-        checkMeasurement(measurementsView,"PM1: 3.00 µg/m³");
-        checkMeasurement(measurementsView,"PM2.5: 4.00 µg/m³");
-        checkMeasurement(measurementsView,"PM10: 5.00 µg/m³");
-
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
-        onView(withId(R.id.stop_session_button)).perform(click())
-
-        Thread.sleep(2000)
-
-        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
-
-        Thread.sleep(2000)
+        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
 
         val sessionNameView = onView(allOf(withId(R.id.session_name), isDisplayed()))
-        sessionNameView.check(matches(withText("Ania's mobile bluetooth session")));
+        sessionNameView.check(matches(withText("Ania's fixed session")));
 
         val sessionTagsView = onView(allOf(withId(R.id.session_tags), isDisplayed()))
         sessionTagsView.check(matches(withText("tag1, tag2")));
     }
 
     @Test
-    fun testMicrophoneMobileSessionRecording() {
+    fun testFixedIndoorSessionRecording() {
         settings.setAuthToken("TOKEN")
+        stubBluetooth(bluetoothManager)
+        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", "00:18:96:10:70:D6")
 
         testRule.launchActivity(null)
 
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
 
-        onView(withId(R.id.mobile_session_button)).perform(click())
+        onView(withId(R.id.fixed_session_button)).perform(click())
+        verify(bluetoothManager).requestBluetoothPermissions();
 
-        whenever(permissionsManager.audioPermissionsGranted(any())).thenReturn(true)
-        onView(withId(R.id.microphone_button)).perform(click())
+        onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile microphone session"))
+        onView(withText("AirBeam2")).perform(click())
+
+        onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
+
+        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
+        Espresso.closeSoftKeyboard()
+
+        // not touching indoor_toogle - default is indoor
+
+        onView(withId(R.id.wifi_credentials)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.continue_button)).perform(scrollTo())
+
+        onView(withId(R.id.streaming_method_toggle)).perform(click())
+        onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
+        onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
@@ -166,24 +185,15 @@ class MobileSessionTest {
 
         Thread.sleep(2000)
 
-        val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
-        checkMeasurement(measurementsView, "Phone Microphone: 89.43 dB")
-
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
-        onView(withId(R.id.stop_session_button)).perform(click())
-
-        Thread.sleep(2000)
-
-        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
-
-        Thread.sleep(2000)
+        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
 
         val sessionNameView = onView(allOf(withId(R.id.session_name), isDisplayed()))
-        sessionNameView.check(matches(withText("Ania's mobile microphone session")));
+        sessionNameView.check(matches(withText("Ania's fixed session")));
 
         val sessionTagsView = onView(allOf(withId(R.id.session_tags), isDisplayed()))
         sessionTagsView.check(matches(withText("tag1, tag2")));
     }
+
 
     private fun checkMeasurement(measurementsView: ViewInteraction, measurementString: String) {
         measurementsView.check(matches(withText(containsString(measurementString))));

@@ -30,9 +30,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
 
     private val MAX_ZOOM = 20.0f
     private val MIN_ZOOM = 5.0f
-
-    // TODO: handle?
-    private var mZoom = 13f
+    private val DEFAULT_ZOOM = 13f
 
     private val mDefaultLatitude: Double
     private val mDefaultLongitude: Double
@@ -96,7 +94,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         mMap = googleMap
         setZoomPreferences()
         addMarkerToMap()
-        updateMapCamera()
+        updateMapCamera(DEFAULT_ZOOM)
     }
 
     private fun onContinueClicked() {
@@ -122,9 +120,10 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         mMarker.setDraggable(true)
     }
 
-    private fun updateMapCamera() {
+    private fun updateMapCamera(aZoom: Float? = null) {
+        val zoom = aZoom ?: mMap.cameraPosition.zoom
         val newLocation = LatLng(mMarker.position.latitude, mMarker.position.longitude)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, mZoom))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, zoom))
     }
 
     private fun updateMarkerPosition(latitude: Double, longitude: Double) {
@@ -133,6 +132,6 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
 
     private fun resetMapToDefaults() {
         updateMarkerPosition(mDefaultLatitude, mDefaultLongitude)
-        updateMapCamera()
+        updateMapCamera(DEFAULT_ZOOM)
     }
 }
