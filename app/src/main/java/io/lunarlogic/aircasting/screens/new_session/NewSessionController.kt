@@ -100,6 +100,8 @@ class NewSessionController(
     }
 
     override fun onMicrophoneDeviceSelected() {
+        wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
+
         if (mActivity.audioPermissionsGranted(permissionsManager)) {
             startMicrophoneSession()
         } else {
@@ -109,7 +111,6 @@ class NewSessionController(
 
     private fun startMicrophoneSession() {
         microphoneReader.start()
-        wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
     }
 
     override fun onTurnOnBluetoothOkClicked() {
