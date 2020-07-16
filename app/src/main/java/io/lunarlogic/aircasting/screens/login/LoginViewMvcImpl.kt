@@ -19,19 +19,11 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     private fun onLoginClicked() {
-        val username = getUsername()
-        val password = getPassword()
+        val username = getInputValue(R.id.username)
+        val password = getInputValue(R.id.password)
 
         for (listener in listeners) {
             listener.onLoginClicked(username, password)
         }
-    }
-
-    private fun getUsername(): String {
-        return rootView?.findViewById<EditText>(R.id.username)?.text.toString().trim()
-    }
-
-    private fun getPassword(): String {
-        return rootView?.findViewById<EditText>(R.id.password)?.text.toString().trim()
     }
 }
