@@ -8,4 +8,6 @@ interface ConfirmationViewMvc : ObservableViewMvc<ConfirmationViewMvc.Listener> 
     interface Listener {
         fun onStartRecordingClicked(session: Session)
     }
+
+    fun updateLocation(latitude: Double?, longitude: Double?)
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import android.location.Location
 import android.os.Looper
 import com.google.android.gms.location.*
+import io.lunarlogic.aircasting.events.LocationChanged
+import org.greenrobot.eventbus.EventBus
 
 class LocationHelper(private val mContext: Context) {
     companion object {
@@ -39,6 +41,8 @@ class LocationHelper(private val mContext: Context) {
             for (location in locationResult.locations) {
                 mLastLocation = location
             }
+
+            EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
         }
     }
 

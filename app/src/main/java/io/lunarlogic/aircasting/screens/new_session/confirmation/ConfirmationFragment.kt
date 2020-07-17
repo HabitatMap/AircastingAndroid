@@ -27,6 +27,7 @@ class ConfirmationFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        controller.registerToEventBus()
         controller.registerListener(listener)
         controller.onStart(context)
     }

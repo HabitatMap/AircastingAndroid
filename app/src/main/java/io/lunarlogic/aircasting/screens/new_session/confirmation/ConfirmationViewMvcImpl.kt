@@ -10,6 +10,7 @@ import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.LatLng
+import com.google.android.libraries.maps.model.Marker
 import com.google.android.libraries.maps.model.MarkerOptions
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Session
@@ -19,7 +20,9 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     OnMapReadyCallback {
     private var session: Session? = null
 
-    private val DEFAULT_ZOOM = 13f
+    private val DEFAULT_ZOOM = 16f
+
+    private var mMarker: Marker? = null
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?,
@@ -45,13 +48,17 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     abstract fun layoutId(): Int
     abstract fun descriptionStringId(): Int
 
+    protected fun updateMarkerPosition(latitude: Double?, longitude: Double?) {
+        if (latitude == null || longitude == null) return
+
+        mMarker?.position = LatLng(latitude, longitude)
+    }
+
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         val sessionLocation = session!!.location!!
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(location))
+        mMarker = googleMap.addMarker(MarkerOptions().position(location))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
 

@@ -21,4 +21,7 @@ class FixedSessionConfirmationViewMvcImpl(
         return R.string.fixed_session_confirmation_description
     }
 
+    override fun updateLocation(latitude: Double?, longitude: Double?) {
+        // do nothing, static map
+    }
 }
