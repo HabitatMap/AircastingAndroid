@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
-class MobileMobileActiveSessionViewMvcImpl: BaseObservableViewMvc<MobileActiveSessionViewMvc.Listener>,
+class MobileActiveSessionViewMvcImpl: BaseObservableViewMvc<MobileActiveSessionViewMvc.Listener>,
     MobileActiveSessionViewMvc {
     private var mDateTextView: TextView
     private var mNameTextView: TextView
@@ -24,9 +24,9 @@ class MobileMobileActiveSessionViewMvcImpl: BaseObservableViewMvc<MobileActiveSe
     constructor(inflater: LayoutInflater, parent: ViewGroup) {
         this.rootView = inflater.inflate(R.layout.active_session, parent, false)
 
-        mDateTextView = findViewById(R.id.session_date)
-        mNameTextView = findViewById(R.id.session_name)
-        mTagsTextView = findViewById(R.id.session_tags)
+        mDateTextView = findViewById(R.id.active_session_date)
+        mNameTextView = findViewById(R.id.active_session_name)
+        mTagsTextView = findViewById(R.id.active_session_tags)
         mMeasurementsTextView = findViewById(R.id.session_measurements)
         mStopSesssionButton = findViewById(R.id.stop_session_button)
 

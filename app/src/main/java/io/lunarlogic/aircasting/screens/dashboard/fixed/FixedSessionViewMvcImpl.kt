@@ -22,9 +22,9 @@ class FixedSessionViewMvcImpl: BaseObservableViewMvc<FixedSessionViewMvc.Listene
     constructor(inflater: LayoutInflater, parent: ViewGroup) {
         this.rootView = inflater.inflate(R.layout.dormant_session, parent, false)
 
-        mDateTextView = findViewById(R.id.session_date)
-        mNameTextView = findViewById(R.id.session_name)
-        mTagsTextView = findViewById(R.id.session_tags)
+        mDateTextView = findViewById(R.id.dormant_session_date)
+        mNameTextView = findViewById(R.id.dormant_session_name)
+        mTagsTextView = findViewById(R.id.dormant_session_tags)
         mMeasurementsTextView = findViewById(R.id.session_measurements)
         mDeleteSesssionButton = findViewById(R.id.delete_session_button)
 

@@ -6,7 +6,7 @@ class CalibrationHelper {
     val OFFSET_POINT = 60.0
 
     fun calibrate(value: Double): Double {
-        val calibration = DEFAULT_CALIBRATION // TODO: take from settings
+        val calibration = DEFAULT_CALIBRATION // TODO: take from settings and update session params
 
         return calibrate(value, calibration)
     }

@@ -8,14 +8,14 @@
     android:gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/session_date"
+        android:id="@+id/dormant_session_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textAlignment="center" />
 
     <TextView
-        android:id="@+id/session_name"
+        android:id="@+id/dormant_session_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -23,7 +23,7 @@
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/session_tags"
+        android:id="@+id/dormant_session_tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp" />

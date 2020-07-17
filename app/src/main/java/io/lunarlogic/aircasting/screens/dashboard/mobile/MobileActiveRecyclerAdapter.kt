@@ -12,7 +12,7 @@ class MobileActiveRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc =
-            MobileMobileActiveSessionViewMvcImpl(
+            MobileActiveSessionViewMvcImpl(
                 mInflater,
                 parent
             )

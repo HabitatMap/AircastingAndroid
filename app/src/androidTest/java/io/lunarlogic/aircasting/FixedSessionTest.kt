@@ -101,7 +101,7 @@ class FixedSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed session"))
+        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed outdoor session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
 
@@ -129,15 +129,15 @@ class FixedSessionTest {
 
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(2000)
+        Thread.sleep(3000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
+        onView(allOf(withId(R.id.refresh_sessions), isDisplayed()))
+            .perform(swipeDown());
+        Thread.sleep(3000)
 
-        val sessionNameView = onView(allOf(withId(R.id.session_name), isDisplayed()))
-        sessionNameView.check(matches(withText("Ania's fixed session")));
-
-        val sessionTagsView = onView(allOf(withId(R.id.session_tags), isDisplayed()))
-        sessionTagsView.check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's fixed outdoor session")))
+        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
     }
 
     @Test
@@ -163,7 +163,7 @@ class FixedSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed session"))
+        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed indoor session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
 
@@ -183,15 +183,15 @@ class FixedSessionTest {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(2000)
+        Thread.sleep(3000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
+        onView(allOf(withId(R.id.refresh_sessions), isDisplayed()))
+            .perform(swipeDown());
+        Thread.sleep(3000)
 
-        val sessionNameView = onView(allOf(withId(R.id.session_name), isDisplayed()))
-        sessionNameView.check(matches(withText("Ania's fixed session")));
-
-        val sessionTagsView = onView(allOf(withId(R.id.session_tags), isDisplayed()))
-        sessionTagsView.check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's fixed indoor session")))
+        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
     }
 
 

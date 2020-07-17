@@ -22,7 +22,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): super() {
-        this.rootView = inflater.inflate(R.layout.fragment_mobile_sessions, parent, false)
+        this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
 
         mEmptyView = rootView?.findViewById(R.id.empty_dashboard)
         mRecordSessionButton = rootView?.findViewById(R.id.dashboard_record_new_session_button)

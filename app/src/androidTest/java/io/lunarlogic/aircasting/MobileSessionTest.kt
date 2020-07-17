@@ -116,7 +116,7 @@ class MobileSessionTest {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(2000)
+        Thread.sleep(4000)
 
         val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
         checkMeasurement(measurementsView, "F: 1.00 F")
@@ -129,17 +129,15 @@ class MobileSessionTest {
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(3000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
+        onView(allOf(withId(R.id.refresh_sessions), isDisplayed()))
+            .perform(swipeDown());
+        Thread.sleep(3000)
 
-        Thread.sleep(2000)
-
-        val sessionNameView = onView(allOf(withId(R.id.session_name), isDisplayed()))
-        sessionNameView.check(matches(withText("Ania's mobile bluetooth session")));
-
-        val sessionTagsView = onView(allOf(withId(R.id.session_tags), isDisplayed()))
-        sessionTagsView.check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
     }
 
     @Test
@@ -164,25 +162,24 @@ class MobileSessionTest {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(2000)
+        Thread.sleep(4000)
 
         val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
         checkMeasurement(measurementsView, "Phone Microphone: 89.43 dB")
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(3000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
+        onView(allOf(withId(R.id.refresh_sessions), isDisplayed()))
+            .perform(swipeDown());
+        Thread.sleep(3000)
 
-        Thread.sleep(2000)
-
-        val sessionNameView = onView(allOf(withId(R.id.session_name), isDisplayed()))
-        sessionNameView.check(matches(withText("Ania's mobile microphone session")));
-
-        val sessionTagsView = onView(allOf(withId(R.id.session_tags), isDisplayed()))
-        sessionTagsView.check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's mobile microphone session")))
+        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
     }
 
     private fun checkMeasurement(measurementsView: ViewInteraction, measurementString: String) {
