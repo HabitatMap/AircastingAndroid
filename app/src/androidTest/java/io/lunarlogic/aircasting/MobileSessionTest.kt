@@ -129,7 +129,7 @@ class MobileSessionTest {
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
 
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
         Thread.sleep(4000)
@@ -169,7 +169,7 @@ class MobileSessionTest {
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
 
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
         Thread.sleep(4000)

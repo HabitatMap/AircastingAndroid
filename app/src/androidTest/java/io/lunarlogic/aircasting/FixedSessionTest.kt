@@ -129,7 +129,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
@@ -181,7 +181,7 @@ class FixedSessionTest {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(3000)
+        Thread.sleep(4000)
 
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
