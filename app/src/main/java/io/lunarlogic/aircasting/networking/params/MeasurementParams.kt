@@ -16,7 +16,6 @@ class MeasurementParams {
 
     val longitude: Double?
     val latitude: Double?
-    val timezone_offset = 0 // TODO: handle
     val milliseconds: Int
     val time: Date
     val value: Double?

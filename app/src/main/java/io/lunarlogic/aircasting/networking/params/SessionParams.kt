@@ -36,7 +36,6 @@ class SessionParams {
     val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only
     val contribute = true // TODO: handle from settings
     val is_indoor: Boolean
-    val deleted = false
     val notes = listOf<String>() // TODO: handle after adding notes
     val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
