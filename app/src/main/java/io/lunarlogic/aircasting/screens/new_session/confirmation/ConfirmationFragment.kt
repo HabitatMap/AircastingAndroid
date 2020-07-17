@@ -4,33 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.lib.KeyboardHelper
 import io.lunarlogic.aircasting.sensor.Session
 
 class ConfirmationFragment() : Fragment() {
-    private var controller: ConfirmationController? = null
-    var listener: ConfirmationViewMvc.Listener? = null
-    var session: Session? = null
+    private lateinit var controller: ConfirmationController
+    lateinit var listener: ConfirmationViewMvc.Listener
+    lateinit var session: Session
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session!!)
+        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session)
         controller = ConfirmationController(context, view)
-
         return view.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        listener?.let { controller?.registerListener(it) }
 
+        controller.registerListener(listener)
+        controller.onStart(context)
     }
 
     override fun onStop() {
         super.onStop()
-        listener?.let { controller?.unregisterListener(it) }
+        controller.unregisterListener(listener)
     }
 }

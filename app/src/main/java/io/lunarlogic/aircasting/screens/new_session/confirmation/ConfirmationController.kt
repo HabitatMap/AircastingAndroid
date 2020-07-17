@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.new_session.confirmation
 
 import android.content.Context
+import io.lunarlogic.aircasting.lib.KeyboardHelper
 
 class ConfirmationController(
     private val mContext: Context?,
@@ -13,5 +14,9 @@ class ConfirmationController(
 
     fun unregisterListener(listener: ConfirmationViewMvc.Listener) {
         mViewMvc.unregisterListener(listener)
+    }
+
+    fun onStart(context: Context?) {
+        KeyboardHelper.hideKeyboard(context)
     }
 }
