@@ -39,8 +39,8 @@ class SessionsRepository {
             session.endTime!!, session.status)
     }
 
-    fun alreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions().loadSessionByByDeviceIdAndStatus(deviceId, Session.Status.RECORDING) != null
+    fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
+        return mDatabase.sessions().loadSessionByByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
     }
 
     fun stopMobileSessions() {
