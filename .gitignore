@@ -12,7 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
-aircasting.keystore
+aircasting-ad-hoc.keystore
 app/google-services.json
 secure.properties
 app/release
