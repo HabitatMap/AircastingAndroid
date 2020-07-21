@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.di.PermissionsModule
 import io.lunarlogic.aircasting.di.SensorsModule
 import io.lunarlogic.aircasting.di.SettingsModule
 import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
+import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileActiveFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileDormantFragment
 import io.lunarlogic.aircasting.screens.main.MainActivity
@@ -26,6 +27,7 @@ interface AppComponent {
     fun inject(app: AircastingApplication)
     fun inject(activity: LoginActivity)
     fun inject(activity: MainActivity)
+    fun inject(fragment: FollowingFragment)
     fun inject(fragment: MobileActiveFragment)
     fun inject(fragment: MobileDormantFragment)
     fun inject(fragment: FixedFragment)
