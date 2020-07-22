@@ -1,30 +1,46 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.Aircasting" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/aircastingBlue</item>
+        <item name="colorSecondary">@color/aircastingBlue</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:colorBackground">@color/white</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
+        <item name="actionBarStyle">@style/Aircasting.ActionBar</item>
+        <item name="actionBarTabTextStyle">@style/Aircasting.ActionBarTitle</item>
+        <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="Theme.Aircasting.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+<!--    <style name="Theme.Aircasting.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.Aircasting.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style
-        name="Header1"
+        name="TextAppearance.Aircasting.Headline1"
         parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">Moderat Trial</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/header1_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style
+        name="Aircasting.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="background">?android:attr/colorBackground</item>
+<!--        <item name="actionBarStyle">@style/Aircasting.ActionBarTitle</item>-->
+    </style>
 
+    <style name="Aircasting.ActionBarTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/action_bar_title_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

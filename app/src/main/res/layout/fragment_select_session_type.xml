@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
         android:text="@string/title_lets_start"
-        style="@style/Header1"
+        android:textAppearance="?attr/textAppearanceHeadline1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
