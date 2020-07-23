@@ -19,11 +19,17 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         val MOBILE_DORMANT_TAB_INDEX = 2
         val FIXED_TAB_INDEX = 3
 
-        fun tabIndexForSessionType(sessionType: Session.Type): Int {
-            return when(sessionType) {
-                Session.Type.MOBILE -> MOBILE_ACTIVE_TAB_INDEX
-                else -> FOLLOWING_TAB_INDEX
+        fun tabIndexForSessionType(sessionType: Session.Type, sessionStatus: Session.Status): Int {
+
+            if (sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.RECORDING) {
+                return MOBILE_ACTIVE_TAB_INDEX
             }
+
+            if (sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.FINISHED) {
+                return MOBILE_DORMANT_TAB_INDEX
+            }
+
+            return FOLLOWING_TAB_INDEX
         }
     }
 

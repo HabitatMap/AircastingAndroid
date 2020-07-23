@@ -126,9 +126,6 @@ class MobileSessionTest {
 
         Thread.sleep(4000)
 
-        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
-        Thread.sleep(4000)
-
         onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
     }
@@ -164,9 +161,6 @@ class MobileSessionTest {
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
         onView(withId(R.id.stop_session_button)).perform(click())
 
-        Thread.sleep(4000)
-
-        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.MOBILE_DORMANT_TAB_INDEX))
         Thread.sleep(4000)
 
         onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's mobile microphone session")))
