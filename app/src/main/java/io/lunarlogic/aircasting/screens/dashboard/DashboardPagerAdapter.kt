@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
 import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileActiveFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileDormantFragment
+import io.lunarlogic.aircasting.sensor.Session
 
 class DashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -17,6 +18,13 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         val MOBILE_ACTIVE_TAB_INDEX = 1
         val MOBILE_DORMANT_TAB_INDEX = 2
         val FIXED_TAB_INDEX = 3
+
+        fun tabIndexForSessionType(sessionType: Session.Type): Int {
+            return when(sessionType) {
+                Session.Type.MOBILE -> MOBILE_ACTIVE_TAB_INDEX
+                else -> FOLLOWING_TAB_INDEX
+            }
+        }
     }
 
     override fun getCount(): Int {

@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 
 
 class DashboardFragment : Fragment() {
-    private val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    private var controller: DashboardController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -17,6 +17,14 @@ class DashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
+        controller = DashboardController(view)
+        controller?.onCreate()
+
         return view.rootView
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controller?.onDestroy()
     }
 }
