@@ -89,6 +89,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND deleted=0")
     fun loadSessionByByDeviceIdAndStatus(deviceId: String, status: Session.Status): SessionDBObject?
 
+    @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
+    fun loadSessionByByDeviceIdStatusAndType(deviceId: String, status: Session.Status, type: Session.Type): SessionDBObject?
+
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
 

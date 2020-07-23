@@ -165,7 +165,7 @@ class NewSessionController(
         GlobalScope.launch(Dispatchers.Main) {
             var existing: Boolean = false
             val query = GlobalScope.async(Dispatchers.IO) {
-                existing = sessionsRepository.alreadyExistsForDeviceId(deviceItem.id)
+                existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(deviceItem.id)
             }
             query.await()
             if (existing) {
