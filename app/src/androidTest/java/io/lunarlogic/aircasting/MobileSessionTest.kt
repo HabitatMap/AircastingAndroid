@@ -122,7 +122,7 @@ class MobileSessionTest {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
-        onView(withId(R.id.stop_session_button)).perform(click())
+        onView(withId(R.id.stop_session_button)).perform(scrollTo(), click())
 
         Thread.sleep(4000)
 
@@ -159,7 +159,7 @@ class MobileSessionTest {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
-        onView(withId(R.id.stop_session_button)).perform(click())
+        onView(withId(R.id.stop_session_button)).perform(scrollTo(), click())
 
         Thread.sleep(4000)
 

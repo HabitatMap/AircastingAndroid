@@ -35,10 +35,12 @@
 
     <style name="Widget.Aircasting.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="background">?android:attr/colorBackground</item>
+        <item name="elevation">0dp</item>
         <item name="titleTextStyle">@style/Widget.Aircasting.ActionBar.TitleTextStyle</item>
     </style>
 
     <style name="Widget.Aircasting.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <!--- <item name="android:fontFamily"></item> // TODO: setup font when we get files -->
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/action_bar_title_text_size</item>
         <item name="android:textStyle">bold</item>
