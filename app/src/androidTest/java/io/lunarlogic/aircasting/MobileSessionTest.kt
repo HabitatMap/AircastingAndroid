@@ -1,13 +1,11 @@
 package io.lunarlogic.aircasting
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -15,12 +13,10 @@ import com.nhaarman.mockito_kotlin.*
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubBluetooth
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
@@ -120,8 +116,7 @@ class MobileSessionTest {
         val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
         measurementsView.check(matches(not(withText(""))))
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
@@ -157,8 +152,7 @@ class MobileSessionTest {
         val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
         checkMeasurement(measurementsView, "Phone Microphone: 89.43 dB")
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed()))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0));
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)

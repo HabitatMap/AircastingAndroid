@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:textSize="@dimen/header1_text_size"
             android:text="@string/mobile_session_details_header"
             android:layout_margin="20dp"
@@ -43,7 +43,7 @@
         <TextView
             android:id="@+id/indoor_toggle_header"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:textSize="18dp"
             android:text="@string/fixed_session_details_indoor_toggle_header"
             android:layout_margin="20dp"
@@ -72,7 +72,7 @@
         <TextView
             android:id="@+id/streaming_method_toggle_header"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:textSize="18dp"
             android:text="@string/fixed_session_details_streaming_method_header"
             android:layout_margin="20dp"

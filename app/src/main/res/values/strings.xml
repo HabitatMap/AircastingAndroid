@@ -7,7 +7,7 @@
     <string name="password_hint">password</string>
     <string name="login_button">Login</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_lets_start">Lets start</string>
+    <string name="title_lets_start">Let\'s begin</string>
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty">You haven\'t added any sessions to your Dashboard yet.</string>
     <string name="dashboard_tabs_mobile_active">Mobile active</string>

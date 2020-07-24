@@ -1,20 +1,76 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <!-- Themes -->
+
+    <style name="Theme.Aircasting" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/aircasting_blue</item>
+        <item name="colorSecondary">@color/aircasting_dark_blue</item>
+        <item name="colorAccent">@color/aircasting_pink</item>
+
+        <item name="android:colorBackground">@color/aircasting_white</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
+        <item name="actionBarStyle">@style/Widget.Aircasting.ActionBar</item>
+        <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="Theme.Aircasting.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+<!--    <style name="Theme.Aircasting.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.Aircasting.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <!-- Typography -->
+
+    <style name="TextAppearance.Aircasting.Headline1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/header1_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Headline2" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/header2_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Headline3" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:textColor">@color/aircasting_light_grey</item>
+        <item name="android:textSize">@dimen/header3_text_size</item>
+    </style>
+
+    <!-- Styles -->
+
+    <!-- Action Bar -->
+
+    <style name="Widget.Aircasting.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="background">?android:attr/colorBackground</item>
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@style/Widget.Aircasting.ActionBar.TitleTextStyle</item>
+    </style>
+
+    <style name="Widget.Aircasting.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <!--- <item name="android:fontFamily"></item> // TODO: setup font when we get files -->
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/action_bar_title_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Tab Layout -->
+
+    <style name="Widget.Aicasting.TabLayout" parent="">
+        <item name="tabIndicator">@null</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/Widget.Aicasting.TabLayout.TextAppearance</item>
+        <item name="tabSelectedTextColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.Aicasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline3">
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>
