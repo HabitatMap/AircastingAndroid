@@ -1,6 +1,7 @@
 <resources>
 
     <!-- Themes -->
+
     <style name="Theme.Aircasting" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/aircasting_blue</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
@@ -21,17 +22,31 @@
 
     <style name="Theme.Aircasting.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
     <!-- Typography -->
 
-    <style name="TextAppearance.Aircasting.Headline1"
-        parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.Headline1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">Moderat Trial</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/header1_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Headline2" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/header2_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Headline3" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:textColor">@color/aircasting_light_grey</item>
+        <item name="android:textSize">@dimen/header3_text_size</item>
+    </style>
+
     <!-- Styles -->
+
+    <!-- Action Bar -->
 
     <style name="Widget.Aircasting.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="background">?android:attr/colorBackground</item>
@@ -44,5 +59,18 @@
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/action_bar_title_text_size</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Tab Layout -->
+
+    <style name="Widget.Aicasting.TabLayout" parent="">
+        <item name="tabIndicator">@null</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/Widget.Aicasting.TabLayout.TextAppearance</item>
+        <item name="tabSelectedTextColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.Aicasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline3">
+        <item name="textAllCaps">false</item>
     </style>
 </resources>

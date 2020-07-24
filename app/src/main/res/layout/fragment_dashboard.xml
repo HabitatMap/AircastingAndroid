@@ -12,6 +12,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.tabs.TabLayout
+            style="@style/Widget.Aicasting.TabLayout"
             android:id="@+id/tabs"
             android:layout_width="wrap_content"
             app:tabMode="scrollable"
