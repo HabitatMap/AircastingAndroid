@@ -55,7 +55,7 @@
     </style>
 
     <style name="Widget.Aircasting.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <!--- <item name="android:fontFamily"></item> // TODO: setup font when we get files -->
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/action_bar_title_text_size</item>
         <item name="android:textStyle">bold</item>
