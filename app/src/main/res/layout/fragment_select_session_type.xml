@@ -4,24 +4,34 @@
     android:id="@+id/container"
     android:background="@android:color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/aircasting_grey_100"
+    >
 
     <TextView
         android:id="@+id/select_session_type_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_lets_start"
         android:textAppearance="?attr/textAppearanceHeadline1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="0dp"
+        android:paddingLeft="@dimen/select_session_type_padding_left"
+        android:paddingBottom="@dimen/select_session_type_title_padding_bottom"
+        android:background="@color/aircasting_white"/>
 
     <TextView
         android:id="@+id/select_session_type_subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="@string/select_session_type_header"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:paddingBottom="@dimen/select_session_type_title_padding_bottom"
+        android:paddingTop="8dp"
+        android:paddingLeft="@dimen/select_session_type_padding_left"
+        android:background="@color/aircasting_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_session_type_title" />
