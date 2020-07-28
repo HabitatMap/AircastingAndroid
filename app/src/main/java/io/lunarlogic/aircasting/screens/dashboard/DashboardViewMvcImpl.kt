@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -17,10 +18,13 @@ class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
         mPager = rootView?.findViewById<ViewPager>(R.id.pager)
+        Log.d("DashboardViewMvcImpl", "constructor: mPager " + mPager)
+        Log.d("DashboardViewMvcImpl", "constructor: fragmentManager " + fragmentManager)
         fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
     }
 
     override fun goToTab(sessionType: Session.Type, sessionStatus: Session.Status) {
-        mPager?.currentItem = DashboardPagerAdapter.tabIndexForSessionType(sessionType, sessionStatus)
+        Log.d("DashboardViewMvcImpl", "goToTab: mPager " + mPager)
+        mPager!!.currentItem = DashboardPagerAdapter.tabIndexForSessionType(sessionType, sessionStatus)
     }
 }
