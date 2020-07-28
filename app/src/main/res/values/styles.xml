@@ -7,8 +7,17 @@
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
 
+        <item name="colorOnPrimary">@color/aircasting_white</item>
+
         <item name="android:colorBackground">@color/aircasting_white</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.Aircasting.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.Aircasting.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.Aircasting.Headline4</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Body1</item>
+
+        <item name="buttonStyle">@style/Widget.Aircasting.Button</item>
+
         <item name="actionBarStyle">@style/Widget.Aircasting.ActionBar</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
@@ -33,44 +42,72 @@
     </style>
 
     <style name="TextAppearance.Aircasting.Headline2" parent="@style/TextAppearance.AppCompat">
-        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/header2_text_size</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Headline3" parent="@style/TextAppearance.AppCompat">
-        <item name="android:fontFamily">Moderat Trial</item>
-        <item name="android:textColor">@color/aircasting_light_grey</item>
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/header3_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Headline4" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_40</item>
+        <item name="android:textSize">@dimen/header4_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Body1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_30</item>
+        <item name="android:textSize">@dimen/body1_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Button" parent="">
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
     </style>
 
     <!-- Styles -->
 
     <!-- Action Bar -->
 
+    <style name="Widget.Aircasting.Button" parent="@style/Widget.AppCompat.Button">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
+    </style>
+
     <style name="Widget.Aircasting.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="background">?android:attr/colorBackground</item>
         <item name="elevation">0dp</item>
         <item name="titleTextStyle">@style/Widget.Aircasting.ActionBar.TitleTextStyle</item>
+        <item name="android:paddingLeft">@dimen/action_bar_text_padding</item>
+        <item name="android:paddingRight">@dimen/action_bar_text_padding</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="Widget.Aircasting.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/action_bar_title_text_size</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Tab Layout -->
 
-    <style name="Widget.Aicasting.TabLayout" parent="">
+    <style name="Widget.Aircasting.TabLayout" parent="">
         <item name="tabIndicator">@null</item>
         <item name="tabBackground">?attr/selectableItemBackground</item>
-        <item name="tabTextAppearance">@style/Widget.Aicasting.TabLayout.TextAppearance</item>
+        <item name="tabTextAppearance">@style/Widget.Aircasting.TabLayout.TextAppearance</item>
         <item name="tabSelectedTextColor">?attr/colorPrimary</item>
+        <item name="android:elevation">10dp</item>
     </style>
 
-    <style name="Widget.Aicasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline3">
+    <style name="Widget.Aircasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline4">
         <item name="textAllCaps">false</item>
     </style>
+
+    <!-- Dashboard -->
 </resources>

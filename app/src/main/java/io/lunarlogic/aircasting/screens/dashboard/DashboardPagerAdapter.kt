@@ -20,7 +20,6 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         val FIXED_TAB_INDEX = 3
 
         fun tabIndexForSessionType(sessionType: Session.Type, sessionStatus: Session.Status): Int {
-
             if (sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.RECORDING) {
                 return MOBILE_ACTIVE_TAB_INDEX
             }
