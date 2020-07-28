@@ -87,6 +87,12 @@
         <item name="android:textSize">@dimen/button_text_size</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.TextButton" parent="">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/text_button_text_size</item>
+
+    </style>
 
     <!-- Styles -->
 
@@ -127,4 +133,9 @@
     </style>
 
     <!-- Dashboard -->
+
+    <!-- New session -->
+    <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
+    </style>
 </resources>

@@ -36,21 +36,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_session_type_title" />
 
-    <Button
-        android:id="@+id/fixed_session_button"
+    <TextView
+        android:id="@+id/record_new_session_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="@string/fixed_session_button"
+        android:text="@string/record_new_session_title"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:paddingBottom="@dimen/select_session_type_title_padding_bottom"
+        android:paddingTop="8dp"
+        android:paddingLeft="@dimen/select_session_type_padding_left"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_session_type_subtitle" />
 
     <Button
+        android:id="@+id/new_session_more_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_session_more_info"
+        android:paddingBottom="@dimen/select_session_type_title_padding_bottom"
+        android:paddingRight="@dimen/select_session_type_padding_right"
+        android:paddingTop="8dp"
+        style="@style/Widget.Aircasting.TextButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_session_type_subtitle" />
+
+    <Button
+        android:id="@+id/fixed_session_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fixed_session_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/record_new_session_title" />
+
+    <Button
         android:id="@+id/mobile_session_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
         android:text="@string/mobile_session_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
