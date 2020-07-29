@@ -15,8 +15,8 @@
         <item name="textAppearanceHeadline4">@style/TextAppearance.Aircasting.Headline4</item>
         <item name="textAppearanceHeadline5">@style/TextAppearance.Aircasting.Headline5</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Body1</item>
-        <item name="buttonStyle">@style/Widget.Aircasting.Button</item>
         <item name="textAppearanceBody2">@style/TextAppearance.Aircasting.Body2</item>
+        <item name="buttonStyle">@style/Widget.Aircasting.Button</item>
         <item name="actionBarStyle">@style/Widget.Aircasting.ActionBar</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
@@ -26,9 +26,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-<!--    <style name="Theme.Aircasting.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-
     <style name="Theme.Aircasting.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Cards -->
+    <style name="Theme.Aircasting.Cards" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/aircasting_blue</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Cards.Headline1</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Cards.Body1</item>
+    </style>
+
+
 
 
     <!-- Typography -->
@@ -66,6 +73,8 @@
         <item name="android:textSize">@dimen/header5_text_size</item>
     </style>
 
+
+
     <style name="TextAppearance.Aircasting.Body1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_regular</item>
         <item name="android:textColor">@color/aircasting_grey_500</item>
@@ -91,7 +100,21 @@
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/text_button_text_size</item>
+    </style>
 
+    <!-- New session typography -->
+
+
+    <!-- Cards -->
+    <style name="TextAppearance.Aircasting.Cards.Headline1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/cards_headline1_text_size</item>
+    </style>
+    <style name="TextAppearance.Aircasting.Cards.Body1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_500</item>
+        <item name="android:textSize">@dimen/cards_body1_text_size</item>
     </style>
 
     <!-- Styles -->
@@ -137,5 +160,10 @@
     <!-- New session -->
     <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
+    </style>
+
+    <!-- Cards -->
+    <style name="Widget.Aircasting.Cards" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
 </resources>

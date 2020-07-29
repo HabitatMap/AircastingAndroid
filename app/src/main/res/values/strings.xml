@@ -19,10 +19,18 @@
     <string name="record_new_session">Record new session</string>
     <string name="stop_session">Stop session</string>
     <string name="delete_session">Delete session</string>
+
+    <!-- Let's begin (new session start) -->
+
     <string name="select_session_type_header">How would you like to add your session?</string>
     <string name="new_session_more_info"><u>more info</u></string>
+    <string name="fixed_session_start_title">Fixed session</string>
+    <string name="fixed_session_start_desc">for measuring in one place</string>
+    <string name="mobile_session_start_title">Mobile session</string>
+    <string name="mobile_session_start_desc">for moving around</string>
     <string name="fixed_session_button">Fixed session</string>
     <string name="mobile_session_button">Mobile session</string>
+
     <string name="select_device_type_header">What device are you using to record this session?</string>
     <string name="bluetooth_device_button">Bluetooth device</string>
     <string name="microphone_button">Phone microphone</string>
