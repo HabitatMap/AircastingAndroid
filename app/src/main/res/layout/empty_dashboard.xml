@@ -14,17 +14,16 @@
 
     <TextView
         android:id="@+id/dashboard_text"
+        style="@style/Widget.Aircasting.EmptyDashboardText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/dashboard_empty_text"
-        android:textAppearance="?attr/textAppearanceBody1"
-        android:textAlignment="center" />
+        android:textAppearance="?attr/textAppearanceBody1" />
 
     <Button
         android:id="@+id/dashboard_record_new_session_button"
+        style="@style/Widget.Aircasting.EmptyDashboardButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_marginTop="80dp"
         android:text="@string/record_new_session" />
 </LinearLayout>
