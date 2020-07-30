@@ -1,9 +1,8 @@
 package io.lunarlogic.aircasting.screens.new_session.select_session_type
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.cardview.widget.CardView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
@@ -12,13 +11,13 @@ class SelectSessionTypeViewMvcImpl : BaseObservableViewMvc<SelectSessionTypeView
         inflater: LayoutInflater, parent: ViewGroup?): super() {
         this.rootView = inflater.inflate(R.layout.fragment_select_session_type, parent, false)
 
-        val fixedSessionButton = rootView?.findViewById<View>(R.id.fixed_session_start_card)
-        fixedSessionButton?.setOnClickListener {
+        val fixedSessionCard = rootView?.findViewById<CardView>(R.id.fixed_session_start_card)
+        fixedSessionCard?.setOnClickListener {
             onFixedSessionSelected()
         }
 
-        val mobileSessionButton = rootView?.findViewById<View>(R.id.mobile_session_start_card)
-        mobileSessionButton?.setOnClickListener {
+        val mobileSessionCard = rootView?.findViewById<CardView>(R.id.mobile_session_start_card)
+        mobileSessionCard?.setOnClickListener {
             onMobileSessionSelected()
         }
     }

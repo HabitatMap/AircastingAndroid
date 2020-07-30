@@ -78,6 +78,7 @@ class NewSessionController(
     }
     override fun onMobileSessionSelected() {
         sessionType = Session.Type.MOBILE
+        println("mobile session selected")
         wizardNavigator.goToSelectDeviceType(this)
     }
 
