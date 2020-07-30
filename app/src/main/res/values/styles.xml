@@ -90,7 +90,7 @@
         <item name="android:textAlignment">viewStart</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.Button" parent="">
+    <style name="TextAppearance.Aircasting.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:fontFamily">@font/muli_bold</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/button_text_size</item>
@@ -121,8 +121,9 @@
 
     <!-- Action Bar -->
 
-    <style name="Widget.Aircasting.Button" parent="@style/Widget.AppCompat.Button">
+    <style name="Widget.Aircasting.Button" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:minHeight">56dp</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
     </style>
 
@@ -156,6 +157,21 @@
     </style>
 
     <!-- Dashboard -->
+    <style name="Widget.Aircasting.EmptyDashboard" parent="">
+        <item name="android:layout_marginTop">125dp</item>
+        <item name="android:layout_marginLeft">64dp</item>
+        <item name="android:layout_marginRight">64dp</item>
+    </style>
+
+    <style name="Widget.Aircasting.EmptyDashboardText" parent="">
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="lineHeight">30dp</item>
+    </style>
+
+    <style name="Widget.Aircasting.EmptyDashboardButton" parent="">
+        <item name="android:layout_marginTop">32dp</item>
+    </style>
 
     <!-- New session -->
     <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
