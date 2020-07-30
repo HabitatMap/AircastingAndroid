@@ -16,8 +16,6 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTy
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
-import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeFragment
-import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.sensor.Session
@@ -28,18 +26,11 @@ class NewSessionWizardNavigator(
     private val mFragmentManager: FragmentManager
 ) {
     private val STEP_PROGRESS = 10
-    private var currentProgressStep = 1
+    private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 
     interface BackPressedListener {
         fun onBackPressed()
-    }
-
-    fun showFirstStep(listener: SelectSessionTypeViewMvc.Listener) {
-        val fragment = SelectSessionTypeFragment()
-        fragment.listener = listener
-        replaceFragment(fragment)
-        updateProgressBarView()
     }
 
     fun goToSelectDeviceType(listener: SelectDeviceTypeViewMvc.Listener) {
@@ -148,8 +139,16 @@ class NewSessionWizardNavigator(
 
     private fun goToFragment(fragment: Fragment) {
         val fragmentTransaction = mFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.new_session_fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
+        val container = R.id.new_session_fragment_container
+
+        if (currentProgressStep == 1) {
+            // for first step
+            fragmentTransaction.replace(container, fragment)
+        } else {
+            fragmentTransaction.add(container, fragment)
+            fragmentTransaction.addToBackStack(null)
+        }
+
         fragmentTransaction.commit()
     }
 }

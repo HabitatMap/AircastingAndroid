@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
+import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 
 class FixedController(
@@ -31,6 +32,10 @@ class FixedController(
 
     fun onDestroy() {
         mViewMvc.unregisterListener(this)
+    }
+
+    override fun onRecordNewSessionClicked() {
+        startNewSession(Session.Type.FIXED)
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {

@@ -23,6 +23,7 @@
         android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_gravity="left"/>
 
 </LinearLayout>

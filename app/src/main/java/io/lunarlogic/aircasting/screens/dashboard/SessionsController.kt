@@ -37,8 +37,8 @@ abstract class SessionsController(
 
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
-    override fun onRecordNewSessionClicked() {
-        NewSessionActivity.start(mContext)
+    protected fun startNewSession(sessionType: Session.Type) {
+        NewSessionActivity.start(mContext, sessionType)
     }
 
     override fun onSwipeToRefreshTriggered(callback: () -> Unit) {

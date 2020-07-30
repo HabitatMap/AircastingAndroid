@@ -17,8 +17,17 @@ class LetsStartFragment : Fragment() {
     ): View? {
         val view = LetsStartViewMvcImpl(layoutInflater, null)
         controller = LetsStartController(activity, view)
-        controller.onCreate()
 
         return view.rootView
+    }
+
+    override fun onStart() {
+        super.onStart()
+        controller.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        controller.onStop()
     }
 }

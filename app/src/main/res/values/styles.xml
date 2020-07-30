@@ -8,16 +8,15 @@
         <item name="colorAccent">@color/aircasting_pink</item>
 
         <item name="colorOnPrimary">@color/aircasting_white</item>
-
         <item name="android:colorBackground">@color/aircasting_white</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.Aircasting.Headline2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.Aircasting.Headline3</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.Aircasting.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.Aircasting.Headline5</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Body1</item>
-
+        <item name="textAppearanceBody2">@style/TextAppearance.Aircasting.Body2</item>
         <item name="buttonStyle">@style/Widget.Aircasting.Button</item>
-
         <item name="actionBarStyle">@style/Widget.Aircasting.ActionBar</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
@@ -27,24 +26,33 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-<!--    <style name="Theme.Aircasting.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-
     <style name="Theme.Aircasting.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Cards -->
+    <style name="Theme.Aircasting.Cards" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/aircasting_blue</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Cards.Headline1</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Cards.Body1</item>
+    </style>
+
+
 
 
     <!-- Typography -->
 
     <style name="TextAppearance.Aircasting.Headline1" parent="@style/TextAppearance.AppCompat">
-        <item name="android:fontFamily">Moderat Trial</item>
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/header1_text_size</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Headline2" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/header2_text_size</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Headline3" parent="@style/TextAppearance.AppCompat">
@@ -55,20 +63,58 @@
 
     <style name="TextAppearance.Aircasting.Headline4" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
-        <item name="android:textColor">@color/aircasting_grey_40</item>
+        <item name="android:textColor">@color/aircasting_grey_600</item>
         <item name="android:textSize">@dimen/header4_text_size</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Headline5" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="android:textColor">@color/aircasting_grey_600</item>
+        <item name="android:textSize">@dimen/header5_text_size</item>
+    </style>
+
+
+
     <style name="TextAppearance.Aircasting.Body1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_regular</item>
-        <item name="android:textColor">@color/aircasting_grey_30</item>
+        <item name="android:textColor">@color/aircasting_grey_500</item>
         <item name="android:textSize">@dimen/body1_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Body2" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textSize">@dimen/body2_text_size</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:fontFamily">@font/muli_bold</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/button_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.TextButton" parent="">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/text_button_text_size</item>
+    </style>
+
+    <!-- New session typography -->
+
+
+    <!-- Cards -->
+    <style name="TextAppearance.Aircasting.Cards.Headline1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/cards_headline1_text_size</item>
+    </style>
+    <style name="TextAppearance.Aircasting.Cards.Body1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_500</item>
+        <item name="android:textSize">@dimen/cards_body1_text_size</item>
     </style>
 
     <!-- Styles -->
@@ -111,7 +157,6 @@
     </style>
 
     <!-- Dashboard -->
-
     <style name="Widget.Aircasting.EmptyDashboard" parent="">
         <item name="android:layout_marginTop">125dp</item>
         <item name="android:layout_marginLeft">64dp</item>
@@ -126,5 +171,10 @@
 
     <style name="Widget.Aircasting.EmptyDashboardButton" parent="">
         <item name="android:layout_marginTop">32dp</item>
+    </style>
+
+    <!-- New session -->
+    <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
     </style>
 </resources>

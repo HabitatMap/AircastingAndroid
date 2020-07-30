@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
@@ -40,9 +41,12 @@ class NewSessionActivity : AppCompatActivity(),
     lateinit var sessionBuilder: SessionBuilder
 
     companion object {
-        fun start(context: Context?) {
+        val SESSION_TYPE_KEY = "sessionType"
+
+        fun start(context: Context?, sessionType: Session.Type) {
             context?.let{
                 val intent = Intent(it, NewSessionActivity::class.java)
+                intent.putExtra(SESSION_TYPE_KEY, sessionType)
                 it.startActivity(intent)
             }
         }
@@ -50,6 +54,8 @@ class NewSessionActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as Session.Type
 
         val app = application as AircastingApplication
         app.permissionsModule.permissionsActivity = this
@@ -66,7 +72,8 @@ class NewSessionActivity : AppCompatActivity(),
             bluetoothManager,
             airbeam2Connector,
             audioReader,
-            sessionBuilder
+            sessionBuilder,
+            sessionType
         )
 
         setContentView(view.rootView)
