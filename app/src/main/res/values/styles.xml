@@ -3,7 +3,7 @@
     <!-- Themes -->
 
     <style name="Theme.Aircasting" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/aircasting_blue</item>
+        <item name="colorPrimary">@color/aircasting_blue_400</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
 
@@ -30,7 +30,7 @@
 
     <!-- Cards -->
     <style name="Theme.Aircasting.Cards" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/aircasting_blue</item>
+        <item name="colorPrimary">@color/aircasting_blue_400</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Cards.Headline1</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Cards.Body1</item>
     </style>

@@ -5,7 +5,7 @@
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/aircasting_grey_100"
+    android:backgroundTint="@color/aircasting_blue_50"
     >
 
     <TextView
