@@ -4,6 +4,7 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 
 interface LetsStartViewMvc: ObservableViewMvc<LetsStartViewMvc.Listener> {
     interface Listener {
-        fun onRecordNewSessionClicked()
+        fun onFixedSessionSelected()
+        fun onMobileSessionSelected()
     }
 }

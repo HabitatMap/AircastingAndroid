@@ -16,8 +16,6 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTy
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
-import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeFragment
-import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.sensor.Session

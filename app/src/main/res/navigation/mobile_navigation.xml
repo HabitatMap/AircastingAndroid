@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_lets_start"
-        android:name="io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeFragment"
+        android:name="io.lunarlogic.aircasting.screens.lets_start.LetsStartFragment"
         android:label="     "
         tools:layout="@layout/fragment_dashboard" />
 

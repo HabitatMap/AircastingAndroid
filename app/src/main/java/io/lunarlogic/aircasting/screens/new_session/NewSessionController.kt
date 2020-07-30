@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
-import android.location.Location
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -22,7 +21,6 @@ import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocati
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_session_type.SelectSessionTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
