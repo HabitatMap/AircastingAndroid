@@ -161,5 +161,4 @@
     <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
     </style>
-
 </resources>

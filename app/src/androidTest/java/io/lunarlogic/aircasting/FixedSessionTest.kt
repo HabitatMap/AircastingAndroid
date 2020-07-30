@@ -87,7 +87,7 @@ class FixedSessionTest {
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
 
-        onView(withId(R.id.fixed_session_button)).perform(click())
+        onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
@@ -147,7 +147,7 @@ class FixedSessionTest {
         onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
 
-        onView(withId(R.id.fixed_session_button)).perform(click())
+        onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
