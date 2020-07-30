@@ -35,18 +35,11 @@ class NewSessionWizardNavigator(
         fun onBackPressed()
     }
 
-    fun showFirstStep(listener: SelectSessionTypeViewMvc.Listener) {
-        val fragment = SelectSessionTypeFragment()
-        fragment.listener = listener
-        replaceFragment(fragment)
-        updateProgressBarView()
-    }
-
     fun goToSelectDeviceType(listener: SelectDeviceTypeViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SelectDeviceTypeFragment()
         fragment.listener = listener
-        goToFragment(fragment)
+        replaceFragment(fragment)
         updateProgressBarView()
     }
 

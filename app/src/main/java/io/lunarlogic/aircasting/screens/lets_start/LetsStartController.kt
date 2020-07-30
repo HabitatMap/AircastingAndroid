@@ -13,6 +13,6 @@ class LetsStartController(
 
     override fun onRecordNewSessionClicked() {
         mActivity?.supportFragmentManager?.popBackStack()
-        NewSessionActivity.start(mActivity)
+//        NewSessionActivity.start(mActivity)
     }
 }

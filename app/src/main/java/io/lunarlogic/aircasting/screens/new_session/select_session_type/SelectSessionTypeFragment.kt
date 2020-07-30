@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class SelectSessionTypeFragment() : Fragment() {
-    private var controller: SelectSessionTypeController? = null
-    var listener: SelectSessionTypeViewMvc.Listener? = null
+    private lateinit var controller: SelectSessionTypeController
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,12 +22,11 @@ class SelectSessionTypeFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        listener?.let { controller?.registerListener(it) }
-
+        controller.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        listener?.let { controller?.unregisterListener(it) }
+        controller.onStop()
     }
 }

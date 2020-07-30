@@ -44,9 +44,9 @@ class NewSessionController(
     private val bluetoothManager: BluetoothManager,
     private val airBeam2Connector: AirBeam2Connector,
     audioReader: AudioReader,
-    private val sessionBuilder: SessionBuilder
-) : SelectSessionTypeViewMvc.Listener,
-    SelectDeviceTypeViewMvc.Listener,
+    private val sessionBuilder: SessionBuilder,
+    private val sessionType: Session.Type
+) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -60,26 +60,18 @@ class NewSessionController(
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
     private val microphoneReader = MicrophoneReader(audioReader, errorHandler)
-    private var sessionType: Session.Type? = null
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
 
     fun onStart() {
-        wizardNavigator.showFirstStep(this)
+        when (sessionType) {
+            Session.Type.FIXED -> onFixedSessionSelected()
+            Session.Type.MOBILE -> onMobileSessionSelected()
+        }
     }
 
     fun onBackPressed() {
         wizardNavigator.onBackPressed()
-    }
-
-    override fun onFixedSessionSelected() {
-        sessionType = Session.Type.FIXED
-        onBluetoothDeviceSelected()
-    }
-    override fun onMobileSessionSelected() {
-        sessionType = Session.Type.MOBILE
-        println("mobile session selected")
-        wizardNavigator.goToSelectDeviceType(this)
     }
 
     override fun onBluetoothDeviceSelected() {
@@ -108,6 +100,14 @@ class NewSessionController(
         } else {
             mActivity.requestAudioPermissions(permissionsManager)
         }
+    }
+
+    private fun onFixedSessionSelected() {
+        onBluetoothDeviceSelected()
+    }
+
+    private fun onMobileSessionSelected() {
+        wizardNavigator.goToSelectDeviceType(this)
     }
 
     private fun startMicrophoneSession() {
