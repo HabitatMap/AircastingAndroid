@@ -162,8 +162,4 @@
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
     </style>
 
-    <!-- Cards -->
-    <style name="Widget.Aircasting.Cards" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
-    </style>
 </resources>
