@@ -28,7 +28,7 @@ class NewSessionWizardNavigator(
     private val mFragmentManager: FragmentManager
 ) {
     private val STEP_PROGRESS = 10
-    private var currentProgressStep = 1
+    private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 
     interface BackPressedListener {
@@ -39,7 +39,7 @@ class NewSessionWizardNavigator(
         incrementStepProgress()
         val fragment = SelectDeviceTypeFragment()
         fragment.listener = listener
-        replaceFragment(fragment)
+        goToFragment(fragment)
         updateProgressBarView()
     }
 
@@ -141,8 +141,16 @@ class NewSessionWizardNavigator(
 
     private fun goToFragment(fragment: Fragment) {
         val fragmentTransaction = mFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.new_session_fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
+        val container = R.id.new_session_fragment_container
+
+        if (currentProgressStep == 1) {
+            // for first step
+            fragmentTransaction.replace(container, fragment)
+        } else {
+            fragmentTransaction.add(container, fragment)
+            fragmentTransaction.addToBackStack(null)
+        }
+
         fragmentTransaction.commit()
     }
 }

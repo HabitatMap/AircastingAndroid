@@ -41,10 +41,12 @@ class NewSessionActivity : AppCompatActivity(),
     lateinit var sessionBuilder: SessionBuilder
 
     companion object {
+        val SESSION_TYPE_KEY = "sessionType"
+
         fun start(context: Context?, sessionType: Session.Type) {
             context?.let{
                 val intent = Intent(it, NewSessionActivity::class.java)
-                intent.putExtra("sessionType", sessionType)
+                intent.putExtra(SESSION_TYPE_KEY, sessionType)
                 it.startActivity(intent)
             }
         }
@@ -53,7 +55,7 @@ class NewSessionActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sessionType = intent.extras?.get("sessionType") as Session.Type
+        val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as Session.Type
 
         val app = application as AircastingApplication
         app.permissionsModule.permissionsActivity = this
