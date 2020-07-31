@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
 import android.content.Context
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.sensor.Session
 
@@ -23,5 +24,9 @@ class LetsStartController(
 
     override fun onMobileSessionSelected() {
         NewSessionActivity.start(mContext, Session.Type.MOBILE)
+    }
+
+    override fun onMoreInfoClicked() {
+        mViewMvc.showMoreInfoDialog()
     }
 }

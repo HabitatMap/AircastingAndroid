@@ -2,8 +2,10 @@ package io.lunarlogic.aircasting.screens.lets_start
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import androidx.cardview.widget.CardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
@@ -21,6 +23,21 @@ class LetsStartViewMvcImpl : BaseObservableViewMvc<LetsStartViewMvc.Listener>, L
         mobileSessionCard?.setOnClickListener {
             onMobileSessionSelected()
         }
+
+        val moreInfoButton = rootView?.findViewById<Button>(R.id.new_session_more_info)
+        moreInfoButton?.setOnClickListener {
+            onMoreInfoClicked()
+        }
+    }
+
+    override fun showMoreInfoDialog() {
+        val dialogBuilder = MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_Aircasting_MaterialAlertDialog)
+            .setTitle(R.string.more_info_title)
+            .setMessage(R.string.more_info_text)
+            .setNeutralButton(R.string.more_info_cancel_button_text, { dialog, which ->
+            })
+
+        dialogBuilder.show()
     }
 
     private fun onFixedSessionSelected() {
@@ -34,4 +51,12 @@ class LetsStartViewMvcImpl : BaseObservableViewMvc<LetsStartViewMvc.Listener>, L
             listener.onMobileSessionSelected()
         }
     }
+
+    private fun onMoreInfoClicked() {
+        for (listener in listeners) {
+            listener.onMoreInfoClicked()
+        }
+    }
+
+
 }

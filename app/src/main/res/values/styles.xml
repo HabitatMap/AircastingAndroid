@@ -8,6 +8,7 @@
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
         <item name="colorOnPrimary">@color/aircasting_white</item>
+        <item name="colorSurface">@color/aircasting_white</item>
         <item name="android:colorBackground">@color/aircasting_white</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.Aircasting.Headline2</item>
@@ -22,7 +23,6 @@
         <item name="actionBarSize">@dimen/action_bar_size</item>
         <item name="bottomSheetDialogTheme">@style/Widget.Aircasting.BottomSheet</item>
     </style>
-
 
     <!-- Typography -->
 
@@ -240,4 +240,5 @@
         <item name="android:colorBackground">@android:color/transparent</item>
         <item name="android:textColor">@color/aircasting_dark_blue</item>
     </style>
+
 </resources>
