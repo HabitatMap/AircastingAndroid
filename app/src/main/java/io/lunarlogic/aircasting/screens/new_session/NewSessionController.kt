@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.extensions.popToRoot
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
@@ -228,6 +229,8 @@ class NewSessionController(
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
 
+        mContextActivity.popToRoot()
         mContextActivity.finish()
+
     }
 }

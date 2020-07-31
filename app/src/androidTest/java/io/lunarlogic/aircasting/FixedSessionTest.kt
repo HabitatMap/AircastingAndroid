@@ -144,8 +144,8 @@ class FixedSessionTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
