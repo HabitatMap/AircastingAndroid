@@ -44,6 +44,7 @@ class MainActivity: AppCompatActivity() {
         controller?.onCreate()
 
         setContentView(view.rootView)
+        setSupportActionBar(findViewById(R.id.topAppBar))
         view.setupBottomNavigationBar()
     }
 
