@@ -121,13 +121,13 @@
     <!-- Buttons -->
 
     <style name="Widget.Aircasting.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:minHeight">56dp</item>
+        <item name="android:minHeight">@dimen/button_min_height</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
         <item name="shapeAppearance">@style/Widget.Aircasting.ButtonShapeAppearance</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:translationX">6dp</item>
-        <item name="android:translationY">-6dp</item>
-        <item name="android:translationZ">6dp</item>
+        <item name="android:translationX">@dimen/button_shadow_translation</item>
+        <item name="android:translationY">@dimen/button_shadow_y_translation</item>
+        <item name="android:translationZ">@dimen/button_shadow_translation</item>
     </style>
 
     <style name="Widget.Aircasting.ButtonShapeAppearance" parent="">
@@ -170,7 +170,7 @@
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/Widget.Aircasting.TabLayout.TextAppearance</item>
         <item name="tabSelectedTextColor">?attr/colorPrimary</item>
-        <item name="android:elevation">10dp</item>
+        <item name="android:elevation">@dimen/default_elevation</item>
         <item name="tabPaddingStart">@dimen/keyline_6</item>
         <item name="tabPaddingEnd">@dimen/keyline_6</item>
     </style>
