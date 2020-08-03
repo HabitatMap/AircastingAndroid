@@ -2,8 +2,9 @@
 
     <!-- Themes -->
 
-    <style name="Theme.Aircasting" parent="Theme.AppCompat.Light">
+    <style name="Theme.Aircasting" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/aircasting_blue_400</item>
+        <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
 
@@ -16,17 +17,10 @@
         <item name="textAppearanceHeadline5">@style/TextAppearance.Aircasting.Headline5</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Body1</item>
         <item name="textAppearanceBody2">@style/TextAppearance.Aircasting.Body2</item>
-        <item name="buttonStyle">@style/Widget.Aircasting.Button</item>
-        <item name="actionBarStyle">@style/Widget.Aircasting.ActionBar</item>
+        <item name="materialButtonStyle">@style/Widget.Aircasting.Button</item>
+        <item name="toolbarStyle">@style/Widget.Aircasting.AppBar</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
-
-    <style name="Theme.Aircasting.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="Theme.Aircasting.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Cards -->
     <style name="Theme.Aircasting.Cards" parent="Theme.MaterialComponents.Light">
@@ -74,6 +68,11 @@
     </style>
 
 
+    <style name="TextAppearance.Aircasting.AppBar" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textSize">@dimen/action_bar_title_text_size</item>
+    </style>
+
 
     <style name="TextAppearance.Aircasting.Body1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_regular</item>
@@ -119,27 +118,56 @@
 
     <!-- Styles -->
 
-    <!-- Action Bar -->
+    <!-- Buttons -->
 
     <style name="Widget.Aircasting.Button" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">?attr/colorPrimary</item>
-        <item name="android:minHeight">56dp</item>
+        <item name="android:minHeight">@dimen/button_min_height</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
+        <item name="shapeAppearance">@style/Widget.Aircasting.ButtonShapeAppearance</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:translationX">@dimen/button_shadow_translation</item>
+        <item name="android:translationY">@dimen/button_shadow_y_translation</item>
+        <item name="android:translationZ">@dimen/button_shadow_translation</item>
     </style>
 
-    <style name="Widget.Aircasting.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="background">?android:attr/colorBackground</item>
+    <style name="Widget.Aircasting.ButtonShapeAppearance" parent="">
+        <item name="cornerFamilyTopLeft">cut</item>
+        <item name="cornerFamilyBottomLeft">cut</item>
+        <item name="cornerFamilyTopRight">cut</item>
+        <item name="cornerFamilyBottomRight">cut</item>
+        <item name="cornerSize">0dp</item>
+    </style>
+
+    <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
+        <item name="android:translationX">0dp</item>
+        <item name="android:translationY">0dp</item>
+        <item name="android:translationZ">0dp</item>
+    </style>
+
+    <!-- App Bar -->
+
+    <style name="Widget.Aircasting.AppBarLayout" parent="">
+        <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
-        <item name="titleTextStyle">@style/Widget.Aircasting.ActionBar.TitleTextStyle</item>
-        <item name="android:paddingLeft">@dimen/action_bar_text_padding</item>
-        <item name="android:paddingRight">@dimen/action_bar_text_padding</item>
-        <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="Widget.Aircasting.ActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:fontFamily">@font/moderat_trial_bold</item>
-        <item name="android:textColor">?attr/colorSecondary</item>
-        <item name="android:textSize">@dimen/action_bar_title_text_size</item>
+    <style name="Widget.Aircasting.AppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Aircasting.AppBar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Aircasting.AppBar</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingBottom">@dimen/keyline_2</item>
+        <item name="android:paddingStart">@dimen/app_bar_padding</item>
+        <item name="android:paddingEnd">@dimen/app_bar_padding</item>
+        <item name="android:gravity">bottom</item>
+    </style>
+
+    <style name="ThemeOverlay.Aircasting.AppBar" parent="">
+        <!-- background color -->
+        <item name="colorPrimary">?android:attr/colorBackground</item>
+        <!-- text color -->
+        <item name="colorOnPrimary">?attr/colorSecondary</item>
     </style>
 
     <!-- Tab Layout -->
@@ -149,32 +177,12 @@
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/Widget.Aircasting.TabLayout.TextAppearance</item>
         <item name="tabSelectedTextColor">?attr/colorPrimary</item>
-        <item name="android:elevation">10dp</item>
+        <item name="android:elevation">@dimen/default_elevation</item>
+        <item name="tabPaddingStart">@dimen/keyline_6</item>
+        <item name="tabPaddingEnd">@dimen/keyline_6</item>
     </style>
 
     <style name="Widget.Aircasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline4">
         <item name="textAllCaps">false</item>
-    </style>
-
-    <!-- Dashboard -->
-    <style name="Widget.Aircasting.EmptyDashboard" parent="">
-        <item name="android:layout_marginTop">125dp</item>
-        <item name="android:layout_marginLeft">64dp</item>
-        <item name="android:layout_marginRight">64dp</item>
-    </style>
-
-    <style name="Widget.Aircasting.EmptyDashboardText" parent="">
-        <item name="android:layout_marginTop">24dp</item>
-        <item name="android:textAlignment">center</item>
-        <item name="lineHeight">30dp</item>
-    </style>
-
-    <style name="Widget.Aircasting.EmptyDashboardButton" parent="">
-        <item name="android:layout_marginTop">32dp</item>
-    </style>
-
-    <!-- New session -->
-    <style name="Widget.Aircasting.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
     </style>
 </resources>
