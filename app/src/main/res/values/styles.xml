@@ -7,6 +7,8 @@
         <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
+<!--        <item name="backgroundTint">@color/aircasting_blue_50</item>-->
+<!--        <item name="colorSurface">@color/aircasting_white</item>-->
 
         <item name="colorOnPrimary">@color/aircasting_white</item>
         <item name="android:colorBackground">@color/aircasting_white</item>
@@ -21,15 +23,6 @@
         <item name="toolbarStyle">@style/Widget.Aircasting.AppBar</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
     </style>
-
-    <!-- Cards -->
-    <style name="Theme.Aircasting.Cards" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/aircasting_blue_400</item>
-        <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Cards.Headline1</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Cards.Body1</item>
-    </style>
-
-
 
 
     <!-- Typography -->
@@ -143,6 +136,20 @@
         <item name="android:translationX">0dp</item>
         <item name="android:translationY">0dp</item>
         <item name="android:translationZ">0dp</item>
+    </style>
+
+    <!-- Cards -->
+
+    <style name="Widget.Aircasting.Cards" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Aircasting.Cards</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardElevation">@dimen/cardview_default_elevation</item>
+    </style>
+
+    <style name="ThemeOverlay.Aircasting.Cards" parent="">
+        <item name="colorPrimary">@color/aircasting_blue_400</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Cards.Headline1</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Cards.Body1</item>
     </style>
 
     <!-- App Bar -->
