@@ -41,6 +41,16 @@
             android:font="@font/moderat_trial_medium"
             app:layout_constraintTop_toBottomOf="@+id/dormant_session_date"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/session_more_details_button" />
+
+        <ImageView
+            android:id="@+id/session_more_details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_chevron_down"
+            android:tint="@color/aircasting_dark_blue"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
+            app:layout_constraintStart_toEndOf="@+id/dormant_session_name"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
