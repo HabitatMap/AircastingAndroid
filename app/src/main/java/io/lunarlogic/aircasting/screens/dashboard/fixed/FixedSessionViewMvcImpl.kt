@@ -15,7 +15,7 @@ class FixedSessionViewMvcImpl: BaseObservableViewMvc<FixedSessionViewMvc.Listene
     private var mNameTextView: TextView
     private var mTagsTextView: TextView
     private var mMeasurementsTextView: TextView
-    private var mDeleteSesssionButton: Button
+//    private var mDeleteSesssionButton: Button
 
     private var mSession: Session? = null
 
@@ -26,13 +26,13 @@ class FixedSessionViewMvcImpl: BaseObservableViewMvc<FixedSessionViewMvc.Listene
         mNameTextView = findViewById(R.id.dormant_session_name)
         mTagsTextView = findViewById(R.id.dormant_session_tags)
         mMeasurementsTextView = findViewById(R.id.session_measurements)
-        mDeleteSesssionButton = findViewById(R.id.delete_session_button)
+//        mDeleteSesssionButton = findViewById(R.id.delete_session_button)
 
-        mDeleteSesssionButton.setOnClickListener(View.OnClickListener {
-            for (listener in listeners) {
-                listener.onSessionDeleteClicked(mSession!!)
-            }
-        })
+//        mDeleteSesssionButton.setOnClickListener(View.OnClickListener {
+//            for (listener in listeners) {
+//                listener.onSessionDeleteClicked(mSession!!)
+//            }
+//        })
     }
 
     override fun bindSession(session: Session) {

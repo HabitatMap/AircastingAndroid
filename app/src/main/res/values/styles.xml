@@ -17,6 +17,7 @@
         <item name="textAppearanceHeadline3">@style/TextAppearance.Aircasting.Headline3</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.Aircasting.Headline4</item>
         <item name="textAppearanceHeadline5">@style/TextAppearance.Aircasting.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.Aircasting.Headline6</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Aircasting.Body1</item>
         <item name="textAppearanceBody2">@style/TextAppearance.Aircasting.Body2</item>
         <item name="materialButtonStyle">@style/Widget.Aircasting.Button</item>
@@ -50,14 +51,23 @@
 
     <style name="TextAppearance.Aircasting.Headline4" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
-        <item name="android:textColor">@color/aircasting_grey_600</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
         <item name="android:textSize">@dimen/header4_text_size</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Headline5" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_bold</item>
         <item name="android:textColor">@color/aircasting_grey_600</item>
         <item name="android:textSize">@dimen/header5_text_size</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Headline6" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textSize">@dimen/header6_text_size</item>
     </style>
 
 
@@ -77,9 +87,8 @@
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_400</item>
         <item name="android:textSize">@dimen/body2_text_size</item>
-        <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:gravity">left</item>
-        <item name="android:textAlignment">viewStart</item>
+        <item name="android:textAlignment">textStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Button" parent="Widget.MaterialComponents.Button">
@@ -189,7 +198,7 @@
         <item name="tabPaddingEnd">@dimen/keyline_6</item>
     </style>
 
-    <style name="Widget.Aircasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline4">
+    <style name="Widget.Aircasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline6">
         <item name="textAllCaps">false</item>
     </style>
 </resources>
