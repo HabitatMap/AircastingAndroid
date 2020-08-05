@@ -138,7 +138,11 @@ class Session(
         val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
         val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)
 
-        return "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}-${hourFormatter.format(endTime)}"
+        var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
+        if (endTime != null) {
+            durationString += "-${hourFormatter.format(endTime)}"
+        }
+        return durationString
     }
 
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {

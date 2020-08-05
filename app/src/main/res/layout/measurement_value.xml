@@ -1,18 +1,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
+    android:gravity="center"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="1dp"
-        app:srcCompat="@drawable/ic_dot_24dp"
+        android:id="@+id/circle_indicator"
+        app:srcCompat="@drawable/ic_circle"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         android:tint="@color/aircasting_pink" />
+
     <TextView
+        android:id="@+id/measurement_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1mg" />
+        android:layout_marginStart="3dp" />
 
 </LinearLayout>
