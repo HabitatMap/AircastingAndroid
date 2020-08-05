@@ -7,9 +7,6 @@
         <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
-<!--        <item name="backgroundTint">@color/aircasting_blue_50</item>-->
-<!--        <item name="colorSurface">@color/aircasting_white</item>-->
-
         <item name="colorOnPrimary">@color/aircasting_white</item>
         <item name="android:colorBackground">@color/aircasting_white</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
@@ -23,6 +20,7 @@
         <item name="materialButtonStyle">@style/Widget.Aircasting.Button</item>
         <item name="toolbarStyle">@style/Widget.Aircasting.AppBar</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
+        <item name="actionSheetStyle">@style/ActionSheetStyleiOS7</item>
     </style>
 
 

@@ -1,11 +1,13 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
@@ -13,9 +15,14 @@ import io.lunarlogic.aircasting.sensor.Session
 
 abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<ListenerType> {
 
-    private var mMeasurementValues: TableRow
+    private val mMeasurementValues: TableRow
 
-    constructor(inflater: LayoutInflater, parent: ViewGroup): super(inflater, parent) {
+    constructor(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        context: Context,
+        supportFragmentManager: FragmentManager
+    ): super(inflater, parent, context, supportFragmentManager) {
         mMeasurementValues = findViewById(R.id.measurement_values)
     }
 

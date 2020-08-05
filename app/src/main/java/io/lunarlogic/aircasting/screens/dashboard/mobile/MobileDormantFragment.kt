@@ -29,7 +29,9 @@ class MobileDormantFragment : Fragment() {
 
         val view = MobileDormantViewMvcImpl(
             layoutInflater,
-            null
+            null,
+            requireContext(),
+            childFragmentManager
         )
         controller = MobileDormantController(
             context,
