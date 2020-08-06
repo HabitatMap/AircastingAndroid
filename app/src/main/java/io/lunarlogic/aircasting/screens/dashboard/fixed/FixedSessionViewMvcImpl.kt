@@ -1,10 +1,8 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.baoyz.actionsheet.ActionSheet
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
@@ -29,9 +27,9 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun deleteSessionPressed() {
-//        for (listener in listeners) {
-//            listener.onSessionDeleteClicked(mSession!!)
-//        }
+        for (listener in listeners) {
+            listener.onSessionDeleteClicked(mSession!!)
+        }
         dismissBottomSheet()
     }
 }

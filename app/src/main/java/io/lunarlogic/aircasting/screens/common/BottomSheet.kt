@@ -10,19 +10,21 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 
 
-open class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
+abstract class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
     interface Listener {
         fun cancelPressed()
     }
 
     private val TAG = "BottomSheet"
 
+    abstract protected fun layoutId(): Int
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.dormant_session_actions, container, false)
+        val view = inflater.inflate(layoutId(), container, false)
 
         val cancelButton = view.findViewById<Button>(R.id.cancel_button)
         cancelButton.setOnClickListener {

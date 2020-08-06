@@ -8,13 +8,13 @@ import android.widget.Button
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 
-class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mListener) {
+class ActiveSessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mListener) {
     interface Listener: BottomSheet.Listener {
-        fun deleteSessionPressed()
+        fun stopSessionPressed()
     }
 
     override fun layoutId(): Int {
-        return R.layout.session_actions;
+        return R.layout.active_session_actions;
     }
 
     override fun onCreateView(
@@ -24,9 +24,9 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        val deleteButton = view?.findViewById<Button>(R.id.delete_session_button)
-        deleteButton?.setOnClickListener {
-            mListener.deleteSessionPressed()
+        val stopButton = view?.findViewById<Button>(R.id.stop_session_button)
+        stopButton?.setOnClickListener {
+            mListener.stopSessionPressed()
         }
 
         return view
