@@ -18,6 +18,7 @@
     <string name="record_new_session">Record new session</string>
     <string name="stop_session">Stop session</string>
     <string name="delete_session">Delete session</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Let's begin (new session start) -->
     <string name="title_lets_start">Let\'s begin</string>

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.baoyz.actionsheet.ActionSheet
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -52,12 +53,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected abstract fun layoutId(): Int
 
     protected fun actionsButtonClicked() {
-        ActionSheet.createBuilder(mContext, mSupportFragmentManager)
-            .setCancelButtonTitle("Cancel")
-            .setOtherButtonTitles("Item1", "Item2", "Item3", "Item4")
-            .setCancelableOnTouchOutside(true)
-            .setListener(this)
-            .show();
+        val bottomSheet = BottomSheet()
+        bottomSheet.show(mSupportFragmentManager)
     }
 
     override fun bindSession(session: Session) {
