@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 
 
-class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
+open class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
     interface Listener {
         fun cancelPressed()
     }

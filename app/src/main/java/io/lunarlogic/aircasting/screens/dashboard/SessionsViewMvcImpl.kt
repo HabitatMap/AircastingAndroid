@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        context: Context,
         supportFragmentManager: FragmentManager
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
@@ -36,7 +34,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
         mRecyclerSessions?.setLayoutManager(LinearLayoutManager(rootView!!.context))
-        mAdapter = buildAdapter(inflater, context, supportFragmentManager)
+        mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
 
         val swipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
@@ -48,7 +46,6 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     abstract fun buildAdapter(
         inflater: LayoutInflater,
-        context: Context,
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<ListenerType>
 

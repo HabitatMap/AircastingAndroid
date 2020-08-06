@@ -9,7 +9,6 @@ import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
-    protected val context: Context,
     protected val supportFragmentManager: FragmentManager
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
 

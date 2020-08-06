@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
-    SessionViewMvc<ListenerType>, ActionSheet.ActionSheetListener, BottomSheet.Listener {
+    SessionViewMvc<ListenerType>, BottomSheet.Listener {
     protected val mLayoutInflater: LayoutInflater
 
     private val mDateTextView: TextView
@@ -21,22 +21,19 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private val mMeasurementsTable: TableLayout
     private val mMeasurementHeaders: TableRow
     private val mActionsButton: ImageView
-    private val mContext: Context
     private val mSupportFragmentManager: FragmentManager
-    private var mBottomSheet :BottomSheet? = null
+    protected var mBottomSheet: BottomSheet? = null
 
-    private var mSession: Session? = null
+    protected var mSession: Session? = null
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup,
-        context: Context,
         supportFragmentManager: FragmentManager
     ) {
         mLayoutInflater = inflater
 
         this.rootView = inflater.inflate(layoutId(), parent, false)
-        mContext = context
         mSupportFragmentManager = supportFragmentManager
 
         mDateTextView = findViewById(R.id.session_date)
@@ -52,14 +49,19 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected abstract fun layoutId(): Int
+    protected abstract fun buildBottomSheet(): BottomSheet?
 
-    protected fun actionsButtonClicked() {
-        mBottomSheet = BottomSheet(this)
+    private fun actionsButtonClicked() {
+        mBottomSheet = buildBottomSheet()
         mBottomSheet?.show(mSupportFragmentManager)
     }
 
-    override fun cancelPressed() {
+    protected fun dismissBottomSheet() {
         mBottomSheet?.dismiss()
+    }
+
+    override fun cancelPressed() {
+        dismissBottomSheet()
     }
 
     override fun bindSession(session: Session) {

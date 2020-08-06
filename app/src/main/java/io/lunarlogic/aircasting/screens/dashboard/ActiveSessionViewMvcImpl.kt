@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,8 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup,
-        context: Context,
         supportFragmentManager: FragmentManager
-    ): super(inflater, parent, context, supportFragmentManager) {
+    ): super(inflater, parent, supportFragmentManager) {
         mMeasurementValues = findViewById(R.id.measurement_values)
     }
 

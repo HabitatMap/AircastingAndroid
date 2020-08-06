@@ -30,7 +30,6 @@ class FixedFragment : Fragment() {
         val view = FixedViewMvcImpl(
             layoutInflater,
             null,
-            requireContext(),
             childFragmentManager
         )
         controller = FixedController(

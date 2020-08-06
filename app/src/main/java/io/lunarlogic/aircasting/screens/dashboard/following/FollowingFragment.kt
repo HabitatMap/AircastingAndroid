@@ -30,7 +30,6 @@ class FollowingFragment : Fragment() {
         val view = FollowingViewMvcImpl(
             layoutInflater,
             null,
-            requireContext(),
             childFragmentManager
         )
         controller = FollowingController(

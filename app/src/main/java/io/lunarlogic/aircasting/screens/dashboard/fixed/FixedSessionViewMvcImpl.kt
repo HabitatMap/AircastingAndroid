@@ -6,26 +6,32 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.baoyz.actionsheet.ActionSheet
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 
 class FixedSessionViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    context: Context,
     supportFragmentManager: FragmentManager
 ):
-    SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, context, supportFragmentManager),
-    FixedSessionViewMvc {
+    SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+    FixedSessionViewMvc,
+    SessionActionsBottomSheet.Listener
+{
 
     override fun layoutId(): Int {
         return R.layout.dormant_session
     }
 
-    override fun onOtherButtonClick(actionSheet: ActionSheet?, index: Int) {
-        TODO("Not yet implemented")
+    override fun buildBottomSheet(): BottomSheet {
+        return SessionActionsBottomSheet(this)
     }
 
-    override fun onDismiss(actionSheet: ActionSheet?, isCancel: Boolean) {
-        TODO("Not yet implemented")
+    override fun deleteSessionPressed() {
+//        for (listener in listeners) {
+//            listener.onSessionDeleteClicked(mSession!!)
+//        }
+        dismissBottomSheet()
     }
 }

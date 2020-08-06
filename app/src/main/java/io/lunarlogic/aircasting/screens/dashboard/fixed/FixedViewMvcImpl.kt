@@ -12,20 +12,17 @@ import io.lunarlogic.aircasting.sensor.Session
 class FixedViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    context: Context,
     supportFragmentManager: FragmentManager
-): SessionsViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, context, supportFragmentManager),
+): SessionsViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     FixedSessionViewMvc.Listener {
 
     override fun buildAdapter(
         inflater: LayoutInflater,
-        context: Context,
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<FixedSessionViewMvc.Listener> {
         return FixedRecyclerAdapter(
             inflater,
             this,
-            context,
             supportFragmentManager
         )
     }

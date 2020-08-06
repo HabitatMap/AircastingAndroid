@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard.mobile
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -11,20 +10,17 @@ import io.lunarlogic.aircasting.sensor.Session
 class MobileActiveViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    context: Context,
     supportFragmentManager: FragmentManager
-): SessionsViewMvcImpl<MobileActiveSessionViewMvc.Listener>(inflater, parent, context, supportFragmentManager),
+): SessionsViewMvcImpl<MobileActiveSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     MobileActiveSessionViewMvc.Listener {
 
     override fun buildAdapter(
         inflater: LayoutInflater,
-        context: Context,
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<MobileActiveSessionViewMvc.Listener> {
         return MobileActiveRecyclerAdapter(
             inflater,
             this,
-            context,
             supportFragmentManager
         )
     }
