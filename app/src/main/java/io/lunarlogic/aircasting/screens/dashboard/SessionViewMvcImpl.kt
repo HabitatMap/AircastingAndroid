@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
-    SessionViewMvc<ListenerType>, ActionSheet.ActionSheetListener {
+    SessionViewMvc<ListenerType>, ActionSheet.ActionSheetListener, BottomSheet.Listener {
     protected val mLayoutInflater: LayoutInflater
 
     private val mDateTextView: TextView
@@ -23,6 +23,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private val mActionsButton: ImageView
     private val mContext: Context
     private val mSupportFragmentManager: FragmentManager
+    private var mBottomSheet :BottomSheet? = null
 
     private var mSession: Session? = null
 
@@ -53,8 +54,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected abstract fun layoutId(): Int
 
     protected fun actionsButtonClicked() {
-        val bottomSheet = BottomSheet()
-        bottomSheet.show(mSupportFragmentManager)
+        mBottomSheet = BottomSheet(this)
+        mBottomSheet?.show(mSupportFragmentManager)
+    }
+
+    override fun cancelPressed() {
+        mBottomSheet?.dismiss()
     }
 
     override fun bindSession(session: Session) {
