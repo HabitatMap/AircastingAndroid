@@ -33,7 +33,7 @@ class MobileDormantFragment : Fragment() {
             childFragmentManager
         )
         controller = MobileDormantController(
-            context,
+            activity,
             view,
             sessionsViewModel,
             viewLifecycleOwner,

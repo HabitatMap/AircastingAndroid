@@ -33,7 +33,7 @@ class FixedFragment : Fragment() {
             childFragmentManager
         )
         controller = FixedController(
-            context,
+            activity,
             view,
             sessionsViewModel,
             viewLifecycleOwner,

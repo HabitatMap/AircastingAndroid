@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.mobile
 
-import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
@@ -13,12 +13,12 @@ import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
-    private val mContext: Context?,
+    private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
-): SessionsController(mContext, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
     override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {

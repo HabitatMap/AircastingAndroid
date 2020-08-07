@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -13,13 +13,13 @@ import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionsController(
-    private val mContext: Context?,
+    private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     private val mLifecycleOwner: LifecycleOwner,
     private val mSettings: Settings
 ) : SessionsViewMvc.Listener {
-    private val mErrorHandler = ErrorHandler(mContext!!)
+    private val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
     private val mMobileSessionsSyncService = MobileSessionsSyncService(mApiService, mErrorHandler)
 
@@ -38,7 +38,7 @@ abstract class SessionsController(
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
     protected fun startNewSession(sessionType: Session.Type) {
-        NewSessionActivity.start(mContext, sessionType)
+        NewSessionActivity.start(mRootActivity, sessionType)
     }
 
     override fun onSwipeToRefreshTriggered(callback: () -> Unit) {

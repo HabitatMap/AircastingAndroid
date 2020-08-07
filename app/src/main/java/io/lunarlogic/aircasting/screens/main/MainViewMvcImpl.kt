@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -22,10 +23,9 @@ class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
         this.rootActivity = rootActivity
     }
 
-    fun setupBottomNavigationBar() {
+    fun setupBottomNavigationBar(navController: NavController) {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        val navController = rootActivity.findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_dashboard,

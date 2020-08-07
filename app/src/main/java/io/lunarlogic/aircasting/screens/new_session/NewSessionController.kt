@@ -37,7 +37,7 @@ class NewSessionController(
     private val mContextActivity: AppCompatActivity,
     private val mActivity: PermissionsActivity,
     mViewMvc: NewSessionViewMvc,
-    mFragmentManager: FragmentManager,
+    private val mFragmentManager: FragmentManager,
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val airBeam2Connector: AirBeam2Connector,
@@ -227,7 +227,6 @@ class NewSessionController(
     override fun onStartRecordingClicked(session: Session) {
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
-
         mContextActivity.finish()
     }
 }

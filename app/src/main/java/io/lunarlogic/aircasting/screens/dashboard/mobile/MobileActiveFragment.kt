@@ -33,7 +33,7 @@ class MobileActiveFragment : Fragment() {
             childFragmentManager
         )
         controller = MobileActiveController(
-            context,
+            activity,
             view,
             sessionsViewModel,
             viewLifecycleOwner,

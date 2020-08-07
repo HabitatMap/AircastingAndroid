@@ -4,9 +4,12 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
@@ -43,11 +46,15 @@ class NewSessionActivity : AppCompatActivity(),
     companion object {
         val SESSION_TYPE_KEY = "sessionType"
 
-        fun start(context: Context?, sessionType: Session.Type) {
-            context?.let{
+        fun start(rootActivity: FragmentActivity?, sessionType: Session.Type) {
+            rootActivity?.let{
+                val startForResult = it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    NavigationController.goToDashboard()
+                }
+
                 val intent = Intent(it, NewSessionActivity::class.java)
                 intent.putExtra(SESSION_TYPE_KEY, sessionType)
-                it.startActivity(intent)
+                startForResult.launch(intent)
             }
         }
     }

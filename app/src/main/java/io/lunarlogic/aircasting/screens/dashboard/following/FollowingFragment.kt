@@ -33,7 +33,7 @@ class FollowingFragment : Fragment() {
             childFragmentManager
         )
         controller = FollowingController(
-            context,
+            activity,
             view,
             sessionsViewModel,
             viewLifecycleOwner,

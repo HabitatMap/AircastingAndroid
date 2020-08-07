@@ -1,32 +1,33 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
-import android.content.Context
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.sensor.Session
 
 class LetsStartController(
-    private val mContext: Context?,
+    private val mRootActivity: FragmentActivity?,
     private val mViewMvc: LetsStartViewMvc
 ): LetsStartViewMvc.Listener {
 
-    fun onStart() {
+    fun onCreate() {
         mViewMvc.registerListener(this)
     }
 
-    fun onStop() {
+    fun onDestroy() {
         mViewMvc.unregisterListener(this)
     }
 
     override fun onFixedSessionSelected() {
-        NewSessionActivity.start(mContext, Session.Type.FIXED)
+        NewSessionActivity.start(mRootActivity, Session.Type.FIXED)
     }
 
     override fun onMobileSessionSelected() {
-        NewSessionActivity.start(mContext, Session.Type.MOBILE)
+        NewSessionActivity.start(mRootActivity, Session.Type.MOBILE)
     }
 
     override fun onMoreInfoClicked() {
         mViewMvc.showMoreInfoDialog()
     }
+
+
 }

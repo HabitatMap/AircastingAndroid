@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.google.android.libraries.places.api.Places
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
@@ -45,7 +47,10 @@ class MainActivity: AppCompatActivity() {
 
         setContentView(view.rootView)
         setSupportActionBar(findViewById(R.id.topAppBar))
-        view.setupBottomNavigationBar()
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        NavigationController.setup(navController)
+        view.setupBottomNavigationBar(navController)
     }
 
     override fun onDestroy() {
