@@ -3,6 +3,9 @@ package io.lunarlogic.aircasting.sensor
 import android.location.Location
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.lib.DateConverter
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -96,6 +99,9 @@ class Session(
         }
     }
 
+    val DEFAULT_DATE_FORMAT = "MM/dd/yyyy"
+    val DEFAULT_HOUR_FORMAT = "HH:mm"
+
     val type get() = mType
     val name get() = mName
     val tags get() = mTags
@@ -126,5 +132,22 @@ class Session(
 
     fun isFixed(): Boolean {
         return type == Type.FIXED
+    }
+
+    fun durationString(): String {
+        val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
+        val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)
+
+        var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
+        if (endTime != null) {
+            durationString += "-${hourFormatter.format(endTime)}"
+        }
+        return durationString
+    }
+
+    private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {
+        val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
+        formatter.timeZone = TimeZone.getDefault()
+        return formatter
     }
 }

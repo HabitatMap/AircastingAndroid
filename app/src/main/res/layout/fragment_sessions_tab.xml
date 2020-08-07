@@ -7,16 +7,16 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_sessions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:paddingBottom="120dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/keyline_4"
+        android:paddingBottom="@dimen/keyline_4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bottom_nav_bar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_sessions"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="parent"/>
+            android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include

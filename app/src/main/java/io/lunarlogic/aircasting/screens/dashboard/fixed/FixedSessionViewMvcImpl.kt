@@ -1,50 +1,35 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 
-class FixedSessionViewMvcImpl: BaseObservableViewMvc<FixedSessionViewMvc.Listener>,
-    FixedSessionViewMvc {
-    private var mDateTextView: TextView
-    private var mNameTextView: TextView
-    private var mTagsTextView: TextView
-    private var mMeasurementsTextView: TextView
-    private var mDeleteSesssionButton: Button
+class FixedSessionViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    supportFragmentManager: FragmentManager
+):
+    SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+    FixedSessionViewMvc,
+    SessionActionsBottomSheet.Listener
+{
 
-    private var mSession: Session? = null
-
-    constructor(inflater: LayoutInflater, parent: ViewGroup) {
-        this.rootView = inflater.inflate(R.layout.dormant_session, parent, false)
-
-        mDateTextView = findViewById(R.id.dormant_session_date)
-        mNameTextView = findViewById(R.id.dormant_session_name)
-        mTagsTextView = findViewById(R.id.dormant_session_tags)
-        mMeasurementsTextView = findViewById(R.id.session_measurements)
-        mDeleteSesssionButton = findViewById(R.id.delete_session_button)
-
-        mDeleteSesssionButton.setOnClickListener(View.OnClickListener {
-            for (listener in listeners) {
-                listener.onSessionDeleteClicked(mSession!!)
-            }
-        })
+    override fun layoutId(): Int {
+        return R.layout.dormant_session
     }
 
-    override fun bindSession(session: Session) {
-        mSession = session
-        mDateTextView.setText(session.startTime.toString())
-        mNameTextView.setText(session.name)
-        mTagsTextView.setText(session.tags.joinToString(", "))
+    override fun buildBottomSheet(): BottomSheet {
+        return SessionActionsBottomSheet(this)
+    }
 
-        // TODO: handle
-        val measurementsString = session.streams.map { stream ->
-            stream.detailedType
-        }.joinToString("\n")
-        mMeasurementsTextView.setText(measurementsString)
+    override fun deleteSessionPressed() {
+        for (listener in listeners) {
+            listener.onSessionDeleteClicked(mSession!!)
+        }
+        dismissBottomSheet()
     }
 }

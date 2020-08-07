@@ -1,12 +1,15 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Context
 import android.view.LayoutInflater
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.sensor.Session
 
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
-    private val mInflater: LayoutInflater
+    private val mInflater: LayoutInflater,
+    protected val supportFragmentManager: FragmentManager
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :

@@ -2,20 +2,25 @@ package io.lunarlogic.aircasting.screens.dashboard.following
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
-import io.lunarlogic.aircasting.sensor.Session
 
 class FollowingViewMvcImpl(
     inflater: LayoutInflater,
-    parent: ViewGroup?
-): SessionsViewMvcImpl<FollowingSessionViewMvc.Listener>(inflater, parent),
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager
+): SessionsViewMvcImpl<FollowingSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     FollowingSessionViewMvc.Listener {
 
-    override fun buildAdapter(inflater: LayoutInflater): SessionsRecyclerAdapter<FollowingSessionViewMvc.Listener> {
+    override fun buildAdapter(
+        inflater: LayoutInflater,
+        supportFragmentManager: FragmentManager
+    ): SessionsRecyclerAdapter<FollowingSessionViewMvc.Listener> {
         return FollowingRecyclerAdapter(
             inflater,
-            this
+            this,
+            supportFragmentManager
         )
     }
 }

@@ -1,61 +1,30 @@
 package io.lunarlogic.aircasting.screens.dashboard.mobile
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.Session
+import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionActionsBottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionViewMvcImpl
 
-class MobileActiveSessionViewMvcImpl: BaseObservableViewMvc<MobileActiveSessionViewMvc.Listener>,
-    MobileActiveSessionViewMvc {
-    private var mDateTextView: TextView
-    private var mNameTextView: TextView
-    private var mTagsTextView: TextView
-    private var mMeasurementsTextView: TextView
-    private var mStopSesssionButton: Button
+class MobileActiveSessionViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    supportFragmentManager: FragmentManager
+):
+    ActiveSessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+    MobileActiveSessionViewMvc,
+    ActiveSessionActionsBottomSheet.Listener
+{
 
-    private var mSession: Session? = null
-
-    constructor(inflater: LayoutInflater, parent: ViewGroup) {
-        this.rootView = inflater.inflate(R.layout.active_session, parent, false)
-
-        mDateTextView = findViewById(R.id.active_session_date)
-        mNameTextView = findViewById(R.id.active_session_name)
-        mTagsTextView = findViewById(R.id.active_session_tags)
-        mMeasurementsTextView = findViewById(R.id.session_measurements)
-        mStopSesssionButton = findViewById(R.id.stop_session_button)
-
-        mStopSesssionButton.setOnClickListener(View.OnClickListener {
-            for (listener in listeners) {
-                listener.onSessionStopClicked(mSession!!)
-            }
-        })
+    override fun buildBottomSheet(): BottomSheet? {
+        return ActiveSessionActionsBottomSheet(this)
     }
 
-    override fun bindSession(session: Session) {
-        mSession = session
-        mDateTextView.setText(session.startTime.toString())
-        mNameTextView.setText(session.name)
-        mTagsTextView.setText(session.tags.joinToString(", "))
-
-        // TODO: handle
-        val measurementsString = session.streams.map { stream ->
-            val measurement = stream.measurements.lastOrNull()
-            "${stream.detailedType}: ${measurementString(measurement, stream)}"
-        }.joinToString("\n")
-        mMeasurementsTextView.setText(measurementsString)
-    }
-
-    private fun measurementString(measurement: Measurement?, stream: MeasurementStream): String {
-        if (measurement == null) {
-            return ""
+    override fun stopSessionPressed() {
+        for (listener in listeners) {
+            listener.onSessionStopClicked(mSession!!)
         }
-
-        return "%.2f %s".format(measurement.value, stream.unitSymbol)
+        dismissBottomSheet()
     }
 }

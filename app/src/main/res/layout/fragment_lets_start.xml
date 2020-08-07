@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
-    android:background="@android:color/white"
+    android:background="@color/aircasting_blue_50"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/aircasting_blue_50"
     >
 
     <TextView
@@ -27,10 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/select_session_type_header"
-        android:textAppearance="?attr/textAppearanceBody2"
+        android:textAppearance="?attr/textAppearanceHeadline4"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_2"
         android:paddingLeft="@dimen/keyline_10"
+        android:paddingRight="@dimen/keyline_10"
         android:background="@color/aircasting_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,11 +65,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/fixed_session_start_card"
-        android:theme="@style/Theme.Aircasting.Cards"
+        style="@style/Widget.Aircasting.Cards"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
+        app:cardElevation="1dp"
         android:clickable="true"
-        app:cardCornerRadius="0dp"
         android:layout_marginLeft="@dimen/keyline_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/mobile_session_start_card"
@@ -109,12 +109,12 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/mobile_session_start_card"
-        android:theme="@style/Theme.Aircasting.Cards"
+        style="@style/Widget.Aircasting.Cards"
         android:layout_height="0dp"
         android:layout_width="0dp"
+        app:cardElevation="1dp"
         android:clickable="true"
-        app:cardCornerRadius="0dp"
-        android:layout_marginLeft="@dimen/keyline_10"
+        android:layout_marginLeft="@dimen/keyline_8"
         android:layout_marginRight="@dimen/keyline_8"
         app:layout_constraintStart_toEndOf="@+id/fixed_session_start_card"
         app:layout_constraintEnd_toEndOf="parent"

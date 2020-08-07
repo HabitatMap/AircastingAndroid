@@ -1,55 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Aircasting.Cards"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:layout_width="match_parent"
+    android:layout_margin="@dimen/keyline_4">
 
-    <TextView
-        android:id="@+id/active_session_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textAlignment="center" />
-
-    <TextView
-        android:id="@+id/active_session_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/active_session_tags"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/session_measurements_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/session_measurements_description"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/session_measurements"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:textSize="15sp"
-        android:textAlignment="center" />
-
-    <Button
-        android:id="@+id/stop_session_button"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_marginTop="80dp"
-        android:text="@string/stop_session" />
+        android:layout_height="match_parent"
+        android:padding="@dimen/keyline_4" >
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/session_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/session_actions_button" />
+
+        <ImageView
+            android:id="@+id/session_actions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_more_horizontal"
+            android:tint="@color/aircasting_grey_400"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/session_date"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/session_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4"
+            android:textAppearance="?attr/textAppearanceHeadline4"
+            android:textColor="@color/aircasting_dark_blue"
+            android:font="@font/moderat_trial_medium"
+            app:layout_constraintTop_toBottomOf="@+id/session_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/session_more_details_button" />
+
+        <ImageView
+            android:id="@+id/session_more_details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_chevron_down"
+            android:tint="@color/aircasting_dark_blue"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
+            app:layout_constraintStart_toEndOf="@+id/session_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/session_tags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_2"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="@color/aircasting_dark_blue"
+            app:layout_constraintTop_toBottomOf="@+id/session_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/session_measurements_description"
+            android:text="@string/session_measurements_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintTop_toBottomOf="@+id/session_tags"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TableLayout
+            android:id="@+id/measurements_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/keyline_4"
+            app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
+
+            <TableRow android:id="@+id/measurement_headers" />
+            <TableRow android:id="@+id/measurement_values" />
+        </TableLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

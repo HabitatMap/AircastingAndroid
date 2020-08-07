@@ -29,7 +29,8 @@ class MobileActiveFragment : Fragment() {
 
         val view = MobileActiveViewMvcImpl(
             layoutInflater,
-            null
+            null,
+            childFragmentManager
         )
         controller = MobileActiveController(
             context,

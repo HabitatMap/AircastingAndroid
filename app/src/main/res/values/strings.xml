@@ -16,8 +16,9 @@
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
     <string name="record_new_session">Record new session</string>
-    <string name="stop_session">Stop session</string>
+    <string name="stop_session">Finish recording session</string>
     <string name="delete_session">Delete session</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Let's begin (new session start) -->
     <string name="title_lets_start">Let\'s begin</string>
@@ -68,6 +69,7 @@
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
     <string name="errors_bluetooth_required">Bluetooth and location services are required to continue</string>
     <string name="errors_audio_required">Audio and location permissions are required to continue</string>
+    <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_name_required">Session name can\'t be blank.</string>
     <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
