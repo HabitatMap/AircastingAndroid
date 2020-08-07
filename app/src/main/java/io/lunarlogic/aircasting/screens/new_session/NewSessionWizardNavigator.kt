@@ -131,12 +131,6 @@ class NewSessionWizardNavigator(
         progressBar?.progress = currentProgressStep * STEP_PROGRESS
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentTransaction = mFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.new_session_fragment_container, fragment)
-        fragmentTransaction.commit()
-    }
-
     private fun goToFragment(fragment: Fragment) {
         val fragmentTransaction = mFragmentManager.beginTransaction()
         val container = R.id.new_session_fragment_container
