@@ -5,14 +5,23 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
-class LetsStartViewMvcImpl : BaseObservableViewMvc<LetsStartViewMvc.Listener>, LetsStartViewMvc {
+class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
+    LetsStartViewMvc, MoreInfoBottomSheet.Listener {
+    private val mSupportFragmentManager: FragmentManager
+    private var mDialog: MoreInfoBottomSheet? = null
+
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        supportFragmentManager: FragmentManager
+    ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
+        mSupportFragmentManager = supportFragmentManager
 
         val fixedSessionCard = rootView?.findViewById<CardView>(R.id.fixed_session_start_card)
         fixedSessionCard?.setOnClickListener {
@@ -31,13 +40,12 @@ class LetsStartViewMvcImpl : BaseObservableViewMvc<LetsStartViewMvc.Listener>, L
     }
 
     override fun showMoreInfoDialog() {
-        val dialogBuilder = MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_Aircasting_MaterialAlertDialog)
-            .setTitle(R.string.more_info_title)
-            .setMessage(R.string.more_info_text)
-            .setNeutralButton(R.string.more_info_cancel_button_text, { dialog, which ->
-            })
+        mDialog = MoreInfoBottomSheet(this)
+        mDialog?.show(mSupportFragmentManager)
+    }
 
-        dialogBuilder.show()
+    override fun closePressed() {
+        mDialog?.dismiss()
     }
 
     private fun onFixedSessionSelected() {
@@ -57,6 +65,4 @@ class LetsStartViewMvcImpl : BaseObservableViewMvc<LetsStartViewMvc.Listener>, L
             listener.onMoreInfoClicked()
         }
     }
-
-
 }
