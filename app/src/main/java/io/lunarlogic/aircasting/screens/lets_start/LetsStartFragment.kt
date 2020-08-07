@@ -15,7 +15,7 @@ class LetsStartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = LetsStartViewMvcImpl(layoutInflater, null)
+        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
         controller = LetsStartController(activity, view)
 
         return view.rootView

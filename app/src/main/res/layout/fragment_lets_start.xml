@@ -58,6 +58,7 @@
         android:paddingBottom="@dimen/keyline_6"
         android:paddingRight="@dimen/keyline_8"
         android:paddingTop="@dimen/keyline_8"
+        app:rippleColor="@null"
         app:layout_constraintBottom_toBottomOf="@id/record_new_session_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_session_type_subtitle" />
