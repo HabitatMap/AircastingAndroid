@@ -86,8 +86,8 @@ class MobileSessionTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
 
@@ -113,16 +113,17 @@ class MobileSessionTest {
 
         Thread.sleep(4000)
 
-        val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
-        measurementsView.check(matches(not(withText(""))))
+        val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
+        measurementValuesRow.check(matches(hasChildCount(5)))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        onView(withId(R.id.session_actions_button)).perform(click())
         onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
 
-        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's mobile bluetooth session")))
-        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
     }
 
     @Test
@@ -131,8 +132,8 @@ class MobileSessionTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
 
@@ -149,19 +150,16 @@ class MobileSessionTest {
 
         Thread.sleep(4000)
 
-        val measurementsView = onView(allOf(withId(R.id.session_measurements), isDisplayed()))
-        checkMeasurement(measurementsView, "Phone Microphone: 89.43 dB")
+        val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
+        measurementValuesRow.check(matches(hasChildCount(1)))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        onView(withId(R.id.session_actions_button)).perform(click())
         onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
 
-        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's mobile microphone session")))
-        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
-    }
-
-    private fun checkMeasurement(measurementsView: ViewInteraction, measurementString: String) {
-        measurementsView.check(matches(withText(containsString(measurementString))));
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
+        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
     }
 }

@@ -84,8 +84,8 @@ class FixedSessionTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
@@ -132,8 +132,8 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's fixed outdoor session")))
-        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed outdoor session")))
+        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
     }
 
     @Test
@@ -144,8 +144,8 @@ class FixedSessionTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.dashboard_record_new_session_button), isDisplayed())).perform(click())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
@@ -184,8 +184,8 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(withId(R.id.dormant_session_name)).check(matches(withText("Ania's fixed indoor session")))
-        onView(withId(R.id.dormant_session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed indoor session")))
+        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
     }
 
 
