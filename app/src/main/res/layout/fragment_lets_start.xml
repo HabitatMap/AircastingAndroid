@@ -79,6 +79,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:maxHeight="200dp"
             android:paddingBottom="@dimen/keyline_8"
             android:paddingLeft="@dimen/keyline_4" >
             <TextView
@@ -124,7 +125,8 @@
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:maxHeight="200dp">
             <TextView
                 android:id="@+id/mobile_session_start_title"
                 android:layout_width="match_parent"
