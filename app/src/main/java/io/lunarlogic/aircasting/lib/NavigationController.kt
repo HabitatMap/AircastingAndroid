@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.lib
 
 import androidx.navigation.NavController
-import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.MobileNavigationDirections
 
 class NavigationController {
     companion object {
@@ -11,8 +11,9 @@ class NavigationController {
             mNavController = navController
         }
 
-        fun goToDashboard() {
-            mNavController.navigate(R.id.navigation_dashboard)
+        fun goToDashboard(tabId: Int = 0) {
+            val action = MobileNavigationDirections.actionGlobalDashboard(tabId)
+            mNavController.navigate(action)
         }
     }
 }

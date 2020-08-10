@@ -10,23 +10,13 @@ class DashboardController(
     private val mView: DashboardViewMvc
 ) {
 
-    fun onCreate() {
-        EventBus.getDefault().register(this)
-    }
-
-    fun onDestroy() {
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: StartRecordingEvent) {
-        val sessionType = event.session.type
-        mView.goToTab(sessionType)
+    fun onCreate(tabId: Int?) {
+        mView.goToTab(tabId ?: 0)
     }
 
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
         // stop is possible only for mobile sessions
-        mView.goToTab(Session.Type.MOBILE, Session.Status.FINISHED)
+//        mView.goToTab(Session.Type.MOBILE, Session.Status.FINISHED)
     }
 }

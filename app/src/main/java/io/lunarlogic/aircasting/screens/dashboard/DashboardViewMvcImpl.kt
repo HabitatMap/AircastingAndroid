@@ -20,7 +20,7 @@ class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
         fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
     }
 
-    override fun goToTab(sessionType: Session.Type, sessionStatus: Session.Status) {
-        mPager?.currentItem = DashboardPagerAdapter.tabIndexForSessionType(sessionType, sessionStatus)
+    override fun goToTab(tabId: Int) {
+        mPager?.currentItem = tabId
     }
 }

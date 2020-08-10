@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-
 
 class DashboardFragment : Fragment() {
     private var controller: DashboardController? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -18,13 +17,9 @@ class DashboardFragment : Fragment() {
     ): View? {
         val view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
         controller = DashboardController(view)
-        controller?.onCreate()
+        val tabId = arguments?.get("tabId") as Int?
+        controller?.onCreate(tabId)
 
         return view.rootView
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        controller?.onDestroy()
     }
 }

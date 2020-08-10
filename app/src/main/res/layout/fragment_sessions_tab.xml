@@ -11,7 +11,7 @@
         android:paddingTop="@dimen/keyline_4"
         android:paddingBottom="@dimen/keyline_4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/bottom_nav_bar">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_sessions"

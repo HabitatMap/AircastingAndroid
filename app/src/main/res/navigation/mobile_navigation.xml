@@ -5,6 +5,14 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_dashboard">
 
+    <action android:id="@+id/actionGlobalDashboard"
+        app:destination="@+id/navigation_dashboard">
+        <argument
+            android:name="tabId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </action>
+
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="io.lunarlogic.aircasting.screens.dashboard.DashboardFragment"
