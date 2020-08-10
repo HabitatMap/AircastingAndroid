@@ -5,7 +5,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
@@ -41,6 +43,9 @@ class MobileActiveController(
     override fun onStopSessionClicked(sessionUUID: String) {
         val event = StopRecordingEvent(sessionUUID)
         EventBus.getDefault().post(event)
+
+        val tabId = DashboardPagerAdapter.tabIndexForSessionType(Session.Type.MOBILE, Session.Status.FINISHED)
+        NavigationController.goToDashboard(tabId)
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
