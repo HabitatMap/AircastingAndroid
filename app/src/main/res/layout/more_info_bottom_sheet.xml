@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cancel_card"
+        android:id="@+id/more_info_card"
         style="@style/Widget.Aircasting.BottomSheetCard"
         android:layout_height="500dp"
         android:layout_width="match_parent"
