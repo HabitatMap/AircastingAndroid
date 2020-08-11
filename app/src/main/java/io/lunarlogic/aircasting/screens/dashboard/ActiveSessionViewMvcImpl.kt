@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Measurement
@@ -13,6 +14,13 @@ import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<ListenerType> {
+    private val LEVEL_COLORS_IDS = arrayOf(
+        R.color.session_color_indicator_very_low,
+        R.color.session_color_indicator_low,
+        R.color.session_color_indicator_medium,
+        R.color.session_color_indicator_high,
+        R.color.session_color_indicator_very_high
+    )
 
     private val mMeasurementValues: TableRow
 
@@ -58,9 +66,16 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
             circleView.visibility = View.GONE
         } else {
             valueTextView.text = measurementValueString(measurement, stream)
+            circleView.setColorFilter(getColor(measurement, stream))
         }
 
         mMeasurementValues.addView(valueView)
+    }
+
+    private fun getColor(measurement: Measurement, stream: MeasurementStream): Int {
+        val level = measurement.getLevel(stream)
+        val colorId = LEVEL_COLORS_IDS[level]
+        return ResourcesCompat.getColor(context.resources, colorId, null)
     }
 
     private fun measurementValueString(measurement: Measurement, stream: MeasurementStream): String {

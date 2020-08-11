@@ -7,8 +7,8 @@ import java.util.*
 class Measurement(
     val value: Double,
     val time: Date,
-    val latitude: Double?,
-    val longitude: Double?) {
+    val latitude: Double? = null,
+    val longitude: Double? = null) {
 
     constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?):
             this(event.measuredValue, Date(event.creationTime), latitude, longitude)
@@ -19,4 +19,8 @@ class Measurement(
                 measurementDBObject.latitude,
                 measurementDBObject.longitude
             )
+
+    fun getLevel(stream: MeasurementStream): Int {
+        return stream.levels.indexOfLast { level -> value > level }
+    }
 }

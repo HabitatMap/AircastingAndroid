@@ -72,6 +72,7 @@ class MeasurementStream(
     private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
+    val levels get() = arrayOf(thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh)
 
     init {
         val splitted = sensorName.split("-")

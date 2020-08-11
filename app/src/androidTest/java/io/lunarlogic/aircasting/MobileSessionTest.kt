@@ -119,7 +119,7 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         onView(withId(R.id.session_actions_button)).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(4000)
 
         onView(withId(R.id.stop_session_button)).perform(click())
 
@@ -159,7 +159,7 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         onView(withId(R.id.session_actions_button)).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(4000)
 
         onView(withId(R.id.stop_session_button)).perform(click())
 
