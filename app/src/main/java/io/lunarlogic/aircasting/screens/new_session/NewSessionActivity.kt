@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.permissions.PermissionsActivity
@@ -18,6 +19,7 @@ import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
+import kotlinx.android.synthetic.main.activity_new_session.view.*
 import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity(),
@@ -85,6 +87,8 @@ class NewSessionActivity : AppCompatActivity(),
         )
 
         setContentView(view.rootView)
+        setSupportActionBar(findViewById(R.id.new_session_toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun requestBluetoothPermissions(permissionsManager: PermissionsManager) {
