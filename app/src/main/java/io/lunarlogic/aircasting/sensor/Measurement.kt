@@ -21,6 +21,8 @@ class Measurement(
             )
 
     fun getLevel(stream: MeasurementStream): Int {
+        if (value <= stream.thresholdVeryLow) return 0
+
         return stream.levels.indexOfLast { level -> value > level }
     }
 }

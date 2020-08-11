@@ -22,14 +22,20 @@ class MeasurementTest {
             "PM",
             "micrograms per cubic meter",
             "µg/m³",
-            0,
+            1,
             12,
             35,
             55,
             150
         )
 
-        var measurement = Measurement(5.0, Date())
+        var measurement = Measurement(0.0, Date())
+        assertEquals(0, measurement.getLevel(stream))
+
+        measurement = Measurement(1.0, Date())
+        assertEquals(0, measurement.getLevel(stream))
+
+        measurement = Measurement(5.0, Date())
         assertEquals(0, measurement.getLevel(stream))
 
         measurement = Measurement(15.0, Date())
