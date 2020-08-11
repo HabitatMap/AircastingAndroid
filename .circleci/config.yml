@@ -33,7 +33,7 @@ jobs:
             sudo gcloud firebase test android run \
               --device model=Pixel2,version=28,locale=en,orientation=portrait \
               --device model=hwALE-H,version=21,locale=en,orientation=portrait \
-              --device model=blueline,version=29,locale=en,orientation=portrait \
+              --device model=flame,version=29,locale=en,orientation=portrait \
               --app ~/project/app/build/outputs/apk/debug/app-debug.apk \
               --test ~/project/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}

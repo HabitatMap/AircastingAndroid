@@ -62,13 +62,20 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     }
 
     override fun showSessionsView(sessions: List<Session>) {
-        mAdapter.bindSessions(sessions)
-        mRecyclerSessions?.visibility = View.VISIBLE
-        mEmptyView?.visibility = View.INVISIBLE
+        if (recyclerViewCanBeUpdated()) {
+            mAdapter.bindSessions(sessions)
+            mRecyclerSessions?.visibility = View.VISIBLE
+            mEmptyView?.visibility = View.INVISIBLE
+        }
     }
 
     override fun showEmptyView() {
         mEmptyView?.visibility = View.VISIBLE
         mRecyclerSessions?.visibility = View.INVISIBLE
+    }
+
+    private fun recyclerViewCanBeUpdated(): Boolean {
+        return mRecyclerSessions?.isComputingLayout == false
+                && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE
     }
 }

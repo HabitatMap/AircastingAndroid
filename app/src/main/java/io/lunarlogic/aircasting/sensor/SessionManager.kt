@@ -72,7 +72,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         val deviceId = event.deviceId ?: return
 
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getActiveSessionIdByDeviceId(deviceId)
+            val sessionId = sessionsRespository.getMobileActiveSessionIdByDeviceId(deviceId)
             sessionId?.let {
                 val measurementStreamId = measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                 measurementsRepository.insert(measurementStreamId, measurement)

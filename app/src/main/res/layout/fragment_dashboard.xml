@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dashboard"
-    android:background="@color/aircasting_blue_50">
+    android:background="@drawable/dashboard_background">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
