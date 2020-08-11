@@ -14,8 +14,9 @@ class SessionsRepository {
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
-    fun getActiveSessionIdByDeviceId(deviceId: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByByDeviceIdAndStatus(deviceId, Session.Status.RECORDING)
+    fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
+        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId,
+            Session.Status.RECORDING, Session.Type.MOBILE)
 
         if (sessionDBObject != null) {
             return sessionDBObject.id
@@ -40,7 +41,7 @@ class SessionsRepository {
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions().loadSessionByByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
+        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
     }
 
     fun stopMobileSessions() {
