@@ -109,10 +109,7 @@ class MobileSessionTest {
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.start_recording_button)).perform(scrollTo())
-        Thread.sleep(2000)
-        onView(withId(R.id.start_recording_button)).perform(click())
-
+        onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(4000)
 
@@ -152,9 +149,7 @@ class MobileSessionTest {
         onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.start_recording_button)).perform(scrollTo())
-        Thread.sleep(2000)
-        onView(withId(R.id.start_recording_button)).perform(click())
+        onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
         Thread.sleep(4000)
 
