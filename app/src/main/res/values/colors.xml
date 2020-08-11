@@ -9,7 +9,7 @@
     <color name="aircasting_grey_400">#A1A2A6</color>
     <color name="aircasting_grey_500">#949599</color>
     <color name="aircasting_grey_600">#858B93</color>
-
+    <color name="aircasting_grey_700">#737578</color>
     <color name="session_color_indicator_very_low">#96D788</color>
     <color name="session_color_indicator_low">#FDD760</color>
     <color name="session_color_indicator_medium">#F9A342</color>

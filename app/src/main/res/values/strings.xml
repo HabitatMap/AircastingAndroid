@@ -37,8 +37,8 @@
     <!-- New session Step 1 -->
     <string name="turn_on_bluetooth_image_desc">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
-    <string name="turn_on_bluetooth_description">To communicate with AirBeam, the app needs Bluetooth.</string>
-    <string name="turn_on_bluetooth_ok_button">Turn the Bluetooth on</string>
+    <string name="turn_on_bluetooth_description">Turn on Bluetooth to enable your phone to connect to the AirBeam.</string>
+    <string name="turn_on_bluetooth_ok_button">Continue</string>
 
     <string name="select_device_type_header">What device are you using to record this session?</string>
     <string name="bluetooth_device_button">Bluetooth device</string>
