@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.new_session
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -130,5 +131,20 @@ class NewSessionActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         controller.onActivityResult(requestCode, resultCode)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        android.R.id.home -> {
+            val fragmentManager = supportFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack()
+            } else {
+                super.onBackPressed()
+            }
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }
