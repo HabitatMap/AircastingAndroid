@@ -232,6 +232,12 @@
         <item name="colorOnPrimary">?attr/colorSecondary</item>
     </style>
 
+    <style name="ThemeOverlay.Aircasting.EmptyAppBar" parent="">
+        <!-- background color -->
+        <item name="colorPrimary">?android:attr/colorBackground</item>
+        <item name="homeAsUpIndicator">@drawable/chevron_left</item>
+    </style>
+
     <!-- Tab Layout -->
 
     <style name="Widget.Aircasting.TabLayout" parent="">
