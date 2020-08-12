@@ -32,6 +32,7 @@
 
     <dimen name="keyline_1">4dp</dimen>
     <dimen name="keyline_2">8dp</dimen>
+    <dimen name="keyline_3">12dp</dimen>
     <dimen name="keyline_4">16dp</dimen>
     <dimen name="keyline_6">24dp</dimen>
     <dimen name="keyline_8">32dp</dimen>
