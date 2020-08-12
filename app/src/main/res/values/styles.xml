@@ -116,6 +116,19 @@
         <item name="android:textSize">@dimen/cards_body1_text_size</item>
     </style>
 
+    <!-- Steps -->
+    <style name="TextAppearance.Aircasting.NewSessionSteps.Headline1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/text_size_xl</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.NewSessionSteps.Body1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->
@@ -217,6 +230,12 @@
         <item name="colorPrimary">?android:attr/colorBackground</item>
         <!-- text color -->
         <item name="colorOnPrimary">?attr/colorSecondary</item>
+    </style>
+
+    <style name="ThemeOverlay.Aircasting.EmptyAppBar" parent="">
+        <!-- background color -->
+        <item name="colorPrimary">?android:attr/colorBackground</item>
+        <item name="homeAsUpIndicator">@drawable/chevron_left</item>
     </style>
 
     <!-- Tab Layout -->

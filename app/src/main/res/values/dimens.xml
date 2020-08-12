@@ -22,6 +22,11 @@
     <dimen name="button_shadow_y_translation">-6dp</dimen>
     <dimen name="cardview_default_elevation">4dp</dimen>
 
+    <dimen name="text_size_xxl">32sp</dimen>
+    <dimen name="text_size_xl">24sp</dimen>
+    <dimen name="text_size_l">20sp</dimen>
+    <dimen name="text_size_m">18sp</dimen>
+
     <dimen name="action_bar_size">100dp</dimen>
     <dimen name="app_bar_padding">20dp</dimen>
 
