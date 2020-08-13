@@ -49,8 +49,9 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_10"
         android:text="@string/turn_on_bluetooth_ok_button"
-        app:layout_constraintTop_toBottomOf="@id/turn_bluetooth_description"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
