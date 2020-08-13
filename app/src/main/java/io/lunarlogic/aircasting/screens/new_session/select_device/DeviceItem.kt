@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.new_session.select_device.items
+package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
 

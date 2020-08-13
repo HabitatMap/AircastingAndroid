@@ -18,38 +18,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/select_device_airbeams_label_with_loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/keyline_8"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/select_device_header"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/select_device_airbeams_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
-            android:text="@string/select_device_airbeams_label"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_loader"
-            android:tint="@color/aircasting_blue_400"
-            android:layout_marginStart="@dimen/keyline_2"
-            app:layout_constraintStart_toEndOf="@+id/select_device_airbeams_label" />
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_devices"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@+id/select_device_airbeams_label_with_loader"
+        app:layout_constraintTop_toBottomOf="@+id/select_device_header"
         app:layout_constraintBottom_toTopOf="@+id/connect_button" />
 
     <Button

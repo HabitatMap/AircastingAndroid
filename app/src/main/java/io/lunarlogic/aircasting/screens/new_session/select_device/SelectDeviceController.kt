@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
 class SelectDeviceController(
     private val mContext: Context?,

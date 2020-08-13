@@ -2,18 +2,25 @@ package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xwray.groupie.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import kotlinx.android.synthetic.main.select_device_item.view.*
 
-class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
-    SelectDeviceViewMvc,
-    SelectDeviceRecyclerAdapter.Listener {
+class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
+    SelectDeviceViewMvc {
 
     private var mRecyclerDevices: RecyclerView? = null
-    private val mAdapter: SelectDeviceRecyclerAdapter
+    private val mAdapter: GroupAdapter<GroupieViewHolder>
+    private var mAirBeamDevicesSection: RecyclerViewSection? = null
+    private var mOtherDevicesSection: RecyclerViewSection? = null
+    private var mSelectedDeviceItem: DeviceItem? = null
+    private var mConnectButton: Button? = null
+
+    private val AIRBEAM_NAME_REGEX = "AirBeam"
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
@@ -21,24 +28,95 @@ class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listen
 
         mRecyclerDevices = findViewById(R.id.recycler_devices)
         mRecyclerDevices?.setLayoutManager(LinearLayoutManager(rootView!!.context))
-        mAdapter = SelectDeviceRecyclerAdapter(
-            inflater,
-            this
-        )
+        mAdapter = GroupAdapter()
+        mAdapter.setOnItemClickListener { item, view ->
+            val recyclerViewItem = item as? RecyclerViewDeviceItem
+            recyclerViewItem?.let { onDeviceItemSelected(it) }
+        }
         mRecyclerDevices?.setAdapter(mAdapter)
+        mConnectButton = findViewById(R.id.connect_button)
+        mConnectButton?.setOnClickListener {
+            onConnectClicked()
+        }
+    }
+
+    class RecyclerViewDeviceItem(val deviceItem: DeviceItem, var selected: Boolean = false) : Item<GroupieViewHolder>() {
+        override fun getLayout() = R.layout.select_device_item
+
+        override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+            if (selected) {
+                viewHolder.itemView.radio.setImageResource(R.drawable.ic_radio_selected)
+            } else {
+                viewHolder.itemView.radio.setImageResource(R.drawable.ic_radio)
+            }
+            viewHolder.itemView.label.text = "${deviceItem.name} ${deviceItem.address}"
+        }
+    }
+
+    class RecyclerViewGroupHeader(private val label: String?): Item<GroupieViewHolder>() {
+        override fun getLayout() = R.layout.select_device_group_header
+
+        override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+            viewHolder.itemView.label.text = label
+        }
+    }
+
+    class RecyclerViewSection(private val label: String?, private val deviceItems: List<DeviceItem>): Section() {
+        init {
+            setHeader(RecyclerViewGroupHeader(label))
+            val recyclerItems = deviceItems.map { deviceItem -> RecyclerViewDeviceItem(deviceItem) }
+            addAll(recyclerItems)
+        }
+    }
+
+    private fun isAirBeamDevice(deviceItem: DeviceItem): Boolean {
+        return deviceItem.name.contains(AIRBEAM_NAME_REGEX)
     }
 
     override fun bindDeviceItems(deviceItems: List<DeviceItem>) {
-        mAdapter.bindDeviceItems(deviceItems)
+        val airbeams = deviceItems.filter { isAirBeamDevice(it) }
+        val others = deviceItems.filter { !isAirBeamDevice(it) }
+
+        mAirBeamDevicesSection = RecyclerViewSection(getLabel(R.string.select_device_airbeams_label), airbeams)
+        mAdapter.add(mAirBeamDevicesSection!!)
+        mOtherDevicesSection = RecyclerViewSection(getLabel(R.string.select_device_others_label), others)
+        mAdapter.add(mOtherDevicesSection!!)
     }
 
     override fun addDeviceItem(deviceItem: DeviceItem) {
-        mAdapter.addDeviceItem(deviceItem)
+        if (isAirBeamDevice(deviceItem)) {
+            mAirBeamDevicesSection?.add(RecyclerViewDeviceItem(deviceItem))
+        } else {
+            mOtherDevicesSection?.add(RecyclerViewDeviceItem(deviceItem))
+        }
     }
 
-    override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+    private fun getLabel(labelId: Int): String? {
+        return this.rootView?.context?.getString(labelId)
+    }
+
+    private fun onDeviceItemSelected(recyclerViewDeviceItem: RecyclerViewDeviceItem) {
+        mSelectedDeviceItem = recyclerViewDeviceItem.deviceItem
+
+        mAirBeamDevicesSection?.let { clearSelections(it) }
+        mOtherDevicesSection?.let { clearSelections(it) }
+
+        recyclerViewDeviceItem.selected = true
+        mAdapter.notifyDataSetChanged()
+    }
+
+    private fun clearSelections(section: RecyclerViewSection) {
+        section.groups?.forEach { item ->
+            val recyclerViewDeviceItem = item as? RecyclerViewDeviceItem
+            recyclerViewDeviceItem?.selected = false
+        }
+    }
+
+    private fun onConnectClicked() {
+        mSelectedDeviceItem ?: return
+
         for (listener in listeners) {
-            listener.onDeviceItemSelected(deviceItem)
+            listener.onConnectClicked(mSelectedDeviceItem!!)
         }
     }
 }

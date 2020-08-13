@@ -8,7 +8,7 @@ import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
