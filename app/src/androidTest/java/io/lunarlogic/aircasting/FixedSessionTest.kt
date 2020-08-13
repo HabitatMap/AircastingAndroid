@@ -90,7 +90,7 @@ class FixedSessionTest {
         onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
-        onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
+        onView(allOf(withId(R.id.turn_on_airbeam_ready_button), isDisplayed())).perform(click())
 
         onView(withText("AirBeam2")).perform(click())
 
