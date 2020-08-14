@@ -20,8 +20,6 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
     private var mSelectedDeviceItem: DeviceItem? = null
     private var mConnectButton: Button? = null
 
-    private val AIRBEAM_NAME_REGEX = "AirBeam"
-
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
         this.rootView = inflater.inflate(R.layout.fragment_select_device, parent, false)
@@ -49,7 +47,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             } else {
                 viewHolder.itemView.radio.setImageResource(R.drawable.ic_radio)
             }
-            viewHolder.itemView.label.text = "${deviceItem.name} ${deviceItem.address}"
+            viewHolder.itemView.label.text = "${deviceItem.displayName()} ${deviceItem.address}"
         }
     }
 
@@ -62,20 +60,28 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
     }
 
     class RecyclerViewSection(private val label: String?, private val deviceItems: List<DeviceItem>): Section() {
+        private var mDeviceItemsAddresses: MutableSet<String>
+
         init {
             setHeader(RecyclerViewGroupHeader(label))
+
+            mDeviceItemsAddresses = deviceItems.map { it.address }.toMutableSet()
             val recyclerItems = deviceItems.map { deviceItem -> RecyclerViewDeviceItem(deviceItem) }
             addAll(recyclerItems)
         }
-    }
 
-    private fun isAirBeamDevice(deviceItem: DeviceItem): Boolean {
-        return deviceItem.name.contains(AIRBEAM_NAME_REGEX)
+        fun addUnique(deviceItem: DeviceItem) {
+            if (!mDeviceItemsAddresses.contains(deviceItem.address)) {
+                mDeviceItemsAddresses.add(deviceItem.address)
+                val item = RecyclerViewDeviceItem(deviceItem)
+                add(item)
+            }
+        }
     }
 
     override fun bindDeviceItems(deviceItems: List<DeviceItem>) {
-        val airbeams = deviceItems.filter { isAirBeamDevice(it) }
-        val others = deviceItems.filter { !isAirBeamDevice(it) }
+        val airbeams = deviceItems.filter { it.isAirBeam() }
+        val others = deviceItems.filter { !it.isAirBeam() }
 
         mAirBeamDevicesSection = RecyclerViewSection(getLabel(R.string.select_device_airbeams_label), airbeams)
         mAdapter.add(mAirBeamDevicesSection!!)
@@ -84,10 +90,10 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
     }
 
     override fun addDeviceItem(deviceItem: DeviceItem) {
-        if (isAirBeamDevice(deviceItem)) {
-            mAirBeamDevicesSection?.add(RecyclerViewDeviceItem(deviceItem))
+        if (deviceItem.isAirBeam()) {
+            mAirBeamDevicesSection?.addUnique(deviceItem)
         } else {
-            mOtherDevicesSection?.add(RecyclerViewDeviceItem(deviceItem))
+            mOtherDevicesSection?.addUnique(deviceItem)
         }
     }
 
