@@ -93,7 +93,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             mLoader?.visibility = View.VISIBLE
             hideRefreshButton()
 
-            // There is no way to actually now when the device list is ready
+            // There is no way to actually know when the device list is ready
             // So we are hiding loader after 3s...
             GlobalScope.launch(Dispatchers.IO) {
                 delay(3000)
