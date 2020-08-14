@@ -92,7 +92,8 @@ class FixedSessionTest {
 
         onView(allOf(withId(R.id.turn_on_airbeam_ready_button), isDisplayed())).perform(click())
 
-        onView(withText("AirBeam2")).perform(click())
+        onView(withText(containsString("AirBeam2"))).perform(click())
+        onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
 
@@ -152,7 +153,8 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText("AirBeam2")).perform(click())
+        onView(withText(containsString("AirBeam2"))).perform(click())
+        onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
 

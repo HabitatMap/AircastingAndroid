@@ -7,7 +7,9 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     open val address: String
     open val id: String
 
-    private val AIRBEAM_NAME_REGEX = "airbeam"
+    companion object {
+        private val AIRBEAM_NAME_REGEX = "airbeam"
+    }
 
     init {
         name = mBluetoothDevice.name?: "Unknown"
@@ -28,5 +30,4 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     fun isAirBeam(): Boolean {
         return name.contains(AIRBEAM_NAME_REGEX, true)
     }
-
 }
