@@ -1,27 +1,39 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import kotlinx.android.synthetic.main.select_device_group_header.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.*
+import kotlinx.android.synthetic.main.select_device_item.view.label
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {
 
+    private var mRefreshListener: SelectDeviceViewMvc.OnRefreshListener? = null
     private var mRecyclerDevices: RecyclerView? = null
     private val mAdapter: GroupAdapter<GroupieViewHolder>
     private var mAirBeamDevicesSection: RecyclerViewSection? = null
     private var mOtherDevicesSection: RecyclerViewSection? = null
     private var mSelectedDeviceItem: DeviceItem? = null
+    private var mRefreshButton: Button? = null
     private var mConnectButton: Button? = null
 
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_select_device, parent, false)
 
         mRecyclerDevices = findViewById(R.id.recycler_devices)
@@ -32,13 +44,21 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             recyclerViewItem?.let { onDeviceItemSelected(it) }
         }
         mRecyclerDevices?.setAdapter(mAdapter)
+        mRefreshButton = findViewById(R.id.refresh_button)
+        mRefreshButton?.setOnClickListener {
+            onRefreshClicked()
+        }
         mConnectButton = findViewById(R.id.connect_button)
         mConnectButton?.setOnClickListener {
             onConnectClicked()
         }
     }
 
-    class RecyclerViewDeviceItem(val deviceItem: DeviceItem, var selected: Boolean = false) : Item<GroupieViewHolder>() {
+    override fun registerOnRefreshListener(refreshListener: SelectDeviceViewMvc.OnRefreshListener) {
+        mRefreshListener = refreshListener
+    }
+
+    inner class RecyclerViewDeviceItem(val deviceItem: DeviceItem, var selected: Boolean = false) : Item<GroupieViewHolder>() {
         override fun getLayout() = R.layout.select_device_item
 
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -51,19 +71,51 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
     }
 
-    class RecyclerViewGroupHeader(private val label: String?): Item<GroupieViewHolder>() {
+    inner class RecyclerViewGroupHeader(private val label: String?): Item<GroupieViewHolder>() {
+        private var mLoader: ImageView? = null
+
         override fun getLayout() = R.layout.select_device_group_header
+
+        override fun createViewHolder(itemView: View): GroupieViewHolder {
+            val viewHolder = super.createViewHolder(itemView)
+
+            mLoader = viewHolder.itemView.loader
+            showLoader()
+
+            return viewHolder
+        }
 
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             viewHolder.itemView.label.text = label
         }
+
+        fun showLoader() {
+            mLoader?.visibility = View.VISIBLE
+            hideRefreshButton()
+
+            // There is no way to actually now when the device list is ready
+            // So we are hiding loader after 3s...
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(3000)
+                GlobalScope.launch(Dispatchers.Main) {
+                    hideLoader()
+                }
+            }
+        }
+
+        fun hideLoader() {
+            mLoader?.visibility = View.INVISIBLE
+            showRefreshButton()
+        }
     }
 
-    class RecyclerViewSection(private val label: String?, private val deviceItems: List<DeviceItem>): Section() {
+    inner class RecyclerViewSection(private val label: String?, private val deviceItems: List<DeviceItem>): Section() {
         private var mDeviceItemsAddresses: MutableSet<String>
+        private val mHeader: RecyclerViewGroupHeader
 
         init {
-            setHeader(RecyclerViewGroupHeader(label))
+            mHeader = RecyclerViewGroupHeader(label)
+            setHeader(mHeader)
 
             mDeviceItemsAddresses = deviceItems.map { it.address }.toMutableSet()
             val recyclerItems = deviceItems.map { deviceItem -> RecyclerViewDeviceItem(deviceItem) }
@@ -76,6 +128,10 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
                 val item = RecyclerViewDeviceItem(deviceItem)
                 add(item)
             }
+        }
+
+        fun showLoader() {
+            mHeader.showLoader()
         }
     }
 
@@ -97,6 +153,14 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
     }
 
+    fun showRefreshButton() {
+        mRefreshButton?.visibility = View.VISIBLE
+    }
+
+    fun hideRefreshButton() {
+        mRefreshButton?.visibility = View.INVISIBLE
+    }
+
     private fun getLabel(labelId: Int): String? {
         return this.rootView?.context?.getString(labelId)
     }
@@ -116,6 +180,16 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             val recyclerViewDeviceItem = item as? RecyclerViewDeviceItem
             recyclerViewDeviceItem?.selected = false
         }
+    }
+
+    private fun showLoaders() {
+        mAirBeamDevicesSection?.showLoader()
+        mOtherDevicesSection?.showLoader()
+    }
+
+    private fun onRefreshClicked() {
+        showLoaders()
+        mRefreshListener?.onRefreshClicked()
     }
 
     private fun onConnectClicked() {

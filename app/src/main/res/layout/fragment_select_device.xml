@@ -23,8 +23,22 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/keyline_4"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
         app:layout_constraintTop_toBottomOf="@+id/select_device_header"
-        app:layout_constraintBottom_toTopOf="@+id/connect_button" />
+        app:layout_constraintBottom_toTopOf="@+id/refresh_button" />
+
+    <Button
+        android:id="@+id/refresh_button"
+        style="@style/Widget.Aircasting.TextButton"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_device_refresh_button"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_devices"
+        app:layout_constraintBottom_toTopOf="@+id/connect_button"/>
 
     <Button
         android:id="@+id/connect_button"
@@ -32,7 +46,7 @@
         android:layout_height="wrap_content"
         android:text="@string/select_device_connect_button"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_devices"
+        app:layout_constraintTop_toBottomOf="@+id/refresh_button"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

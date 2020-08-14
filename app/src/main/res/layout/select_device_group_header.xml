@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_loader"
         android:tint="@color/aircasting_blue_400"
+        android:visibility="invisible"
         android:layout_marginStart="@dimen/keyline_2"
         app:layout_constraintStart_toEndOf="@+id/select_device_airbeams_label" />
 </LinearLayout>

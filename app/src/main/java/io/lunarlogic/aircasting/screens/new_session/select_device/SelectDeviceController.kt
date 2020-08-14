@@ -12,12 +12,13 @@ class SelectDeviceController(
     private val mViewMvc: SelectDeviceViewMvc,
     private val bluetoothManager: BluetoothManager,
     private val mListener: SelectDeviceViewMvc.Listener
-) : BroadcastReceiver() {
+) : BroadcastReceiver(), SelectDeviceViewMvc.OnRefreshListener {
 
     fun onStart() {
         bindDevices()
         registerListener(mListener)
         registerBluetoothDeviceFoundReceiver()
+        mViewMvc.registerOnRefreshListener(this)
         bluetoothManager.startDiscovery()
     }
 
@@ -36,6 +37,11 @@ class SelectDeviceController(
                 device?.let { mViewMvc.addDeviceItem(DeviceItem(it)) }
             }
         }
+    }
+
+    override fun onRefreshClicked() {
+        bluetoothManager.cancelDiscovery()
+        bluetoothManager.startDiscovery()
     }
 
     private fun bindDevices() {

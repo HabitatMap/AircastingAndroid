@@ -7,6 +7,11 @@ interface SelectDeviceViewMvc : ObservableViewMvc<SelectDeviceViewMvc.Listener> 
         fun onConnectClicked(selectedDeviceItem: DeviceItem)
     }
 
+    interface OnRefreshListener {
+        fun onRefreshClicked()
+    }
+
+    fun registerOnRefreshListener(refreshListener: OnRefreshListener)
     fun bindDeviceItems(deviceItems: List<DeviceItem>)
     fun addDeviceItem(deviceItem: DeviceItem)
 }
