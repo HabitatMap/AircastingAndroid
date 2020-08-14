@@ -38,7 +38,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="200dp"
+            android:maxHeight="150dp"
             android:paddingLeft="@dimen/keyline_4"
 
             >
@@ -100,7 +100,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:maxHeight="200dp"
+            android:maxHeight="150dp"
             android:paddingLeft="@dimen/keyline_4" >
             <TextView
                 android:id="@+id/microphone_device_card_header"
