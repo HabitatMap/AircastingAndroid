@@ -46,7 +46,7 @@
                 android:id="@+id/bluetooth_device_card_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/fixed_session_start_title"
+                android:text="@string/bluetooth_device_card_header"
                 android:textAppearance="?attr/textAppearanceHeadline1"
                 android:layout_marginTop="@dimen/keyline_8"
                 android:layout_marginEnd="@dimen/keyline_4"
