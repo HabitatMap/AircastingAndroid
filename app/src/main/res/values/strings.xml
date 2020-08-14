@@ -46,13 +46,16 @@
     <string name="turn_on_airbeam_ready_button">Continue</string>
     <string name="turn_on_airbeam_image_desc">Power on your AirBeam</string>
 
+    <!-- Select device type -->
     <string name="select_device_type_header">What device are you using to record this session?</string>
-    <string name="bluetooth_device_button">Bluetooth device</string>
-    <string name="microphone_button">Phone microphone</string>
+    <string name="bluetooth_device_card_header">Bluetooth device</string>
+    <string name="bluetooth_device_card_body">for example AirBeam</string>
+    <string name="microphone_device_card_header">Phone microphone</string>
+    <string name="microphone_device_card_body">to measure sound level</string>
+    <string name="select_device_type_button">Choose</string>
+
     <string name="airbeam2">AirBeam2</string>
     <string name="select_device_header">Select a device</string>
-
-
     <string name="connecting_airbeam_header">Connecting</string>
     <string name="connecting_airbeam_description">Make sure your AirBeam\'s connection indicator is lit green.</string>
     <string name="airbeam_connected_header">AirBeam connected</string>

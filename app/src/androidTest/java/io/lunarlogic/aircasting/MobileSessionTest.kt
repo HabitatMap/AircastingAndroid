@@ -91,7 +91,7 @@ class MobileSessionTest {
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
 
-        onView(withId(R.id.bluetooth_device_button)).perform(click())
+        onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
@@ -141,7 +141,7 @@ class MobileSessionTest {
         onView(withId(R.id.mobile_session_start_card)).perform(click())
 
         whenever(permissionsManager.audioPermissionsGranted(any())).thenReturn(true)
-        onView(withId(R.id.microphone_button)).perform(click())
+        onView(withId(R.id.select_device_type_microphone_card)).perform(click())
 
         onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile microphone session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
