@@ -80,7 +80,8 @@ class FixedSessionTest {
     fun testFixedOutdoorSessionRecording() {
         settings.setAuthToken("TOKEN")
         stubBluetooth(bluetoothManager)
-        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", "00:18:96:10:70:D6")
+        val airBeamAddress = "00:18:96:10:70:D6"
+        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
 
         testRule.launchActivity(null)
 
@@ -92,7 +93,8 @@ class FixedSessionTest {
 
         onView(allOf(withId(R.id.turn_on_airbeam_ready_button), isDisplayed())).perform(click())
 
-        onView(withText("AirBeam2")).perform(click())
+        onView(withText(containsString(airBeamAddress))).perform(click())
+        onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
 
@@ -140,7 +142,8 @@ class FixedSessionTest {
     fun testFixedIndoorSessionRecording() {
         settings.setAuthToken("TOKEN")
         stubBluetooth(bluetoothManager)
-        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", "00:18:96:10:70:D6")
+        val airBeamAddress = "00:18:96:10:70:D6"
+        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
 
         testRule.launchActivity(null)
 
@@ -152,7 +155,8 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText("AirBeam2")).perform(click())
+        onView(withText(containsString(airBeamAddress))).perform(click())
+        onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
 
@@ -186,10 +190,5 @@ class FixedSessionTest {
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed indoor session")))
         onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
-    }
-
-
-    private fun checkMeasurement(measurementsView: ViewInteraction, measurementString: String) {
-        measurementsView.check(matches(withText(containsString(measurementString))));
     }
 }

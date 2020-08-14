@@ -6,19 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
 
 class SelectDeviceController(
     private val mContext: Context?,
     private val mViewMvc: SelectDeviceViewMvc,
     private val bluetoothManager: BluetoothManager,
     private val mListener: SelectDeviceViewMvc.Listener
-) : BroadcastReceiver() {
+) : BroadcastReceiver(), SelectDeviceViewMvc.OnRefreshListener {
 
     fun onStart() {
         bindDevices()
         registerListener(mListener)
         registerBluetoothDeviceFoundReceiver()
+        mViewMvc.registerOnRefreshListener(this)
         bluetoothManager.startDiscovery()
     }
 
@@ -37,6 +37,11 @@ class SelectDeviceController(
                 device?.let { mViewMvc.addDeviceItem(DeviceItem(it)) }
             }
         }
+    }
+
+    override fun onRefreshClicked() {
+        bluetoothManager.cancelDiscovery()
+        bluetoothManager.startDiscovery()
     }
 
     private fun bindDevices() {

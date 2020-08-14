@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.helpers
 
 import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.mockito.Mockito
 
 fun stubBluetooth(bluetoothManager: BluetoothManager) {

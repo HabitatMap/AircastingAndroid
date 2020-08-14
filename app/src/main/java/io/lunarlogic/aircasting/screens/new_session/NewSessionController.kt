@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.items.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
@@ -159,18 +159,18 @@ class NewSessionController(
         wizardNavigator.goToSelectDevice(bluetoothManager, this)
     }
 
-    override fun onDeviceItemSelected(deviceItem: DeviceItem) {
+    override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
         val listener = this
         GlobalScope.launch(Dispatchers.Main) {
-            var existing: Boolean = false
+            var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
-                existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(deviceItem.id)
+                existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
             }
             query.await()
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
-                wizardNavigator.goToConnectingAirBeam(deviceItem, listener, airBeam2Connector)
+                wizardNavigator.goToConnectingAirBeam(selectedDeviceItem, listener, airBeam2Connector)
             }
         }
     }
