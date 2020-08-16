@@ -80,7 +80,7 @@ class NewSessionController(
                 } else {
                     bluetoothManager.requestBluetoothPermissions()
                 }
-                wizardNavigator.goToTurnOnAirBeam(this)
+                wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
             }
         } catch(exception: BluetoothNotSupportedException) {
@@ -144,7 +144,7 @@ class NewSessionController(
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     LocationHelper.start()
-                    wizardNavigator.goToTurnOnAirBeam(this)
+                    wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)
                 }
