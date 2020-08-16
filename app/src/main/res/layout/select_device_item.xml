@@ -4,40 +4,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    >
+    android:gravity="center_vertical"
+    android:padding="@dimen/keyline_3">
 
     <ImageView
-        android:id="@+id/device_image_airbeam2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_panorama_fish_eye_black_50dp"
-        android:contentDescription="@string/airbeam2"/>
+        android:id="@+id/radio"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_radio" />
 
     <TextView
-        android:id="@+id/device_name"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textAlignment="center"
-        />
-
-    <TextView
-        android:id="@+id/device_address"
+        android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:textSize="18sp"
-        android:textAlignment="center"
-        />
+        android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+        android:layout_marginStart="@dimen/keyline_4"/>
 
 </LinearLayout>

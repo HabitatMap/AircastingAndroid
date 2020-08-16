@@ -4,7 +4,7 @@
     <item android:drawable="@drawable/ic_icon_aircasting"
         android:width="200dp"
         android:height="200dp"
-        android:gravity="right|bottom"
+        android:gravity="end|bottom"
         android:right="@dimen/keyline_8"
         android:bottom="@dimen/keyline_8" />
 </layer-list>

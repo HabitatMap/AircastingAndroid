@@ -82,7 +82,8 @@ class MobileSessionTest {
     fun testBluetoothMobileSessionRecording() {
         settings.setAuthToken("TOKEN")
         stubBluetooth(bluetoothManager)
-        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", "00:18:96:10:70:D6")
+        val airBeamAddress = "00:18:96:10:70:D6"
+        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
 
         testRule.launchActivity(null)
 
@@ -96,7 +97,8 @@ class MobileSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText("AirBeam2")).perform(click())
+        onView(withText(containsString(airBeamAddress))).perform(click())
+        onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
 

@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.new_session.select_device.items
+package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
 
@@ -7,6 +7,10 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     open val address: String
     open val id: String
 
+    companion object {
+        private val AIRBEAM_NAME_REGEX = "airbeam"
+    }
+
     init {
         name = mBluetoothDevice.name?: "Unknown"
         address = mBluetoothDevice.address
@@ -14,4 +18,16 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     }
 
     val bluetoothDevice get() = mBluetoothDevice
+
+    fun displayName(): String {
+        if (isAirBeam()) {
+            return name.split(":", "-").first()
+        }
+
+        return name
+    }
+
+    fun isAirBeam(): Boolean {
+        return name.contains(AIRBEAM_NAME_REGEX, true)
+    }
 }

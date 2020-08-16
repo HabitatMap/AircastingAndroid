@@ -14,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.18"
+        versionName "1.19"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
@@ -72,6 +72,8 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+    implementation "com.xwray:groupie:2.8.1"
+    implementation "com.xwray:groupie-kotlin-android-extensions:2.8.1"
 
     // for google places api
     implementation(name:'places-maps-sdk-3.1.0-beta', ext:'aar')
