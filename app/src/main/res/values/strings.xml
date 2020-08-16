@@ -54,18 +54,19 @@
     <string name="microphone_device_card_body">to measure sound level</string>
     <string name="select_device_type_button">Choose</string>
 
-    <string name="airbeam2">AirBeam2</string>
-
     <!-- New session Step 4 -->
     <string name="select_device_header">Choose the device you\'d like to record with.</string>
     <string name="select_device_airbeams_label">AirBeams</string>
     <string name="select_device_others_label">Others</string>
     <string name="select_device_connect_button">Connect</string>
     <string name="select_device_refresh_button"><u>Don\'t see a device? Refresh scanning.</u></string>
-
-
+  
+    <!--  New session Step 4 - Connecting -->
     <string name="connecting_airbeam_header">Connecting</string>
-    <string name="connecting_airbeam_description">Make sure your AirBeam\'s connection indicator is lit green.</string>
+    <string name="connecting_image_desc">Connecting</string>
+    <string name="connecting_airbeam_description">This should take less than 10 seconds.</string>
+    <string name="airbeam2">AirBeam2</string>
+
     <string name="airbeam_connected_header">AirBeam connected</string>
     <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
     <string name="airbeam_connected_continue_button">Continue</string>
