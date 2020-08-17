@@ -67,15 +67,18 @@
     <string name="select_device_connect_button">Connect</string>
     <string name="select_device_refresh_button"><u>Don\'t see a device? Refresh scanning.</u></string>
   
-    <!--  New session Step 4 - Connecting -->
+    <!--  New session Step 5 - Connecting -->
     <string name="connecting_airbeam_header">Connecting</string>
     <string name="connecting_image_desc">Connecting</string>
     <string name="connecting_airbeam_description">This should take less than 10 seconds.</string>
     <string name="airbeam2">AirBeam2</string>
 
+    <!--  New session Step 6 - Connected -->
     <string name="airbeam_connected_header">AirBeam connected</string>
+    <string name="airbeam_connected_image_desc">AirBeam connected</string>
     <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
     <string name="airbeam_connected_continue_button">Continue</string>
+
     <string name="mobile_session_details_header">New session details</string>
     <string name="session_details_session_name_hint">Session name</string>
     <string name="session_details_session_tags_hint">Tags</string>
