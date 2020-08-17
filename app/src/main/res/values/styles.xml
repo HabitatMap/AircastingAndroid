@@ -130,6 +130,18 @@
         <item name="android:textSize">@dimen/text_size_m</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.NewSessionDetails.Headline1" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_extra_bold</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/text_size_xl</item>
+        <item name="lineHeight">42dp</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.NewSessionDetails.Headline2" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
     <!-- Styles -->
 
     <!-- Buttons -->

@@ -79,6 +79,8 @@
     <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
     <string name="airbeam_connected_continue_button">Continue</string>
 
+    <!-- New session step 7 - Session details -->
+    <string name="fixed_session_details_header">New session details</string>
     <string name="mobile_session_details_header">New session details</string>
     <string name="session_details_session_name_hint">Session name</string>
     <string name="session_details_session_tags_hint">Tags</string>
