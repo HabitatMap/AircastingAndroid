@@ -10,7 +10,7 @@
         android:id="@+id/connected_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/connecting"
+        android:src="@drawable/connected"
         android:contentDescription="@string/airbeam_connected_image_desc"
         android:layout_marginTop="@dimen/keyline_10"
         app:layout_constraintTop_toTopOf="parent"
