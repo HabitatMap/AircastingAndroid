@@ -41,6 +41,12 @@
     <string name="turn_on_bluetooth_ok_button">Continue</string>
 
     <!-- New session Step 2 -->
+    <!-- Mobile -->
+    <string name="power_on_bluetooth_device_header">Power on your Bluetooth device</string>
+    <string name="power_on_bluetooth_device_desc">If using AirBeam2, wait for the connection indicator to change from red to green before continuing.</string>
+    <string name="power_on_bluetooth_device_ready_button">Continue</string>
+    <string name="power_on_bluetooth_device_image_desc">Power on your AirBeam</string>
+    <!-- Fixed -->
     <string name="turn_on_airbeam_header">Power on your AirBeam</string>
     <string name="turn_on_airbeam_description">If using AirBeam2, wait for the connection indicator to change from red to green before continuing.</string>
     <string name="turn_on_airbeam_ready_button">Continue</string>
