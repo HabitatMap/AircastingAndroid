@@ -11,8 +11,8 @@ class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.List
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?, sessionType: Session.Type): super() {
-        val fragment = getFragmentId(sessionType)
-        this.rootView = inflater.inflate(fragment, parent, false)
+        val layoutId = getLayoutId(sessionType)
+        this.rootView = inflater.inflate(layoutId, parent, false)
         val button = rootView?.findViewById<Button>(R.id.turn_on_airbeam_ready_button)
         button?.setOnClickListener {
             onReadyClicked()
@@ -24,7 +24,8 @@ class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.List
             listener.onTurnOnAirBeamReadyClicked()
         }
     }
-    private fun getFragmentId(sessionType: Session.Type): Int {
+    
+    private fun getLayoutId(sessionType: Session.Type): Int {
         return when (sessionType) {
             Session.Type.FIXED -> R.layout.fragment_turn_on_airbeam_fixed
             Session.Type.MOBILE -> R.layout.fragment_turn_on_airbeam_mobile
