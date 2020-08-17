@@ -10,9 +10,8 @@
     <color name="aircasting_grey_500">#949599</color>
     <color name="aircasting_grey_600">#858B93</color>
     <color name="aircasting_grey_700">#737578</color>
-    <color name="session_color_indicator_very_low">#96D788</color>
-    <color name="session_color_indicator_low">#FDD760</color>
-    <color name="session_color_indicator_medium">#F9A342</color>
-    <color name="session_color_indicator_high">#E65F5E</color>
-    <color name="session_color_indicator_very_high">#80003e</color>
+    <color name="session_color_indicator_low">#96D788</color>
+    <color name="session_color_indicator_medium">#FDD760</color>
+    <color name="session_color_indicator_high">#F9A342</color>
+    <color name="session_color_indicator_very_high">#E65F5E</color>
 </resources>

@@ -20,9 +20,10 @@ class Measurement(
                 measurementDBObject.longitude
             )
 
-    fun getLevel(stream: MeasurementStream): Int {
-        if (value <= stream.thresholdVeryLow) return 0
+    fun getLevel(stream: MeasurementStream): Int? {
+        if (value < stream.thresholdVeryLow) return null
+        if (value >= stream.thresholdVeryHigh) return null
 
-        return stream.levels.indexOfLast { level -> value > level }
+        return stream.levels.indexOfLast { level -> value >= level }
     }
 }

@@ -15,7 +15,6 @@ import io.lunarlogic.aircasting.sensor.Session
 
 abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<ListenerType> {
     private val LEVEL_COLORS_IDS = arrayOf(
-        R.color.session_color_indicator_very_low,
         R.color.session_color_indicator_low,
         R.color.session_color_indicator_medium,
         R.color.session_color_indicator_high,
@@ -66,14 +65,18 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
             circleView.visibility = View.GONE
         } else {
             valueTextView.text = measurementValueString(measurement, stream)
-            circleView.setColorFilter(getColor(measurement, stream))
+            val level = measurement.getLevel(stream)
+            if (level == null) {
+                circleView.visibility = View.GONE
+            } else {
+                circleView.setColorFilter(getColor(level))
+            }
         }
 
         mMeasurementValues.addView(valueView)
     }
 
-    private fun getColor(measurement: Measurement, stream: MeasurementStream): Int {
-        val level = measurement.getLevel(stream)
+    private fun getColor(level: Int): Int {
         val colorId = LEVEL_COLORS_IDS[level]
         return ResourcesCompat.getColor(context.resources, colorId, null)
     }

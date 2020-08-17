@@ -30,7 +30,7 @@ class MeasurementTest {
         )
 
         var measurement = Measurement(0.0, Date())
-        assertEquals(0, measurement.getLevel(stream))
+        assertEquals(null, measurement.getLevel(stream))
 
         measurement = Measurement(1.0, Date())
         assertEquals(0, measurement.getLevel(stream))
@@ -48,6 +48,6 @@ class MeasurementTest {
         assertEquals(3, measurement.getLevel(stream))
 
         measurement = Measurement(200.0, Date())
-        assertEquals(4, measurement.getLevel(stream))
+        assertEquals(null, measurement.getLevel(stream))
     }
 }
