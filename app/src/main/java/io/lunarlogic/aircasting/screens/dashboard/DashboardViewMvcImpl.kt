@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
-import io.lunarlogic.aircasting.sensor.Session
 
 class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
     private val mPager: ViewPager?

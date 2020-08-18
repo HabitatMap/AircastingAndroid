@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
+import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,6 +91,8 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
 
         fun showLoader() {
+            val animatable: Animatable? = mLoader?.drawable as? Animatable
+            animatable?.start()
             mLoader?.visibility = View.VISIBLE
             hideRefreshButton()
 
