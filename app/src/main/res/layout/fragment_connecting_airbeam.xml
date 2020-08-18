@@ -8,13 +8,22 @@
 
     <ImageView
         android:id="@+id/connecting_image"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/connecting"
         android:contentDescription="@string/connecting_image_desc"
         android:layout_marginTop="@dimen/keyline_10"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        />
+    <ImageView
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_loader_big"
+        app:layout_constraintBottom_toBottomOf="@+id/connecting_image"
+        app:layout_constraintEnd_toEndOf="@+id/connecting_image"
         />
     <TextView
         android:id="@+id/connecting_airbeam_header"
