@@ -19,7 +19,11 @@ class FollowingSessionViewMvcImpl:
         supportFragmentManager: FragmentManager
     ): super(inflater, parent, supportFragmentManager) {
         val actionsView = this.rootView?.findViewById<ImageView>(R.id.session_actions_button)
-        actionsView?.visibility = View.INVISIBLE
+        actionsView?.visibility = View.GONE
+    }
+
+    override fun layoutId(): Int {
+        return R.layout.active_session
     }
 
     override fun buildBottomSheet(): BottomSheet? {
