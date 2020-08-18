@@ -5,13 +5,18 @@
     <color name="aircasting_pink">#D81B60</color>
     <color name="aircasting_white">#FFFFFF</color>
     <color name="aircasting_blue_50">#26E0F0FF</color>
-    <color name="aircasting_grey_50">#EAECF2</color>
+    <color name="aircasting_grey_50">#55F1F4F4</color>
+    <color name="aircasting_grey_100">#EAECF2</color>
+    <color name="aircasting_grey_300">#CACCCC</color>
     <color name="aircasting_grey_400">#A1A2A6</color>
     <color name="aircasting_grey_500">#949599</color>
     <color name="aircasting_grey_600">#858B93</color>
     <color name="aircasting_grey_700">#737578</color>
+
     <color name="session_color_indicator_low">#96D788</color>
     <color name="session_color_indicator_medium">#FDD760</color>
     <color name="session_color_indicator_high">#F9A342</color>
     <color name="session_color_indicator_very_high">#E65F5E</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color">@color/aircasting_grey_100</color>
 </resources>

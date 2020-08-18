@@ -103,7 +103,6 @@
 
     <!-- New session typography -->
 
-
     <!-- Cards -->
     <style name="TextAppearance.Aircasting.Cards.Headline1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_bold</item>
@@ -142,6 +141,19 @@
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:textSize">@dimen/text_size_m</item>
     </style>
+
+    <style name="TextAppearance.Aircasting.NewSessionDetails.Hint" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_500</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.NewSessionDetails.Text" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->
@@ -273,4 +285,26 @@
         <item name="android:textColor">@color/aircasting_dark_blue</item>
     </style>
 
+    <!-- New session details -->
+    <style name="Widget.Aircasting.NewSessionDetails.TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/aircasting_grey_50</item>
+        <item name="boxStrokeColor">@color/aircasting_grey_100</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="android:strokeColor">@color/aircasting_grey_100</item>
+        <item name="hintTextAppearance">@style/TextAppearance.Aircasting.NewSessionDetails.Hint</item>
+        <item name="shapeAppearance">@style/Widget.Aircasting.TextInputShapeAppearance</item>
+    </style>
+
+    <style name="Widget.Aircasting.NewSessionDetails.TextInputEditText" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.NewSessionDetails.Text</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+    </style>
+
+    <style name="Widget.Aircasting.TextInputShapeAppearance" parent="">
+        <item name="cornerFamilyTopLeft">cut</item>
+        <item name="cornerFamilyBottomLeft">cut</item>
+        <item name="cornerFamilyTopRight">cut</item>
+        <item name="cornerFamilyBottomRight">cut</item>
+        <item name="cornerSize">0dp</item>
+    </style>
 </resources>

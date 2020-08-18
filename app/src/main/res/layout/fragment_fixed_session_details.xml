@@ -23,29 +23,53 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/session_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/session_details_session_name_hint"
+            app:hintEnabled="false"
+            style="@style/Widget.Aircasting.NewSessionDetails.TextInputLayout"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/session_details_header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent">
 
-        <EditText
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:hint="@string/session_details_session_name_hint"
+                android:textAppearance="@style/TextAppearance.Aircasting.NewSessionDetails.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/session_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/session_details_session_tags_hint"
+            app:hintEnabled="false"
+            style="@style/Widget.Aircasting.NewSessionDetails.TextInputLayout"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/session_name"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:hint="@string/session_details_session_tags_hint"
+                android:textAppearance="@style/TextAppearance.Aircasting.NewSessionDetails.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/indoor_toggle_header"
