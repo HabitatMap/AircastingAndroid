@@ -27,6 +27,7 @@
             android:id="@+id/session_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/session_details_session_name_hint"
             app:hintEnabled="false"
             style="@style/Widget.Aircasting.NewSessionDetails.TextInputLayout"
             android:layout_marginTop="@dimen/keyline_6"
@@ -37,6 +38,7 @@
             app:layout_constraintRight_toRightOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/session_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
@@ -61,6 +63,7 @@
             app:layout_constraintRight_toRightOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/session_tags_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
