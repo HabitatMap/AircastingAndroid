@@ -28,6 +28,7 @@ class FakeAirBeam2Connector(
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         override fun run() {
+            sleep(3000) // we need to wait a bit, to test connecting screen properly
             listener.onConnectionSuccessful(deviceItem.id)
 
             while (true) {
