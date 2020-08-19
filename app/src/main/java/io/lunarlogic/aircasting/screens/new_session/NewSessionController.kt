@@ -61,7 +61,7 @@ class NewSessionController(
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
 
-    fun onStart() {
+    fun onCreate() {
         when (sessionType) {
             Session.Type.FIXED -> onFixedSessionSelected()
             Session.Type.MOBILE -> onMobileSessionSelected()
@@ -180,7 +180,7 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {
-        wizardNavigator.goToSessionDetails(sessionType!!, deviceId, this)
+        wizardNavigator.goToSessionDetails(sessionType, deviceId, this)
     }
 
     override fun validationFailed(errorMessage: String) {

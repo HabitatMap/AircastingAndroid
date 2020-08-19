@@ -86,6 +86,7 @@ class NewSessionActivity : AppCompatActivity(),
             sessionBuilder,
             sessionType
         )
+        controller.onCreate()
 
         setContentView(view.rootView)
         setSupportActionBar(findViewById(R.id.new_session_toolbar))
@@ -111,11 +112,6 @@ class NewSessionActivity : AppCompatActivity(),
 
     override fun audioPermissionsGranted(permissionsManager: PermissionsManager): Boolean {
         return permissionsManager.audioPermissionsGranted(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        controller.onStart()
     }
 
     override fun onBackPressed() {
