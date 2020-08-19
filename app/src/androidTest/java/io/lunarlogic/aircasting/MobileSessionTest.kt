@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -119,16 +120,23 @@ class MobileSessionTest {
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        onView(withId(R.id.session_actions_button)).perform(click())
-
-        Thread.sleep(4000)
-
-        onView(withId(R.id.stop_session_button)).perform(click())
+        try {
+            stopSession()
+        } catch(e: NoMatchingViewException) {
+            // retry...
+            stopSession()
+        }
 
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
+    }
+
+    private fun stopSession() {
+        onView(withId(R.id.session_actions_button)).perform(click())
+        Thread.sleep(1000)
+        onView(withId(R.id.stop_session_button)).perform(click())
     }
 
     @Test
