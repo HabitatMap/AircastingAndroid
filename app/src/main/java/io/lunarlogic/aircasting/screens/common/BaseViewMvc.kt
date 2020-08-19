@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.common
 import android.content.Context
 import android.view.View
 import android.widget.EditText
+import com.google.android.material.textfield.TextInputEditText
 
 abstract class BaseViewMvc : ViewMvc {
 
@@ -20,8 +21,13 @@ abstract class BaseViewMvc : ViewMvc {
         return rootView?.context?.getString(id)
     }
 
-    protected fun getInputValue(id: Int): String {
+    protected fun getEditTextValue(id: Int): String {
         val field = rootView?.findViewById<EditText>(id)
+        return field?.text.toString().trim()
+    }
+
+    protected fun getTextInputEditTextValue(id: Int): String {
+        val field = rootView?.findViewById<TextInputEditText>(id)
         return field?.text.toString().trim()
     }
 }

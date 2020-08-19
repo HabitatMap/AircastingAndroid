@@ -141,7 +141,7 @@ class NewSessionWizardNavigator(
             // for first step
             fragmentTransaction.replace(container, fragment)
         } else {
-            fragmentTransaction.add(container, fragment)
+            fragmentTransaction.replace(container, fragment)
             fragmentTransaction.addToBackStack(null)
         }
 

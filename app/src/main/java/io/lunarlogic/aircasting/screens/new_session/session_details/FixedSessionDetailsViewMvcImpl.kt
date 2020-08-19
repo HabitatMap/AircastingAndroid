@@ -50,10 +50,10 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getInputValue(R.id.session_name)
+        val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
-        val wifiName = getInputValue(R.id.wifi_name)
-        val wifiPassword = getInputValue(R.id.wifi_password)
+        val wifiName = getEditTextValue(R.id.wifi_name)
+        val wifiPassword = getEditTextValue(R.id.wifi_password)
 
         val errorMessage = validate(sessionName, wifiName, wifiPassword)
 
@@ -92,7 +92,7 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
     }
 
     private fun getSessionTags(): ArrayList<String> {
-        val string = getInputValue(R.id.session_tags)
+        val string = getTextInputEditTextValue(R.id.session_tags_input)
         return ArrayList(string.split(TAGS_SEPARATOR))
     }
 

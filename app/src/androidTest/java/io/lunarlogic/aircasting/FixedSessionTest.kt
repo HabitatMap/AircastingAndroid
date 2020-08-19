@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -97,12 +96,14 @@ class FixedSessionTest {
         onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
+        // should be connected by this time
+        Thread.sleep(4000)
 
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed outdoor session"))
-        onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
+        onView(withId(R.id.session_name_input)).perform(typeText("Ania's fixed outdoor session"))
+        onView(withId(R.id.session_tags_input)).perform(typeText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
 
         // change to outdoor
@@ -114,9 +115,9 @@ class FixedSessionTest {
         onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
         onView(withId(R.id.continue_button)).perform(scrollTo())
 
-        onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
+        onView(withId(R.id.wifi_name)).perform(typeText("WIFI-SSID"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
+        onView(withId(R.id.wifi_password)).perform(typeText("secret"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
@@ -159,12 +160,14 @@ class FixedSessionTest {
         onView(withId(R.id.connect_button)).perform(click())
 
         onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
+        // should be connected by this time
+        Thread.sleep(4000)
 
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's fixed indoor session"))
-        onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
+        onView(withId(R.id.session_name_input)).perform(typeText("Ania's fixed indoor session"))
+        onView(withId(R.id.session_tags_input)).perform(typeText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
 
         // not touching indoor_toogle - default is indoor
@@ -174,9 +177,9 @@ class FixedSessionTest {
 
         onView(withId(R.id.streaming_method_toggle)).perform(click())
         onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
-        onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
+        onView(withId(R.id.wifi_name)).perform(typeText("WIFI-SSID"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
+        onView(withId(R.id.wifi_password)).perform(typeText("secret"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
