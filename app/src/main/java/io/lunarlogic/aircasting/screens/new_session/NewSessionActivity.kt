@@ -20,7 +20,6 @@ import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
-import kotlinx.android.synthetic.main.activity_new_session.view.*
 import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity(),
