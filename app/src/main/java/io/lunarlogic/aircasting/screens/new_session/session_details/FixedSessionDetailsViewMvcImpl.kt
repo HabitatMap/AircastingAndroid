@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
+import com.google.android.material.button.MaterialButtonToggleGroup
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Session
@@ -30,16 +31,16 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
             onSessionDetailsContinueClicked()
         }
 
-        val indoorToggle = rootView?.findViewById<Switch>(R.id.indoor_toggle)
-        indoorToggle?.setOnCheckedChangeListener { _, isChecked ->
-            indoor = isChecked
+        val indoorToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.indoor_toggle)
+        indoorToggle?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            indoor = (checkedId == R.id.indoor_button && isChecked)
         }
 
         val wifiCredentialsSection = rootView?.findViewById<ViewGroup>(R.id.wifi_credentials)
 
-        val streamingMethofToggle = rootView?.findViewById<Switch>(R.id.streaming_method_toggle)
-        streamingMethofToggle?.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
+        val streamingMethofToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.streaming_method_toggle)
+        streamingMethofToggle?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (checkedId == R.id.cellular_button && isChecked) {
                 streamingMethod = Session.StreamingMethod.CELLULAR
                 wifiCredentialsSection?.visibility = View.INVISIBLE
             } else {
