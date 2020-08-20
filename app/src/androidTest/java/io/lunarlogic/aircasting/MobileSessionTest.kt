@@ -107,6 +107,7 @@ class MobileSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
+        // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile bluetooth session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
@@ -154,6 +155,7 @@ class MobileSessionTest {
         whenever(permissionsManager.audioPermissionsGranted(any())).thenReturn(true)
         onView(withId(R.id.select_device_type_microphone_card)).perform(click())
 
+        // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile microphone session"))
         onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()

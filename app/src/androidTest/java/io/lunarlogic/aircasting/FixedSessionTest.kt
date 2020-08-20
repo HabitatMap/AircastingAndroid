@@ -102,8 +102,9 @@ class FixedSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name_input)).perform(typeText("Ania's fixed outdoor session"))
-        onView(withId(R.id.session_tags_input)).perform(typeText("tag1 tag2"))
+        // replaceText is needed here to go around autocorrect...
+        onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed outdoor session"))
+        onView(withId(R.id.session_tags_input)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
 
         // change to outdoor
@@ -115,9 +116,9 @@ class FixedSessionTest {
         onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
         onView(withId(R.id.continue_button)).perform(scrollTo())
 
-        onView(withId(R.id.wifi_name)).perform(typeText("WIFI-SSID"))
+        onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.wifi_password)).perform(typeText("secret"))
+        onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
@@ -166,8 +167,9 @@ class FixedSessionTest {
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
-        onView(withId(R.id.session_name_input)).perform(typeText("Ania's fixed indoor session"))
-        onView(withId(R.id.session_tags_input)).perform(typeText("tag1 tag2"))
+        // replaceText is needed here to go around autocorrect...
+        onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed indoor session"))
+        onView(withId(R.id.session_tags_input)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
 
         // not touching indoor_toogle - default is indoor
@@ -177,9 +179,9 @@ class FixedSessionTest {
 
         onView(withId(R.id.streaming_method_toggle)).perform(click())
         onView(withId(R.id.wifi_credentials)).check(matches(isDisplayed()))
-        onView(withId(R.id.wifi_name)).perform(typeText("WIFI-SSID"))
+        onView(withId(R.id.wifi_name)).perform(replaceText("WIFI-SSID"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.wifi_password)).perform(typeText("secret"))
+        onView(withId(R.id.wifi_password)).perform(replaceText("secret"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
