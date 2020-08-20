@@ -159,6 +159,14 @@
         <item name="android:textSize">@dimen/text_size_m</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.NewSessionDetails.Network" parent="@style/TextAppearance.Aircasting.Body2">
+        <item name="android:textColor">@color/aircasting_grey_500</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.NewSessionDetails.SelectedNetwork" parent="@style/TextAppearance.Aircasting.NewSessionDetails.Network">
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->

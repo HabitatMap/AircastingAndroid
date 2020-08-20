@@ -18,4 +18,6 @@ interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listen
         )
         fun validationFailed(errorMessage: String)
     }
+
+    fun bindNetworks(networks: List<Network>)
 }

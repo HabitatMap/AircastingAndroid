@@ -158,35 +158,34 @@
                 style="@style/Widget.Aircasting.ToggleButton" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/wifi_credentials"
-            android:background="@android:color/white"
+        <TextView
+            android:id="@+id/networks_list_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@id/streaming_method_toggle">
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline2"
+            android:textSize="@dimen/body2_text_size"
+            android:text="@string/fixed_session_details_networks_list_header"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/streaming_method_toggle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
-            <EditText
-                android:id="@+id/wifi_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/fixed_session_details_wifi_name_hint"
-                android:layout_margin="20dp"
-                app:layout_constraintTop_toTopOf="@id/wifi_credentials"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-
-            <EditText
-                android:id="@+id/wifi_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="@string/fixed_session_details_wifi_password_hint"
-                android:layout_margin="20dp"
-                app:layout_constraintTop_toBottomOf="@id/wifi_name"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/networks_list"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/keyline_4"
+            android:layout_marginBottom="@dimen/keyline_4"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
+            app:layout_constraintBottom_toTopOf="@+id/continue_button" />
 
         <Button
             android:id="@+id/continue_button"

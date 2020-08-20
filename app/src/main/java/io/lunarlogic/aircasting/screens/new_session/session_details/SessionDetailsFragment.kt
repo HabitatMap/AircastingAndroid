@@ -27,6 +27,7 @@ class SessionDetailsFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         listener.let { controller.registerListener(it) }
+        controller.bindNetworks(listOf(Network("slimaki-guest"), Network("slimaki"), Network("other")))
     }
 
     override fun onStop() {

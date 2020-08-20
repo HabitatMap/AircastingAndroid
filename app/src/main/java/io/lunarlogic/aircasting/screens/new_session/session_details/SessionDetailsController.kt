@@ -14,4 +14,8 @@ class SessionDetailsController(
     fun unregisterListener(listener: SessionDetailsViewMvc.Listener) {
         mViewMvc.unregisterListener(listener)
     }
+
+    fun bindNetworks(networks: List<Network>) {
+        mViewMvc.bindNetworks(networks)
+    }
 }
