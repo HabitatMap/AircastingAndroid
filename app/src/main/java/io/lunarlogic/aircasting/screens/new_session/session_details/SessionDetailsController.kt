@@ -15,5 +15,5 @@ open class SessionDetailsController(
         mViewMvc.unregisterListener(listener)
     }
 
-    open fun onStart() {}
+    open fun onCreate() {}
 }

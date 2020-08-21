@@ -20,6 +20,7 @@ class SessionDetailsFragment() : Fragment() {
     ): View? {
         val view = SessionDetailsViewFactory.get(inflater, container, deviceId, sessionType)
         controller = SessionDetailsControllerFactory.get(context, view, sessionType)
+        controller.onCreate()
 
         return view.rootView
     }
@@ -27,7 +28,6 @@ class SessionDetailsFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         listener.let { controller.registerListener(it) }
-        controller.onStart()
     }
 
     override fun onStop() {

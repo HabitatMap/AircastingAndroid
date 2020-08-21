@@ -28,10 +28,10 @@ class FixedSessionDetailsController(
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onCreate() {
+        super.onCreate()
         registerNetworksReceiver()
-        mWifiManager = mContext?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager;
+        mWifiManager = mContext?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
         mWifiManager?.startScan()
     }
 

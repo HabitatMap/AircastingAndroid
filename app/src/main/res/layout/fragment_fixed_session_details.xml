@@ -160,7 +160,7 @@
 
         <TextView
             android:id="@+id/networks_list_header"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline2"
             android:textSize="@dimen/body2_text_size"
@@ -170,8 +170,32 @@
             android:layout_marginEnd="@dimen/keyline_8"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/streaming_method_toggle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/refresh_network_list_button" />
+
+        <Button
+            android:id="@+id/refresh_network_list_button"
+            style="@style/Widget.Aircasting.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fixed_session_details_refresh_networks_list_button"
+            android:textSize="12sp"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/networks_list"/>
+
+        <ImageView
+            android:id="@+id/networks_list_loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_loader"
+            android:tint="@color/aircasting_blue_400"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_8"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
+            app:layout_constraintBottom_toTopOf="@+id/continue_button" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/networks_list"
@@ -189,15 +213,15 @@
 
         <Button
             android:id="@+id/continue_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/session_details_continue_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/networks_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
