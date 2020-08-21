@@ -1,10 +1,12 @@
 package io.lunarlogic.aircasting.screens.new_session.session_details
 
+import android.content.res.Resources
 import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -15,7 +17,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
-import kotlinx.android.synthetic.main.select_device_item.view.*
+import kotlinx.android.synthetic.main.network_list_item.view.*
 
 
 class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, FixedSessionDetailsViewMvc {
@@ -29,6 +31,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var networksRecyclerView: RecyclerView? = null
     private val networksRecyclerViewAdapter: GroupAdapter<GroupieViewHolder>
     private var networksRefreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener? = null
+    private var selectedNetworkItem: RecyclerViewNetworkItem? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -53,7 +56,8 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         networksRecyclerView?.setLayoutManager(LinearLayoutManager(rootView!!.context))
         networksRecyclerViewAdapter = GroupAdapter()
         networksRecyclerViewAdapter.setOnItemClickListener { item, view ->
-
+            val networkItem = item as? RecyclerViewNetworkItem
+            networkItem?.let { onNetworkItemClicked(it) }
         }
         networksRecyclerView?.setAdapter(networksRecyclerViewAdapter)
 
@@ -105,11 +109,29 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         networksRecyclerView?.visibility = View.GONE
     }
 
-    inner class RecyclerViewNetworkItem(val network: Network) : Item<GroupieViewHolder>() {
+    inner class RecyclerViewNetworkItem(val network: Network, var selected: Boolean = false) : Item<GroupieViewHolder>() {
         override fun getLayout() = R.layout.network_list_item
 
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             viewHolder.itemView.label.text = network.name
+
+            if (selected) {
+                setSelectedNetworkItemStyles(viewHolder)
+            } else {
+                setDefaultNetworkItemStyles(viewHolder)
+            }
+        }
+
+        private fun setSelectedNetworkItemStyles(viewHolder: GroupieViewHolder) {
+            viewHolder.itemView.check_icon.visibility = View.VISIBLE
+            viewHolder.itemView.label.typeface = ResourcesCompat.getFont(context, R.font.moderat_trial_bold)
+            viewHolder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.selected_network_item_background, context.theme)
+        }
+
+        private fun setDefaultNetworkItemStyles(viewHolder: GroupieViewHolder) {
+            viewHolder.itemView.check_icon.visibility = View.INVISIBLE
+            viewHolder.itemView.label.typeface = ResourcesCompat.getFont(context, R.font.moderat_trial_regular)
+            viewHolder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.network_item_background, context.theme)
         }
     }
 
@@ -124,6 +146,15 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
         networkListLoaded = true
         showNetworksList()
+    }
+
+    private fun onNetworkItemClicked(networkItem: RecyclerViewNetworkItem) {
+        selectedNetworkItem?.selected = false
+
+        selectedNetworkItem = networkItem
+        selectedNetworkItem?.selected = true
+
+        networksRecyclerViewAdapter.notifyDataSetChanged()
     }
 
     private fun onSessionDetailsContinueClicked() {

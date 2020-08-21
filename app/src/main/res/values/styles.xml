@@ -163,10 +163,6 @@
         <item name="android:textColor">@color/aircasting_grey_500</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.NewSessionDetails.SelectedNetwork" parent="@style/TextAppearance.Aircasting.NewSessionDetails.Network">
-        <item name="android:fontFamily">@font/moderat_trial_bold</item>
-    </style>
-
     <!-- Styles -->
 
     <!-- Buttons -->
