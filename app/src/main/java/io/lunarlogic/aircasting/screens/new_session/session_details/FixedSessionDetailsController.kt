@@ -8,8 +8,8 @@ import android.net.wifi.WifiManager
 
 class FixedSessionDetailsController(
     private val mContext: Context?,
-    private val mViewMvc: SessionDetailsViewMvc
-): SessionDetailsController(mContext, mViewMvc) {
+    private val mViewMvc: FixedSessionDetailsViewMvc
+): SessionDetailsController(mContext, mViewMvc), FixedSessionDetailsViewMvc.OnRefreshNetworksListener {
 
     private var mWifiManager: WifiManager? = null
 
@@ -32,6 +32,16 @@ class FixedSessionDetailsController(
         super.onCreate()
         registerNetworksReceiver()
         mWifiManager = mContext?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+        scanForNetworks()
+
+        mViewMvc.registerOnRefreshNetworksListener(this)
+    }
+
+    override fun onRefreshClicked() {
+        scanForNetworks()
+    }
+
+    private fun scanForNetworks() {
         mWifiManager?.startScan()
     }
 

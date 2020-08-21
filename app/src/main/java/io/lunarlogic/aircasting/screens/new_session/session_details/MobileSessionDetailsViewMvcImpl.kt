@@ -26,10 +26,6 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         }
     }
 
-    override fun bindNetworks(networks: List<Network>) {
-        // do nothing
-    }
-
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getEditTextValue(R.id.session_name)
         val sessionTags = getSessionTags()

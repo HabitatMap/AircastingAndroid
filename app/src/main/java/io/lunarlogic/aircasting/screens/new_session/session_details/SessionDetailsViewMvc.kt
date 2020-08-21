@@ -4,7 +4,7 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 import io.lunarlogic.aircasting.sensor.Session
 
 
-interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listener> {
+interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listener> {
     interface Listener {
         fun onSessionDetailsContinueClicked(
             deviceId: String,
@@ -18,6 +18,4 @@ interface SessionDetailsViewMvc : ObservableViewMvc<SessionDetailsViewMvc.Listen
         )
         fun validationFailed(errorMessage: String)
     }
-
-    fun bindNetworks(networks: List<Network>)
 }

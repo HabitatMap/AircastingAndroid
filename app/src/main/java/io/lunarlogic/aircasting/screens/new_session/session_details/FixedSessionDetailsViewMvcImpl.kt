@@ -13,14 +13,12 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.select_device_item.view.*
 
 
-class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
+class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, FixedSessionDetailsViewMvc {
     private var deviceId: String
     private var indoor = true
     private var streamingMethod = Session.StreamingMethod.CELLULAR
@@ -30,6 +28,7 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
     private var networkListLoader: ImageView? = null
     private var networksRecyclerView: RecyclerView? = null
     private val networksRecyclerViewAdapter: GroupAdapter<GroupieViewHolder>
+    private var networksRefreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -46,6 +45,9 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
 
         networksHeaderView = rootView?.findViewById(R.id.networks_list_header)
         refreshNetworksListButton = rootView?.findViewById(R.id.refresh_network_list_button)
+        refreshNetworksListButton?.setOnClickListener {
+            onRefreshNetworksListClicked()
+        }
         networkListLoader = rootView?.findViewById(R.id.networks_list_loader)
         networksRecyclerView = rootView?.findViewById(R.id.networks_list)
         networksRecyclerView?.setLayoutManager(LinearLayoutManager(rootView!!.context))
@@ -78,13 +80,22 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
             refreshNetworksListButton?.visibility = View.VISIBLE
             networkListLoader?.visibility = View.GONE
         } else {
-            networkListLoader?.visibility = View.VISIBLE
-            networksRecyclerView?.visibility = View.INVISIBLE
-
-            val animatable: Animatable? = networkListLoader?.drawable as? Animatable
-            animatable?.start()
+            startLoading()
         }
         networksHeaderView?.visibility = View.VISIBLE
+    }
+
+    private fun startLoading() {
+        networkListLoader?.visibility = View.VISIBLE
+        networksRecyclerView?.visibility = View.INVISIBLE
+
+        val animatable: Animatable? = networkListLoader?.drawable as? Animatable
+        animatable?.start()
+    }
+
+    private fun onRefreshNetworksListClicked() {
+        startLoading()
+        networksRefreshListener?.onRefreshClicked()
     }
 
     private fun hideNetworksList() {
@@ -100,6 +111,10 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             viewHolder.itemView.label.text = network.name
         }
+    }
+
+    override fun registerOnRefreshNetworksListener(refreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener) {
+        networksRefreshListener = refreshListener
     }
 
     override fun bindNetworks(networks: List<Network>) {

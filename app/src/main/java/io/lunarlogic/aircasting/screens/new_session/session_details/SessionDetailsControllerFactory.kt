@@ -12,7 +12,7 @@ class SessionDetailsControllerFactory {
         ): SessionDetailsController {
             return when(sessionType) {
                 Session.Type.MOBILE -> SessionDetailsController(context, view)
-                Session.Type.FIXED -> FixedSessionDetailsController(context, view)
+                Session.Type.FIXED -> FixedSessionDetailsController(context, view as FixedSessionDetailsViewMvcImpl)
             }
         }
     }
