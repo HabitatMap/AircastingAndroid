@@ -19,7 +19,7 @@ class SessionDetailsFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = SessionDetailsViewFactory.get(inflater, container, deviceId, sessionType)
-        controller = SessionDetailsController(context, view)
+        controller = SessionDetailsControllerFactory.get(context, view, sessionType)
 
         return view.rootView
     }
@@ -27,7 +27,7 @@ class SessionDetailsFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         listener.let { controller.registerListener(it) }
-        controller.bindNetworks(listOf(Network("slimaki-guest"), Network("slimaki"), Network("other")))
+        controller.onStart()
     }
 
     override fun onStop() {

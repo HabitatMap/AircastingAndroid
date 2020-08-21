@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session.session_details
 
 import android.content.Context
 
-class SessionDetailsController(
+open class SessionDetailsController(
     private val mContext: Context?,
     private val mViewMvc: SessionDetailsViewMvc
 ) {
@@ -15,7 +15,5 @@ class SessionDetailsController(
         mViewMvc.unregisterListener(listener)
     }
 
-    fun bindNetworks(networks: List<Network>) {
-        mViewMvc.bindNetworks(networks)
-    }
+    open fun onStart() {}
 }

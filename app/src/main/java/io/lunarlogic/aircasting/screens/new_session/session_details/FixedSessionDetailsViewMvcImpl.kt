@@ -89,6 +89,7 @@ class FixedSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewM
 
     override fun bindNetworks(networks: List<Network>) {
         val networkItems = networks.map { RecyclerViewNetworkItem(it) }
+        networksRecyclerViewAdapter.clear()
         networksRecyclerViewAdapter.addAll(networkItems)
     }
 
