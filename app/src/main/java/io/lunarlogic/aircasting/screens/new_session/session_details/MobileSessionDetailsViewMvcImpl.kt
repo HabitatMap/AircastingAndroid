@@ -27,7 +27,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getEditTextValue(R.id.session_name)
+        val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
 
         val errorMessage = validate(sessionName)
@@ -52,7 +52,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     }
 
     private fun getSessionTags(): ArrayList<String> {
-        val string = getEditTextValue(R.id.session_tags)
+        val string = getTextInputEditTextValue(R.id.session_tags_input)
         return ArrayList(string.split(TAGS_SEPARATOR))
     }
 
