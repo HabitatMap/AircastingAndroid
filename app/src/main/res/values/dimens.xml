@@ -26,6 +26,7 @@
     <dimen name="text_size_xl">24sp</dimen>
     <dimen name="text_size_l">20sp</dimen>
     <dimen name="text_size_m">18sp</dimen>
+    <dimen name="text_size_s">16sp</dimen>
 
     <dimen name="action_bar_size">100dp</dimen>
     <dimen name="app_bar_padding">20dp</dimen>

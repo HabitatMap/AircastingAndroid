@@ -137,11 +137,8 @@ class NewSessionWizardNavigator(
         val fragmentTransaction = mFragmentManager.beginTransaction()
         val container = R.id.new_session_fragment_container
 
-        if (currentProgressStep == 1) {
-            // for first step
-            fragmentTransaction.replace(container, fragment)
-        } else {
-            fragmentTransaction.replace(container, fragment)
+        fragmentTransaction.replace(container, fragment)
+        if (currentProgressStep > 1) {
             fragmentTransaction.addToBackStack(null)
         }
 

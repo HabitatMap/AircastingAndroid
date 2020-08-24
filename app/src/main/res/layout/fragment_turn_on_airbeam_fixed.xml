@@ -1,59 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    android:id="@+id/confirmation"
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/turn_on_airbeam_image"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/sync_step3"
-        android:contentDescription="@string/turn_on_airbeam_image_desc"
-        android:layout_marginTop="@dimen/keyline_10"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/turn_on_airbeam_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        android:text="@string/turn_on_airbeam_header"
-        android:layout_marginTop="@dimen/keyline_8"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@+id/turn_on_airbeam_image"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <ImageView
+            android:id="@+id/turn_on_airbeam_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sync_step3"
+            android:contentDescription="@string/turn_on_airbeam_image_desc"
+            android:layout_marginTop="@dimen/keyline_10"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
-    <TextView
-        android:id="@+id/turn_on_airbeam_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
-        android:text="@string/turn_on_airbeam_description"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/turn_on_airbeam_header"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <TextView
+            android:id="@+id/turn_on_airbeam_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
+            android:text="@string/turn_on_airbeam_header"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            app:layout_constraintTop_toBottomOf="@+id/turn_on_airbeam_image"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
-    <Button
-        android:id="@+id/turn_on_airbeam_ready_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginTop="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_10"
-        android:text="@string/turn_on_airbeam_ready_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <TextView
+            android:id="@+id/turn_on_airbeam_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
+            android:text="@string/turn_on_airbeam_description"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            app:layout_constraintTop_toBottomOf="@id/turn_on_airbeam_header"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/turn_on_airbeam_ready_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_10"
+            android:text="@string/turn_on_airbeam_ready_button"
+            app:layout_constraintTop_toBottomOf="@id/turn_on_airbeam_description"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
