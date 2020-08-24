@@ -99,12 +99,12 @@
 
     <string name="session_confirmation_header">Are you ready?</string>
     <string name="session_confirmation_start_recording_button">Start recording</string>
-    <string name="mobile_session_confirmation_description">Your mobile session %1$s is ready to start gathering data.</string>
+    <string name="mobile_session_confirmation_description">Your mobile session <b>%1$s</b> is ready to start gathering data.</string>
     <string name="mobile_session_confirmation_instructions">Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.</string>
     <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
     <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
     <string name="fixed_session_choose_location_continue_button">Continue</string>
-    <string name="fixed_session_confirmation_description">Your fixed session %1$s is ready to start gathering data.</string>
+    <string name="fixed_session_confirmation_description">Your fixed session <b>%1$s</b> is ready to start gathering data.</string>
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
     <string name="errors_bluetooth_required">Bluetooth and location services are required to continue</string>
     <string name="errors_audio_required">Audio and location permissions are required to continue</string>
