@@ -24,13 +24,15 @@ class FixedSessionDetailsController(
                     mViewMvc.bindNetworks(networkList)
                 }
             }
+
+            mContext?.unregisterReceiver(this)
         }
 
     }
 
     override fun onCreate() {
         super.onCreate()
-        registerNetworksReceiver()
+
         mWifiManager = mContext?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
         scanForNetworks()
 
@@ -42,6 +44,7 @@ class FixedSessionDetailsController(
     }
 
     private fun scanForNetworks() {
+        registerNetworksReceiver()
         mWifiManager?.startScan()
     }
 
