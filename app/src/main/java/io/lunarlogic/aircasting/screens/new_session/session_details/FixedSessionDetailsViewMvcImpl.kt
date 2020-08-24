@@ -150,7 +150,9 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         networksRecyclerViewAdapter.addAll(networkItems)
 
         networkListLoaded = true
-        showNetworksList()
+        if (streamingMethod == Session.StreamingMethod.WIFI) {
+            showNetworksList()
+        }
     }
 
     private fun onNetworkItemClicked(networkItem: RecyclerViewNetworkItem) {
