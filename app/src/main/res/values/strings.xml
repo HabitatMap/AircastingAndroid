@@ -18,6 +18,7 @@
     <string name="record_new_session">Record new session</string>
     <string name="stop_session">Finish recording session</string>
     <string name="delete_session">Delete session</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
     <!-- Let's begin (new session start) -->
@@ -93,6 +94,9 @@
     <string name="fixed_session_details_wifi">Wi-Fi</string>
     <string name="fixed_session_details_networks_list_header">Available networks:</string>
     <string name="fixed_session_details_refresh_networks_list_button"><u>Refresh</u></string>
+    <string name="fixed_session_details_wifi_password_dialog_header">Provide password for \"%1$s\" network</string>
+    <string name="session_details_network_password_hint">Password</string>
+
     <string name="session_confirmation_header">Are you ready?</string>
     <string name="session_confirmation_start_recording_button">Start recording</string>
     <string name="mobile_session_confirmation_description">Your mobile session %1$s is ready to start gathering data.</string>

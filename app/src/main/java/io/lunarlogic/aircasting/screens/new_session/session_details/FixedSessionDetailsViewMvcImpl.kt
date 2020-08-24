@@ -1,12 +1,12 @@
 package io.lunarlogic.aircasting.screens.new_session.session_details
 
-import android.content.res.Resources
 import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -20,7 +20,9 @@ import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.network_list_item.view.*
 
 
-class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, FixedSessionDetailsViewMvc {
+class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>,
+    FixedSessionDetailsViewMvc, FixedSessionDetailsViewMvc.OnPasswordProvidedListener {
+    private val fragmentManager: FragmentManager
     private var deviceId: String
     private var indoor = true
     private var streamingMethod = Session.StreamingMethod.CELLULAR
@@ -32,13 +34,16 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private val networksRecyclerViewAdapter: GroupAdapter<GroupieViewHolder>
     private var networksRefreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener? = null
     private var selectedNetworkItem: RecyclerViewNetworkItem? = null
+    private var selectedNetworkPassword: String? = null
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
+        fragmentManager: FragmentManager,
         deviceId: String
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_fixed_session_details, parent, false)
+        this.fragmentManager = fragmentManager
         this.deviceId = deviceId
 
         val indoorToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.indoor_toggle)
@@ -155,21 +160,23 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         selectedNetworkItem?.selected = true
 
         networksRecyclerViewAdapter.notifyDataSetChanged()
+
+        NetworkPasswordDialog(networkItem.network.name, fragmentManager, this).show()
     }
 
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
-//        val wifiName = getEditTextValue(R.id.wifi_name)
-//        val wifiPassword = getEditTextValue(R.id.wifi_password)
+        val wifiName = selectedNetworkItem?.network?.name ?: ""
+        val wifiPassword = selectedNetworkPassword ?: ""
 
-//        val errorMessage = validate(sessionName, wifiName, wifiPassword)
+        val errorMessage = validate(sessionName, wifiName, wifiPassword)
 
-//        if (errorMessage == null) {
-//            notifyAboutSuccess(deviceId, sessionName, sessionTags, wifiName, wifiPassword)
-//        } else {
-//            notifyAboutValidationError(errorMessage)
-//        }
+        if (errorMessage == null) {
+            notifyAboutSuccess(deviceId, sessionName, sessionTags, wifiName, wifiPassword)
+        } else {
+            notifyAboutValidationError(errorMessage)
+        }
     }
 
     private fun notifyAboutValidationError(errorMessage: String) {
@@ -214,5 +221,9 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         }
 
         return null
+    }
+
+    override fun onNetworkPasswordProvided(password: String) {
+        selectedNetworkPassword = password
     }
 }
