@@ -62,11 +62,10 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
-        wizardNavigator.goToSessionDetails(Session.Type.FIXED, "deviceID", this)
-//        when (sessionType) {
-//            Session.Type.FIXED -> onFixedSessionSelected()
-//            Session.Type.MOBILE -> onMobileSessionSelected()
-//        }
+        when (sessionType) {
+            Session.Type.FIXED -> onFixedSessionSelected()
+            Session.Type.MOBILE -> onMobileSessionSelected()
+        }
     }
 
     fun onBackPressed() {
