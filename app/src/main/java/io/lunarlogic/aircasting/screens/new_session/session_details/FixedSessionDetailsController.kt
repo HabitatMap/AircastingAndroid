@@ -20,7 +20,7 @@ class FixedSessionDetailsController(
                 wifiList?.let {
                     val networkList = wifiList
                         .filter { !it.SSID.isEmpty() }
-                        .map { Network(it.SSID) }
+                        .map { Network(it.SSID, it.level) }
                     mViewMvc.bindNetworks(networkList)
                 }
             }
