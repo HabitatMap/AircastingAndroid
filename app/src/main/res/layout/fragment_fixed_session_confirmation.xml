@@ -12,32 +12,38 @@
 
         <TextView
             android:id="@+id/header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/header1_text_size"
             android:text="@string/session_confirmation_header"
-            android:layout_margin="20dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/description"
+            style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/default_text_size"
-            android:layout_margin="20dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/instructions"
+            style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/default_text_size"
             android:text="@string/fixed_session_confirmation_instructions"
-            android:layout_margin="20dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/description"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -47,23 +53,29 @@
             android:name="com.google.android.libraries.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_margin="20dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             map:uiRotateGestures="false"
             map:uiScrollGestures="false"
             map:uiTiltGestures="false"
-            map:uiZoomControls="false"
-            map:uiZoomGestures="false"
+            map:uiZoomControls="true"
+            map:uiZoomGestures="true"
             app:layout_constraintTop_toBottomOf="@id/instructions" />
 
         <Button
             android:id="@+id/start_recording_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/session_confirmation_start_recording_button"
             app:layout_constraintTop_toBottomOf="@id/map"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

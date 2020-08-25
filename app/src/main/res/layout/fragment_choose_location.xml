@@ -12,11 +12,14 @@
 
         <TextView
             android:id="@+id/header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/header1_text_size"
+            android:textSize="@dimen/header4_text_size"
             android:text="@string/fixed_session_choose_location_header"
-            android:layout_margin="20dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -25,6 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/header" />
 
         <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -33,17 +39,24 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             map:uiZoomControls="true"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment" />
 
         <Button
             android:id="@+id/continue_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/fixed_session_choose_location_continue_button"
             app:layout_constraintTop_toBottomOf="@id/map"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

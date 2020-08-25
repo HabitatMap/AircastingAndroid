@@ -125,16 +125,31 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
             } else {
                 setDefaultNetworkItemStyles(viewHolder)
             }
+
+            updateWifiIcon(network, viewHolder.itemView)
+        }
+
+        private fun updateWifiIcon(network: Network, view: View) {
+            view.wifi_icon_0.visibility = View.INVISIBLE
+            view.wifi_icon_1.visibility = View.INVISIBLE
+            view.wifi_icon_2.visibility = View.INVISIBLE
+            view.wifi_icon_3.visibility = View.INVISIBLE
+
+            val wifiIcon = when (network.level) {
+                1 -> view.wifi_icon_1
+                2 -> view.wifi_icon_2
+                3 -> view.wifi_icon_3
+                else -> view.wifi_icon_0
+            }
+            wifiIcon.visibility = View.VISIBLE
         }
 
         private fun setSelectedNetworkItemStyles(viewHolder: GroupieViewHolder) {
-            viewHolder.itemView.check_icon.visibility = View.VISIBLE
             viewHolder.itemView.label.typeface = ResourcesCompat.getFont(context, R.font.moderat_trial_bold)
             viewHolder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.selected_network_item_background, context.theme)
         }
 
         private fun setDefaultNetworkItemStyles(viewHolder: GroupieViewHolder) {
-            viewHolder.itemView.check_icon.visibility = View.INVISIBLE
             viewHolder.itemView.label.typeface = ResourcesCompat.getFont(context, R.font.moderat_trial_regular)
             viewHolder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.network_item_background, context.theme)
         }

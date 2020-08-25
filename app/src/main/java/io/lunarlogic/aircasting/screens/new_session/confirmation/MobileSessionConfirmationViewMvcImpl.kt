@@ -18,10 +18,6 @@ class MobileSessionConfirmationViewMvcImpl(
         return R.layout.fragment_mobile_session_confirmation
     }
 
-    override fun descriptionStringId(): Int {
-        return R.string.mobile_session_confirmation_description
-    }
-
     override fun updateLocation(latitude: Double?, longitude: Double?) {
         updateMarkerPosition(latitude, longitude)
     }

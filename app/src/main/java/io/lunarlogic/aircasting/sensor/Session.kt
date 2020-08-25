@@ -116,6 +116,11 @@ class Session(
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
 
+    val displayedType get() = when(type) {
+        Type.MOBILE -> "mobile"
+        Type.FIXED -> "fixed"
+    }
+
     fun startRecording() {
         mStatus = Status.RECORDING
     }

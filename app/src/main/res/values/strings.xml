@@ -32,7 +32,11 @@
     <string name="mobile_session_start_desc">for moving around</string>
     <!-- more info modal -->
     <string name="more_info_title">Session types</string>
-    <string name="more_info_text">If you plan on moving around with the AirBeam2 while recording air quality measurements, configure the AirBeam2 to record a <b>mobile</b> session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second. \n\nIf you plan to leave the AirBeam2 indoors or hang it outside then configure it to record a <b>fixed</b> session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute and geocoordinates are fixed to a set location.</string>
+    <string name="more_info_text_part1">If you plan on moving around with the AirBeam2 while recording air quality measurements, configure the AirBeam2 to record a</string>
+    <string name="more_info_text_part2">mobile</string>
+    <string name="more_info_text_part3">session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second. \n\nIf you plan to leave the AirBeam2 indoors or hang it outside then configure it to record a</string>
+    <string name="more_info_text_part4">fixed</string>
+    <string name="more_info_text_part5">session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute and geocoordinates are fixed to a set location.</string>
     <string name="more_info_cancel_button_text">CLOSE</string>
 
     <!-- New session Step 1 -->
@@ -98,13 +102,14 @@
     <string name="session_details_network_password_hint">Password</string>
 
     <string name="session_confirmation_header">Are you ready?</string>
+    <string name="session_confirmation_description_part1">Your</string>
+    <string name="session_confirmation_description_part2">session</string>
+    <string name="session_confirmation_description_part3">is ready to start gathering data.</string>
     <string name="session_confirmation_start_recording_button">Start recording</string>
-    <string name="mobile_session_confirmation_description">Your mobile session %1$s is ready to start gathering data.</string>
     <string name="mobile_session_confirmation_instructions">Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.</string>
     <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
     <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
     <string name="fixed_session_choose_location_continue_button">Continue</string>
-    <string name="fixed_session_confirmation_description">Your fixed session %1$s is ready to start gathering data.</string>
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
     <string name="errors_bluetooth_required">Bluetooth and location services are required to continue</string>
     <string name="errors_audio_required">Audio and location permissions are required to continue</string>
