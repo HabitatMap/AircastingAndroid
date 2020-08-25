@@ -145,13 +145,11 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         }
 
         private fun setSelectedNetworkItemStyles(viewHolder: GroupieViewHolder) {
-            viewHolder.itemView.check_icon.visibility = View.VISIBLE
             viewHolder.itemView.label.typeface = ResourcesCompat.getFont(context, R.font.moderat_trial_bold)
             viewHolder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.selected_network_item_background, context.theme)
         }
 
         private fun setDefaultNetworkItemStyles(viewHolder: GroupieViewHolder) {
-            viewHolder.itemView.check_icon.visibility = View.INVISIBLE
             viewHolder.itemView.label.typeface = ResourcesCompat.getFont(context, R.font.moderat_trial_regular)
             viewHolder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.network_item_background, context.theme)
         }
