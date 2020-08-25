@@ -132,9 +132,6 @@
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:textSize">@dimen/text_size_m</item>
-    </style>
-
-    <style name="TextAppearance.Aircasting.NewSessionSteps.Body2" parent="@style/TextAppearance.Aircasting.Body1">
         <item name="lineHeight">32dp</item>
     </style>
 
@@ -149,7 +146,7 @@
         <item name="android:fontFamily">@font/muli_extra_bold</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/text_size_xl</item>
-        <item name="lineHeight">24dp</item>
+        <item name="lineHeight">32dp</item>
     </style>
 
     <style name="TextAppearance.Aircasting.NewSessionDetails.Headline3" parent="@style/TextAppearance.AppCompat">
@@ -322,6 +319,7 @@
     </style>
 
     <!-- New session details -->
+
     <style name="Widget.Aircasting.NewSessionDetails.TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/aircasting_grey_50</item>
         <item name="boxStrokeColor">@color/aircasting_grey_100</item>
@@ -342,5 +340,10 @@
         <item name="cornerFamilyTopRight">cut</item>
         <item name="cornerFamilyBottomRight">cut</item>
         <item name="cornerSize">0dp</item>
+    </style>
+
+    <style name="Widget.Aircasting.NewSessionDetails.WifiIcon" parent="">
+        <item name="android:visibility">invisible</item>
+        <item name="android:layout_marginStart">@dimen/keyline_4</item>
     </style>
 </resources>
