@@ -24,16 +24,49 @@
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/label"
-        app:layout_constraintEnd_toEndOf="@id/wifi_icon" />
+        app:layout_constraintEnd_toEndOf="@id/wifi_icon_1" />
 
     <ImageView
-        android:id="@+id/wifi_icon"
+        android:id="@+id/wifi_icon_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_wifi"
-        android:tint="@color/aircasting_grey_600"
+        android:src="@drawable/ic_wifi_00"
         android:layout_marginTop="2dp"
         android:layout_marginStart="@dimen/keyline_4"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/check_icon"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/wifi_icon_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_wifi_01"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="@dimen/keyline_4"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/check_icon"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/wifi_icon_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_wifi_02"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="@dimen/keyline_4"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/check_icon"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/wifi_icon_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_wifi_03"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="@dimen/keyline_4"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/check_icon"
         app:layout_constraintEnd_toEndOf="parent" />
