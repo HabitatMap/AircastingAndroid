@@ -9,12 +9,12 @@ import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
-import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.Marker
-import com.google.android.libraries.maps.model.MarkerOptions
+import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.sensor.Session
+
 
 abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
     OnMapReadyCallback {
@@ -58,7 +58,11 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         googleMap ?: return
         val sessionLocation = session!!.location!!
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
-        mMarker = googleMap.addMarker(MarkerOptions().position(location))
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
+        val marker = MarkerOptions()
+            .position(location)
+            .icon(icon)
+        mMarker = googleMap.addMarker(marker)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
 

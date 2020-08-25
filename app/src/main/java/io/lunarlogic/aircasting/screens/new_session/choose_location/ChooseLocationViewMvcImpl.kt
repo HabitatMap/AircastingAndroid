@@ -20,6 +20,7 @@ import com.google.android.libraries.maps.model.Marker
 import android.view.View
 import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.sensor.Session
 
 
@@ -71,7 +72,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
             }
         })
 
-        autocompleteFragment.view!!.findViewById<View>(com.google.android.libraries.places.R.id.places_autocomplete_clear_button)
+        autocompleteFragment.requireView().findViewById<View>(com.google.android.libraries.places.R.id.places_autocomplete_clear_button)
             .setOnClickListener(object : View.OnClickListener {
                 override fun onClick(view: View) {
                     autocompleteFragment.setText("")
@@ -114,9 +115,11 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
 
     private fun addMarkerToMap() {
         val location = LatLng(mDefaultLatitude, mDefaultLongitude)
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
         mMarker = mMap.addMarker(
             MarkerOptions()
-                .position(location))
+                .position(location)
+                .icon(icon))
         mMarker.setDraggable(true)
     }
 
