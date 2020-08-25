@@ -78,10 +78,14 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         val blueColor = ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
 
         return SpannableStringBuilder()
-            .append("Your ")
+            .append(getString(R.string.session_confirmation_description_part1))
+            .append(" ")
             .color(blueColor, { bold { append(session?.displayedType) } })
-            .append(" session ")
+            .append(" ")
+            .append(getString(R.string.session_confirmation_description_part2))
+            .append(" ")
             .color(blueColor, { bold { append(session?.name) } })
-            .append(" is ready to start gathering data.")
+            .append(" ")
+            .append(getString(R.string.session_confirmation_description_part3))
     }
 }
