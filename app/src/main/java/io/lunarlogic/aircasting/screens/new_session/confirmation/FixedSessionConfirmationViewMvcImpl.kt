@@ -17,10 +17,6 @@ class FixedSessionConfirmationViewMvcImpl(
         return R.layout.fragment_fixed_session_confirmation
     }
 
-    override fun descriptionStringId(): Int {
-        return R.string.fixed_session_confirmation_description
-    }
-
     override fun updateLocation(latitude: Double?, longitude: Double?) {
         // do nothing, static map
     }
