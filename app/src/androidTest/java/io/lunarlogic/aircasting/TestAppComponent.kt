@@ -11,7 +11,8 @@ import javax.inject.Singleton
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
-        MockWebServerModule::class
+        MockWebServerModule::class,
+        NewSessionWizardModule::class
     ]
 )
 interface TestAppComponent: AppComponent {

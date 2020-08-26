@@ -37,7 +37,7 @@ class FakeAirBeam2Connector(
             while (true) {
                 val inputStream = app.resources.openRawResource(R.raw.airbeam2_stream)
                 mAirBeam2Reader.run(inputStream)
-                sleep(3000)
+                sleep(1000)
                 inputStream.close()
             }
         }

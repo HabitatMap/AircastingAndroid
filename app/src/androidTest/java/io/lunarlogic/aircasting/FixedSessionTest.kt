@@ -57,6 +57,7 @@ class FixedSessionTest {
             .permissionsModule(permissionsModule)
             .sensorsModule(TestSensorsModule(app, sensorsIdlingResource))
             .mockWebServerModule(MockWebServerModule())
+            .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -120,8 +121,7 @@ class FixedSessionTest {
         onView(withId(R.id.continue_button)).perform(scrollTo())
         onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
 
-        Thread.sleep(4000)
-        onView(withText(containsString("AndroidWifi"))).perform(click())
+        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))
         onView(withId(R.id.ok_button)).perform(click())
 
@@ -186,8 +186,7 @@ class FixedSessionTest {
         onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
         onView(withId(R.id.continue_button)).perform(scrollTo())
 
-        Thread.sleep(4000)
-        onView(withText(containsString("AndroidWifi"))).perform(click())
+        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))
         onView(withId(R.id.ok_button)).perform(click())
 
