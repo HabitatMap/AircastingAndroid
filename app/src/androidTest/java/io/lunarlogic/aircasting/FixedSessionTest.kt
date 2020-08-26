@@ -100,9 +100,7 @@ class FixedSessionTest {
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
-        onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
         IdlingRegistry.getInstance().register(sensorsIdlingResource)
-        sensorsIdlingResource.increment()
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
@@ -165,9 +163,7 @@ class FixedSessionTest {
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
-        onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
         IdlingRegistry.getInstance().register(sensorsIdlingResource)
-        sensorsIdlingResource.increment()
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())

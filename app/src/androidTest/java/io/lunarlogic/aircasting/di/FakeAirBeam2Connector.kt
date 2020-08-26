@@ -30,7 +30,9 @@ class FakeAirBeam2Connector(
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         override fun run() {
+            mIdlingResource.increment()
             sleep(2000) // imitate connection time
+
             listener.onConnectionSuccessful(deviceItem.id)
             mIdlingResource.decrement()
 
