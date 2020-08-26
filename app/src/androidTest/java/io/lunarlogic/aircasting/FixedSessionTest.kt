@@ -3,8 +3,10 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -45,13 +47,15 @@ class FixedSessionTest {
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
+    val sensorsIdlingResource = CountingIdlingResource("sensors")
+
     private fun setupDagger() {
         val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app))
+            .sensorsModule(TestSensorsModule(app, sensorsIdlingResource))
             .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
@@ -93,16 +97,15 @@ class FixedSessionTest {
         onView(allOf(withId(R.id.turn_on_airbeam_ready_button), isDisplayed())).perform(scrollTo(), click())
 
         onView(withText(containsString(airBeamAddress))).perform(click())
+
         onView(withId(R.id.connect_button)).perform(click())
-
-        // TODO: fixed it with idling resource
-        // onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
-        // should be connected by this time
-        Thread.sleep(4000)
-
-        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
+        onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
+        IdlingRegistry.getInstance().register(sensorsIdlingResource)
+        sensorsIdlingResource.increment()
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
+        IdlingRegistry.getInstance().unregister(sensorsIdlingResource)
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed outdoor session"))
@@ -160,16 +163,15 @@ class FixedSessionTest {
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
         onView(withText(containsString(airBeamAddress))).perform(click())
+
         onView(withId(R.id.connect_button)).perform(click())
-
-        // TODO: fixed it with idling resource
-        // onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
-        // should be connected by this time
-        Thread.sleep(4000)
-
-        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
+        onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
+        IdlingRegistry.getInstance().register(sensorsIdlingResource)
+        sensorsIdlingResource.increment()
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
+        IdlingRegistry.getInstance().unregister(sensorsIdlingResource)
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed indoor session"))

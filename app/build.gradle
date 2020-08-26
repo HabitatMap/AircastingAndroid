@@ -111,6 +111,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.1.1'
 
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:2.8.1"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.8.0"

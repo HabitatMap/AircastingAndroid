@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.di
 
+import androidx.test.espresso.idling.CountingIdlingResource
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -13,7 +14,8 @@ class FakeAirBeam2Connector(
     private val app: AircastingApplication,
     errorHandler: ErrorHandler,
     private val mAirBeamConfigurator: AirBeam2Configurator,
-    private val mAirBeam2Reader: AirBeam2Reader
+    private val mAirBeam2Reader: AirBeam2Reader,
+    private val mIdlingResource: CountingIdlingResource
 ): AirBeam2Connector(errorHandler, mAirBeamConfigurator, mAirBeam2Reader) {
     private val connectionStarted = AtomicBoolean(false)
     private var mThread: ConnectThread? = null
@@ -28,13 +30,14 @@ class FakeAirBeam2Connector(
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         override fun run() {
-            sleep(3000) // we need to wait a bit, to test connecting screen properly
+            sleep(2000) // imitate connection time
             listener.onConnectionSuccessful(deviceItem.id)
+            mIdlingResource.decrement()
 
             while (true) {
                 val inputStream = app.resources.openRawResource(R.raw.airbeam2_stream)
                 mAirBeam2Reader.run(inputStream)
-                sleep(1000)
+                sleep(3000)
                 inputStream.close()
             }
         }
