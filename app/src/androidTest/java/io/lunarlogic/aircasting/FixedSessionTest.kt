@@ -47,15 +47,13 @@ class FixedSessionTest {
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
-    val sensorsIdlingResource = CountingIdlingResource("sensors")
-
     private fun setupDagger() {
         val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app, sensorsIdlingResource))
+            .sensorsModule(TestSensorsModule(app))
             .mockWebServerModule(MockWebServerModule())
             .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
@@ -95,16 +93,15 @@ class FixedSessionTest {
         onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
-        onView(allOf(withId(R.id.turn_on_airbeam_ready_button), isDisplayed())).perform(scrollTo(), click())
+        onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
-        IdlingRegistry.getInstance().register(sensorsIdlingResource)
+        Thread.sleep(4000)
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
-        IdlingRegistry.getInstance().unregister(sensorsIdlingResource)
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed outdoor session"))
@@ -163,11 +160,10 @@ class FixedSessionTest {
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
-        IdlingRegistry.getInstance().register(sensorsIdlingResource)
+        Thread.sleep(4000)
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
-        IdlingRegistry.getInstance().unregister(sensorsIdlingResource)
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed indoor session"))
@@ -179,8 +175,8 @@ class FixedSessionTest {
         onView(withId(R.id.networks_list_header)).check(matches(not(isDisplayed())))
         onView(withId(R.id.wifi_button)).perform(click())
 
-        onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
         onView(withId(R.id.continue_button)).perform(scrollTo())
+        onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
 
         onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))

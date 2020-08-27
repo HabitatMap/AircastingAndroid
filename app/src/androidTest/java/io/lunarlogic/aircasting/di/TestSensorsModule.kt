@@ -9,8 +9,7 @@ import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Reader
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 
 class TestSensorsModule(
-    private val app: AircastingApplication,
-    private val idlingResource: CountingIdlingResource
+    private val app: AircastingApplication
 ): SensorsModule() {
 
     override fun providesAirbeam2Connector(
@@ -18,7 +17,7 @@ class TestSensorsModule(
         airBeamConfigurator: AirBeam2Configurator,
         airBeam2Reader: AirBeam2Reader
     ): AirBeam2Connector {
-        return FakeAirBeam2Connector(app, errorHandler, airBeamConfigurator, airBeam2Reader, idlingResource)
+        return FakeAirBeam2Connector(app, errorHandler, airBeamConfigurator, airBeam2Reader)
     }
 
     override fun providesAudioReader(): AudioReader = FakeAudioReader(app)

@@ -3,11 +3,9 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -54,15 +52,13 @@ class MobileSessionTest {
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
-    val sensorsIdlingResource = CountingIdlingResource("sensors")
-
     private fun setupDagger() {
         val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app, sensorsIdlingResource))
+            .sensorsModule(TestSensorsModule(app))
             .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
@@ -108,13 +104,10 @@ class MobileSessionTest {
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
-        onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
-        IdlingRegistry.getInstance().register(sensorsIdlingResource)
-        sensorsIdlingResource.increment()
+        Thread.sleep(4000)
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
         onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
-        IdlingRegistry.getInstance().unregister(sensorsIdlingResource)
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile bluetooth session"))
@@ -131,7 +124,7 @@ class MobileSessionTest {
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
         clickActionsButton()
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         stopSession()
 
         Thread.sleep(4000)
@@ -172,7 +165,7 @@ class MobileSessionTest {
         onView(withId(R.id.session_actions_button)).perform(click())
 
         clickActionsButton()
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         stopSession()
 
         Thread.sleep(4000)
