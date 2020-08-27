@@ -1,14 +1,14 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.location.LocationManager
+import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.Session
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.StartRecordingEvent
@@ -16,12 +16,19 @@ import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.location.LocationHelper
+import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.AirBeamConnectedViewMvc
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
+import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
@@ -32,6 +39,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import java.util.*
+
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -44,7 +52,8 @@ class NewSessionController(
     audioReader: AudioReader,
     private val sessionBuilder: SessionBuilder,
     private val sessionType: Session.Type
-) : SelectDeviceTypeViewMvc.Listener,
+) : NewSessionViewMvc.Listener,
+    SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -72,7 +81,22 @@ class NewSessionController(
         wizardNavigator.onBackPressed()
     }
 
+    fun areLocationServicesOn(): Boolean {
+        val manager =
+            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    override fun onTurnOnLocationServicesClicked() {
+        mContextActivity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+    }
+
     override fun onBluetoothDeviceSelected() {
+        if (!areLocationServicesOn()) {
+            val dialog = TurnOnLocationServicesDialog(mFragmentManager, this)
+            dialog.show()
+        }
+
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
                 if (bluetoothManager.permissionsGranted()) {
@@ -80,6 +104,7 @@ class NewSessionController(
                 } else {
                     bluetoothManager.requestBluetoothPermissions()
                 }
+
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
             }
