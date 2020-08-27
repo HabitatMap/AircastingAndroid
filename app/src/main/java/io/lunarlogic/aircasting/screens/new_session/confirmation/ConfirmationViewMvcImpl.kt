@@ -29,7 +29,8 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     private var mMarker: Marker? = null
 
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?,
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
         supportFragmentManager: FragmentManager?,
         session: Session
     ): super() {
