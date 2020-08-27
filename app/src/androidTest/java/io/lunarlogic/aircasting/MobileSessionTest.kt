@@ -125,7 +125,7 @@ class MobileSessionTest {
 
         clickActionsButton()
         Thread.sleep(2000)
-        stopSession()
+        onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
 
@@ -163,7 +163,7 @@ class MobileSessionTest {
 
         clickActionsButton()
         Thread.sleep(2000)
-        stopSession()
+        onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
 
@@ -180,18 +180,6 @@ class MobileSessionTest {
             onView(withId(R.id.session_actions_button)).perform(click())
         } catch(e: NoMatchingViewException) {
             clickActionsButton(retryCount + 1)
-        }
-    }
-
-    private fun stopSession(retryCount: Int = 0) {
-        if (retryCount >= 3) {
-            return
-        }
-
-        try {
-            onView(withId(R.id.stop_session_button)).perform(click())
-        } catch(e: NoMatchingViewException) {
-            stopSession(retryCount + 1)
         }
     }
 }
