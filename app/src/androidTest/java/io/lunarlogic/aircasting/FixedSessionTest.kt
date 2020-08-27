@@ -3,8 +3,10 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -53,6 +55,7 @@ class FixedSessionTest {
             .permissionsModule(permissionsModule)
             .sensorsModule(TestSensorsModule(app))
             .mockWebServerModule(MockWebServerModule())
+            .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -90,18 +93,14 @@ class FixedSessionTest {
         onView(withId(R.id.fixed_session_start_card)).perform(click())
         verify(bluetoothManager).requestBluetoothPermissions();
 
-        onView(allOf(withId(R.id.turn_on_airbeam_ready_button), isDisplayed())).perform(scrollTo(), click())
+        onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
         onView(withText(containsString(airBeamAddress))).perform(click())
+
         onView(withId(R.id.connect_button)).perform(click())
-
-        // TODO: fixed it with idling resource
-        // onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
-        // should be connected by this time
         Thread.sleep(4000)
-
-        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
 
         // replaceText is needed here to go around autocorrect...
@@ -117,8 +116,7 @@ class FixedSessionTest {
         onView(withId(R.id.continue_button)).perform(scrollTo())
         onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
 
-        Thread.sleep(4000)
-        onView(withText(containsString("AndroidWifi"))).perform(click())
+        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))
         onView(withId(R.id.ok_button)).perform(click())
 
@@ -160,15 +158,11 @@ class FixedSessionTest {
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
         onView(withText(containsString(airBeamAddress))).perform(click())
+
         onView(withId(R.id.connect_button)).perform(click())
-
-        // TODO: fixed it with idling resource
-        // onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
-        // should be connected by this time
         Thread.sleep(4000)
-
-        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
 
         // replaceText is needed here to go around autocorrect...
@@ -181,11 +175,10 @@ class FixedSessionTest {
         onView(withId(R.id.networks_list_header)).check(matches(not(isDisplayed())))
         onView(withId(R.id.wifi_button)).perform(click())
 
-        onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
         onView(withId(R.id.continue_button)).perform(scrollTo())
+        onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
 
-        Thread.sleep(4000)
-        onView(withText(containsString("AndroidWifi"))).perform(click())
+        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))
         onView(withId(R.id.ok_button)).perform(click())
 

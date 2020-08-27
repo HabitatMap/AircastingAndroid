@@ -9,7 +9,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
@@ -19,11 +21,13 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers.*
-import org.junit.*
-
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
@@ -98,20 +102,16 @@ class MobileSessionTest {
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
         onView(withText(containsString(airBeamAddress))).perform(click())
+
         onView(withId(R.id.connect_button)).perform(click())
-
-        // TODO: fixed it with idling resource
-        // onView(withId(R.id.connecting_airbeam_header)).check(matches(isDisplayed()))
-        // should be connected by this time
         Thread.sleep(4000)
-
-        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
 
         // replaceText is needed here to go around autocorrect...
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile bluetooth session"))
-        onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
+        onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile bluetooth session"))
+        onView(withId(R.id.session_tags_input)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
@@ -123,12 +123,9 @@ class MobileSessionTest {
         val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
-        try {
-            stopSession()
-        } catch(e: NoMatchingViewException) {
-            // retry...
-            stopSession()
-        }
+        clickActionsButton()
+        Thread.sleep(2000)
+        onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
 
@@ -151,8 +148,8 @@ class MobileSessionTest {
         onView(withId(R.id.select_device_type_microphone_card)).perform(click())
 
         // replaceText is needed here to go around autocorrect...
-        onView(withId(R.id.session_name)).perform(replaceText("Ania's mobile microphone session"))
-        onView(withId(R.id.session_tags)).perform(replaceText("tag1 tag2"))
+        onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile microphone session"))
+        onView(withId(R.id.session_tags_input)).perform(replaceText("tag1 tag2"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.continue_button)).perform(click())
 
@@ -164,15 +161,9 @@ class MobileSessionTest {
         val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        onView(withId(R.id.session_actions_button)).perform(click())
-
-        try {
-            stopSession()
-        } catch(e: NoMatchingViewException) {
-            // retry...
-            stopSession()
-        }
+        clickActionsButton()
+        Thread.sleep(2000)
+        onView(withId(R.id.stop_session_button)).perform(click())
 
         Thread.sleep(4000)
 
@@ -180,9 +171,15 @@ class MobileSessionTest {
         onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
     }
 
-    private fun stopSession() {
-        onView(withId(R.id.session_actions_button)).perform(click())
-        Thread.sleep(1000)
-        onView(withId(R.id.stop_session_button)).perform(click())
+    private fun clickActionsButton(retryCount: Int = 0) {
+        if (retryCount >= 3) {
+            return
+        }
+
+        try {
+            onView(withId(R.id.session_actions_button)).perform(click())
+        } catch(e: NoMatchingViewException) {
+            clickActionsButton(retryCount + 1)
+        }
     }
 }

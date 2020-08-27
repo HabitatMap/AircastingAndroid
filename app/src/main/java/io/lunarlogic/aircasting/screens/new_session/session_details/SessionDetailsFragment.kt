@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.sensor.SessionBuilder
+import javax.inject.Inject
 
 class SessionDetailsFragment() : Fragment() {
     private lateinit var controller: SessionDetailsController
@@ -13,13 +16,19 @@ class SessionDetailsFragment() : Fragment() {
     lateinit var deviceId: String
     lateinit var sessionType: Session.Type
 
+    @Inject
+    lateinit var sessionDetailsControllerFactory: SessionDetailsControllerFactory
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
+
         val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceId, sessionType)
-        controller = SessionDetailsControllerFactory.get(context, view, sessionType)
+        controller = sessionDetailsControllerFactory.get(context, view, sessionType)
         controller.onCreate()
 
         return view.rootView

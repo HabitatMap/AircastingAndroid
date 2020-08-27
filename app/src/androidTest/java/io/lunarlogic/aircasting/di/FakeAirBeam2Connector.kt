@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.di
 
+import androidx.test.espresso.idling.CountingIdlingResource
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -28,7 +29,8 @@ class FakeAirBeam2Connector(
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         override fun run() {
-            sleep(3000) // we need to wait a bit, to test connecting screen properly
+            sleep(2000) // imitate connection time
+
             listener.onConnectionSuccessful(deviceItem.id)
 
             while (true) {
