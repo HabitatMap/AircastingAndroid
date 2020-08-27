@@ -161,9 +161,6 @@ class MobileSessionTest {
         val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        onView(withId(R.id.session_actions_button)).perform(click())
-
         clickActionsButton()
         Thread.sleep(2000)
         stopSession()
@@ -174,7 +171,7 @@ class MobileSessionTest {
         onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
     }
 
-    private fun clickActionsButton(retryCount: Int = 3) {
+    private fun clickActionsButton(retryCount: Int = 0) {
         if (retryCount >= 3) {
             return
         }
@@ -186,7 +183,7 @@ class MobileSessionTest {
         }
     }
 
-    private fun stopSession(retryCount: Int = 3) {
+    private fun stopSession(retryCount: Int = 0) {
         if (retryCount >= 3) {
             return
         }
