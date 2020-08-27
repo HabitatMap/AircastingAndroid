@@ -21,6 +21,11 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    <!--  Dialogs -->
+    <string name="turn_on_location_services_dialog_header">Turn on location services</string>
+    <string name="turn_on_location_services_dialog_description">To map your measurements, turn on location services.</string>
+    <string name="turn_on_location_services_dialog_ok_button">Turn on</string>
+
     <!-- Let's begin (new session start) -->
     <string name="title_lets_start">Let\'s begin</string>
     <string name="record_new_session_title">Record a new session</string>

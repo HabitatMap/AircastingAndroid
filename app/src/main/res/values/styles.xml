@@ -171,6 +171,19 @@
         <item name="android:textColor">@color/aircasting_grey_500</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Dialog.Header" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/muli_extra_bold</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="android:textAlignment">center</item>
+        <item name="lineHeight">24dp</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Dialog.Description" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:textAlignment">center</item>
+        <item name="lineHeight">32dp</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->

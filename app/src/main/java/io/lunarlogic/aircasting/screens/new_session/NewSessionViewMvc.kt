@@ -4,4 +4,7 @@ import io.lunarlogic.aircasting.screens.common.ViewMvc
 
 
 interface NewSessionViewMvc : ViewMvc {
+    interface Listener {
+        fun onTurnOnLocationServicesClicked()
+    }
 }
