@@ -27,6 +27,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     private val DEFAULT_ZOOM = 16f
 
     private var mMarker: Marker? = null
+    private var mMap: GoogleMap? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -54,11 +55,16 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     protected fun updateMarkerPosition(latitude: Double?, longitude: Double?) {
         if (latitude == null || longitude == null) return
 
-        mMarker?.position = LatLng(latitude, longitude)
+        val location = LatLng(latitude, longitude)
+        val zoom = mMap?.cameraPosition?.zoom ?: DEFAULT_ZOOM
+        mMarker?.position = location
+        mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoom))
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
+        mMap = googleMap
+
         val sessionLocation = session!!.location!!
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
