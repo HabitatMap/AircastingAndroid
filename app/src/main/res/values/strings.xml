@@ -21,11 +21,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
-    <!--  Dialogs -->
-    <string name="turn_on_location_services_dialog_header">Turn on location services</string>
-    <string name="turn_on_location_services_dialog_description">To map your measurements, turn on location services.</string>
-    <string name="turn_on_location_services_dialog_ok_button">Turn on</string>
-
     <!-- Let's begin (new session start) -->
     <string name="title_lets_start">Let\'s begin</string>
     <string name="record_new_session_title">Record a new session</string>
@@ -45,12 +40,18 @@
     <string name="more_info_cancel_button_text">CLOSE</string>
 
     <!-- New session Step 1 -->
+    <string name="turn_on_location_services_image_desc">Turn on location services</string>
+    <string name="turn_on_location_services_header">Turn on location services</string>
+    <string name="turn_on_location_services_description">To map your measurements, turn on location services.</string>
+    <string name="turn_on_location_services_ok_button">Turn on</string>
+
+    <!-- New session Step 2 -->
     <string name="turn_on_bluetooth_image_desc">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_description">Turn on Bluetooth to enable your phone to connect to the AirBeam.</string>
     <string name="turn_on_bluetooth_ok_button">Continue</string>
 
-    <!-- New session Step 2 -->
+    <!-- New session Step 3 -->
     <!-- Mobile -->
     <string name="power_on_bluetooth_device_header">Power on your Bluetooth device</string>
     <string name="power_on_bluetooth_device_desc">If using AirBeam2, wait for the connection indicator to change from red to green before continuing.</string>
@@ -62,7 +63,7 @@
     <string name="turn_on_airbeam_ready_button">Continue</string>
     <string name="turn_on_airbeam_image_desc">Power on your AirBeam</string>
 
-    <!-- New session Step 3 -->
+    <!-- New session Step 4 -->
     <string name="select_device_type_header">What device are you using to record this session?</string>
     <string name="bluetooth_device_card_header">Bluetooth device</string>
     <string name="bluetooth_device_card_body">for example AirBeam</string>
@@ -70,26 +71,26 @@
     <string name="microphone_device_card_body">to measure sound level</string>
     <string name="select_device_type_button">Choose</string>
 
-    <!-- New session Step 4 -->
+    <!-- New session Step 5 -->
     <string name="select_device_header">Choose the device you\'d like to record with.</string>
     <string name="select_device_airbeams_label">AirBeams</string>
     <string name="select_device_others_label">Others</string>
     <string name="select_device_connect_button">Connect</string>
     <string name="select_device_refresh_button"><u>Don\'t see a device? Refresh scanning.</u></string>
   
-    <!--  New session Step 5 - Connecting -->
+    <!--  New session Step 6 - Connecting -->
     <string name="connecting_airbeam_header">Connecting</string>
     <string name="connecting_image_desc">Connecting</string>
     <string name="connecting_airbeam_description">This should take less than 10 seconds.</string>
     <string name="airbeam2">AirBeam2</string>
 
-    <!--  New session Step 6 - Connected -->
+    <!--  New session Step 7 - Connected -->
     <string name="airbeam_connected_header">AirBeam connected</string>
     <string name="airbeam_connected_image_desc">AirBeam connected</string>
     <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
     <string name="airbeam_connected_continue_button">Continue</string>
 
-    <!-- New session step 7 - Session details -->
+    <!-- New session step 8 - Session details -->
     <string name="fixed_session_details_header">New session details</string>
     <string name="mobile_session_details_header">New session details</string>
     <string name="session_details_session_name_hint">Session name</string>

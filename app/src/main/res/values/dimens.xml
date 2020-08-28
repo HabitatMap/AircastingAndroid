@@ -41,4 +41,6 @@
     <dimen name="keyline_12">64dp</dimen>
 
     <dimen name="card_corner_radius">0dp</dimen>
+
+    <dimen name="map_height">300dp</dimen>
 </resources>
