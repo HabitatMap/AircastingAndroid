@@ -33,11 +33,32 @@
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/header" />
 
+        <!-- marker is intensionally added here, because it needs to stay in place -->
+        <!-- while the map is moving -->
+        <!-- in theory we could use OnCameraMoveListener and move the marker along with the map -->
+        <!-- but then the marker flickers too much  -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/map_height"
+            app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment"
+            android:elevation="10dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8">
+            <ImageView
+                android:id="@+id/center_marker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_dot_20" />
+        </RelativeLayout>
+
         <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/map"
             android:name="com.google.android.libraries.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="@dimen/map_height"
             map:uiZoomControls="true"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"

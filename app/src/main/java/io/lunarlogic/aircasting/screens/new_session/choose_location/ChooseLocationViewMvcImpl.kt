@@ -9,14 +9,12 @@ import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import com.google.android.gms.common.api.Status
-import com.google.android.libraries.maps.model.Marker
 import android.view.View
 import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -35,8 +33,6 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
 
     private val mDefaultLatitude: Double
     private val mDefaultLongitude: Double
-
-    private lateinit var mMarker: Marker
 
     private lateinit var mMap: GoogleMap
 
@@ -62,8 +58,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 place.latLng?.let {
-                    updateMarkerPosition(it.latitude, it.longitude)
-                    updateMapCamera()
+                    updateMapCamera(it.latitude, it.longitude)
                 }
             }
 
@@ -94,13 +89,13 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         googleMap ?: return
         mMap = googleMap
         setZoomPreferences()
-        addMarkerToMap()
-        updateMapCamera(DEFAULT_ZOOM)
+        resetMapToDefaults()
     }
 
     private fun onContinueClicked() {
-        val latitude = mMarker.position.latitude
-        val longitude = mMarker.position.longitude
+        val target = mMap.cameraPosition.target
+        val latitude = target.latitude
+        val longitude = target.longitude
         session.location = Session.Location(latitude, longitude)
 
         for (listener in listeners) {
@@ -113,28 +108,13 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         mMap.setMinZoomPreference(MIN_ZOOM)
     }
 
-    private fun addMarkerToMap() {
-        val location = LatLng(mDefaultLatitude, mDefaultLongitude)
-        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
-        mMarker = mMap.addMarker(
-            MarkerOptions()
-                .position(location)
-                .icon(icon))
-        mMarker.setDraggable(true)
-    }
-
-    private fun updateMapCamera(aZoom: Float? = null) {
+    private fun updateMapCamera(latitude: Double, longitude: Double, aZoom: Float? = null) {
         val zoom = aZoom ?: mMap.cameraPosition.zoom
-        val newLocation = LatLng(mMarker.position.latitude, mMarker.position.longitude)
+        val newLocation = LatLng(latitude, longitude)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, zoom))
     }
 
-    private fun updateMarkerPosition(latitude: Double, longitude: Double) {
-        mMarker.position = LatLng(latitude, longitude)
-    }
-
     private fun resetMapToDefaults() {
-        updateMarkerPosition(mDefaultLatitude, mDefaultLongitude)
-        updateMapCamera(DEFAULT_ZOOM)
+        updateMapCamera(mDefaultLatitude, mDefaultLongitude, DEFAULT_ZOOM)
     }
 }
