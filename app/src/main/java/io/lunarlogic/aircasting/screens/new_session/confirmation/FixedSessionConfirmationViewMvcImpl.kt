@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.SupportMapFragment
 import io.lunarlogic.aircasting.R
@@ -20,6 +21,9 @@ class FixedSessionConfirmationViewMvcImpl : ConfirmationViewMvcImpl {
         if (session.indoor == true) {
             val instructions = rootView?.findViewById<TextView>(R.id.instructions)
             instructions?.visibility = View.GONE
+
+            val map = rootView?.findViewById<View>(R.id.map)
+            map?.visibility = View.GONE
         }
     }
 
