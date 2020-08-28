@@ -155,13 +155,13 @@
         <item name="android:textSize">@dimen/text_size_s</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.NewSessionDetails.Hint" parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.TextInput.Hint" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_500</item>
         <item name="android:textSize">@dimen/text_size_m</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.NewSessionDetails.Text" parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.TextInput.Text" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:textSize">@dimen/text_size_m</item>
@@ -331,19 +331,19 @@
         <item name="android:textColor">@color/aircasting_dark_blue</item>
     </style>
 
-    <!-- New session details -->
+    <!-- Text inputs -->
 
-    <style name="Widget.Aircasting.NewSessionDetails.TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="Widget.Aircasting.TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/aircasting_grey_50</item>
         <item name="boxStrokeColor">@color/aircasting_grey_100</item>
         <item name="boxStrokeWidthFocused">1dp</item>
         <item name="android:strokeColor">@color/aircasting_grey_100</item>
-        <item name="hintTextAppearance">@style/TextAppearance.Aircasting.NewSessionDetails.Hint</item>
+        <item name="hintTextAppearance">@style/TextAppearance.Aircasting.TextInput.Hint</item>
         <item name="shapeAppearance">@style/Widget.Aircasting.TextInputShapeAppearance</item>
     </style>
 
-    <style name="Widget.Aircasting.NewSessionDetails.TextInputEditText" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textAppearance">@style/TextAppearance.Aircasting.NewSessionDetails.Text</item>
+    <style name="Widget.Aircasting.TextInputEditText" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextInput.Text</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
     </style>
 
@@ -354,6 +354,8 @@
         <item name="cornerFamilyBottomRight">cut</item>
         <item name="cornerSize">0dp</item>
     </style>
+
+    <!-- New session details -->
 
     <style name="Widget.Aircasting.NewSessionDetails.WifiIcon" parent="">
         <item name="android:visibility">invisible</item>

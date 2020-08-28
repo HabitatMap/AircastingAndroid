@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">AircastingAndroid</string>
+
+    <!-- Sign in -->
     <string name="invalid_credentials_message">Incorrect username or password.</string>
-    <string name="login_header">Login</string>
+    <string name="login_header">Sign in</string>
     <string name="login_description">to record and map your environment</string>
     <string name="username_hint">username</string>
     <string name="password_hint">password</string>
-    <string name="login_button">Login</string>
+    <string name="login_button">Sign in</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="create_account_prompt">First time here? Create an account</string>
 
 
     <string name="title_settings">Settings</string>

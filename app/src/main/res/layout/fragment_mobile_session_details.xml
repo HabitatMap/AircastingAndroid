@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/session_details_session_name_hint"
             app:hintEnabled="false"
-            style="@style/Widget.Aircasting.NewSessionDetails.TextInputLayout"
+            style="@style/Widget.Aircasting.TextInputLayout"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
                 android:hint="@string/session_details_session_name_hint"
-                android:textAppearance="@style/TextAppearance.Aircasting.NewSessionDetails.Text"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                 android:textColor="@color/aircasting_grey_700"
                 />
 
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintEnabled="false"
-            style="@style/Widget.Aircasting.NewSessionDetails.TextInputLayout"
+            style="@style/Widget.Aircasting.TextInputLayout"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
                 android:hint="@string/session_details_session_tags_hint"
-                android:textAppearance="@style/TextAppearance.Aircasting.NewSessionDetails.Text"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                 android:textColor="@color/aircasting_grey_700"
                 />
 
