@@ -56,6 +56,13 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
+    fun goToTurnOnLocationServices(listener: TurnOnLocationServicesViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = TurnOnLocationServicesFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
+    }
+
     fun goToTurnOnAirBeam(sessionType: Session.Type, listener: TurnOnAirBeamViewMvc.Listener) {
         incrementStepProgress()
 

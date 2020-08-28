@@ -6,6 +6,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -20,10 +21,7 @@ import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.AirBeamConnectedViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
@@ -52,14 +50,14 @@ class NewSessionController(
     audioReader: AudioReader,
     private val sessionBuilder: SessionBuilder,
     private val sessionType: Session.Type
-) : NewSessionViewMvc.Listener,
-    SelectDeviceTypeViewMvc.Listener,
+) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
     ConnectingAirBeamController.Listener,
     AirBeamConnectedViewMvc.Listener,
     SessionDetailsViewMvc.Listener,
+    TurnOnLocationServicesViewMvc.Listener,
     ChooseLocationViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
@@ -71,9 +69,10 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
-        when (sessionType) {
-            Session.Type.FIXED -> onFixedSessionSelected()
-            Session.Type.MOBILE -> onMobileSessionSelected()
+        if (areLocationServicesOn()) {
+            startNewSessionWizard()
+        } else {
+            wizardNavigator.goToTurnOnLocationServices(this)
         }
     }
 
@@ -81,22 +80,23 @@ class NewSessionController(
         wizardNavigator.onBackPressed()
     }
 
-    fun areLocationServicesOn(): Boolean {
-        val manager =
-            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    private fun startNewSessionWizard() {
+        when (sessionType) {
+            Session.Type.FIXED -> onFixedSessionSelected()
+            Session.Type.MOBILE -> onMobileSessionSelected()
+        }
     }
 
-    override fun onTurnOnLocationServicesClicked() {
-        mContextActivity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+    override fun onTurnOnLocationServicesOkClicked() {
+        val startForResult = mContextActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            startNewSessionWizard()
+        }
+
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startForResult.launch(intent)
     }
 
     override fun onBluetoothDeviceSelected() {
-        if (!areLocationServicesOn()) {
-            val dialog = TurnOnLocationServicesDialog(mFragmentManager, this)
-            dialog.show()
-        }
-
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
                 if (bluetoothManager.permissionsGranted()) {
@@ -123,6 +123,12 @@ class NewSessionController(
         } else {
             mActivity.requestAudioPermissions(permissionsManager)
         }
+    }
+
+    private fun areLocationServicesOn(): Boolean {
+        val manager =
+            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     private fun onFixedSessionSelected() {
