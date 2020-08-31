@@ -186,6 +186,7 @@
             android:text="@string/fixed_session_details_refresh_networks_list_button"
             android:textSize="12sp"
             android:layout_marginEnd="@dimen/keyline_8"
+            android:textAlignment="textEnd"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/networks_list"/>

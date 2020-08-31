@@ -21,6 +21,11 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    <!--  Dialogs -->
+    <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
+    <string name="turn_on_wifi_dialog_description">To see available networks list you need to turn on WIFI.</string>
+    <string name="turn_on_wifi_dialog_ok_button">Turn on</string>
+
     <!-- Let's begin (new session start) -->
     <string name="title_lets_start">Let\'s begin</string>
     <string name="record_new_session_title">Record a new session</string>
@@ -102,7 +107,7 @@
     <string name="fixed_session_details_streaming_method_header">Data transmission:</string>
     <string name="fixed_session_details_cellular">Cellular</string>
     <string name="fixed_session_details_wifi">Wi-Fi</string>
-    <string name="fixed_session_details_networks_list_header">Available networks:</string>
+    <string name="fixed_session_details_networks_list_header">Available 2.4 GHz networks:</string>
     <string name="fixed_session_details_refresh_networks_list_button"><u>Refresh</u></string>
     <string name="fixed_session_details_wifi_password_dialog_header">Provide password for \"%1$s\" network</string>
     <string name="session_details_network_password_hint">Password</string>

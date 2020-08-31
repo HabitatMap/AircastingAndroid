@@ -1,6 +1,8 @@
 package io.lunarlogic.aircasting.di
 
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.new_session.session_details.*
 import io.lunarlogic.aircasting.sensor.Session
 
@@ -12,20 +14,21 @@ class FakeFixedSessionDetailsController(
         val TEST_WIFI_SSID = "fake-wifi"
     }
     init {
-        mViewMvc.bindNetworks(listOf(Network(TEST_WIFI_SSID, 777)))
+        mViewMvc.bindNetworks(listOf(Network(TEST_WIFI_SSID, 777, 2)))
     }
 }
 
 class FakeSessionDetailsControllerFactory: SessionDetailsControllerFactory() {
-    override fun get(context: Context?,
+    override fun get(mContextActivity: FragmentActivity?,
                      view: SessionDetailsViewMvc,
-                     sessionType: Session.Type
+                     sessionType: Session.Type,
+                     fragmentManager: FragmentManager
     ): SessionDetailsController {
         if (sessionType == Session.Type.FIXED) {
-            return FakeFixedSessionDetailsController(context, view as FixedSessionDetailsViewMvcImpl)
+            return FakeFixedSessionDetailsController(mContextActivity, view as FixedSessionDetailsViewMvcImpl)
         }
 
-        return super.get(context, view, sessionType)
+        return super.get(mContextActivity, view, sessionType, fragmentManager)
     }
 }
 

@@ -26,6 +26,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var deviceId: String
     private var indoor = true
     private var streamingMethod = Session.StreamingMethod.CELLULAR
+    private var streamingMethodChangedListener: FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener? = null
     private var networksHeaderView: TextView? = null
     private var refreshNetworksListButton: Button? = null
     private var networkListLoaded = false
@@ -66,15 +67,20 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         }
         networksRecyclerView?.setAdapter(networksRecyclerViewAdapter)
 
-        val streamingMethofToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.streaming_method_toggle)
-        streamingMethofToggle?.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (checkedId == R.id.cellular_button && isChecked) {
-                streamingMethod = Session.StreamingMethod.CELLULAR
-                hideNetworksList()
-            } else {
-                streamingMethod = Session.StreamingMethod.WIFI
-                showNetworksList()
-            }
+        val cellularButton = rootView?.findViewById<Button>(R.id.cellular_button)
+        cellularButton?.setOnClickListener {
+            streamingMethod = Session.StreamingMethod.CELLULAR
+            hideNetworksList()
+
+            streamingMethodChangedListener?.onStreamingMethodChanged(streamingMethod)
+        }
+
+        val wifiButton = rootView?.findViewById<Button>(R.id.wifi_button)
+        wifiButton?.setOnClickListener {
+            streamingMethod = Session.StreamingMethod.WIFI
+            showNetworksList()
+
+            streamingMethodChangedListener?.onStreamingMethodChanged(streamingMethod)
         }
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
@@ -155,8 +161,12 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         }
     }
 
-    override fun registerOnRefreshNetworksListener(refreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener) {
-        networksRefreshListener = refreshListener
+    override fun registerOnStreamingMethodChangedListener(listener: FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener) {
+        streamingMethodChangedListener = listener
+    }
+
+    override fun registerOnRefreshNetworksListener(listener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener) {
+        networksRefreshListener = listener
     }
 
     override fun bindNetworks(networks: List<Network>) {
