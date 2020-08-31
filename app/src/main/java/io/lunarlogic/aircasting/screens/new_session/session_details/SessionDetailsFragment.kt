@@ -28,7 +28,7 @@ class SessionDetailsFragment() : Fragment() {
             .appComponent.inject(this)
 
         val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceId, sessionType)
-        controller = sessionDetailsControllerFactory.get(context, view, sessionType)
+        controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
         controller.onCreate()
 
         return view.rootView
