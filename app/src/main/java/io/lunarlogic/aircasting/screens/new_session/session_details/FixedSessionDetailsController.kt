@@ -33,8 +33,9 @@ class FixedSessionDetailsController(
                 val wifiList = mWifiManager?.getScanResults()
                 wifiList?.let {
                     val networkList = wifiList
-                        .filter { !it.SSID.isEmpty() }
-                        .map { Network(it.SSID, it.level) }
+                        .map { Network(it.SSID, it.level, it.frequency) }
+                        .filter { !it.name.isEmpty() }
+                        .filter { it.frequency <= Network.MAX_FREQUENCY }
                     mViewMvc.bindNetworks(networkList)
                 }
             }

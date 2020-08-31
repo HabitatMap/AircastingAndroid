@@ -14,7 +14,7 @@ class FakeFixedSessionDetailsController(
         val TEST_WIFI_SSID = "fake-wifi"
     }
     init {
-        mViewMvc.bindNetworks(listOf(Network(TEST_WIFI_SSID, 777)))
+        mViewMvc.bindNetworks(listOf(Network(TEST_WIFI_SSID, 777, 2)))
     }
 }
 
