@@ -42,7 +42,11 @@ class LocationHelper(private val mContext: Context) {
 
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
 
-    private var locationRequest: LocationRequest? = null
+    private val locationRequest: LocationRequest
+
+    init {
+        locationRequest = createLocationRequest()
+    }
 
     private var locationCallback: LocationCallback = object: LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -56,14 +60,10 @@ class LocationHelper(private val mContext: Context) {
     }
 
     fun turnOnLocationServices(activity: AppCompatActivity) {
-        if (locationRequest != null) return
-
-        locationRequest = createLocationRequest()
-
-        val builder = LocationSettingsRequest.Builder()
-        builder.setAlwaysShow(true)
-        builder.addLocationRequest(locationRequest!!)
-        val locationSettingsRequest = builder.build()
+        val locationSettingsRequest = LocationSettingsRequest.Builder()
+            .setAlwaysShow(true)
+            .addLocationRequest(locationRequest)
+            .build()
 
         val settingsClient = LocationServices.getSettingsClient(activity)
 
@@ -83,7 +83,6 @@ class LocationHelper(private val mContext: Context) {
     }
 
     fun stop() {
-        locationRequest = null
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
