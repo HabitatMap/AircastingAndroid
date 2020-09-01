@@ -1,12 +1,11 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
+import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
-import android.provider.Settings
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -17,7 +16,6 @@ import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.location.LocationHelper
-import io.lunarlogic.aircasting.permissions.PermissionsActivity
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
@@ -41,7 +39,6 @@ import java.util.*
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
-    private val mActivity: PermissionsActivity,
     mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager,
     private val permissionsManager: PermissionsManager,
@@ -69,6 +66,14 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
+        if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
+            goToFirstStep()
+        } else {
+            permissionsManager.requestLocationPermissions(mContextActivity)
+        }
+    }
+
+    private fun goToFirstStep() {
         if (areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
@@ -81,6 +86,7 @@ class NewSessionController(
     }
 
     private fun startNewSessionWizard() {
+        LocationHelper.start()
         when (sessionType) {
             Session.Type.FIXED -> onFixedSessionSelected()
             Session.Type.MOBILE -> onMobileSessionSelected()
@@ -88,23 +94,20 @@ class NewSessionController(
     }
 
     override fun onTurnOnLocationServicesOkClicked() {
-        val startForResult = mContextActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            startNewSessionWizard()
-        }
+        LocationHelper.turnOnLocationServices(mContextActivity)
+    }
 
-        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        startForResult.launch(intent)
+    private fun requestBluetoothEnable() {
+        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+
+        // I know it's deprecated, but location services requires onActivityResult
+        // so I wanted to be consistent
+        mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
     }
 
     override fun onBluetoothDeviceSelected() {
         try {
             if (bluetoothManager.isBluetoothEnabled()) {
-                if (bluetoothManager.permissionsGranted()) {
-                    LocationHelper.start()
-                } else {
-                    bluetoothManager.requestBluetoothPermissions()
-                }
-
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
             }
@@ -118,10 +121,10 @@ class NewSessionController(
     override fun onMicrophoneDeviceSelected() {
         wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
 
-        if (mActivity.audioPermissionsGranted(permissionsManager)) {
+        if (permissionsManager.audioPermissionsGranted(mContextActivity)) {
             startMicrophoneSession()
         } else {
-            mActivity.requestAudioPermissions(permissionsManager)
+            permissionsManager.requestAudioPermissions(mContextActivity)
         }
     }
 
@@ -140,21 +143,20 @@ class NewSessionController(
     }
 
     private fun startMicrophoneSession() {
-        LocationHelper.start()
         microphoneReader.start()
     }
 
     override fun onTurnOnBluetoothOkClicked() {
-        bluetoothManager.enableBluetooth()
+        requestBluetoothEnable()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH -> {
-                if (bluetoothManager.permissionsGranted(grantResults)) {
-                    mActivity.requestBluetoothEnable()
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
+                if (permissionsManager.permissionsGranted(grantResults)) {
+                    goToFirstStep()
                 } else {
-                    errorHandler.showError(R.string.errors_bluetooth_required)
+                    errorHandler.showError(R.string.errors_location_services_required)
                 }
             }
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO -> {
@@ -172,9 +174,15 @@ class NewSessionController(
 
     fun onActivityResult(requestCode: Int, resultCode: Int) {
         when (requestCode) {
+            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    startNewSessionWizard()
+                } else {
+                    errorHandler.showError(R.string.errors_location_services_required)
+                }
+            }
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    LocationHelper.start()
                     wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)

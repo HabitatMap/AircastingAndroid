@@ -1,11 +1,16 @@
 package io.lunarlogic.aircasting.location
 
 import android.content.Context
+import android.content.IntentSender
 import android.location.Location
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import io.lunarlogic.aircasting.events.LocationChanged
+import io.lunarlogic.aircasting.lib.ResultCodes
 import org.greenrobot.eventbus.EventBus
+
 
 class LocationHelper(private val mContext: Context) {
     companion object {
@@ -13,6 +18,10 @@ class LocationHelper(private val mContext: Context) {
 
         fun setup(context: Context) {
             singleton = LocationHelper(context)
+        }
+
+        fun turnOnLocationServices(activity: AppCompatActivity) {
+            singleton.turnOnLocationServices(activity)
         }
 
         fun start() {
@@ -33,7 +42,11 @@ class LocationHelper(private val mContext: Context) {
 
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
 
-    private var locationRequest: LocationRequest? = null
+    private val locationRequest: LocationRequest
+
+    init {
+        locationRequest = createLocationRequest()
+    }
 
     private var locationCallback: LocationCallback = object: LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -46,15 +59,30 @@ class LocationHelper(private val mContext: Context) {
         }
     }
 
-    fun start() {
-        if (locationRequest != null) return
+    fun turnOnLocationServices(activity: AppCompatActivity) {
+        val locationSettingsRequest = LocationSettingsRequest.Builder()
+            .setAlwaysShow(true)
+            .addLocationRequest(locationRequest)
+            .build()
 
-        locationRequest = createLocationRequest()
+        val settingsClient = LocationServices.getSettingsClient(activity)
+
+        val task = settingsClient.checkLocationSettings(locationSettingsRequest)
+        task.addOnFailureListener { e ->
+            if (e is ResolvableApiException) {
+                try {
+                    e.startResolutionForResult(activity,
+                        ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE)
+                } catch (sendEx: IntentSender.SendIntentException) { }
+            }
+        }
+    }
+
+    fun start() {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
     fun stop() {
-        locationRequest = null
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
