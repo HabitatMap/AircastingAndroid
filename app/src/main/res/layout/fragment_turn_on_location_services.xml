@@ -15,7 +15,7 @@
             android:id="@+id/turn_location_services_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/sync_step3"
+            android:src="@drawable/sync_step1"
             android:contentDescription="@string/turn_on_location_services_image_desc"
             android:layout_marginTop="@dimen/keyline_10"
             app:layout_constraintTop_toTopOf="parent"
