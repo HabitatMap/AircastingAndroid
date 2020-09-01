@@ -10,12 +10,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.helpers.stubBluetooth
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
@@ -85,7 +83,9 @@ class MobileSessionTest {
     @Test
     fun testBluetoothMobileSessionRecording() {
         settings.setAuthToken("TOKEN")
-        stubBluetooth(bluetoothManager)
+
+        whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         val airBeamAddress = "00:18:96:10:70:D6"
         stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
 
@@ -95,9 +95,7 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
-
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
-        verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
@@ -134,6 +132,8 @@ class MobileSessionTest {
     @Test
     fun testMicrophoneMobileSessionRecording() {
         settings.setAuthToken("TOKEN")
+
+        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
 
         testRule.launchActivity(null)
 

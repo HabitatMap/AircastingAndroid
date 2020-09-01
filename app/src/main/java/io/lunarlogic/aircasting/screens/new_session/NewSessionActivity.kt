@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.new_session
 
-import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -11,8 +10,6 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.NavigationController
-import io.lunarlogic.aircasting.permissions.PermissionsActivity
-import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
@@ -22,8 +19,7 @@ import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import javax.inject.Inject
 
-class NewSessionActivity : AppCompatActivity(),
-    PermissionsActivity {
+class NewSessionActivity : AppCompatActivity() {
 
     private lateinit var controller: NewSessionController
 
@@ -68,13 +64,11 @@ class NewSessionActivity : AppCompatActivity(),
         val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as Session.Type
 
         val app = application as AircastingApplication
-        app.permissionsModule.permissionsActivity = this
         val appComponent = app.appComponent
         appComponent.inject(this)
 
         val view = NewSessionViewMvcImpl(layoutInflater, null)
         controller = NewSessionController(
-            this,
             this,
             view,
             supportFragmentManager,
@@ -92,27 +86,6 @@ class NewSessionActivity : AppCompatActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun requestBluetoothPermissions(permissionsManager: PermissionsManager) {
-        permissionsManager.requestBluetoothPermissions(this)
-    }
-
-    override fun bluetoothPermissionsGranted(permissionsManager: PermissionsManager): Boolean {
-        return permissionsManager.bluetoothPermissionsGranted(this)
-    }
-
-    override fun requestBluetoothEnable() {
-        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
-    }
-
-    override fun requestAudioPermissions(permissionsManager: PermissionsManager) {
-        permissionsManager.requestAudioPermissions(this)
-    }
-
-    override fun audioPermissionsGranted(permissionsManager: PermissionsManager): Boolean {
-        return permissionsManager.audioPermissionsGranted(this)
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
         controller.onBackPressed()
@@ -120,6 +93,7 @@ class NewSessionActivity : AppCompatActivity(),
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller.onRequestPermissionsResult(requestCode, grantResults)
     }
 

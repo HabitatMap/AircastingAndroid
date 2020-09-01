@@ -19,24 +19,24 @@ open class PermissionsManager {
         return false
     }
 
-    fun bluetoothPermissionsGranted(context: Context): Boolean {
+    open fun locationPermissionsGranted(context: Context): Boolean {
         return permissionsGranted(LOCATION_PERMISSIONS, context)
     }
 
     open fun audioPermissionsGranted(context: Context): Boolean {
-        return permissionsGranted(AUDIO_PERMISSIONS.plus(LOCATION_PERMISSIONS), context)
+        return permissionsGranted(AUDIO_PERMISSIONS, context)
     }
 
-    fun requestBluetoothPermissions(activity: Activity) {
+    open fun requestLocationPermissions(activity: Activity) {
         ActivityCompat.requestPermissions(activity,
             LOCATION_PERMISSIONS,
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION
         )
     }
 
     fun requestAudioPermissions(activity: Activity) {
         ActivityCompat.requestPermissions(activity,
-            AUDIO_PERMISSIONS.plus(LOCATION_PERMISSIONS),
+            AUDIO_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO
         )
     }

@@ -3,21 +3,20 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.any
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.helpers.selectTabAtPosition
-import io.lunarlogic.aircasting.helpers.stubBluetooth
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
@@ -34,6 +33,9 @@ import javax.inject.Inject
 class FixedSessionTest {
     @Inject
     lateinit var settings: Settings
+
+    @Inject
+    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
@@ -81,7 +83,9 @@ class FixedSessionTest {
     @Test
     fun testFixedOutdoorSessionRecording() {
         settings.setAuthToken("TOKEN")
-        stubBluetooth(bluetoothManager)
+
+        whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         val airBeamAddress = "00:18:96:10:70:D6"
         stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
 
@@ -91,7 +95,6 @@ class FixedSessionTest {
         onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
-        verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 
@@ -143,7 +146,9 @@ class FixedSessionTest {
     @Test
     fun testFixedIndoorSessionRecording() {
         settings.setAuthToken("TOKEN")
-        stubBluetooth(bluetoothManager)
+
+        whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         val airBeamAddress = "00:18:96:10:70:D6"
         stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
 
@@ -153,7 +158,6 @@ class FixedSessionTest {
         onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
-        verify(bluetoothManager).requestBluetoothPermissions();
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
 

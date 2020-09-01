@@ -122,8 +122,9 @@
     <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
     <string name="fixed_session_choose_location_continue_button">Continue</string>
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
-    <string name="errors_bluetooth_required">Bluetooth and location services are required to continue</string>
-    <string name="errors_audio_required">Audio and location permissions are required to continue</string>
+    <string name="errors_location_services_required">Without location services you will not be able to record mobile and fixed outdoor sessions.</string>
+    <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
+    <string name="errors_audio_required">Audio permissions are required to continue</string>
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_name_required">Session name can\'t be blank.</string>
