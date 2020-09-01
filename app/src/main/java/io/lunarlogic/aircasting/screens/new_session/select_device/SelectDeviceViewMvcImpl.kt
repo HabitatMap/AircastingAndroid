@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.select_device_group_header.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.*
@@ -91,8 +92,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
 
         fun showLoader() {
-            val animatable: Animatable? = mLoader?.drawable as? Animatable
-            animatable?.start()
+            AnimatedLoader(mLoader).start()
             mLoader?.visibility = View.VISIBLE
             hideRefreshButton()
 

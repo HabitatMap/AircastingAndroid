@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 
 class ConnectingAirBeamViewMvcImpl : BaseViewMvc, ConnectingAirBeamViewMvc {
@@ -18,7 +19,6 @@ class ConnectingAirBeamViewMvcImpl : BaseViewMvc, ConnectingAirBeamViewMvc {
 
     private fun startLoader() {
         val loader = rootView?.findViewById<ImageView>(R.id.loader)
-        val animatable: Animatable? = loader?.drawable as? Animatable
-        animatable?.start()
+        AnimatedLoader(loader).start()
     }
 }
