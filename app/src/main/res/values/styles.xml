@@ -35,16 +35,16 @@
     </style>
 
     <style name="TextAppearance.Aircasting.Headline2" parent="@style/TextAppearance.AppCompat">
-        <item name="android:fontFamily">@font/moderat_trial_regular</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/header2_text_size</item>
-        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Headline3" parent="@style/TextAppearance.AppCompat">
-        <item name="android:fontFamily">@font/moderat_trial_bold</item>
-        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/header3_text_size</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Headline4" parent="@style/TextAppearance.AppCompat">
