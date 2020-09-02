@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.content.Context
 import android.widget.Toast
+import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
@@ -26,13 +27,15 @@ class LoginController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onLoginClicked(username: String, password: String) {
+    override fun onLoginClicked(username: String, password: String, usernameInputLayout: TextInputLayout, passwordInputLayout: TextInputLayout) {
         val successCallback = {
             performSessionSync()
             MainActivity.start(mContext)
         }
         val message = mContext.getString(R.string.invalid_credentials_message)
         val errorCallback = {
+            usernameInputLayout.error = " "
+            passwordInputLayout.error = " "
             val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
             toast.show()
         }
