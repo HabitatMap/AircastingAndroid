@@ -4,6 +4,7 @@ import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject
 import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
+import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 
 class MeasurementStream(
     val sensorPackageName: String,
@@ -66,6 +67,13 @@ class MeasurementStream(
         sessionStreamResponse.threshold_high,
         sessionStreamResponse.threshold_very_high
     )
+
+    constructor(sessionStreamWithMeasurementsResponse: SessionStreamWithMeasurementsResponse):
+            this(sessionStreamWithMeasurementsResponse as SessionStreamResponse) {
+        this.mMeasurements = sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
+            Measurement(measurementResponse)
+        }
+    }
 
     val detailedType: String?
 

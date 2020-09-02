@@ -56,6 +56,7 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
 
     private fun bindLastMeasurement(stream: MeasurementStream) {
         val measurement = stream.measurements.lastOrNull()
+//        println("ANIA " + measurement?.value)
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
 
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)

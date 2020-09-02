@@ -60,4 +60,7 @@ interface MeasurementStreamDao {
 
     @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
     fun loadStreamBySessionIdAndSensorName(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
+
+    @Query("DELETE FROM measurement_streams")
+    fun deleteAll()
 }

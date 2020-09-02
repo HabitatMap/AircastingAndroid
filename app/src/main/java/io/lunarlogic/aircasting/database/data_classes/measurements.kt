@@ -14,11 +14,13 @@ import java.util.*
         )
     ],
     indices = [
-        Index("measurement_stream_id")
+        Index("measurement_stream_id"),
+        Index("session_id")
     ]
 )
 data class MeasurementDBObject(
     @ColumnInfo(name = "measurement_stream_id") val measurementStreamId: Long,
+    @ColumnInfo(name = "session_id") val sessionId: Long,
     @ColumnInfo(name = "value") val value: Double,
     @ColumnInfo(name = "time") val time: Date,
     @ColumnInfo(name = "latitude") val latitude: Double?,
@@ -35,4 +37,10 @@ interface MeasurementDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(measurement: MeasurementDBObject): Long
+
+    @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT 1")
+    fun lastForSession(sessionId: Long): MeasurementDBObject
+
+    @Query("DELETE FROM measurements")
+    fun deleteAll()
 }
