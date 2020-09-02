@@ -7,4 +7,6 @@ interface LoginViewMvc : ObservableViewMvc<LoginViewMvc.Listener> {
     interface Listener {
         fun onLoginClicked(username: String, password: String)
     }
+
+    fun showError()
 }

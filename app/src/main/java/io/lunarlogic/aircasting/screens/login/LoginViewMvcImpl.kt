@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.new_session
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
+import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
@@ -18,11 +19,18 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     private fun onLoginClicked() {
-        val username = getEditTextValue(R.id.username)
-        val password = getEditTextValue(R.id.password)
+        val username = getEditTextValue(R.id.username_input)
+        val password = getEditTextValue(R.id.password_input)
 
         for (listener in listeners) {
             listener.onLoginClicked(username, password)
         }
+    }
+
+    override fun showError() {
+        val usernameInputLayout = findViewById<TextInputLayout>(R.id.username)
+        val passwordInputLayout = findViewById<TextInputLayout>(R.id.password)
+        usernameInputLayout.error = " "
+        passwordInputLayout.error = " "
     }
 }
