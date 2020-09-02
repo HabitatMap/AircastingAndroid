@@ -10,13 +10,13 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiService
 import io.lunarlogic.aircasting.networking.services.FixedSessionUploadService
-import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService) {
     private val errorHandler = ErrorHandler(mContext)
-    private val mobileSessionsSyncService = MobileSessionsSyncService(apiService, errorHandler)
+    private val mobileSessionsSyncService = SessionsSyncService(apiService, errorHandler)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
