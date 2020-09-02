@@ -9,7 +9,8 @@
     <string name="password_hint">Password</string>
     <string name="login_button">Sign in</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="create_account_prompt">First time here? Create an account</string>
+    <string name="create_account_prompt">First time here? </string>
+    <string name="create_account_button">Create an account</string>
 
 
     <string name="title_settings">Settings</string>

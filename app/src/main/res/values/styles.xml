@@ -101,6 +101,12 @@
         <item name="android:textSize">@dimen/text_button_text_size</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Login.TextButton" parent="">
+        <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
+    
     <style name="TextAppearance.Aircasting.ToggleButton" parent="TextAppearance.Aircasting.TextButton">
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textSize">@dimen/text_size_s</item>
