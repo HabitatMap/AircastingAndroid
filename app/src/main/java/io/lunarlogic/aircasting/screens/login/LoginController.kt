@@ -27,15 +27,14 @@ class LoginController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onLoginClicked(username: String, password: String, usernameInputLayout: TextInputLayout, passwordInputLayout: TextInputLayout) {
+    override fun onLoginClicked(username: String, password: String) {
         val successCallback = {
             performSessionSync()
             MainActivity.start(mContext)
         }
         val message = mContext.getString(R.string.invalid_credentials_message)
         val errorCallback = {
-            usernameInputLayout.error = " "
-            passwordInputLayout.error = " "
+            mViewMvc.showError()
             val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
             toast.show()
         }

@@ -21,11 +21,16 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     private fun onLoginClicked() {
         val username = getEditTextValue(R.id.username_input)
         val password = getEditTextValue(R.id.password_input)
-        val usernameInputLayout = findViewById<TextInputLayout>(R.id.username)
-        val passwordInputLayout = findViewById<TextInputLayout>(R.id.password)
 
         for (listener in listeners) {
-            listener.onLoginClicked(username, password, usernameInputLayout, passwordInputLayout)
+            listener.onLoginClicked(username, password)
         }
+    }
+
+    override fun showError() {
+        val usernameInputLayout = findViewById<TextInputLayout>(R.id.username)
+        val passwordInputLayout = findViewById<TextInputLayout>(R.id.password)
+        usernameInputLayout.error = " "
+        passwordInputLayout.error = " "
     }
 }
