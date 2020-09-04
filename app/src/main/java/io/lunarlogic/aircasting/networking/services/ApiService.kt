@@ -9,6 +9,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
+import io.lunarlogic.aircasting.networking.params.CreateAccountBody
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.responses.SessionResponse
@@ -35,6 +36,9 @@ interface ApiService {
 
     @GET("/api/user.json")
     fun login(): Call<UserResponse>
+
+    @POST("/api/user.json")
+    fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 }
 
 class ApiServiceFactory {

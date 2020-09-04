@@ -16,6 +16,11 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
         loginButton?.setOnClickListener {
             onLoginClicked()
         }
+
+        val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
+        createAccountButton?.setOnClickListener {
+            onCreateAccountClicked()
+        }
     }
 
     private fun onLoginClicked() {
@@ -24,6 +29,12 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
 
         for (listener in listeners) {
             listener.onLoginClicked(username, password)
+        }
+    }
+
+    private fun onCreateAccountClicked() {
+        for (listener in listeners) {
+            listener.onCreateAccountClicked()
         }
     }
 

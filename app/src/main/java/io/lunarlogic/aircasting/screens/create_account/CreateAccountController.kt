@@ -15,7 +15,7 @@ class CreateAccountController(
     private val mSettings: Settings
 ) : CreateAccountViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mContext)
-    private val mLoginService = CreateAccountService(mSettings, mErrorHandler)
+    private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler)
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -25,23 +25,18 @@ class CreateAccountController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onCreateAccountClicked(username: String, password: String) {
+    override fun onCreateAccountClicked(username: String, password: String, email: String) {
+        print("trying to create account")
         val successCallback = {
-            performSessionSync()
             MainActivity.start(mContext)
         }
-        val message = mContext.getString(R.string.invalid_credentials_message)
+        val message = "Something wrong with the credentials"
         val errorCallback = {
             mViewMvc.showError()
             val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
             toast.show()
         }
-        mLoginService.performCreateAccount(username, password, successCallback, errorCallback)
+        mCreateAccountService.performCreateAccount(username, password, email, successCallback, errorCallback)
     }
 
-    private fun performSessionSync() {
-        val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-        val sessionSyncService = MobileSessionsSyncService(apiService, mErrorHandler)
-        sessionSyncService.sync()
-    }
 }

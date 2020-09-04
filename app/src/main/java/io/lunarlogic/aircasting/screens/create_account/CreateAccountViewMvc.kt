@@ -5,7 +5,7 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 
 interface CreateAccountViewMvc : ObservableViewMvc<CreateAccountViewMvc.Listener> {
     interface Listener {
-        fun onCreateAccountClicked(username: String, password: String)
+        fun onCreateAccountClicked(username: String, password: String, email: String)
     }
 
     fun showError()

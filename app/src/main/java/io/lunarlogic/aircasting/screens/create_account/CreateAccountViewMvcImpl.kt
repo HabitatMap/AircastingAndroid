@@ -6,14 +6,13 @@ import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.new_session.LoginViewMvc
 
-class CreateAccountViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {
+class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.Listener>, CreateAccountViewMvc {
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
         this.rootView = inflater.inflate(R.layout.activity_create_account, parent, false)
 
-        val createAccountButton = rootView?.findViewById<Button>(R.id.login_button)
+        val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
         createAccountButton?.setOnClickListener {
             onCreateAccountClicked()
         }
@@ -22,9 +21,10 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, L
     private fun onCreateAccountClicked() {
         val username = getEditTextValue(R.id.username_input)
         val password = getEditTextValue(R.id.password_input)
+        val email = getEditTextValue(R.id.email_input)
 
         for (listener in listeners) {
-            listener.onLoginClicked(username, password)
+            listener.onCreateAccountClicked(username, password, email)
         }
     }
 

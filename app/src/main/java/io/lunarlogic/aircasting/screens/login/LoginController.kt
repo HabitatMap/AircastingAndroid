@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
+import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
 
@@ -39,6 +40,10 @@ class LoginController(
             toast.show()
         }
         mLoginService.performLogin(username, password, successCallback, errorCallback)
+    }
+
+    override fun onCreateAccountClicked() {
+        CreateAccountActivity.start(mContext)
     }
 
     private fun performSessionSync() {
