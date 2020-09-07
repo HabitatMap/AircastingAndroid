@@ -118,6 +118,22 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/send_emails_input"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/send_emails"
+        android:checked="true"
+        android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+        android:textColor="@color/aircasting_grey_700"
+        android:buttonTint="?attr/colorPrimary"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        app:layout_constraintTop_toBottomOf="@id/password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
     <Button
         android:id="@+id/create_account_button"
         android:layout_width="match_parent"
@@ -125,21 +141,21 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginTop="@dimen/keyline_8"
-        android:text="@string/login_button"
-        app:layout_constraintTop_toBottomOf="@id/password"
+        android:text="@string/create_account_button"
+        app:layout_constraintTop_toBottomOf="@id/send_emails_input"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/create_account_prompt"
+        android:id="@+id/login_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_account_prompt"
+        android:text="@string/login_prompt"
         android:textAppearance="?attr/textAppearanceHeadline4"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_6"
         android:paddingLeft="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/login_button"
+        app:layout_constraintTop_toBottomOf="@id/create_account_button"
         app:layout_constraintStart_toStartOf="parent" />
     <Button
         android:id="@+id/sign_in_button"
@@ -147,13 +163,13 @@
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_account_text_button"
+        android:text="@string/login_text_button"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_6"
+        android:minWidth="0dp"
         app:rippleColor="@null"
-        app:layout_constraintTop_toBottomOf="@id/login_button"
-        app:layout_constraintBottom_toBottomOf="@id/create_account_prompt"
-        app:layout_constraintStart_toEndOf="@id/create_account_prompt" />
-
+        app:layout_constraintTop_toBottomOf="@id/create_account_button"
+        app:layout_constraintBottom_toBottomOf="@id/login_prompt"
+        app:layout_constraintStart_toEndOf="@id/login_prompt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
