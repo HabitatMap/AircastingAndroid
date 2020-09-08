@@ -74,7 +74,7 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun byType(type: Session.Type): List<SessionDBObject>
 
     @Query("SELECT * FROM sessions WHERE status=:status")
