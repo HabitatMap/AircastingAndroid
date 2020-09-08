@@ -52,7 +52,8 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
         val inputId = rootView?.resources?.getIdentifier(inputLayoutName, "id", context.packageName)
         inputId.let {
             val inputLayout: TextInputLayout = findViewById<TextInputLayout>(it!!)
-            val errors: List<String> = errorRespose.javaClass.getMethod("get"+inputLayoutName.capitalize()).invoke(errorRespose) as List<String>
+            val errors: List<String>? = errorRespose.javaClass.getMethod("get"+inputLayoutName.capitalize()).invoke(errorRespose) as? List<String>
+
             if(errors != null && !errors.isEmpty()) {
                 inputLayout.error = errors.joinToString(separator = ". ")
             } else {
