@@ -19,6 +19,7 @@ import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
+import org.hamcrest.CoreMatchers
 import org.junit.*
 import org.junit.Assert.assertEquals
 
@@ -99,7 +100,7 @@ class CreateAccountTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.create_account_button)).perform(click())
+        onView(CoreMatchers.allOf(withId(R.id.create_account_button), isDisplayed())).perform(click())
 
         Thread.sleep(2000)
 
@@ -139,7 +140,7 @@ class CreateAccountTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.create_account_button)).perform(click())
+        onView(CoreMatchers.allOf(withId(R.id.create_account_button), isDisplayed())).perform(click())
 
         Thread.sleep(2000)
 
