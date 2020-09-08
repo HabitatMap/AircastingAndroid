@@ -92,7 +92,7 @@ class CreateAccountTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.create_account_button)).perform(click())
+        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
         Thread.sleep(500)
         onView(withId(R.id.email_input)).perform(ViewActions.typeText("maria@example.org"))
         Espresso.closeSoftKeyboard()
@@ -100,7 +100,7 @@ class CreateAccountTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()
-        onView(CoreMatchers.allOf(withId(R.id.create_account_button), isDisplayed())).perform(click())
+        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
 
         Thread.sleep(2000)
 
@@ -134,8 +134,10 @@ class CreateAccountTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.create_account_button)).perform(click())
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
         Thread.sleep(500)
+        Espresso.closeSoftKeyboard()
         onView(withId(R.id.username_input)).perform(ViewActions.typeText("maria"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
