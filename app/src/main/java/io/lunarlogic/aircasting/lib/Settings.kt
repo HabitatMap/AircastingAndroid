@@ -22,11 +22,8 @@ open class Settings(mApplication: Application) {
         return sharedPreferences.getString(EMAIL_KEY, null)
     }
 
-    open fun setEmail(email: String) {
+    open fun login(email: String, authToken: String) {
         saveToSettings(EMAIL_KEY, email)
-    }
-
-    open fun setAuthToken(authToken: String) {
         saveToSettings(AUTH_TOKEN_KEY, authToken)
     }
 

@@ -23,8 +23,7 @@ class LoginService(val mSettings: Settings, private val mErrorHandler: ErrorHand
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
-                        mSettings.setEmail(body.email)
-                        mSettings.setAuthToken(body.authentication_token)
+                        mSettings.login(body.email, body.authentication_token)
                     }
                     successCallback()
                 } else if(response.code() == 401) {

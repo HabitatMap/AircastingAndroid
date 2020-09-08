@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.networking.params.CreateAccountParams
 import io.lunarlogic.aircasting.networking.responses.CreateAccountErrorResponse
 import io.lunarlogic.aircasting.networking.responses.UserResponse
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import okhttp3.Interceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,7 +21,7 @@ class CreateAccountService(val mSettings: Settings, private val mErrorHandler: E
         successCallback: () -> Unit,
         errorCallback: (CreateAccountErrorResponse) -> Unit
     ) {
-        val apiService = ApiServiceFactory.get(username, password)
+        val apiService = ApiServiceFactory.get(emptyList())
         val createAccountParams = CreateAccountParams(
             username,
             password,
@@ -35,12 +36,11 @@ class CreateAccountService(val mSettings: Settings, private val mErrorHandler: E
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
-                        mSettings.setEmail(body.email)
-                        mSettings.setAuthToken(body.authentication_token)
+                        mSettings.login(body.email, body.authentication_token)
                     }
                     successCallback()
                 } else if (response.code() == 422) {
-                    val errorResponse = Gson().fromJson<CreateAccountErrorResponse>(response.errorBody()?.string(), CreateAccountErrorResponse::class.java )
+                    val errorResponse = Gson().fromJson<CreateAccountErrorResponse>(response.errorBody()?.string(), CreateAccountErrorResponse::class.java)
                     errorCallback(errorResponse)
                 } else {
                     mErrorHandler.handleAndDisplay(InternalAPIError())
