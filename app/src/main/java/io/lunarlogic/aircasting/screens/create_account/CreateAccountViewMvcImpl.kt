@@ -42,19 +42,23 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
         }
     }
 
-    override fun showError(errorRespose: CreateAccountErrorResponse) {
-        val emailInputLayout = findViewById<TextInputLayout>(R.id.email)
-        val usernameInputLayout = findViewById<TextInputLayout>(R.id.username)
-        val passwordInputLayout = findViewById<TextInputLayout>(R.id.password)
-        if(errorRespose.email != null && !errorRespose.email.isEmpty()) {
-            emailInputLayout.error = errorRespose.email.first()
-        }
-        if(errorRespose.username != null && !errorRespose.username.isEmpty()) {
-            usernameInputLayout.error = errorRespose.username.first()
+    override fun showErrors(errorRespose: CreateAccountErrorResponse) {
+        showError("email", errorRespose)
+        showError("username", errorRespose)
+        showError("password", errorRespose)
+    }
+
+    private fun showError(inputLayoutName: String, errorRespose: CreateAccountErrorResponse) {
+        val inputId = rootView?.resources?.getIdentifier(inputLayoutName, "id", context.packageName)
+        inputId.let {
+            val inputLayout: TextInputLayout = findViewById<TextInputLayout>(it!!)
+            val errors: List<String> = errorRespose.javaClass.getMethod("get"+inputLayoutName.capitalize()).invoke(errorRespose) as List<String>
+            if(errors != null && !errors.isEmpty()) {
+                inputLayout.error = errors.joinToString(separator = ". ")
+            } else {
+                inputLayout.error = null
+            }
         }
 
-        if(errorRespose.password != null && !errorRespose.password.isEmpty()) {
-            passwordInputLayout.error = errorRespose.password.first()
-        }
     }
 }

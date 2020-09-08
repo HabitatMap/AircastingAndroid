@@ -10,5 +10,5 @@ interface CreateAccountViewMvc : ObservableViewMvc<CreateAccountViewMvc.Listener
         fun onLoginClicked()
     }
 
-    fun showError(errorResponse: CreateAccountErrorResponse)
+    fun showErrors(errorResponse: CreateAccountErrorResponse)
 }
