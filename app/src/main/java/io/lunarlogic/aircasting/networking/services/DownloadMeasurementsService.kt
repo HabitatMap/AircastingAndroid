@@ -48,7 +48,6 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
             val dbSessions = sessionsRepository.fixedSessions()
             dbSessions.forEach { dbSession ->
                 val session = Session(dbSession)
-                println("ANIA name " + session.name)
                 downloadMeasurements(dbSession.id, session)
             }
         }
@@ -86,13 +85,6 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
                             val streamResponses = streams.values
                             streamResponses.forEach { streamResponse ->
                                 saveStreamData(streamResponse)
-                            }
-                            DatabaseProvider.runQuery {
-                                println(
-                                    "ANIA measurements count " + DatabaseProvider.get()
-                                        .measurements()
-                                        .getAll().size
-                                )
                             }
                         }
                     }
