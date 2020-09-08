@@ -82,7 +82,7 @@ class MobileSessionTest {
 
     @Test
     fun testBluetoothMobileSessionRecording() {
-        settings.setAuthToken("TOKEN")
+        settings.login("X", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -131,7 +131,7 @@ class MobileSessionTest {
 
     @Test
     fun testMicrophoneMobileSessionRecording() {
-        settings.setAuthToken("TOKEN")
+        settings.login("X", "TOKEN")
 
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
 
