@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.create_account
 
 import android.content.Context
 import android.widget.Toast
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.responses.CreateAccountErrorResponse
@@ -25,14 +26,12 @@ class CreateAccountController(
     }
 
     override fun onCreateAccountClicked(username: String, password: String, email: String, send_emails: Boolean) {
-        print("trying to create account")
         val successCallback = {
             MainActivity.start(mContext)
         }
-        val message = "Something wrong with the credentials"
+        val message =  mContext.getString(R.string.create_account_errors_message)
         val errorCallback = { errorResponse: CreateAccountErrorResponse ->
             mViewMvc.showErrors(errorResponse)
-            println("przekazany error: "+errorResponse.email)
             val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
             toast.show()
         }

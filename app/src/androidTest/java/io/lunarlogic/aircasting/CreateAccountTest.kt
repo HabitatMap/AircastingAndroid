@@ -9,7 +9,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import org.hamcrest.CoreMatchers.allOf
 import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.di.AppModule
 import io.lunarlogic.aircasting.di.MockWebServerModule

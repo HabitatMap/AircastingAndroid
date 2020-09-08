@@ -20,6 +20,7 @@
     <string name="login_prompt">Already have an account?</string>
     <string name="login_text_button">Sign in</string>
     <string name="send_emails">Send me emails from AirCasting</string>
+    <string name="create_account_errors_message">There are errors in the form. Please fix them before continuing.</string>
 
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty_header">Ready to get started?</string>

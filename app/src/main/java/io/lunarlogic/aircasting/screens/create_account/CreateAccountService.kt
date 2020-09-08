@@ -40,9 +40,7 @@ class CreateAccountService(val mSettings: Settings, private val mErrorHandler: E
                     }
                     successCallback()
                 } else if (response.code() == 422) {
-//                    println("errorek: " + response.errorBody()?.string())
                     val errorResponse = Gson().fromJson<CreateAccountErrorResponse>(response.errorBody()?.string(), CreateAccountErrorResponse::class.java )
-                    println("czy ładny error? "+errorResponse.email)
                     errorCallback(errorResponse)
                 } else {
                     mErrorHandler.handleAndDisplay(InternalAPIError())
