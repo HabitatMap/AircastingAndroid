@@ -68,8 +68,9 @@ class MeasurementStream(
         sessionStreamResponse.threshold_very_high
     )
 
-    constructor(sessionStreamWithMeasurementsResponse: SessionStreamWithMeasurementsResponse):
-            this(sessionStreamWithMeasurementsResponse as SessionStreamResponse) {
+    constructor(
+        sessionStreamWithMeasurementsResponse: SessionStreamWithMeasurementsResponse
+    ): this(sessionStreamWithMeasurementsResponse as SessionStreamResponse) {
         this.mMeasurements = sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
             Measurement(measurementResponse)
         }
