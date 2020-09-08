@@ -150,6 +150,10 @@ class Session(
         return durationString
     }
 
+    fun measurementsCount(): Int {
+        return streams.map { stream -> stream.measurements.size }.sum()
+    }
+
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()

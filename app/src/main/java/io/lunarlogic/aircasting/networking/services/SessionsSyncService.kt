@@ -15,9 +15,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
-class MobileSessionsSyncService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class SessionsSyncService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     private val uploadService = MobileSessionUploadService(apiService, errorHandler)
-    private val downloadService = DownloadService(apiService, errorHandler)
+    private val downloadService = SessionDownloadService(apiService, errorHandler)
 
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()

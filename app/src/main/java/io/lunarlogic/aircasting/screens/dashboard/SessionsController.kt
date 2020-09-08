@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionsController(
@@ -21,7 +21,7 @@ abstract class SessionsController(
 ) : SessionsViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mMobileSessionsSyncService = MobileSessionsSyncService(mApiService, mErrorHandler)
+    private val mMobileSessionsSyncService = SessionsSyncService(mApiService, mErrorHandler)
 
     fun registerSessionsObserver() {
         loadSessions().observe(mLifecycleOwner, Observer { sessions ->

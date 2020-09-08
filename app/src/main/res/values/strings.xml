@@ -131,6 +131,8 @@
     <string name="errors_audio_required">Audio permissions are required to continue</string>
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
+    <string name="session_no_measurements_label1">Your AirBeam is gathering data.</string>
+    <string name="session_no_measurements_label2">Measurements will appear in 3 minutes.</string>
     <string name="session_name_required">Session name can\'t be blank.</string>
     <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
     <string name="active_session_already_exists">Active session already exists for this device.</string>
