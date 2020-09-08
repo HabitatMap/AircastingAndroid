@@ -17,7 +17,7 @@ import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService) {
     private val errorHandler = ErrorHandler(mContext)
-    private val mobileSessionsSyncService = SessionsSyncService(apiService, errorHandler)
+    private val sessionsSyncService = SessionsSyncService(apiService, errorHandler)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadService = DownloadMeasurementsService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
@@ -102,7 +102,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
-                mobileSessionsSyncService.sync()
+                sessionsSyncService.sync()
             }
         }
     }
@@ -110,6 +110,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.markForRemoval(listOf(sessionUUID))
+            sessionsSyncService.sync()
         }
     }
 }
