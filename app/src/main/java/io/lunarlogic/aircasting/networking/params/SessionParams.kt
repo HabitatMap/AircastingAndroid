@@ -6,11 +6,16 @@ import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.sensor.microphone.DEFAULT_CALIBRATION
 
 class SessionParams {
+    companion object {
+        val MOBILE_SESSION_TYPE = "MobileSession"
+        val FIXED_SESSION_TYPE = "FixedSession"
+    }
+
     constructor(session: Session) {
         this.uuid = session.uuid
         this.type = when(session.type) {
-            Session.Type.FIXED -> "FixedSession"
-            Session.Type.MOBILE -> "MobileSession"
+            Session.Type.FIXED -> FIXED_SESSION_TYPE
+            Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)

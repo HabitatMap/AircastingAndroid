@@ -12,10 +12,7 @@ import android.util.Base64
 import io.lunarlogic.aircasting.networking.params.CreateAccountBody
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
-import io.lunarlogic.aircasting.networking.responses.SessionResponse
-import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
-import io.lunarlogic.aircasting.networking.responses.SyncResponse
-import io.lunarlogic.aircasting.networking.responses.UserResponse
+import io.lunarlogic.aircasting.networking.responses.*
 import okhttp3.HttpUrl
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
@@ -33,6 +30,9 @@ interface ApiService {
 
     @POST("/api/user/sessions/sync_with_versioning.json")
     fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
+
+    @GET("/api/realtime/sync_measurements.json")
+    fun downloadMeasurements(@Query("uuid") uuid: String, @Query("last_measurement_sync") last_measurement_sync: String): Call<SessionWithMeasurementsResponse>
 
     @GET("/api/user.json")
     fun login(): Call<UserResponse>

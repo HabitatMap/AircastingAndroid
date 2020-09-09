@@ -33,6 +33,9 @@ class InternalAPIError():
 class SyncError(t: Throwable? = null):
     BaseException(Exception(t), "Session sync failed, check your network connection.")
 
+class DownloadMeasurementsError(t: Throwable? = null):
+    BaseException(Exception(t))
+
 class UnexpectedAPIError(t: Throwable? = null):
     BaseException(Exception(t), "Something went wrong, please contact our support.")
 

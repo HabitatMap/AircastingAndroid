@@ -3,7 +3,7 @@ package io.lunarlogic.aircasting.networking.services
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.lib.DateConverter
-import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.params.SessionParams
 import io.lunarlogic.aircasting.networking.responses.SessionResponse
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
@@ -12,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DownloadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class SessionDownloadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     fun download(uuid: String, successCallback: (Session) -> Unit) {
         val call = apiService.show(uuid)
         call.enqueue(object : Callback<SessionResponse> {
@@ -44,7 +44,7 @@ class DownloadService(private val apiService: ApiService, private val errorHandl
 
         val session = Session(
             null,
-            Session.Type.MOBILE,
+            sessionType(sessionResponse.type),
             sessionResponse.title,
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
@@ -57,5 +57,12 @@ class DownloadService(private val apiService: ApiService, private val errorHandl
         )
 
         return session
+    }
+
+    private fun sessionType(type: String): Session.Type {
+        return when(type) {
+            SessionParams.FIXED_SESSION_TYPE -> Session.Type.FIXED
+            else -> return Session.Type.MOBILE
+        }
     }
 }

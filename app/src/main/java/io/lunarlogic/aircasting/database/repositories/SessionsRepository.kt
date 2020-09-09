@@ -41,16 +41,22 @@ class SessionsRepository {
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
+        return mDatabase.sessions()
+            .loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
     }
 
     fun stopMobileSessions() {
-        mDatabase.sessions().updateStatusAndEndTimeForSessionTypeAndExistingStatus(Session.Status.FINISHED, Date(), Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().updateStatusAndEndTimeForSessionTypeAndExistingStatus(
+            Session.Status.FINISHED, Date(), Session.Type.MOBILE, Session.Status.RECORDING)
     }
 
     fun finishedSessions(): List<Session> {
         return mDatabase.sessions().byStatus(Session.Status.FINISHED)
             .map { dbObject -> Session(dbObject) }
+    }
+
+    fun fixedSessions(): List<SessionDBObject> {
+        return mDatabase.sessions().byType(Session.Type.FIXED)
     }
 
     fun delete(uuids: List<String>) {
@@ -71,7 +77,6 @@ class SessionsRepository {
         val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
         if (sessionDbObject == null) {
             return insert(session)
-
         } else {
             update(session)
             return null

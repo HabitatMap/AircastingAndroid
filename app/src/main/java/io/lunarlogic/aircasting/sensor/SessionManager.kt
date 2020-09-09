@@ -9,15 +9,17 @@ import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiService
+import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.FixedSessionUploadService
-import io.lunarlogic.aircasting.networking.services.MobileSessionsSyncService
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService) {
     private val errorHandler = ErrorHandler(mContext)
-    private val mobileSessionsSyncService = MobileSessionsSyncService(apiService, errorHandler)
+    private val sessionsSyncService = SessionsSyncService(apiService, errorHandler)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
+    private val fixedSessionDownloadService = DownloadMeasurementsService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -45,6 +47,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     fun onStart() {
         registerToEventBus()
         stopMobileSessions()
+        fixedSessionDownloadService.start()
     }
 
     fun onStop() {
@@ -75,7 +78,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             val sessionId = sessionsRespository.getMobileActiveSessionIdByDeviceId(deviceId)
             sessionId?.let {
                 val measurementStreamId = measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
-                measurementsRepository.insert(measurementStreamId, measurement)
+                measurementsRepository.insert(measurementStreamId, sessionId, measurement)
             }
         }
     }
@@ -99,7 +102,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
-                mobileSessionsSyncService.sync()
+                sessionsSyncService.sync()
             }
         }
     }
@@ -107,6 +110,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.markForRemoval(listOf(sessionUUID))
+            sessionsSyncService.sync()
         }
     }
 }

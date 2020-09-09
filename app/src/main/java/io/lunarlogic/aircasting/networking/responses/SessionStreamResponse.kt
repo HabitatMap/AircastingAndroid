@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.networking.responses
 
-class SessionStreamResponse(
+open class SessionStreamResponse(
     val sensor_name: String,
     val sensor_package_name: String,
     val unit_name: String,
