@@ -17,6 +17,7 @@ import javax.inject.Singleton
 )
 interface TestAppComponent: AppComponent {
     fun inject(test: LoginTest)
+    fun inject(test: CreateAccountTest)
     fun inject(test: MobileSessionTest)
     fun inject(test: FixedSessionTest)
 }

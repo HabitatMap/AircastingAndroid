@@ -4,14 +4,16 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 
 class FakeSettings(application: AircastingApplication): Settings(application) {
-    private var token: String? = null
+    private var mEmail: String? = null
+    private var mToken: String? = null
 
     override fun getAuthToken(): String? {
-        return token
+        return mToken
     }
 
-    override fun setAuthToken(authToken: String) {
-        token = authToken
+    override fun login(email: String, authToken: String) {
+        this.mEmail = email
+        this.mToken = authToken
     }
 }
 

@@ -82,7 +82,7 @@ class FixedSessionTest {
 
     @Test
     fun testFixedOutdoorSessionRecording() {
-        settings.setAuthToken("TOKEN")
+        settings.login("X", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -145,7 +145,7 @@ class FixedSessionTest {
 
     @Test
     fun testFixedIndoorSessionRecording() {
-        settings.setAuthToken("TOKEN")
+        settings.login("X", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)

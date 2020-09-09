@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline1"
-        android:text="@string/login_header"
+        android:text="@string/create_account_header"
         android:layout_marginStart="0dp"
         android:layout_marginTop="@dimen/action_bar_size"
         android:paddingLeft="@dimen/keyline_10"
@@ -29,7 +29,7 @@
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login_description"
+        android:text="@string/create_account_description"
         android:textAppearance="?attr/textAppearanceHeadline4"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_2"
@@ -38,6 +38,34 @@
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email_hint"
+        app:hintEnabled="false"
+        app:errorEnabled="true"
+        style="@style/Widget.Aircasting.TextInputLayout"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:hint="@string/email_hint"
+            android:inputType="textEmailAddress"
+            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+            android:textColor="@color/aircasting_grey_700"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/username"
@@ -50,7 +78,7 @@
         android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/description"
+        app:layout_constraintTop_toBottomOf="@id/email"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
@@ -96,43 +124,59 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/send_emails_input"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/send_emails"
+        android:checked="true"
+        android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+        android:textColor="@color/aircasting_grey_700"
+        android:buttonTint="?attr/colorPrimary"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        app:layout_constraintTop_toBottomOf="@id/password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/create_account_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginTop="@dimen/keyline_8"
-        android:text="@string/login_button"
-        app:layout_constraintTop_toBottomOf="@id/password"
+        android:text="@string/create_account_button"
+        app:layout_constraintTop_toBottomOf="@id/send_emails_input"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/create_account_prompt"
+        android:id="@+id/login_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_account_prompt"
+        android:text="@string/login_prompt"
         android:textAppearance="?attr/textAppearanceHeadline4"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_6"
         android:paddingLeft="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/login_button"
+        app:layout_constraintTop_toBottomOf="@id/create_account_button"
         app:layout_constraintStart_toStartOf="parent" />
     <Button
-        android:id="@+id/create_account_button"
+        android:id="@+id/sign_in_button"
         style="@style/Widget.Aircasting.TextButton"
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_account_text_button"
+        android:text="@string/login_text_button"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_6"
+        android:minWidth="0dp"
         app:rippleColor="@null"
-        app:layout_constraintTop_toBottomOf="@id/login_button"
-        app:layout_constraintBottom_toBottomOf="@id/create_account_prompt"
-        app:layout_constraintStart_toEndOf="@id/create_account_prompt" />
-
+        app:layout_constraintTop_toBottomOf="@id/create_account_button"
+        app:layout_constraintBottom_toBottomOf="@id/login_prompt"
+        app:layout_constraintStart_toEndOf="@id/login_prompt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

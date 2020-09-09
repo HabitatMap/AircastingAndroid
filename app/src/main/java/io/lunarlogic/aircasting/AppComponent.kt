@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting
 
 import dagger.Component
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
 import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileActiveFragment
@@ -25,6 +26,7 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(app: AircastingApplication)
     fun inject(activity: LoginActivity)
+    fun inject(activity: CreateAccountActivity)
     fun inject(activity: MainActivity)
     fun inject(fragment: FollowingFragment)
     fun inject(fragment: MobileActiveFragment)
