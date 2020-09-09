@@ -142,7 +142,7 @@ class CreateAccountTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()
-        onView(CoreMatchers.allOf(withId(R.id.create_account_button), isDisplayed())).perform(click())
+        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
 
         Thread.sleep(2000)
 
