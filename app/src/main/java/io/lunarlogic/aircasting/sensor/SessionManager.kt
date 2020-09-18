@@ -88,6 +88,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
         session.startRecording()
         if (session.isFixed()) {
+            session.followed = true
             fixedSessionUploadService.upload(session)
         }
 

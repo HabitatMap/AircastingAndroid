@@ -10,8 +10,7 @@ class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()
 
     fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        // TODO: handle properly after implementing following feature
-        return loadFixedSessionsWithMeasurements()
+        return mDatabase.sessions().loadFollowingWithMeasurements()
     }
 
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
