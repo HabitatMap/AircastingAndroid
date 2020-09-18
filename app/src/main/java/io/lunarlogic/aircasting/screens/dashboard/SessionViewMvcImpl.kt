@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.FragmentManager
@@ -22,6 +23,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private val mSupportFragmentManager: FragmentManager
     protected var mBottomSheet: BottomSheet? = null
 
+    private var mExpandedSessionView: View
+    private var mExpandSessionButton: ImageView
+    private var mCollapseSessionButton: ImageView
+
     protected var mSession: Session? = null
 
     constructor(
@@ -40,6 +45,16 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTable = findViewById(R.id.measurements_table)
         mMeasurementHeaders = findViewById(R.id.measurement_headers)
         mActionsButton = findViewById(R.id.session_actions_button)
+
+        mExpandedSessionView = findViewById(R.id.expanded_session_view)
+        mExpandSessionButton = findViewById(R.id.expand_session_button)
+        mExpandSessionButton.setOnClickListener {
+            expandSessionCard()
+        }
+        mCollapseSessionButton = findViewById(R.id.collapse_session_button)
+        mCollapseSessionButton.setOnClickListener {
+            collapseSessionCard()
+        }
 
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
@@ -100,5 +115,17 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         headerTextView.text = detailedType
 
         mMeasurementHeaders.addView(headerView)
+    }
+
+    private fun expandSessionCard() {
+        mExpandSessionButton.visibility = View.INVISIBLE
+        mCollapseSessionButton.visibility = View.VISIBLE
+        mExpandedSessionView.visibility = View.VISIBLE
+    }
+
+    private fun collapseSessionCard() {
+        mCollapseSessionButton.visibility = View.INVISIBLE
+        mExpandSessionButton.visibility = View.VISIBLE
+        mExpandedSessionView.visibility = View.GONE
     }
 }
