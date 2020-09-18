@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.map.MapActivity
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -26,6 +27,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mExpandedSessionView: View
     private var mExpandSessionButton: ImageView
     private var mCollapseSessionButton: ImageView
+    private var mMapButton: Button
 
     protected var mSession: Session? = null
 
@@ -54,6 +56,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mCollapseSessionButton = findViewById(R.id.collapse_session_button)
         mCollapseSessionButton.setOnClickListener {
             collapseSessionCard()
+        }
+        mMapButton = findViewById(R.id.map_button)
+        mMapButton.setOnClickListener {
+            goToMapView()
         }
 
         mActionsButton.setOnClickListener {
@@ -127,5 +133,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
+    }
+
+    private fun goToMapView() {
+        MapActivity.start(context)
     }
 }
