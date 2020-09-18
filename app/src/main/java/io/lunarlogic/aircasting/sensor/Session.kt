@@ -22,6 +22,7 @@ class Session(
     val uuid: String = generateUUID(),
     var version: Int = 0,
     var deleted: Boolean = false,
+    var followed: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
@@ -34,7 +35,8 @@ class Session(
         sessionDBObject.endTime,
         sessionDBObject.uuid,
         sessionDBObject.version,
-        sessionDBObject.deleted
+        sessionDBObject.deleted,
+        sessionDBObject.followed
     )
 
     constructor(

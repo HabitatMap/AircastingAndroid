@@ -22,7 +22,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "end_time") val endTime: Date?,
     @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW,
     @ColumnInfo(name = "version") val version: Int = 0,
-    @ColumnInfo(name = "deleted") val deleted: Boolean = false
+    @ColumnInfo(name = "deleted") val deleted: Boolean = false,
+    @ColumnInfo(name = "followed") val followed: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -36,7 +37,10 @@ data class SessionDBObject(
                 session.tags,
                 session.startTime,
                 session.endTime,
-                session.status
+                session.status,
+                session.version,
+                session.deleted,
+                session.followed
             )
 }
 
@@ -73,6 +77,9 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND followed=1 ORDER BY start_time DESC")
+    fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun byType(type: Session.Type): List<SessionDBObject>
