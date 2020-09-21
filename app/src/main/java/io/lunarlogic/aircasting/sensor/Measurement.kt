@@ -43,4 +43,8 @@ class Measurement(
 
         return stream.levels.indexOfLast { level -> value >= level }
     }
+
+    fun valueString(): String {
+        return "%.0f".format(value)
+    }
 }
