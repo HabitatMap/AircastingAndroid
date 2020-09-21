@@ -7,5 +7,6 @@ interface FixedSessionViewMvc:
     SessionViewMvc<FixedSessionViewMvc.Listener> {
     interface Listener {
         fun onSessionDeleteClicked(session: Session)
+        fun onMapButtonClicked(session: Session)
     }
 }

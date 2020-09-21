@@ -32,4 +32,12 @@ class MobileDormantSessionViewMvcImpl(
         }
         dismissBottomSheet()
     }
+
+    override fun onMapButtonClicked() {
+        mSession?.let {
+            for (listener in listeners) {
+                listener.onMapButtonClicked(it)
+            }
+        }
+    }
 }

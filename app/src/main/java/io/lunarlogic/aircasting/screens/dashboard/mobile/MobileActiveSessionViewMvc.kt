@@ -7,5 +7,6 @@ interface MobileActiveSessionViewMvc:
     SessionViewMvc<MobileActiveSessionViewMvc.Listener> {
     interface Listener {
         fun onSessionStopClicked(session: Session)
+        fun onMapButtonClicked(session: Session)
     }
 }

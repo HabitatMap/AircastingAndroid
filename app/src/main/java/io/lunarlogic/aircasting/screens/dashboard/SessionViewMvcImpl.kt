@@ -59,7 +59,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
-            goToMapView()
+            onMapButtonClicked()
         }
 
         mActionsButton.setOnClickListener {
@@ -135,9 +135,5 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandedSessionView.visibility = View.GONE
     }
 
-    private fun goToMapView() {
-        mSession?.let {
-            MapActivity.start(context, it.uuid)
-        }
-    }
+    abstract protected fun onMapButtonClicked()
 }

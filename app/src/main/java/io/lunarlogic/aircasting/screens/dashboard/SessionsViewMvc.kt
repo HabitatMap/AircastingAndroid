@@ -11,6 +11,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onSwipeToRefreshTriggered(callback: () -> Unit)
         fun onStopSessionClicked(sessionUUID: String)
         fun onDeleteSessionClicked(sessionUUID: String)
+        fun onMapButtonClicked(sessionUUID: String)
     }
 
     fun showSessionsView(sessions: List<Session>)

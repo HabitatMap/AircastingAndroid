@@ -67,4 +67,12 @@ class FollowingSessionViewMvcImpl:
         noMeasurementsIcon?.visibility = View.GONE
         noMeasurementsLabels?.visibility = View.GONE
     }
+
+    override fun onMapButtonClicked() {
+        mSession?.let {
+            for (listener in listeners) {
+                listener.onMapButtonClicked(it)
+            }
+        }
+    }
 }
