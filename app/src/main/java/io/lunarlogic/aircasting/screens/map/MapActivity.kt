@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.lib.AppBar
 
 class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null
@@ -26,6 +27,7 @@ class MapActivity: AppCompatActivity() {
         controller?.onCreate()
 
         setContentView(view.rootView)
+        AppBar.setup(view.rootView, this)
     }
 
     override fun onDestroy() {
