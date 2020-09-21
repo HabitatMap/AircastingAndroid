@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -266,6 +267,7 @@ class NewSessionController(
     override fun onStartRecordingClicked(session: Session) {
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
+        mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
     }
 }

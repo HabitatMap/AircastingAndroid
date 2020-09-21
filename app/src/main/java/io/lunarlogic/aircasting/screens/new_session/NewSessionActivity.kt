@@ -49,7 +49,9 @@ class NewSessionActivity : AppCompatActivity() {
             rootActivity?.let{
                 val startForResult = it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     val tabId = DashboardPagerAdapter.tabIndexForSessionType(sessionType, Session.Status.RECORDING)
-                    NavigationController.goToDashboard(tabId)
+                    if (it.resultCode == RESULT_OK) {
+                        NavigationController.goToDashboard(tabId)
+                    }
                 }
 
                 val intent = Intent(it, NewSessionActivity::class.java)
