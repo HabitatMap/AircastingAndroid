@@ -94,7 +94,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mSession = session
         mDateTextView.text = session.durationString()
         mNameTextView.text = session.name
-        mTagsTextView.text = session.tags.joinToString(", ")
+        mTagsTextView.text = session.tagsString()
     }
 
     open protected fun resetMeasurementsView() {
@@ -136,6 +136,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun goToMapView() {
-        MapActivity.start(context)
+        mSession?.let {
+            MapActivity.start(context, it.uuid)
+        }
     }
 }

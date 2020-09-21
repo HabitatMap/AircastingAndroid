@@ -17,7 +17,6 @@
         android:layout_marginEnd="@dimen/keyline_10"
         android:layout_marginTop="@dimen/keyline_4"
         android:textAppearance="?attr/textAppearanceBody2"
-        android:text="03/20/2020 10:35-15:56"
         app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />
@@ -32,7 +31,6 @@
         android:textAppearance="?attr/textAppearanceHeadline2"
         android:textColor="@color/aircasting_dark_blue"
         android:fontFamily="@font/moderat_trial_medium"
-        android:text="Neighborhood check"
         app:layout_constraintTop_toBottomOf="@+id/session_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />
@@ -47,7 +45,6 @@
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textColor="@color/aircasting_dark_blue"
         android:textSize="@dimen/text_size_xs"
-        android:text="Fixed, Airbeam3"
         app:layout_constraintTop_toBottomOf="@+id/session_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

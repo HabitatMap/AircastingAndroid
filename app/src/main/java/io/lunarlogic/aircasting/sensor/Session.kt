@@ -152,6 +152,10 @@ class Session(
         return durationString
     }
 
+    fun tagsString(): String {
+        return tags.joinToString(", ")
+    }
+
     fun measurementsCount(): Int {
         return streams.map { stream -> stream.measurements.size }.sum()
     }

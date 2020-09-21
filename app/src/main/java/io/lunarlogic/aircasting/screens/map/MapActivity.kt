@@ -10,9 +10,12 @@ class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null
 
     companion object {
-        fun start(context: Context?) {
+        val SESSION_UUID_KEY = "SESSION_UUID"
+
+        fun start(context: Context?, sessionUUID: String) {
             context?.let{
                 val intent = Intent(it, MapActivity::class.java)
+                intent.putExtra(SESSION_UUID_KEY, sessionUUID)
                 it.startActivity(intent)
             }
         }
@@ -21,8 +24,10 @@ class MapActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
+
         val view = MapViewMvcImpl(layoutInflater, null)
-        controller = MapController(this, view)
+        controller = MapController(this, view, sessionUUID)
 
         controller?.onCreate()
 
