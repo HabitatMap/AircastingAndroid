@@ -10,11 +10,72 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/session_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Map"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:text="03/20/2020 10:35-15:56"
         app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/session_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceHeadline2"
+        android:textColor="@color/aircasting_dark_blue"
+        android:fontFamily="@font/moderat_trial_medium"
+        android:text="Neighborhood check"
+        app:layout_constraintTop_toBottomOf="@+id/session_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/session_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textColor="@color/aircasting_dark_blue"
+        android:textSize="@dimen/text_size_xs"
+        android:text="Fixed, Airbeam3"
+        app:layout_constraintTop_toBottomOf="@+id/session_name"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/session_measurements_description"
+        android:text="@string/session_measurements_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:textAppearance="?attr/textAppearanceBody2"
+        app:layout_constraintTop_toBottomOf="@+id/session_tags"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TableLayout
+        android:id="@+id/measurements_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
+
+        <TableRow android:id="@+id/measurement_headers" />
+        <TableRow android:id="@+id/measurement_values" />
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
