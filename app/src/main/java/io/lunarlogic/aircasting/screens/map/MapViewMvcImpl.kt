@@ -83,7 +83,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         googleMap ?: return
         mMap = googleMap
 
-        setZoomPreferences()
+        initializeMap()
 
         val measurements = measurementsWithLocations()
         if (measurements.size > 0) {
@@ -97,6 +97,11 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     private fun measurementsWithLocations(): List<Measurement> {
         val measurements = mSelectedStream?.measurements?.filter { it.latitude !== null && it.longitude != null }
         return measurements ?: emptyList()
+    }
+
+    private fun initializeMap() {
+        setZoomPreferences()
+        mMap.isBuildingsEnabled = false
     }
 
     private fun setZoomPreferences() {
