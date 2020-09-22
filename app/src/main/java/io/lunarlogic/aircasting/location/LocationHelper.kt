@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus
 class LocationHelper(private val mContext: Context) {
     companion object {
         private lateinit var singleton: LocationHelper
+        private var started = false
 
         fun setup(context: Context) {
             singleton = LocationHelper(context)
@@ -24,8 +25,11 @@ class LocationHelper(private val mContext: Context) {
             singleton.turnOnLocationServices(activity)
         }
 
-        fun start() {
-            singleton.start()
+        fun start(callback: (() -> Unit)? = null) {
+            if (!started) {
+                singleton.start(callback)
+            }
+            started = true
         }
 
         fun stop() {
@@ -48,16 +52,7 @@ class LocationHelper(private val mContext: Context) {
         locationRequest = createLocationRequest()
     }
 
-    private var locationCallback: LocationCallback = object: LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            locationResult ?: return
-            for (location in locationResult.locations) {
-                mLastLocation = location
-            }
-
-            EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
-        }
-    }
+    private var locationCallback: LocationCallback? = null
 
     fun turnOnLocationServices(activity: AppCompatActivity) {
         val locationSettingsRequest = LocationSettingsRequest.Builder()
@@ -78,7 +73,20 @@ class LocationHelper(private val mContext: Context) {
         }
     }
 
-    fun start() {
+    fun start(callback: (() -> Unit)? = null) {
+        locationCallback = object: LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations) {
+                    mLastLocation = location
+                }
+
+                callback?.invoke()
+
+                EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
+            }
+        }
+
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 

@@ -1,5 +1,9 @@
 package io.lunarlogic.aircasting.screens.map
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +16,17 @@ import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
+import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
+import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
+import java.util.*
 
 class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     private val mLayoutInflater: LayoutInflater
@@ -38,6 +46,17 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
 
     private val MAX_ZOOM = 20.0f
     private val MIN_ZOOM = 5.0f
+    private val DEFAULT_ZOOM = 16f
+
+    private val mMeasurementsLineOptions = PolylineOptions()
+        .width(20f)
+        .jointType(JointType.ROUND)
+        .endCap(RoundCap())
+        .startCap(RoundCap())
+    private var mMeasurementsLine: Polyline? = null
+    private val mMeasurementPoints = ArrayList<LatLng>()
+    private val mMeasurementSpans = ArrayList<StyleSpan>()
+    private var mLastMeasurementMarker: Marker? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -63,20 +82,78 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         mMap = googleMap
+
         setZoomPreferences()
-        animateCameraToSession()
+
+        val measurements = measurementsWithLocations()
+        if (measurements.size > 0) {
+            drawSession(measurements)
+            animateCameraToSession(measurements)
+        } else {
+            LocationHelper.start({ centerMap() })
+        }
     }
 
-    private fun animateCameraToSession() {
-        val measurements = mSelectedStream?.measurements ?: emptyList()
-        val boundingBox = SessionBoundingBox.get(measurements)
-        val padding = 100 // meters
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+    private fun measurementsWithLocations(): List<Measurement> {
+        val measurements = mSelectedStream?.measurements?.filter { it.latitude !== null && it.longitude != null }
+        return measurements ?: emptyList()
     }
 
     private fun setZoomPreferences() {
         mMap.setMaxZoomPreference(MAX_ZOOM)
         mMap.setMinZoomPreference(MIN_ZOOM)
+    }
+
+    private fun drawSession(measurements: List<Measurement>) {
+        if (mMap == null) return
+
+        var latestPoint: LatLng? = null
+        var latestColor: Int? = null
+
+        var i = 0
+        for (measurement in measurements) {
+            val level = measurement.getLevel(mSelectedStream!!)
+            if (level == null) continue // TODO: check this
+
+            latestColor = MeasurementColor.get(context, level)
+
+            if (i > 0) {
+                mMeasurementSpans.add(StyleSpan(latestColor))
+            }
+            latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
+            mMeasurementPoints.add(latestPoint)
+            i += 1
+        }
+        mMeasurementsLineOptions.addAll(mMeasurementPoints).addAllSpans(mMeasurementSpans)
+        mMeasurementsLine = mMap.addPolyline(mMeasurementsLineOptions)
+
+        if (latestPoint != null && latestColor != null) {
+            drawLastMeasurementMarker(latestPoint, latestColor)
+        }
+    }
+
+    private fun drawLastMeasurementMarker(point: LatLng, color: Int) {
+        if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
+
+        mLastMeasurementMarker = mMap.addMarker(
+            MarkerOptions()
+                .position(point)
+                .icon(circleMarkerIcon(color))
+        )
+    }
+
+    private fun animateCameraToSession(measurements: List<Measurement>) {
+        val boundingBox = SessionBoundingBox.get(measurements)
+        val padding = 100 // meters
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+    }
+
+    private fun centerMap() {
+        val location = LocationHelper.lastLocation()
+        if (location != null) {
+            val position = LatLng(location.latitude, location.longitude)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
+        }
     }
 
     override fun bindSession(session: Session) {
@@ -147,5 +224,46 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         }
 
         mMeasurementValues?.addView(valueView)
+    }
+
+    // TODO: enhance this
+    private fun circleMarkerIcon(color: Int): BitmapDescriptor? {
+        val CIRCLE_WIDTH = 30
+        val STROKE_WIDTH = 4
+        val bitmap = Bitmap.createBitmap(
+            CIRCLE_WIDTH + 2 * STROKE_WIDTH,
+            CIRCLE_WIDTH + 2 * STROKE_WIDTH,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        canvas.drawColor(Color.TRANSPARENT)
+        val strokePaint = Paint()
+        strokePaint.style = Paint.Style.STROKE
+        strokePaint.color = Color.WHITE
+        strokePaint.isAntiAlias = true
+        strokePaint.strokeWidth = STROKE_WIDTH.toFloat()
+        val paint = Paint()
+        paint.style = Paint.Style.FILL
+        paint.color = color
+        paint.isAntiAlias = true
+        val radius = CIRCLE_WIDTH / 2
+        val padding = 0
+
+        // drawing stroke
+        canvas.drawCircle(
+            radius + STROKE_WIDTH.toFloat(),
+            radius + STROKE_WIDTH.toFloat(),
+            radius - padding.toFloat(),
+            strokePaint
+        )
+
+        // drawing circle filled with proper color
+        canvas.drawCircle(
+            radius + STROKE_WIDTH.toFloat(),
+            radius + STROKE_WIDTH.toFloat(),
+            radius - padding.toFloat(),
+            paint
+        )
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }

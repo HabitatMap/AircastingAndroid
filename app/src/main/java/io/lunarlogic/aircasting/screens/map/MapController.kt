@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.map
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.location.LocationHelper
 
 class MapController(
     private val rootActivity: AppCompatActivity,
