@@ -61,7 +61,6 @@ class FollowingSessionViewMvcImpl:
         noMeasurementsLabels?.visibility = View.VISIBLE
 
         mExpandSessionButton.visibility = View.GONE
-        mCollapseSessionButton.visibility = View.GONE
     }
 
     private fun hideNoMeasurementsInfo() {
@@ -71,7 +70,6 @@ class FollowingSessionViewMvcImpl:
         noMeasurementsLabels?.visibility = View.GONE
 
         mExpandSessionButton.visibility = View.VISIBLE
-        mCollapseSessionButton.visibility = View.VISIBLE
     }
 
     override fun onMapButtonClicked() {
