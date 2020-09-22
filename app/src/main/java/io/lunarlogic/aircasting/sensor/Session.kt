@@ -141,6 +141,10 @@ class Session(
         return type == Type.FIXED
     }
 
+    fun isRecording(): Boolean {
+        return status == Status.RECORDING
+    }
+
     fun durationString(): String {
         val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
         val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)

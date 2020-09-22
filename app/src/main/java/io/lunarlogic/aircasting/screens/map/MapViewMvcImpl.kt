@@ -161,6 +161,41 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         }
     }
 
+    override fun addMeasurement(measurement: Measurement) {
+        if (measurement.latitude == null || measurement.longitude == null) return
+
+        val point = LatLng(measurement.latitude, measurement.longitude)
+        val level = measurement.getLevel(mSelectedStream!!) ?: return // TODO: check
+
+        val color = MeasurementColor.get(context, level)
+
+        mSession?.let {
+            if (it.isFixed()) {
+                drawFixedMeasurement(point, color)
+            } else if (it.isRecording()) {
+                drawMobileMeasurement(point, color)
+            }
+        }
+    }
+
+    private fun drawFixedMeasurement(point: LatLng, color: Int) {
+        drawLastMeasurementMarker(point, color)
+    }
+
+    private fun drawMobileMeasurement(point: LatLng, color: Int) {
+        mMeasurementPoints.add(point)
+        mMeasurementSpans.add(StyleSpan(color))
+
+        if (mMeasurementsLine == null) {
+            mMeasurementsLine = mMap.addPolyline(mMeasurementsLineOptions)
+        }
+
+        mMeasurementsLine?.setPoints(mMeasurementPoints)
+        mMeasurementsLine?.setSpans(mMeasurementSpans)
+
+        drawLastMeasurementMarker(point, color)
+    }
+
     override fun bindSession(session: Session) {
         bindSessionDetails(session)
 
