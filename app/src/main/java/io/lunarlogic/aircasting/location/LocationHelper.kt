@@ -91,7 +91,9 @@ class LocationHelper(private val mContext: Context) {
     }
 
     fun stop() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     private fun createLocationRequest(): LocationRequest {
