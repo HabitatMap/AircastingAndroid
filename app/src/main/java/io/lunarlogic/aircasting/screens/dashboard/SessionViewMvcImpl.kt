@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.map.MapActivity
+import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -30,6 +31,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mMapButton: Button
 
     protected var mSession: Session? = null
+    protected var mSelectedStream: MeasurementStream? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -92,6 +94,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun bindSessionDetails(session: Session) {
         mSession = session
+        mSelectedStream = session.streams.firstOrNull()
+
         mDateTextView.text = session.durationString()
         mNameTextView.text = session.name
         mTagsTextView.text = session.tagsString()

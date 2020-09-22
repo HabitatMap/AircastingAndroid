@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
+import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
 class MobileActiveViewMvcImpl(
@@ -31,9 +32,9 @@ class MobileActiveViewMvcImpl(
         }
     }
 
-    override fun onMapButtonClicked(session: Session) {
+    override fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream) {
         for (listener in listeners) {
-            listener.onMapButtonClicked(session.uuid)
+            listener.onMapButtonClicked(session.uuid, measurementStream.sensorName)
         }
     }
 }

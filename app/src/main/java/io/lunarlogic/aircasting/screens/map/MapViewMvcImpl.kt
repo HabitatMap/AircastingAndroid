@@ -81,7 +81,6 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
 
     override fun bindSession(session: Session) {
         bindSessionDetails(session)
-        mSelectedStream = initialStream(session)
 
         if (session.measurementsCount() > 0) {
             resetMeasurementsView()
@@ -90,8 +89,8 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         }
     }
 
-    private fun initialStream(session: Session): MeasurementStream? {
-        return session.streams.firstOrNull()
+    override fun bindMeasurementStream(measurementStream: MeasurementStream?) {
+        mSelectedStream = measurementStream
     }
 
     private fun bindSessionDetails(session: Session) {
