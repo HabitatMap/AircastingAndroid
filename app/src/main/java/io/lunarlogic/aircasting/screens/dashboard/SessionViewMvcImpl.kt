@@ -26,8 +26,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mBottomSheet: BottomSheet? = null
 
     private var mExpandedSessionView: View
-    private var mExpandSessionButton: ImageView
-    private var mCollapseSessionButton: ImageView
+    protected var mExpandSessionButton: ImageView
+    protected var mCollapseSessionButton: ImageView
     private var mMapButton: Button
 
     protected var mSession: Session? = null
