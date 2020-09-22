@@ -7,14 +7,20 @@ import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
+import com.google.android.libraries.maps.CameraUpdateFactory
+import com.google.android.libraries.maps.GoogleMap
+import com.google.android.libraries.maps.OnMapReadyCallback
+import com.google.android.libraries.maps.SupportMapFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
+import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 
-class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
+class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     private val mLayoutInflater: LayoutInflater
 
     private val mSessionDateTextView: TextView?
@@ -26,10 +32,17 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
     private val mMeasurementValues: TableRow?
 
     private var mSession: Session? = null
+    private var mSelectedStream: MeasurementStream? = null
+
+    private lateinit var mMap: GoogleMap
+
+    private val MAX_ZOOM = 20.0f
+    private val MIN_ZOOM = 5.0f
 
     constructor(
         inflater: LayoutInflater,
-        parent: ViewGroup?
+        parent: ViewGroup?,
+        supportFragmentManager: FragmentManager?
     ): super() {
         mLayoutInflater = inflater
 
@@ -42,16 +55,46 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         mSessionMeasurementsTable = this.rootView?.measurements_table
         mSessionMeasurementHeaders = this.rootView?.measurement_headers
         mMeasurementValues = this.rootView?.measurement_values
+
+        val mapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        googleMap ?: return
+        mMap = googleMap
+        setZoomPreferences()
+        animateCameraToSession()
+    }
+
+    private fun animateCameraToSession() {
+        val measurements = mSelectedStream?.measurements ?: emptyList()
+        val boundingBox = SessionBoundingBox.get(measurements)
+        val padding = 100 // meters
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+    }
+
+    private fun setZoomPreferences() {
+        mMap.setMaxZoomPreference(MAX_ZOOM)
+        mMap.setMinZoomPreference(MIN_ZOOM)
     }
 
     override fun bindSession(session: Session) {
         bindSessionDetails(session)
-        resetMeasurementsView()
-        bindMeasurements(session)
-        stretchTableLayout(session)
+        mSelectedStream = initialStream(session)
+
+        if (session.measurementsCount() > 0) {
+            resetMeasurementsView()
+            bindMeasurements(session)
+            stretchTableLayout(session)
+        }
     }
 
-    protected fun bindSessionDetails(session: Session) {
+    private fun initialStream(session: Session): MeasurementStream? {
+        return session.streams.firstOrNull()
+    }
+
+    private fun bindSessionDetails(session: Session) {
         mSession = session
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name

@@ -26,7 +26,7 @@ class MapActivity: AppCompatActivity() {
 
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
 
-        val view = MapViewMvcImpl(layoutInflater, null)
+        val view = MapViewMvcImpl(layoutInflater, null, supportFragmentManager)
         controller = MapController(this, view, sessionUUID)
 
         controller?.onCreate()
