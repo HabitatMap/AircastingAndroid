@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.map
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableLayout
@@ -9,25 +8,17 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
-import io.lunarlogic.aircasting.lib.SessionBoundingBox
-import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
-import java.util.*
 
-class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
+class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
     private val mLayoutInflater: LayoutInflater
 
     private val mSessionDateTextView: TextView?
@@ -41,21 +32,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     private var mSession: Session? = null
     private var mSelectedStream: MeasurementStream? = null
 
-    private lateinit var mMap: GoogleMap
-
-    private val MAX_ZOOM = 20.0f
-    private val MIN_ZOOM = 5.0f
-    private val DEFAULT_ZOOM = 16f
-
-    private val mMeasurementsLineOptions = PolylineOptions()
-        .width(20f)
-        .jointType(JointType.ROUND)
-        .endCap(RoundCap())
-        .startCap(RoundCap())
-    private var mMeasurementsLine: Polyline? = null
-    private val mMeasurementPoints = ArrayList<LatLng>()
-    private val mMeasurementSpans = ArrayList<StyleSpan>()
-    private var mLastMeasurementMarker: Marker? = null
+    private val mMapContainer: MapContainer
 
     constructor(
         inflater: LayoutInflater,
@@ -74,88 +51,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         mSessionMeasurementHeaders = this.rootView?.measurement_headers
         mMeasurementValues = this.rootView?.measurement_values
 
-        val mapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
-    }
-
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMap ?: return
-        mMap = googleMap
-
-        initializeMap()
-
-        val measurements = measurementsWithLocations()
-        if (measurements.size > 0) {
-            drawSession(measurements)
-            animateCameraToSession(measurements)
-        } else {
-            LocationHelper.start({ centerMap() })
-        }
-    }
-
-    private fun measurementsWithLocations(): List<Measurement> {
-        val measurements = mSelectedStream?.measurements?.filter { it.latitude !== null && it.longitude != null }
-        return measurements ?: emptyList()
-    }
-
-    private fun initializeMap() {
-        setZoomPreferences()
-        mMap.isBuildingsEnabled = false
-    }
-
-    private fun setZoomPreferences() {
-        mMap.setMaxZoomPreference(MAX_ZOOM)
-        mMap.setMinZoomPreference(MIN_ZOOM)
-    }
-
-    private fun drawSession(measurements: List<Measurement>) {
-        if (mMap == null) return
-
-        var latestPoint: LatLng? = null
-        var latestColor: Int? = null
-
-        var i = 0
-        for (measurement in measurements) {
-            latestColor = MeasurementColor.forMap(context, measurement, mSelectedStream!!)
-
-            if (i > 0) {
-                mMeasurementSpans.add(StyleSpan(latestColor))
-            }
-            latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
-            mMeasurementPoints.add(latestPoint)
-            i += 1
-        }
-        mMeasurementsLineOptions.addAll(mMeasurementPoints).addAllSpans(mMeasurementSpans)
-        mMeasurementsLine = mMap.addPolyline(mMeasurementsLineOptions)
-
-        if (latestPoint != null && latestColor != null) {
-            drawLastMeasurementMarker(latestPoint, latestColor)
-        }
-    }
-
-    private fun drawLastMeasurementMarker(point: LatLng, color: Int) {
-        if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
-
-        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20, color)
-        mLastMeasurementMarker = mMap.addMarker(
-            MarkerOptions()
-                .position(point)
-                .icon(icon)
-        )
-    }
-
-    private fun animateCameraToSession(measurements: List<Measurement>) {
-        val boundingBox = SessionBoundingBox.get(measurements)
-        val padding = 100 // meters
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
-    }
-
-    private fun centerMap() {
-        val location = LocationHelper.lastLocation()
-        if (location != null) {
-            val position = LatLng(location.latitude, location.longitude)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
-        }
+        mMapContainer = MapContainer(context, supportFragmentManager)
     }
 
     override fun addMeasurement(measurement: Measurement) {
@@ -166,33 +62,16 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
 
         mSession?.let {
             if (it.isFixed()) {
-                drawFixedMeasurement(point, color)
+                mMapContainer.drawFixedMeasurement(point, color)
             } else if (it.isRecording()) {
-                drawMobileMeasurement(point, color)
+                mMapContainer.drawMobileMeasurement(point, color)
             }
         }
     }
 
-    private fun drawFixedMeasurement(point: LatLng, color: Int) {
-        drawLastMeasurementMarker(point, color)
-    }
-
-    private fun drawMobileMeasurement(point: LatLng, color: Int) {
-        mMeasurementPoints.add(point)
-        mMeasurementSpans.add(StyleSpan(color))
-
-        if (mMeasurementsLine == null) {
-            mMeasurementsLine = mMap.addPolyline(mMeasurementsLineOptions)
-        }
-
-        mMeasurementsLine?.setPoints(mMeasurementPoints)
-        mMeasurementsLine?.setSpans(mMeasurementSpans)
-
-        drawLastMeasurementMarker(point, color)
-    }
-
     override fun bindSession(session: Session, measurementStream: MeasurementStream?) {
         mSelectedStream = measurementStream
+        mMapContainer.bindStream(measurementStream)
 
         bindSessionDetails(session)
 
@@ -267,12 +146,6 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
 
     private fun measurementStreamChanged(measurementStream: MeasurementStream) {
         mSelectedStream = measurementStream
-        refreshMap()
-    }
-
-    private fun refreshMap() {
-        mMap.clear()
-        val measurements = measurementsWithLocations()
-        drawSession(measurements)
+        mMapContainer.refreshMap(measurementStream)
     }
 }
