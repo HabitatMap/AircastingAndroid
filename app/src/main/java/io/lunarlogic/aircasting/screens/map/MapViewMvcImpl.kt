@@ -279,6 +279,13 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
 
     private fun measurementStreamChanged(measurementStream: MeasurementStream) {
         mSelectedStream = measurementStream
+        refreshMap()
+    }
+
+    private fun refreshMap() {
+        mMap.clear()
+        val measurements = measurementsWithLocations()
+        drawSession(measurements)
     }
 
     // TODO: enhance this
