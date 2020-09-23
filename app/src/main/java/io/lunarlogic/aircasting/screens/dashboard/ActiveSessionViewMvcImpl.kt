@@ -63,11 +63,11 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
             circleView.visibility = View.GONE
         } else {
             valueTextView.text = measurement.valueString()
-            val level = measurement.getLevel(stream)
-            if (level == null) {
+            val color = MeasurementColor.forTable(context, measurement, stream)
+
+            if (color == null) {
                 circleView.visibility = View.GONE
             } else {
-                val color = MeasurementColor.get(context, level)
                 circleView.setColorFilter(color)
 
                 if (stream == mSelectedStream) {

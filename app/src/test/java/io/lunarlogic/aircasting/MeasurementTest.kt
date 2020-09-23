@@ -30,24 +30,24 @@ class MeasurementTest {
         )
 
         var measurement = Measurement(0.0, Date())
-        assertEquals(null, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.EXTREMELY_LOW, measurement.getLevel(stream))
 
         measurement = Measurement(1.0, Date())
-        assertEquals(0, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.LOW, measurement.getLevel(stream))
 
         measurement = Measurement(5.0, Date())
-        assertEquals(0, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.LOW, measurement.getLevel(stream))
 
         measurement = Measurement(15.0, Date())
-        assertEquals(1, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.MEDIUM, measurement.getLevel(stream))
 
         measurement = Measurement(40.0, Date())
-        assertEquals(2, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.HIGH, measurement.getLevel(stream))
 
         measurement = Measurement(100.0, Date())
-        assertEquals(3, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.VERY_HIGH, measurement.getLevel(stream))
 
         measurement = Measurement(200.0, Date())
-        assertEquals(null, measurement.getLevel(stream))
+        assertEquals(Measurement.Level.EXTREMELY_HIGH, measurement.getLevel(stream))
     }
 }

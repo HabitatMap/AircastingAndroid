@@ -116,10 +116,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
 
         var i = 0
         for (measurement in measurements) {
-            val level = measurement.getLevel(mSelectedStream!!)
-            if (level == null) continue // TODO: check this
-
-            latestColor = MeasurementColor.get(context, level)
+            latestColor = MeasurementColor.forMap(context, measurement, mSelectedStream!!)
 
             if (i > 0) {
                 mMeasurementSpans.add(StyleSpan(latestColor))
@@ -165,9 +162,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         if (measurement.latitude == null || measurement.longitude == null) return
 
         val point = LatLng(measurement.latitude, measurement.longitude)
-        val level = measurement.getLevel(mSelectedStream!!) ?: return // TODO: check
-
-        val color = MeasurementColor.get(context, level)
+        val color = MeasurementColor.forMap(context, measurement, mSelectedStream!!)
 
         mSession?.let {
             if (it.isFixed()) {
@@ -252,24 +247,19 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
         valueTextView.text = measurement.valueString()
-        val level = measurement.getLevel(stream)
-        if (level == null) {
-            circleView.visibility = View.GONE
-            // TODO: what with the border?
-        } else {
-            val color = MeasurementColor.get(context, level)
-            circleView.setColorFilter(color)
 
-            if (stream == mSelectedStream) {
-                valueView.background = SelectedSensorBorder(color)
-            }
+        val color = MeasurementColor.forMap(context, measurement, stream)
+        circleView.setColorFilter(color)
 
-            valueView.setOnClickListener {
-                mMeasurementValues?.forEach { it.background = null }
-                valueView.background = SelectedSensorBorder(color)
+        if (stream == mSelectedStream) {
+            valueView.background = SelectedSensorBorder(color)
+        }
 
-                measurementStreamChanged(stream)
-            }
+        valueView.setOnClickListener {
+            mMeasurementValues?.forEach { it.background = null }
+            valueView.background = SelectedSensorBorder(color)
+
+            measurementStreamChanged(stream)
         }
 
         mMeasurementValues?.addView(valueView)
