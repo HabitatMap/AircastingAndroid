@@ -8,6 +8,6 @@ interface MobileDormantSessionViewMvc:
     SessionViewMvc<MobileDormantSessionViewMvc.Listener> {
     interface Listener {
         fun onSessionDeleteClicked(session: Session)
-        fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream)
+        fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?)
     }
 }

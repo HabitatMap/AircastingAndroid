@@ -13,7 +13,7 @@ class MapActivity: AppCompatActivity() {
         val SESSION_UUID_KEY = "SESSION_UUID"
         val SENSOR_NAME_KEY = "SENSOR_NAME"
 
-        fun start(context: Context?, sessionUUID: String, sensorName: String) {
+        fun start(context: Context?, sessionUUID: String, sensorName: String?) {
             context?.let{
                 val intent = Intent(it, MapActivity::class.java)
                 intent.putExtra(SESSION_UUID_KEY, sessionUUID)
@@ -27,7 +27,7 @@ class MapActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
-        val sensorName: String = intent.extras?.get(SENSOR_NAME_KEY) as String
+        val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
 
         val view = MapViewMvcImpl(layoutInflater, null, supportFragmentManager)
         controller = MapController(this, view, sessionUUID, sensorName)

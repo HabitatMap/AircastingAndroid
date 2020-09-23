@@ -31,7 +31,7 @@ class MobileActiveSessionViewMvcImpl(
     override fun onMapButtonClicked() {
         mSession?.let {
             for (listener in listeners) {
-                listener.onMapButtonClicked(it, mSelectedStream!!)
+                listener.onMapButtonClicked(it, mSelectedStream)
             }
         }
     }

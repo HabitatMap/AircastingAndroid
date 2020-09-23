@@ -14,7 +14,7 @@ class MapController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MapViewMvc,
     private val sessionUUID: String,
-    private val sensorName: String
+    private val sensorName: String?
 ) {
     private val mSessionsRepository = SessionsRepository()
 

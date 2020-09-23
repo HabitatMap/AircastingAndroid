@@ -46,7 +46,7 @@ abstract class SessionsController(
         mMobileSessionsSyncService.sync(callback)
     }
 
-    override fun onMapButtonClicked(sessionUUID: String, sensorName: String) {
+    override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {
         MapActivity.start(mRootActivity, sessionUUID, sensorName)
     }
 }
