@@ -145,6 +145,10 @@ class Session(
         return status == Status.RECORDING
     }
 
+    fun streamsSortedByDetailedType(): List<MeasurementStream> {
+        return streams.sortedBy { it.detailedType }
+    }
+
     fun durationString(): String {
         val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
         val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)

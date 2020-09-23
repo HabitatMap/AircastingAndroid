@@ -22,6 +22,7 @@ import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
+import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
@@ -196,7 +197,9 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         drawLastMeasurementMarker(point, color)
     }
 
-    override fun bindSession(session: Session) {
+    override fun bindSession(session: Session, measurementStream: MeasurementStream?) {
+        mSelectedStream = measurementStream
+
         bindSessionDetails(session)
 
         if (session.measurementsCount() > 0) {
@@ -204,10 +207,6 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
             bindMeasurements(session)
             stretchTableLayout(session)
         }
-    }
-
-    override fun bindMeasurementStream(measurementStream: MeasurementStream?) {
-        mSelectedStream = measurementStream
     }
 
     private fun bindSessionDetails(session: Session) {
@@ -223,7 +222,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     }
 
     private fun bindMeasurements(session: Session) {
-        session.streams.sortedBy { it.detailedType }.forEach { stream ->
+        session.streamsSortedByDetailedType().forEach { stream ->
             bindStream(stream.detailedType)
             bindLastMeasurement(stream)
         }
@@ -259,7 +258,12 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
             if (level == null) {
                 circleView.visibility = View.GONE
             } else {
-                circleView.setColorFilter(MeasurementColor.get(context, level))
+                val color = MeasurementColor.get(context, level)
+                circleView.setColorFilter(color)
+
+                if (stream == mSelectedStream) {
+                    valueView.background = SelectedSensorBorder(color)
+                }
             }
         }
 

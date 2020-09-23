@@ -94,7 +94,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun bindSessionDetails(session: Session) {
         mSession = session
-        mSelectedStream = session.streams.firstOrNull()
+        mSelectedStream = session.streamsSortedByDetailedType().firstOrNull()
 
         mDateTextView.text = session.durationString()
         mNameTextView.text = session.name
@@ -107,7 +107,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     open protected fun bindMeasurements(session: Session) {
-        session.streams.sortedBy { it.detailedType }.forEach { stream ->
+        session.streamsSortedByDetailedType().forEach { stream ->
             bindStream(stream.detailedType)
         }
     }

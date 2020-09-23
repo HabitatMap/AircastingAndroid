@@ -24,10 +24,8 @@ class MapController(
         DatabaseProvider.runQuery {
             val session = mSessionsRepository.loadSessionAndMeasurementsByUUID(sessionUUID)
             if (session != null) {
-                mViewMvc.bindSession(session)
-
                 val measurementStream = session.streams.firstOrNull { it.sensorName == sensorName }
-                mViewMvc.bindMeasurementStream(measurementStream)
+                mViewMvc.bindSession(session, measurementStream)
             }
         }
     }

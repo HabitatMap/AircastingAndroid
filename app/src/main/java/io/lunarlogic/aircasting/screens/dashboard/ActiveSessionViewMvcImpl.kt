@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
+import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
@@ -52,6 +55,7 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
         val measurement = stream.measurements.lastOrNull()
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
 
+
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
@@ -63,7 +67,12 @@ abstract class ActiveSessionViewMvcImpl<ListenerType>: SessionViewMvcImpl<Listen
             if (level == null) {
                 circleView.visibility = View.GONE
             } else {
-                circleView.setColorFilter(MeasurementColor.get(context, level))
+                val color = MeasurementColor.get(context, level)
+                circleView.setColorFilter(color)
+
+                if (stream == mSelectedStream) {
+                    valueView.background = SelectedSensorBorder(color)
+                }
             }
         }
 
