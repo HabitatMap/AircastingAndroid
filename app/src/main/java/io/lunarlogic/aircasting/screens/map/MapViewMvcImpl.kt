@@ -1,9 +1,5 @@
 package io.lunarlogic.aircasting.screens.map
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +15,7 @@ import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -142,10 +139,11 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     private fun drawLastMeasurementMarker(point: LatLng, color: Int) {
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
 
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20, color)
         mLastMeasurementMarker = mMap.addMarker(
             MarkerOptions()
                 .position(point)
-                .icon(circleMarkerIcon(color))
+                .icon(icon)
         )
     }
 
@@ -286,46 +284,5 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
         mMap.clear()
         val measurements = measurementsWithLocations()
         drawSession(measurements)
-    }
-
-    // TODO: enhance this
-    private fun circleMarkerIcon(color: Int): BitmapDescriptor? {
-        val CIRCLE_WIDTH = 30
-        val STROKE_WIDTH = 4
-        val bitmap = Bitmap.createBitmap(
-            CIRCLE_WIDTH + 2 * STROKE_WIDTH,
-            CIRCLE_WIDTH + 2 * STROKE_WIDTH,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        canvas.drawColor(Color.TRANSPARENT)
-        val strokePaint = Paint()
-        strokePaint.style = Paint.Style.STROKE
-        strokePaint.color = Color.WHITE
-        strokePaint.isAntiAlias = true
-        strokePaint.strokeWidth = STROKE_WIDTH.toFloat()
-        val paint = Paint()
-        paint.style = Paint.Style.FILL
-        paint.color = color
-        paint.isAntiAlias = true
-        val radius = CIRCLE_WIDTH / 2
-        val padding = 0
-
-        // drawing stroke
-        canvas.drawCircle(
-            radius + STROKE_WIDTH.toFloat(),
-            radius + STROKE_WIDTH.toFloat(),
-            radius - padding.toFloat(),
-            strokePaint
-        )
-
-        // drawing circle filled with proper color
-        canvas.drawCircle(
-            radius + STROKE_WIDTH.toFloat(),
-            radius + STROKE_WIDTH.toFloat(),
-            radius - padding.toFloat(),
-            paint
-        )
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }
