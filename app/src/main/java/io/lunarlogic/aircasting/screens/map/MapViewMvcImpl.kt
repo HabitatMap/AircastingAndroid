@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.forEach
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
@@ -244,30 +245,40 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc, OnMapReadyCallback {
     }
 
     private fun bindLastMeasurement(stream: MeasurementStream) {
-        val measurement = stream.measurements.lastOrNull()
+        val measurement = stream.measurements.lastOrNull() ?: return
+
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
+        valueView.background = null
 
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
-        if (measurement == null) {
+        valueTextView.text = measurement.valueString()
+        val level = measurement.getLevel(stream)
+        if (level == null) {
             circleView.visibility = View.GONE
+            // TODO: what with the border?
         } else {
-            valueTextView.text = measurement.valueString()
-            val level = measurement.getLevel(stream)
-            if (level == null) {
-                circleView.visibility = View.GONE
-            } else {
-                val color = MeasurementColor.get(context, level)
-                circleView.setColorFilter(color)
+            val color = MeasurementColor.get(context, level)
+            circleView.setColorFilter(color)
 
-                if (stream == mSelectedStream) {
-                    valueView.background = SelectedSensorBorder(color)
-                }
+            if (stream == mSelectedStream) {
+                valueView.background = SelectedSensorBorder(color)
+            }
+
+            valueView.setOnClickListener {
+                mMeasurementValues?.forEach { it.background = null }
+                valueView.background = SelectedSensorBorder(color)
+
+                measurementStreamChanged(stream)
             }
         }
 
         mMeasurementValues?.addView(valueView)
+    }
+
+    private fun measurementStreamChanged(measurementStream: MeasurementStream) {
+        mSelectedStream = measurementStream
     }
 
     // TODO: enhance this
