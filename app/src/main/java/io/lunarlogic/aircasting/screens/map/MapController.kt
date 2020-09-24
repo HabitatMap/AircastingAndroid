@@ -32,8 +32,7 @@ class MapController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        // TODO: move it somewhere?
-        // more checks?
+        // TODO: more checks?
         if (event.sensorName == sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
