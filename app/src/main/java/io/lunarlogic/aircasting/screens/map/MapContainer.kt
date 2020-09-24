@@ -15,6 +15,8 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import java.util.ArrayList
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
@@ -34,6 +36,14 @@ class MapContainer: OnMapReadyCallback {
     private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
 
+    private val status = AtomicInteger(Status.INIT.value)
+
+    enum class Status(val value: Int){
+        INIT(0),
+        MAP_LOADED(1),
+        SESSION_LOADED(2)
+    }
+
     constructor(context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
         val mapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
@@ -44,7 +54,11 @@ class MapContainer: OnMapReadyCallback {
         googleMap ?: return
         mMap = googleMap
 
-        setup()
+        // sometimes onMapReady is invoked earlier than bindStream
+        if (status.get() == Status.SESSION_LOADED.value) {
+            setup()
+        }
+        status.set(Status.MAP_LOADED.value)
     }
 
     fun setup() {
@@ -61,6 +75,12 @@ class MapContainer: OnMapReadyCallback {
     fun bindStream(stream: MeasurementStream?) {
         mSelectedStream = stream
         mMeasurements = measurementsWithLocations(stream)
+
+        // sometimes onMapReady is invoked earlier than bindStream
+        if (status.get() == Status.MAP_LOADED.value) {
+            setup()
+        }
+        status.set(Status.SESSION_LOADED.value)
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
