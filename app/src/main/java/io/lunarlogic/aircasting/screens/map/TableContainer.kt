@@ -31,9 +31,7 @@ class TableContainer {
     private val mMeasurementValues: TableRow?
 
     private val mHeaderColor: Int
-    private val mHeaderFont: Typeface?
     private val mSelectedHeaderColor: Int
-    private val mSelectedHeaderFont: Typeface?
 
     constructor(context: Context, inflater: LayoutInflater, rootView: View?) {
         mContext = context
@@ -44,8 +42,6 @@ class TableContainer {
         mMeasurementValues = rootView?.measurement_values
 
         mHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_400, null)
-        mHeaderFont = ResourcesCompat.getFont(mContext, R.font.muli_regular)
-        mSelectedHeaderFont = ResourcesCompat.getFont(mContext, R.font.muli_bold)
         mSelectedHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_dark_blue, null)
     }
 
@@ -64,6 +60,7 @@ class TableContainer {
     private fun resetMeasurementsView() {
         mMeasurementsTable?.isStretchAllColumns = false
         mMeasurementHeaders?.removeAllViews()
+        mMeasurementValues?.removeAllViews()
     }
 
     private fun bindMeasurements(
@@ -117,7 +114,7 @@ class TableContainer {
 
     private fun resetMeasurementHeader(headerView: View) {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
-        headerTextView.typeface = mHeaderFont
+        headerTextView.setTypeface(null, Typeface.NORMAL)
         headerTextView.setTextColor(mHeaderColor)
     }
 
@@ -131,7 +128,7 @@ class TableContainer {
     }
 
     private fun markMeasurementHeaderAsSelected(headerTextView: TextView) {
-        headerTextView.typeface = mSelectedHeaderFont
+        headerTextView.setTypeface(null, Typeface.BOLD)
         headerTextView.setTextColor(mSelectedHeaderColor)
     }
 
