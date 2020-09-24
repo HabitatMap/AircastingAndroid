@@ -1,33 +1,34 @@
 package io.lunarlogic.aircasting.screens.map
 
 import androidx.appcompat.app.AppCompatActivity
-import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import io.lunarlogic.aircasting.sensor.Measurement
+import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+
 class MapController(
     private val rootActivity: AppCompatActivity,
+    private val mSessionsViewModel: SessionsViewModel,
     private val mViewMvc: MapViewMvc,
     private val sessionUUID: String,
     private val sensorName: String?
 ) {
-    private val mSessionsRepository = SessionsRepository()
-
     fun onCreate() {
         EventBus.getDefault().register(this);
 
-        DatabaseProvider.runQuery {
-            val session = mSessionsRepository.loadSessionAndMeasurementsByUUID(sessionUUID)
-            if (session != null) {
+        mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(rootActivity, Observer { sessionDBObject ->
+            sessionDBObject?.let {
+                val session = Session(sessionDBObject)
                 val measurementStream = session.streams.firstOrNull { it.sensorName == sensorName }
                 mViewMvc.bindSession(session, measurementStream)
             }
-        }
+        })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

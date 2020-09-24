@@ -4,10 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
 import io.lunarlogic.aircasting.lib.AppBar
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 
 class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null
+    private val sessionsViewModel by viewModels<SessionsViewModel>()
 
     companion object {
         val SESSION_UUID_KEY = "SESSION_UUID"
@@ -30,7 +33,7 @@ class MapActivity: AppCompatActivity() {
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
 
         val view = MapViewMvcImpl(layoutInflater, null, supportFragmentManager)
-        controller = MapController(this, view, sessionUUID, sensorName)
+        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName)
 
         controller?.onCreate()
 

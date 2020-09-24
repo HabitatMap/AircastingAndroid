@@ -21,7 +21,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
     private var mSession: Session? = null
     private var mSelectedStream: MeasurementStream? = null
 
-    private val mTableController: TableContainer
+    private val mTableContainer: TableContainer
     private val mMapContainer: MapContainer
 
     constructor(
@@ -35,7 +35,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_tags
 
-        mTableController = TableContainer(context, inflater, this.rootView)
+        mTableContainer = TableContainer(context, inflater, this.rootView)
         mMapContainer = MapContainer(context, supportFragmentManager)
     }
 
@@ -61,7 +61,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         bindSessionDetails(session)
 
         mMapContainer.bindStream(measurementStream)
-        mTableController.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+        mTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
     }
 
     private fun bindSessionDetails(session: Session) {
@@ -72,6 +72,6 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSelectedStream = measurementStream
-        mMapContainer.refreshMap(measurementStream)
+        mMapContainer.refresh(measurementStream)
     }
 }
