@@ -56,8 +56,8 @@ class TableContainer {
 
     fun bindSession(
         session: Session,
-        selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: (MeasurementStream) -> Unit
+        selectedStream: MeasurementStream? = null,
+        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     ) {
         if (session.measurementsCount() > 0) {
             resetMeasurementsView()
@@ -75,7 +75,7 @@ class TableContainer {
     private fun bindMeasurements(
         session: Session,
         selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: (MeasurementStream) -> Unit
+        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     ) {
         session.streamsSortedByDetailedType().forEach { stream ->
             bindStream(stream, selectedStream, onMeasurementStreamChanged)
@@ -92,7 +92,7 @@ class TableContainer {
     private fun bindStream(
         stream: MeasurementStream,
         selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: (MeasurementStream) -> Unit
+        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     ) {
         val headerView = mLayoutInflater.inflate(R.layout.measurement_header, null, false)
 
@@ -113,12 +113,12 @@ class TableContainer {
                 markMeasurementHeaderAsSelected(stream)
                 markMeasurementValueAsSelected(stream)
 
-                onMeasurementStreamChanged(stream)
+                onMeasurementStreamChanged?.invoke(stream)
             }
         }
     }
 
-    fun resetSensorSelection() {
+    private fun resetSensorSelection() {
         mMeasurementHeaders?.forEach { resetMeasurementHeader(it) }
         mMeasurementValues?.forEach { it.background = null }
     }
@@ -158,7 +158,7 @@ class TableContainer {
     private fun bindLastMeasurement(
         stream: MeasurementStream,
         selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: (MeasurementStream) -> Unit
+        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     ) {
         val measurement = stream.measurements.lastOrNull() ?: return
 
@@ -187,7 +187,7 @@ class TableContainer {
                 markMeasurementHeaderAsSelected(stream)
                 valueView.background = SelectedSensorBorder(color)
 
-                onMeasurementStreamChanged(stream)
+                onMeasurementStreamChanged?.invoke(stream)
             }
         }
     }

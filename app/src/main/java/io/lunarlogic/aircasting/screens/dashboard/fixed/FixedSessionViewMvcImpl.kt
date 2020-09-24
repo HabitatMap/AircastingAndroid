@@ -22,6 +22,10 @@ class FixedSessionViewMvcImpl(
         return R.layout.dormant_session
     }
 
+    override fun showMeasurementsTableValues(): Boolean {
+        return false
+    }
+
     override fun buildBottomSheet(): BottomSheet {
         return SessionActionsBottomSheet(this)
     }
