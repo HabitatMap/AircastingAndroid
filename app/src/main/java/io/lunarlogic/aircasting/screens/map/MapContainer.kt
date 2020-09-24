@@ -17,8 +17,6 @@ import io.lunarlogic.aircasting.sensor.MeasurementStream
 import java.util.ArrayList
 
 class MapContainer: OnMapReadyCallback {
-    private val MAX_ZOOM = 20.0f
-    private val MIN_ZOOM = 5.0f
     private val DEFAULT_ZOOM = 16f
 
     private val mContext: Context
@@ -50,7 +48,6 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun setup() {
-        setZoomPreferences()
         mMap?.isBuildingsEnabled = false
 
         if (mMeasurements.size > 0) {
@@ -69,11 +66,6 @@ class MapContainer: OnMapReadyCallback {
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
         val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
         return measurements ?: emptyList()
-    }
-
-    private fun setZoomPreferences() {
-        mMap?.setMaxZoomPreference(MAX_ZOOM)
-        mMap?.setMinZoomPreference(MIN_ZOOM)
     }
 
     private fun drawSession() {
