@@ -35,7 +35,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_tags
 
-        mTableContainer = TableContainer(context, inflater, this.rootView)
+        mTableContainer = TableContainer(context, inflater, this.rootView, true, true)
         mMapContainer = MapContainer(context, supportFragmentManager)
     }
 

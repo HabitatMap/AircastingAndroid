@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 class TableContainer {
     private val mContext: Context
     private val mLayoutInflater: LayoutInflater
+    private val mSelectable: Boolean
+    private val mDisplayValues: Boolean
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
@@ -33,13 +35,20 @@ class TableContainer {
     private val mHeaderColor: Int
     private val mSelectedHeaderColor: Int
 
-    constructor(context: Context, inflater: LayoutInflater, rootView: View?) {
+    constructor(context: Context, inflater: LayoutInflater, rootView: View?, selectable: Boolean = false, displayValues: Boolean = false) {
         mContext = context
         mLayoutInflater = inflater
+        mSelectable = selectable
+        mDisplayValues = displayValues
 
         mMeasurementsTable = rootView?.measurements_table
         mMeasurementHeaders = rootView?.measurement_headers
-        mMeasurementValues = rootView?.measurement_values
+
+        if (mDisplayValues) {
+            mMeasurementValues = rootView?.measurement_values
+        } else {
+            mMeasurementValues = null
+        }
 
         mHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_400, null)
         mSelectedHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_dark_blue, null)
@@ -90,20 +99,22 @@ class TableContainer {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
         headerTextView.text = stream.detailedType
 
-        if (stream == selectedStream) {
-            markMeasurementHeaderAsSelected(headerTextView)
-        }
-
         mMeasurementHeaders?.addView(headerView)
         mMeasurementStreams.add(stream)
 
-        headerView.setOnClickListener {
-            resetSensorSelection()
+        if (mSelectable) {
+            if (stream == selectedStream) {
+                markMeasurementHeaderAsSelected(headerTextView)
+            }
 
-            markMeasurementHeaderAsSelected(stream)
-            markMeasurementValueAsSelected(stream)
+            headerView.setOnClickListener {
+                resetSensorSelection()
 
-            onMeasurementStreamChanged(stream)
+                markMeasurementHeaderAsSelected(stream)
+                markMeasurementValueAsSelected(stream)
+
+                onMeasurementStreamChanged(stream)
+            }
         }
     }
 
@@ -163,19 +174,21 @@ class TableContainer {
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
 
-        if (stream == selectedStream) {
-            valueView.background = SelectedSensorBorder(color)
-        }
-
-        valueView.setOnClickListener {
-            resetSensorSelection()
-
-            markMeasurementHeaderAsSelected(stream)
-            valueView.background = SelectedSensorBorder(color)
-
-            onMeasurementStreamChanged(stream)
-        }
-
         mMeasurementValues?.addView(valueView)
+
+        if (mSelectable) {
+            if (stream == selectedStream) {
+                valueView.background = SelectedSensorBorder(color)
+            }
+
+            valueView.setOnClickListener {
+                resetSensorSelection()
+
+                markMeasurementHeaderAsSelected(stream)
+                valueView.background = SelectedSensorBorder(color)
+
+                onMeasurementStreamChanged(stream)
+            }
+        }
     }
 }
