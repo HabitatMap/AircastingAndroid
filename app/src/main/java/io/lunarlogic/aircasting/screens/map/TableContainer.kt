@@ -24,6 +24,7 @@ class TableContainer {
     private val mLayoutInflater: LayoutInflater
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
+    private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
 
     private val mMeasurementsTable: TableLayout?
     private val mMeasurementHeaders: TableRow?
@@ -33,7 +34,6 @@ class TableContainer {
     private val mHeaderFont: Typeface?
     private val mSelectedHeaderColor: Int
     private val mSelectedHeaderFont: Typeface?
-
 
     constructor(context: Context, inflater: LayoutInflater, rootView: View?) {
         mContext = context
@@ -72,7 +72,7 @@ class TableContainer {
         onMeasurementStreamChanged: (MeasurementStream) -> Unit
     ) {
         session.streamsSortedByDetailedType().forEach { stream ->
-            bindStream(stream, selectedStream)
+            bindStream(stream, selectedStream, onMeasurementStreamChanged)
             bindLastMeasurement(stream, selectedStream, onMeasurementStreamChanged)
         }
     }
@@ -83,7 +83,11 @@ class TableContainer {
         }
     }
 
-    private fun bindStream(stream: MeasurementStream, selectedStream: MeasurementStream?) {
+    private fun bindStream(
+        stream: MeasurementStream,
+        selectedStream: MeasurementStream?,
+        onMeasurementStreamChanged: (MeasurementStream) -> Unit
+    ) {
         val headerView = mLayoutInflater.inflate(R.layout.measurement_header, null, false)
 
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
@@ -95,6 +99,20 @@ class TableContainer {
 
         mMeasurementHeaders?.addView(headerView)
         mMeasurementStreams.add(stream)
+
+        headerView.setOnClickListener {
+            resetSensorSelection()
+
+            markMeasurementHeaderAsSelected(stream)
+            markMeasurementValueAsSelected(stream)
+
+            onMeasurementStreamChanged(stream)
+        }
+    }
+
+    fun resetSensorSelection() {
+        mMeasurementHeaders?.forEach { resetMeasurementHeader(it) }
+        mMeasurementValues?.forEach { it.background = null }
     }
 
     private fun resetMeasurementHeader(headerView: View) {
@@ -117,6 +135,18 @@ class TableContainer {
         headerTextView.setTextColor(mSelectedHeaderColor)
     }
 
+    private fun markMeasurementValueAsSelected(stream: MeasurementStream) {
+        val index = mMeasurementStreams.indexOf(stream)
+        val color = mLastMeasurementColors[stream]
+
+        try {
+            val valueView = mMeasurementValues?.get(index)
+            if (valueView != null && color != null) {
+                valueView.background = SelectedSensorBorder(color)
+            }
+        } catch(e: IndexOutOfBoundsException) {}
+    }
+
     private fun bindLastMeasurement(
         stream: MeasurementStream,
         selectedStream: MeasurementStream?,
@@ -134,14 +164,14 @@ class TableContainer {
 
         val color = MeasurementColor.forMap(mContext, measurement, stream)
         circleView.setColorFilter(color)
+        mLastMeasurementColors[stream] = color
 
         if (stream == selectedStream) {
             valueView.background = SelectedSensorBorder(color)
         }
 
         valueView.setOnClickListener {
-            mMeasurementHeaders?.forEach { resetMeasurementHeader(it) }
-            mMeasurementValues?.forEach { it.background = null }
+            resetSensorSelection()
 
             markMeasurementHeaderAsSelected(stream)
             valueView.background = SelectedSensorBorder(color)
