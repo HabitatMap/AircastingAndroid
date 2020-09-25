@@ -32,10 +32,6 @@ class FollowingSessionViewMvcImpl:
         measurementsDescription = this.rootView?.findViewById(R.id.session_measurements_description)
     }
 
-    override fun layoutId(): Int {
-        return R.layout.following_session
-    }
-
     override fun showMeasurementsTableValues(): Boolean {
         return true
     }

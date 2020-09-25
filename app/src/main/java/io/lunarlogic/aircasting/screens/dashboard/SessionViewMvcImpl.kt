@@ -39,7 +39,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     ) {
         mLayoutInflater = inflater
 
-        this.rootView = inflater.inflate(layoutId(), parent, false)
+        this.rootView = inflater.inflate(R.layout.session_card, parent, false)
         mSupportFragmentManager = supportFragmentManager
 
         mDateTextView = findViewById(R.id.session_date)
@@ -71,10 +71,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
-
-    open fun layoutId(): Int {
-        return R.layout.session_card
-    }
 
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet()

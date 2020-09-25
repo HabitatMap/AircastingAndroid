@@ -84,6 +84,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <include android:id="@+id/no_measurements_view"
+            layout="@layout/no_measurements_view" />
+
         <TextView
             android:id="@+id/session_measurements_description"
             android:text="@string/session_measurements_description"

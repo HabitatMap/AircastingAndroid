@@ -64,7 +64,7 @@ class TableContainer {
         mSelectable = true
         mDisplayValues = true
         mMeasurementValues = mRootView?.measurement_values
-        
+
         refresh()
     }
 
@@ -206,9 +206,7 @@ class TableContainer {
         val color = MeasurementColor.forMap(mContext, measurement, stream)
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
-
-        println("ANIA mMeasurementValues mDisplayValues " + mMeasurementValues + " " + mDisplayValues)
-
+        
         mMeasurementValues?.addView(valueView)
 
         if (mSelectable) {
