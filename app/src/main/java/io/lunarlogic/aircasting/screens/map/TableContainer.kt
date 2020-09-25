@@ -93,8 +93,8 @@ class TableContainer {
 
         if (session != null && session.measurementsCount() > 0) {
             resetMeasurementsView()
-            bindMeasurements(session, selectedStream, onMeasurementStreamChanged)
-            stretchTableLayout(session)
+            bindMeasurements()
+            stretchTableLayout()
         }
     }
 
@@ -104,28 +104,20 @@ class TableContainer {
         mMeasurementValues?.removeAllViews()
     }
 
-    private fun bindMeasurements(
-        session: Session,
-        selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
-    ) {
-        session.streamsSortedByDetailedType().forEach { stream ->
-            bindStream(stream, selectedStream, onMeasurementStreamChanged)
-            bindLastMeasurement(stream, selectedStream, onMeasurementStreamChanged)
+    private fun bindMeasurements() {
+        mSession?.streamsSortedByDetailedType()?.forEach { stream ->
+            bindStream(stream)
+            bindLastMeasurement(stream)
         }
     }
 
-    private fun stretchTableLayout(session: Session) {
-        if (session.streams.size > 1) {
+    private fun stretchTableLayout() {
+        if (mSession != null && mSession!!.streams.size > 1) {
             mMeasurementsTable?.isStretchAllColumns = true
         }
     }
 
-    private fun bindStream(
-        stream: MeasurementStream,
-        selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
-    ) {
+    private fun bindStream(stream: MeasurementStream) {
         val headerView = mLayoutInflater.inflate(R.layout.measurement_header, null, false)
 
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
@@ -135,20 +127,23 @@ class TableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream == selectedStream) {
+            if (stream == mSelectedStream) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
             headerView.setOnClickListener {
-                mSelectedStream = stream
-                resetSensorSelection()
+                onMeasurementClicked(stream)
 
                 markMeasurementHeaderAsSelected(stream)
                 markMeasurementValueAsSelected(stream)
-
-                onMeasurementStreamChanged?.invoke(stream)
             }
         }
+    }
+
+    private fun onMeasurementClicked(stream: MeasurementStream) {
+        mSelectedStream = stream
+        resetSensorSelection()
+        mOnMeasurementStreamChanged?.invoke(stream)
     }
 
     private fun resetSensorSelection() {
@@ -188,11 +183,7 @@ class TableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    private fun bindLastMeasurement(
-        stream: MeasurementStream,
-        selectedStream: MeasurementStream?,
-        onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
-    ) {
+    private fun bindLastMeasurement(stream: MeasurementStream) {
         val measurement = stream.measurements.lastOrNull() ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
@@ -206,22 +197,19 @@ class TableContainer {
         val color = MeasurementColor.forMap(mContext, measurement, stream)
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
-        
-        mMeasurementValues?.addView(valueView)
 
+        mMeasurementValues?.addView(valueView)
+        
         if (mSelectable) {
-            if (stream == selectedStream) {
+            if (stream == mSelectedStream) {
                 valueView.background = SelectedSensorBorder(color)
             }
 
             valueView.setOnClickListener {
-                resetSensorSelection()
+                onMeasurementClicked(stream)
 
-                mSelectedStream = stream
                 markMeasurementHeaderAsSelected(stream)
                 valueView.background = SelectedSensorBorder(color)
-
-                onMeasurementStreamChanged?.invoke(stream)
             }
         }
     }
