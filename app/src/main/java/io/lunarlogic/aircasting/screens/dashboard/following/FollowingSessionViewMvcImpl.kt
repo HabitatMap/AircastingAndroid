@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
-import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionViewMvcImpl
+import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
 
 class FollowingSessionViewMvcImpl:
-    ActiveSessionViewMvcImpl<FollowingSessionViewMvc.Listener>,
+    SessionViewMvcImpl<FollowingSessionViewMvc.Listener>,
     FollowingSessionViewMvc {
 
     val noMeasurementsIcon: ImageView?
@@ -34,6 +34,10 @@ class FollowingSessionViewMvcImpl:
 
     override fun layoutId(): Int {
         return R.layout.following_session
+    }
+
+    override fun showMeasurementsTableValues(): Boolean {
+        return true
     }
 
     override fun buildBottomSheet(): BottomSheet? {

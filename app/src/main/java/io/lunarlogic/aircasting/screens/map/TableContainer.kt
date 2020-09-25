@@ -21,23 +21,31 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 
 class TableContainer {
     private val mContext: Context
+    private val mRootView: View?
     private val mLayoutInflater: LayoutInflater
-    private val mSelectable: Boolean
-    private val mDisplayValues: Boolean
+
+    private var mSelectable: Boolean
+    private var mDisplayValues: Boolean
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
 
     private val mMeasurementsTable: TableLayout?
     private val mMeasurementHeaders: TableRow?
-    private val mMeasurementValues: TableRow?
+    private var mMeasurementValues: TableRow? = null
 
     private val mHeaderColor: Int
     private val mSelectedHeaderColor: Int
 
+    private var mSession: Session? = null
+    private var mSelectedStream: MeasurementStream? = null
+    private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
+
     constructor(context: Context, inflater: LayoutInflater, rootView: View?, selectable: Boolean = false, displayValues: Boolean = false) {
         mContext = context
+        mRootView = rootView
         mLayoutInflater = inflater
+
         mSelectable = selectable
         mDisplayValues = displayValues
 
@@ -46,20 +54,44 @@ class TableContainer {
 
         if (mDisplayValues) {
             mMeasurementValues = rootView?.measurement_values
-        } else {
-            mMeasurementValues = null
         }
 
         mHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_400, null)
         mSelectedHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_dark_blue, null)
     }
 
+    fun makeSelectable() {
+        mSelectable = true
+        mDisplayValues = true
+        mMeasurementValues = mRootView?.measurement_values
+        
+        refresh()
+    }
+
+    fun makeStatic(displayValues: Boolean = true) {
+        resetMeasurementsView()
+
+        mSelectable = false
+        mDisplayValues = displayValues
+        if (!displayValues) mMeasurementValues = null
+
+        refresh()
+    }
+
+    fun refresh() {
+        bindSession(mSession, mSelectedStream, mOnMeasurementStreamChanged)
+    }
+
     fun bindSession(
-        session: Session,
+        session: Session?,
         selectedStream: MeasurementStream? = null,
         onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     ) {
-        if (session.measurementsCount() > 0) {
+        mSession = session
+        mSelectedStream = selectedStream
+        mOnMeasurementStreamChanged = onMeasurementStreamChanged
+
+        if (session != null && session.measurementsCount() > 0) {
             resetMeasurementsView()
             bindMeasurements(session, selectedStream, onMeasurementStreamChanged)
             stretchTableLayout(session)
@@ -108,6 +140,7 @@ class TableContainer {
             }
 
             headerView.setOnClickListener {
+                mSelectedStream = stream
                 resetSensorSelection()
 
                 markMeasurementHeaderAsSelected(stream)
@@ -174,6 +207,8 @@ class TableContainer {
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
 
+        println("ANIA mMeasurementValues mDisplayValues " + mMeasurementValues + " " + mDisplayValues)
+
         mMeasurementValues?.addView(valueView)
 
         if (mSelectable) {
@@ -184,6 +219,7 @@ class TableContainer {
             valueView.setOnClickListener {
                 resetSensorSelection()
 
+                mSelectedStream = stream
                 markMeasurementHeaderAsSelected(stream)
                 valueView.background = SelectedSensorBorder(color)
 

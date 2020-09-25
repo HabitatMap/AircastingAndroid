@@ -69,9 +69,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
     }
 
-    protected abstract fun layoutId(): Int
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
+
+    open fun layoutId(): Int {
+        return R.layout.session_card
+    }
 
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet()
@@ -100,16 +103,20 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mTagsTextView.text = session.tagsString()
     }
 
-    private fun expandSessionCard() {
+    protected open fun expandSessionCard() {
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
+
+        mTableContainer.makeSelectable()
     }
 
-    private fun collapseSessionCard() {
+    protected open fun collapseSessionCard() {
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
+
+        mTableContainer.makeStatic(showMeasurementsTableValues())
     }
 
     abstract protected fun onMapButtonClicked()

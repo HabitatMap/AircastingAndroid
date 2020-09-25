@@ -2,11 +2,13 @@ package io.lunarlogic.aircasting.screens.dashboard.mobile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
+import kotlinx.android.synthetic.main.session_card.view.*
 
 class MobileDormantSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -17,9 +19,11 @@ class MobileDormantSessionViewMvcImpl(
     MobileDormantSessionViewMvc,
     SessionActionsBottomSheet.Listener
 {
+    private val mMeasurementsDescriptionTextView: TextView?
 
-    override fun layoutId(): Int {
-        return R.layout.dormant_session
+    init {
+        mMeasurementsDescriptionTextView = this.rootView?.session_measurements_description
+        setCollapsedMeasurementDescriptionText()
     }
 
     override fun showMeasurementsTableValues(): Boolean {
@@ -43,5 +47,23 @@ class MobileDormantSessionViewMvcImpl(
                 listener.onMapButtonClicked(it, mSelectedStream)
             }
         }
+    }
+
+    override fun expandSessionCard() {
+        super.expandSessionCard()
+        setExpandedMeasurementDescriptionText()
+    }
+
+    override fun collapseSessionCard() {
+        super.collapseSessionCard()
+        setCollapsedMeasurementDescriptionText()
+    }
+
+    private fun setCollapsedMeasurementDescriptionText() {
+        mMeasurementsDescriptionTextView?.text = context.getString(R.string.parameters)
+    }
+
+    private fun setExpandedMeasurementDescriptionText() {
+        mMeasurementsDescriptionTextView?.text = context.getString(R.string.session_measurements_description)
     }
 }
