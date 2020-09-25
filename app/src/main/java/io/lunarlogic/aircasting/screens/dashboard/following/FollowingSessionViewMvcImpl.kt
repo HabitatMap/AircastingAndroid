@@ -45,7 +45,7 @@ class FollowingSessionViewMvcImpl:
 
         if (session.measurementsCount() > 0) {
             hideNoMeasurementsInfo()
-            mTableContainer.bindSession(session)
+            mMeasurementsTableContainer.bindSession(session)
         } else {
             showNoMeasurementsInfo()
         }

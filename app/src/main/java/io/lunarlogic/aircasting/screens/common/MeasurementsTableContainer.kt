@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.map
+package io.lunarlogic.aircasting.screens.common
 
 import android.content.Context
 import android.graphics.Typeface
@@ -13,13 +13,12 @@ import androidx.core.view.forEach
 import androidx.core.view.get
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
-import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-class TableContainer {
+class MeasurementsTableContainer {
     private val mContext: Context
     private val mRootView: View?
     private val mLayoutInflater: LayoutInflater

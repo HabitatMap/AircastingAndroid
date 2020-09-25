@@ -8,6 +8,7 @@ import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
+import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
@@ -21,7 +22,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
     private var mSession: Session? = null
     private var mSelectedStream: MeasurementStream? = null
 
-    private val mTableContainer: TableContainer
+    private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
 
     constructor(
@@ -35,7 +36,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_tags
 
-        mTableContainer = TableContainer(context, inflater, this.rootView, true, true)
+        mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, true, true)
         mMapContainer = MapContainer(context, supportFragmentManager)
     }
 
@@ -61,7 +62,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         bindSessionDetails(session)
 
         mMapContainer.bindStream(measurementStream)
-        mTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+        mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
     }
 
     private fun bindSessionDetails(session: Session) {
