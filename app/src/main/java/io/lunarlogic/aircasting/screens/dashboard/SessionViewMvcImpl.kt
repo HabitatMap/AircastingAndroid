@@ -105,6 +105,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandedSessionView.visibility = View.VISIBLE
 
         mMeasurementsTableContainer.makeSelectable()
+
+        onExpandSessionCard()
     }
 
     protected open fun collapseSessionCard() {
@@ -115,9 +117,23 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
     }
 
-    abstract protected fun onMapButtonClicked()
-
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSelectedStream = measurementStream
+    }
+
+    private fun onMapButtonClicked() {
+        mSession?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onMapButtonClicked(it, mSelectedStream)
+            }
+        }
+    }
+
+    private fun onExpandSessionCard() {
+        mSession?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onExpandSessionCard(it)
+            }
+        }
     }
 }

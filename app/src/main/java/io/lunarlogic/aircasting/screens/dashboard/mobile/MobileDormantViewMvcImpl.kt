@@ -32,10 +32,4 @@ class MobileDormantViewMvcImpl(
             listener.onDeleteSessionClicked(session.uuid)
         }
     }
-
-    override fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {
-        for (listener in listeners) {
-            listener.onMapButtonClicked(session.uuid, measurementStream?.sensorName)
-        }
-    }
 }

@@ -8,11 +8,12 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
 
 class FollowingSessionViewMvcImpl:
-    SessionViewMvcImpl<FollowingSessionViewMvc.Listener>,
+    SessionViewMvcImpl<SessionCardListener>,
     FollowingSessionViewMvc {
 
     val noMeasurementsIcon: ImageView?
@@ -67,13 +68,5 @@ class FollowingSessionViewMvcImpl:
         noMeasurementsLabels?.visibility = View.GONE
 
         mExpandSessionButton.visibility = View.VISIBLE
-    }
-
-    override fun onMapButtonClicked() {
-        mSession?.let {
-            for (listener in listeners) {
-                listener.onMapButtonClicked(it, mSelectedStream)
-            }
-        }
     }
 }

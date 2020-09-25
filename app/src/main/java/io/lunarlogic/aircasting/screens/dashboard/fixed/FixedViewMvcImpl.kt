@@ -1,12 +1,10 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
-import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
 
@@ -31,12 +29,6 @@ class FixedViewMvcImpl(
     override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
             listener.onDeleteSessionClicked(session.uuid)
-        }
-    }
-
-    override fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {
-        for (listener in listeners) {
-            listener.onMapButtonClicked(session.uuid, measurementStream?.sensorName)
         }
     }
 }

@@ -41,14 +41,6 @@ class MobileDormantSessionViewMvcImpl(
         dismissBottomSheet()
     }
 
-    override fun onMapButtonClicked() {
-        mSession?.let {
-            for (listener in listeners) {
-                listener.onMapButtonClicked(it, mSelectedStream)
-            }
-        }
-    }
-
     override fun expandSessionCard() {
         super.expandSessionCard()
         setExpandedMeasurementDescriptionText()

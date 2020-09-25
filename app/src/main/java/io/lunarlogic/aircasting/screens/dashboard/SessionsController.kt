@@ -49,4 +49,8 @@ abstract class SessionsController(
     override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {
         MapActivity.start(mRootActivity, sessionUUID, sensorName)
     }
+
+    override fun onExpandSessionCard(sessionUUID: String) {
+        // TODO: download session data
+    }
 }
