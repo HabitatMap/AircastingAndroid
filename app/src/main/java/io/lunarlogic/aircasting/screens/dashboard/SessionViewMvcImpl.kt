@@ -87,7 +87,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun bindSession(session: Session) {
         bindSessionDetails(session)
-        mMeasurementsTableContainer.bindSession(session)
+        mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
     }
 
     protected fun bindSessionDetails(session: Session) {
@@ -116,4 +116,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     abstract protected fun onMapButtonClicked()
+
+    protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+        mSelectedStream = measurementStream
+    }
 }
