@@ -90,7 +90,7 @@ class MeasurementsTableContainer {
         mSelectedStream = selectedStream
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
 
-        if (session != null && session.measurementsCount() > 0) {
+        if (session != null && session.streams.count() > 0) {
             resetMeasurementsView()
             bindMeasurements()
             stretchTableLayout()
