@@ -54,10 +54,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandSessionButton = findViewById(R.id.expand_session_button)
         mExpandSessionButton.setOnClickListener {
             expandSessionCard()
+            onExpandSessionCardClicked()
         }
         mCollapseSessionButton = findViewById(R.id.collapse_session_button)
         mCollapseSessionButton.setOnClickListener {
             collapseSessionCard()
+            onCollapseSessionCardClicked()
         }
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
@@ -86,13 +88,15 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(session: Session) {
-        resetCardState()
+        resetCardState(session)
         bindSessionDetails(session)
         mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
     }
 
-    private fun resetCardState() {
-        collapseSessionCard()
+    private fun resetCardState(session: Session) {
+        if (session.name != mSession?.name) {
+            collapseSessionCard()
+        }
     }
 
     protected fun bindSessionDetails(session: Session) {
@@ -104,17 +108,15 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mTagsTextView.text = session.tagsString()
     }
 
-    protected open fun expandSessionCard() {
+    override fun expandSessionCard() {
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
 
         mMeasurementsTableContainer.makeSelectable()
-
-        onExpandSessionCard()
     }
 
-    protected open fun collapseSessionCard() {
+    override fun collapseSessionCard() {
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
@@ -134,10 +136,18 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
     }
 
-    private fun onExpandSessionCard() {
+    private fun onExpandSessionCardClicked() {
         mSession?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onExpandSessionCard(it)
+            }
+        }
+    }
+
+    private fun onCollapseSessionCardClicked() {
+        mSession?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onCollapseSessionCard(it)
             }
         }
     }

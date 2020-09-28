@@ -18,9 +18,18 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     private var mSessions: List<Session> = emptyList()
+    private var mExpandedSessionUUIDs: MutableSet<String> = mutableSetOf()
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.view.bindSession(mSessions.get(position))
+        val session = mSessions.get(position)
+        val sessionView = holder.view
+        sessionView.bindSession(session)
+
+        if (mExpandedSessionUUIDs.contains(session.uuid)) {
+            sessionView.expandSessionCard()
+        } else {
+            sessionView.collapseSessionCard()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -30,5 +39,13 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     fun bindSessions(sessions: List<Session>) {
         mSessions = sessions
         notifyDataSetChanged()
+    }
+
+    fun expandSessionCard(session: Session) {
+        mExpandedSessionUUIDs.add(session.uuid)
+    }
+
+    fun collapseSessionCard(session: Session) {
+        mExpandedSessionUUIDs.remove(session.uuid)
     }
 }
