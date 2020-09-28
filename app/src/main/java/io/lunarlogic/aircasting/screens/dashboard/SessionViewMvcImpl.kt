@@ -86,8 +86,13 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(session: Session) {
+        resetCardState()
         bindSessionDetails(session)
         mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+    }
+
+    private fun resetCardState() {
+        collapseSessionCard()
     }
 
     protected fun bindSessionDetails(session: Session) {
