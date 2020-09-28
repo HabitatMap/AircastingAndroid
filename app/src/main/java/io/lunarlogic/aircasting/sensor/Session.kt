@@ -145,6 +145,10 @@ class Session(
         return status == Status.RECORDING
     }
 
+    fun isIncomplete(): Boolean {
+        return streams.isEmpty() || measurementsCount() == 0
+    }
+
     fun streamsSortedByDetailedType(): List<MeasurementStream> {
         return streams.sortedBy { it.detailedType }
     }

@@ -82,7 +82,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     fun onExpandSessionCard(session: Session) {
         for (listener in listeners) {
-            listener.onExpandSessionCard(session.uuid)
+            listener.onExpandSessionCard(session)
         }
     }
 

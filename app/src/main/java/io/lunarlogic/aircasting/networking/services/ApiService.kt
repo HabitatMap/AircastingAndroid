@@ -26,7 +26,10 @@ interface ApiService {
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
     @GET("/api/user/sessions/empty.json")
-    fun show(@Query("uuid") uuid: String): Call<SessionResponse>
+    fun downloadSession(@Query("uuid") uuid: String): Call<SessionResponse>
+
+    @GET("/api/user/sessions/empty.json")
+    fun downloadSessionWithMeasurements(@Query("uuid") uuid: String, @Query("stream_measurements") stream_measurements: Boolean = true): Call<SessionWithMeasurementsResponse>
 
     @POST("/api/user/sessions/sync_with_versioning.json")
     fun sync(@Body body: SyncSessionBody): Call<SyncResponse>

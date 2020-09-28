@@ -25,6 +25,10 @@ class SessionsRepository {
         }
     }
 
+    fun getSessionByUUID(uuid: String): SessionDBObject? {
+        return mDatabase.sessions().loadSessionByUUID(uuid)
+    }
+
     fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
         val sessionDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
 

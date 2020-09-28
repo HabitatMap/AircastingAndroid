@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.map.MapActivity
 import io.lunarlogic.aircasting.sensor.Session
@@ -23,6 +24,7 @@ abstract class SessionsController(
     private val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
     private val mMobileSessionsSyncService = SessionsSyncService(mApiService, mErrorHandler)
+    private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
     fun registerSessionsObserver() {
         loadSessions().observe(mLifecycleOwner, Observer { sessions ->
@@ -50,7 +52,9 @@ abstract class SessionsController(
         MapActivity.start(mRootActivity, sessionUUID, sensorName)
     }
 
-    override fun onExpandSessionCard(sessionUUID: String) {
-        // TODO: download session data
+    override fun onExpandSessionCard(session: Session) {
+        if (session.isIncomplete()) {
+            mDownloadMeasurementsService.downloadMeasurements(session)
+        }
     }
 }
