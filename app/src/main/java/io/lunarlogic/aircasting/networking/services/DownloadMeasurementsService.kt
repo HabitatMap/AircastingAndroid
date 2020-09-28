@@ -15,22 +15,22 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
 
-    fun downloadMeasurements(session: Session) {
+    fun downloadMeasurements(session: Session, finallyCallback: (() -> Unit)? = null) {
         DatabaseProvider.runQuery {
             val dbSession = sessionsRepository.getSessionByUUID(session.uuid)
             dbSession?.let {
-                downloadMeasurements(dbSession.id, session)
+                downloadMeasurements(dbSession.id, session, finallyCallback)
             }
         }
     }
 
-    private fun downloadMeasurements(sessionId: Long, session: Session) {
+    private fun downloadMeasurements(sessionId: Long, session: Session, finallyCallback: (() -> Unit)?) {
         GlobalScope.launch(Dispatchers.Main) {
             val call = apiService.downloadSessionWithMeasurements(session.uuid)
 
             call.enqueue(DownloadMeasurementsCallback(
                 sessionId, session, sessionsRepository, measurementStreamsRepository,
-                measurementsRepository, errorHandler))
+                measurementsRepository, errorHandler, finallyCallback))
         }
     }
 }

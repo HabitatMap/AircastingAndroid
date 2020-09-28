@@ -75,6 +75,14 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mRecyclerSessions?.visibility = View.INVISIBLE
     }
 
+    override fun showLoaderFor(session: Session) {
+        mAdapter.showLoaderFor(session)
+    }
+
+    override fun hideLoaderFor(session: Session) {
+        mAdapter.hideLoaderFor(session)
+    }
+
     private fun recyclerViewCanBeUpdated(): Boolean {
         return mRecyclerSessions?.isComputingLayout == false
                 && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE

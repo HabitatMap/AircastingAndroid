@@ -19,6 +19,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private var mSessions: List<Session> = emptyList()
     private var mExpandedSessionUUIDs: MutableSet<String> = mutableSetOf()
+    private var mLoadingSessionUUIDs: MutableSet<String> = mutableSetOf()
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val session = mSessions.get(position)
@@ -29,6 +30,12 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             sessionView.expandSessionCard()
         } else {
             sessionView.collapseSessionCard()
+        }
+
+        if (mLoadingSessionUUIDs.contains(session.uuid)) {
+            sessionView.showLoader()
+        } else {
+            sessionView.hideLoader()
         }
     }
 
@@ -47,5 +54,15 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     fun collapseSessionCard(session: Session) {
         mExpandedSessionUUIDs.remove(session.uuid)
+    }
+
+    fun showLoaderFor(session: Session) {
+        mLoadingSessionUUIDs.add(session.uuid)
+        notifyDataSetChanged()
+    }
+
+    fun hideLoaderFor(session: Session) {
+        mLoadingSessionUUIDs.remove(session.uuid)
+        notifyDataSetChanged()
     }
 }

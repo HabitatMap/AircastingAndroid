@@ -21,7 +21,8 @@ class DownloadMeasurementsCallback(
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
-    private val errorHandler: ErrorHandler
+    private val errorHandler: ErrorHandler,
+    private val finallyCallback: (() -> Unit)? = null
 ): Callback<SessionWithMeasurementsResponse> {
     override fun onResponse(
         call: Call<SessionWithMeasurementsResponse>,
@@ -40,6 +41,8 @@ class DownloadMeasurementsCallback(
         } else {
             errorHandler.handleAndDisplay(DownloadMeasurementsError())
         }
+
+        finallyCallback?.invoke()
     }
 
     override fun onFailure(
@@ -47,6 +50,7 @@ class DownloadMeasurementsCallback(
         t: Throwable
     ) {
         errorHandler.handleAndDisplay(DownloadMeasurementsError(t))
+        finallyCallback?.invoke()
     }
 
     private fun saveStreamData(streamResponse: SessionStreamWithMeasurementsResponse) {

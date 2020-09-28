@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
@@ -28,6 +29,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
     private var mMapButton: Button
+    private var mLoader: ImageView?
 
     protected var mSession: Session? = null
     protected var mSelectedStream: MeasurementStream? = null
@@ -69,6 +71,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
         }
+
+        mLoader = rootView?.findViewById<ImageView>(R.id.loader)
     }
 
     protected abstract fun showMeasurementsTableValues(): Boolean
@@ -88,15 +92,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(session: Session) {
-        resetCardState(session)
+        hideLoader()
         bindSessionDetails(session)
         mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
-    }
-
-    private fun resetCardState(session: Session) {
-        if (session.name != mSession?.name) {
-            collapseSessionCard()
-        }
     }
 
     protected fun bindSessionDetails(session: Session) {
@@ -122,6 +120,15 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandedSessionView.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
+    }
+
+    override fun showLoader() {
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+    }
+
+    override fun hideLoader() {
+        mLoader?.visibility = View.GONE
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
