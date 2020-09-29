@@ -28,6 +28,8 @@ class LocationHelper(private val mContext: Context) {
         fun start(callback: (() -> Unit)? = null) {
             if (!started) {
                 singleton.start(callback)
+            } else {
+                callback?.invoke()
             }
             started = true
         }
