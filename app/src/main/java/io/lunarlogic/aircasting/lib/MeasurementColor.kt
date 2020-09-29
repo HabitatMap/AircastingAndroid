@@ -30,7 +30,15 @@ class MeasurementColor {
 
         fun forMap(context: Context, measurement: Measurement, measurementStream: MeasurementStream): Int {
             val level = measurement.getLevel(measurementStream)
+            return colorForLevel(context, level)
+        }
 
+        fun forMap(context: Context, value: Double, measurementStream: MeasurementStream): Int {
+            val level = Measurement.getLevel(value, measurementStream)
+            return colorForLevel(context, level)
+        }
+
+        private fun colorForLevel(context: Context, level: Measurement.Level): Int {
             val colorId = when (level) {
                 Measurement.Level.EXTREMELY_LOW -> R.color.aircasting_grey_500
                 Measurement.Level.EXTREMELY_HIGH -> R.color.session_color_indicator_very_high

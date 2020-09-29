@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/Widget.Aircasting.Cards"
+    android:layout_marginTop="@dimen/keyline_2"
+    android:layout_marginStart="@dimen/keyline_4"
+    app:layout_constraintTop_toTopOf="@id/map"
+    app:layout_constraintStart_toStartOf="@id/map"
+    android:visibility="gone">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/keyline_3">
+
+        <TextView
+            android:id="@+id/avg_label"
+            android:text="@string/avg_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/now_label"
+            android:layout_marginEnd="@dimen/keyline_8"/>
+
+        <TextView
+            android:id="@+id/now_label"
+            android:text="@string/now_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/avg_label"
+            app:layout_constraintEnd_toEndOf="@id/peak_label"
+            android:layout_marginEnd="@dimen/keyline_8" />
+
+        <TextView
+            android:id="@+id/peak_label"
+            android:text="@string/peak_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/now_label"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <ImageView
+            android:id="@+id/avg_circle_indicator"
+            app:srcCompat="@drawable/ic_circle"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:tint="@color/aircasting_pink"
+            android:layout_marginStart="@dimen/keyline_3"
+            app:layout_constraintTop_toTopOf="@id/avg_value"
+            app:layout_constraintBottom_toBottomOf="@id/avg_value"
+            app:layout_constraintStart_toStartOf="@+id/avg_value" />
+
+        <TextView
+            android:id="@+id/avg_value"
+            android:text="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.MapStatisticsValue"
+            android:padding="@dimen/keyline_2"
+            android:paddingStart="@dimen/keyline_8"
+            app:layout_constraintTop_toBottomOf="@id/avg_label"
+            app:layout_constraintStart_toStartOf="@id/avg_label"
+            app:layout_constraintEnd_toEndOf="@id/avg_label"/>
+
+        <ImageView
+            android:id="@+id/now_circle_indicator"
+            app:srcCompat="@drawable/ic_circle"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:tint="@color/aircasting_pink"
+            android:layout_marginStart="@dimen/keyline_3"
+            app:layout_constraintTop_toTopOf="@id/now_value"
+            app:layout_constraintBottom_toBottomOf="@id/now_value"
+            app:layout_constraintStart_toStartOf="@+id/now_value" />
+
+        <TextView
+            android:id="@+id/now_value"
+            android:text="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.MapStatisticsValue"
+            android:padding="@dimen/keyline_2"
+            android:paddingStart="@dimen/keyline_8"
+            android:textSize="@dimen/text_size_l"
+            app:layout_constraintTop_toBottomOf="@id/now_label"
+            app:layout_constraintStart_toStartOf="@+id/now_label"
+            app:layout_constraintEnd_toEndOf="@+id/now_label" />
+
+        <ImageView
+            android:id="@+id/peak_circle_indicator"
+            app:srcCompat="@drawable/ic_circle"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:tint="@color/aircasting_pink"
+            android:layout_marginStart="@dimen/keyline_3"
+            app:layout_constraintTop_toTopOf="@id/peak_value"
+            app:layout_constraintBottom_toBottomOf="@id/peak_value"
+            app:layout_constraintStart_toStartOf="@+id/peak_value" />
+
+        <TextView
+            android:id="@+id/peak_value"
+            android:text="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Aircasting.MapStatisticsValue"
+            android:padding="@dimen/keyline_2"
+            android:paddingStart="@dimen/keyline_8"
+            app:layout_constraintTop_toBottomOf="@id/peak_label"
+            app:layout_constraintStart_toStartOf="@id/peak_label"
+            app:layout_constraintEnd_toEndOf="@id/peak_label"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

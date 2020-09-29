@@ -48,11 +48,17 @@ class Measurement(
  */
 
     fun getLevel(stream: MeasurementStream): Level {
-        if (value < stream.thresholdVeryLow) return Level.EXTREMELY_LOW
-        if (value >= stream.thresholdVeryHigh) return Level.EXTREMELY_HIGH
+        return getLevel(value, stream)
+    }
 
-        val index = stream.levels.indexOfLast { level -> value >= level }
-        return Level.values().first { it.value == index }
+    companion object {
+        fun getLevel(value: Double, stream: MeasurementStream): Level {
+            if (value < stream.thresholdVeryLow) return Level.EXTREMELY_LOW
+            if (value >= stream.thresholdVeryHigh) return Level.EXTREMELY_HIGH
+
+            val index = stream.levels.indexOfLast { level -> value >= level }
+            return Level.values().first { it.value == index }
+        }
     }
 
     fun valueString(): String {

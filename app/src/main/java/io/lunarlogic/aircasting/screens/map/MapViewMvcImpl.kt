@@ -24,6 +24,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
+    private val mStatisticsContainer: StatisticsContainer
 
     constructor(
         inflater: LayoutInflater,
@@ -38,6 +39,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
 
         mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, true, true)
         mMapContainer = MapContainer(context, supportFragmentManager)
+        mStatisticsContainer = StatisticsContainer(this.rootView, context)
     }
 
     override fun addMeasurement(measurement: Measurement) {
@@ -52,6 +54,8 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
             } else if (it.isRecording()) {
                 mMapContainer.drawMobileMeasurement(point, color)
             }
+
+            mStatisticsContainer.addMeasurement(measurement)
         }
     }
 
@@ -63,6 +67,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
 
         mMapContainer.bindStream(measurementStream)
         mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+        mStatisticsContainer.bindStream(measurementStream)
     }
 
     private fun bindSessionDetails(session: Session) {
@@ -74,5 +79,6 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSelectedStream = measurementStream
         mMapContainer.refresh(measurementStream)
+        mStatisticsContainer.refresh(measurementStream)
     }
 }

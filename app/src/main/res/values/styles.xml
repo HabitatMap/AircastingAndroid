@@ -190,6 +190,21 @@
         <item name="lineHeight">32dp</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.MapStatisticsLabel" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:textAlignment">center</item>
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_600</item>
+        <item name="android:textSize">@dimen/text_size_xxs</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.MapStatisticsValue" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:textAlignment">center</item>
+        <item name="android:fontFamily">@font/moderat_trial_medium</item>
+        <item name="android:textColor">@color/aircasting_grey_600</item>
+        <item name="android:textSize">@dimen/text_size_s</item>
+        <item name="android:layout_marginTop">@dimen/keyline_2</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->
