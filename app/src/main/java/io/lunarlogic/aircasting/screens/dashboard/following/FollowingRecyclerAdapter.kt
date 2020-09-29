@@ -1,17 +1,17 @@
 package io.lunarlogic.aircasting.screens.dashboard.following
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 
 
 class FollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
-    private val mListener: FollowingSessionViewMvc.Listener,
+    private val mListener: SessionCardListener,
     supportFragmentManager: FragmentManager
-): SessionsRecyclerAdapter<FollowingSessionViewMvc.Listener>(mInflater, supportFragmentManager) {
+): SessionsRecyclerAdapter<SessionCardListener>(mInflater, supportFragmentManager) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc =

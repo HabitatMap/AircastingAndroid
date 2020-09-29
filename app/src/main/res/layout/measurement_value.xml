@@ -3,7 +3,8 @@
     android:orientation="horizontal"
     android:gravity="center"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/circle_indicator"
@@ -18,6 +19,8 @@
         android:id="@+id/measurement_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_xs"
+        android:textColor="@color/aircasting_grey_400"
         android:layout_marginStart="3dp" />
 
 </LinearLayout>

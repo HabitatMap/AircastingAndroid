@@ -141,6 +141,18 @@ class Session(
         return type == Type.FIXED
     }
 
+    fun isRecording(): Boolean {
+        return status == Status.RECORDING
+    }
+
+    fun isIncomplete(): Boolean {
+        return streams.isEmpty() || measurementsCount() == 0
+    }
+
+    fun streamsSortedByDetailedType(): List<MeasurementStream> {
+        return streams.sortedBy { it.detailedType }
+    }
+
     fun durationString(): String {
         val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
         val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)
@@ -150,6 +162,10 @@ class Session(
             durationString += "-${hourFormatter.format(endTime)}"
         }
         return durationString
+    }
+
+    fun tagsString(): String {
+        return tags.joinToString(", ")
     }
 
     fun measurementsCount(): Int {

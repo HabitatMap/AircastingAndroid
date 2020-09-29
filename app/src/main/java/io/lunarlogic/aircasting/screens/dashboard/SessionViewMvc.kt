@@ -5,4 +5,8 @@ import io.lunarlogic.aircasting.sensor.Session
 
 interface SessionViewMvc<ListenerType>: ObservableViewMvc<ListenerType> {
     fun bindSession(session: Session)
+    fun expandSessionCard()
+    fun collapseSessionCard()
+    fun showLoader()
+    fun hideLoader()
 }

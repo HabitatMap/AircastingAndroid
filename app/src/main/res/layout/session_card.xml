@@ -41,20 +41,34 @@
             android:layout_marginTop="@dimen/keyline_4"
             android:textAppearance="?attr/textAppearanceHeadline4"
             android:textColor="@color/aircasting_dark_blue"
-            android:font="@font/moderat_trial_medium"
+            android:fontFamily="@font/moderat_trial_medium"
             app:layout_constraintTop_toBottomOf="@+id/session_date"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/session_more_details_button" />
+            app:layout_constraintEnd_toStartOf="@+id/expand_session_button" />
 
         <ImageView
-            android:id="@+id/session_more_details_button"
+            android:id="@+id/expand_session_button"
             style="@style/Widget.AppCompat.ActionButton"
             android:clickable="true"
             android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_chevron_down"
+            android:src="@drawable/ic_chevron_down"
             android:tint="@color/aircasting_dark_blue"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
+            app:layout_constraintStart_toEndOf="@+id/session_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/collapse_session_button"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_chevron_up"
+            android:tint="@color/aircasting_dark_blue"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:layout_constraintStart_toEndOf="@+id/session_name"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -69,6 +83,9 @@
             app:layout_constraintTop_toBottomOf="@+id/session_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <include android:id="@+id/no_measurements_view"
+            layout="@layout/no_measurements_view" />
 
         <TextView
             android:id="@+id/session_measurements_description"
@@ -91,5 +108,25 @@
             <TableRow android:id="@+id/measurement_headers" />
             <TableRow android:id="@+id/measurement_values" />
         </TableLayout>
+
+        <ImageView
+            android:id="@+id/loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_loader"
+            android:tint="@color/aircasting_blue_400"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_8"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/session_measurements_description" />
+
+        <include
+            android:id="@+id/expanded_session_view"
+            layout="@layout/expanded_session_view"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_3"
+            app:layout_constraintTop_toBottomOf="@id/measurements_table" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

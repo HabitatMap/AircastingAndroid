@@ -5,15 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/new_session_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:paddingTop="@dimen/keyline_10"
+    <include android:id="@+id/app_bar_layout"
+        layout="@layout/app_bar"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        />
 
     <FrameLayout
         android:id="@+id/progress_bar_frame"
@@ -24,7 +19,7 @@
         android:background="@drawable/progress_bar_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_session_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
         >
 
         <ProgressBar

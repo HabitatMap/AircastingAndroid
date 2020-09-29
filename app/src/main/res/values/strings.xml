@@ -22,6 +22,7 @@
     <string name="send_emails">Send me emails from AirCasting</string>
     <string name="create_account_errors_message">There are errors in the form. Please fix them before continuing.</string>
 
+    <!--  Dashboard -->
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty_header">Ready to get started?</string>
     <string name="dashboard_empty_text">Record a new session to and monitor your health &amp; environment.</string>
@@ -33,6 +34,7 @@
     <string name="delete_session">Delete session</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="map_button">map</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
@@ -125,6 +127,7 @@
     <string name="fixed_session_details_wifi_password_dialog_header">Provide password for \"%1$s\" network</string>
     <string name="session_details_network_password_hint">Password</string>
 
+    <!-- New session step 9 - Confirmation / Choose location -->
     <string name="session_confirmation_header">Are you ready?</string>
     <string name="session_confirmation_description_part1">Your</string>
     <string name="session_confirmation_description_part2">session</string>
@@ -135,6 +138,12 @@
     <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
     <string name="fixed_session_choose_location_continue_button">Continue</string>
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
+
+    <!-- Map view -->
+    <string name="avg_label">Avg %1$s</string>
+    <string name="now_label">Now %1$s</string>
+    <string name="peak_label">Peak %1$s</string>
+
     <string name="errors_location_services_required">Without location services you will not be able to record mobile and fixed outdoor sessions.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>

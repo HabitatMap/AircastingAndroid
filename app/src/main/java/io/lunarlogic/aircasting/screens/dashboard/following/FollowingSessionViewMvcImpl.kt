@@ -8,11 +8,12 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
-import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionViewMvcImpl
+import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
+import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
 
 class FollowingSessionViewMvcImpl:
-    ActiveSessionViewMvcImpl<FollowingSessionViewMvc.Listener>,
+    SessionViewMvcImpl<SessionCardListener>,
     FollowingSessionViewMvc {
 
     val noMeasurementsIcon: ImageView?
@@ -32,8 +33,8 @@ class FollowingSessionViewMvcImpl:
         measurementsDescription = this.rootView?.findViewById(R.id.session_measurements_description)
     }
 
-    override fun layoutId(): Int {
-        return R.layout.following_session
+    override fun showMeasurementsTableValues(): Boolean {
+        return true
     }
 
     override fun buildBottomSheet(): BottomSheet? {
@@ -45,11 +46,8 @@ class FollowingSessionViewMvcImpl:
 
         if (session.measurementsCount() > 0) {
             hideNoMeasurementsInfo()
-            resetMeasurementsView()
-            bindMeasurements(session)
-            stretchTableLayout(session)
-        }
-        else {
+            mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+        } else {
             showNoMeasurementsInfo()
         }
     }
@@ -59,6 +57,8 @@ class FollowingSessionViewMvcImpl:
 
         noMeasurementsIcon?.visibility = View.VISIBLE
         noMeasurementsLabels?.visibility = View.VISIBLE
+
+        mExpandSessionButton.visibility = View.GONE
     }
 
     private fun hideNoMeasurementsInfo() {
@@ -66,5 +66,7 @@ class FollowingSessionViewMvcImpl:
 
         noMeasurementsIcon?.visibility = View.GONE
         noMeasurementsLabels?.visibility = View.GONE
+
+        mExpandSessionButton.visibility = View.VISIBLE
     }
 }

@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard.fixed
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
@@ -17,9 +16,8 @@ class FixedSessionViewMvcImpl(
     FixedSessionViewMvc,
     SessionActionsBottomSheet.Listener
 {
-
-    override fun layoutId(): Int {
-        return R.layout.dormant_session
+    override fun showMeasurementsTableValues(): Boolean {
+        return false
     }
 
     override fun buildBottomSheet(): BottomSheet {

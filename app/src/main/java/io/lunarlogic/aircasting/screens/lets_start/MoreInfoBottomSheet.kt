@@ -13,7 +13,6 @@ import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
-import kotlinx.android.synthetic.main.more_info_bottom_sheet.*
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 
 class MoreInfoBottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {

@@ -28,19 +28,40 @@ class Measurement(
         measurementResponse.latitude,
         measurementResponse.longitude
     )
+
+    enum class Level(val value: Int) {
+        EXTREMELY_LOW(-1),
+        LOW(0),
+        MEDIUM(1),
+        HIGH(2),
+        VERY_HIGH(3),
+        EXTREMELY_HIGH(4)
+    }
 /*
     T1..T5 are integer thresholds which guide how values should be displayed:
-    - lower than T1 - extremely low / won't be displayed - level = null
+    - lower than T1 - extremely low - level = -1
     - between T1 and T2 - low / green - level = 0
     - between T2 and T3 - medium / yellow - level = 1
     - between T3 and T4 - high / orange - level = 2
     - between T4 and T5 - very high / red - level = 3
-    - higher than T5 - extremely high / won't be displayed - level = null
+    - higher than T5 - extremely high - level = 4
  */
-    fun getLevel(stream: MeasurementStream): Int? {
-        if (value < stream.thresholdVeryLow) return null
-        if (value >= stream.thresholdVeryHigh) return null
 
-        return stream.levels.indexOfLast { level -> value >= level }
+    fun getLevel(stream: MeasurementStream): Level {
+        return getLevel(value, stream)
+    }
+
+    companion object {
+        fun getLevel(value: Double, stream: MeasurementStream): Level {
+            if (value < stream.thresholdVeryLow) return Level.EXTREMELY_LOW
+            if (value >= stream.thresholdVeryHigh) return Level.EXTREMELY_HIGH
+
+            val index = stream.levels.indexOfLast { level -> value >= level }
+            return Level.values().first { it.value == index }
+        }
+    }
+
+    fun valueString(): String {
+        return "%.0f".format(value)
     }
 }

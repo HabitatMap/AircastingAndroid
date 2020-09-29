@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
@@ -48,7 +49,9 @@ class NewSessionActivity : AppCompatActivity() {
             rootActivity?.let{
                 val startForResult = it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     val tabId = DashboardPagerAdapter.tabIndexForSessionType(sessionType, Session.Status.RECORDING)
-                    NavigationController.goToDashboard(tabId)
+                    if (it.resultCode == RESULT_OK) {
+                        NavigationController.goToDashboard(tabId)
+                    }
                 }
 
                 val intent = Intent(it, NewSessionActivity::class.java)
@@ -82,8 +85,7 @@ class NewSessionActivity : AppCompatActivity() {
         controller.onCreate()
 
         setContentView(view.rootView)
-        setSupportActionBar(findViewById(R.id.new_session_toolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        AppBar.setup(view.rootView, this)
     }
 
     override fun onBackPressed() {
@@ -100,20 +102,5 @@ class NewSessionActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         controller.onActivityResult(requestCode, resultCode)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            val fragmentManager = supportFragmentManager
-            if (fragmentManager.backStackEntryCount > 0) {
-                fragmentManager.popBackStack()
-            } else {
-                super.onBackPressed()
-            }
-            true
-        }
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
     }
 }

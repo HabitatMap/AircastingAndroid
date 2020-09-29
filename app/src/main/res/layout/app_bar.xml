@@ -1,4 +1,5 @@
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Aircasting.AppBarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -7,6 +8,12 @@
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:paddingTop="@dimen/keyline_10"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
         />
 </com.google.android.material.appbar.AppBarLayout>

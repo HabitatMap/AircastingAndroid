@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
@@ -74,8 +75,34 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mRecyclerSessions?.visibility = View.INVISIBLE
     }
 
+    override fun showLoaderFor(session: Session) {
+        mAdapter.showLoaderFor(session)
+    }
+
+    override fun hideLoaderFor(session: Session) {
+        mAdapter.hideLoaderFor(session)
+    }
+
     private fun recyclerViewCanBeUpdated(): Boolean {
         return mRecyclerSessions?.isComputingLayout == false
                 && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE
+    }
+
+    fun onExpandSessionCard(session: Session) {
+        mAdapter.expandSessionCard(session)
+
+        for (listener in listeners) {
+            listener.onExpandSessionCard(session)
+        }
+    }
+
+    fun onCollapseSessionCard(session: Session) {
+        mAdapter.collapseSessionCard(session)
+    }
+
+    fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {
+        for (listener in listeners) {
+            listener.onMapButtonClicked(session.uuid, measurementStream?.sensorName)
+        }
     }
 }

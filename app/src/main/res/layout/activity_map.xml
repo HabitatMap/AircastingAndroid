@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include android:id="@+id/app_bar_layout"
+        layout="@layout/app_bar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/session_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceBody2"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/session_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceHeadline2"
+        android:textColor="@color/aircasting_dark_blue"
+        android:fontFamily="@font/moderat_trial_medium"
+        app:layout_constraintTop_toBottomOf="@+id/session_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/session_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textColor="@color/aircasting_dark_blue"
+        android:textSize="@dimen/text_size_xs"
+        app:layout_constraintTop_toBottomOf="@+id/session_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/session_measurements_description"
+        android:text="@string/session_measurements_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:textAppearance="?attr/textAppearanceBody2"
+        app:layout_constraintTop_toBottomOf="@+id/session_tags"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TableLayout
+        android:id="@+id/measurements_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
+
+        <TableRow android:id="@+id/measurement_headers" />
+        <TableRow android:id="@+id/measurement_values" />
+    </TableLayout>
+
+    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
+        android:name="com.google.android.libraries.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:layout_marginBottom="@dimen/keyline_10"
+        map:uiZoomControls="true"
+        map:uiZoomGestures="true"
+        app:layout_constraintTop_toBottomOf="@id/measurements_table"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <include android:id="@+id/statistics_view" layout="@layout/map_statistics_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
