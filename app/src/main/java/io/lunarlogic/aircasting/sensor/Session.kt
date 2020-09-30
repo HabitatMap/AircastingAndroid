@@ -149,6 +149,13 @@ class Session(
         return streams.isEmpty() || measurementsCount() == 0
     }
 
+    fun hasChangedFrom(session: Session?): Boolean {
+        return session?.name != name ||
+                session.tags != tags ||
+                session.streams.size != streams.size ||
+                session.measurementsCount() != measurementsCount()
+    }
+
     fun streamsSortedByDetailedType(): List<MeasurementStream> {
         return streams.sortedBy { it.detailedType }
     }

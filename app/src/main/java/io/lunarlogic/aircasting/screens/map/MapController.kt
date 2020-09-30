@@ -19,14 +19,19 @@ class MapController(
     private val sessionUUID: String,
     private val sensorName: String?
 ) {
+    private var mSession: Session? = null
+
     fun onCreate() {
         EventBus.getDefault().register(this);
 
         mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(rootActivity, Observer { sessionDBObject ->
             sessionDBObject?.let {
                 val session = Session(sessionDBObject)
-                val measurementStream = session.streams.firstOrNull { it.sensorName == sensorName }
-                mViewMvc.bindSession(session, measurementStream)
+                if (session.hasChangedFrom(mSession)) {
+                    mSession = session
+                    val measurementStream = session.streams.firstOrNull { it.sensorName == sensorName }
+                    mViewMvc.bindSession(session, measurementStream)
+                }
             }
         })
     }
