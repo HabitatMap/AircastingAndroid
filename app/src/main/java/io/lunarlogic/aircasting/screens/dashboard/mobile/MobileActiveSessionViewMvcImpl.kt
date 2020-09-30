@@ -26,7 +26,7 @@ class MobileActiveSessionViewMvcImpl(
 
     override fun stopSessionPressed() {
         for (listener in listeners) {
-            listener.onSessionStopClicked(mSession!!)
+            listener.onSessionStopClicked(mSessionPresenter!!.session)
         }
         dismissBottomSheet()
     }

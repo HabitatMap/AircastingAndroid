@@ -31,8 +31,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mMapButton: Button
     private var mLoader: ImageView?
 
-    protected var mSession: Session? = null
-    protected var mSelectedStream: MeasurementStream? = null
+    protected var mSessionPresenter: SessionPresenter? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -91,22 +90,37 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         dismissBottomSheet()
     }
 
-    override fun bindSession(session: Session) {
-        hideLoader()
-        bindSessionDetails(session)
-        mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+    override fun bindSession(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.loading) {
+            showLoader()
+        } else {
+            hideLoader()
+        }
+        if (sessionPresenter.expanded) {
+            expandSessionCard()
+        } else {
+            collapseSessionCard()
+        }
+
+        mSessionPresenter = sessionPresenter
+
+        bindSessionDetails()
+        bindMeasurementsTable()
     }
 
-    protected fun bindSessionDetails(session: Session) {
-        mSession = session
-        mSelectedStream = session.streamsSortedByDetailedType().firstOrNull()
+    protected fun bindSessionDetails() {
+        val session = mSessionPresenter?.session
 
-        mDateTextView.text = session.durationString()
-        mNameTextView.text = session.name
-        mTagsTextView.text = session.tagsString()
+        mDateTextView.text = session?.durationString()
+        mNameTextView.text = session?.name
+        mTagsTextView.text = session?.tagsString()
     }
 
-    override fun expandSessionCard() {
+    protected open fun bindMeasurementsTable() {
+        mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
+    }
+
+    protected open fun expandSessionCard() {
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
@@ -114,7 +128,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.makeSelectable()
     }
 
-    override fun collapseSessionCard() {
+    protected open fun collapseSessionCard() {
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
@@ -132,19 +146,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        mSelectedStream = measurementStream
+        mSessionPresenter?.selectedStream = measurementStream
     }
 
     private fun onMapButtonClicked() {
-        mSession?.let {
+        mSessionPresenter?.session?.let {
             for (listener in listeners) {
-                (listener as? SessionCardListener)?.onMapButtonClicked(it, mSelectedStream)
+                (listener as? SessionCardListener)?.onMapButtonClicked(it, mSessionPresenter?.selectedStream)
             }
         }
     }
 
     private fun onExpandSessionCardClicked() {
-        mSession?.let {
+        mSessionPresenter?.expanded = true
+
+        mSessionPresenter?.session?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onExpandSessionCard(it)
             }
@@ -152,10 +168,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun onCollapseSessionCardClicked() {
-        mSession?.let {
-            for (listener in listeners) {
-                (listener as? SessionCardListener)?.onCollapseSessionCard(it)
-            }
-        }
+        mSessionPresenter?.expanded = false
     }
 }

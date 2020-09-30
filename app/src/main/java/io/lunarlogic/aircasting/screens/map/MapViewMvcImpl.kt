@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
@@ -66,7 +67,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         bindSessionDetails(session)
 
         mMapContainer.bindStream(measurementStream)
-        mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+        mMeasurementsTableContainer.bindSession(SessionPresenter(session), this::onMeasurementStreamChanged)
         mStatisticsContainer.bindStream(measurementStream)
     }
 

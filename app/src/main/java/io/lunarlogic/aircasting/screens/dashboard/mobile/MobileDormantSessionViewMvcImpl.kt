@@ -36,7 +36,7 @@ class MobileDormantSessionViewMvcImpl(
 
     override fun deleteSessionPressed() {
         for (listener in listeners) {
-            listener.onSessionDeleteClicked(mSession!!)
+            listener.onSessionDeleteClicked(mSessionPresenter!!.session)
         }
         dismissBottomSheet()
     }
