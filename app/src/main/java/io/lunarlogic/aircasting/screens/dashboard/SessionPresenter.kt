@@ -7,11 +7,9 @@ class SessionPresenter(
     var session: Session,
     var expanded: Boolean = false,
     var loading: Boolean = false,
-    var selectedStream: MeasurementStream? = defaultStream(session)
+    var selectedStream: MeasurementStream? = null
 ) {
-    companion object {
-        fun defaultStream(session: Session): MeasurementStream? {
-            return session.streamsSortedByDetailedType().firstOrNull()
-        }
+    fun setDefaultStream() {
+        selectedStream = session.streamsSortedByDetailedType().firstOrNull()
     }
 }

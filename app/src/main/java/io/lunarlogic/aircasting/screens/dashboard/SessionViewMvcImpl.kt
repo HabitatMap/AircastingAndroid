@@ -103,6 +103,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
 
         mSessionPresenter = sessionPresenter
+        if (mSessionPresenter != null && sessionPresenter.selectedStream == null) {
+            mSessionPresenter!!.setDefaultStream()
+        }
 
         bindSessionDetails()
         bindMeasurementsTable()
