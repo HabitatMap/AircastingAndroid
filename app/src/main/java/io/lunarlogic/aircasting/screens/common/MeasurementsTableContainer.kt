@@ -99,6 +99,7 @@ class MeasurementsTableContainer {
         mMeasurementsTable?.isStretchAllColumns = false
         mMeasurementHeaders?.removeAllViews()
         mMeasurementValues?.removeAllViews()
+        mMeasurementStreams.clear()
     }
 
     private fun bindMeasurements() {
@@ -126,7 +127,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream.detailedType == mSessionPresenter?.selectedStream?.detailedType) {
+            if (stream == mSessionPresenter?.selectedStream) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
@@ -199,7 +200,7 @@ class MeasurementsTableContainer {
         mMeasurementValues?.addView(valueView)
         
         if (mSelectable) {
-            if (stream.detailedType == mSessionPresenter?.selectedStream?.detailedType) {
+            if (stream == mSessionPresenter?.selectedStream) {
                 valueView.background = SelectedSensorBorder(color)
             }
 
