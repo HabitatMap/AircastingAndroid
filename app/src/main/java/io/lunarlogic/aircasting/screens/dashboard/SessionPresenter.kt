@@ -5,11 +5,24 @@ import io.lunarlogic.aircasting.sensor.Session
 
 class SessionPresenter(
     var session: Session,
+    var selectedStream: MeasurementStream? = null,
     var expanded: Boolean = false,
-    var loading: Boolean = false,
-    var selectedStream: MeasurementStream? = null
+    var loading: Boolean = false
 ) {
+
+    init {
+        if (selectedStream == null) {
+            setDefaultStream()
+        }
+    }
+
     fun setDefaultStream() {
-        selectedStream = session.streamsSortedByDetailedType().firstOrNull()
+        selectedStream = defaultStream(session)
+    }
+
+    companion object {
+        fun defaultStream(session: Session): MeasurementStream? {
+            return session.streamsSortedByDetailedType().firstOrNull()
+        }
     }
 }

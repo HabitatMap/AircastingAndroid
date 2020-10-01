@@ -126,7 +126,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream) {
+            if (stream.detailedType == mSessionPresenter?.selectedStream?.detailedType) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
@@ -199,7 +199,7 @@ class MeasurementsTableContainer {
         mMeasurementValues?.addView(valueView)
         
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream) {
+            if (stream.detailedType == mSessionPresenter?.selectedStream?.detailedType) {
                 valueView.background = SelectedSensorBorder(color)
             }
 

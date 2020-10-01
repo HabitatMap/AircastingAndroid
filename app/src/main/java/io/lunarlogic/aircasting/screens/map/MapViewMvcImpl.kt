@@ -67,8 +67,7 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         bindSessionDetails(session)
 
         mMapContainer.bindStream(measurementStream)
-        val sessionPresenter = SessionPresenter(session)
-        sessionPresenter.setDefaultStream()
+        val sessionPresenter = SessionPresenter(session, measurementStream)
         mMeasurementsTableContainer.bindSession(sessionPresenter, this::onMeasurementStreamChanged)
         mStatisticsContainer.bindStream(measurementStream)
     }
