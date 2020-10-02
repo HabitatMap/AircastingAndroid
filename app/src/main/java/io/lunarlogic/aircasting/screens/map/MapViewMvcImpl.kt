@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.map
 
 import android.location.Location
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -92,7 +93,12 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private fun bindSessionDetails(session: Session) {
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
-        mSessionTagsTextView?.text = session.tagsString()
+
+        if (session.tags.isEmpty()) {
+            mSessionTagsTextView?.visibility = View.GONE
+        } else {
+            mSessionTagsTextView?.text = session.tagsString()
+        }
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
