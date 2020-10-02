@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting.screens.map
 
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
@@ -18,11 +20,13 @@ class MapController(
     private val mViewMvc: MapViewMvc,
     private val sessionUUID: String,
     private val sensorName: String?
-) {
+): MapViewMvc.Listener {
     private var mSession: Session? = null
+    private var mLocateRequested = false
 
     fun onCreate() {
         EventBus.getDefault().register(this);
+        mViewMvc.registerListener(this)
 
         mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(rootActivity, Observer { sessionDBObject ->
             sessionDBObject?.let {
@@ -46,7 +50,35 @@ class MapController(
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: LocationChanged) {
+        if (mLocateRequested) {
+            val location = LocationHelper.lastLocation()
+            location?.let { mViewMvc.centerMap(location) }
+            mLocateRequested = false
+        }
+    }
+
+    override fun locateRequested() {
+        val location = LocationHelper.lastLocation()
+        if (location == null) {
+            requestLocation()
+        } else {
+            mViewMvc.centerMap(location)
+        }
+    }
+
+    private fun requestLocation() {
+        mLocateRequested = true
+        LocationHelper.checkLocationServicesSettings(rootActivity)
+    }
+
+    fun onLocationSettingsSatisfied() {
+        LocationHelper.start()
+    }
+
     fun onDestroy() {
         EventBus.getDefault().unregister(this);
+        mViewMvc.unregisterListener(this)
     }
 }

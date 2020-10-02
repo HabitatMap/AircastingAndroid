@@ -145,6 +145,7 @@
     <string name="peak_label">Peak %1$s</string>
 
     <string name="errors_location_services_required">Without location services you will not be able to record mobile and fixed outdoor sessions.</string>
+    <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>
     <string name="parameters">Parameters:</string>

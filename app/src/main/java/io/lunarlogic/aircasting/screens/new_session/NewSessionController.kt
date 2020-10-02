@@ -95,7 +95,7 @@ class NewSessionController(
     }
 
     override fun onTurnOnLocationServicesOkClicked() {
-        LocationHelper.turnOnLocationServices(mContextActivity)
+        LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
     private fun requestBluetoothEnable() {
