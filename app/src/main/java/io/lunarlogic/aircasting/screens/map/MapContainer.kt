@@ -1,6 +1,9 @@
 package io.lunarlogic.aircasting.screens.map
 
 import android.content.Context
+import android.location.Location
+import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
@@ -14,15 +17,19 @@ import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.ArrayList
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
 
     private val mContext: Context
+    private var mListener: MapViewMvc.Listener? = null
+
     private var mMap: GoogleMap? = null
+    private val mLocateButton: ImageView?
+
     private var mSelectedStream: MeasurementStream? = null
     private var mMeasurements: List<Measurement> = emptyList()
 
@@ -44,10 +51,24 @@ class MapContainer: OnMapReadyCallback {
         SESSION_LOADED(2)
     }
 
-    constructor(context: Context, supportFragmentManager: FragmentManager?) {
+    constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
+
         val mapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+
+        mLocateButton = rootView?.locate_button
+        mLocateButton?.setOnClickListener {
+            locate()
+        }
+    }
+
+    fun registerListener(listener: MapViewMvc.Listener) {
+        mListener = listener
+    }
+
+    fun unregisterListener() {
+        mListener = null
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -68,7 +89,7 @@ class MapContainer: OnMapReadyCallback {
             drawSession()
             animateCameraToSession()
         } else {
-            LocationHelper.start({ centerMap() })
+            locate()
         }
     }
 
@@ -130,12 +151,9 @@ class MapContainer: OnMapReadyCallback {
         mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
     }
 
-    private fun centerMap() {
-        val location = LocationHelper.lastLocation()
-        if (location != null) {
-            val position = LatLng(location.latitude, location.longitude)
-            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
-        }
+    fun centerMap(location: Location) {
+        val position = LatLng(location.latitude, location.longitude)
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
     fun drawFixedMeasurement(point: LatLng, color: Int) {
@@ -160,5 +178,9 @@ class MapContainer: OnMapReadyCallback {
         mMap?.clear()
         bindStream(stream)
         drawSession()
+    }
+
+    private fun locate() {
+        mListener?.locateRequested()
     }
 }

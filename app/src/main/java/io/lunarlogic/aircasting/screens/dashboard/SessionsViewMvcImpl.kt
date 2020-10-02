@@ -89,15 +89,9 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     }
 
     fun onExpandSessionCard(session: Session) {
-        mAdapter.expandSessionCard(session)
-
         for (listener in listeners) {
             listener.onExpandSessionCard(session)
         }
-    }
-
-    fun onCollapseSessionCard(session: Session) {
-        mAdapter.collapseSessionCard(session)
     }
 
     fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {

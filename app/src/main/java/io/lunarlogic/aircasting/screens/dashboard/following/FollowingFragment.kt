@@ -32,6 +32,7 @@ class FollowingFragment : Fragment() {
             null,
             childFragmentManager
         )
+
         controller = FollowingController(
             activity,
             view,
@@ -39,13 +40,17 @@ class FollowingFragment : Fragment() {
             viewLifecycleOwner,
             settings
         )
-        controller.onCreate()
 
         return view.rootView
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        controller.onDestroy()
+    override fun onResume() {
+        super.onResume()
+        controller.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        controller.onPause()
     }
 }

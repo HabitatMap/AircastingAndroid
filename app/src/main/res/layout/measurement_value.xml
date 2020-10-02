@@ -13,6 +13,7 @@
         android:layout_height="6dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:layout_marginStart="6dp"
         android:tint="@color/aircasting_pink" />
 
     <TextView
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_xs"
         android:textColor="@color/aircasting_grey_400"
-        android:layout_marginStart="3dp" />
+        android:layout_marginStart="3dp"
+        android:padding="@dimen/keyline_1"/>
 
 </LinearLayout>

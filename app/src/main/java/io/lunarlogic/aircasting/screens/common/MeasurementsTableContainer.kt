@@ -13,8 +13,8 @@ import androidx.core.view.forEach
 import androidx.core.view.get
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
@@ -36,8 +36,7 @@ class MeasurementsTableContainer {
     private val mHeaderColor: Int
     private val mSelectedHeaderColor: Int
 
-    private var mSession: Session? = null
-    private var mSelectedStream: MeasurementStream? = null
+    private var mSessionPresenter: SessionPresenter? = null
     private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
 
     constructor(context: Context, inflater: LayoutInflater, rootView: View?, selectable: Boolean = false, displayValues: Boolean = false) {
@@ -78,18 +77,17 @@ class MeasurementsTableContainer {
     }
 
     fun refresh() {
-        bindSession(mSession, mSelectedStream, mOnMeasurementStreamChanged)
+        bindSession(mSessionPresenter, mOnMeasurementStreamChanged)
     }
 
     fun bindSession(
-        session: Session?,
-        selectedStream: MeasurementStream? = null,
+        sessionPresenter: SessionPresenter?,
         onMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     ) {
-        mSession = session
-        mSelectedStream = selectedStream
+        mSessionPresenter = sessionPresenter
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
 
+        val session = mSessionPresenter?.session
         if (session != null && session.streams.count() > 0) {
             resetMeasurementsView()
             bindMeasurements()
@@ -101,17 +99,20 @@ class MeasurementsTableContainer {
         mMeasurementsTable?.isStretchAllColumns = false
         mMeasurementHeaders?.removeAllViews()
         mMeasurementValues?.removeAllViews()
+        mMeasurementStreams.clear()
     }
 
     private fun bindMeasurements() {
-        mSession?.streamsSortedByDetailedType()?.forEach { stream ->
+        val session = mSessionPresenter?.session
+        session?.streamsSortedByDetailedType()?.forEach { stream ->
             bindStream(stream)
             bindLastMeasurement(stream)
         }
     }
 
     private fun stretchTableLayout() {
-        if (mSession != null && mSession!!.streams.size > 1) {
+        val session = mSessionPresenter?.session
+        if (session != null && session!!.streams.size > 1) {
             mMeasurementsTable?.isStretchAllColumns = true
         }
     }
@@ -126,7 +127,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream == mSelectedStream) {
+            if (stream == mSessionPresenter?.selectedStream) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
@@ -140,7 +141,6 @@ class MeasurementsTableContainer {
     }
 
     private fun onMeasurementClicked(stream: MeasurementStream) {
-        mSelectedStream = stream
         resetSensorSelection()
         mOnMeasurementStreamChanged?.invoke(stream)
     }
@@ -200,7 +200,7 @@ class MeasurementsTableContainer {
         mMeasurementValues?.addView(valueView)
         
         if (mSelectable) {
-            if (stream == mSelectedStream) {
+            if (stream == mSessionPresenter?.selectedStream) {
                 valueView.background = SelectedSensorBorder(color)
             }
 

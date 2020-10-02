@@ -1,20 +1,24 @@
 package io.lunarlogic.aircasting.screens.map
 
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 
-class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
+class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
@@ -38,8 +42,18 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         mSessionTagsTextView = this.rootView?.session_tags
 
         mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, true, true)
-        mMapContainer = MapContainer(context, supportFragmentManager)
+        mMapContainer = MapContainer(rootView, context, supportFragmentManager)
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
+    }
+
+    override fun registerListener(listener: MapViewMvc.Listener) {
+        super.registerListener(listener)
+        mMapContainer.registerListener(listener)
+    }
+
+    override fun unregisterListener(listener: MapViewMvc.Listener) {
+        super.unregisterListener(listener)
+        mMapContainer.unregisterListener()
     }
 
     override fun addMeasurement(measurement: Measurement) {
@@ -66,8 +80,13 @@ class MapViewMvcImpl: BaseViewMvc, MapViewMvc {
         bindSessionDetails(session)
 
         mMapContainer.bindStream(measurementStream)
-        mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+        val sessionPresenter = SessionPresenter(session, measurementStream)
+        mMeasurementsTableContainer.bindSession(sessionPresenter, this::onMeasurementStreamChanged)
         mStatisticsContainer.bindStream(measurementStream)
+    }
+
+    override fun centerMap(location: Location) {
+        mMapContainer.centerMap(location)
     }
 
     private fun bindSessionDetails(session: Session) {

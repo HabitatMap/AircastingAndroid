@@ -64,7 +64,6 @@
 
         <TextView
             android:id="@+id/avg_value"
-            android:text="2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.MapStatisticsValue"
@@ -89,7 +88,6 @@
 
         <TextView
             android:id="@+id/now_value"
-            android:text="2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.MapStatisticsValue"
@@ -115,7 +113,6 @@
 
         <TextView
             android:id="@+id/peak_value"
-            android:text="2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.MapStatisticsValue"

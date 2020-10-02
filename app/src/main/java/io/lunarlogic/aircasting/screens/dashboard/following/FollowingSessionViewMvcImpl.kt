@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
 
@@ -41,12 +42,11 @@ class FollowingSessionViewMvcImpl:
         return null;
     }
 
-    override fun bindSession(session: Session) {
-        bindSessionDetails(session)
-
-        if (session.measurementsCount() > 0) {
+    override fun bindMeasurementsTable() {
+        val session = mSessionPresenter?.session
+        if (session == null || session.measurementsCount() > 0) {
             hideNoMeasurementsInfo()
-            mMeasurementsTableContainer.bindSession(session, mSelectedStream, this::onMeasurementStreamChanged)
+            mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
         } else {
             showNoMeasurementsInfo()
         }

@@ -3,7 +3,9 @@ package io.lunarlogic.aircasting.screens.dashboard
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -26,19 +28,37 @@ abstract class SessionsController(
     private val mMobileSessionsSyncService = SessionsSyncService(mApiService, mErrorHandler)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
+    protected lateinit var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>
+
+    private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { sessions ->
+        if (sessions.size > 0) {
+            mViewMvc.showSessionsView(sessions.map { session ->
+                Session(session)
+            })
+        } else {
+            mViewMvc.showEmptyView()
+        }
+    }
+
     fun registerSessionsObserver() {
-        loadSessions().observe(mLifecycleOwner, Observer { sessions ->
-            if (sessions.size > 0) {
-                mViewMvc.showSessionsView(sessions.map { session ->
-                    Session(session)
-                })
-            } else {
-                mViewMvc.showEmptyView()
-            }
-        })
+        mSessionsLiveData.observe(mLifecycleOwner, mSessionsObserver)
+    }
+
+    fun unregisterSessionsObserver() {
+        mSessionsLiveData.removeObserver(mSessionsObserver)
     }
 
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
+
+    fun onResume() {
+        registerSessionsObserver()
+        mViewMvc.registerListener(this)
+    }
+
+    fun onPause() {
+        unregisterSessionsObserver()
+        mViewMvc.unregisterListener(this)
+    }
 
     protected fun startNewSession(sessionType: Session.Type) {
         NewSessionActivity.start(mRootActivity, sessionType)

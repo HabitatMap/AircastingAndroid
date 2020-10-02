@@ -32,8 +32,6 @@ class StatisticsContainer {
     private var mSum: Double? = null
     private var mPeak: Double? = null
 
-    private val mStreamCustomLabels = hashMapOf("Phone Microphone" to "mic")
-
     constructor(rootView: View?, context: Context) {
         mContext = context
 
@@ -127,8 +125,6 @@ class StatisticsContainer {
     private fun streamLabel(stream: MeasurementStream?): String? {
         if (stream == null) return null
 
-        val detailedType = stream.detailedType
-        val customLabel = mStreamCustomLabels.get(detailedType)
-        return customLabel ?: detailedType
+        return stream.detailedType
     }
 }

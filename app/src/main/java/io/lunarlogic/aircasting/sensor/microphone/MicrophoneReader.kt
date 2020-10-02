@@ -12,7 +12,7 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     private val UNIT = "decibels"
     private val MEASUREMENT_TYPE = "Sound Level"
     private val SHORT_TYPE = "dB"
-    private val SENSOR_NAME = "Phone Microphone"
+    private val SENSOR_NAME = "Phone Microphone-dB"
     private val SENSOR_PACKAGE_NAME = deviceId
 
     companion object {

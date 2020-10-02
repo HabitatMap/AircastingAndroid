@@ -87,4 +87,9 @@ class MeasurementStream(
         val splitted = sensorName.split("-")
         detailedType = splitted.lastOrNull()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is MeasurementStream) return false
+        return detailedType == other.detailedType
+    }
 }

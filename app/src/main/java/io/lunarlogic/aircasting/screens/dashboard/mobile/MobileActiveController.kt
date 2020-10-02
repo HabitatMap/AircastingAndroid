@@ -23,17 +23,12 @@ class MobileActiveController(
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
+    init {
+        mSessionsLiveData = loadSessions()
+    }
+
     override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
         return mSessionsViewModel.loadMobileActiveSessionsWithMeasurements()
-    }
-
-    fun onCreate() {
-        registerSessionsObserver()
-        mViewMvc.registerListener(this)
-    }
-
-    fun onDestroy() {
-        mViewMvc.unregisterListener(this)
     }
 
     override fun onRecordNewSessionClicked() {

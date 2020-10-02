@@ -21,15 +21,13 @@ class LocationHelper(private val mContext: Context) {
             singleton = LocationHelper(context)
         }
 
-        fun turnOnLocationServices(activity: AppCompatActivity) {
-            singleton.turnOnLocationServices(activity)
+        fun checkLocationServicesSettings(activity: AppCompatActivity) {
+            singleton.checkLocationServicesSettings(activity)
         }
 
-        fun start(callback: (() -> Unit)? = null) {
+        fun start() {
             if (!started) {
-                singleton.start(callback)
-            } else {
-                callback?.invoke()
+                singleton.start()
             }
             started = true
         }
@@ -56,7 +54,7 @@ class LocationHelper(private val mContext: Context) {
 
     private var locationCallback: LocationCallback? = null
 
-    fun turnOnLocationServices(activity: AppCompatActivity) {
+    fun checkLocationServicesSettings(activity: AppCompatActivity) {
         val locationSettingsRequest = LocationSettingsRequest.Builder()
             .setAlwaysShow(true)
             .addLocationRequest(locationRequest)
@@ -65,6 +63,9 @@ class LocationHelper(private val mContext: Context) {
         val settingsClient = LocationServices.getSettingsClient(activity)
 
         val task = settingsClient.checkLocationSettings(locationSettingsRequest)
+        task.addOnSuccessListener {
+            start()
+        }
         task.addOnFailureListener { e ->
             if (e is ResolvableApiException) {
                 try {
@@ -75,15 +76,13 @@ class LocationHelper(private val mContext: Context) {
         }
     }
 
-    fun start(callback: (() -> Unit)? = null) {
+    fun start() {
         locationCallback = object: LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     mLastLocation = location
                 }
-
-                callback?.invoke()
 
                 EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
             }

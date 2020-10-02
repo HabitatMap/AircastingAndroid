@@ -15,19 +15,6 @@ class MeasurementColor {
             R.color.session_color_indicator_very_high
         )
 
-        fun forTable(context: Context, measurement: Measurement, measurementStream: MeasurementStream): Int? {
-            val level = measurement.getLevel(measurementStream)
-
-            val colorId = when (level) {
-                Measurement.Level.EXTREMELY_LOW -> null
-                Measurement.Level.EXTREMELY_HIGH -> null
-                else -> LEVEL_COLORS_IDS[level.value]
-            }
-            colorId ?: return null
-
-            return ResourcesCompat.getColor(context.resources, colorId, null)
-        }
-
         fun forMap(context: Context, measurement: Measurement, measurementStream: MeasurementStream): Int {
             val level = measurement.getLevel(measurementStream)
             return colorForLevel(context, level)
@@ -41,7 +28,7 @@ class MeasurementColor {
         private fun colorForLevel(context: Context, level: Measurement.Level): Int {
             val colorId = when (level) {
                 Measurement.Level.EXTREMELY_LOW -> R.color.aircasting_grey_500
-                Measurement.Level.EXTREMELY_HIGH -> R.color.session_color_indicator_very_high
+                Measurement.Level.EXTREMELY_HIGH -> R.color.aircasting_grey_500
                 else -> LEVEL_COLORS_IDS[level.value]
             }
 
