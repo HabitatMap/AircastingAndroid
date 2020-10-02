@@ -29,15 +29,28 @@ abstract class SessionsController(
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
     protected lateinit var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>
+    private var mSessions = hashMapOf<String, Session>()
 
-    private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { sessions ->
-        if (sessions.size > 0) {
-            mViewMvc.showSessionsView(sessions.map { session ->
-                Session(session)
-            })
-        } else {
-            mViewMvc.showEmptyView()
+    private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { dbSessions ->
+        val sessions = dbSessions.map { dbSession -> Session(dbSession) }
+
+        if (anySessionChanged(sessions)) {
+            if (sessions.size > 0) {
+                mViewMvc.showSessionsView(sessions)
+            } else {
+                mViewMvc.showEmptyView()
+            }
+
+            updateSessionsCache(sessions)
         }
+    }
+
+    private fun anySessionChanged(sessions: List<Session>): Boolean {
+        return mSessions.isEmpty() || sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
+    }
+
+    private fun updateSessionsCache(sessions: List<Session>) {
+        sessions.forEach { session -> mSessions[session.uuid] = session }
     }
 
     fun registerSessionsObserver() {
