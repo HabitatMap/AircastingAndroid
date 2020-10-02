@@ -20,7 +20,6 @@
         <item name="textAppearanceBody2">@style/TextAppearance.Aircasting.Body2</item>
         <item name="materialButtonStyle">@style/Widget.Aircasting.Button</item>
         <item name="toolbarStyle">@style/Widget.Aircasting.AppBar</item>
-        <item name="actionBarSize">@dimen/action_bar_size</item>
         <item name="bottomSheetDialogTheme">@style/Widget.Aircasting.BottomSheet</item>
     </style>
 
@@ -323,6 +322,7 @@
     <style name="Widget.Aircasting.AppBarLayout" parent="">
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
+        <item name="background">@color/aircasting_white</item>
     </style>
 
     <style name="Widget.Aircasting.AppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
@@ -346,7 +346,6 @@
     <style name="ThemeOverlay.Aircasting.EmptyAppBar" parent="">
         <!-- background color -->
         <item name="colorPrimary">?android:attr/colorBackground</item>
-        <item name="homeAsUpIndicator">@drawable/chevron_left</item>
     </style>
 
     <!-- Tab Layout -->
