@@ -176,7 +176,12 @@ class Session(
     }
 
     fun instrumentNameString(): String? {
-        return streams?.last()?.sensorShortName
+        val OTHER_DEVICE = "Other Device"
+        val sensorName = streams?.lastOrNull()?.sensorShortName ?: OTHER_DEVICE
+        return when {
+            sensorName.contains("airbeam|microphone".toRegex(RegexOption.IGNORE_CASE)) -> sensorName
+            else -> OTHER_DEVICE
+        }
     }
 
     fun measurementsCount(): Int {
