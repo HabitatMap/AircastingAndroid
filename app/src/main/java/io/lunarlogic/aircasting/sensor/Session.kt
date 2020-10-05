@@ -175,6 +175,10 @@ class Session(
         return tags.joinToString(", ")
     }
 
+    fun instrumentNameString(): String? {
+        return streams?.last()?.sensorShortName
+    }
+
     fun measurementsCount(): Int {
         return streams.map { stream -> stream.measurements.size }.sum()
     }

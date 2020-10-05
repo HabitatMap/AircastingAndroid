@@ -3,14 +3,12 @@ package io.lunarlogic.aircasting.screens.map
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
@@ -39,7 +37,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
 
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
-        mSessionTagsTextView = this.rootView?.session_tags
+        mSessionTagsTextView = this.rootView?.session_info
 
         mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, true, true)
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)

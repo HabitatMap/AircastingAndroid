@@ -78,6 +78,8 @@ class MeasurementStream(
 
     val detailedType: String?
 
+    val sensorShortName: String?
+
     private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
@@ -86,6 +88,7 @@ class MeasurementStream(
     init {
         val splitted = sensorName.split("-")
         detailedType = splitted.lastOrNull()
+        sensorShortName = splitted.firstOrNull()
     }
 
     override fun equals(other: Any?): Boolean {

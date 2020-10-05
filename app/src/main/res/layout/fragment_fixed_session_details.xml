@@ -50,7 +50,7 @@
         </com.google.android.material.textfield.TextInputLayout>
         
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/session_tags"
+            android:id="@+id/session_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintEnabled="false"
@@ -83,7 +83,7 @@
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@+id/session_tags"
+            app:layout_constraintTop_toBottomOf="@+id/session_info"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
