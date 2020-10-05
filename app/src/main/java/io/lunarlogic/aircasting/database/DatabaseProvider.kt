@@ -48,7 +48,7 @@ class DatabaseProvider {
                 mAppDatabase = Room.databaseBuilder(
                     mContext,
                     AppDatabase::class.java, DB_NAME
-                ).fallbackToDestructiveMigration().build()
+                ).build()
             }
 
             return mAppDatabase!!
