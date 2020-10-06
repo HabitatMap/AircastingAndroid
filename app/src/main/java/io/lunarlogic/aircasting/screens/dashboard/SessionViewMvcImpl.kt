@@ -112,10 +112,19 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun bindSessionDetails() {
         val session = mSessionPresenter?.session
+        val packageNames = session?.streams?.mapNotNull { s ->
+            val name = s.sensorPackageName.split(":").firstOrNull()
+            when (name) {
+                "Builtin" -> "Phone Mic"
+                "InsertSensorPackageName" -> s.sensorName
+                else -> name
+            }
 
+        }
         mDateTextView.text = session?.durationString()
         mNameTextView.text = session?.name
-        mInfoTextView.text = "${session?.displayedType?.capitalize()}, ${session?.instrumentNameString()}"
+//        mInfoTextView.text = "${session?.displayedType?.capitalize()}, ${session?.instrumentNameString()}"
+        mInfoTextView.text = "${session?.displayedType?.capitalize()}, ${packageNames?.distinct()?.joinToString(", ")}"
     }
 
     protected open fun bindMeasurementsTable() {
