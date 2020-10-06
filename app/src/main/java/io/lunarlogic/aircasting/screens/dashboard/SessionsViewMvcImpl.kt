@@ -41,12 +41,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
 
-        mSwipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
-        mSwipeRefreshLayout?.isRefreshing = true
-        mSwipeRefreshLayout?.setOnRefreshListener {
-            val callback = { mSwipeRefreshLayout!!.isRefreshing = false }
-            onSwipeToRefreshTriggered(callback)
-        }
+        setupSwipeToRefreshLayout()
     }
 
     abstract fun buildAdapter(
@@ -94,6 +89,18 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     private fun recyclerViewCanBeUpdated(): Boolean {
         return mRecyclerSessions?.isComputingLayout == false
                 && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE
+    }
+
+    private fun setupSwipeToRefreshLayout() {
+        mSwipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
+        mSwipeRefreshLayout?.let { layout ->
+            layout.isRefreshing = true
+            layout.setColorSchemeResources(R.color.aircasting_blue_400)
+            layout.setOnRefreshListener {
+                val callback = { layout.isRefreshing = false }
+                onSwipeToRefreshTriggered(callback)
+            }
+        }
     }
 
     fun onExpandSessionCard(session: Session) {
