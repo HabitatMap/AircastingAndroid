@@ -35,6 +35,8 @@ abstract class SessionsController(
         val sessions = dbSessions.map { dbSession -> Session(dbSession) }
 
         if (anySessionChanged(sessions)) {
+            mViewMvc.hideLoader()
+
             if (sessions.size > 0) {
                 mViewMvc.showSessionsView(sessions)
             } else {

@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     private var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     private val mAdapter: SessionsRecyclerAdapter<ListenerType>
+    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -38,9 +41,10 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
 
-        val swipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
-        swipeRefreshLayout?.setOnRefreshListener {
-            val callback = { swipeRefreshLayout.isRefreshing = false }
+        mSwipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
+        mSwipeRefreshLayout?.isRefreshing = true
+        mSwipeRefreshLayout?.setOnRefreshListener {
+            val callback = { mSwipeRefreshLayout!!.isRefreshing = false }
             onSwipeToRefreshTriggered(callback)
         }
     }
@@ -81,6 +85,10 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     override fun hideLoaderFor(session: Session) {
         mAdapter.hideLoaderFor(session)
+    }
+
+    override fun hideLoader() {
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun recyclerViewCanBeUpdated(): Boolean {
