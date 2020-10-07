@@ -57,6 +57,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     }
 
     override fun addMeasurement(measurement: Measurement) {
+        println("MARYSIA: addMeasurement called")
         if (measurement.latitude == null || measurement.longitude == null) return
 
         val point = LatLng(measurement.latitude, measurement.longitude)
