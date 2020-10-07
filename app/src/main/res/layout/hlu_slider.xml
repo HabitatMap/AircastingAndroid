@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@id/map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <View
+            android:id="@+id/low_segment"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="0.25"
+            android:background="@color/session_color_indicator_low" />
+
+        <View
+            android:id="@+id/medium_segment"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="0.25"
+            android:background="@color/session_color_indicator_medium" />
+
+        <View
+            android:id="@+id/high_segment"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="0.25"
+            android:background="@color/session_color_indicator_high" />
+
+        <View
+            android:id="@+id/very_high_segment"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="0.25"
+            android:background="@color/session_color_indicator_very_high" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <TextView
+        android:id="@+id/very_low_label"
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:layout_marginStart="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@id/track"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@id/track"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <TextView
+            android:id="@+id/low_label"
+            android:text="25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4" />
+
+        <TextView
+            android:id="@+id/medium_label"
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4" />
+
+        <TextView
+            android:id="@+id/high_label"
+            android:text="75"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <TextView
+        android:id="@+id/very_high_label"
+        android:text="100"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:layout_marginEnd="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@id/track"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/hlu_slider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:trackColorActive="@color/transparent"
+        app:trackColorInactive="@color/transparent"
+        android:layout_margin="@dimen/keyline_4"
+        app:thumbElevation="3dp"
+        app:thumbColor="@color/aircasting_white"
+        app:labelBehavior="gone"
+        app:thumbRadius="@dimen/hlu_slider_thumb_radius"
+        app:layout_constraintTop_toBottomOf="@id/map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</merge>

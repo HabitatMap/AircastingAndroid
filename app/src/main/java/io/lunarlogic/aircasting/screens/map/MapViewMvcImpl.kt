@@ -4,20 +4,19 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.model.*
+import com.google.android.libraries.maps.model.LatLng
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
+
 
 class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mSessionDateTextView: TextView?
@@ -30,6 +29,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
     private val mStatisticsContainer: StatisticsContainer
+    private val mHLUSlider: HLUSlider
 
     constructor(
         inflater: LayoutInflater,
@@ -42,9 +42,16 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_tags
 
-        mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, true, true)
+        mMeasurementsTableContainer = MeasurementsTableContainer(
+            context,
+            inflater,
+            this.rootView,
+            true,
+            true
+        )
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
+        mHLUSlider = HLUSlider(this.rootView, context)
     }
 
     override fun registerListener(listener: MapViewMvc.Listener) {
@@ -84,6 +91,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         val sessionPresenter = SessionPresenter(session, measurementStream)
         mMeasurementsTableContainer.bindSession(sessionPresenter, this::onMeasurementStreamChanged)
         mStatisticsContainer.bindStream(measurementStream)
+        mHLUSlider.draw()
     }
 
     override fun centerMap(location: Location) {
