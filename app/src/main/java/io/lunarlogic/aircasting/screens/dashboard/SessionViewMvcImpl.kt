@@ -1,10 +1,18 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
@@ -27,6 +35,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mExpandedSessionView: View
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
+    protected var mChart: LineChart
     private var mMapButton: Button
     private var mLoader: ImageView?
 
@@ -46,7 +55,27 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
 
-        mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, false, showMeasurementsTableValues())
+        mMeasurementsTableContainer = MeasurementsTableContainer(
+            context,
+            inflater,
+            this.rootView,
+            false,
+            showMeasurementsTableValues()
+        )
+
+        // CHARTS
+        mChart = findViewById<View>(R.id.chart) as LineChart
+        mChart.description = "xxx" as Description
+        val rightYAxis = mChart.axisRight
+        rightYAxis.gridColor = R.color.aircasting_white
+        val xAxis = mChart.xAxis
+        xAxis.setDrawLabels(false)
+        val entries: List<Entry> = listOf(Entry(0F,1F), Entry(1F,2F), Entry(2F,4F), Entry(3F,2F), Entry(4F,5F), Entry(5F,2F), Entry(6F,4F), Entry(7F,2F), Entry(8F,1F) )
+        val dataSet: LineDataSet = LineDataSet(entries, "Label")
+        val lineData: LineData = LineData(dataSet)
+        mChart.data = lineData
+        mChart.invalidate()
+        // CHARTS
 
         mActionsButton = findViewById(R.id.session_actions_button)
 
@@ -126,6 +155,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
+        mChart.visibility = View.VISIBLE
 
         mMeasurementsTableContainer.makeSelectable()
     }
@@ -154,7 +184,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun onMapButtonClicked() {
         mSessionPresenter?.session?.let {
             for (listener in listeners) {
-                (listener as? SessionCardListener)?.onMapButtonClicked(it, mSessionPresenter?.selectedStream)
+                (listener as? SessionCardListener)?.onMapButtonClicked(
+                    it,
+                    mSessionPresenter?.selectedStream
+                )
             }
         }
     }
