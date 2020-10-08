@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/session_tags"
+        android:id="@+id/session_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_10"
@@ -58,7 +58,7 @@
         android:layout_marginEnd="@dimen/keyline_10"
         android:layout_marginTop="@dimen/keyline_6"
         android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintTop_toBottomOf="@+id/session_tags"
+        app:layout_constraintTop_toBottomOf="@+id/session_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

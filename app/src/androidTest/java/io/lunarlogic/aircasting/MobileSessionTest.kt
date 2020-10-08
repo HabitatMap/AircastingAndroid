@@ -126,7 +126,7 @@ class MobileSessionTest {
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
-        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")));
     }
 
     @Test
@@ -164,7 +164,7 @@ class MobileSessionTest {
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
-        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")));
     }
 
     private fun stopSession(retryCount: Int = 0) {

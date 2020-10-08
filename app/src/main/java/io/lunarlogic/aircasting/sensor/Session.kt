@@ -175,6 +175,19 @@ class Session(
         return tags.joinToString(", ")
     }
 
+    fun sensorPackageNamesString(): String? {
+        val PHONE_MIC_SENSOR_PACKAGE_NAME = "Phone Mic"
+        val packageNames = mStreams.mapNotNull { s ->
+            val name = s.sensorPackageName.split(":").firstOrNull()
+            when (name) {
+                "Builtin" -> PHONE_MIC_SENSOR_PACKAGE_NAME
+                else -> name
+            }
+        }
+
+       return packageNames?.distinct()?.joinToString(", ")
+    }
+
     fun measurementsCount(): Int {
         return streams.map { stream -> stream.measurements.size }.sum()
     }
