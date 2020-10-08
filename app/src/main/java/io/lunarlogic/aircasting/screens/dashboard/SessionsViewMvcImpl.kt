@@ -55,9 +55,9 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
     }
 
-    private fun onSwipeToRefreshTriggered(callback: () -> Unit) {
+    private fun onSwipeToRefreshTriggered() {
         for (listener in listeners) {
-            listener.onSwipeToRefreshTriggered(callback)
+            listener.onSwipeToRefreshTriggered()
         }
     }
 
@@ -82,6 +82,10 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mAdapter.hideLoaderFor(session)
     }
 
+    override fun showLoader() {
+        mSwipeRefreshLayout?.isRefreshing = true
+    }
+
     override fun hideLoader() {
         mSwipeRefreshLayout?.isRefreshing = false
     }
@@ -94,11 +98,9 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     private fun setupSwipeToRefreshLayout() {
         mSwipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
         mSwipeRefreshLayout?.let { layout ->
-            layout.isRefreshing = true
             layout.setColorSchemeResources(R.color.aircasting_blue_400)
             layout.setOnRefreshListener {
-                val callback = { layout.isRefreshing = false }
-                onSwipeToRefreshTriggered(callback)
+                onSwipeToRefreshTriggered()
             }
         }
     }

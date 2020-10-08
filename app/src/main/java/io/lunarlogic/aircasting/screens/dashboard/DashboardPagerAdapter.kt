@@ -13,6 +13,14 @@ import io.lunarlogic.aircasting.sensor.Session
 
 class DashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
+    val fragments = hashMapOf(
+        FOLLOWING_TAB_INDEX to FollowingFragment(),
+        MOBILE_ACTIVE_TAB_INDEX to MobileActiveFragment(),
+        MOBILE_DORMANT_TAB_INDEX to MobileDormantFragment(),
+        FIXED_TAB_INDEX to FixedFragment()
+    )
+
     companion object {
         val FOLLOWING_TAB_INDEX = 0
         val MOBILE_ACTIVE_TAB_INDEX = 1
@@ -47,12 +55,6 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
     }
 
     override fun getItem(position: Int): Fragment {
-        return when (position) {
-            FOLLOWING_TAB_INDEX -> FollowingFragment()
-            MOBILE_ACTIVE_TAB_INDEX -> MobileActiveFragment()
-            MOBILE_DORMANT_TAB_INDEX -> MobileDormantFragment()
-            FIXED_TAB_INDEX -> FixedFragment()
-            else -> Fragment()
-        }
+        return fragments[position] ?: Fragment()
     }
 }
