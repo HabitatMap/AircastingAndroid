@@ -33,11 +33,7 @@ class MapContainer: OnMapReadyCallback {
     private var mSelectedStream: MeasurementStream? = null
     private var mMeasurements: List<Measurement> = emptyList()
 
-    private val mMeasurementsLineOptions = PolylineOptions()
-        .width(20f)
-        .jointType(JointType.ROUND)
-        .endCap(RoundCap())
-        .startCap(RoundCap())
+    private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
     private val mMeasurementPoints = ArrayList<LatLng>()
     private val mMeasurementSpans = ArrayList<StyleSpan>()
@@ -175,12 +171,28 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun refresh(stream: MeasurementStream) {
-        mMap?.clear()
+        clearMap()
         bindStream(stream)
         drawSession()
     }
 
     private fun locate() {
         mListener?.locateRequested()
+    }
+
+    private fun clearMap() {
+        mMap?.clear()
+        mMeasurementPoints.clear()
+        mMeasurementSpans.clear()
+        mMeasurementsLine = null
+        mMeasurementsLineOptions = defaultPolylineOptions()
+    }
+
+    private fun defaultPolylineOptions(): PolylineOptions {
+        return PolylineOptions()
+            .width(20f)
+            .jointType(JointType.ROUND)
+            .endCap(RoundCap())
+            .startCap(RoundCap())
     }
 }
