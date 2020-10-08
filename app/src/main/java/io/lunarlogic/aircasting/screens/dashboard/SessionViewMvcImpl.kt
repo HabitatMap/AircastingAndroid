@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
@@ -65,13 +66,19 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         // CHARTS
         mChart = findViewById<View>(R.id.chart) as LineChart
-        mChart.description = "xxx" as Description
         val rightYAxis = mChart.axisRight
-        rightYAxis.gridColor = R.color.aircasting_white
+        rightYAxis.gridColor = ContextCompat.getColor(context, R.color.aircasting_grey_50)
+        rightYAxis.setDrawLabels(false)
+        val leftYAxis = mChart.axisLeft
+        leftYAxis.setDrawLabels(false)
         val xAxis = mChart.xAxis
         xAxis.setDrawLabels(false)
+        xAxis.gridColor = Color.TRANSPARENT
+
+        mChart.setDrawBorders(false)
         val entries: List<Entry> = listOf(Entry(0F,1F), Entry(1F,2F), Entry(2F,4F), Entry(3F,2F), Entry(4F,5F), Entry(5F,2F), Entry(6F,4F), Entry(7F,2F), Entry(8F,1F) )
         val dataSet: LineDataSet = LineDataSet(entries, "Label")
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
         val lineData: LineData = LineData(dataSet)
         mChart.data = lineData
         mChart.invalidate()
