@@ -3,9 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
-import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -33,6 +31,7 @@ abstract class SessionsController(
 
     private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { dbSessions ->
         val sessions = dbSessions.map { dbSession -> Session(dbSession) }
+
 
         if (anySessionChanged(sessions)) {
             if (sessions.size > 0) {
@@ -63,6 +62,11 @@ abstract class SessionsController(
 
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
+    fun onCreate() {
+        mViewMvc.showLoader()
+        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
+    }
+
     fun onResume() {
         registerSessionsObserver()
         mViewMvc.registerListener(this)
@@ -77,8 +81,8 @@ abstract class SessionsController(
         NewSessionActivity.start(mRootActivity, sessionType)
     }
 
-    override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        mMobileSessionsSyncService.sync(callback)
+    override fun onSwipeToRefreshTriggered() {
+        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
     }
 
     override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {

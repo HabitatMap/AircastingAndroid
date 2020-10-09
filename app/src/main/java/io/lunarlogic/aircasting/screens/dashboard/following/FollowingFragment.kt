@@ -19,6 +19,8 @@ class FollowingFragment : Fragment() {
     @Inject
     lateinit var settings: Settings
 
+    private var sessionsRequested = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,7 +43,17 @@ class FollowingFragment : Fragment() {
             settings
         )
 
+        if (sessionsRequested) {
+            controller.onCreate()
+            sessionsRequested = false
+        }
+
         return view.rootView
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sessionsRequested = true
     }
 
     override fun onResume() {

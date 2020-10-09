@@ -8,7 +8,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
 
     interface Listener {
         fun onRecordNewSessionClicked()
-        fun onSwipeToRefreshTriggered(callback: () -> Unit)
+        fun onSwipeToRefreshTriggered()
         fun onStopSessionClicked(sessionUUID: String)
         fun onDeleteSessionClicked(sessionUUID: String)
         fun onMapButtonClicked(sessionUUID: String, sensorName: String?)
@@ -19,4 +19,6 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
     fun showEmptyView()
     fun showLoaderFor(session: Session)
     fun hideLoaderFor(session: Session)
+    fun showLoader()
+    fun hideLoader()
 }
