@@ -21,8 +21,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
 
-    private var mSession: Session? = null
-    private var mSelectedStream: MeasurementStream? = null
+    private var mSessionPresenter: SessionPresenter? = null
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
@@ -58,9 +57,11 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         if (measurement.latitude == null || measurement.longitude == null) return
 
         val point = LatLng(measurement.latitude, measurement.longitude)
-        val color = MeasurementColor.forMap(context, measurement, mSelectedStream!!)
+        val selectedStream = mSessionPresenter?.selectedStream
+        val color = MeasurementColor.forMap(context, measurement, selectedStream!!)
 
-        mSession?.let {
+        val session = mSessionPresenter?.session
+        session?.let {
             if (it.isFixed()) {
                 mMapContainer.drawFixedMeasurement(point, color)
             } else if (it.isRecording()) {
@@ -71,30 +72,28 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         }
     }
 
-    override fun bindSession(session: Session, measurementStream: MeasurementStream?) {
-        mSession = session
-        mSelectedStream = measurementStream
+    override fun bindSession(sessionPresenter: SessionPresenter) {
+        bindSessionDetails(sessionPresenter.session)
 
-        bindSessionDetails(session)
-
-        mMapContainer.bindStream(measurementStream)
-        val sessionPresenter = SessionPresenter(session, measurementStream)
-        mMeasurementsTableContainer.bindSession(sessionPresenter, this::onMeasurementStreamChanged)
-        mStatisticsContainer.bindStream(measurementStream)
+        mMapContainer.bindStream(sessionPresenter.selectedStream)
+        mSessionPresenter = sessionPresenter
+        mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
+        mStatisticsContainer.bindStream(sessionPresenter.selectedStream)
     }
 
     override fun centerMap(location: Location) {
         mMapContainer.centerMap(location)
     }
 
-    private fun bindSessionDetails(session: Session) {
-        mSessionDateTextView?.text = session.durationString()
-        mSessionNameTextView?.text = session.name
-        mSessionTagsTextView?.text = session.tagsString()
+    private fun bindSessionDetails(session: Session?) {
+        mSessionDateTextView?.text = session?.durationString()
+        mSessionNameTextView?.text = session?.name
+        mSessionTagsTextView?.text = session?.tagsString()
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        mSelectedStream = measurementStream
+        mSessionPresenter?.selectedStream = measurementStream
+
         mMapContainer.refresh(measurementStream)
         mStatisticsContainer.refresh(measurementStream)
     }
