@@ -1,10 +1,12 @@
 package io.lunarlogic.aircasting.sensor
 
+import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject
 import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
+import java.util.*
 
 class MeasurementStream(
     val sensorPackageName: String,
@@ -18,6 +20,7 @@ class MeasurementStream(
     val thresholdMedium: Int,
     val thresholdHigh: Int,
     val thresholdVeryHigh: Int
+
 ) {
     constructor(measurementEvent: NewMeasurementEvent): this(
         measurementEvent.packageName,
@@ -81,15 +84,63 @@ class MeasurementStream(
     private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
-    val levels get() = arrayOf(thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh)
+    val levels get() = arrayOf(
+        thresholdVeryLow,
+        thresholdLow,
+        thresholdMedium,
+        thresholdHigh,
+        thresholdVeryHigh
+    )
 
     init {
         val splitted = sensorName.split("-")
         detailedType = splitted.lastOrNull()
+
     }
 
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is MeasurementStream) return false
         return detailedType == other.detailedType
+    }
+
+    fun samplingFrequency(divisor: Double): Double {
+        var deltaSum = 0.0
+        val sample: ArrayList<Measurement> = Lists.newArrayList(getFirstMeasurements(10))
+        for (i in 0 until sample.size - 1) {
+            val delta: Double = (sample[i + 1].time.time - sample[i].time.time) as Double
+            deltaSum += delta
+        }
+        return deltaSum / divisor
+    }
+
+    private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
+        val allMeasurements = ArrayList<Measurement?>(measurements)
+        val size = allMeasurements.size
+        return if (size > amount) {
+            allMeasurements.subList(0, amount - 1)
+        } else {
+            allMeasurements
+        }
+    }
+
+    fun getMeasurementsForPeriod(amount: Int, divisor: Double): MutableList<Measurement>? {
+        val frequency = samplingFrequency(divisor)
+        return try {
+            val measurementsInPeriod = (60 / frequency) as Int * amount
+            getLastMeasurements(measurementsInPeriod)
+        } catch (e: IndexOutOfBoundsException) {
+            getMeasurementsForPeriod(amount - 1, divisor)
+        }
+    }
+
+    fun getLastMeasurements(amount: Int): MutableList<Measurement>? {
+        // copy the backing list to avoid ConcurrentModificationException
+        val allMeasurements = ArrayList<Measurement>(measurements)
+        val size = allMeasurements.size
+        return if (size > amount) {
+            allMeasurements.subList(size - amount, size)
+        } else {
+            allMeasurements
+        }
     }
 }

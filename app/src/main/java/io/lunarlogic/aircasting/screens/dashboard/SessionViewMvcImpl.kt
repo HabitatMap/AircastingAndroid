@@ -235,6 +235,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
     }
 
+    protected open fun bindChartData() {
+
+    }
+
     protected open fun expandSessionCard() {
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
