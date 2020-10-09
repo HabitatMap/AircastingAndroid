@@ -10,16 +10,20 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import java.text.DecimalFormat
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
@@ -66,21 +70,94 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         // CHARTS
         mChart = findViewById<View>(R.id.chart) as LineChart
+
         val rightYAxis = mChart.axisRight
-        rightYAxis.gridColor = ContextCompat.getColor(context, R.color.aircasting_grey_50)
+        rightYAxis.gridColor = ContextCompat.getColor(context, R.color.aircasting_grey_100)
         rightYAxis.setDrawLabels(false)
+        rightYAxis.setDrawAxisLine(false)
+        rightYAxis.valueFormatter = PercentFormatter()
+
+        //Removing bottom "border" and Y values
         val leftYAxis = mChart.axisLeft
+        leftYAxis.gridColor = Color.TRANSPARENT
+        leftYAxis.setDrawAxisLine(false)
         leftYAxis.setDrawLabels(false)
+
         val xAxis = mChart.xAxis
         xAxis.setDrawLabels(false)
+        xAxis.setDrawAxisLine(false)
+
+        // Removing vertical lines
         xAxis.gridColor = Color.TRANSPARENT
 
+
         mChart.setDrawBorders(false)
-        val entries: List<Entry> = listOf(Entry(0F,1F), Entry(1F,2F), Entry(2F,4F), Entry(3F,2F), Entry(4F,5F), Entry(5F,2F), Entry(6F,4F), Entry(7F,2F), Entry(8F,1F) )
-        val dataSet: LineDataSet = LineDataSet(entries, "Label")
+        mChart.setBorderColor(Color.TRANSPARENT)
+
+        // Chart data
+        val entries: List<Entry> = listOf(
+            Entry(0F, 1F), Entry(1F, 2F), Entry(2F, 4F), Entry(3F, 2F), Entry(
+                4F,
+                5F
+            ), Entry(5F, 2F), Entry(6F, 4F), Entry(7F, 2F), Entry(8F, 1F)
+        )
+        val dataSet: LineDataSet = LineDataSet(entries, "")
+
+        // Making the line a curve, not a polyline
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+
+        // Circle colors
+        dataSet.circleRadius = 7f
+        dataSet.setCircleColors(
+            ContextCompat.getColor(
+                context,
+                R.color.session_color_indicator_low_shadow
+            )
+        )
+        dataSet.fillAlpha = 10
+        dataSet.circleHoleRadius = 3.5f
+        dataSet.circleHoleColor = ContextCompat.getColor(
+            context,
+            R.color.session_color_indicator_low
+        )
+
+        // Line color
+        dataSet.setColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+        dataSet.lineWidth = 1f
+
+        // Line shadow (not working great)
+        mChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        mChart.renderer.paintRender.setShadowLayer(
+            20f, 0f, 0f, ContextCompat.getColor(
+                context,
+                R.color.aircasting_grey_50
+            )
+        )
+
+
         val lineData: LineData = LineData(dataSet)
+
+        // Formatting values on the chart (no decimal places)
+        val formatter: ValueFormatter = object : ValueFormatter() {
+            private val format = DecimalFormat("###,##0")
+            override fun getPointLabel(entry: Entry?): String {
+                return format.format(entry?.y)
+            }
+            override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                return format.format(value)
+            }
+        }
+        lineData.setValueFormatter(formatter)
+
         mChart.data = lineData
+
+        // Removing the legend for colors
+        mChart.legend.isEnabled  = false
+
+        // Removing description on the down right
+        mChart.description.isEnabled = false
+
+        // Refreshing the chart
         mChart.invalidate()
         // CHARTS
 
