@@ -20,7 +20,9 @@ class MeasurementColor {
             return colorForLevel(context, level)
         }
 
-        fun forMap(context: Context, value: Double, measurementStream: MeasurementStream): Int {
+        fun forMap(context: Context, value: Double?, measurementStream: MeasurementStream): Int {
+            if (value == null) return colorForResourceId(context, R.color.aircasting_grey_500)
+
             val level = Measurement.getLevel(value, measurementStream)
             return colorForLevel(context, level)
         }
@@ -32,6 +34,10 @@ class MeasurementColor {
                 else -> LEVEL_COLORS_IDS[level.value]
             }
 
+            return colorForResourceId(context, colorId)
+        }
+
+        private fun colorForResourceId(context: Context, colorId: Int): Int {
             return ResourcesCompat.getColor(context.resources, colorId, null)
         }
     }
