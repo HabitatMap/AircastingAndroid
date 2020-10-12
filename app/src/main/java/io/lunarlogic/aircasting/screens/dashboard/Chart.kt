@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
@@ -13,11 +14,12 @@ import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import java.text.DecimalFormat
+import kotlinx.android.synthetic.main.session_card.view.*
 
 
 class Chart {
     private val mContext: Context
-    private var mLineChart: LineChart
+    private var mLineChart: LineChart?
     private val mRootView: View?
     private var mAverages: HashMap<String, List<Entry>> = HashMap();
 //    private val mLayoutInflater: LayoutInflater
@@ -45,7 +47,7 @@ class Chart {
     ) {
         mContext = context
         mRootView = rootView
-        mLineChart = mRootView?.chart
+        mLineChart = mRootView?.chart_view
     }
 
 
@@ -68,14 +70,14 @@ class Chart {
     }
 
     private fun resetChart() {
-        // assign new data
-        // invalidate chart
+        mLineChart?.data?.clearValues()
+        mLineChart?.clear()
     }
 
     private fun bindMeasurements() {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
-//            bindStream(stream)
+            bindStream(stream)
             bindAverages(stream)
         }
     }
@@ -90,14 +92,39 @@ class Chart {
 
 
     private fun bindAverages(stream: MeasurementStream) {
-        setChartDataset(stream.sensorName)
-
-
+        drawChart(stream.sensorName)
     }
 
-    private fun setChartDataset(sensorName: String) {
+    private fun bindStream(stream: MeasurementStream) {
+        mMeasurementStreams.add(stream)
+    }
+
+    private fun drawChart(sensorName: String) {
         val entries: List<Entry?>?
         val datasetLabel: String
+
+         val rightYAxis = mLineChart?.axisRight
+        rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
+        rightYAxis?.setDrawLabels(false)
+        rightYAxis?.setDrawAxisLine(false)
+
+        //Removing bottom "border" and Y values
+        val leftYAxis = mLineChart?.axisLeft
+        leftYAxis?.gridColor = Color.TRANSPARENT
+        leftYAxis?.setDrawAxisLine(false)
+        leftYAxis?.setDrawLabels(false)
+
+        val xAxis = mLineChart?.xAxis
+        xAxis?.setDrawLabels(false)
+        xAxis?.setDrawAxisLine(false)
+
+        // Removing vertical lines
+        xAxis?.gridColor = Color.TRANSPARENT
+
+
+        mLineChart?.setDrawBorders(false)
+        mLineChart?.setBorderColor(Color.TRANSPARENT)
+
 
         prepareCurrentEntries()
         entries = getEntriesForStream(sensorName)
@@ -122,16 +149,16 @@ class Chart {
         lineData.setValueFormatter(formatter)
 
 
-        mLineChart.clear()
-        mLineChart.data = lineData
+        mLineChart?.clear()
+        mLineChart?.data = lineData
         // Removing the legend for colors
-        mLineChart.legend.isEnabled  = false
+        mLineChart?.legend?.isEnabled  = false
 
         // Removing description on the down right
-        mLineChart.description.isEnabled = false
+        mLineChart?.description?.isEnabled = false
 
         // Refreshing the chart
-        mLineChart.invalidate()
+        mLineChart?.invalidate()
     }
 
     private fun prepareCurrentEntries() {
@@ -144,9 +171,9 @@ class Chart {
                 Lists.reverse(entries)
             )
 
-            setChartDataset(
-                sensorName
-            )
+//            setChartDataset(
+//                sensorName
+//            )
 
         }
     }

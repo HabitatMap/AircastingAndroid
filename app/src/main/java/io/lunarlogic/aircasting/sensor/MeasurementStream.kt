@@ -107,7 +107,7 @@ class MeasurementStream(
         var deltaSum = 0.0
         val sample: ArrayList<Measurement> = Lists.newArrayList(getFirstMeasurements(10))
         for (i in 0 until sample.size - 1) {
-            val delta: Double = (sample[i + 1].time.time - sample[i].time.time) as Double
+            val delta: Double = (sample[i + 1].time.time - sample[i].time.time).toDouble()
             deltaSum += delta
         }
         return deltaSum / divisor
@@ -126,7 +126,7 @@ class MeasurementStream(
     fun getMeasurementsForPeriod(amount: Int, divisor: Double): MutableList<Measurement>? {
         val frequency = samplingFrequency(divisor)
         return try {
-            val measurementsInPeriod = (60 / frequency) as Int * amount
+            val measurementsInPeriod = (60 / frequency).toInt() * amount
             getLastMeasurements(measurementsInPeriod)
         } catch (e: IndexOutOfBoundsException) {
             getMeasurementsForPeriod(amount - 1, divisor)

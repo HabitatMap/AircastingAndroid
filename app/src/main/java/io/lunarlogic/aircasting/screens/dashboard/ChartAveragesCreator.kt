@@ -12,7 +12,7 @@ class ChartAveragesCreator {
     private val MAX_AVERAGES_AMOUNT = 9
     private val MAX_X_VALUE = 8
     private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
-    private var oldEntries: List<*> = CopyOnWriteArrayList<Any?>()
+    private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
     @Synchronized
@@ -21,7 +21,7 @@ class ChartAveragesCreator {
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
         val measurementsInPeriod = (INTERVAL_IN_SECONDS / streamFrequency).toInt()
-        val entries: MutableList<Entry?> = mutableListOf()
+        val entries: MutableList<Entry> = mutableListOf()
         val measurements: MutableList<Measurement>? =
             stream.getMeasurementsForPeriod(MAX_AVERAGES_AMOUNT, MOBILE_FREQUENCY_DIVISOR)
         periodData = Lists.partition(measurements, measurementsInPeriod)
