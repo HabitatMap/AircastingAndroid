@@ -174,7 +174,7 @@ class MapContainer: OnMapReadyCallback {
         drawLastMeasurementMarker(point, color)
     }
 
-    fun refresh(stream: MeasurementStream) {
+    fun refresh(stream: MeasurementStream?) {
         mMap?.clear()
         bindStream(stream)
         drawSession()

@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 
@@ -30,6 +31,8 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mMapContainer: MapContainer
     private val mStatisticsContainer: StatisticsContainer
     private val mHLUSlider: HLUSlider
+
+    private var mOnSensorThresholdChanged: ((sensorThreshold: SensorThreshold) -> Unit)? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -51,7 +54,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         )
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
-        mHLUSlider = HLUSlider(this.rootView, context)
+        mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
     }
 
     override fun registerListener(listener: MapViewMvc.Listener) {
@@ -91,7 +94,11 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         val sessionPresenter = SessionPresenter(session, measurementStream)
         mMeasurementsTableContainer.bindSession(sessionPresenter, this::onMeasurementStreamChanged)
         mStatisticsContainer.bindStream(measurementStream)
-        mHLUSlider.draw()
+    }
+
+    override fun bindSensorThreshold(sensorThreshold: SensorThreshold?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
+        mOnSensorThresholdChanged = onSensorThresholdChanged
+        mHLUSlider.bindSensorThreshold(sensorThreshold)
     }
 
     override fun centerMap(location: Location) {
@@ -113,5 +120,13 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         mSelectedStream = measurementStream
         mMapContainer.refresh(measurementStream)
         mStatisticsContainer.refresh(measurementStream)
+    }
+
+    private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
+        // TODO: use sensorThreshold in map, stats and table ??
+        mMapContainer.refresh(mSelectedStream)
+        mStatisticsContainer.refresh(mSelectedStream)
+
+        mOnSensorThresholdChanged?.invoke(sensorThreshold)
     }
 }

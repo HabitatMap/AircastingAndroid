@@ -70,7 +70,7 @@ class StatisticsContainer {
         }
     }
 
-    fun refresh(stream: MeasurementStream) {
+    fun refresh(stream: MeasurementStream?) {
         mSum = null
         mPeak = null
         bindStream(stream)

@@ -5,7 +5,9 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.slider.RangeSlider
+import com.google.android.material.slider.Slider
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 
 class HLUSlider {
     private val mContext: Context
@@ -16,10 +18,10 @@ class HLUSlider {
     private val mSlider: RangeSlider?
     private val mThumbRadiusInPixels: Int
 
-    private var mFrom: Float
-    private var mTo: Float
+    private var mSensorThreshold: SensorThreshold? = null
+    private var mOnThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit
 
-    constructor(rootView: View?, context: Context) {
+    constructor(rootView: View?, context: Context, onThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
         mContext = context
 
         val lowSegment = rootView?.findViewById<View>(R.id.low_segment)
@@ -37,16 +39,51 @@ class HLUSlider {
 
         mThumbRadiusInPixels = mContext.resources.getDimension(R.dimen.hlu_slider_thumb_radius).toInt()
 
-        // TODO: get from settings/db
-        mFrom = 0f
-        mTo = 100f
-        mSlider?.valueFrom = mFrom
-        mSlider?.valueTo = mTo
-        mSlider?.values = arrayListOf(5f, 80f, 90f)
+        mOnThresholdChanged = onThresholdChanged
 
-        mSlider?.addOnChangeListener { _, _, _ ->
-            draw()
-        }
+        mSlider?.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: RangeSlider) {
+                // Do nothing
+            }
+
+            override fun onStopTrackingTouch(slider: RangeSlider) {
+                draw()
+                updateSensorThreshold()
+            }
+        })
+    }
+
+    fun bindSensorThreshold(sensorThreshold: SensorThreshold?) {
+        sensorThreshold ?: return
+
+        mSensorThreshold = sensorThreshold
+        mSlider?.valueFrom = sensorThreshold.from
+        mSlider?.valueTo = sensorThreshold.to
+        mSlider?.values = valuesFromThreshold(sensorThreshold)
+
+        draw()
+    }
+
+    private fun valuesFromThreshold(sensorThreshold: SensorThreshold): List<Float> {
+        return arrayListOf(
+            sensorThreshold.thresholdLow.toFloat(),
+            sensorThreshold.thresholdMedium.toFloat(),
+            sensorThreshold.thresholdHigh.toFloat()
+        )
+    }
+
+    private fun updateSensorThreshold() {
+        mSensorThreshold ?: return
+        val values = mSlider?.values ?: return
+
+        val thresholdLow = values.getOrNull(0)?.toInt()
+        thresholdLow?.let { mSensorThreshold!!.thresholdLow = thresholdLow }
+        val thresholdMedium = values.getOrNull(1)?.toInt()
+        thresholdMedium?.let { mSensorThreshold!!.thresholdMedium = thresholdMedium }
+        val thresholdHigh = values.getOrNull(2)?.toInt()
+        thresholdHigh?.let { mSensorThreshold!!.thresholdHigh = thresholdHigh }
+
+        mOnThresholdChanged.invoke(mSensorThreshold!!)
     }
 
     inner class SegmentProperty {
@@ -71,19 +108,20 @@ class HLUSlider {
         }
 
         private fun calculateWidth(adjacentProperty: SegmentProperty?, value: Float): Int {
-            if (mSlider == null) return 0
+            if (mSlider == null || mSensorThreshold == null) return 0
 
             val adjacentValue = adjacentValue(adjacentProperty)
-            val percentage = (value - adjacentValue) / (mTo - mFrom)
+            val percentage = (value - adjacentValue) / (mSensorThreshold!!.to - mSensorThreshold!!.from)
             return (percentage * mSlider.trackWidth).toInt()
         }
 
         private fun adjacentValue(adjacentProperty: SegmentProperty?): Float {
-            return adjacentProperty?.value ?: mFrom
+            return adjacentProperty?.value ?: mSensorThreshold?.from ?: 0f
         }
     }
 
-    fun draw() {
+    private fun draw() {
+        mSensorThreshold ?: return
         val values = mSlider?.values ?: return
 
         var adjacentProperty: SegmentProperty? = null
