@@ -229,7 +229,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         bindSessionDetails()
         bindMeasurementsTable()
-        bindChartData()
     }
 
     protected fun bindSessionDetails() {
@@ -249,12 +248,14 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun expandSessionCard() {
+        // ACTUALLY expanding the card (showing stuff)
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
-//        rootView.chart_view
         mMeasurementsTableContainer.makeSelectable()
-
+// I should not MAKE stuff, should I? damn
+        // yest I should move calculating chart data to session presenter (chartpresenter?)
+        // and then Chart class will only contain drawing chart, can be view only class and I can call it from the view
         bindChartData()
         mChart.refresh()
         mChartView?.visibility = View.VISIBLE

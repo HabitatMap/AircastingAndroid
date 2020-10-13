@@ -28,6 +28,7 @@ class Chart {
 //    private var mDisplayValues: Boolean
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
+    private var mCurrentStream: MeasurementStream? = null
 //    private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
 
 //    private val mMeasurementsTable: TableLayout?
@@ -66,6 +67,12 @@ class Chart {
         if (session != null && session.streams.count() > 0) {
             resetChart()
             bindMeasurements()
+            // check if there is any other way to pick default stream or pass strem from the view
+            if(mCurrentStream == null) {
+                mCurrentStream = session.streams.first()
+            }
+            println("MARYSIA: drawing chart for "+mCurrentStream?.sensorName+" session "+session.name)
+            drawChart(mCurrentStream?.sensorName!!)
         }
     }
 
@@ -76,10 +83,14 @@ class Chart {
 
     private fun bindMeasurements() {
         val session = mSessionPresenter?.session
+        println("MARYSIA: all streams:")
+        //if current stream is set we can bind averages only for that stream
         session?.streamsSortedByDetailedType()?.forEach { stream ->
+            println("MARYSIA: "+stream.sensorName)
             bindStream(stream)
-            bindAverages(stream)
+//            bindAverages(stream)
         }
+        prepareCurrentEntries()
     }
 
 
@@ -92,6 +103,7 @@ class Chart {
 
 
     private fun bindAverages(stream: MeasurementStream) {
+        println("MARYSIA: stream sensor name: "+stream.sensorName)
         drawChart(stream.sensorName)
     }
 
@@ -126,7 +138,7 @@ class Chart {
         mLineChart?.setBorderColor(Color.TRANSPARENT)
 
 
-        prepareCurrentEntries()
+
         entries = getEntriesForStream(sensorName)
 
         if (entries == null || entries.isEmpty()) {
@@ -166,6 +178,7 @@ class Chart {
             val sensorName: String = stream.sensorName
 //            val streamKey: String = getKey(Constants.CURRENT_SESSION_FAKE_ID, sensorName)
             val entries: List<Entry>? = ChartAveragesCreator().getMobileEntries(stream)
+            // probably key should be more unique than sensorName
             mAverages.put(
                 sensorName,
                 Lists.reverse(entries)
