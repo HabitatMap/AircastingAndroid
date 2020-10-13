@@ -151,6 +151,6 @@ class HLUSlider {
         val position = segmentEndPosition - mThumbRadiusInPixels
 
         label.x = position
-        label.text = "%.0f".format(segmentProperty.value)
+        label.text = "%d".format(segmentProperty.value.toInt())
     }
 }
