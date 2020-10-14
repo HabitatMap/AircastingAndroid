@@ -7,7 +7,8 @@ class SessionPresenter(
     var session: Session,
     var selectedStream: MeasurementStream? = null,
     var expanded: Boolean = false,
-    var loading: Boolean = false
+    var loading: Boolean = false,
+    var chartData: ChartData = ChartData(session)
 ) {
 
     init {
