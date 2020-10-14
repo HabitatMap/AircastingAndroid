@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import java.text.DecimalFormat
 import kotlinx.android.synthetic.main.session_card.view.*
@@ -89,7 +90,7 @@ class Chart {
             return
         }
 
-        val dataSet = prepareDataSet(entries)
+        val dataSet = prepareDataSet(entries, stream)
         val lineData: LineData = LineData(dataSet)
 
         // Formatting values on the chart (no decimal places)
@@ -117,31 +118,34 @@ class Chart {
         mLineChart?.invalidate()
     }
 
-    private fun prepareDataSet(entries: List<Entry?>?): LineDataSet {
+    private fun prepareDataSet(entries: List<Entry?>?, stream: MeasurementStream?): LineDataSet {
         val dataSet: LineDataSet = LineDataSet(entries, "")
 
         // Making the line a curve, not a polyline
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
 
         // Circle colors
-        dataSet.circleRadius = 7f
-        dataSet.setCircleColors(
-            ContextCompat.getColor(
-                mContext,
-                R.color.session_color_indicator_low_shadow
-            )
+        dataSet.circleRadius = 3.5f
+        dataSet.setCircleColors(circleColors(entries, stream)
         )
         dataSet.fillAlpha = 10
-        dataSet.circleHoleRadius = 3.5f
-        dataSet.circleHoleColor = ContextCompat.getColor(
-            mContext,
-            R.color.session_color_indicator_low
-        )
+        dataSet.setDrawCircleHole(false)
 
         // Line color
         dataSet.setColor(ContextCompat.getColor(mContext, R.color.aircasting_grey_300))
         dataSet.lineWidth = 1f
 
         return dataSet
+    }
+
+    private fun circleColors(entries: List<Entry?>?, stream: MeasurementStream?): List<Int>? {
+        return entries?.map { entry ->
+            getColor(entry?.y, stream)
+        }
+    }
+
+    private fun getColor(value: Float?, stream: MeasurementStream?): Int {
+        val measurementValue = value?.toDouble() ?: 0.0
+        return  MeasurementColor.forMap(mContext, measurementValue, stream!!)
     }
 }
