@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import com.github.mikephil.charting.charts.LineChart
 import io.lunarlogic.aircasting.R
@@ -32,7 +33,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
     protected val mChart: Chart
-    protected val mChartView: LineChart?
+    protected val mChartView: ConstraintLayout?
+    protected val mChartStartTimeTextView: TextView?
+    protected val mChartEndTimeTextView: TextView?
     private var mMapButton: Button
     private var mLoader: ImageView?
 
@@ -65,7 +68,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             this.rootView
         )
 
-        mChartView = rootView?.chart_view
+        mChartView = rootView?.chart_container
+        mChartStartTimeTextView = rootView?.chart_start_time
+        mChartEndTimeTextView = rootView?.chart_end_time
 
         mActionsButton = findViewById(R.id.session_actions_button)
 
@@ -144,6 +149,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected open fun bindChartData() {
         mChart.bindChart(mSessionPresenter)
+        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
+        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
     }
 
     protected open fun expandSessionCard() {

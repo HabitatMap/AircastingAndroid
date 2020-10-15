@@ -120,13 +120,40 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/session_measurements_description" />
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="100dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/measurements_table"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/chart_container"
+            app:layout_constraintTop_toBottomOf="@id/measurements_table"
+            android:visibility="gone">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="100dp"
+                />
+            <TextView
+                android:id="@+id/chart_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chart_view" />
+            <TextView
+                android:id="@+id/chart_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chart_view" />
+            <TextView
+                android:id="@+id/chart_unit"
+                android:text="1 hr avg - µg/m³"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chart_end_time" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <include
             android:id="@+id/expanded_session_view"
@@ -135,6 +162,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_3"
-            app:layout_constraintTop_toBottomOf="@id/chart_view" />
+            app:layout_constraintTop_toBottomOf="@id/chart_container" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
