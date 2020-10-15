@@ -44,13 +44,16 @@ class HLUSlider {
 
         mOnThresholdChanged = onThresholdChanged
 
+        mSlider?.addOnChangeListener { _, _, _ ->
+            draw()
+        }
+
         mSlider?.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: RangeSlider) {
                 // Do nothing
             }
 
             override fun onStopTrackingTouch(slider: RangeSlider) {
-                draw()
                 updateSensorThreshold()
             }
         })
