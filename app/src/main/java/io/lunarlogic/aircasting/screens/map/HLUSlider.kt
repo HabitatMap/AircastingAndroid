@@ -38,7 +38,7 @@ class HLUSlider {
         toLabel = rootView?.findViewById(R.id.very_high_label)
         mLabels = listOf(lowLabel, mediumLabel, highLabel)
 
-        mSlider = rootView?.findViewById(R.id.hlu_slider)
+        mSlider = rootView?.findViewById(R.id.slider)
 
         mThumbRadiusInPixels = mContext.resources.getDimension(R.dimen.hlu_slider_thumb_radius).toInt()
 
