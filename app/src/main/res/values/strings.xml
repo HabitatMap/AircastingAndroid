@@ -144,6 +144,17 @@
     <string name="now_label">Now %1$s</string>
     <string name="peak_label">Peak %1$s</string>
 
+    <!-- HLU dialog -->
+    <string name="hlu_dialog_header">Heatmap settings</string>
+    <string name="hlu_dialog_description">Values beyond Min and Max will not be displayed.</string>
+    <string name="hlu_dialog_min">Min</string>
+    <string name="hlu_dialog_low">Low</string>
+    <string name="hlu_dialog_medium">Medium</string>
+    <string name="hlu_dialog_high">High</string>
+    <string name="hlu_dialog_max">Max</string>
+    <string name="hlu_dialog_save_button">Save changes</string>
+    <string name="hlu_dialog_reset_button">Reset to default</string>
+
     <string name="errors_location_services_required">Without location services you will not be able to record mobile and fixed outdoor sessions.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>

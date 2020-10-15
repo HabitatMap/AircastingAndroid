@@ -16,4 +16,8 @@ interface MapViewMvc: ObservableViewMvc<MapViewMvc.Listener> {
     interface Listener {
         fun locateRequested()
     }
+
+    interface HLUDialogListener {
+        fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold)
+    }
 }

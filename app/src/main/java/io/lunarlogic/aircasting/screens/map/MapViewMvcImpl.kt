@@ -4,6 +4,7 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -16,7 +17,9 @@ import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
+class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
+    private val mFragmentManager: FragmentManager?
+
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
@@ -26,6 +29,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
     private val mStatisticsContainer: StatisticsContainer
+    private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
 
     private var mOnSensorThresholdChanged: ((sensorThreshold: SensorThreshold) -> Unit)? = null
@@ -35,6 +39,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super() {
+        this.mFragmentManager = supportFragmentManager
         this.rootView = inflater.inflate(R.layout.activity_map, parent, false)
 
         mSessionDateTextView = this.rootView?.session_date
@@ -50,6 +55,10 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         )
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
+        mMoreButton = this.rootView?.more_button
+        mMoreButton?.setOnClickListener {
+            onMoreButtonPressed()
+        }
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
     }
 
@@ -111,5 +120,14 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
         mStatisticsContainer.refresh(mSessionPresenter)
 
         mOnSensorThresholdChanged?.invoke(sensorThreshold)
+    }
+
+    override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
+        onSensorThresholdChanged(sensorThreshold)
+        mHLUSlider.refresh(sensorThreshold)
+    }
+
+    private fun onMoreButtonPressed() {
+        mFragmentManager?.let { HLUDialog(mSessionPresenter?.selectedSensorThreshold(), mFragmentManager, this).show() }
     }
 }
