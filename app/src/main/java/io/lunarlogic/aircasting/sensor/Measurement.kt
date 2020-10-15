@@ -47,16 +47,16 @@ class Measurement(
     - higher than T5 - extremely high - level = 4
  */
 
-    fun getLevel(stream: MeasurementStream): Level {
-        return getLevel(value, stream)
+    fun getLevel(sensorThreshold: SensorThreshold): Level {
+        return getLevel(value, sensorThreshold)
     }
 
     companion object {
-        fun getLevel(value: Double, stream: MeasurementStream): Level {
-            if (value < stream.thresholdVeryLow) return Level.EXTREMELY_LOW
-            if (value >= stream.thresholdVeryHigh) return Level.EXTREMELY_HIGH
+        fun getLevel(value: Double, sensorThreshold: SensorThreshold): Level {
+            if (value < sensorThreshold.thresholdVeryLow) return Level.EXTREMELY_LOW
+            if (value >= sensorThreshold.thresholdVeryHigh) return Level.EXTREMELY_HIGH
 
-            val index = stream.levels.indexOfLast { level -> value >= level }
+            val index = sensorThreshold.levels.indexOfLast { level -> value >= level }
             return Level.values().first { it.value == index }
         }
     }

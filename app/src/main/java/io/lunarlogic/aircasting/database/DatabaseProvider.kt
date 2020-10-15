@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.database.converters.SessionTypeConverter
 import io.lunarlogic.aircasting.database.converters.TagsConverter
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -60,19 +61,15 @@ class DatabaseProvider {
             return mAppDatabase!!
         }
 
-        fun runQuery(block: () -> Unit) {
+        fun runQuery(block: (scope: CoroutineScope) -> Unit) {
             GlobalScope.launch(Dispatchers.IO) {
-                block()
+                block(this)
             }
         }
 
-        fun runQueryWithUICallback(block: () -> Unit, uiBlock: () -> Unit) {
-            GlobalScope.launch(Dispatchers.IO) {
-                block()
-
-                launch(Dispatchers.Main) {
-                    uiBlock()
-                }
+        fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
+            scope.launch(Dispatchers.Main) {
+                uiBlock()
             }
         }
     }

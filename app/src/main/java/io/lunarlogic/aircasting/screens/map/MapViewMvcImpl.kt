@@ -6,16 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.model.LatLng
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
@@ -24,8 +21,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
 
-    private var mSession: Session? = null
-    private var mSelectedStream: MeasurementStream? = null
+    private var mSessionPresenter: SessionPresenter? = null
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
@@ -68,44 +64,30 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     }
 
     override fun addMeasurement(measurement: Measurement) {
-        if (measurement.latitude == null || measurement.longitude == null) return
-
-        val point = LatLng(measurement.latitude, measurement.longitude)
-        val color = MeasurementColor.forMap(context, measurement, mSelectedStream!!)
-
-        mSession?.let {
-            if (it.isFixed()) {
-                mMapContainer.drawFixedMeasurement(point, color)
-            } else if (it.isRecording()) {
-                mMapContainer.drawMobileMeasurement(point, color)
-            }
-
-            mStatisticsContainer.addMeasurement(measurement)
-        }
+        mMapContainer.addMeasurement(measurement)
+        mStatisticsContainer.addMeasurement(measurement)
     }
 
-    override fun bindSession(session: Session, measurementStream: MeasurementStream?) {
-        mSession = session
-        mSelectedStream = measurementStream
-
-        bindSessionDetails(session)
-
-        mMapContainer.bindStream(measurementStream)
-        val sessionPresenter = SessionPresenter(session, measurementStream)
-        mMeasurementsTableContainer.bindSession(sessionPresenter, this::onMeasurementStreamChanged)
-        mStatisticsContainer.bindStream(measurementStream)
-    }
-
-    override fun bindSensorThreshold(sensorThreshold: SensorThreshold?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
+    override fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
+        mSessionPresenter = sessionPresenter
         mOnSensorThresholdChanged = onSensorThresholdChanged
-        mHLUSlider.bindSensorThreshold(sensorThreshold)
+
+        bindSessionDetails()
+
+        mMapContainer.bindSession(mSessionPresenter)
+        mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
+        mStatisticsContainer.bindSession(mSessionPresenter)
+        mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
     }
 
     override fun centerMap(location: Location) {
         mMapContainer.centerMap(location)
     }
 
-    private fun bindSessionDetails(session: Session) {
+    private fun bindSessionDetails() {
+        val session = mSessionPresenter?.session
+        session ?: return
+
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
 
@@ -117,15 +99,16 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc {
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        mSelectedStream = measurementStream
-        mMapContainer.refresh(measurementStream)
-        mStatisticsContainer.refresh(measurementStream)
+        mSessionPresenter?.selectedStream = measurementStream
+        mMapContainer.refresh(mSessionPresenter)
+        mStatisticsContainer.refresh(mSessionPresenter)
+        mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 
     private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
-        // TODO: use sensorThreshold in map, stats and table ??
-        mMapContainer.refresh(mSelectedStream)
-        mStatisticsContainer.refresh(mSelectedStream)
+        mMeasurementsTableContainer.refresh()
+        mMapContainer.refresh(mSessionPresenter)
+        mStatisticsContainer.refresh(mSessionPresenter)
 
         mOnSensorThresholdChanged?.invoke(sensorThreshold)
     }

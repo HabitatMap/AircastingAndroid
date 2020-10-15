@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.slider.RangeSlider
-import com.google.android.material.slider.Slider
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 
@@ -13,6 +12,8 @@ class HLUSlider {
     private val mContext: Context
 
     private var mSegments: List<View?>
+    private var fromLabel: TextView?
+    private var toLabel: TextView?
     private val mLabels: List<TextView?>
 
     private val mSlider: RangeSlider?
@@ -33,6 +34,8 @@ class HLUSlider {
         val lowLabel = rootView?.findViewById<TextView>(R.id.low_label)
         val mediumLabel = rootView?.findViewById<TextView>(R.id.medium_label)
         val highLabel = rootView?.findViewById<TextView>(R.id.high_label)
+        fromLabel = rootView?.findViewById(R.id.very_low_label)
+        toLabel = rootView?.findViewById(R.id.very_high_label)
         mLabels = listOf(lowLabel, mediumLabel, highLabel)
 
         mSlider = rootView?.findViewById(R.id.hlu_slider)
@@ -62,6 +65,10 @@ class HLUSlider {
         mSlider?.values = valuesFromThreshold(sensorThreshold)
 
         draw()
+    }
+
+    fun refresh(sensorThreshold: SensorThreshold?) {
+        bindSensorThreshold(sensorThreshold)
     }
 
     private fun valuesFromThreshold(sensorThreshold: SensorThreshold): List<Float> {
@@ -133,6 +140,8 @@ class HLUSlider {
             segmentProperty
         }
 
+        fromLabel?.text = labelFormat(mSensorThreshold?.from)
+        toLabel?.text = labelFormat(mSensorThreshold?.to)
         mLabels.forEachIndexed { index, _ ->
             updateLabel(mLabels.getOrNull(index), segmentProperties.getOrNull(index))
         }
@@ -151,6 +160,10 @@ class HLUSlider {
         val position = segmentEndPosition - mThumbRadiusInPixels
 
         label.x = position
-        label.text = "%d".format(segmentProperty.value.toInt())
+        label.text = labelFormat(segmentProperty.value)
+    }
+
+    private fun labelFormat(value: Float?): String {
+        return "%d".format(value?.toInt())
     }
 }

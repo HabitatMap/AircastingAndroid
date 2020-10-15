@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
@@ -14,7 +15,12 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.map.MapActivity
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
@@ -30,19 +36,50 @@ abstract class SessionsController(
 
     protected lateinit var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>
     private var mSessions = hashMapOf<String, Session>()
+    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
     private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { dbSessions ->
-        val sessions = dbSessions.map { dbSession -> Session(dbSession) }
+        DatabaseProvider.runQuery { coroutineScope ->
+            val sessions = dbSessions.map { dbSession -> Session(dbSession) }
+            val sensorThresholds = getSensorThresholds(sessions)
 
-        if (anySessionChanged(sessions)) {
-            if (sessions.size > 0) {
-                mViewMvc.showSessionsView(sessions)
-            } else {
-                mViewMvc.showEmptyView()
+            if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
+                if (sessions.size > 0) {
+                    updateSensorThresholds(sensorThresholds)
+                    showSessionsView(coroutineScope, sessions)
+                } else {
+                    showEmptyView(coroutineScope)
+                }
+
+                updateSessionsCache(sessions)
             }
-
-            updateSessionsCache(sessions)
         }
+    }
+
+    private fun showSessionsView(coroutineScope: CoroutineScope, sessions: List<Session>) {
+        DatabaseProvider.backToUIThread(coroutineScope) {
+            mViewMvc.showSessionsView(sessions, mSensorThresholds)
+        }
+    }
+
+    private fun showEmptyView(coroutineScope: CoroutineScope) {
+        DatabaseProvider.backToUIThread(coroutineScope) {
+            mViewMvc.showEmptyView()
+        }
+    }
+
+    private fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {
+        val streams = sessions.flatMap { it.streams }.distinctBy { it.sensorName }
+        return mSessionsViewModel.findOrCreateSensorThresholds(streams)
+    }
+
+    private fun anySensorThresholdChanged(sensorThresholds: List<SensorThreshold>): Boolean {
+        return mSensorThresholds.isEmpty() ||
+                sensorThresholds.any { threshold -> threshold.hasChangedFrom(mSensorThresholds[threshold.sensorName]) }
+    }
+
+    private fun updateSensorThresholds(sensorThresholds: List<SensorThreshold>) {
+        sensorThresholds.forEach { mSensorThresholds[it.sensorName] = it }
     }
 
     private fun anySessionChanged(sessions: List<Session>): Boolean {

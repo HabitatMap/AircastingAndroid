@@ -7,8 +7,10 @@ import android.widget.TextView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.StatisticsValueBackground
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.map_statistics_view.view.*
 
@@ -28,6 +30,8 @@ class StatisticsContainer {
     private val mAvgCircleIndicator: ImageView?
     private val mNowCircleIndicator: ImageView?
     private val mPeakCircleIndicator: ImageView?
+
+    private var mSensorThreshold: SensorThreshold? = null
 
     private var mSum: Double? = null
     private var mPeak: Double? = null
@@ -50,7 +54,10 @@ class StatisticsContainer {
         mPeakCircleIndicator = rootView?.peak_circle_indicator
     }
 
-    fun bindStream(stream: MeasurementStream?) {
+    fun bindSession(sessionPresenter: SessionPresenter?) {
+        val stream = sessionPresenter?.selectedStream
+        mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
+
         mStatisticsView?.visibility = View.VISIBLE
 
         mAvgLabel?.text = mContext.getString(R.string.avg_label, streamLabel(stream))
@@ -70,10 +77,10 @@ class StatisticsContainer {
         }
     }
 
-    fun refresh(stream: MeasurementStream?) {
+    fun refresh(sessionPresenter: SessionPresenter?) {
         mSum = null
         mPeak = null
-        bindStream(stream)
+        bindSession(sessionPresenter)
     }
 
     private fun bindAvgStatistics(stream: MeasurementStream?) {
@@ -105,7 +112,7 @@ class StatisticsContainer {
     private fun bindStatisticValues(stream: MeasurementStream, value: Double, valueView: TextView?, circleIndicator: ImageView?) {
         valueView?.text = formatStatistic(value)
 
-        val color = MeasurementColor.forMap(mContext, value, stream)
+        val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color)
         circleIndicator?.setColorFilter(color)
     }

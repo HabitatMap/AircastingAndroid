@@ -21,4 +21,15 @@ class SensorThreshold(
 
     val from get() = thresholdVeryLow.toFloat()
     val to get() = thresholdVeryHigh.toFloat()
+
+    val levels get() = arrayOf(thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh)
+
+    fun hasChangedFrom(sensorThreshold: SensorThreshold?): Boolean {
+        return sensorThreshold?.sensorName != sensorName ||
+                sensorThreshold.thresholdVeryLow != thresholdVeryLow ||
+                sensorThreshold.thresholdLow != thresholdLow ||
+                sensorThreshold.thresholdMedium != thresholdMedium ||
+                sensorThreshold.thresholdHigh != thresholdHigh ||
+                sensorThreshold.thresholdVeryHigh != thresholdVeryHigh
+    }
 }

@@ -112,7 +112,7 @@ class MeasurementsTableContainer {
 
     private fun stretchTableLayout() {
         val session = mSessionPresenter?.session
-        if (session != null && session!!.streams.size > 1) {
+        if (session != null && session.streams.size > 1) {
             mMeasurementsTable?.isStretchAllColumns = true
         }
     }
@@ -193,7 +193,7 @@ class MeasurementsTableContainer {
 
         valueTextView.text = measurement.valueString()
 
-        val color = MeasurementColor.forMap(mContext, measurement, stream)
+        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.sensorThresholdFor(stream))
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
 

@@ -32,26 +32,37 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
-    fun findOrCreateSensorThreshold(sensorName: String?, stream: MeasurementStream?): SensorThresholdDBObject? {
-        sensorName ?: return null
+    fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
+        return findOrCreateSensorThresholds(session.streams)
+    }
 
-        var sensorThresholdDBObject = mDatabase.sensorThresholds().findBySensorName(sensorName)
+    fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
+        val existingThresholds = findSensorThresholds(streams)
+        var newThresholds = createSensorThresholds(streams, existingThresholds)
 
-        if (sensorThresholdDBObject != null) return sensorThresholdDBObject
+        val thresholds = mutableListOf<SensorThreshold>()
+        thresholds.addAll(existingThresholds)
+        thresholds.addAll(newThresholds)
 
-        stream ?: return null
+        return thresholds
+    }
 
-        sensorThresholdDBObject = SensorThresholdDBObject(
-            sensorName,
-            stream.thresholdVeryLow,
-            stream.thresholdLow,
-            stream.thresholdMedium,
-            stream.thresholdHigh,
-            stream.thresholdVeryHigh
-        )
-        mDatabase.sensorThresholds().insert(sensorThresholdDBObject)
+    private fun findSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
+        val sensorNames = streams.map { it.sensorName }
+        return mDatabase.sensorThresholds()
+            .allBySensorNames(sensorNames)
+            .map { SensorThreshold(it) }
+    }
 
-        return sensorThresholdDBObject
+    private fun createSensorThresholds(streams: List<MeasurementStream>, existingThreshols: List<SensorThreshold>): List<SensorThreshold> {
+        val existingSensorNames = existingThreshols.map { it.sensorName }
+        val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
+
+        return toCreate.map { stream ->
+            val sensorThresholdDBObject = SensorThresholdDBObject(stream)
+            mDatabase.sensorThresholds().insert(sensorThresholdDBObject)
+            SensorThreshold(sensorThresholdDBObject)
+        }
     }
 
     fun updateSensorThreshold(sensorThreshold: SensorThreshold) {
