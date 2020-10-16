@@ -1,13 +1,17 @@
 package io.lunarlogic.aircasting.screens.map
 
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import io.lunarlogic.aircasting.sensor.Measurement
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -32,20 +36,31 @@ class MapController(
             sessionDBObject?.let {
                 val session = Session(sessionDBObject)
                 if (session.hasChangedFrom(mSessionPresenter.session)) {
-                    mSessionPresenter.session = session
-
-                    var selectedSensorName = sensorName
-                    if (mSessionPresenter.selectedStream != null) {
-                        selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
-                    }
-
-                    val measurementStream = session.streams.firstOrNull { it.sensorName == selectedSensorName }
-                    mSessionPresenter.selectedStream = measurementStream
-
-                    mViewMvc.bindSession(mSessionPresenter)
+                    onSessionChanged(session)
                 }
             }
         })
+    }
+
+    private fun onSessionChanged(session: Session) {
+        mSessionPresenter.session = session
+
+        DatabaseProvider.runQuery { coroutineScope ->
+            var selectedSensorName = sensorName
+            if (mSessionPresenter.selectedStream != null) {
+                selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
+            }
+
+            val measurementStream = session.streams.firstOrNull { it.sensorName == selectedSensorName }
+            mSessionPresenter.selectedStream = measurementStream
+
+            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
+            mSessionPresenter.setSensorThresholds(sensorThresholds)
+
+            DatabaseProvider.backToUIThread(coroutineScope) {
+                mViewMvc.bindSession(mSessionPresenter, this::onSensorThresholdChanged)
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -85,8 +100,20 @@ class MapController(
         LocationHelper.start()
     }
 
+    override fun onHLUDialogValidationFailed() {
+        val errorMessage = rootActivity.getString(R.string.hlu_thresholds_error)
+        val toast = Toast.makeText(rootActivity, errorMessage, Toast.LENGTH_LONG)
+        toast.show()
+    }
+
     fun onDestroy() {
         EventBus.getDefault().unregister(this);
         mViewMvc.unregisterListener(this)
+    }
+
+    private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
+        DatabaseProvider.runQuery {
+            mSessionsViewModel.updateSensorThreshold(sensorThreshold)
+        }
     }
 }

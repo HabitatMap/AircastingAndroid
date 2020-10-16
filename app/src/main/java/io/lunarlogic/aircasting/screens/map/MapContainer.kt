@@ -14,9 +14,10 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
-import io.lunarlogic.aircasting.location.LocationHelper
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicInteger
@@ -30,7 +31,7 @@ class MapContainer: OnMapReadyCallback {
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
 
-    private var mSelectedStream: MeasurementStream? = null
+    private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
@@ -41,7 +42,7 @@ class MapContainer: OnMapReadyCallback {
 
     private val status = AtomicInteger(Status.INIT.value)
 
-    enum class Status(val value: Int){
+    enum class Status(val value: Int) {
         INIT(0),
         MAP_LOADED(1),
         SESSION_LOADED(2)
@@ -89,9 +90,9 @@ class MapContainer: OnMapReadyCallback {
         }
     }
 
-    fun bindStream(stream: MeasurementStream?) {
-        mSelectedStream = stream
-        mMeasurements = measurementsWithLocations(stream)
+    fun bindSession(sessionPresenter: SessionPresenter?) {
+        mSessionPresenter = sessionPresenter
+        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.MAP_LOADED.value) {
@@ -113,7 +114,7 @@ class MapContainer: OnMapReadyCallback {
 
         var i = 0
         for (measurement in mMeasurements) {
-            latestColor = MeasurementColor.forMap(mContext, measurement, mSelectedStream!!)
+            latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
 
             if (i > 0) {
                 mMeasurementSpans.add(StyleSpan(latestColor))
@@ -152,11 +153,24 @@ class MapContainer: OnMapReadyCallback {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
-    fun drawFixedMeasurement(point: LatLng, color: Int) {
+    fun addMeasurement(measurement: Measurement) {
+        if (measurement.latitude == null || measurement.longitude == null) return
+
+        val point = LatLng(measurement.latitude, measurement.longitude)
+        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
+
+        if (mSessionPresenter?.isFixed() == true) {
+            drawFixedMeasurement(point, color)
+        } else if (mSessionPresenter?.isRecording() == true) {
+            drawMobileMeasurement(point, color)
+        }
+    }
+
+    private fun drawFixedMeasurement(point: LatLng, color: Int) {
         drawLastMeasurementMarker(point, color)
     }
 
-    fun drawMobileMeasurement(point: LatLng, color: Int) {
+    private fun drawMobileMeasurement(point: LatLng, color: Int) {
         mMeasurementPoints.add(point)
         mMeasurementSpans.add(StyleSpan(color))
 
@@ -170,9 +184,9 @@ class MapContainer: OnMapReadyCallback {
         drawLastMeasurementMarker(point, color)
     }
 
-    fun refresh(stream: MeasurementStream) {
+    fun refresh(sessionPresenter: SessionPresenter?) {
         clearMap()
-        bindStream(stream)
+        bindSession(sessionPresenter)
         drawSession()
     }
 

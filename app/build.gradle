@@ -24,6 +24,13 @@ android {
         }
         resValue "string", "maps_api_key", (secureProps.getProperty("MAPS_API_KEY") ?: "")
         buildConfigField "String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\"")
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation":
+                                      "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         debug {

@@ -13,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
@@ -61,9 +62,9 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
     }
 
-    override fun showSessionsView(sessions: List<Session>) {
+    override fun showSessionsView(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
         if (recyclerViewCanBeUpdated()) {
-            mAdapter.bindSessions(sessions)
+            mAdapter.bindSessions(sessions, sensorThresholds)
             mRecyclerSessions?.visibility = View.VISIBLE
             mEmptyView?.visibility = View.INVISIBLE
         }

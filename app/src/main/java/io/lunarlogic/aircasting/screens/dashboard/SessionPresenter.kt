@@ -1,34 +1,59 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 
 class SessionPresenter() {
     var session: Session? = null
     var selectedStream: MeasurementStream? = null
+    var sensorThresholds: HashMap<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
     var loading: Boolean = false
 
     constructor(
-        session: Session?,
+        session: Session,
+        sensorThresholds: HashMap<String, SensorThreshold>,
         selectedStream: MeasurementStream? = null,
         expanded: Boolean = false,
         loading: Boolean = false
     ): this() {
         this.session = session
-        this.selectedStream = selectedStream
+        this.selectedStream = selectedStream ?: defaultStream(session)
         this.expanded = expanded
         this.loading = loading
+        this.sensorThresholds = sensorThresholds
     }
 
-    init {
-        if (selectedStream == null) {
-            setDefaultStream()
-        }
+    fun selectedSensorThreshold(): SensorThreshold? {
+        selectedStream ?: return null
+
+        return sensorThresholds[selectedStream!!.sensorName]
+    }
+
+    fun sensorThresholdFor(stream: MeasurementStream): SensorThreshold? {
+        return sensorThresholds[stream.sensorName]
     }
 
     fun setDefaultStream() {
         selectedStream = defaultStream(session)
+    }
+
+    fun isFixed(): Boolean {
+        return session?.isFixed() == true
+    }
+
+    fun isRecording(): Boolean {
+        return session?.isRecording() == true
+    }
+
+    fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {
+        val hash = hashMapOf<String, SensorThreshold>()
+        sensorThresholds.forEach {
+            hash[it.sensorName] = it
+        }
+
+        this.sensorThresholds = hash
     }
 
     companion object {

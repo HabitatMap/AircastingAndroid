@@ -6,6 +6,8 @@ import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 class TagsConverter {
     @TypeConverter
     fun fromString(value: String): ArrayList<String> {
+        if (value.isEmpty()) return arrayListOf()
+
         return ArrayList(value.split(TAGS_SEPARATOR))
     }
 
