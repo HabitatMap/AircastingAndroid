@@ -46,7 +46,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
-        mSessionTagsTextView = this.rootView?.session_tags
+        mSessionTagsTextView = this.rootView?.session_info
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -84,7 +84,6 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     override fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
         mSessionPresenter = sessionPresenter
         mOnSensorThresholdChanged = onSensorThresholdChanged
-
 
         bindSessionDetails()
         if (sessionPresenter?.selectedStream != null) showSlider()

@@ -13,7 +13,6 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
-import kotlinx.coroutines.coroutineScope
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,7 +25,7 @@ class MapController(
     private val sessionUUID: String,
     private val sensorName: String?
 ): MapViewMvc.Listener {
-    private var mSession: Session? = null
+    private var mSessionPresenter = SessionPresenter()
     private var mLocateRequested = false
 
     fun onCreate() {
@@ -36,7 +35,7 @@ class MapController(
         mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(rootActivity, Observer { sessionDBObject ->
             sessionDBObject?.let {
                 val session = Session(sessionDBObject)
-                if (session.hasChangedFrom(mSession)) {
+                if (session.hasChangedFrom(mSessionPresenter.session)) {
                     onSessionChanged(session)
                 }
             }
@@ -44,17 +43,22 @@ class MapController(
     }
 
     private fun onSessionChanged(session: Session) {
-        mSession = session
-        var sessionPresenter: SessionPresenter? = null
+        mSessionPresenter.session = session
 
         DatabaseProvider.runQuery { coroutineScope ->
-            val measurementStream = session.streams.firstOrNull { it.sensorName == sensorName }
-            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
+            var selectedSensorName = sensorName
+            if (mSessionPresenter.selectedStream != null) {
+                selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
+            }
 
-            sessionPresenter = SessionPresenter.get(session, sensorThresholds, measurementStream)
+            val measurementStream = session.streams.firstOrNull { it.sensorName == selectedSensorName }
+            mSessionPresenter.selectedStream = measurementStream
+
+            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
+            mSessionPresenter.setSensorThresholds(sensorThresholds)
 
             DatabaseProvider.backToUIThread(coroutineScope) {
-                mViewMvc.bindSession(sessionPresenter, this::onSensorThresholdChanged)
+                mViewMvc.bindSession(mSessionPresenter, this::onSensorThresholdChanged)
             }
         }
     }

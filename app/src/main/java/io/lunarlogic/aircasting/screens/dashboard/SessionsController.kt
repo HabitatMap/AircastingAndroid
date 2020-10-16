@@ -3,10 +3,8 @@ package io.lunarlogic.aircasting.screens.dashboard
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -18,9 +16,7 @@ import io.lunarlogic.aircasting.screens.map.MapActivity
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+
 
 abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
@@ -100,6 +96,11 @@ abstract class SessionsController(
 
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
+    fun onCreate() {
+        mViewMvc.showLoader()
+        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
+    }
+
     fun onResume() {
         registerSessionsObserver()
         mViewMvc.registerListener(this)
@@ -114,8 +115,8 @@ abstract class SessionsController(
         NewSessionActivity.start(mRootActivity, sessionType)
     }
 
-    override fun onSwipeToRefreshTriggered(callback: () -> Unit) {
-        mMobileSessionsSyncService.sync(callback)
+    override fun onSwipeToRefreshTriggered() {
+        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
     }
 
     override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {

@@ -34,6 +34,7 @@ class StatisticsContainer {
     private var mSensorThreshold: SensorThreshold? = null
 
     private var mSum: Double? = null
+    private var mNow: Double? = null
     private var mPeak: Double? = null
 
     constructor(rootView: View?, context: Context) {
@@ -72,6 +73,8 @@ class StatisticsContainer {
     fun addMeasurement(measurement: Measurement) {
         mSum?.let { mSum = it + measurement.value }
 
+        mNow = measurement.value
+
         if (mPeak != null && measurement.value > mPeak!!) {
             mPeak = measurement.value
         }
@@ -80,6 +83,7 @@ class StatisticsContainer {
     fun refresh(sessionPresenter: SessionPresenter?) {
         mSum = null
         mPeak = null
+        mNow = null
         bindSession(sessionPresenter)
     }
 
@@ -98,9 +102,7 @@ class StatisticsContainer {
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
-        val measurement = stream?.measurements?.lastOrNull()
-
-        bindStatisticValues(stream, measurement?.value, mNowValue, mNowCircleIndicator)
+        bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator)
     }
 
     private fun bindPeakStatistics(stream: MeasurementStream?) {

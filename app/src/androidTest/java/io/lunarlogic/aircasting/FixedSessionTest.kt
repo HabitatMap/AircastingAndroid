@@ -140,7 +140,7 @@ class FixedSessionTest {
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed outdoor session")))
-        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_info)).check(matches(withText("Fixed: ")));
     }
 
     @Test
@@ -197,6 +197,6 @@ class FixedSessionTest {
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed indoor session")))
-        onView(withId(R.id.session_tags)).check(matches(withText("tag1, tag2")));
+        onView(withId(R.id.session_info)).check(matches(withText("Fixed: ")));
     }
 }
