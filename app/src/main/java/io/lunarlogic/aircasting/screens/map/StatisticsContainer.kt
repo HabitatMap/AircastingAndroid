@@ -84,32 +84,34 @@ class StatisticsContainer {
     }
 
     private fun bindAvgStatistics(stream: MeasurementStream?) {
-        if (stream == null) return
+        var avg: Double? = null
 
-        if (mSum == null) {
-            mSum = calculateSum(stream)
+        if (stream != null) {
+            if (mSum == null) {
+                mSum = calculateSum(stream)
+            }
+
+            avg = mSum!! / stream.measurements.size
         }
 
-        val avg = mSum!! / stream.measurements.size
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
-        val measurement = stream?.measurements?.lastOrNull() ?: return
+        val measurement = stream?.measurements?.lastOrNull()
 
-        bindStatisticValues(stream, measurement.value, mNowValue, mNowCircleIndicator)
+        bindStatisticValues(stream, measurement?.value, mNowValue, mNowCircleIndicator)
     }
 
     private fun bindPeakStatistics(stream: MeasurementStream?) {
-        if (stream == null) return
-
-        if (mPeak == null) {
+        if (mPeak == null && stream != null) {
             mPeak = calculatePeak(stream)
         }
-        bindStatisticValues(stream, mPeak!!, mPeakValue, mPeakCircleIndicator)
+
+        bindStatisticValues(stream, mPeak, mPeakValue, mPeakCircleIndicator)
     }
 
-    private fun bindStatisticValues(stream: MeasurementStream, value: Double, valueView: TextView?, circleIndicator: ImageView?) {
+    private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?) {
         valueView?.text = formatStatistic(value)
 
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
@@ -117,8 +119,12 @@ class StatisticsContainer {
         circleIndicator?.setColorFilter(color)
     }
 
-    private fun formatStatistic(value: Double): String {
-        return "%.0f".format(value)
+    private fun formatStatistic(value: Double?): String {
+        if (value == null) {
+            return "-"
+        } else {
+            return "%.0f".format(value)
+        }
     }
 
     private fun calculateSum(stream: MeasurementStream): Double {

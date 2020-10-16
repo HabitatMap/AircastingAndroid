@@ -107,6 +107,7 @@
         android:tint="@color/aircasting_grey_500"
         android:paddingStart="@dimen/keyline_4"
         android:paddingEnd="@dimen/keyline_4"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/map"
         app:layout_constraintBottom_toTopOf="@id/hlu"
         app:layout_constraintEnd_toEndOf="parent" />

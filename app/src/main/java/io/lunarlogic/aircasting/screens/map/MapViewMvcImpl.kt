@@ -85,12 +85,19 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mSessionPresenter = sessionPresenter
         mOnSensorThresholdChanged = onSensorThresholdChanged
 
+
         bindSessionDetails()
+        if (sessionPresenter?.selectedStream != null) showSlider()
 
         mMapContainer.bindSession(mSessionPresenter)
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
         mStatisticsContainer.bindSession(mSessionPresenter)
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+    }
+
+    fun showSlider() {
+        mMoreButton?.visibility = View.VISIBLE
+        mHLUSlider.show()
     }
 
     override fun centerMap(location: Location) {

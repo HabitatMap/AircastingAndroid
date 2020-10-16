@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/hlu_slider"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/more_button"
@@ -23,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
+            android:visibility="invisible"
             android:background="@color/session_color_indicator_low" />
 
         <View
@@ -30,6 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
+            android:visibility="invisible"
             android:background="@color/session_color_indicator_medium" />
 
         <View
@@ -37,6 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
+            android:visibility="invisible"
             android:background="@color/session_color_indicator_high" />
 
         <View
@@ -44,6 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
+            android:visibility="invisible"
             android:background="@color/session_color_indicator_very_high" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -51,6 +54,7 @@
     <TextView
         android:id="@+id/very_low_label"
         android:text="0"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_2"
@@ -74,6 +78,7 @@
         <TextView
             android:id="@+id/low_label"
             android:text="25"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_2" />
@@ -81,6 +86,7 @@
         <TextView
             android:id="@+id/medium_label"
             android:text="50"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_2" />
@@ -88,6 +94,7 @@
         <TextView
             android:id="@+id/high_label"
             android:text="75"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_2" />
@@ -96,6 +103,7 @@
     <TextView
         android:id="@+id/very_high_label"
         android:text="100"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_2"
@@ -106,6 +114,7 @@
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/slider"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:trackColorActive="@color/transparent"

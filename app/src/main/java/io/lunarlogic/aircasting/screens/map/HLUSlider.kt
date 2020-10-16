@@ -130,6 +130,14 @@ class HLUSlider {
         }
     }
 
+    fun show() {
+        mSegments.forEach { it?.visibility = View.VISIBLE }
+        mLabels.forEach { it?.visibility = View.VISIBLE }
+        fromLabel?.visibility = View.VISIBLE
+        toLabel?.visibility = View.VISIBLE
+        mSlider?.visibility = View.VISIBLE
+    }
+
     private fun draw() {
         mSensorThreshold ?: return
         val values = mSlider?.values ?: return

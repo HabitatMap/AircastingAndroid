@@ -24,7 +24,8 @@ class MeasurementColor {
             return colorForLevel(context, level)
         }
 
-        fun forMap(context: Context, value: Double, sensorThreshold: SensorThreshold?): Int {
+        fun forMap(context: Context, value: Double?, sensorThreshold: SensorThreshold?): Int {
+            value ?: return colorWithResourceId(context, FALLBACK_COLOR)
             sensorThreshold ?: return colorWithResourceId(context, FALLBACK_COLOR)
 
             val level = Measurement.getLevel(value, sensorThreshold)
