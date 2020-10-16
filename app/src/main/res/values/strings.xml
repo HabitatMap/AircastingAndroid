@@ -155,4 +155,8 @@
     <string name="session_name_required">Session name can\'t be blank.</string>
     <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
     <string name="active_session_already_exists">Active session already exists for this device.</string>
+
+    <!-- Chart -->
+    <string name="fixed_session_units_label">1 hr avg</string>
+    <string name="mobile_session_units_label">1 min avg</string>
 </resources>

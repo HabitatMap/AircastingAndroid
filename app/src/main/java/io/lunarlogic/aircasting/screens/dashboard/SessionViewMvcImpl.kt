@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
-import com.github.mikephil.charting.charts.LineChart
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
@@ -36,6 +35,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected val mChartView: ConstraintLayout?
     protected val mChartStartTimeTextView: TextView?
     protected val mChartEndTimeTextView: TextView?
+    protected val mChartUnitTextView: TextView?
+
     private var mMapButton: Button
     private var mLoader: ImageView?
 
@@ -71,6 +72,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mChartView = rootView?.chart_container
         mChartStartTimeTextView = rootView?.chart_start_time
         mChartEndTimeTextView = rootView?.chart_end_time
+        mChartUnitTextView = rootView?.chart_unit
 
         mActionsButton = findViewById(R.id.session_actions_button)
 
@@ -99,6 +101,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
+    protected abstract fun chartUnitLabel(): Int
 
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet()
@@ -151,6 +154,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mChart.bindChart(mSessionPresenter)
         mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
         mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
+        mChartUnitTextView?.text = "${getString(chartUnitLabel())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
     }
 
     protected open fun expandSessionCard() {
@@ -181,7 +185,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
-        mChart.refreshChart()
+        bindChartData()
     }
 
     private fun onMapButtonClicked() {
