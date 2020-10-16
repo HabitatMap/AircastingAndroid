@@ -128,6 +128,10 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     }
 
     private fun onMoreButtonPressed() {
-        mFragmentManager?.let { HLUDialog(mSessionPresenter?.selectedSensorThreshold(), mFragmentManager, this).show() }
+        mFragmentManager?.let {
+            val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
+            val measurementStream = mSessionPresenter?.selectedStream
+            HLUDialog(sensorThreshold, measurementStream, mFragmentManager, this).show()
+        }
     }
 }

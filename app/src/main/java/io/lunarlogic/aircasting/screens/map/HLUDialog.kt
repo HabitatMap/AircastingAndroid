@@ -6,11 +6,13 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseDialog
+import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(
     private var mSensorThreshold: SensorThreshold?,
+    private val mMeasurementStream: MeasurementStream?,
     mFragmentManager: FragmentManager,
     private val listener: MapViewMvc.HLUDialogListener
 ): BaseDialog(mFragmentManager) {
@@ -30,7 +32,7 @@ class HLUDialog(
         }
 
         mView.reset_button.setOnClickListener {
-            dismiss()
+            resetToDefaultsClicked()
         }
 
         return mView
@@ -61,6 +63,20 @@ class HLUDialog(
 
         val max = getValue(mView.hlu_dialog_max)
         max?.let { mSensorThreshold!!.thresholdVeryHigh = max }
+
+        listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+
+        dismiss()
+    }
+
+    private fun resetToDefaultsClicked() {
+        if (mSensorThreshold == null || mMeasurementStream == null) return
+
+        mSensorThreshold!!.thresholdVeryLow = mMeasurementStream.thresholdVeryLow
+        mSensorThreshold!!.thresholdLow = mMeasurementStream.thresholdLow
+        mSensorThreshold!!.thresholdMedium = mMeasurementStream.thresholdMedium
+        mSensorThreshold!!.thresholdHigh = mMeasurementStream.thresholdHigh
+        mSensorThreshold!!.thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
 
         listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
 
