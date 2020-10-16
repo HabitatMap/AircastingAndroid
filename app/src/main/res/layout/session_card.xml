@@ -147,7 +147,7 @@
                 app:layout_constraintTop_toBottomOf="@id/chart_view" />
             <TextView
                 android:id="@+id/chart_unit"
-                android:text="1 hr avg - µg/m³"
+                android:text="1 min avg - µg/m³"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

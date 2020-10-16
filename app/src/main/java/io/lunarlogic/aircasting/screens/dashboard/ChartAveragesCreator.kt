@@ -68,54 +68,57 @@ class ChartAveragesCreator {
         return entries
     }
 
-//    fun getFixedEntries(stream: MeasurementStream): List<Entry?>? {
-//        val measurements: MutableList<Measurement>?
-//        var xValue = MAX_X_VALUE.toDouble()
-//        val entries: MutableList<*> = CopyOnWriteArrayList<Any?>()
-//        val periodData: MutableList<List<Measurement>?> = mutableListOf()
-//        val maxMeasurementsAmount = 600
-//        val measurements = stream.getLastMeasurements(maxMeasurementsAmount)
-//
-//        if (measurements.isEmpty()) {
-//            return entries
-//        }
-//
-//
-//        var hour: Int = measurements[0].time.getHours()
-//        var measurementsInHour: MutableList<Measurement> = ArrayList<Measurement>()
-//        for (i in measurements.indices) {
-//            val measurement: Measurement = measurements[i]
-//            val measurementHour: Int = measurement.time.getHours()
-//            if (hour == measurementHour) {
-//                measurementsInHour.add(measurement)
-//            } else {
-//                periodData.add(measurementsInHour)
-//                hour = measurementHour
-//                measurementsInHour = ArrayList<Measurement>()
-//                measurementsInHour.add(measurement)
-//            }
-//        }
-//        if (periodData.size > 0) {
-//            for (dataChunk in Lists.reverse<List<Measurement>?>(periodData)) {
-//                if (xValue < 0) {
-//                    return entries
-//                }
-//                synchronized(dataChunk!!) {
-//                    val yValue = getAverage(dataChunk).toDouble()
-//                    entries.add(
-//                        Entry(
-//                            xValue.toFloat(),
-//                            yValue.toFloat()
-//                        )
-//                    )
-//                    xValue--
-//                }
-//            }
-//        }
-//        return if (entries.size == 0) {
-//            entries
-//        } else entries
-//    }
+    fun getFixedEntries(stream: MeasurementStream): List<Entry>? {
+        var measurements: MutableList<Measurement>?
+        var xValue = MAX_X_VALUE.toDouble()
+        val entries: MutableList<Entry> = mutableListOf()
+        val periodData: MutableList<List<Measurement>?> = mutableListOf()
+        val maxMeasurementsAmount = 600
+
+        measurements = stream.getLastMeasurements(maxMeasurementsAmount)
+
+        if (measurements == null || measurements.isEmpty()) {
+            return entries
+        }
+
+        val calendar = Calendar.getInstance()
+        calendar.time = measurements[0].time
+        var hour: Int = calendar[Calendar.HOUR_OF_DAY]
+        var measurementsInHour: MutableList<Measurement> = ArrayList<Measurement>()
+        for (i in measurements.indices) {
+            val measurement: Measurement = measurements[i]
+            calendar.time = measurement.time
+            val measurementHour: Int = calendar[Calendar.HOUR_OF_DAY]
+            if (hour == measurementHour) {
+                measurementsInHour.add(measurement)
+            } else {
+                periodData.add(measurementsInHour)
+                hour = measurementHour
+                measurementsInHour = ArrayList<Measurement>()
+                measurementsInHour.add(measurement)
+            }
+        }
+        if (periodData.size > 0) {
+            for (dataChunk in Lists.reverse<List<Measurement>?>(periodData)) {
+                if (xValue < 0) {
+                    return entries
+                }
+                synchronized(dataChunk!!) {
+                    val yValue = getAverage(dataChunk).toDouble()
+                    entries.add(
+                        Entry(
+                            xValue.toFloat(),
+                            yValue.toFloat()
+                        )
+                    )
+                    xValue--
+                }
+            }
+        }
+        return if (entries.size == 0) {
+            entries
+        } else entries
+    }
 
     private fun getTolerance(measurementsInPeriod: Double): Double {
         return 0.1 * measurementsInPeriod
