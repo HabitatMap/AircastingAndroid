@@ -50,23 +50,29 @@ class HLUDialog(
         mSensorThreshold ?: return
 
         val min = getValue(mView.hlu_dialog_min)
-        min?.let { mSensorThreshold!!.thresholdVeryLow = min }
-
         val low = getValue(mView.hlu_dialog_low)
-        low?.let { mSensorThreshold!!.thresholdLow = low }
-
         val medium = getValue(mView.hlu_dialog_medium)
-        medium?.let { mSensorThreshold!!.thresholdMedium = medium }
-
         val high = getValue(mView.hlu_dialog_high)
-        high?.let { mSensorThreshold!!.thresholdHigh = high }
-
         val max = getValue(mView.hlu_dialog_max)
-        max?.let { mSensorThreshold!!.thresholdVeryHigh = max }
 
-        listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+        if (validate(min, low, medium, high, max)) {
+            min?.let { mSensorThreshold!!.thresholdVeryLow = min }
+            low?.let { mSensorThreshold!!.thresholdLow = low }
+            medium?.let { mSensorThreshold!!.thresholdMedium = medium }
+            high?.let { mSensorThreshold!!.thresholdHigh = high }
+            max?.let { mSensorThreshold!!.thresholdVeryHigh = max }
 
-        dismiss()
+            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+
+            dismiss()
+        } else {
+            listener.onValidationFailed()
+        }
+    }
+
+    private fun validate(min: Int?, low: Int?, medium: Int?, high: Int?, max: Int?): Boolean {
+        return min != null && low != null && medium != null && high != null && max != null &&
+                min < low && low < medium && medium < high && high < max
     }
 
     private fun resetToDefaultsClicked() {
@@ -85,6 +91,9 @@ class HLUDialog(
 
     private fun getValue(input: TextInputEditText): Int? {
         val stringValue = input.text.toString().trim()
+        
+        if (stringValue.isEmpty()) return null
+
         return stringValue.toInt()
     }
 }

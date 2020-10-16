@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 
 class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
     private val mFragmentManager: FragmentManager?
+    private var mListener: MapViewMvc.Listener? = null
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
@@ -40,6 +41,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         supportFragmentManager: FragmentManager?
     ): super() {
         this.mFragmentManager = supportFragmentManager
+
         this.rootView = inflater.inflate(R.layout.activity_map, parent, false)
 
         mSessionDateTextView = this.rootView?.session_date
@@ -64,11 +66,13 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
     override fun registerListener(listener: MapViewMvc.Listener) {
         super.registerListener(listener)
+        mListener = listener
         mMapContainer.registerListener(listener)
     }
 
     override fun unregisterListener(listener: MapViewMvc.Listener) {
         super.unregisterListener(listener)
+        mListener = null
         mMapContainer.unregisterListener()
     }
 
@@ -125,6 +129,10 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
         onSensorThresholdChanged(sensorThreshold)
         mHLUSlider.refresh(sensorThreshold)
+    }
+
+    override fun onValidationFailed() {
+        mListener?.onHLUDialogValidationFailed()
     }
 
     private fun onMoreButtonPressed() {

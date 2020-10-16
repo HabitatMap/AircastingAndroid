@@ -166,4 +166,5 @@
     <string name="session_name_required">Session name can\'t be blank.</string>
     <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
     <string name="active_session_already_exists">Active session already exists for this device.</string>
+    <string name="hlu_thresholds_error">All values needs to be present and fit the range (min &lt; low &lt; medium &lt; high &lt; max).</string>
 </resources>

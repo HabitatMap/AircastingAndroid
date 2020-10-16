@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting.screens.map
 
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
@@ -92,6 +94,12 @@ class MapController(
 
     fun onLocationSettingsSatisfied() {
         LocationHelper.start()
+    }
+
+    override fun onHLUDialogValidationFailed() {
+        val errorMessage = rootActivity.getString(R.string.hlu_thresholds_error)
+        val toast = Toast.makeText(rootActivity, errorMessage, Toast.LENGTH_LONG)
+        toast.show()
     }
 
     fun onDestroy() {
