@@ -31,7 +31,7 @@ class ChartData(
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
-        calendar.add(Calendar.MINUTE, -mMaxEntriesCount)
+        calendar.add(averageFrequency(), -mMaxEntriesCount)
         val startString = DateConverter.toDateString(calendar.time, TimeZone.getDefault(), "HH:mm")
         return startString
     }
@@ -41,6 +41,12 @@ class ChartData(
         return endString
     }
 
+    private fun averageFrequency(): Int {
+        return when (session.type) {
+            Session.Type.MOBILE -> Calendar.MINUTE
+            Session.Type.FIXED -> Calendar.HOUR
+        }
+    }
     private fun initStreams(): MutableList<MeasurementStream> {
         var streams: MutableList<MeasurementStream> = mutableListOf()
         session.streamsSortedByDetailedType()?.forEach { stream ->
