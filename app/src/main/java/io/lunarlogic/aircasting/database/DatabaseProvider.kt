@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.database.converters.SessionStatusConverter
 import io.lunarlogic.aircasting.database.converters.SessionTypeConverter
 import io.lunarlogic.aircasting.database.converters.TagsConverter
 import io.lunarlogic.aircasting.database.data_classes.*
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,7 +49,8 @@ class DatabaseProvider {
                 mAppDatabase = Room.databaseBuilder(
                     mContext,
                     AppDatabase::class.java, DB_NAME
-                ).build()
+                ).addMigrations(
+                    MIGRATION_16_17).build()
             }
 
             return mAppDatabase!!
