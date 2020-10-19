@@ -34,10 +34,6 @@ class Chart {
         mLineChart = mRootView?.chart_view
     }
 
-    fun refreshChart() {
-        bindChart(mSessionPresenter)
-    }
-
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {

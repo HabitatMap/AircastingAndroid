@@ -5,7 +5,6 @@ import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.Session
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
