@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 import io.lunarlogic.aircasting.sensor.Measurement
+import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +24,7 @@ class MapController(
     private val mSessionsViewModel: SessionsViewModel,
     private val mViewMvc: MapViewMvc,
     private val sessionUUID: String,
-    private val sensorName: String?
+    private var sensorName: String?
 ): MapViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter()
     private var mLocateRequested = false
@@ -89,6 +90,10 @@ class MapController(
         } else {
             mViewMvc.centerMap(location)
         }
+    }
+
+    override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+        this.sensorName = measurementStream.sensorName
     }
 
     private fun requestLocation() {

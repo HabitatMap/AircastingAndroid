@@ -140,9 +140,9 @@
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
 
     <!-- Map view -->
-    <string name="avg_label">Avg %1$s</string>
-    <string name="now_label">Now %1$s</string>
-    <string name="peak_label">Peak %1$s</string>
+    <string name="avg_label">Avg</string>
+    <string name="now_label">Now</string>
+    <string name="peak_label">Peak</string>
 
     <!-- HLU dialog -->
     <string name="hlu_dialog_header">Heatmap settings</string>

@@ -109,12 +109,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
-
-        if (session.tags.isEmpty()) {
-            mSessionTagsTextView?.visibility = View.GONE
-        } else {
-            mSessionTagsTextView?.text = session.tagsString()
-        }
+        mSessionTagsTextView?.text = session.infoString()
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
@@ -122,6 +117,8 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mMapContainer.refresh(mSessionPresenter)
         mStatisticsContainer.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
+
+        mListener?.onMeasurementStreamChanged(measurementStream)
     }
 
     private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
