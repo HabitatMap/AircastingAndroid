@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.StatisticsValueBackground
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -18,10 +17,6 @@ class StatisticsContainer {
     private val mContext: Context
 
     private val mStatisticsView: View?
-
-    private val mAvgLabel: TextView?
-    private val mNowLabel: TextView?
-    private val mPeakLabel: TextView?
 
     private val mAvgValue: TextView?
     private val mNowValue: TextView?
@@ -42,10 +37,6 @@ class StatisticsContainer {
 
         mStatisticsView = rootView?.statistics_view
 
-        mAvgLabel = rootView?.avg_label
-        mNowLabel = rootView?.now_label
-        mPeakLabel = rootView?.peak_label
-
         mAvgValue = rootView?.avg_value
         mNowValue = rootView?.now_value
         mPeakValue = rootView?.peak_value
@@ -60,10 +51,6 @@ class StatisticsContainer {
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
 
         mStatisticsView?.visibility = View.VISIBLE
-
-        mAvgLabel?.text = mContext.getString(R.string.avg_label, streamLabel(stream))
-        mNowLabel?.text = mContext.getString(R.string.now_label, streamLabel(stream))
-        mPeakLabel?.text = mContext.getString(R.string.peak_label, streamLabel(stream))
 
         bindAvgStatistics(stream)
         bindNowStatistics(stream)
@@ -135,11 +122,5 @@ class StatisticsContainer {
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         return stream.measurements.maxBy { it.value }?.value ?: 0.0
-    }
-
-    private fun streamLabel(stream: MeasurementStream?): String? {
-        if (stream == null) return null
-
-        return stream.detailedType
     }
 }
