@@ -117,6 +117,8 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mMapContainer.refresh(mSessionPresenter)
         mStatisticsContainer.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
+
+        mListener?.onMeasurementStreamChanged(measurementStream)
     }
 
     private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
