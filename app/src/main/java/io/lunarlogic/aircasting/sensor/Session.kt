@@ -171,8 +171,8 @@ class Session(
         return durationString
     }
 
-    fun tagsString(): String {
-        return tags.joinToString(", ")
+    fun infoString(): String {
+        return "${displayedType.capitalize()}: ${sensorPackageNamesString()}"
     }
 
     fun sensorPackageNamesString(): String? {
