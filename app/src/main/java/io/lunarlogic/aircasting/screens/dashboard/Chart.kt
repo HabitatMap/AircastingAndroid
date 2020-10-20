@@ -28,6 +28,7 @@ class Chart {
 
     private var mLineChart: LineChart?
     private var mDataSet: LineDataSet? = null
+    private var mSessionPresenter: SessionPresenter? = null
 
     constructor(
         context: Context,
@@ -37,14 +38,13 @@ class Chart {
         mContext = context
         mRootView = rootView
         mLineChart = mRootView?.chart_view
-
-
     }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
         val session = sessionPresenter?.session
+        mSessionPresenter = sessionPresenter
         mStream = sessionPresenter?.selectedStream
         mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 
@@ -142,6 +142,6 @@ class Chart {
 
     private fun getColor(value: Float?, stream: MeasurementStream?): Int {
         val measurementValue = value?.toDouble() ?: 0.0
-        return  MeasurementColor.forMap(mContext, measurementValue, stream!!)
+        return  MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
     }
 }

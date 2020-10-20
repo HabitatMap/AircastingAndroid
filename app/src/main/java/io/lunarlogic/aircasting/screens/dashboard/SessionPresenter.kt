@@ -10,7 +10,7 @@ class SessionPresenter() {
     var sensorThresholds: HashMap<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
     var loading: Boolean = false
-    var chartData: ChartData
+    var chartData: ChartData? = null
 
     constructor(
         session: Session,
@@ -24,10 +24,7 @@ class SessionPresenter() {
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-    }
-
-    init {
-        chartData = ChartData(session)
+        this.chartData = ChartData(session)
     }
 
     fun selectedSensorThreshold(): SensorThreshold? {
@@ -36,7 +33,8 @@ class SessionPresenter() {
         return sensorThresholds[selectedStream!!.sensorName]
     }
 
-    fun sensorThresholdFor(stream: MeasurementStream): SensorThreshold? {
+    fun sensorThresholdFor(stream: MeasurementStream?): SensorThreshold? {
+        stream ?: return null
         return sensorThresholds[stream.sensorName]
     }
 

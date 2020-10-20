@@ -47,8 +47,8 @@ class ChartData(
         }
     }
     private fun initStreams(): MutableList<MeasurementStream> {
-        var streams: MutableList<MeasurementStream> = mutableListOf()
-        session.streamsSortedByDetailedType()?.forEach { stream ->
+        val streams: MutableList<MeasurementStream> = mutableListOf()
+        session.streamsSortedByDetailedType().forEach { stream ->
             streams.add(stream)
         }
         return streams
