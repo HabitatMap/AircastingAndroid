@@ -62,10 +62,12 @@ class Chart {
     }
 
     private fun drawChart() {
-         val rightYAxis = mLineChart?.axisRight
+        val rightYAxis = mLineChart?.axisRight
         rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
         rightYAxis?.setDrawLabels(false)
         rightYAxis?.setDrawAxisLine(false)
+        rightYAxis?.axisMinimum = 0f
+        rightYAxis?.axisMaximum = 100f
 
         //Removing bottom "border" and Y values
         val leftYAxis = mLineChart?.axisLeft
@@ -76,11 +78,9 @@ class Chart {
         val xAxis = mLineChart?.xAxis
         xAxis?.setDrawLabels(false)
         xAxis?.setDrawAxisLine(false)
-//        xAxis?.axisMaximum = 9f
         xAxis?.spaceMin = (MAXIMUM_ENTRIES_COUNT - mEntries.size).toFloat()
         // Removing vertical lines
         xAxis?.gridColor = Color.TRANSPARENT
-
 
         mLineChart?.setDrawBorders(false)
         mLineChart?.setBorderColor(Color.TRANSPARENT)
