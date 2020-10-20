@@ -16,7 +16,7 @@ class ChartAveragesCreator {
     private var usePreviousEntry = false
 
     @Synchronized
-    fun getMobileEntries(stream: MeasurementStream): List<Entry>? {
+    fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
@@ -68,7 +68,7 @@ class ChartAveragesCreator {
         return entries
     }
 
-    fun getFixedEntries(stream: MeasurementStream): List<Entry>? {
+    fun getFixedEntries(stream: MeasurementStream): MutableList<Entry>? {
         var measurements: MutableList<Measurement>?
         var xValue = MAX_X_VALUE.toDouble()
         val entries: MutableList<Entry> = mutableListOf()

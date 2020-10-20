@@ -56,10 +56,12 @@ class ChartData(
 
     private fun calculateAvarages() {
         for (stream in mMeasurementStreams) {
-            val entries: List<Entry>? =   createEntries(stream)
-            if(entries?.size ?: 0 > mMaxEntriesCount) {
+            val entries: MutableList<Entry>? = createEntries(stream)
+            val entriesSize = entries?.size ?: 0
+            if(entriesSize > mMaxEntriesCount) {
                 mMaxEntriesCount = entries?.size ?: 0
             }
+
             mEntriesPerStream.put(
                 streamKey(stream),
                 Lists.reverse(entries)
@@ -67,8 +69,8 @@ class ChartData(
         }
     }
 
-    private fun createEntries(stream: MeasurementStream?): List<Entry>?{
-        var entries: List<Entry>? = null
+    private fun createEntries(stream: MeasurementStream?): MutableList<Entry>?{
+        var entries: MutableList<Entry>? = null
 
         stream?.let { stream ->
             entries =  when (session.type) {

@@ -18,11 +18,16 @@ import kotlinx.android.synthetic.main.session_card.view.*
 
 
 class Chart {
+    private val MAXIMUM_ENTRIES_COUNT = 9
+
     private val mContext: Context
-    private var mLineChart: LineChart?
     private val mRootView: View?
-    private var mSessionPresenter: SessionPresenter? = null
-    private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
+
+    private var mEntries: List<Entry> = listOf()
+    private var mStream: MeasurementStream? = null
+
+    private var mLineChart: LineChart?
+    private var mDataSet: LineDataSet? = null
 
     constructor(
         context: Context,
@@ -32,19 +37,22 @@ class Chart {
         mContext = context
         mRootView = rootView
         mLineChart = mRootView?.chart_view
+
+
     }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
-        mSessionPresenter = sessionPresenter
-
-        val session = mSessionPresenter?.session
+        val session = sessionPresenter?.session
+        mStream = sessionPresenter?.selectedStream
+        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 
         resetChart()
-        if (session != null && session.streams.count() > 0) {
-            println("MARYSIA: drawing chart for " + sessionPresenter?.selectedStream?.sensorName + " session " + session.name)
-            drawChart(sessionPresenter?.selectedStream)
+        if (session != null && session?.streams.count() > 0) {
+            mDataSet = prepareDataSet()
+            println("MARYSIA: drawing chart for " + sessionPresenter.selectedStream?.sensorName + " session " + session.name)
+            drawChart()
         }
     }
 
@@ -53,9 +61,7 @@ class Chart {
         mLineChart?.clear()
     }
 
-    private fun drawChart(stream: MeasurementStream?) {
-        val entries: List<Entry?>?
-
+    private fun drawChart() {
          val rightYAxis = mLineChart?.axisRight
         rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
         rightYAxis?.setDrawLabels(false)
@@ -70,7 +76,8 @@ class Chart {
         val xAxis = mLineChart?.xAxis
         xAxis?.setDrawLabels(false)
         xAxis?.setDrawAxisLine(false)
-
+//        xAxis?.axisMaximum = 9f
+        xAxis?.spaceMin = (MAXIMUM_ENTRIES_COUNT - mEntries.size).toFloat()
         // Removing vertical lines
         xAxis?.gridColor = Color.TRANSPARENT
 
@@ -78,16 +85,7 @@ class Chart {
         mLineChart?.setDrawBorders(false)
         mLineChart?.setBorderColor(Color.TRANSPARENT)
 
-
-
-        entries = mSessionPresenter?.chartData?.getEntries(stream)
-
-        if (entries == null || entries.isEmpty()) {
-            return
-        }
-
-        val dataSet = prepareDataSet(entries, stream)
-        val lineData: LineData = LineData(dataSet)
+        val lineData = LineData(mDataSet)
 
         // Formatting values on the chart (no decimal places)
         val formatter: ValueFormatter = object : ValueFormatter() {
@@ -101,7 +99,6 @@ class Chart {
         }
         lineData.setValueFormatter(formatter)
 
-
         mLineChart?.clear()
         mLineChart?.data = lineData
         // Removing the legend for colors
@@ -114,16 +111,19 @@ class Chart {
         mLineChart?.invalidate()
     }
 
-    private fun prepareDataSet(entries: List<Entry?>?, stream: MeasurementStream?): LineDataSet {
-        val dataSet: LineDataSet = LineDataSet(entries, "")
+    private fun prepareDataSet(): LineDataSet? {
+
+        if (mEntries == null || mEntries.isEmpty()) {
+            return LineDataSet(listOf(), "")
+        }
+        val dataSet = LineDataSet(mEntries, "")
 
         // Making the line a curve, not a polyline
         dataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
 
         // Circle colors
         dataSet.circleRadius = 3.5f
-        dataSet.setCircleColors(circleColors(entries, stream)
-        )
+        dataSet.setCircleColors(circleColors())
         dataSet.fillAlpha = 10
         dataSet.setDrawCircleHole(false)
 
@@ -134,9 +134,9 @@ class Chart {
         return dataSet
     }
 
-    private fun circleColors(entries: List<Entry?>?, stream: MeasurementStream?): List<Int>? {
-        return entries?.map { entry ->
-            getColor(entry?.y, stream)
+    private fun circleColors(): List<Int>? {
+        return mEntries?.map { entry ->
+            getColor(entry?.y, mStream)
         }
     }
 
