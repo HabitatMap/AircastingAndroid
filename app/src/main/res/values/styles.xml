@@ -20,7 +20,6 @@
         <item name="textAppearanceBody2">@style/TextAppearance.Aircasting.Body2</item>
         <item name="materialButtonStyle">@style/Widget.Aircasting.Button</item>
         <item name="toolbarStyle">@style/Widget.Aircasting.AppBar</item>
-        <item name="actionBarSize">@dimen/action_bar_size</item>
         <item name="bottomSheetDialogTheme">@style/Widget.Aircasting.BottomSheet</item>
     </style>
 
@@ -323,6 +322,7 @@
     <style name="Widget.Aircasting.AppBarLayout" parent="">
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
+        <item name="background">@color/aircasting_white</item>
     </style>
 
     <style name="Widget.Aircasting.AppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
@@ -346,7 +346,6 @@
     <style name="ThemeOverlay.Aircasting.EmptyAppBar" parent="">
         <!-- background color -->
         <item name="colorPrimary">?android:attr/colorBackground</item>
-        <item name="homeAsUpIndicator">@drawable/chevron_left</item>
     </style>
 
     <!-- Tab Layout -->
@@ -388,6 +387,19 @@
         <item name="android:textColor">@color/aircasting_grey_700</item>
     </style>
 
+    <style name="Widget.Aircasting.TextInputLayoutFilledBox" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/aircasting_grey_50</item>
+        <item name="boxStrokeColor">@color/aircasting_grey_100</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="android:strokeColor">@color/aircasting_grey_100</item>
+        <item name="shapeAppearance">@style/Widget.Aircasting.TextInputShapeAppearance</item>
+    </style>
+
+    <style name="Widget.Aircasting.TextInputEditTextFilledBox" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextInput.Text</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+    </style>
+
     <style name="Widget.Aircasting.TextInputShapeAppearance" parent="">
         <item name="cornerFamilyTopLeft">cut</item>
         <item name="cornerFamilyBottomLeft">cut</item>
@@ -402,4 +414,5 @@
         <item name="android:visibility">invisible</item>
         <item name="android:layout_marginStart">@dimen/keyline_4</item>
     </style>
+
 </resources>

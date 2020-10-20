@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.database.converters.SessionTypeConverter
 import io.lunarlogic.aircasting.database.converters.TagsConverter
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,9 +18,11 @@ import kotlinx.coroutines.launch
     entities = arrayOf(
         SessionDBObject::class,
         MeasurementStreamDBObject::class,
-        MeasurementDBObject::class
+        MeasurementDBObject::class,
+        SensorThresholdDBObject::class
     ),
-    version = 16
+    version = 17,
+    exportSchema = true
 )
 @TypeConverters(
     DateConverter::class,
@@ -31,6 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessions(): SessionDao
     abstract fun measurementStreams(): MeasurementStreamDao
     abstract fun measurements(): MeasurementDao
+    abstract fun sensorThresholds(): SensorThresholdDao
 }
 
 class DatabaseProvider {
@@ -50,15 +54,22 @@ class DatabaseProvider {
                     mContext,
                     AppDatabase::class.java, DB_NAME
                 ).addMigrations(
-                    MIGRATION_16_17).build()
+                    MIGRATION_16_17
+                ).build()
             }
 
             return mAppDatabase!!
         }
 
-        fun runQuery(block: () -> Unit) {
+        fun runQuery(block: (scope: CoroutineScope) -> Unit) {
             GlobalScope.launch(Dispatchers.IO) {
-                block()
+                block(this)
+            }
+        }
+
+        fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
+            scope.launch(Dispatchers.Main) {
+                uiBlock()
             }
         }
     }

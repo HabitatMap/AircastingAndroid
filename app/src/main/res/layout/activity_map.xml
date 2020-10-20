@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/keyline_4">
 
     <include android:id="@+id/app_bar_layout"
         layout="@layout/app_bar"
@@ -15,7 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_10"
         android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_4"
         android:textAppearance="?attr/textAppearanceBody2"
         app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,9 +83,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/keyline_4"
-        android:layout_marginBottom="@dimen/keyline_10"
         app:layout_constraintTop_toBottomOf="@id/measurements_table"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/more_button" />
 
     <ImageView android:id="@+id/locate_button"
         android:layout_width="wrap_content"
@@ -97,5 +96,25 @@
         android:padding="@dimen/keyline_3"
         app:layout_constraintBottom_toBottomOf="@id/map"
         app:layout_constraintEnd_toEndOf="@id/map" />
+
+    <ImageView android:id="@+id/more_button"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_more_horizontal"
+        android:tint="@color/aircasting_grey_500"
+        android:paddingStart="@dimen/keyline_4"
+        android:paddingEnd="@dimen/keyline_4"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/map"
+        app:layout_constraintBottom_toTopOf="@id/hlu"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <include layout="@layout/hlu_slider"
+        android:id="@+id/hlu"
+        app:layout_constraintTop_toBottomOf="@id/more_button"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

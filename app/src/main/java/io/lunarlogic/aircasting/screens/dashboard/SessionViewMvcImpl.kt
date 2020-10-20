@@ -143,7 +143,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         mDateTextView.text = session?.durationString()
         mNameTextView.text = session?.name
-        mInfoTextView.text = "${session?.displayedType?.capitalize()}: ${session?.sensorPackageNamesString()}"
+        mInfoTextView.text = session?.infoString()
     }
 
     protected open fun bindMeasurementsTable() {

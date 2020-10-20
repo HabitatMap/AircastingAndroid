@@ -4,11 +4,12 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.StatisticsValueBackground
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.map_statistics_view.view.*
 
@@ -16,10 +17,6 @@ class StatisticsContainer {
     private val mContext: Context
 
     private val mStatisticsView: View?
-
-    private val mAvgLabel: TextView?
-    private val mNowLabel: TextView?
-    private val mPeakLabel: TextView?
 
     private val mAvgValue: TextView?
     private val mNowValue: TextView?
@@ -29,17 +26,16 @@ class StatisticsContainer {
     private val mNowCircleIndicator: ImageView?
     private val mPeakCircleIndicator: ImageView?
 
+    private var mSensorThreshold: SensorThreshold? = null
+
     private var mSum: Double? = null
+    private var mNow: Double? = null
     private var mPeak: Double? = null
 
     constructor(rootView: View?, context: Context) {
         mContext = context
 
         mStatisticsView = rootView?.statistics_view
-
-        mAvgLabel = rootView?.avg_label
-        mNowLabel = rootView?.now_label
-        mPeakLabel = rootView?.peak_label
 
         mAvgValue = rootView?.avg_value
         mNowValue = rootView?.now_value
@@ -50,12 +46,11 @@ class StatisticsContainer {
         mPeakCircleIndicator = rootView?.peak_circle_indicator
     }
 
-    fun bindStream(stream: MeasurementStream?) {
-        mStatisticsView?.visibility = View.VISIBLE
+    fun bindSession(sessionPresenter: SessionPresenter?) {
+        val stream = sessionPresenter?.selectedStream
+        mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
 
-        mAvgLabel?.text = mContext.getString(R.string.avg_label, streamLabel(stream))
-        mNowLabel?.text = mContext.getString(R.string.now_label, streamLabel(stream))
-        mPeakLabel?.text = mContext.getString(R.string.peak_label, streamLabel(stream))
+        mStatisticsView?.visibility = View.VISIBLE
 
         bindAvgStatistics(stream)
         bindNowStatistics(stream)
@@ -65,53 +60,60 @@ class StatisticsContainer {
     fun addMeasurement(measurement: Measurement) {
         mSum?.let { mSum = it + measurement.value }
 
+        mNow = measurement.value
+
         if (mPeak != null && measurement.value > mPeak!!) {
             mPeak = measurement.value
         }
     }
 
-    fun refresh(stream: MeasurementStream) {
+    fun refresh(sessionPresenter: SessionPresenter?) {
         mSum = null
         mPeak = null
-        bindStream(stream)
+        mNow = null
+        bindSession(sessionPresenter)
     }
 
     private fun bindAvgStatistics(stream: MeasurementStream?) {
-        if (stream == null) return
+        var avg: Double? = null
 
-        if (mSum == null) {
-            mSum = calculateSum(stream)
+        if (stream != null) {
+            if (mSum == null) {
+                mSum = calculateSum(stream)
+            }
+
+            avg = mSum!! / stream.measurements.size
         }
 
-        val avg = mSum!! / stream.measurements.size
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
-        val measurement = stream?.measurements?.lastOrNull() ?: return
-
-        bindStatisticValues(stream, measurement.value, mNowValue, mNowCircleIndicator)
+        bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator)
     }
 
     private fun bindPeakStatistics(stream: MeasurementStream?) {
-        if (stream == null) return
-
-        if (mPeak == null) {
+        if (mPeak == null && stream != null) {
             mPeak = calculatePeak(stream)
         }
-        bindStatisticValues(stream, mPeak!!, mPeakValue, mPeakCircleIndicator)
+
+        bindStatisticValues(stream, mPeak, mPeakValue, mPeakCircleIndicator)
     }
 
-    private fun bindStatisticValues(stream: MeasurementStream, value: Double, valueView: TextView?, circleIndicator: ImageView?) {
+    private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?) {
         valueView?.text = formatStatistic(value)
 
-        val color = MeasurementColor.forMap(mContext, value, stream)
+        val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color)
         circleIndicator?.setColorFilter(color)
     }
 
-    private fun formatStatistic(value: Double): String {
-        return "%.0f".format(value)
+    private fun formatStatistic(value: Double?): String {
+        if (value == null) {
+            return "-"
+        } else {
+            return "%.0f".format(value)
+        }
     }
 
     private fun calculateSum(stream: MeasurementStream): Double {
@@ -120,11 +122,5 @@ class StatisticsContainer {
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         return stream.measurements.maxBy { it.value }?.value ?: 0.0
-    }
-
-    private fun streamLabel(stream: MeasurementStream?): String? {
-        if (stream == null) return null
-
-        return stream.detailedType
     }
 }
