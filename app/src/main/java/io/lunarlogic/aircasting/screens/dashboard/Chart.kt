@@ -107,6 +107,9 @@ class Chart {
         // Removing description on the down right
         mLineChart?.description?.isEnabled = false
 
+        // Disabling chart scalability by pinching
+        mLineChart?.setScaleEnabled(false)
+
         // Refreshing the chart
         mLineChart?.invalidate()
     }
