@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
@@ -19,7 +19,7 @@ class ChartData(
     private var mMaxEntriesCount: Int = 0
     private var mMeasurementStreams: MutableList<MeasurementStream> = initStreams()
     init {
-        calculateAvarages()
+        calculateAverages()
         calculateTimes()
     }
 
@@ -54,7 +54,7 @@ class ChartData(
         return streams
     }
 
-    private fun calculateAvarages() {
+    private fun calculateAverages() {
         for (stream in mMeasurementStreams) {
             val entries: MutableList<Entry>? = createEntries(stream)
             val entriesSize = entries?.size ?: 0

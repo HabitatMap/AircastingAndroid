@@ -1,40 +1,41 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
 
 class ChartAveragesCreator {
-    private val INTERVAL_IN_SECONDS = 60
-    private val MAX_AVERAGES_AMOUNT = 9
-    private val MAX_X_VALUE = 8
-    private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
+    companion object {
+        const val MAX_AVERAGES_AMOUNT = 9
+        private val MOBILE_INTERVAL_IN_SECONDS = 60
+        private val MAX_X_VALUE = 8
+        private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
+
+    }
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
-    @Synchronized
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
-        val measurementsInPeriod = (INTERVAL_IN_SECONDS / streamFrequency).toInt()
+        val measurementsInPeriod = (MOBILE_INTERVAL_IN_SECONDS / streamFrequency).toInt()
         val entries: MutableList<Entry> = mutableListOf()
         val measurements: MutableList<Measurement>? =
             stream.getMeasurementsForPeriod(MAX_AVERAGES_AMOUNT, MOBILE_FREQUENCY_DIVISOR)
+
         periodData = Lists.partition(measurements, measurementsInPeriod)
         val reversedPeriodData: List<List<Measurement>?> =
             Lists.reverse<List<Measurement>?>(periodData)
-        synchronized(reversedPeriodData) {
+
             if (periodData.size > 0) {
                 for (i in reversedPeriodData.indices) {
                     var yValue: Double
                     try {
                         val dataChunk: List<Measurement> =
                             Collections.synchronizedList(reversedPeriodData[i])
-                        synchronized(dataChunk) {
                             if (dataChunk.size > measurementsInPeriod - getTolerance(
                                     measurementsInPeriod.toDouble()
                                 )
@@ -54,13 +55,11 @@ class ChartAveragesCreator {
                                 )
                                 xValue--
                             }
-                        }
                     } catch (e: ConcurrentModificationException) {
                         return oldEntries
                     }
                 }
             }
-        }
         if (entries.size == 0) {
             return entries
         }
@@ -103,7 +102,6 @@ class ChartAveragesCreator {
                 if (xValue < 0) {
                     return entries
                 }
-                synchronized(dataChunk!!) {
                     val yValue = getAverage(dataChunk).toDouble()
                     entries.add(
                         Entry(
@@ -112,7 +110,6 @@ class ChartAveragesCreator {
                         )
                     )
                     xValue--
-                }
             }
         }
         return if (entries.size == 0) {
@@ -127,9 +124,8 @@ class ChartAveragesCreator {
     private fun getAverage(measurements: List<Measurement>?): Int {
         var sum = 0.0
         var lastIndex = 1
-        val m: List<Measurement> = Collections.synchronizedList(measurements)
+        val m: List<Measurement> = measurements ?: listOf()
         val size = m.size
-        synchronized(m) {
             try {
                 for (i in 0 until size) {
                     lastIndex = i
@@ -143,7 +139,6 @@ class ChartAveragesCreator {
                     sum.toInt() / lastIndex
                 }
             }
-        }
         return (sum / size).toInt()
     }
 }

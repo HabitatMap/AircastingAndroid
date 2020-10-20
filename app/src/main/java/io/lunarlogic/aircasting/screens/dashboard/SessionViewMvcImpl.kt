@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import kotlinx.android.synthetic.main.session_card.view.*
 
@@ -101,7 +102,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
-    protected abstract fun chartUnitLabel(): Int
+    protected abstract fun chartUnitLabelId(): Int
 
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet()
@@ -154,7 +155,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mChart.bindChart(mSessionPresenter)
         mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
         mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
-        mChartUnitTextView?.text = "${getString(chartUnitLabel())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
+        mChartUnitTextView?.text = chartUnitText()
     }
 
     protected open fun expandSessionCard() {
@@ -211,5 +212,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
+    }
+
+    private fun chartUnitText(): String {
+        return "${getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
     }
 }

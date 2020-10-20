@@ -1,10 +1,9 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
 

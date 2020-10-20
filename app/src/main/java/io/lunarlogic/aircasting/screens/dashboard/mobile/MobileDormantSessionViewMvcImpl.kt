@@ -59,7 +59,7 @@ class MobileDormantSessionViewMvcImpl(
         mMeasurementsDescriptionTextView?.text = context.getString(R.string.session_measurements_description)
     }
 
-    override fun chartUnitLabel(): Int {
+    override fun chartUnitLabelId(): Int {
         return R.string.mobile_session_units_label
     }
 }

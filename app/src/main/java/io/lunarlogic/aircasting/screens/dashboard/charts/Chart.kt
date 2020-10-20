@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.screens.dashboard.charts
 
 import android.content.Context
 import android.graphics.Color
@@ -12,19 +12,16 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import java.text.DecimalFormat
 import kotlinx.android.synthetic.main.session_card.view.*
 
 
 class Chart {
-    private val MAXIMUM_ENTRIES_COUNT = 9
-
     private val mContext: Context
     private val mRootView: View?
 
     private var mEntries: List<Entry> = listOf()
-    private var mStream: MeasurementStream? = null
 
     private var mLineChart: LineChart?
     private var mDataSet: LineDataSet? = null
@@ -45,13 +42,11 @@ class Chart {
     ) {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
-        mStream = sessionPresenter?.selectedStream
         mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 
         resetChart()
         if (session != null && session?.streams.count() > 0) {
             mDataSet = prepareDataSet()
-            println("MARYSIA: drawing chart for " + sessionPresenter.selectedStream?.sensorName + " session " + session.name)
             drawChart()
         }
     }
@@ -62,10 +57,13 @@ class Chart {
     }
 
     private fun drawChart() {
+        // Horizontal grid and no Y Axis labels
         val rightYAxis = mLineChart?.axisRight
         rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
         rightYAxis?.setDrawLabels(false)
         rightYAxis?.setDrawAxisLine(false)
+
+        // Drawing grid even on an empty chart
         rightYAxis?.axisMinimum = 0f
         rightYAxis?.axisMaximum = 100f
 
@@ -75,32 +73,30 @@ class Chart {
         leftYAxis?.setDrawAxisLine(false)
         leftYAxis?.setDrawLabels(false)
 
+        // No labels on X Axis and no
         val xAxis = mLineChart?.xAxis
         xAxis?.setDrawLabels(false)
         xAxis?.setDrawAxisLine(false)
-        xAxis?.spaceMin = (MAXIMUM_ENTRIES_COUNT - mEntries.size).toFloat()
+
+        // Chart will not stretch even if there are less than 9 entries
+        xAxis?.spaceMin = (ChartAveragesCreator.MAX_AVERAGES_AMOUNT - mEntries.size).toFloat()
+
         // Removing vertical lines
         xAxis?.gridColor = Color.TRANSPARENT
 
+        // Remove borders
         mLineChart?.setDrawBorders(false)
         mLineChart?.setBorderColor(Color.TRANSPARENT)
 
+        // DATASET
         val lineData = LineData(mDataSet)
 
         // Formatting values on the chart (no decimal places)
-        val formatter: ValueFormatter = object : ValueFormatter() {
-            private val format = DecimalFormat("###,##0")
-            override fun getPointLabel(entry: Entry?): String {
-                return format.format(entry?.y)
-            }
-            override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-                return format.format(value)
-            }
-        }
-        lineData.setValueFormatter(formatter)
+        lineData.setValueFormatter(ChartValueFormatter())
 
         mLineChart?.clear()
         mLineChart?.data = lineData
+
         // Removing the legend for colors
         mLineChart?.legend?.isEnabled  = false
 
@@ -115,7 +111,6 @@ class Chart {
     }
 
     private fun prepareDataSet(): LineDataSet? {
-
         if (mEntries == null || mEntries.isEmpty()) {
             return LineDataSet(listOf(), "")
         }
@@ -127,7 +122,6 @@ class Chart {
         // Circle colors
         dataSet.circleRadius = 3.5f
         dataSet.setCircleColors(circleColors())
-        dataSet.fillAlpha = 10
         dataSet.setDrawCircleHole(false)
 
         // Line color
@@ -139,12 +133,12 @@ class Chart {
 
     private fun circleColors(): List<Int>? {
         return mEntries?.map { entry ->
-            getColor(entry?.y, mStream)
+            getColor(entry?.y)
         }
     }
 
-    private fun getColor(value: Float?, stream: MeasurementStream?): Int {
+    private fun getColor(value: Float?): Int {
         val measurementValue = value?.toDouble() ?: 0.0
-        return  MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
+        return  MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream))
     }
 }

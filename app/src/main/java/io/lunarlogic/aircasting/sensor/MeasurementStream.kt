@@ -20,7 +20,6 @@ class MeasurementStream(
     val thresholdMedium: Int,
     val thresholdHigh: Int,
     val thresholdVeryHigh: Int
-
 ) {
     constructor(measurementEvent: NewMeasurementEvent): this(
         measurementEvent.packageName,
@@ -85,9 +84,8 @@ class MeasurementStream(
     val measurements get() = mMeasurements
 
     init {
-        val splitted = sensorName.split("-")
-        detailedType = splitted.lastOrNull()
-
+        val split = sensorName.split("-")
+        detailedType = split.lastOrNull()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -103,16 +101,6 @@ class MeasurementStream(
             deltaSum += delta
         }
         return deltaSum / divisor
-    }
-
-    private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
-        val allMeasurements = ArrayList<Measurement?>(measurements)
-        val size = allMeasurements.size
-        return if (size > amount) {
-            allMeasurements.subList(0, amount - 1)
-        } else {
-            allMeasurements
-        }
     }
 
     fun getMeasurementsForPeriod(amount: Int, divisor: Double): MutableList<Measurement>? {
@@ -131,6 +119,16 @@ class MeasurementStream(
         val size = allMeasurements.size
         return if (size > amount) {
             allMeasurements.subList(size - amount, size)
+        } else {
+            allMeasurements
+        }
+    }
+
+    private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
+        val allMeasurements = ArrayList<Measurement?>(measurements)
+        val size = allMeasurements.size
+        return if (size > amount) {
+            allMeasurements.subList(0, amount - 1)
         } else {
             allMeasurements
         }

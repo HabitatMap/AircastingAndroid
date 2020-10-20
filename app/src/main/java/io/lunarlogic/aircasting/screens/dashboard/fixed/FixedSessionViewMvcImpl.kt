@@ -32,7 +32,7 @@ class FixedSessionViewMvcImpl(
         dismissBottomSheet()
     }
 
-    override fun chartUnitLabel(): Int {
+    override fun chartUnitLabelId(): Int {
        return R.string.fixed_session_units_label
     }
 
