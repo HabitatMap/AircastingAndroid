@@ -128,6 +128,10 @@ class Chart {
         dataSet.setColor(ContextCompat.getColor(mContext, R.color.aircasting_grey_300))
         dataSet.lineWidth = 1f
 
+        // Values size and color
+        dataSet.valueTextSize = 12f
+        dataSet.valueTextColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_700)
+
         return dataSet
     }
 
