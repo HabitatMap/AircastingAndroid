@@ -1,52 +1,59 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import android.util.Log
+import io.lunarlogic.aircasting.bluetooth.BLEManager
+import no.nordicsemi.android.ble.observer.ConnectionObserver
+import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
+import no.nordicsemi.android.support.v18.scanner.ScanCallback
+import no.nordicsemi.android.support.v18.scanner.ScanResult
 
 class SelectDeviceController(
     private val mContext: Context?,
     private val mViewMvc: SelectDeviceViewMvc,
-    private val bluetoothManager: BluetoothManager,
     private val mListener: SelectDeviceViewMvc.Listener
-) : BroadcastReceiver(), SelectDeviceViewMvc.OnRefreshListener {
+) : SelectDeviceViewMvc.OnRefreshListener, ConnectionObserver {
 
-    fun onStart() {
-        bindDevices()
-        registerListener(mListener)
-        registerBluetoothDeviceFoundReceiver()
-        mViewMvc.registerOnRefreshListener(this)
-        bluetoothManager.startDiscovery()
-    }
+    private var bleManager: BLEManager? = null
+    private val scanner = BluetoothLeScannerCompat.getScanner()
+    private val scanCallback = object : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            val device = result.device
 
-    fun onStop() {
-        unregisterListener(mListener)
-        unRegisterBluetoothDeviceFoundReceiver()
-        bluetoothManager.cancelDiscovery()
-    }
-
-    override fun onReceive(context: Context, intent: Intent) {
-        when(intent.action) {
-            BluetoothDevice.ACTION_FOUND -> {
-                val device: BluetoothDevice? =
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-
-                device?.let { mViewMvc.addDeviceItem(DeviceItem(it)) }
+            if (device.name == "AirBeam3:246f28c47698") {
+                bleManager!!.connect(device)
+                    .timeout(100000)
+                    .retry(3, 100)
+                    .done { device -> Log.i(BLEManager.TAG, "Device initiated") }
+                    .enqueue()
             }
         }
     }
 
-    override fun onRefreshClicked() {
-        bluetoothManager.cancelDiscovery()
-        bluetoothManager.startDiscovery()
+    fun onStart() {
+        registerListener(mListener)
+        mViewMvc.registerOnRefreshListener(this)
+
+        bleManager = BLEManager(mContext!!)
+        bleManager!!.setConnectionObserver(this)
+        startScan()
     }
 
-    private fun bindDevices() {
-        val deviceItems = bluetoothManager.pairedDeviceItems()
-        mViewMvc.bindDeviceItems(deviceItems)
+    fun onStop() {
+        unregisterListener(mListener)
+        // TODO: handle
+        // bluetoothManager.cancelDiscovery()
+    }
+
+    private fun startScan() {
+        scanner.startScan(scanCallback)
+    }
+
+    override fun onRefreshClicked() {
+        // TODO: handle
+        // bluetoothManager.cancelDiscovery()
+        // bluetoothManager.startDiscovery()
     }
 
     private fun registerListener(listener: SelectDeviceViewMvc.Listener) {
@@ -57,12 +64,18 @@ class SelectDeviceController(
         mViewMvc.unregisterListener(listener)
     }
 
-    private fun registerBluetoothDeviceFoundReceiver() {
-        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        mContext?.registerReceiver(this, filter)
+    override fun onDeviceConnecting(device: BluetoothDevice) {}
+
+    override fun onDeviceConnected(device: BluetoothDevice) {}
+
+    override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {}
+
+    override fun onDeviceReady(device: BluetoothDevice) {
+        Log.i(BLEManager.TAG, "onDeviceReady")
+        bleManager!!.run()
     }
 
-    private fun unRegisterBluetoothDeviceFoundReceiver() {
-        mContext?.unregisterReceiver(this)
-    }
+    override fun onDeviceDisconnecting(device: BluetoothDevice) {}
+
+    override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {}
 }

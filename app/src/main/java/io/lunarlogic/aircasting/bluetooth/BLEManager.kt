@@ -7,12 +7,15 @@ import android.content.Context
 import android.util.Log
 import io.lunarlogic.aircasting.sensor.airbeam2.HexMessagesBuilder
 import no.nordicsemi.android.ble.BleManager
-import no.nordicsemi.android.ble.PhyRequest
-import no.nordicsemi.android.ble.callback.DataReceivedCallback
 import no.nordicsemi.android.ble.callback.profile.ProfileDataCallback
 import no.nordicsemi.android.ble.data.Data
 import java.util.*
 
+//    0000ffe1-0000-1000-8000-00805f9b34fb F
+//    0000ffe3-0000-1000-8000-00805f9b34fb Humidity
+//    0000ffe4-0000-1000-8000-00805f9b34fb PM1
+//    0000ffe5-0000-1000-8000-00805f9b34fb PM2.5
+//    0000ffe6-0000-1000-8000-00805f9b34fb PM10
 
 class BLEManager(context: Context) : BleManager(context) {
     companion object {
