@@ -17,8 +17,8 @@ import java.util.*
 class BLEManager(context: Context) : BleManager(context) {
     companion object {
         val TAG = "MyBleManager"
+        val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
     }
-    private val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
 
     private val WRITE_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
     private val READ_CHARACTERISTIC_UUID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb")
