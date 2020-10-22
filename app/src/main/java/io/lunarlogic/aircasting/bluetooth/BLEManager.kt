@@ -88,14 +88,14 @@ class BLEManager(context: Context) : BleManager(context) {
                 .add(
                     writeCharacteristic(writeCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
                         .done { device: BluetoothDevice? ->
-                            log(Log.ERROR, "Configuration message sent!")
+                            log(Log.INFO, "Configuration message sent!")
                         }
                 )
-                .add(
-                    requestMtu(247)
-                        .with { device, mtu -> log(Log.INFO, "MTU set to " + mtu) }
-                        .fail { device, status -> log(Log.WARN, "Requested MTU not supported: " + status) }
-                )
+//                .add(
+//                    requestMtu(247)
+//                        .with { device, mtu -> log(Log.INFO, "MTU set to " + mtu) }
+//                        .fail { device, status -> log(Log.WARN, "Requested MTU not supported: " + status) }
+//                )
 //                .add(
 //                    setPreferredPhy(PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_OPTION_NO_PREFERRED)
 //                        .fail { device, status -> log(Log.WARN, "Requested PHY not supported: " + status) }
@@ -103,7 +103,7 @@ class BLEManager(context: Context) : BleManager(context) {
                 .add(
                     enableNotifications(readCharacteristic)
                         .done { device: BluetoothDevice? ->
-                            log(Log.ERROR, "Notification enabled")
+                            log(Log.INFO, "Notification enabled")
                         }
                         .fail { _, status ->
                             log(Log.ERROR, "Notification enable failed $status")
@@ -117,6 +117,15 @@ class BLEManager(context: Context) : BleManager(context) {
             readCharacteristic = null
             writeCharacteristic = null
         }
+    }
+
+    fun run() {
+        readCharacteristic(readCharacteristic)
+            .done {
+                log(Log.INFO, "READ finished " + String(readCharacteristic!!.value))
+                run()
+            }
+            .enqueue()
     }
 
     // Define your API.

@@ -219,6 +219,8 @@ class SelectDeviceFragment() : Fragment(), ConnectionObserver {
 
     private val connectionStarted = AtomicBoolean(false)
 
+    private var bleManager: BLEManager? = null
+
     override fun onStart() {
         super.onStart()
 
@@ -235,8 +237,8 @@ class SelectDeviceFragment() : Fragment(), ConnectionObserver {
 
             }
 
-        val manager = BLEManager(requireContext())
-        manager.setConnectionObserver(this)
+        bleManager = BLEManager(requireContext())
+        bleManager!!.setConnectionObserver(this)
 
         val leScanCallback =
             LeScanCallback { device, rssi, scanRecord ->
@@ -247,7 +249,7 @@ class SelectDeviceFragment() : Fragment(), ConnectionObserver {
                             println("ANIA found! trying to connect...")
                             connectionStarted.set(true)
 
-                            manager.connect(device)
+                            bleManager!!.connect(device)
                                 .timeout(100000)
                                 .retry(3, 100)
                                 .done({ device -> Log.i(BLEManager.TAG, "Device initiated") })
@@ -287,6 +289,7 @@ class SelectDeviceFragment() : Fragment(), ConnectionObserver {
 
     override fun onDeviceReady(device: BluetoothDevice) {
         Log.i(BLEManager.TAG, "onDeviceReady")
+        bleManager!!.run()
     }
 
     override fun onDeviceDisconnecting(device: BluetoothDevice) {
