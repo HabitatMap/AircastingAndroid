@@ -114,6 +114,9 @@ class Chart {
         // Disabling chart scalability by pinching
         mLineChart?.setScaleEnabled(false)
 
+        // Disabling chart touch event
+        mLineChart?.setTouchEnabled(false)
+
         // Refreshing the chart
         mLineChart?.invalidate()
     }
