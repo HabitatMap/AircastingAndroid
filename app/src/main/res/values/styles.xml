@@ -204,6 +204,12 @@
         <item name="android:layout_marginTop">@dimen/keyline_2</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.ChartLabels" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+        <item name="android:textSize">@dimen/text_size_xxs</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->

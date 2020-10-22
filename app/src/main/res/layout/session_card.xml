@@ -137,18 +137,22 @@
                 android:id="@+id/chart_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/chart_view" />
             <TextView
                 android:id="@+id/chart_end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/chart_view" />
             <TextView
                 android:id="@+id/chart_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+                android:layout_marginTop="@dimen/keyline_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/chart_end_time" />
         </androidx.constraintlayout.widget.ConstraintLayout>
