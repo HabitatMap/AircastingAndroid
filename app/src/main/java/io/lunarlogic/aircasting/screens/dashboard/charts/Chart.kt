@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.charts
 import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -20,6 +21,9 @@ import kotlinx.android.synthetic.main.session_card.view.*
 class Chart {
     private val mContext: Context
     private val mRootView: View?
+    private val mChartStartTimeTextView: TextView?
+    private val mChartEndTimeTextView: TextView?
+    private val mChartUnitTextView: TextView?
 
     private var mEntries: List<Entry> = listOf()
 
@@ -35,6 +39,9 @@ class Chart {
         mContext = context
         mRootView = rootView
         mLineChart = mRootView?.chart_view
+        mChartStartTimeTextView = mRootView?.chart_start_time
+        mChartEndTimeTextView = mRootView?.chart_end_time
+        mChartUnitTextView = mRootView?.chart_unit
     }
 
     fun bindChart(
@@ -48,6 +55,7 @@ class Chart {
         if (session != null && session?.streams.count() > 0) {
             mDataSet = prepareDataSet()
             drawChart()
+            setTimesAndUnit()
         }
     }
 
@@ -144,5 +152,23 @@ class Chart {
     private fun getColor(value: Float?): Int {
         val measurementValue = value?.toDouble() ?: 0.0
         return  MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream))
+    }
+
+    private fun setTimesAndUnit() {
+        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
+        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
+        mChartUnitTextView?.text = chartUnitText()
+    }
+
+    private fun chartUnitText(): String {
+        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
+    }
+
+    private fun chartUnitLabelId(): Int {
+        if(mSessionPresenter?.isFixed()!!){
+            return R.string.fixed_session_units_label
+        } else {
+            return R.string.mobile_session_units_label
+        }
     }
 }

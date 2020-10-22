@@ -58,8 +58,4 @@ class MobileDormantSessionViewMvcImpl(
     private fun setExpandedMeasurementDescriptionText() {
         mMeasurementsDescriptionTextView?.text = context.getString(R.string.session_measurements_description)
     }
-
-    override fun chartUnitLabelId(): Int {
-        return R.string.mobile_session_units_label
-    }
 }

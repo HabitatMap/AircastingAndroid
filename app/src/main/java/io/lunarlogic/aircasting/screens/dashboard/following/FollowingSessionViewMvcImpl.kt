@@ -69,8 +69,4 @@ class FollowingSessionViewMvcImpl:
 
         mExpandSessionButton.visibility = View.VISIBLE
     }
-
-    override fun chartUnitLabelId(): Int {
-        return R.string.fixed_session_units_label
-    }
 }

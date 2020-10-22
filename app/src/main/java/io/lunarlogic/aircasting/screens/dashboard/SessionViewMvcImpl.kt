@@ -34,9 +34,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mCollapseSessionButton: ImageView
     protected val mChart: Chart
     protected val mChartView: ConstraintLayout?
-    protected val mChartStartTimeTextView: TextView?
-    protected val mChartEndTimeTextView: TextView?
-    protected val mChartUnitTextView: TextView?
 
     private var mMapButton: Button
     private var mLoader: ImageView?
@@ -71,9 +68,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         )
 
         mChartView = rootView?.chart_container
-        mChartStartTimeTextView = rootView?.chart_start_time
-        mChartEndTimeTextView = rootView?.chart_end_time
-        mChartUnitTextView = rootView?.chart_unit
 
         mActionsButton = findViewById(R.id.session_actions_button)
 
@@ -102,7 +96,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
-    protected abstract fun chartUnitLabelId(): Int
 
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet()
@@ -153,9 +146,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected open fun bindChartData() {
         mChart.bindChart(mSessionPresenter)
-        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
-        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
-        mChartUnitTextView?.text = chartUnitText()
     }
 
     protected open fun expandSessionCard() {
@@ -212,9 +202,5 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
-    }
-
-    private fun chartUnitText(): String {
-        return "${getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
     }
 }

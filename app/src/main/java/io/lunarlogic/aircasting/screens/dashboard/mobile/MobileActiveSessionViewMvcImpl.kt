@@ -31,8 +31,4 @@ class MobileActiveSessionViewMvcImpl(
         }
         dismissBottomSheet()
     }
-
-    override fun chartUnitLabelId(): Int {
-       return R.string.mobile_session_units_label
-    }
 }
