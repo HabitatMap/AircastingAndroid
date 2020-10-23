@@ -1,36 +1,36 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothSocket
+import android.bluetooth.BluetoothDevice
+import android.content.Context
+import android.util.Log
+import io.lunarlogic.aircasting.bluetooth.BLEManager
 import io.lunarlogic.aircasting.events.ApplicationClosed
 import io.lunarlogic.aircasting.events.ConfigureSession
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
-import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.Session
+import no.nordicsemi.android.ble.observer.ConnectionObserver
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
-import java.io.OutputStream
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
 open class AirBeam2Connector(
+    private val mContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mAirBeamConfigurator: AirBeam2Configurator,
     private val mAirBeam2Reader: AirBeam2Reader
 ) {
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
-    private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     private var mThread: ConnectThread? = null
-    private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
+    private var bleManager: BLEManager? = null
     lateinit var listener: ConnectingAirBeamController.Listener
 
     open fun connect(deviceItem: DeviceItem) {
@@ -50,46 +50,22 @@ open class AirBeam2Connector(
         mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
-    private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
-        private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            val device = deviceItem.bluetoothDevice
-            device.createRfcommSocketToServiceRecord(SPP_SERIAL)
-        }
-
-        private lateinit var mOutputStream: OutputStream
-
+    private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread(), ConnectionObserver {
         override fun run() {
+            // TODO: handle
             // Cancel discovery because it otherwise slows down the connection.
-            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            bluetoothAdapter?.cancelDiscovery()
+            // val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            // bluetoothAdapter?.cancelDiscovery()
 
-            try {
-                mmSocket?.use { socket ->
-                    socket.connect()
-                    // wait until connection is finished before sending anything to AirBeam
-                    sleep(ESTIMATED_CONNECTING_TIME_SECONDS)
+            // TODO: inject this
+            bleManager = BLEManager(mContext)
+            bleManager!!.setConnectionObserver(this)
 
-                    mOutputStream = socket.outputStream
-
-                    listener.onConnectionSuccessful(deviceItem.id)
-                    mAirBeam2Reader.run(socket.inputStream)
-                }
-            } catch(e: IOException) {
-                if (cancelStarted.get() == false) {
-                    val message = mErrorHandler.obtainMessage(
-                        ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED,
-                        AirBeam2ConnectionOpenFailed(e)
-                    )
-                    message.sendToTarget()
-                    cancel()
-                }
-            } catch(e: SensorResponseParsingError) {
-                mErrorHandler.handle(e)
-            } catch(e: Exception) {
-                val message = mErrorHandler.obtainMessage(ResultCodes.AIRCASTING_UNKNOWN_ERROR, UnknownError(e))
-                message.sendToTarget()
-                cancel()
-            }
+            bleManager!!.connect(deviceItem.bluetoothDevice)
+                .timeout(100000)
+                .retry(3, 100)
+                .done { _ -> listener.onConnectionSuccessful(deviceItem.id) }
+                .enqueue()
         }
 
         fun cancel() {
@@ -98,30 +74,42 @@ open class AirBeam2Connector(
             if (cancelStarted.get() == false) {
                 cancelStarted.set(true)
                 connectionStarted.set(false)
-                try {
-                    mmSocket?.close()
-                } catch (e: IOException) {
-                    mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
-                }
+                // TODO: handle
             }
         }
 
         fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
             try {
-                mAirBeamConfigurator.configureSessionType(session, mOutputStream)
-                if (session.isFixed()) {
-                    mAirBeamConfigurator.configureFixedSessionDetails(
-                        session.location!!,
-                        session.streamingMethod!!,
-                        wifiSSID,
-                        wifiPassword,
-                        mOutputStream
-                    )
-                }
+                // TODO: handle
+//                mAirBeamConfigurator.configureSessionType(session, mOutputStream)
+//                if (session.isFixed()) {
+//                    mAirBeamConfigurator.configureFixedSessionDetails(
+//                        session.location!!,
+//                        session.streamingMethod!!,
+//                        wifiSSID,
+//                        wifiPassword,
+//                        mOutputStream
+//                    )
+//                }
             } catch (e: IOException) {
                 mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
             }
         }
+
+        override fun onDeviceConnecting(device: BluetoothDevice) {}
+
+        override fun onDeviceConnected(device: BluetoothDevice) {}
+
+        override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {}
+
+        override fun onDeviceReady(device: BluetoothDevice) {
+            Log.i(BLEManager.TAG, "onDeviceReady")
+            bleManager!!.run()
+        }
+
+        override fun onDeviceDisconnecting(device: BluetoothDevice) {}
+
+        override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {}
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

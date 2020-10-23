@@ -5,10 +5,10 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
+import io.lunarlogic.aircasting.sensor.ResponseParser
 import io.lunarlogic.aircasting.sensor.airbeam2.HexMessagesBuilder
 import no.nordicsemi.android.ble.BleManager
-import no.nordicsemi.android.ble.callback.profile.ProfileDataCallback
-import no.nordicsemi.android.ble.data.Data
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 //    0000ffe1-0000-1000-8000-00805f9b34fb F
@@ -29,6 +29,8 @@ class BLEManager(context: Context) : BleManager(context) {
     // Client characteristics
     private var readCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
+
+    val responseParser = ResponseParser()
 
     override fun getGattCallback(): BleManagerGattCallback {
         return MyManagerGattCallback()
@@ -122,27 +124,20 @@ class BLEManager(context: Context) : BleManager(context) {
         }
     }
 
+    // TODO: move it to a separate service
     fun run() {
         readCharacteristic(readCharacteristic)
             .done {
-                log(Log.INFO, "READ finished " + String(readCharacteristic!!.value))
+                val data = String(readCharacteristic!!.value)
+
+                if (!data.isEmpty()) {
+                    log(Log.INFO, "READ finished " + data)
+                    val newMeasurementEvent = responseParser.parse(data)
+                    newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
+                }
+
                 run()
             }
             .enqueue()
-    }
-
-    // Define your API.
-    private abstract inner class FluxHandler : ProfileDataCallback {
-        override fun onDataReceived(device: BluetoothDevice, data: Data) {
-            log(Log.INFO, "onDataReceived " + data.toString())
-        }
-    }
-
-    /**
-     * Aborts time travel. Call during 3 sec after enabling Flux Capacitor and only if you don't
-     * like 2020.
-     */
-    fun abort() {
-        cancelQueue()
     }
 }

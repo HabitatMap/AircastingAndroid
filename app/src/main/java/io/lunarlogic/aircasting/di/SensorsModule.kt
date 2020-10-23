@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
+import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.SessionBuilder
@@ -16,10 +18,11 @@ open class SensorsModule {
     @Provides
     @Singleton
     open fun providesAirbeam2Connector(
+        app: AircastingApplication,
         errorHandler: ErrorHandler,
         airBeamConfigurator: AirBeam2Configurator,
         airBeam2Reader: AirBeam2Reader
-    ): AirBeam2Connector = AirBeam2Connector(errorHandler, airBeamConfigurator, airBeam2Reader)
+    ): AirBeam2Connector = AirBeam2Connector(app.applicationContext, errorHandler, airBeamConfigurator, airBeam2Reader)
 
     @Provides
     @Singleton
