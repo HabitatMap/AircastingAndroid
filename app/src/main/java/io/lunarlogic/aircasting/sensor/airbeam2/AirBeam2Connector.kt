@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.events.ApplicationClosed
 import io.lunarlogic.aircasting.events.ConfigureSession
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.Session
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 open class AirBeam2Connector(
     private val mContext: Context,
+    private val mSettinngs: Settings,
     private val mErrorHandler: ErrorHandler,
     private val mAirBeamConfigurator: AirBeam2Configurator,
     private val mAirBeam2Reader: AirBeam2Reader
@@ -58,7 +60,7 @@ open class AirBeam2Connector(
             // bluetoothAdapter?.cancelDiscovery()
 
             // TODO: inject this
-            bleManager = BLEManager(mContext)
+            bleManager = BLEManager(mContext, mSettinngs)
             bleManager!!.setConnectionObserver(this)
 
             bleManager!!.connect(deviceItem.bluetoothDevice)
@@ -80,17 +82,14 @@ open class AirBeam2Connector(
 
         fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
             try {
-                // TODO: handle
-//                mAirBeamConfigurator.configureSessionType(session, mOutputStream)
-//                if (session.isFixed()) {
-//                    mAirBeamConfigurator.configureFixedSessionDetails(
-//                        session.location!!,
-//                        session.streamingMethod!!,
-//                        wifiSSID,
-//                        wifiPassword,
-//                        mOutputStream
-//                    )
-//                }
+                if (session.isFixed()) {
+                    when (session.streamingMethod) {
+                        Session.StreamingMethod.WIFI -> bleManager?.configureFixedWifi(session, wifiSSID!!, wifiPassword!!)
+                        Session.StreamingMethod.CELLULAR -> bleManager?.configureFixedCellular(session)
+                    }
+                } else {
+                    bleManager?.configureMobile(session)
+                }
             } catch (e: IOException) {
                 mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
             }

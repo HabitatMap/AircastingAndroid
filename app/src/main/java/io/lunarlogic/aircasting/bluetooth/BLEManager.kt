@@ -5,14 +5,16 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.ResponseParser
+import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.airbeam2.HexMessagesBuilder
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
-class BLEManager(context: Context) : BleManager(context) {
+class BLEManager(context: Context, private val settings: Settings) : BleManager(context) {
     companion object {
         val TAG = "MyBleManager"
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
@@ -31,6 +33,7 @@ class BLEManager(context: Context) : BleManager(context) {
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
 
     val responseParser = ResponseParser()
+    val hexMessagesBuilder = HexMessagesBuilder()
 
     override fun getGattCallback(): BleManagerGattCallback {
         return MyManagerGattCallback()
@@ -78,9 +81,9 @@ class BLEManager(context: Context) : BleManager(context) {
         // Initialize your device here. Often you need to enable notifications and set required
         // MTU or write some initial data. Do it here.
         override fun initialize() {
-            val hexMessagesBuilder = HexMessagesBuilder()
-
-            configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+//            val hexMessagesBuilder = HexMessagesBuilder()
+//
+//            configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
 //            val callback = setNotificationCallback(readCharacteristic)
 //            callback.with { _, data ->
@@ -88,13 +91,13 @@ class BLEManager(context: Context) : BleManager(context) {
 //                onCharacteristicChanged(data)
 //            }
 
-            beginAtomicRequestQueue()
-                .add(
-                    writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
-                        .done { device: BluetoothDevice? ->
-                            log(Log.INFO, "Configuration message sent!")
-                        }
-                )
+//            beginAtomicRequestQueue()
+//                .add(
+//                    writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
+//                        .done { device: BluetoothDevice? ->
+//                            log(Log.INFO, "Configuration message sent!")
+//                        }
+//                )
 //                .add(
 //                    enableNotifications(readCharacteristic)
 //                        .done { device: BluetoothDevice? ->
@@ -104,7 +107,7 @@ class BLEManager(context: Context) : BleManager(context) {
 //                            log(Log.ERROR, "Notification enable failed $status")
 //                        }
 //                )
-                .enqueue()
+//                .enqueue()
         }
 
         override fun onDeviceDisconnected() {
@@ -124,13 +127,141 @@ class BLEManager(context: Context) : BleManager(context) {
 //            newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
 //        }
 //    }
+
+    fun configureMobile(session: Session) {
+        println("ANIA configuring mobile mode...")
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        beginAtomicRequestQueue()
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(session.uuid))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA uuid sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, "ANIA uuid send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(settings.getAuthToken()!!))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA auth sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA auth send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA mobile sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA mobile send error $status!")
+                    }
+            )
+            .enqueue()
+    }
+
+    fun configureFixedWifi(session: Session, wifiSSID: String, wifiPassword: String) {
+        println("ANIA configuring wifi mode...")
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        val location = session.location!!
+
+        beginAtomicRequestQueue()
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(session.uuid))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA uuid sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, "ANIA uuid send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(settings.getAuthToken()!!))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA auth sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA auth send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA location sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA location send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA wifi sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA wifi send error $status!")
+                    }
+            )
+            .enqueue()
+    }
+
+    fun configureFixedCellular(session: Session) {
+        println("ANIA configuring cellular mode...")
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        val location = session.location!!
+
+        beginAtomicRequestQueue()
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(session.uuid))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA uuid sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, "ANIA uuid send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(settings.getAuthToken()!!))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA auth sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA auth send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA location sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA location send error $status!")
+                    }
+            )
+            .add(
+                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage)
+                    .done { device: BluetoothDevice? ->
+                        log(Log.INFO, "ANIA cellular sent!")
+                    }
+                    .fail { _, status ->
+                        log(Log.ERROR, " ANIA cellular send error $status!")
+                    }
+            )
+            .enqueue()
+    }
+
     fun run() {
         readCharacteristics?.forEach { characteristic ->
             pollCharacteristic(characteristic)
         }
     }
 
-    fun pollCharacteristic(characteristic: BluetoothGattCharacteristic) {
+    private fun pollCharacteristic(characteristic: BluetoothGattCharacteristic) {
         readCharacteristic(characteristic)
             .done {
                 val data = String(characteristic.value)
