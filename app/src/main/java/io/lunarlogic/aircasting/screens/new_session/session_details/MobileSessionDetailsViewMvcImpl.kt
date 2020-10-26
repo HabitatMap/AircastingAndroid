@@ -10,14 +10,17 @@ import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
 
 class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
+    private var sessionUUID: String
     private var deviceId: String
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
+        sessionUUID: String,
         deviceId: String
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_mobile_session_details, parent, false)
+        this.sessionUUID = sessionUUID
         this.deviceId = deviceId
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
@@ -33,7 +36,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         val errorMessage = validate(sessionName)
 
         if (errorMessage == null) {
-            notifyAboutSuccess(deviceId, sessionName, sessionTags)
+            notifyAboutSuccess(sessionName, sessionTags)
         } else {
             notifyAboutValidationError(errorMessage)
         }
@@ -45,9 +48,9 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         }
     }
 
-    private fun notifyAboutSuccess(deviceId: String, sessionName: String, sessionTags: ArrayList<String>) {
+    private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(deviceId, Session.Type.MOBILE, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(sessionUUID, deviceId, Session.Type.MOBILE, sessionName, sessionTags)
         }
     }
 

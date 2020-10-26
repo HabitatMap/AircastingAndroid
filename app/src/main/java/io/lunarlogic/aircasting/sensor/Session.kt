@@ -9,6 +9,7 @@ import kotlin.collections.ArrayList
 val TAGS_SEPARATOR = " "
 
 class Session(
+    val uuid: String,
     val deviceId: String?,
     private val mType: Type,
     private var mName: String,
@@ -16,13 +17,13 @@ class Session(
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
     var endTime: Date? = null,
-    val uuid: String = generateUUID(),
     var version: Int = 0,
     var deleted: Boolean = false,
     var followed: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
+        sessionDBObject.uuid,
         sessionDBObject.deviceId,
         sessionDBObject.type,
         sessionDBObject.name,
@@ -30,13 +31,13 @@ class Session(
         sessionDBObject.status,
         sessionDBObject.startTime,
         sessionDBObject.endTime,
-        sessionDBObject.uuid,
         sessionDBObject.version,
         sessionDBObject.deleted,
         sessionDBObject.followed
     )
 
     constructor(
+        sessionUUID: String,
         deviceId: String?,
         mType: Type,
         mName: String,
@@ -45,7 +46,7 @@ class Session(
         indoor: Boolean?,
         streamingMethod: StreamingMethod?,
         location: Location?
-    ): this(deviceId, mType, mName, mTags, mStatus) {
+    ): this(sessionUUID, deviceId, mType, mName, mTags, mStatus) {
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
         this.location = location

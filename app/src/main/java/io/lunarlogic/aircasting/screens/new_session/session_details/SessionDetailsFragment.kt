@@ -14,6 +14,7 @@ class SessionDetailsFragment() : Fragment() {
     private lateinit var controller: SessionDetailsController
     lateinit var listener: SessionDetailsViewMvc.Listener
     lateinit var deviceId: String
+    lateinit var sessionUUID: String
     lateinit var sessionType: Session.Type
 
     @Inject
@@ -27,7 +28,7 @@ class SessionDetailsFragment() : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceId, sessionType)
+        val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceId, sessionUUID, sessionType)
         controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
         controller.onCreate()
 

@@ -91,11 +91,12 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToSessionDetails(sessionType: Session.Type, deviceId: String, listener: SessionDetailsViewMvc.Listener) {
+    fun goToSessionDetails(sessionUUID: String, sessionType: Session.Type, deviceId: String, listener: SessionDetailsViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = listener
         fragment.deviceId = deviceId
+        fragment.sessionUUID = sessionUUID
         fragment.sessionType = sessionType
         goToFragment(fragment)
     }

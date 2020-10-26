@@ -120,7 +120,7 @@ class NewSessionController(
     }
 
     override fun onMicrophoneDeviceSelected() {
-        wizardNavigator.goToSessionDetails(Session.Type.MOBILE, MicrophoneReader.deviceId, this)
+        wizardNavigator.goToSessionDetails(Session.generateUUID(), Session.Type.MOBILE, MicrophoneReader.deviceId, this)
 
         if (permissionsManager.audioPermissionsGranted(mContextActivity)) {
             startMicrophoneSession()
@@ -220,7 +220,9 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {
-        wizardNavigator.goToSessionDetails(sessionType, deviceId, this)
+        val sessionUUID = Session.generateUUID()
+        airBeam2Connector.sendAuth(sessionUUID)
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceId, this)
     }
 
     override fun validationFailed(errorMessage: String) {
@@ -229,6 +231,7 @@ class NewSessionController(
     }
 
     override fun onSessionDetailsContinueClicked(
+        sessionUUID: String,
         deviceId: String,
         sessionType: Session.Type,
         sessionName: String,
@@ -241,6 +244,7 @@ class NewSessionController(
 
         val currentLocation = Session.Location.get(LocationHelper.lastLocation())
         val session = sessionBuilder.build(
+            sessionUUID,
             deviceId,
             sessionType,
             sessionName,
