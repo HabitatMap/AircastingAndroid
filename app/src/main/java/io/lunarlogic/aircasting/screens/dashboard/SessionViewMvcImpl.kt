@@ -3,14 +3,19 @@ package io.lunarlogic.aircasting.screens.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.sensor.MeasurementStream
+import kotlinx.android.synthetic.main.session_card.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
@@ -27,6 +32,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mExpandedSessionView: View
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
+    protected val mChart: Chart
+    protected val mChartView: ConstraintLayout?
+
     private var mMapButton: Button
     private var mLoader: ImageView?
 
@@ -46,7 +54,20 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
 
-        mMeasurementsTableContainer = MeasurementsTableContainer(context, inflater, this.rootView, false, showMeasurementsTableValues())
+        mMeasurementsTableContainer = MeasurementsTableContainer(
+            context,
+            inflater,
+            this.rootView,
+            false,
+            showMeasurementsTableValues()
+        )
+
+        mChart = Chart(
+            context,
+            this.rootView
+        )
+
+        mChartView = rootView?.chart_container
 
         mActionsButton = findViewById(R.id.session_actions_button)
 
@@ -108,6 +129,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         bindSessionDetails()
         bindMeasurementsTable()
+        bindChartData()
     }
 
     protected fun bindSessionDetails() {
@@ -122,18 +144,23 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
     }
 
+    protected open fun bindChartData() {
+        mChart.bindChart(mSessionPresenter)
+    }
+
     protected open fun expandSessionCard() {
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
-
         mMeasurementsTableContainer.makeSelectable()
+        mChartView?.visibility = View.VISIBLE
     }
 
     protected open fun collapseSessionCard() {
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
+        mChartView?.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
     }
@@ -149,12 +176,16 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
+        bindChartData()
     }
 
     private fun onMapButtonClicked() {
         mSessionPresenter?.session?.let {
             for (listener in listeners) {
-                (listener as? SessionCardListener)?.onMapButtonClicked(it, mSessionPresenter?.selectedStream)
+                (listener as? SessionCardListener)?.onMapButtonClicked(
+                    it,
+                    mSessionPresenter?.selectedStream
+                )
             }
         }
     }
