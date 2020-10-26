@@ -13,6 +13,8 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAi
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.Session
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
+import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -35,6 +37,9 @@ open class AirBeam2Connector(
     private var bleManager: BLEManager? = null
     lateinit var listener: ConnectingAirBeamController.Listener
 
+    private val scanner = BluetoothLeScannerCompat.getScanner()
+    private val scanCallback = object : ScanCallback() {}
+
     open fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
@@ -54,10 +59,8 @@ open class AirBeam2Connector(
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread(), ConnectionObserver {
         override fun run() {
-            // TODO: handle
             // Cancel discovery because it otherwise slows down the connection.
-            // val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            // bluetoothAdapter?.cancelDiscovery()
+            stopScan()
 
             // TODO: inject this
             bleManager = BLEManager(mContext, mSettinngs)
@@ -70,13 +73,17 @@ open class AirBeam2Connector(
                 .enqueue()
         }
 
+        private fun stopScan() {
+            scanner.stopScan(scanCallback)
+        }
+
         fun cancel() {
             unregisterFromEventBus()
 
             if (cancelStarted.get() == false) {
                 cancelStarted.set(true)
                 connectionStarted.set(false)
-                // TODO: handle
+                bleManager?.close()
             }
         }
 

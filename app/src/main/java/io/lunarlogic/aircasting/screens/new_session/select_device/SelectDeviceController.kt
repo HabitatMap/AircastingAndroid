@@ -29,18 +29,20 @@ class SelectDeviceController(
 
     fun onStop() {
         unregisterListener(mListener)
-        // TODO: handle
-        // bluetoothManager.cancelDiscovery()
+        stopScan()
     }
 
     private fun startScan() {
         scanner.startScan(scanCallback)
     }
 
+    private fun stopScan() {
+        scanner.stopScan(scanCallback)
+    }
+
     override fun onRefreshClicked() {
-        // TODO: handle
-        // bluetoothManager.cancelDiscovery()
-        // bluetoothManager.startDiscovery()
+        stopScan()
+        startScan()
     }
 
     private fun registerListener(listener: SelectDeviceViewMvc.Listener) {
