@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
-import io.lunarlogic.aircasting.exceptions.SensorResponseParsingError
 
 
 class ResponseParser() {
@@ -55,7 +54,6 @@ class ResponseParser() {
 
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
-            throw SensorResponseParsingError(e)
             return null
         }
 
