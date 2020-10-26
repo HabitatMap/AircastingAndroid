@@ -108,10 +108,7 @@ open class AirBeam2Connector(
 
         override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {}
 
-        override fun onDeviceReady(device: BluetoothDevice) {
-            Log.i(BLEManager.TAG, "onDeviceReady")
-            bleManager!!.run()
-        }
+        override fun onDeviceReady(device: BluetoothDevice) {}
 
         override fun onDeviceDisconnecting(device: BluetoothDevice) {}
 
