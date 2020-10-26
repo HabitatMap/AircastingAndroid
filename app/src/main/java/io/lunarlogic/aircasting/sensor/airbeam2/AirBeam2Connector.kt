@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -57,6 +58,10 @@ open class AirBeam2Connector(
         mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
+    fun sendAuth(uuid: String) {
+        mThread?.sendAuth(uuid)
+    }
+
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread(), ConnectionObserver {
         override fun run() {
             // Cancel discovery because it otherwise slows down the connection.
@@ -69,8 +74,12 @@ open class AirBeam2Connector(
             bleManager!!.connect(deviceItem.bluetoothDevice)
                 .timeout(100000)
                 .retry(3, 100)
-                .done { _ -> listener.onConnectionSuccessful(deviceItem.id) }
+                .done { _ -> onConnectionSuccessful() }
                 .enqueue()
+        }
+
+        private fun onConnectionSuccessful() {
+            listener.onConnectionSuccessful(deviceItem.id)
         }
 
         private fun stopScan() {
@@ -87,17 +96,24 @@ open class AirBeam2Connector(
             }
         }
 
+        fun sendAuth(uuid: String) {
+            bleManager?.sendAuth(uuid)
+        }
+
         fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
             try {
                 if (session.isFixed()) {
+                    val location = session.location!! // TODO: handle !! in a better way
+
                     when (session.streamingMethod) {
-                        Session.StreamingMethod.WIFI -> bleManager?.configureFixedWifi(session, wifiSSID!!, wifiPassword!!)
-                        Session.StreamingMethod.CELLULAR -> bleManager?.configureFixedCellular(session)
+                        Session.StreamingMethod.WIFI -> bleManager?.configureFixedWifi(location, wifiSSID!!, wifiPassword!!)
+                        Session.StreamingMethod.CELLULAR -> bleManager?.configureFixedCellular(location)
                     }
                 } else {
-                    bleManager?.configureMobile(session)
+                    bleManager?.configureMobile()
                 }
             } catch (e: IOException) {
+                // TODO: is it really thrown for BLE?
                 mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
             }
         }

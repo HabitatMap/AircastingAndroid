@@ -114,38 +114,37 @@ class BLEManager(context: Context, private val settings: Settings) : BleManager(
         }
     }
 
-    fun configureMobile(session: Session) {
+    fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(session.uuid)))
+            .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(uuid)))
             .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(settings.getAuthToken()!!)))
+            .enqueue()
+    }
+
+    fun configureMobile() {
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        beginAtomicRequestQueue()
             .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage))
             .add(requestMtu(MAX_MTU))
             .enqueue()
     }
 
-    fun configureFixedWifi(session: Session, wifiSSID: String, wifiPassword: String) {
+    fun configureFixedWifi(location: Session.Location, wifiSSID: String, wifiPassword: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
-        val location = session.location!!
-
         beginAtomicRequestQueue()
-            .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(session.uuid)))
-            .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(settings.getAuthToken()!!)))
             .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude)))
             .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword)))
             .enqueue()
     }
 
-    fun configureFixedCellular(session: Session) {
+    fun configureFixedCellular(location: Session.Location) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
-        val location = session.location!!
-
         beginAtomicRequestQueue()
-            .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(session.uuid)))
-            .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(settings.getAuthToken()!!)))
             .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude)))
             .add(writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage))
             .enqueue()
