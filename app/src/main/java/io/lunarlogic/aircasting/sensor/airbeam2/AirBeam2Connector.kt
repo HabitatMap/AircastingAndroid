@@ -62,6 +62,7 @@ open class AirBeam2Connector(
         mThread?.sendAuth(uuid)
     }
 
+    // TODO: actually this thread can be not needed here as we already use async connection method - enqueue
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread(), ConnectionObserver {
         override fun run() {
             // Cancel discovery because it otherwise slows down the connection.

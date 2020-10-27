@@ -1,10 +1,10 @@
 package io.lunarlogic.aircasting.bluetooth
 
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.ResponseParser
 import io.lunarlogic.aircasting.sensor.Session
@@ -14,6 +14,7 @@ import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
+// TODO: add more exception logging (to Firebase)
 class BLEManager(context: Context, private val settings: Settings) : BleManager(context) {
     companion object {
         val TAG = "MyBleManager"
@@ -33,7 +34,8 @@ class BLEManager(context: Context, private val settings: Settings) : BleManager(
     private var readCharacteristics: List<BluetoothGattCharacteristic>? = null
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
 
-    val responseParser = ResponseParser()
+    val errorHandler = ErrorHandler(context)
+    val responseParser = ResponseParser(errorHandler)
     val hexMessagesBuilder = HexMessagesBuilder()
 
     override fun getGattCallback(): BleManagerGattCallback {
