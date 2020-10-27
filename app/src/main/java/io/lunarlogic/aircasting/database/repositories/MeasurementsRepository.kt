@@ -8,8 +8,8 @@ import java.util.*
 class MeasurementsRepository {
     private val mDatabase = DatabaseProvider.get()
 
-    fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
-        val measurementDBObject =
+    fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+        val measurementDBObjects = measurements.map { measurement ->
             MeasurementDBObject(
                 measurementStreamId,
                 sessionId,
@@ -18,6 +18,21 @@ class MeasurementsRepository {
                 measurement.latitude,
                 measurement.longitude
             )
+        }
+
+        mDatabase.measurements().insertAll(measurementDBObjects)
+    }
+
+    fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
+        val measurementDBObject = MeasurementDBObject(
+            measurementStreamId,
+            sessionId,
+            measurement.value,
+            measurement.time,
+            measurement.latitude,
+            measurement.longitude
+        )
+
         return mDatabase.measurements().insert(measurementDBObject)
     }
 

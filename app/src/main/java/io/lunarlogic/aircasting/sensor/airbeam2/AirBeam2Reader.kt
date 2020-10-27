@@ -5,7 +5,6 @@ import com.google.common.io.LineProcessor
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.sensor.ResponseParser
 import org.greenrobot.eventbus.EventBus
-import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 
