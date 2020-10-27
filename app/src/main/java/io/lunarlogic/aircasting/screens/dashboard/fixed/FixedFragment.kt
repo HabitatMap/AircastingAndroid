@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 
 class FixedFragment : Fragment() {
-    private lateinit var controller: FixedController
+    private var controller: FixedController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
 
     @Inject
@@ -43,7 +43,7 @@ class FixedFragment : Fragment() {
         )
 
         if (sessionsRequested) {
-            controller.onCreate()
+            controller?.onCreate()
             sessionsRequested = false
         }
 
@@ -57,11 +57,11 @@ class FixedFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        controller.onResume()
+        controller?.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        controller.onPause()
+        controller?.onPause()
     }
 }

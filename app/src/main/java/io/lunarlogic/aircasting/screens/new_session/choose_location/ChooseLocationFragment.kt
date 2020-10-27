@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.sensor.Session
 
 class ChooseLocationFragment() : Fragment() {
-    private lateinit var controller: ChooseLocationController
+    private var controller: ChooseLocationController? = null
     lateinit var listener: ChooseLocationViewMvc.Listener
     lateinit var session: Session
     lateinit var errorHandler: ErrorHandler
@@ -27,11 +27,11 @@ class ChooseLocationFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        controller.registerListener(listener)
+        controller?.registerListener(listener)
     }
 
     override fun onStop() {
         super.onStop()
-        controller.unregisterListener(listener)
+        controller?.unregisterListener(listener)
     }
 }

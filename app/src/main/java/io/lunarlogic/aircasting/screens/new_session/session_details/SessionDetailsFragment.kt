@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.sensor.SessionBuilder
 import javax.inject.Inject
 
 class SessionDetailsFragment() : Fragment() {
-    private lateinit var controller: SessionDetailsController
+    private var controller: SessionDetailsController? = null
     lateinit var listener: SessionDetailsViewMvc.Listener
     lateinit var deviceId: String
     lateinit var sessionType: Session.Type
@@ -29,18 +29,18 @@ class SessionDetailsFragment() : Fragment() {
 
         val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceId, sessionType)
         controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
-        controller.onCreate()
+        controller?.onCreate()
 
         return view.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        listener.let { controller.registerListener(it) }
+        listener.let { controller?.registerListener(it) }
     }
 
     override fun onStop() {
         super.onStop()
-        listener.let { controller.unregisterListener(it) }
+        listener.let { controller?.unregisterListener(it) }
     }
 }

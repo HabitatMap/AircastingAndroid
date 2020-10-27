@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class LetsStartFragment : Fragment() {
-    private lateinit var controller: LetsStartController
+    private var controller: LetsStartController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -17,13 +17,13 @@ class LetsStartFragment : Fragment() {
     ): View? {
         val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
         controller = LetsStartController(activity, view)
-        controller.onCreate()
+        controller?.onCreate()
 
         return view.rootView
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        controller.onDestroy()
+        controller?.onDestroy()
     }
 }

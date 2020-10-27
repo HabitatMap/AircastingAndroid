@@ -10,7 +10,7 @@ import io.lunarlogic.aircasting.lib.KeyboardHelper
 import io.lunarlogic.aircasting.sensor.Session
 
 class ConfirmationFragment() : Fragment() {
-    private lateinit var controller: ConfirmationController
+    private var controller: ConfirmationController? = null
     lateinit var listener: ConfirmationViewMvc.Listener
     lateinit var session: Session
 
@@ -27,13 +27,13 @@ class ConfirmationFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        controller.registerToEventBus()
-        controller.registerListener(listener)
-        controller.onStart(context)
+        controller?.registerToEventBus()
+        controller?.registerListener(listener)
+        controller?.onStart(context)
     }
 
     override fun onStop() {
         super.onStop()
-        controller.unregisterListener(listener)
+        controller?.unregisterListener(listener)
     }
 }
