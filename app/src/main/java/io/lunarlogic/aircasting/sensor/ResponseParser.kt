@@ -1,9 +1,11 @@
 package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.exceptions.AirBeamResponseParsingError
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 
 
-class ResponseParser() {
+class ResponseParser(private val errorHandler: ErrorHandler) {
     /**
      * This has to match what Arduino produces
      * Value;Sensor package name;Sensor name;Type of measurement;Short type of measurement;Unit name;Unit symbol/abbreviation;T1;T2;T3;T4;T5
@@ -29,6 +31,7 @@ class ResponseParser() {
     fun parse(line: String): NewMeasurementEvent? {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (parts.size < Fields.values().size) {
+            errorHandler.handle(AirBeamResponseParsingError(line))
             return null
         }
 
@@ -54,6 +57,7 @@ class ResponseParser() {
 
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
+            errorHandler.handle(AirBeamResponseParsingError(line, e))
             return null
         }
 

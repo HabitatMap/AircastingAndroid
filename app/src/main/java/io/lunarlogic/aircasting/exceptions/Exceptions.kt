@@ -38,3 +38,6 @@ class UnexpectedAPIError(t: Throwable? = null):
 
 class ChooseAirBeamLocationSelectingPlaceError(t: Throwable? = null):
     BaseException(Exception(t))
+
+class AirBeamResponseParsingError(line: String, t: Throwable? = null):
+    BaseException(Exception(t), "Error while parsing line: '$line'.")

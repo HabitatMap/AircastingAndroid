@@ -31,7 +31,7 @@ open class SensorsModule {
 
     @Provides
     @Singleton
-    fun prodivesAirbeam2Reader(): AirBeam2Reader = AirBeam2Reader()
+    fun prodivesAirbeam2Reader(errorHandler: ErrorHandler): AirBeam2Reader = AirBeam2Reader(errorHandler)
 
     @Provides
     @Singleton
