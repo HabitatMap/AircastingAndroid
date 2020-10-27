@@ -21,9 +21,6 @@ class AirBeam2ConnectionOpenFailed(cause: Exception):
 class AirBeam2ConfiguringFailed(cause: Exception):
     BaseException(cause)
 
-class SensorResponseParsingError(cause: Exception?):
-    BaseException(cause, "There was a problem while parsing response from the sensor. Please make sure that you follow the required protocol.")
-
 class AirBeam2ConnectionCloseFailed(cause: Exception):
     BaseException(cause)
 
@@ -41,3 +38,6 @@ class UnexpectedAPIError(t: Throwable? = null):
 
 class ChooseAirBeamLocationSelectingPlaceError(t: Throwable? = null):
     BaseException(Exception(t))
+
+class AirBeamResponseParsingError(line: String, t: Throwable? = null):
+    BaseException(Exception(t), "Error while parsing line: '$line'.")

@@ -83,8 +83,6 @@ open class AirBeam2Connector(
                     message.sendToTarget()
                     cancel()
                 }
-            } catch(e: SensorResponseParsingError) {
-                mErrorHandler.handle(e)
             } catch(e: Exception) {
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIRCASTING_UNKNOWN_ERROR, UnknownError(e))
                 message.sendToTarget()
