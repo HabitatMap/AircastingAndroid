@@ -93,6 +93,7 @@ open class AirBeam2Connector(
                 cancelStarted.set(true)
                 connectionStarted.set(false)
                 bleManager?.close()
+                cancelStarted.set(false)
             }
         }
 
