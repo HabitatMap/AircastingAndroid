@@ -14,7 +14,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 
 
 class MobileDormantFragment : Fragment() {
-    private lateinit var controller: MobileDormantController
+    private var controller: MobileDormantController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
 
     @Inject
@@ -44,7 +44,7 @@ class MobileDormantFragment : Fragment() {
         )
 
         if (sessionsRequested) {
-            controller.onCreate()
+            controller?.onCreate()
             sessionsRequested = false
         }
 
@@ -58,11 +58,11 @@ class MobileDormantFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        controller.onResume()
+        controller?.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        controller.onPause()
+        controller?.onPause()
     }
 }

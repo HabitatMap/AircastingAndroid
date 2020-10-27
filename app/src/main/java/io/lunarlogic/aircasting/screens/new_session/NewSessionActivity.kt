@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity() {
 
-    private lateinit var controller: NewSessionController
+    private var controller: NewSessionController? = null
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
@@ -82,7 +82,7 @@ class NewSessionActivity : AppCompatActivity() {
             sessionBuilder,
             sessionType
         )
-        controller.onCreate()
+        controller?.onCreate()
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
@@ -90,17 +90,17 @@ class NewSessionActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        controller.onBackPressed()
+        controller?.onBackPressed()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        controller.onRequestPermissionsResult(requestCode, grantResults)
+        controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        controller.onActivityResult(requestCode, resultCode)
+        controller?.onActivityResult(requestCode, resultCode)
     }
 }

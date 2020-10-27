@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 
 class AirBeamConnectedFragment() : Fragment() {
 
-    private lateinit var controller: AirBeamConnectedController
+    private var controller: AirBeamConnectedController? = null
     lateinit var listener: AirBeamConnectedViewMvc.Listener
     lateinit var deviceId: String
 
@@ -24,18 +24,18 @@ class AirBeamConnectedFragment() : Fragment() {
                 deviceId
             )
         controller =
-            AirBeamConnectedController(context!!, view)
+            AirBeamConnectedController(requireContext(), view)
 
         return view.rootView
     }
 
     override fun onStart() {
         super.onStart()
-        listener.let { controller.registerListener(it) }
+        listener.let { controller?.registerListener(it) }
     }
 
     override fun onStop() {
         super.onStop()
-        listener.let { controller.unregisterListener(it) }
+        listener.let { controller?.unregisterListener(it) }
     }
 }
