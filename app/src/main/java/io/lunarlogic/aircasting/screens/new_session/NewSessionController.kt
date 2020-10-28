@@ -200,7 +200,6 @@ class NewSessionController(
     }
 
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
-        val listener = this
         GlobalScope.launch(Dispatchers.Main) {
             var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
@@ -210,13 +209,23 @@ class NewSessionController(
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
-                wizardNavigator.goToConnectingAirBeam(selectedDeviceItem, listener, airBeam2Connector)
+                connectToAirBeam(selectedDeviceItem)
             }
         }
     }
 
+    private fun connectToAirBeam(deviceItem: DeviceItem) {
+        wizardNavigator.goToConnectingAirBeam(this)
+        airBeam2Connector.listener = this // TODO: move it somewhere else
+        airBeam2Connector.connect(deviceItem)
+    }
+
     override fun onConnectionSuccessful(deviceId: String) {
         wizardNavigator.goToAirBeamConnected(deviceId, this)
+    }
+
+    override fun onConnectionCancel() {
+        airBeam2Connector.cancel()
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {

@@ -72,12 +72,10 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToConnectingAirBeam(deviceItem: DeviceItem, listener: ConnectingAirBeamController.Listener, airBeam2Connector: AirBeam2Connector) {
+    fun goToConnectingAirBeam(listener: ConnectingAirBeamController.Listener) {
         incrementStepProgress()
         val fragment = ConnectingAirBeamFragment()
         fragment.listener = listener
-        fragment.deviceItem = deviceItem
-        fragment.airbeam2Connector = airBeam2Connector
         registerBackPressed(fragment)
         goToFragment(fragment)
     }
