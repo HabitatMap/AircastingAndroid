@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 
 
 class SelectDeviceFragment() : Fragment() {
     private var controller: SelectDeviceController? = null
     var listener: SelectDeviceViewMvc.Listener? = null
+    var bluetoothManager: BluetoothManager? = null
 
     private fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
 
@@ -34,6 +36,7 @@ class SelectDeviceFragment() : Fragment() {
                 SelectDeviceController(
                     context,
                     view,
+                    bluetoothManager!!,
                     listener!!
                 )
         }

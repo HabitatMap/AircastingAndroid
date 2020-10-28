@@ -44,8 +44,7 @@ class NewSessionWizardNavigator(
     fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SelectDeviceFragment()
-        // TODO: handle
-        // fragment.bluetoothManager = bluetoothManager
+        fragment.bluetoothManager = bluetoothManager
         fragment.listener = listener
         goToFragment(fragment)
     }

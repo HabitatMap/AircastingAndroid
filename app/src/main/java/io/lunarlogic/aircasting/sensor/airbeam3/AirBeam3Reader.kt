@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.bluetooth
+package io.lunarlogic.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
@@ -8,14 +8,14 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.ResponseParser
 import io.lunarlogic.aircasting.sensor.Session
-import io.lunarlogic.aircasting.sensor.airbeam2.HexMessagesBuilder
+import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 // TODO: add more exception logging (to Firebase)
-class BLEManager(context: Context, private val settings: Settings) : BleManager(context) {
+class AirBeam3Reader(context: Context, private val settings: Settings) : BleManager(context) {
     companion object {
         val TAG = "MyBleManager"
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")

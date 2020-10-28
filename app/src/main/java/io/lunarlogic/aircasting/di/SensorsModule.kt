@@ -18,12 +18,10 @@ open class SensorsModule {
     @Provides
     @Singleton
     open fun providesAirbeam2Connector(
-        app: AircastingApplication,
-        settings: Settings,
         errorHandler: ErrorHandler,
         airBeamConfigurator: AirBeam2Configurator,
         airBeam2Reader: AirBeam2Reader
-    ): AirBeam2Connector = AirBeam2Connector(app.applicationContext, settings, errorHandler, airBeamConfigurator, airBeam2Reader)
+    ): AirBeam2Connector = AirBeam2Connector(errorHandler, airBeamConfigurator, airBeam2Reader)
 
     @Provides
     @Singleton
