@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.Subscribe
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService) {
     private val errorHandler = ErrorHandler(mContext)
-    private val sessionsSyncService = SessionsSyncService(apiService, errorHandler)
+    private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = FixedSessionDownloadMeasurementsService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()

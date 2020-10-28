@@ -15,14 +15,37 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SessionsSyncService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    private val uploadService = MobileSessionUploadService(apiService, errorHandler)
-    private val downloadService = SessionDownloadService(apiService, errorHandler)
+class SessionsSyncService {
+    private val apiService: ApiService
+    private val errorHandler: ErrorHandler
+
+    private val uploadService: MobileSessionUploadService
+    private val downloadService: SessionDownloadService
 
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
+
+    private constructor(apiService: ApiService, errorHandler: ErrorHandler) {
+        this.apiService = apiService
+        this.errorHandler = errorHandler
+
+        this.uploadService = MobileSessionUploadService(apiService, errorHandler)
+        this.downloadService = SessionDownloadService(apiService, errorHandler)
+    }
+
+    companion object {
+        private var mSingleton: SessionsSyncService? = null
+
+        fun get(apiService: ApiService, errorHandler: ErrorHandler): SessionsSyncService {
+            if (mSingleton == null) {
+                mSingleton = SessionsSyncService(apiService, errorHandler)
+            }
+
+            return mSingleton!!
+        }
+    }
 
     fun sync(callback: (() -> Unit)? = null) {
         if (syncStarted.get()) {
@@ -30,6 +53,7 @@ class SessionsSyncService(private val apiService: ApiService, private val errorH
         }
 
         syncStarted.set(true)
+
         DatabaseProvider.runQuery {
             val sessions = sessionRepository.finishedSessions()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }

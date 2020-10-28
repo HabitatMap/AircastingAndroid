@@ -27,7 +27,7 @@ abstract class SessionsController(
 ) : SessionsViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mMobileSessionsSyncService = SessionsSyncService(mApiService, mErrorHandler)
+    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
     protected lateinit var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>
