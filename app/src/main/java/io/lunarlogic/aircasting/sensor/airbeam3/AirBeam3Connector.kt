@@ -4,20 +4,12 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Reader
-import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
-import io.lunarlogic.aircasting.events.ConfigureSession
-import io.lunarlogic.aircasting.events.SendSessionAuth
-import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.Session
 import no.nordicsemi.android.ble.observer.ConnectionObserver
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -26,14 +18,13 @@ open class AirBeam3Connector(
     private val mContext: Context,
     private val mSettinngs: Settings,
     private val mErrorHandler: ErrorHandler
-): AirBeamConnector {
+): AirBeamConnector() {
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
 
     private var mThread: ConnectThread? = null
 
     private var airBeam3Reader: AirBeam3Reader? = null
-    private var mListener: AirBeamConnector.Listener? = null
 
     override fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
@@ -44,19 +35,15 @@ open class AirBeam3Connector(
         }
     }
 
-    override fun registerListener(listener: AirBeamConnector.Listener) {
-        mListener = listener
-    }
-
-    fun cancel() {
+    override fun disconnect() {
         mThread?.cancel()
     }
 
-    fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
         mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
-    fun sendAuth(uuid: String) {
+    override fun sendAuth(uuid: String) {
         mThread?.sendAuth(uuid)
     }
 
@@ -74,12 +61,8 @@ open class AirBeam3Connector(
             airBeam3Reader!!.connect(deviceItem.bluetoothDevice)
                 .timeout(100000)
                 .retry(3, 100)
-                .done { _ -> onConnectionSuccessful() }
+                .done { _ -> onConnectionSuccessful(deviceItem.id) }
                 .enqueue()
-        }
-
-        private fun onConnectionSuccessful() {
-            mListener?.onConnectionSuccessful(deviceItem.id)
         }
 
         fun cancel() {
@@ -126,35 +109,5 @@ open class AirBeam3Connector(
         override fun onDeviceDisconnecting(device: BluetoothDevice) {}
 
         override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {}
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: SendSessionAuth) {
-        sendAuth(event.sessionUUID)
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    fun onMessageEvent(event: ConfigureSession) {
-        configureSession(event.session, event.wifiSSID, event.wifiPassword)
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
-        cancel()
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: StopRecordingEvent) {
-        cancel()
-    }
-
-    private fun registerToEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    private fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
     }
 }

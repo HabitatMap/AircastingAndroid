@@ -7,15 +7,6 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam3Connector
 
-interface AirBeamConnector {
-    fun connect(deviceItem: DeviceItem)
-    fun registerListener(listener: Listener)
-
-    interface Listener {
-        fun onConnectionSuccessful(deviceId: String)
-    }
-}
-
 class AirBeamConnectorFactory(
     private val mContext: Context,
     private val mSettings: Settings,
