@@ -36,8 +36,11 @@ class AirBeam2Configurator(private val mSettings: Settings) {
         wifiPassword: String?,
         outputStream: OutputStream
     ) {
-        val location = session.location!! // TODO?
-        val streamingMethod = session.streamingMethod!! // TODO?
+        val location = session.location
+        val streamingMethod = session.streamingMethod
+
+        location ?: return
+        streamingMethod ?: return
 
         sleepFor(3000)
         configureLocation(location.latitude, location.longitude, outputStream)

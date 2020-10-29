@@ -2,14 +2,13 @@ package io.lunarlogic.aircasting.sensor.airbeam2
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Reader
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
 import no.nordicsemi.android.ble.observer.ConnectionObserver
-import java.io.IOException
 
 
 open class AirBeam3Connector(
@@ -17,12 +16,12 @@ open class AirBeam3Connector(
     private val mSettinngs: Settings,
     private val mErrorHandler: ErrorHandler
 ): AirBeamConnector(), ConnectionObserver {
-    private var airBeam3Reader = AirBeam3Reader(mContext, mErrorHandler, mSettinngs)
+    private var airBeam3Configurator = AirBeam3Configurator(mContext, mErrorHandler, mSettinngs)
 
     override fun start(deviceItem: DeviceItem) {
-        airBeam3Reader.setConnectionObserver(this)
+        airBeam3Configurator.setConnectionObserver(this)
 
-        airBeam3Reader.connect(deviceItem.bluetoothDevice)
+        airBeam3Configurator.connect(deviceItem.bluetoothDevice)
             .timeout(100000)
             .retry(3, 100)
             .done { _ -> onConnectionSuccessful(deviceItem.id) }
@@ -30,29 +29,15 @@ open class AirBeam3Connector(
     }
 
     override fun stop() {
-        airBeam3Reader.close()
+        airBeam3Configurator.close()
     }
 
     override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        try {
-            if (session.isFixed()) {
-                val location = session.location!! // TODO: handle !! in a better way
-
-                when (session.streamingMethod) {
-                    Session.StreamingMethod.WIFI -> airBeam3Reader.configureFixedWifi(location, wifiSSID!!, wifiPassword!!)
-                    Session.StreamingMethod.CELLULAR -> airBeam3Reader.configureFixedCellular(location)
-                }
-            } else {
-                airBeam3Reader.configureMobile()
-            }
-        } catch (e: IOException) {
-            // TODO: is it really thrown for BLE?
-            mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
-        }
+        airBeam3Configurator.configure(session, wifiSSID, wifiPassword)
     }
 
     override fun sendAuth(uuid: String) {
-        airBeam3Reader.sendAuth(uuid)
+        airBeam3Configurator.sendAuth(uuid)
     }
 
     override fun onDeviceConnecting(device: BluetoothDevice) {}
