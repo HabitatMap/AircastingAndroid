@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.ResultCodes
@@ -11,7 +10,6 @@ import io.lunarlogic.aircasting.sensor.Session
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 open class AirBeam2Connector(
@@ -26,19 +24,12 @@ open class AirBeam2Connector(
     private var mThread: ConnectThread? = null
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
-    private val connectionStarted = AtomicBoolean(false)
-    private val cancelStarted = AtomicBoolean(false)
-
-    override fun connect(deviceItem: DeviceItem) {
-        if (connectionStarted.get() == false) {
-            connectionStarted.set(true)
-            registerToEventBus()
-            mThread = ConnectThread(deviceItem)
-            mThread?.start()
-        }
+    override fun start(deviceItem: DeviceItem) {
+        mThread = ConnectThread(deviceItem)
+        mThread?.start()
     }
 
-    override fun disconnect() {
+    override fun stop() {
         mThread?.cancel()
     }
 
@@ -59,10 +50,6 @@ open class AirBeam2Connector(
         private lateinit var mOutputStream: OutputStream
 
         override fun run() {
-            // Cancel discovery because it otherwise slows down the connection.
-            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            bluetoothAdapter?.cancelDiscovery()
-
             try {
                 mmSocket?.use { socket ->
                     socket.connect()
@@ -75,7 +62,7 @@ open class AirBeam2Connector(
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
-                if (cancelStarted.get() == false) {
+                if (!cancelStarted.get()) {
                     val message = mErrorHandler.obtainMessage(
                         ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED,
                         AirBeam2ConnectionOpenFailed(e)
@@ -91,16 +78,10 @@ open class AirBeam2Connector(
         }
 
         fun cancel() {
-            unregisterFromEventBus()
-
-            if (cancelStarted.get() == false) {
-                cancelStarted.set(true)
-                connectionStarted.set(false)
-                try {
-                    mmSocket?.close()
-                } catch (e: IOException) {
-                    mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
-                }
+            try {
+                mmSocket?.close()
+            } catch (e: IOException) {
+                mErrorHandler.handle(AirBeam2ConnectionCloseFailed(e))
             }
         }
 
