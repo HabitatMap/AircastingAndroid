@@ -9,7 +9,6 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionWizardNavigator
 
 class ConnectingAirBeamFragment() : Fragment(), NewSessionWizardNavigator.BackPressedListener {
     private var controller: ConnectingAirBeamController? = null
-    lateinit var listener: ConnectingAirBeamController.Listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,7 +21,7 @@ class ConnectingAirBeamFragment() : Fragment(), NewSessionWizardNavigator.BackPr
                 null
             )
 
-        controller = ConnectingAirBeamController(requireContext(), listener)
+        controller = ConnectingAirBeamController()
 
         return view.rootView
     }

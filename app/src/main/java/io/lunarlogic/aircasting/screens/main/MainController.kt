@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.main
 
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
-import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 
@@ -34,7 +34,7 @@ class MainController(
     fun onDestroy() {
         unregisterConnectivityManager()
         mSessionManager?.onStop()
-        EventBus.getDefault().post(ApplicationClosed())
+        EventBus.getDefault().post(DisconnectExternalSensorsEvent())
     }
 
     private fun showLoginScreen() {

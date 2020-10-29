@@ -4,13 +4,15 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Reader
-import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.events.ConfigureSession
+import io.lunarlogic.aircasting.events.SendSessionAuth
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.ConnectingAirBeamController
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.Session
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import org.greenrobot.eventbus.EventBus
@@ -23,25 +25,27 @@ import java.util.concurrent.atomic.AtomicBoolean
 open class AirBeam3Connector(
     private val mContext: Context,
     private val mSettinngs: Settings,
-    private val mErrorHandler: ErrorHandler,
-    private val mAirBeamConfigurator: AirBeam2Configurator,
-    private val mAirBeam2Reader: AirBeam2Reader
-) {
+    private val mErrorHandler: ErrorHandler
+): AirBeamConnector {
     private val connectionStarted = AtomicBoolean(false)
     private val cancelStarted = AtomicBoolean(false)
 
     private var mThread: ConnectThread? = null
 
     private var airBeam3Reader: AirBeam3Reader? = null
-    lateinit var listener: ConnectingAirBeamController.Listener
+    private var mListener: AirBeamConnector.Listener? = null
 
-    open fun connect(deviceItem: DeviceItem) {
+    override fun connect(deviceItem: DeviceItem) {
         if (connectionStarted.get() == false) {
             connectionStarted.set(true)
             registerToEventBus()
             mThread = ConnectThread(deviceItem)
             mThread?.start()
         }
+    }
+
+    override fun registerListener(listener: AirBeamConnector.Listener) {
+        mListener = listener
     }
 
     fun cancel() {
@@ -64,7 +68,7 @@ open class AirBeam3Connector(
             bluetoothAdapter?.cancelDiscovery()
 
             // TODO: inject this
-            airBeam3Reader = AirBeam3Reader(mContext, mSettinngs)
+            airBeam3Reader = AirBeam3Reader(mContext, mErrorHandler, mSettinngs)
             airBeam3Reader!!.setConnectionObserver(this)
 
             airBeam3Reader!!.connect(deviceItem.bluetoothDevice)
@@ -75,7 +79,7 @@ open class AirBeam3Connector(
         }
 
         private fun onConnectionSuccessful() {
-            listener.onConnectionSuccessful(deviceItem.id)
+            mListener?.onConnectionSuccessful(deviceItem.id)
         }
 
         fun cancel() {
@@ -124,13 +128,18 @@ open class AirBeam3Connector(
         override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {}
     }
 
+    @Subscribe
+    fun onMessageEvent(event: SendSessionAuth) {
+        sendAuth(event.sessionUUID)
+    }
+
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: ConfigureSession) {
         configureSession(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
-    fun onMessageEvent(event: ApplicationClosed) {
+    fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
         cancel()
     }
 

@@ -15,7 +15,11 @@ import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 // TODO: add more exception logging (to Firebase)
-class AirBeam3Reader(context: Context, private val settings: Settings) : BleManager(context) {
+class AirBeam3Reader(
+    context: Context,
+    errorHandler: ErrorHandler,
+    private val settings: Settings
+): BleManager(context) {
     companion object {
         val TAG = "MyBleManager"
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
@@ -34,7 +38,6 @@ class AirBeam3Reader(context: Context, private val settings: Settings) : BleMana
     private var readCharacteristics: List<BluetoothGattCharacteristic>? = null
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
 
-    val errorHandler = ErrorHandler(context)
     val responseParser = ResponseParser(errorHandler)
     val hexMessagesBuilder = HexMessagesBuilder()
 

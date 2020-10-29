@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.SendSessionAuth
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -25,6 +26,8 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
+import io.lunarlogic.aircasting.sensor.AirBeamConnector
+import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
@@ -44,7 +47,7 @@ class NewSessionController(
     private val mFragmentManager: FragmentManager,
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
-    private val airBeam2Connector: AirBeam2Connector,
+    private val airBeamConnectorFactory: AirBeamConnectorFactory,
     audioReader: AudioReader,
     private val sessionBuilder: SessionBuilder,
     private val sessionType: Session.Type
@@ -52,7 +55,7 @@ class NewSessionController(
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
-    ConnectingAirBeamController.Listener,
+    AirBeamConnector.Listener,
     AirBeamConnectedViewMvc.Listener,
     SessionDetailsViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
@@ -215,22 +218,20 @@ class NewSessionController(
     }
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
-        wizardNavigator.goToConnectingAirBeam(this)
-        airBeam2Connector.listener = this // TODO: move it somewhere else
-        airBeam2Connector.connect(deviceItem)
+        wizardNavigator.goToConnectingAirBeam()
+        // TODO: think about this vs GC
+        val airBeamConnector = airBeamConnectorFactory.get(deviceItem)
+        airBeamConnector?.registerListener(this)
+        airBeamConnector?.connect(deviceItem)
     }
 
     override fun onConnectionSuccessful(deviceId: String) {
         wizardNavigator.goToAirBeamConnected(deviceId, this)
     }
 
-    override fun onConnectionCancel() {
-        airBeam2Connector.cancel()
-    }
-
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {
         val sessionUUID = Session.generateUUID()
-        airBeam2Connector.sendAuth(sessionUUID)
+        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceId, this)
     }
 
