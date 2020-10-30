@@ -26,10 +26,10 @@ class SelectDeviceController(
     }
 
     fun onStart() {
+        bindDevices()
         registerListener(mListener)
         registerBluetoothDeviceFoundReceiver()
         mViewMvc.registerOnRefreshListener(this)
-        mViewMvc.bindDeviceItems(emptyList())
 
         startScan()
     }
@@ -51,6 +51,11 @@ class SelectDeviceController(
     override fun onRefreshClicked() {
         stopScan()
         startScan()
+    }
+
+    private fun bindDevices() {
+        val deviceItems = bluetoothManager.pairedDeviceItems()
+        mViewMvc.bindDeviceItems(deviceItems)
     }
 
     private fun registerListener(listener: SelectDeviceViewMvc.Listener) {

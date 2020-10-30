@@ -20,8 +20,8 @@ open class SensorsModule {
     @Singleton
     open fun providesAirBeamConnectorFactory(
         application: AircastingApplication,
-        errorHandler: ErrorHandler,
-        settings: Settings
+        settings: Settings,
+        errorHandler: ErrorHandler
     ): AirBeamConnectorFactory = AirBeamConnectorFactory(application, settings, errorHandler)
 
     @Provides

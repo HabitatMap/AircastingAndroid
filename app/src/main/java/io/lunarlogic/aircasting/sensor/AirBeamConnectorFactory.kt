@@ -7,12 +7,12 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam3Connector
 
-class AirBeamConnectorFactory(
+open class AirBeamConnectorFactory(
     private val mContext: Context,
     private val mSettings: Settings,
     private val mErrorHandler: ErrorHandler
 ) {
-    fun get(deviceItem: DeviceItem): AirBeamConnector? {
+    open fun get(deviceItem: DeviceItem): AirBeamConnector? {
         when(deviceItem.type) {
             DeviceItem.Type.AIRBEAM2 -> return AirBeam2Connector(mSettings, mErrorHandler)
             DeviceItem.Type.AIRBEAM3 -> return AirBeam3Connector(mContext, mSettings, mErrorHandler)
