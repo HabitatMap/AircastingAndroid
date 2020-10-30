@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.SendSessionAuth
 import io.lunarlogic.aircasting.events.StartRecordingEvent
+import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
@@ -219,10 +221,14 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        // TODO: think about this vs GC
         val airBeamConnector = airBeamConnectorFactory.get(deviceItem)
         airBeamConnector?.registerListener(this)
-        airBeamConnector?.connect(deviceItem)
+        try {
+            airBeamConnector?.connect(deviceItem)
+        } catch (e: BLENotSupported) {
+            errorHandler.handleAndDisplay(e)
+            mContextActivity.onBackPressed()
+        }
     }
 
     override fun onConnectionSuccessful(deviceId: String) {

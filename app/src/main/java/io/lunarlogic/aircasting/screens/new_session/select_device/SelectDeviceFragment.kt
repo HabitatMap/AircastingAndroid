@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +13,6 @@ class SelectDeviceFragment() : Fragment() {
     var listener: SelectDeviceViewMvc.Listener? = null
     var bluetoothManager: BluetoothManager? = null
 
-    private fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,10 +23,6 @@ class SelectDeviceFragment() : Fragment() {
                 layoutInflater,
                 null
             )
-
-        activity?.packageManager?.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
-            // TODO: handle BLE not supported
-        }
 
         if (listener != null) {
             controller =

@@ -24,6 +24,9 @@ class AirBeam2ConfiguringFailed(cause: Exception):
 class AirBeam2ConnectionCloseFailed(cause: Exception):
     BaseException(cause)
 
+class BLENotSupported():
+    BaseException(null, "BLE is not supported by this device.")
+
 class AirBeam3ConfiguringFailed(type: String, status: Int):
     BaseException(null, "Configuration of $type failed with status code: $status.")
 

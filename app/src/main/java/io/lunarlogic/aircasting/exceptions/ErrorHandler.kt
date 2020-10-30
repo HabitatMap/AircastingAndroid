@@ -20,7 +20,7 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun handle(exception: BaseException) {
         exception.cause?.printStackTrace()
-        Log.e(TAG, exception.messageToDisplay)
+        exception.messageToDisplay?.let { Log.e(TAG, exception.messageToDisplay) }
 
         if (!BuildConfig.DEBUG) {
             exception.messageToDisplay?.let { crashlytics.log(it) }
