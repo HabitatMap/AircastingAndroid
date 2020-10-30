@@ -57,7 +57,7 @@ abstract class AirBeamConnector {
         mListener?.onConnectionSuccessful(deviceId)
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SendSessionAuth) {
         sendAuth(event.sessionUUID)
     }
@@ -67,12 +67,12 @@ abstract class AirBeamConnector {
         configureSession(event.session, event.wifiSSID, event.wifiPassword)
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
         disconnect()
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: StopRecordingEvent) {
         disconnect()
     }
