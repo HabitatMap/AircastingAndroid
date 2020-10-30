@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import io.lunarlogic.aircasting.sensor.Session
 import no.nordicsemi.android.ble.BleManager
+import no.nordicsemi.android.ble.WriteRequest
 import java.util.*
 
 class AirBeam3Configurator(
@@ -40,15 +41,9 @@ class AirBeam3Configurator(
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(uuid))
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("uuid", status)) }
-            )
+            .add(uuidRequest(uuid))
             .add(sleep(500))
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(mSettings.getAuthToken()!!))
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("token", status)) }
-            )
+            .add(authRequest())
             .enqueue()
     }
 
@@ -73,10 +68,7 @@ class AirBeam3Configurator(
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("mobile mode", status)) }
-            )
+            .add(mobileModeRequest())
             .add(sleep(500))
             .add(requestMtu(MAX_MTU))
             .enqueue()
@@ -89,31 +81,20 @@ class AirBeam3Configurator(
         wifiPassword ?: return
 
         beginAtomicRequestQueue()
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
-            )
+            .add(sendLocationConfiguration(location))
             .add(sleep(500))
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword))
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("wifi credentials", status)) }
-            )
+            .add(sendWifiConfiguration(wifiSSID, wifiPassword))
             .enqueue()
     }
 
-    fun configureFixedCellular(location: Session.Location) {
+    private fun configureFixedCellular(location: Session.Location) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
-            )
+            .add(sendLocationConfiguration(location))
             .add(sleep(500))
-            .add(
-                writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage)
-                    .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("cellular mode", status)) }
-            )
+            .add(cellularModeRequest())
+            .add(sleep(1000))
             .enqueue()
     }
 
@@ -184,5 +165,35 @@ class AirBeam3Configurator(
             readCharacteristics = null
             configurationCharacteristic = null
         }
+    }
+
+    private fun uuidRequest(uuid: String): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(uuid))
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("uuid", status)) }
+    }
+
+    private fun authRequest(): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(mSettings.getAuthToken()!!))
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("token", status)) }
+    }
+
+    private fun mobileModeRequest(): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("mobile mode", status)) }
+    }
+
+    private fun sendLocationConfiguration(location: Session.Location): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
+    }
+
+    private fun sendWifiConfiguration(wifiSSID: String, wifiPassword: String): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword))
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("wifi credentials", status)) }
+    }
+
+    private fun cellularModeRequest(): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage)
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("cellular mode", status)) }
     }
 }
