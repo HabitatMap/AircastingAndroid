@@ -1,8 +1,7 @@
-package io.lunarlogic.aircasting.sensor.airbeam2
+package io.lunarlogic.aircasting.sensor
 
 import android.util.Base64
 import io.lunarlogic.aircasting.lib.TimezoneHelper
-import java.io.UnsupportedEncodingException
 
 class HexMessagesBuilder {
     private val BEGIN_MESSAGE_CODE = 0xfe.toByte()

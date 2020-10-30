@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 
+
 class SelectDeviceFragment() : Fragment() {
     private var controller: SelectDeviceController? = null
     var listener: SelectDeviceViewMvc.Listener? = null
@@ -22,7 +23,8 @@ class SelectDeviceFragment() : Fragment() {
                 layoutInflater,
                 null
             )
-        if (bluetoothManager != null && listener != null) {
+
+        if (listener != null) {
             controller =
                 SelectDeviceController(
                     context,

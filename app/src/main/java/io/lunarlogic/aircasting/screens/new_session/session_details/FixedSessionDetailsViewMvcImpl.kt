@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.network_list_item.view.*
 class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>,
     FixedSessionDetailsViewMvc, FixedSessionDetailsViewMvc.OnPasswordProvidedListener {
     private val fragmentManager: FragmentManager
+    private var sessionUUID: String
     private var deviceId: String
     private var indoor = true
     private var streamingMethod = Session.StreamingMethod.CELLULAR
@@ -41,10 +42,12 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         inflater: LayoutInflater,
         parent: ViewGroup?,
         fragmentManager: FragmentManager,
+        sessionUUID: String,
         deviceId: String
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_fixed_session_details, parent, false)
         this.fragmentManager = fragmentManager
+        this.sessionUUID = sessionUUID
         this.deviceId = deviceId
 
         val indoorToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.indoor_toggle)
@@ -221,6 +224,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     ) {
         for (listener in listeners) {
             listener.onSessionDetailsContinueClicked(
+                sessionUUID,
                 deviceId,
                 Session.Type.FIXED,
                 sessionName,
