@@ -44,6 +44,7 @@ class AirBeam3Configurator(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(uuid))
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("uuid", status)) }
             )
+            .add(sleep(500))
             .add(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(mSettings.getAuthToken()!!))
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("token", status)) }
@@ -76,6 +77,7 @@ class AirBeam3Configurator(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("mobile mode", status)) }
             )
+            .add(sleep(500))
             .add(requestMtu(MAX_MTU))
             .enqueue()
     }
@@ -91,6 +93,7 @@ class AirBeam3Configurator(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
             )
+            .add(sleep(500))
             .add(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword))
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("wifi credentials", status)) }
@@ -106,6 +109,7 @@ class AirBeam3Configurator(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
             )
+            .add(sleep(500))
             .add(
                 writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage)
                     .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("cellular mode", status)) }
@@ -167,7 +171,7 @@ class AirBeam3Configurator(
                 queue.add(
                     enableNotifications(characteristic)
                         .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
-                )
+                ).add(sleep(500))
             }
             queue.enqueue()
         }
