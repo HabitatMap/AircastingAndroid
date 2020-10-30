@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -176,14 +177,14 @@ class Session(
     fun sensorPackageNamesString(): String? {
         val PHONE_MIC_SENSOR_PACKAGE_NAME = "Phone Mic"
         val packageNames = mStreams.mapNotNull { s ->
-            val name = s.sensorPackageName.split(":").firstOrNull()
+            val name = s.sensorPackageName.split(":", "-").firstOrNull()
             when (name) {
-                "Builtin" -> PHONE_MIC_SENSOR_PACKAGE_NAME
+                MicrophoneReader.deviceId -> PHONE_MIC_SENSOR_PACKAGE_NAME
                 else -> name
             }
         }
 
-       return packageNames?.distinct()?.joinToString(", ")
+       return packageNames.distinct().joinToString(", ")
     }
 
     fun measurementsCount(): Int {

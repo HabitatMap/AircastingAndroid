@@ -15,7 +15,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.MeasurementStream
-import kotlinx.android.synthetic.main.activity_map.view.*
+import kotlinx.android.synthetic.main.session_card.view.*
 
 
 class MeasurementsTableContainer {

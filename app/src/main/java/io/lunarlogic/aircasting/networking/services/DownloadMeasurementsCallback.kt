@@ -59,14 +59,9 @@ class DownloadMeasurementsCallback(
             sessionId,
             stream
         )
-        streamResponse.measurements.forEach { measurementResponse ->
-            val measurement = Measurement(measurementResponse)
-            measurementsRepository.insert(
-                streamId,
-                sessionId,
-                measurement
-            )
-            sessionsRepository.update(session)
-        }
+        val measurements = streamResponse.measurements.map { response -> Measurement(response) }
+        measurementsRepository.insertAll(streamId, sessionId, measurements)
+
+        sessionsRepository.update(session)
     }
 }
