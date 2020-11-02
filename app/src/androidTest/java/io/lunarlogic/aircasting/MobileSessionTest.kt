@@ -98,7 +98,6 @@ class MobileSessionTest {
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
-
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
@@ -121,12 +120,36 @@ class MobileSessionTest {
         val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
+        onView(withId(R.id.expand_session_button)).perform(click())
+        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
+
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        onView(withId(R.id.map_button)).perform(click())
+
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        onView(withId(R.id.map)).check(matches(isDisplayed()))
+        onView(withId(R.id.hlu)).check(matches(isDisplayed()))
+        onView(isRoot()).perform(pressBack());
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
+
         stopSession()
         
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")));
+        onView(withId(R.id.expand_session_button)).perform(click())
+        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
+
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        onView(withId(R.id.map_button)).perform(click())
+
+        onView(withId(R.id.more_button)).perform(click())
+        onView(isRoot()).perform(swipeUp())
+        onView(withId(R.id.reset_button)).perform(click())
     }
 
     @Test

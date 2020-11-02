@@ -1,178 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/dialog_background">
-
-    <ImageView
-        android:id="@+id/close_button"
-        android:src="@drawable/ic_x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/keyline_4"
-        android:layout_gravity="right"
-        android:tint="@color/aircasting_dark_blue" />
-
-    <TextView
-        android:id="@+id/hlu_dialog_header"
+    android:fillViewport="true">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.Dialog.Header"
-        android:textSize="@dimen/text_size_xl"
-        app:lineHeight="@dimen/keyline_6"
-        android:textAlignment="textStart"
-        android:text="@string/hlu_dialog_header"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_6" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/dialog_background">
 
-    <TextView
-        android:id="@+id/hlu_dialog_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.Dialog.Description"
-        app:lineHeight="@dimen/keyline_6"
-        android:textAlignment="textStart"
-        android:text="@string/hlu_dialog_description"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_6" />
+        <ImageView
+            android:id="@+id/close_button"
+            android:src="@drawable/ic_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/keyline_4"
+            android:layout_gravity="right"
+            android:tint="@color/aircasting_dark_blue" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hlu_dialog_min"
-        android:textColorHint="@color/aircasting_grey_400"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/hlu_dialog_min"
-            android:inputType="number"
+        <TextView
+            android:id="@+id/hlu_dialog_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
-            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            style="@style/TextAppearance.Aircasting.Dialog.Header"
+            android:textSize="@dimen/text_size_xl"
+            app:lineHeight="@dimen/keyline_6"
+            android:textAlignment="textStart"
+            android:text="@string/hlu_dialog_header"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_6" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hlu_dialog_low"
-        android:textColorHint="@color/aircasting_grey_400"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/hlu_dialog_low"
-            android:inputType="number"
+        <TextView
+            android:id="@+id/hlu_dialog_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
-            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            style="@style/TextAppearance.Aircasting.Dialog.Description"
+            app:lineHeight="@dimen/keyline_6"
+            android:textAlignment="textStart"
+            android:text="@string/hlu_dialog_description"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_6" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hlu_dialog_medium"
-        android:textColorHint="@color/aircasting_grey_400"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/hlu_dialog_medium"
-            android:inputType="number"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
+            android:hint="@string/hlu_dialog_min"
+            android:textColorHint="@color/aircasting_grey_400"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/hlu_dialog_min"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hlu_dialog_low"
+            android:textColorHint="@color/aircasting_grey_400"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/hlu_dialog_low"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/hlu_dialog_medium"
-            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            android:textColorHint="@color/aircasting_grey_400"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/hlu_dialog_medium"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:hint="@string/hlu_dialog_medium"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hlu_dialog_high"
-        android:textColorHint="@color/aircasting_grey_400"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/hlu_dialog_high"
-            android:inputType="number"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
             android:hint="@string/hlu_dialog_high"
-            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            android:textColorHint="@color/aircasting_grey_400"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/hlu_dialog_high"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:hint="@string/hlu_dialog_high"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hlu_dialog_max"
-        android:textColorHint="@color/aircasting_grey_400"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/hlu_dialog_max"
-            android:inputType="number"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Aircasting.TextInputLayoutFilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
             android:hint="@string/hlu_dialog_max"
-            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            android:textColorHint="@color/aircasting_grey_400"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/hlu_dialog_max"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:hint="@string/hlu_dialog_max"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
 
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:text="@string/hlu_dialog_save_button" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/reset_button"
-        style="@style/Widget.Aircasting.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/moderat_trial_bold"
-        android:textSize="@dimen/button_text_size"
-        android:text="@string/hlu_dialog_reset_button"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_6" />
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:text="@string/hlu_dialog_save_button" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+        <Button
+            android:id="@+id/reset_button"
+            style="@style/Widget.Aircasting.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/moderat_trial_bold"
+            android:textSize="@dimen/button_text_size"
+            android:text="@string/hlu_dialog_reset_button"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_6" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</ScrollView>
