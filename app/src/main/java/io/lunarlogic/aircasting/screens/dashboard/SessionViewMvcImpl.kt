@@ -97,6 +97,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
 
+    protected open fun showChart() = true
+
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet()
         mBottomSheet?.show(mSupportFragmentManager)
@@ -129,7 +131,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         bindSessionDetails()
         bindMeasurementsTable()
-        bindChartData()
+
+        if (showChart()) {
+            bindChartData()
+        }
     }
 
     protected fun bindSessionDetails() {
@@ -153,7 +158,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
         mMeasurementsTableContainer.makeSelectable()
-        mChartView?.visibility = View.VISIBLE
+
+        if (showChart()) {
+            mChartView?.visibility = View.VISIBLE
+        }
     }
 
     protected open fun collapseSessionCard() {
