@@ -56,6 +56,6 @@ class MobileDormantSessionViewMvcImpl(
     }
 
     private fun setExpandedMeasurementDescriptionText() {
-        mMeasurementsDescriptionTextView?.text = context.getString(R.string.session_measurements_description)
+        mMeasurementsDescriptionTextView?.text = context.getString(R.string.session_avg_measurements_description)
     }
 }

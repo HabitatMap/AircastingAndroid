@@ -106,7 +106,7 @@ class MeasurementsTableContainer {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             bindStream(stream)
-            bindLastMeasurement(stream)
+            bindAvgMeasurement(stream)
         }
     }
 
@@ -182,8 +182,8 @@ class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    private fun bindLastMeasurement(stream: MeasurementStream) {
-        val measurement = stream.measurements.lastOrNull() ?: return
+    private fun bindAvgMeasurement(stream: MeasurementStream) {
+        val measurement = stream.getAvgMeasurement() ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
         valueView.background = null
@@ -191,7 +191,7 @@ class MeasurementsTableContainer {
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
-        valueTextView.text = measurement.valueString()
+        valueTextView.text = formatAverage(measurement)
 
         val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.sensorThresholdFor(stream))
         circleView.setColorFilter(color)
@@ -210,6 +210,14 @@ class MeasurementsTableContainer {
                 markMeasurementHeaderAsSelected(stream)
                 valueView.background = SelectedSensorBorder(color)
             }
+        }
+    }
+
+    private fun formatAverage(value: Double?): String {
+        if (value == null) {
+            return "-"
+        } else {
+            return "%.0f".format(value)
         }
     }
 }
