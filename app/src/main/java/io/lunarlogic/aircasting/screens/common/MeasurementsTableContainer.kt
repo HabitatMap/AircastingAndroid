@@ -14,6 +14,7 @@ import androidx.core.view.get
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import kotlinx.android.synthetic.main.session_card.view.*
 
@@ -183,7 +184,7 @@ class MeasurementsTableContainer {
     }
 
     private fun bindAvgMeasurement(stream: MeasurementStream) {
-        val measurement = stream.getAvgMeasurement() ?: return
+        val measurementValue = stream.getAvgMeasurement() ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
         valueView.background = null
@@ -191,9 +192,9 @@ class MeasurementsTableContainer {
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
-        valueTextView.text = formatAverage(measurement)
+        valueTextView.text = Measurement.formatValue(measurementValue)
 
-        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.sensorThresholdFor(stream))
+        val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
 
@@ -210,14 +211,6 @@ class MeasurementsTableContainer {
                 markMeasurementHeaderAsSelected(stream)
                 valueView.background = SelectedSensorBorder(color)
             }
-        }
-    }
-
-    private fun formatAverage(value: Double?): String {
-        if (value == null) {
-            return "-"
-        } else {
-            return "%.0f".format(value)
         }
     }
 }

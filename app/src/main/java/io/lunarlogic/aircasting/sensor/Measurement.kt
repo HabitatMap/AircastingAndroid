@@ -59,9 +59,13 @@ class Measurement(
             val index = sensorThreshold.levels.indexOfLast { level -> value >= level }
             return Level.values().first { it.value == index }
         }
-    }
 
-    fun valueString(): String {
-        return "%.0f".format(value)
+        fun formatValue(value: Double?): String {
+            if (value == null) {
+                return "-"
+            } else {
+                return "%.0f".format(value)
+            }
+        }
     }
 }
