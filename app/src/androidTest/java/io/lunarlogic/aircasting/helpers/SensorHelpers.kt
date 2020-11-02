@@ -10,5 +10,6 @@ fun stubPairedDevice(bluetoothManager: BluetoothManager, id: String, name: Strin
     whenever(deviceItem.id).thenReturn(id)
     whenever(deviceItem.name).thenReturn(name)
     whenever(deviceItem.address).thenReturn(address)
+    whenever(deviceItem.type).thenReturn(DeviceItem.Type.AIRBEAM2)
     whenever(bluetoothManager.pairedDeviceItems()).thenReturn(listOf(deviceItem))
 }
