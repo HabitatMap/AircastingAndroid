@@ -125,6 +125,7 @@ class MobileSessionTest {
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        Thread.sleep(3000)
         onView(withId(R.id.map_button)).perform(click())
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
