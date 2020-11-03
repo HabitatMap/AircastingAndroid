@@ -40,6 +40,7 @@ abstract class SessionsController(
             val sensorThresholds = getSensorThresholds(sessions)
 
             if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
+                mViewMvc.hideLoader()
                 if (sessions.size > 0) {
                     updateSensorThresholds(sensorThresholds)
                     showSessionsView(coroutineScope, sessions)
@@ -97,7 +98,7 @@ abstract class SessionsController(
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
     fun onCreate() {
-        sync()
+        mViewMvc.showLoader()
     }
 
     fun onResume() {
@@ -115,10 +116,6 @@ abstract class SessionsController(
     }
 
     override fun onSwipeToRefreshTriggered() {
-        sync()
-    }
-
-    private fun sync() {
         mMobileSessionsSyncService.sync({
             mViewMvc.showLoader()
         }, {
