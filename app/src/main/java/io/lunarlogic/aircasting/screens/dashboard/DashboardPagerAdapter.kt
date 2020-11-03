@@ -27,6 +27,8 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         val MOBILE_DORMANT_TAB_INDEX = 2
         val FIXED_TAB_INDEX = 3
 
+        val TABS_COUNT = 4
+
         fun tabIndexForSessionType(sessionType: Session.Type, sessionStatus: Session.Status): Int {
             if (sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.RECORDING) {
                 return MOBILE_ACTIVE_TAB_INDEX
@@ -41,7 +43,7 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
     }
 
     override fun getCount(): Int {
-        return 4
+        return TABS_COUNT
     }
 
     override fun getPageTitle(position: Int): CharSequence {
