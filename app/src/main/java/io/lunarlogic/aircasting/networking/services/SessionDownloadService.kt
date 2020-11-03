@@ -57,6 +57,10 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             streams
         )
 
+        if (sessionResponse.latitude != null && sessionResponse.longitude != null) {
+            session.location = Session.Location(sessionResponse.latitude, sessionResponse.longitude)
+        }
+
         return session
     }
 

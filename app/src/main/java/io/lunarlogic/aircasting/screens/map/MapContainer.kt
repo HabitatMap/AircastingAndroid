@@ -18,6 +18,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicInteger
@@ -80,14 +81,12 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun setup() {
+        clearMap()
+
         mMap?.isBuildingsEnabled = false
 
-        if (mMeasurements.size > 0) {
-            drawSession()
-            animateCameraToSession()
-        } else {
-            locate()
-        }
+        drawSession()
+        animateCameraToSession()
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
@@ -108,6 +107,7 @@ class MapContainer: OnMapReadyCallback {
 
     private fun drawSession() {
         if (mMap == null) return
+        if (mMeasurements.isEmpty()) return
 
         var latestPoint: LatLng? = null
         var latestColor: Int? = null
@@ -143,13 +143,41 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun animateCameraToSession() {
+        if (mSessionPresenter?.isFixed() == true) {
+            animateCameraToFixedSession()
+        } else {
+            animateCameraToMobileSession()
+        }
+    }
+
+    private fun animateCameraToMobileSession() {
+        if (mMeasurements.isEmpty()) return
+
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
         mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
     }
 
+    private fun animateCameraToFixedSession() {
+        val session = mSessionPresenter?.session
+        val location = session?.location
+
+        location ?: return
+
+        centerMap(location)
+    }
+
     fun centerMap(location: Location) {
         val position = LatLng(location.latitude, location.longitude)
+        centerMap(position)
+    }
+
+    fun centerMap(location: Session.Location) {
+        val position = LatLng(location.latitude, location.longitude)
+        centerMap(position)
+    }
+
+    fun centerMap(position: LatLng) {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
