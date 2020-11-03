@@ -35,7 +35,11 @@ class Session(
         sessionDBObject.version,
         sessionDBObject.deleted,
         sessionDBObject.followed
-    )
+    ) {
+        if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
+            this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
+        }
+    }
 
     constructor(
         sessionUUID: String,
