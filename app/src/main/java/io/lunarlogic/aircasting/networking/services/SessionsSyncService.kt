@@ -47,12 +47,13 @@ class SessionsSyncService {
         }
     }
 
-    fun sync(callback: (() -> Unit)? = null) {
+    fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
         if (syncStarted.get()) {
             return
         }
 
         syncStarted.set(true)
+        showLoaderCallback?.invoke()
 
         DatabaseProvider.runQuery {
             val sessions = sessionRepository.finishedSessions()
@@ -66,7 +67,7 @@ class SessionsSyncService {
                     response: Response<SyncResponse>
                 ) {
                     syncStarted.set(false)
-                    callback?.invoke()
+                    hideLoaderCallback?.invoke()
 
                     if (response.isSuccessful) {
                         val body = response.body()
@@ -85,7 +86,7 @@ class SessionsSyncService {
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
-                    callback?.invoke()
+                    hideLoaderCallback?.invoke()
                     errorHandler.handleAndDisplay(SyncError(t))
                 }
             })

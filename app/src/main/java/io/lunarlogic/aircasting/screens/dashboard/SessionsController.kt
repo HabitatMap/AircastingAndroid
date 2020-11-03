@@ -97,8 +97,7 @@ abstract class SessionsController(
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
     fun onCreate() {
-        mViewMvc.showLoader()
-        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
+        sync()
     }
 
     fun onResume() {
@@ -116,7 +115,15 @@ abstract class SessionsController(
     }
 
     override fun onSwipeToRefreshTriggered() {
-        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
+        sync()
+    }
+
+    private fun sync() {
+        mMobileSessionsSyncService.sync({
+            mViewMvc.showLoader()
+        }, {
+            mViewMvc.hideLoader()
+        })
     }
 
     override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {
