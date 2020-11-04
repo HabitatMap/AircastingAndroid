@@ -104,8 +104,8 @@ class Session(
         }
     }
 
-    val DEFAULT_DATE_FORMAT = "MM/dd/yyyy"
-    val DEFAULT_HOUR_FORMAT = "HH:mm"
+    private val DATE_FORMAT = "MM/dd/yy"
+    private val HOUR_FORMAT = "HH:mm"
 
     val type get() = mType
     val name get() = mName
@@ -164,13 +164,19 @@ class Session(
     }
 
     fun durationString(): String {
-        val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
-        val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)
+        val dateFormatter = dateTimeFormatter(DATE_FORMAT)
+        val hourFormatter = dateTimeFormatter(HOUR_FORMAT)
 
         var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
-        if (endTime != null) {
+
+        if (endTime == null) return durationString
+
+        if (endTime!!.day != startTime.day) {
+            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
+        } else {
             durationString += "-${hourFormatter.format(endTime)}"
         }
+
         return durationString
     }
 
