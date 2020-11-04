@@ -40,7 +40,8 @@ abstract class SessionsController(
             val sensorThresholds = getSensorThresholds(sessions)
 
             if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
-                mViewMvc.hideLoader()
+                hideLoader(coroutineScope)
+
                 if (sessions.size > 0) {
                     updateSensorThresholds(sensorThresholds)
                     showSessionsView(coroutineScope, sessions)
@@ -50,6 +51,12 @@ abstract class SessionsController(
 
                 updateSessionsCache(sessions)
             }
+        }
+    }
+
+    private fun hideLoader(coroutineScope: CoroutineScope) {
+        DatabaseProvider.backToUIThread(coroutineScope) {
+            mViewMvc.hideLoader()
         }
     }
 

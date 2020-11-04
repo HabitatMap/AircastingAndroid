@@ -139,8 +139,8 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed outdoor session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Fixed: ")));
+        onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed outdoor session")))
+        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")));
     }
 
     @Test
@@ -196,7 +196,7 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed indoor session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Fixed: ")));
+        onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed indoor session")))
+        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")));
     }
 }
