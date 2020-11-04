@@ -19,7 +19,6 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -127,6 +126,7 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(3000)
         onView(withId(R.id.map_button)).perform(click())
+        Thread.sleep(3000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
@@ -147,6 +147,7 @@ class MobileSessionTest {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         onView(withId(R.id.map_button)).perform(click())
+        Thread.sleep(3000)
 
         onView(withId(R.id.more_button)).perform(click())
         onView(isRoot()).perform(swipeUp())
@@ -192,6 +193,7 @@ class MobileSessionTest {
 
         onView(withId(R.id.session_actions_button)).perform(click())
         onView(withId(R.id.delete_session_button)).perform(click())
+        Thread.sleep(2000)
         onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
     }
 
