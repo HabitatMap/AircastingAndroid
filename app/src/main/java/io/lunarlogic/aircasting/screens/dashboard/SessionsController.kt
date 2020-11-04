@@ -87,7 +87,9 @@ abstract class SessionsController(
     }
 
     private fun anySessionChanged(sessions: List<Session>): Boolean {
-        return mSessions.isEmpty() || sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
+        return mSessions.isEmpty() ||
+                mSessions.size != sessions.size ||
+                sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
     }
 
     private fun updateSessionsCache(sessions: List<Session>) {
