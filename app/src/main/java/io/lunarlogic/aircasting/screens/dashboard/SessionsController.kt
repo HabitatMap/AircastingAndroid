@@ -132,6 +132,18 @@ abstract class SessionsController(
         })
     }
 
+    override fun onFollowButtonClicked(session: Session) {
+        DatabaseProvider.runQuery {
+            mSessionsViewModel.follow(session)
+        }
+    }
+
+    override fun onUnfollowButtonClicked(session: Session) {
+        DatabaseProvider.runQuery {
+            mSessionsViewModel.unfollow(session)
+        }
+    }
+
     override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {
         MapActivity.start(mRootActivity, sessionUUID, sensorName)
     }

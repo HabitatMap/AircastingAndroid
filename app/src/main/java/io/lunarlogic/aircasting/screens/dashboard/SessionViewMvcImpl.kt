@@ -35,6 +35,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected val mChart: Chart
     protected val mChartView: ConstraintLayout?
 
+    private var mFollowButton: Button
+    private var mUnfollowButton: Button
     private var mMapButton: Button
     private var mLoader: ImageView?
 
@@ -82,6 +84,16 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             collapseSessionCard()
             onCollapseSessionCardClicked()
         }
+        mFollowButton = findViewById(R.id.follow_button)
+        mFollowButton.setOnClickListener {
+            onFollowButtonClicked()
+        }
+
+        mUnfollowButton = findViewById(R.id.unfollow_button)
+        mUnfollowButton.setOnClickListener {
+            onUnfollowButtonClicked()
+        }
+
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
@@ -185,6 +197,22 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
         bindChartData()
+    }
+
+    private fun onFollowButtonClicked() {
+        mSessionPresenter?.session?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onFollowButtonClicked(it)
+            }
+        }
+    }
+
+    private fun onUnfollowButtonClicked() {
+        mSessionPresenter?.session?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onUnfollowButtonClicked(it)
+            }
+        }
     }
 
     private fun onMapButtonClicked() {

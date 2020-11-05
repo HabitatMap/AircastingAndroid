@@ -5,5 +5,7 @@ import io.lunarlogic.aircasting.sensor.Session
 
 interface SessionCardListener {
     fun onExpandSessionCard(session: Session)
+    fun onFollowButtonClicked(session: Session)
+    fun onUnfollowButtonClicked(session: Session)
     fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?)
 }
