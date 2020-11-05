@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
+import io.lunarlogic.aircasting.screens.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.map.MapActivity
 import io.lunarlogic.aircasting.sensor.SensorThreshold
 import io.lunarlogic.aircasting.sensor.Session
@@ -153,7 +154,7 @@ abstract class SessionsController(
     }
 
     override fun onGraphButtonClicked(sessionUUID: String, sensorName: String?) {
-        println("ANIA graph!")
+        GraphActivity.start(mRootActivity, sessionUUID, sensorName)
     }
 
     override fun onExpandSessionCard(session: Session) {
