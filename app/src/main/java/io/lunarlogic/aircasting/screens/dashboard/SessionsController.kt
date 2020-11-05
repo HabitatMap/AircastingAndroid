@@ -134,16 +134,17 @@ abstract class SessionsController(
     }
 
     override fun onFollowButtonClicked(session: Session) {
-        DatabaseProvider.runQuery {
-            mSessionsViewModel.follow(session)
-        }
-
+        updateFollowedAt(session)
         NavigationController.goToDashboard(DashboardPagerAdapter.FOLLOWING_TAB_INDEX)
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
+        updateFollowedAt(session)
+    }
+
+    private fun updateFollowedAt(session: Session) {
         DatabaseProvider.runQuery {
-            mSessionsViewModel.unfollow(session)
+            mSessionsViewModel.updateFollowedAt(session)
         }
     }
 

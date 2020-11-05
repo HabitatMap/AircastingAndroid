@@ -219,7 +219,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun onFollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
-            session.followed = true
+            session.follow()
             bindFollowButtons(mSessionPresenter!!)
 
             for (listener in listeners) {
@@ -230,7 +230,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun onUnfollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
-            session.followed = false
+            session.unfollow()
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onUnfollowButtonClicked(session)
             }

@@ -20,7 +20,7 @@ class Session(
     var endTime: Date? = null,
     var version: Int = 0,
     var deleted: Boolean = false,
-    var followed: Boolean = false,
+    var followedAt: Date? = null,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
@@ -34,7 +34,7 @@ class Session(
         sessionDBObject.endTime,
         sessionDBObject.version,
         sessionDBObject.deleted,
-        sessionDBObject.followed
+        sessionDBObject.followedAt
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
@@ -120,6 +120,7 @@ class Session(
     val streams get() = mStreams
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
+    val followed get() = followedAt != null
 
     val displayedType get() = when(type) {
         Type.MOBILE -> "mobile"
@@ -133,6 +134,14 @@ class Session(
     fun stopRecording() {
         endTime = Date()
         mStatus = Status.FINISHED
+    }
+
+    fun unfollow() {
+        followedAt = null
+    }
+
+    fun follow() {
+        followedAt = Date()
     }
 
     fun isUploadable(): Boolean {
