@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
@@ -136,6 +137,8 @@ abstract class SessionsController(
         DatabaseProvider.runQuery {
             mSessionsViewModel.follow(session)
         }
+
+        NavigationController.goToDashboard(DashboardPagerAdapter.FOLLOWING_TAB_INDEX)
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
