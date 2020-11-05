@@ -7,6 +7,27 @@
 
     <Button
         style="@style/Widget.Aircasting.ExpandedCardButtons"
+        android:id="@+id/follow_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/follow_button"
+        android:backgroundTint="@color/aircasting_blue_400"
+        android:textColor="@color/aircasting_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        style="@style/Widget.Aircasting.ExpandedCardButtonUnfollow"
+        android:id="@+id/unfollow_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/unfollow_button"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        style="@style/Widget.Aircasting.ExpandedCardButtons"
         android:id="@+id/map_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
