@@ -53,7 +53,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             DateConverter.fromString(sessionResponse.end_time),
             sessionResponse.version,
             sessionResponse.deleted,
-            false,
+            null,
             streams
         )
 

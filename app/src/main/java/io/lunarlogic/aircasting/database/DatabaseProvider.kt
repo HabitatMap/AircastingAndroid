@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.database.converters.TagsConverter
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_17_18
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_18_19
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
         MeasurementDBObject::class,
         SensorThresholdDBObject::class
     ),
-    version = 18,
+    version = 19,
     exportSchema = true
 )
 @TypeConverters(
@@ -56,7 +57,8 @@ class DatabaseProvider {
                     AppDatabase::class.java, DB_NAME
                 ).addMigrations(
                     MIGRATION_16_17,
-                    MIGRATION_17_18
+                    MIGRATION_17_18,
+                    MIGRATION_18_19
                 ).build()
             }
 
