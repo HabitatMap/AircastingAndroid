@@ -39,6 +39,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
     private var mMapButton: Button
+    private var mGraphButton: Button
     private var mLoader: ImageView?
 
     protected var mSessionPresenter: SessionPresenter? = null
@@ -99,6 +100,11 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
+        }
+
+        mGraphButton = findViewById(R.id.graph_button)
+        mGraphButton.setOnClickListener {
+            onGraphButtonClicked()
         }
 
         mActionsButton.setOnClickListener {
@@ -262,6 +268,17 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mSessionPresenter?.session?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onMapButtonClicked(
+                    it,
+                    mSessionPresenter?.selectedStream
+                )
+            }
+        }
+    }
+
+    private fun onGraphButtonClicked() {
+        mSessionPresenter?.session?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onGraphButtonClicked(
                     it,
                     mSessionPresenter?.selectedStream
                 )

@@ -127,4 +127,10 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
             listener.onMapButtonClicked(session, measurementStream?.sensorName)
         }
     }
+
+    fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?) {
+        for (listener in listeners) {
+            listener.onGraphButtonClicked(session.uuid, measurementStream?.sensorName)
+        }
+    }
 }

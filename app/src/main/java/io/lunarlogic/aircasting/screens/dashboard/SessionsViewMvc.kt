@@ -15,6 +15,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onFollowButtonClicked(session: Session)
         fun onUnfollowButtonClicked(session: Session)
         fun onMapButtonClicked(session: Session, sensorName: String?)
+        fun onGraphButtonClicked(sessionUUID: String, sensorName: String?)
         fun onExpandSessionCard(session: Session)
     }
 

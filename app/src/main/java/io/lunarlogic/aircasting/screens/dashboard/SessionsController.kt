@@ -152,6 +152,10 @@ abstract class SessionsController(
         MapActivity.start(mRootActivity, sensorName, session.uuid, session.type, session.status)
     }
 
+    override fun onGraphButtonClicked(sessionUUID: String, sensorName: String?) {
+        println("ANIA graph!")
+    }
+
     override fun onExpandSessionCard(session: Session) {
         if (session.isIncomplete()) {
             mViewMvc.showLoaderFor(session)
