@@ -124,8 +124,8 @@ class MobileSessionTest {
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        Thread.sleep(3000)
-        onView(withId(R.id.map_button)).perform(click())
+        Thread.sleep(1000)
+        openMap()
         Thread.sleep(3000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
@@ -146,7 +146,8 @@ class MobileSessionTest {
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        onView(withId(R.id.map_button)).perform(click())
+        Thread.sleep(1000)
+        openMap()
         Thread.sleep(3000)
 
         onView(withId(R.id.more_button)).perform(click())
@@ -195,6 +196,19 @@ class MobileSessionTest {
         onView(withId(R.id.delete_session_button)).perform(click())
         Thread.sleep(2000)
         onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
+    }
+
+    private fun openMap(retryCount: Int = 0) {
+        if (retryCount >= 3) {
+            return
+        }
+
+        try {
+            onView(withId(R.id.map_button)).perform(click())
+        } catch(e: NoMatchingViewException) {
+            Thread.sleep(1000)
+            stopSession(retryCount + 1)
+        }
     }
 
     private fun stopSession(retryCount: Int = 0) {
