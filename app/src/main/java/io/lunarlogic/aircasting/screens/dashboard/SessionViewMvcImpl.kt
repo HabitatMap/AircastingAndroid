@@ -176,11 +176,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun bindFollowButtons(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.session?.followed == true) {
-            mFollowButton.visibility = View.GONE
-        } else {
-            mUnfollowButton.visibility = View.GONE
-        }
+        mFollowButton.visibility = View.GONE
+        mUnfollowButton.visibility = View.GONE
     }
 
     protected open fun expandSessionCard() {
