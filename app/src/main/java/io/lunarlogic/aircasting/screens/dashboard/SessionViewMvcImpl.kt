@@ -35,8 +35,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected val mChart: Chart
     protected val mChartView: ConstraintLayout?
 
-    private var mFollowButton: Button
-    private var mUnfollowButton: Button
+    protected var mFollowButton: Button
+    protected var mUnfollowButton: Button
     private var mMapButton: Button
     private var mLoader: ImageView?
 
@@ -125,27 +125,35 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
+        bindLoader(sessionPresenter)
+        bindExpanded(sessionPresenter)
+        bindSelectedStream(sessionPresenter)
+        bindSessionDetails()
+        bindMeasurementsTable()
+        bindChartData()
+        bindFollowButtons(sessionPresenter)
+    }
+
+    private fun bindLoader(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.loading) {
             showLoader()
         } else {
             hideLoader()
         }
+    }
+
+    private fun bindExpanded(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.expanded) {
             expandSessionCard()
         } else {
             collapseSessionCard()
         }
+    }
 
+    private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
         mSessionPresenter = sessionPresenter
         if (mSessionPresenter != null && sessionPresenter.selectedStream == null) {
             mSessionPresenter!!.setDefaultStream()
-        }
-
-        bindSessionDetails()
-        bindMeasurementsTable()
-
-        if (showChart()) {
-            bindChartData()
         }
     }
 
@@ -161,8 +169,18 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
     }
 
-    protected open fun bindChartData() {
+    private fun bindChartData() {
+        if (!showChart()) return
+
         mChart.bindChart(mSessionPresenter)
+    }
+
+    protected open fun bindFollowButtons(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.session?.followed == true) {
+            mFollowButton.visibility = View.GONE
+        } else {
+            mUnfollowButton.visibility = View.GONE
+        }
     }
 
     protected open fun expandSessionCard() {
@@ -200,17 +218,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun onFollowButtonClicked() {
-        mSessionPresenter?.session?.let {
+        mSessionPresenter?.session?.let { session ->
+            session.followed = true
+            bindFollowButtons(mSessionPresenter!!)
+
             for (listener in listeners) {
-                (listener as? SessionCardListener)?.onFollowButtonClicked(it)
+                (listener as? SessionCardListener)?.onFollowButtonClicked(session)
             }
         }
     }
 
     private fun onUnfollowButtonClicked() {
-        mSessionPresenter?.session?.let {
+        mSessionPresenter?.session?.let { session ->
+            session.followed = false
             for (listener in listeners) {
-                (listener as? SessionCardListener)?.onUnfollowButtonClicked(it)
+                (listener as? SessionCardListener)?.onUnfollowButtonClicked(session)
             }
         }
     }
