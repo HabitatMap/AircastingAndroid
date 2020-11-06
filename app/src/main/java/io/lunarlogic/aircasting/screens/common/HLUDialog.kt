@@ -7,14 +7,13 @@ import com.google.android.material.textfield.TextInputEditText
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
-import io.lunarlogic.aircasting.screens.map.MapViewMvc
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(
     private var mSensorThreshold: SensorThreshold?,
     private val mMeasurementStream: MeasurementStream?,
     mFragmentManager: FragmentManager,
-    private val listener: MapViewMvc.HLUDialogListener
+    private val listener: HLUDialogListener
 ): BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 

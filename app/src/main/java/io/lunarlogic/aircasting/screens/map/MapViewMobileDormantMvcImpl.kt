@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
-import kotlinx.android.synthetic.main.activity_map.view.*
+import io.lunarlogic.aircasting.screens.common.HLUDialogListener
 
 class MapViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?): MapViewMvcImpl(inflater, parent, supportFragmentManager), MapViewMvc, MapViewMvc.HLUDialogListener {
+    supportFragmentManager: FragmentManager?): MapViewMvcImpl(inflater, parent, supportFragmentManager), MapViewMvc,
+    HLUDialogListener {
 
     override fun bindStatisticsContainer() {
         mStatisticsContainer = null

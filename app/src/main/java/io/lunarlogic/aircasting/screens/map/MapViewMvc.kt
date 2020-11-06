@@ -1,26 +1,14 @@
 package io.lunarlogic.aircasting.screens.map
 
 import android.location.Location
+import io.lunarlogic.aircasting.screens.common.HLUListener
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.common.SessionViewMvc
 
-interface MapViewMvc: ObservableViewMvc<MapViewMvc.Listener> {
-    fun bindSession(sessionPresenter: SessionPresenter?)
-
-    fun addMeasurement(measurement: Measurement)
+interface MapViewMvc: ObservableViewMvc<MapViewMvc.Listener>, SessionViewMvc {
     fun centerMap(location: Location)
 
-    interface Listener {
+    interface Listener: HLUListener {
         fun locateRequested()
-        fun onSensorThresholdChanged(sensorThreshold: SensorThreshold)
-        fun onHLUDialogValidationFailed()
-    }
-
-    interface HLUDialogListener {
-        fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold)
-        fun onValidationFailed()
     }
 }

@@ -7,22 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.screens.common.HLUDialog
-import io.lunarlogic.aircasting.screens.common.HLUSlider
-import io.lunarlogic.aircasting.screens.map.MapViewMvc
-import io.lunarlogic.aircasting.screens.common.StatisticsContainer
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.common.*
 import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
-class GraphViewMvcImpl: BaseObservableViewMvc<GraphViewMvc.Listener>, GraphViewMvc, MapViewMvc.HLUDialogListener {
+class GraphViewMvcImpl: BaseObservableViewMvc<GraphViewMvc.Listener>, GraphViewMvc, HLUDialogListener {
     private val mFragmentManager: FragmentManager?
-    private var mListener: GraphViewMvc.Listener? = null
+    private var mListener: HLUListener? = null
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?

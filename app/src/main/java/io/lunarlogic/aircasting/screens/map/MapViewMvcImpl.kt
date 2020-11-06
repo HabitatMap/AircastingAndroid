@@ -16,7 +16,7 @@ import io.lunarlogic.aircasting.screens.common.*
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
+abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, HLUDialogListener {
     private val mFragmentManager: FragmentManager?
     private var mListener: MapViewMvc.Listener? = null
 
