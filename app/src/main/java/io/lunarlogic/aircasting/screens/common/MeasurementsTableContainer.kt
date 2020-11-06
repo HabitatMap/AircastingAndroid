@@ -58,9 +58,9 @@ class MeasurementsTableContainer {
         mSelectedHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_dark_blue, null)
     }
 
-    fun makeSelectable() {
+    fun makeSelectable(displayValues: Boolean = true) {
         mSelectable = true
-        mDisplayValues = true
+        mDisplayValues = displayValues
         mMeasurementValues = mRootView?.measurement_values
 
         refresh()

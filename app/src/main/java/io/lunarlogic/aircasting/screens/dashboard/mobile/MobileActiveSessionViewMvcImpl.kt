@@ -21,6 +21,10 @@ class MobileActiveSessionViewMvcImpl(
         return true
     }
 
+    override fun showExpandedMeasurementsTableValues(): Boolean {
+        return true
+    }
+
     override fun buildBottomSheet(): BottomSheet? {
         return ActiveSessionActionsBottomSheet(this)
     }

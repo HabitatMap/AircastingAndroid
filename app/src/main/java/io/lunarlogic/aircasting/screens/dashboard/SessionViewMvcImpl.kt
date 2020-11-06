@@ -95,6 +95,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected abstract fun showMeasurementsTableValues(): Boolean
+    protected abstract fun showExpandedMeasurementsTableValues(): Boolean
     protected abstract fun buildBottomSheet(): BottomSheet?
 
     protected open fun showChart() = true
@@ -115,6 +116,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     override fun bindSession(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.loading) {
             showLoader()
+            println("MARYSIA: showing loader")
         } else {
             hideLoader()
         }
@@ -157,7 +159,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandSessionButton.visibility = View.INVISIBLE
         mCollapseSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.VISIBLE
-        mMeasurementsTableContainer.makeSelectable()
+        if(showExpandedMeasurementsTableValues()){
+            mMeasurementsTableContainer.makeSelectable()
+        }
 
         if (showChart()) {
             mChartView?.visibility = View.VISIBLE

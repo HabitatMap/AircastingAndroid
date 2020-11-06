@@ -30,6 +30,10 @@ class MobileDormantSessionViewMvcImpl(
         return false
     }
 
+    override fun showExpandedMeasurementsTableValues(): Boolean {
+        return true
+    }
+
     override fun buildBottomSheet(): BottomSheet {
         return SessionActionsBottomSheet(this)
     }
