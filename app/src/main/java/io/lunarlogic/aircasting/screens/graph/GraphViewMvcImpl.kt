@@ -10,10 +10,10 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.screens.map.HLUDialog
-import io.lunarlogic.aircasting.screens.map.HLUSlider
+import io.lunarlogic.aircasting.screens.common.HLUDialog
+import io.lunarlogic.aircasting.screens.common.HLUSlider
 import io.lunarlogic.aircasting.screens.map.MapViewMvc
-import io.lunarlogic.aircasting.screens.map.StatisticsContainer
+import io.lunarlogic.aircasting.screens.common.StatisticsContainer
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold

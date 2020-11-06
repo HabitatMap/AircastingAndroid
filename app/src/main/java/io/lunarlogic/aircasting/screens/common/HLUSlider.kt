@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.map
+package io.lunarlogic.aircasting.screens.common
 
 import android.content.Context
 import android.view.View

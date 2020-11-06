@@ -1,13 +1,13 @@
-package io.lunarlogic.aircasting.screens.map
+package io.lunarlogic.aircasting.screens.common
 
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseDialog
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.map.MapViewMvc
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(
