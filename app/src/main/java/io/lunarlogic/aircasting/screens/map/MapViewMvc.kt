@@ -8,14 +8,14 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 
 interface MapViewMvc: ObservableViewMvc<MapViewMvc.Listener> {
-    fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit)
+    fun bindSession(sessionPresenter: SessionPresenter?)
 
     fun addMeasurement(measurement: Measurement)
     fun centerMap(location: Location)
 
     interface Listener {
         fun locateRequested()
-        fun onMeasurementStreamChanged(measurementStream: MeasurementStream)
+        fun onSensorThresholdChanged(sensorThreshold: SensorThreshold)
         fun onHLUDialogValidationFailed()
     }
 

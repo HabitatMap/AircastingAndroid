@@ -8,12 +8,10 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
+import io.lunarlogic.aircasting.models.*
+import io.lunarlogic.aircasting.screens.common.HLUValidationErrorToast
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.models.SensorThreshold
-import io.lunarlogic.aircasting.models.Session
+import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,41 +24,20 @@ class MapController(
     private val sessionUUID: String,
     private var sensorName: String?
 ): MapViewMvc.Listener {
-    private var mSessionPresenter = SessionPresenter()
+    private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
+    private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
     private var mLocateRequested = false
 
     fun onCreate() {
         EventBus.getDefault().register(this);
         mViewMvc.registerListener(this)
 
-        mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(rootActivity, Observer { sessionDBObject ->
-            sessionDBObject?.let {
-                val session = Session(sessionDBObject)
-                if (session.hasChangedFrom(mSessionPresenter.session)) {
-                    onSessionChanged(session)
-                }
-            }
-        })
+        mSessionObserver.observe()
     }
 
-    private fun onSessionChanged(session: Session) {
-        mSessionPresenter.session = session
-
-        DatabaseProvider.runQuery { coroutineScope ->
-            var selectedSensorName = sensorName
-            if (mSessionPresenter.selectedStream != null) {
-                selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
-            }
-
-            val measurementStream = session.streams.firstOrNull { it.sensorName == selectedSensorName }
-            mSessionPresenter.selectedStream = measurementStream
-
-            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
-            mSessionPresenter.setSensorThresholds(sensorThresholds)
-
-            DatabaseProvider.backToUIThread(coroutineScope) {
-                mViewMvc.bindSession(mSessionPresenter, this::onSensorThresholdChanged)
-            }
+    private fun onSessionChanged(coroutineScope: CoroutineScope) {
+        DatabaseProvider.backToUIThread(coroutineScope) {
+            mViewMvc.bindSession(mSessionPresenter)
         }
     }
 
@@ -92,10 +69,6 @@ class MapController(
         }
     }
 
-    override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        this.sensorName = measurementStream.sensorName
-    }
-
     private fun requestLocation() {
         mLocateRequested = true
         LocationHelper.checkLocationServicesSettings(rootActivity)
@@ -105,20 +78,18 @@ class MapController(
         LocationHelper.start()
     }
 
+    override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
+        DatabaseProvider.runQuery {
+            mSessionsViewModel.updateSensorThreshold(sensorThreshold)
+        }
+    }
+
     override fun onHLUDialogValidationFailed() {
-        val errorMessage = rootActivity.getString(R.string.hlu_thresholds_error)
-        val toast = Toast.makeText(rootActivity, errorMessage, Toast.LENGTH_LONG)
-        toast.show()
+        HLUValidationErrorToast.show(rootActivity)
     }
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this);
         mViewMvc.unregisterListener(this)
-    }
-
-    private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
-        DatabaseProvider.runQuery {
-            mSessionsViewModel.updateSensorThreshold(sensorThreshold)
-        }
     }
 }

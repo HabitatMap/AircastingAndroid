@@ -33,8 +33,6 @@ abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapVi
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
 
-    private var mOnSensorThresholdChanged: ((sensorThreshold: SensorThreshold) -> Unit)? = null
-
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -82,9 +80,8 @@ abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapVi
         mStatisticsContainer?.addMeasurement(measurement)
     }
 
-    override fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
+    override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        mOnSensorThresholdChanged = onSensorThresholdChanged
 
         bindSessionDetails()
         if (sessionPresenter?.selectedStream != null) showSlider()
@@ -127,8 +124,6 @@ abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapVi
         mMapContainer.refresh(mSessionPresenter)
         mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
-
-        mListener?.onMeasurementStreamChanged(measurementStream)
     }
 
     private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
@@ -136,7 +131,7 @@ abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapVi
         mMapContainer.refresh(mSessionPresenter)
         mStatisticsContainer?.refresh(mSessionPresenter)
 
-        mOnSensorThresholdChanged?.invoke(sensorThreshold)
+        mListener?.onSensorThresholdChanged(sensorThreshold)
     }
 
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
