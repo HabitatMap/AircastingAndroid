@@ -1,15 +1,12 @@
 package io.lunarlogic.aircasting.screens.map
 
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
-import io.lunarlogic.aircasting.screens.common.HLUValidationErrorToast
+import io.lunarlogic.aircasting.screens.common.hlu.HLUValidationErrorToast
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus

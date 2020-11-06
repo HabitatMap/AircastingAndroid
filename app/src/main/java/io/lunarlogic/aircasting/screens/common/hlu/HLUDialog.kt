@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.common
+package io.lunarlogic.aircasting.screens.common.hlu
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import com.google.android.material.textfield.TextInputEditText
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(

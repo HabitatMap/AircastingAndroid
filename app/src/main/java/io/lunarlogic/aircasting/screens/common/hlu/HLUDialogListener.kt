@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.common
+package io.lunarlogic.aircasting.screens.common.hlu
 
 import io.lunarlogic.aircasting.models.SensorThreshold
 

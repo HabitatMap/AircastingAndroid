@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.common
+package io.lunarlogic.aircasting.screens.common.hlu
 
 import android.content.Context
 import android.widget.Toast

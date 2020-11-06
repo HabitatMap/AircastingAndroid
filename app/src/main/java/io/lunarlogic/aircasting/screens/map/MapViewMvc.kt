@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.screens.map
 
 import android.location.Location
-import io.lunarlogic.aircasting.screens.common.HLUListener
+import io.lunarlogic.aircasting.screens.common.hlu.HLUListener
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.SessionViewMvc
 

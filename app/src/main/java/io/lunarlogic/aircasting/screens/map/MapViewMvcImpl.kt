@@ -13,6 +13,9 @@ import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.common.*
+import io.lunarlogic.aircasting.screens.common.hlu.HLUDialog
+import io.lunarlogic.aircasting.screens.common.hlu.HLUDialogListener
+import io.lunarlogic.aircasting.screens.common.hlu.HLUSlider
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
