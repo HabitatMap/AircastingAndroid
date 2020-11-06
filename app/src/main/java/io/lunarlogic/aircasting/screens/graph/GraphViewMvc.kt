@@ -7,12 +7,12 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 
 interface GraphViewMvc: ObservableViewMvc<GraphViewMvc.Listener> {
-    fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit)
+    fun bindSession(sessionPresenter: SessionPresenter?)
 
     fun addMeasurement(measurement: Measurement)
 
     interface Listener {
-        fun onMeasurementStreamChanged(measurementStream: MeasurementStream)
+        fun onSensorThresholdChanged(sensorThreshold: SensorThreshold)
         fun onHLUDialogValidationFailed()
     }
 }
