@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
 
-import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView

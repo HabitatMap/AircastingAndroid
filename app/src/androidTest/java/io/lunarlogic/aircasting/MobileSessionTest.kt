@@ -19,8 +19,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -125,8 +124,9 @@ class MobileSessionTest {
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        Thread.sleep(1000)
+        openMap()
         Thread.sleep(3000)
-        onView(withId(R.id.map_button)).perform(click())
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
@@ -146,7 +146,9 @@ class MobileSessionTest {
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        onView(withId(R.id.map_button)).perform(click())
+        Thread.sleep(1000)
+        openMap()
+        Thread.sleep(3000)
 
         onView(withId(R.id.more_button)).perform(click())
         onView(isRoot()).perform(swipeUp())
@@ -189,6 +191,24 @@ class MobileSessionTest {
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")));
+
+        onView(withId(R.id.session_actions_button)).perform(click())
+        onView(withId(R.id.delete_session_button)).perform(click())
+        Thread.sleep(2000)
+        onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
+    }
+
+    private fun openMap(retryCount: Int = 0) {
+        if (retryCount >= 3) {
+            return
+        }
+
+        try {
+            onView(withId(R.id.map_button)).perform(click())
+        } catch(e: NoMatchingViewException) {
+            Thread.sleep(1000)
+            stopSession(retryCount + 1)
+        }
     }
 
     private fun stopSession(retryCount: Int = 0) {

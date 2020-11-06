@@ -15,7 +15,8 @@ class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
         fragmentManager: FragmentManager?
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
-        mPager = rootView?.findViewById<ViewPager>(R.id.pager)
+        mPager = rootView?.findViewById(R.id.pager)
+        mPager?.offscreenPageLimit = DashboardPagerAdapter.TABS_COUNT
         fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
     }
 

@@ -53,9 +53,13 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             DateConverter.fromString(sessionResponse.end_time),
             sessionResponse.version,
             sessionResponse.deleted,
-            false,
+            null,
             streams
         )
+
+        if (sessionResponse.latitude != null && sessionResponse.longitude != null) {
+            session.location = Session.Location(sessionResponse.latitude, sessionResponse.longitude)
+        }
 
         return session
     }

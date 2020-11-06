@@ -20,7 +20,7 @@ class Session(
     var endTime: Date? = null,
     var version: Int = 0,
     var deleted: Boolean = false,
-    var followed: Boolean = false,
+    var followedAt: Date? = null,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
@@ -34,8 +34,12 @@ class Session(
         sessionDBObject.endTime,
         sessionDBObject.version,
         sessionDBObject.deleted,
-        sessionDBObject.followed
-    )
+        sessionDBObject.followedAt
+    ) {
+        if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
+            this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
+        }
+    }
 
     constructor(
         sessionUUID: String,
@@ -100,8 +104,8 @@ class Session(
         }
     }
 
-    val DEFAULT_DATE_FORMAT = "MM/dd/yyyy"
-    val DEFAULT_HOUR_FORMAT = "HH:mm"
+    private val DATE_FORMAT = "MM/dd/yy"
+    private val HOUR_FORMAT = "HH:mm"
 
     val type get() = mType
     val name get() = mName
@@ -116,6 +120,7 @@ class Session(
     val streams get() = mStreams
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
+    val followed get() = followedAt != null
 
     val displayedType get() = when(type) {
         Type.MOBILE -> "mobile"
@@ -129,6 +134,14 @@ class Session(
     fun stopRecording() {
         endTime = Date()
         mStatus = Status.FINISHED
+    }
+
+    fun unfollow() {
+        followedAt = null
+    }
+
+    fun follow() {
+        followedAt = Date()
     }
 
     fun isUploadable(): Boolean {
@@ -160,13 +173,19 @@ class Session(
     }
 
     fun durationString(): String {
-        val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
-        val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)
+        val dateFormatter = dateTimeFormatter(DATE_FORMAT)
+        val hourFormatter = dateTimeFormatter(HOUR_FORMAT)
 
         var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
-        if (endTime != null) {
+
+        if (endTime == null) return durationString
+
+        if (endTime!!.day != startTime.day) {
+            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
+        } else {
             durationString += "-${hourFormatter.format(endTime)}"
         }
+
         return durationString
     }
 

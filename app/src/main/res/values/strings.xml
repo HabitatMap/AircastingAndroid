@@ -34,6 +34,8 @@
     <string name="delete_session">Delete session</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="follow_button">follow</string>
+    <string name="unfollow_button">unfollow</string>
     <string name="map_button">map</string>
 
     <!--  Dialogs -->

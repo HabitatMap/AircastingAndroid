@@ -76,6 +76,10 @@ class SessionsViewModel(): ViewModel() {
         )
     }
 
+    fun updateFollowedAt(session: Session) {
+        mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
+    }
+
     private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, status)
     }

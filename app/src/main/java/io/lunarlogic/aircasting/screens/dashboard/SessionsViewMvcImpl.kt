@@ -112,6 +112,18 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
     }
 
+    fun onFollowButtonClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onFollowButtonClicked(session)
+        }
+    }
+
+    fun onUnfollowButtonClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onUnfollowButtonClicked(session)
+        }
+    }
+
     fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
             listener.onMapButtonClicked(session.uuid, measurementStream?.sensorName)
