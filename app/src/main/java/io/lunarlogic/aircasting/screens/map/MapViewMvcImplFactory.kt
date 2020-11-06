@@ -3,7 +3,7 @@ package io.lunarlogic.aircasting.screens.map
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 
 open class MapViewMvcImplFactory {

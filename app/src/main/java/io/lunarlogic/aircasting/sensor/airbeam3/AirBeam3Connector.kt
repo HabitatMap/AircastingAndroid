@@ -7,7 +7,7 @@ import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 

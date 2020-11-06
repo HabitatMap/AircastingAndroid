@@ -10,8 +10,8 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 
 class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null

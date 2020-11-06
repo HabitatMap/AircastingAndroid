@@ -2,8 +2,8 @@ package io.lunarlogic.aircasting.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.MeasurementStream
 import java.util.*
 
 class ChartAveragesCreator {

@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Session
 
 interface SessionCardListener {
     fun onExpandSessionCard(session: Session)

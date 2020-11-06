@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
 import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileActiveFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileDormantFragment
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class DashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

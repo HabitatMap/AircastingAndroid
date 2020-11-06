@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.sensor
+package io.lunarlogic.aircasting.models
 
 import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject

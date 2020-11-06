@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.exceptions.SyncError
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

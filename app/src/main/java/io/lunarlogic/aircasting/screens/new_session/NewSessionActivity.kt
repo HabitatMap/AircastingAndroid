@@ -2,12 +2,10 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -15,9 +13,8 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
-import io.lunarlogic.aircasting.sensor.Session
-import io.lunarlogic.aircasting.sensor.SessionBuilder
-import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import javax.inject.Inject
 

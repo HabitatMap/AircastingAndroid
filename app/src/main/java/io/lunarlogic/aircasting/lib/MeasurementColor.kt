@@ -3,8 +3,8 @@ package io.lunarlogic.aircasting.lib
 import android.content.Context
 import androidx.core.content.res.ResourcesCompat
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.SensorThreshold
 
 class MeasurementColor {
     companion object {

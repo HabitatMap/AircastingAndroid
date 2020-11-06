@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseDialog
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.SensorThreshold
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(

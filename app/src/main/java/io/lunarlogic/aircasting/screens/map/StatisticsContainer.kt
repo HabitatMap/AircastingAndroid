@@ -7,9 +7,9 @@ import android.widget.TextView
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.common.StatisticsValueBackground
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.map_statistics_view.view.*
 

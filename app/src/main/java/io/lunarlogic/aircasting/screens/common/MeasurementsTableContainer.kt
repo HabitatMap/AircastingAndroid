@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.common
 
-import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -14,9 +13,9 @@ import androidx.core.view.forEach
 import androidx.core.view.get
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
+import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.models.MeasurementStream
 import kotlinx.android.synthetic.main.session_card.view.*
 
 

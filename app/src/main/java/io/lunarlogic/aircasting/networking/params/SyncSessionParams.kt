@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.networking.params
 
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class SyncSessionParams {
     constructor(session: Session) {

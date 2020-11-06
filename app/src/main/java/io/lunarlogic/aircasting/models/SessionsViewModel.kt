@@ -1,13 +1,10 @@
-package io.lunarlogic.aircasting.screens.dashboard
+package io.lunarlogic.aircasting.models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
 
 class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()

@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.sensor
+package io.lunarlogic.aircasting.models
 
 class SessionBuilder {
     fun build(

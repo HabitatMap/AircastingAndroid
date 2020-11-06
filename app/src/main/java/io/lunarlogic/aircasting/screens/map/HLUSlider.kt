@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.slider.RangeSlider
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.models.SensorThreshold
 
 class HLUSlider {
     private val mContext: Context

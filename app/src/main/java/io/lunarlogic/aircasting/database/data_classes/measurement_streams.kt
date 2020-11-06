@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.room.*
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.models.MeasurementStream
 
 @Entity(
     tableName = "measurement_streams",

@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.sensor
+package io.lunarlogic.aircasting.models
 
 import io.lunarlogic.aircasting.database.data_classes.MeasurementDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent

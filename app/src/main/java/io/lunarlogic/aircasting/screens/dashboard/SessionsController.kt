@@ -15,8 +15,9 @@ import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.map.MapActivity
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import kotlinx.coroutines.CoroutineScope
 
 

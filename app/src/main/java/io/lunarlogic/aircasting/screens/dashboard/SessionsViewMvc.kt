@@ -1,8 +1,8 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
 
 
 interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {

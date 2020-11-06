@@ -1,9 +1,9 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
 
 class SessionPresenter() {
     var session: Session? = null

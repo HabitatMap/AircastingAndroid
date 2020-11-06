@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session.session_details
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 open class SessionDetailsControllerFactory {
     open fun get(

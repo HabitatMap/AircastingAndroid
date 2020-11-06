@@ -8,9 +8,9 @@ import io.lunarlogic.aircasting.exceptions.DownloadMeasurementsError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import io.lunarlogic.aircasting.lib.KeyboardHelper
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class ConfirmationFragment() : Fragment() {
     private var controller: ConfirmationController? = null

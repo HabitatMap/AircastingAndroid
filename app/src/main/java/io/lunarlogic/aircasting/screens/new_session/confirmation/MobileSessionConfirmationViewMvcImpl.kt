@@ -3,9 +3,8 @@ package io.lunarlogic.aircasting.screens.new_session.confirmation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.model.LatLng
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class MobileSessionConfirmationViewMvcImpl(
     inflater: LayoutInflater,
