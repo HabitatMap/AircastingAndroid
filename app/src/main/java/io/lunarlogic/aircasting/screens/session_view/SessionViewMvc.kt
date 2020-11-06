@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.common.session_view
+package io.lunarlogic.aircasting.screens.session_view
 
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter

@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
-import io.lunarlogic.aircasting.screens.common.session_view.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
 import kotlinx.android.synthetic.main.session_card.view.*

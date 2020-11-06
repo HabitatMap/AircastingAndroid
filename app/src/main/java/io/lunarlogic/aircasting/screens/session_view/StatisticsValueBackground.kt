@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.common.session_view
+package io.lunarlogic.aircasting.screens.session_view
 
 import android.graphics.drawable.GradientDrawable
 

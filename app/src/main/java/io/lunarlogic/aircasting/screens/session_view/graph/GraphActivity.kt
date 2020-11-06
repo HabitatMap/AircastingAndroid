@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.graph
+package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.content.Intent

@@ -13,8 +13,8 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
-import io.lunarlogic.aircasting.screens.graph.GraphActivity
-import io.lunarlogic.aircasting.screens.map.MapActivity
+import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
+import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel

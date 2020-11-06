@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.graph
+package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +12,12 @@ import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.common.*
-import io.lunarlogic.aircasting.screens.common.hlu.HLUDialog
-import io.lunarlogic.aircasting.screens.common.hlu.HLUDialogListener
-import io.lunarlogic.aircasting.screens.common.hlu.HLUListener
-import io.lunarlogic.aircasting.screens.common.hlu.HLUSlider
-import io.lunarlogic.aircasting.screens.common.session_view.MeasurementsTableContainer
-import io.lunarlogic.aircasting.screens.common.session_view.StatisticsContainer
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUListener
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
+import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.StatisticsContainer
 import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
