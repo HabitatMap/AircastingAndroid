@@ -1,10 +1,18 @@
 package io.lunarlogic.aircasting.screens.session_view
 
+import android.location.Location
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUListener
 
-interface SessionViewMvc  {
+interface SessionViewMvc: ObservableViewMvc<SessionViewMvc.Listener> {
     fun bindSession(sessionPresenter: SessionPresenter?)
 
     fun addMeasurement(measurement: Measurement)
+    fun centerMap(location: Location)
+
+    interface Listener: HLUListener {
+        fun locateRequested()
+    }
 }

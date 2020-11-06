@@ -17,13 +17,14 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.SessionViewMvc
 import io.lunarlogic.aircasting.screens.session_view.StatisticsContainer
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, HLUDialogListener {
+abstract class MapViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionViewMvc, HLUDialogListener {
     private val mFragmentManager: FragmentManager?
-    private var mListener: MapViewMvc.Listener? = null
+    private var mListener: SessionViewMvc.Listener? = null
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
@@ -68,13 +69,13 @@ abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapVi
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
     }
 
-    override fun registerListener(listener: MapViewMvc.Listener) {
+    override fun registerListener(listener: SessionViewMvc.Listener) {
         super.registerListener(listener)
         mListener = listener
         mMapContainer.registerListener(listener)
     }
 
-    override fun unregisterListener(listener: MapViewMvc.Listener) {
+    override fun unregisterListener(listener: SessionViewMvc.Listener) {
         super.unregisterListener(listener)
         mListener = null
         mMapContainer.unregisterListener()

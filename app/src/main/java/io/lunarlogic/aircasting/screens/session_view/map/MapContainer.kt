@@ -18,6 +18,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.session_view.SessionViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicInteger
@@ -26,7 +27,7 @@ class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
 
     private val mContext: Context
-    private var mListener: MapViewMvc.Listener? = null
+    private var mListener: SessionViewMvc.Listener? = null
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
@@ -60,7 +61,7 @@ class MapContainer: OnMapReadyCallback {
         }
     }
 
-    fun registerListener(listener: MapViewMvc.Listener) {
+    fun registerListener(listener: SessionViewMvc.Listener) {
         mListener = listener
     }
 

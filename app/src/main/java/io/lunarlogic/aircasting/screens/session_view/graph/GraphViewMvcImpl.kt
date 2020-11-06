@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.session_view.graph
 
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +18,12 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.SessionViewMvc
 import io.lunarlogic.aircasting.screens.session_view.StatisticsContainer
 import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
-class GraphViewMvcImpl: BaseObservableViewMvc<GraphViewMvc.Listener>, GraphViewMvc,
+class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionViewMvc,
     HLUDialogListener {
     private val mFragmentManager: FragmentManager?
     private var mListener: HLUListener? = null
@@ -67,13 +69,13 @@ class GraphViewMvcImpl: BaseObservableViewMvc<GraphViewMvc.Listener>, GraphViewM
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
     }
 
-    override fun registerListener(listener: GraphViewMvc.Listener) {
+    override fun registerListener(listener: SessionViewMvc.Listener) {
         super.registerListener(listener)
         mListener = listener
 //        mMapContainer.registerListener(listener)
     }
 
-    override fun unregisterListener(listener: GraphViewMvc.Listener) {
+    override fun unregisterListener(listener: SessionViewMvc.Listener) {
         super.unregisterListener(listener)
         mListener = null
 //        mMapContainer.unregisterListener()
@@ -83,6 +85,8 @@ class GraphViewMvcImpl: BaseObservableViewMvc<GraphViewMvc.Listener>, GraphViewM
 //        mMapContainer.addMeasurement(measurement)
         mStatisticsContainer.addMeasurement(measurement)
     }
+
+    override fun centerMap(location: Location) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
