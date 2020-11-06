@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.models.SessionsViewModel
 
 class GraphActivity: AppCompatActivity() {
-    private var controller: GraphController? = null
+    private var controller: GraphControllerDetails? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
 
     companion object {
@@ -32,8 +32,8 @@ class GraphActivity: AppCompatActivity() {
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
 
-        val view = GraphViewMvcImpl(layoutInflater, null, supportFragmentManager)
-        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName)
+        val view = GraphDetailsViewMvcImpl(layoutInflater, null, supportFragmentManager)
+        controller = GraphControllerDetails(this, sessionsViewModel, view, sessionUUID, sensorName)
 
         controller?.onCreate()
 

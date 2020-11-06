@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.session_view.graph
+package io.lunarlogic.aircasting.screens.session_view
 
 import android.location.Location
 import android.view.LayoutInflater
@@ -15,28 +15,23 @@ import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.common.*
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
-import io.lunarlogic.aircasting.screens.session_view.hlu.HLUListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
-import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
-import io.lunarlogic.aircasting.screens.session_view.SessionViewMvc
-import io.lunarlogic.aircasting.screens.session_view.StatisticsContainer
-import kotlinx.android.synthetic.main.activity_graph.view.*
+import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionViewMvc,
-    HLUDialogListener {
+abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
     private val mFragmentManager: FragmentManager?
-    private var mListener: HLUListener? = null
+    private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
+    protected val mSessionMeasurementsDescription: TextView?
 
-    private var mSessionPresenter: SessionPresenter? = null
+    protected var mSessionPresenter: SessionPresenter? = null
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
-//    private val mMapContainer: MapContainer
-    private val mStatisticsContainer: StatisticsContainer
+    protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
 
@@ -47,11 +42,12 @@ class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionV
     ): super() {
         this.mFragmentManager = supportFragmentManager
 
-        this.rootView = inflater.inflate(R.layout.activity_graph, parent, false)
+        this.rootView = inflater.inflate(layoutId(), parent, false)
 
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_info
+        mSessionMeasurementsDescription = this.rootView?.session_measurements_description
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -60,7 +56,7 @@ class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionV
             true,
             true
         )
-//        mMapContainer = MapContainer(rootView, context, supportFragmentManager)
+
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
         mMoreButton = this.rootView?.more_button
         mMoreButton?.setOnClickListener {
@@ -69,24 +65,21 @@ class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionV
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
     }
 
-    override fun registerListener(listener: SessionViewMvc.Listener) {
+    abstract fun layoutId(): Int
+
+    override fun registerListener(listener: SessionDetailsViewMvc.Listener) {
         super.registerListener(listener)
         mListener = listener
-//        mMapContainer.registerListener(listener)
     }
 
-    override fun unregisterListener(listener: SessionViewMvc.Listener) {
+    override fun unregisterListener(listener: SessionDetailsViewMvc.Listener) {
         super.unregisterListener(listener)
         mListener = null
-//        mMapContainer.unregisterListener()
     }
 
     override fun addMeasurement(measurement: Measurement) {
-//        mMapContainer.addMeasurement(measurement)
-        mStatisticsContainer.addMeasurement(measurement)
+        mStatisticsContainer?.addMeasurement(measurement)
     }
-
-    override fun centerMap(location: Location) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
@@ -94,9 +87,8 @@ class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionV
         bindSessionDetails()
         if (sessionPresenter?.selectedStream != null) showSlider()
 
-//        mMapContainer.bindSession(mSessionPresenter)
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
-        mStatisticsContainer.bindSession(mSessionPresenter)
+        bindStatisticsContainer()
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
     }
 
@@ -105,6 +97,8 @@ class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionV
         mHLUSlider.show()
     }
 
+    override fun centerMap(location: Location) {}
+
     private fun bindSessionDetails() {
         val session = mSessionPresenter?.session
         session ?: return
@@ -112,19 +106,26 @@ class GraphViewMvcImpl: BaseObservableViewMvc<SessionViewMvc.Listener>, SessionV
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
         mSessionTagsTextView?.text = session.infoString()
+        bindSessionMeasurementsDescription()
     }
 
-    private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+    protected open fun bindSessionMeasurementsDescription() {
+        mSessionMeasurementsDescription?.text = context.getString(R.string.parameters)
+    }
+
+    protected open fun bindStatisticsContainer() {
+        mStatisticsContainer?.bindSession(mSessionPresenter)
+    }
+
+    protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
-//        mMapContainer.refresh(mSessionPresenter)
-        mStatisticsContainer.refresh(mSessionPresenter)
+        bindStatisticsContainer()
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 
-    private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
+    protected open fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         mMeasurementsTableContainer.refresh()
-//        mMapContainer.refresh(mSessionPresenter)
-        mStatisticsContainer.refresh(mSessionPresenter)
+        bindStatisticsContainer()
 
         mListener?.onSensorThresholdChanged(sensorThreshold)
     }

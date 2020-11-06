@@ -14,7 +14,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 
 class MapActivity: AppCompatActivity() {
-    private var controller: MapController? = null
+    private var controller: MapControllerDetails? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
     private val errorHandler = ErrorHandler(this)
 
@@ -51,7 +51,7 @@ class MapActivity: AppCompatActivity() {
         val sessionStatus: Int = intent.extras?.getInt(SESSION_STATUS_KEY) as Int
 
         val view = MapViewMvcImplFactory.get(layoutInflater, null, supportFragmentManager, Session.Type.fromInt(sessionType), Session.Status.fromInt(sessionStatus))
-        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName)
+        controller = MapControllerDetails(this, sessionsViewModel, view, sessionUUID, sensorName)
 
         controller?.onCreate()
 

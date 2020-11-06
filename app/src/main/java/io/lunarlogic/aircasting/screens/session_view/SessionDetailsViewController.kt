@@ -13,13 +13,13 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-abstract class SessionViewController(
+abstract class SessionDetailsViewController(
     protected val rootActivity: AppCompatActivity,
     protected val mSessionsViewModel: SessionsViewModel,
-    protected val mViewMvc: SessionViewMvc,
+    protected val mViewMvc: SessionDetailsViewMvc,
     sessionUUID: String,
     private var sensorName: String?
-): SessionViewMvc.Listener {
+): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
 
