@@ -15,7 +15,6 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
 class GraphActivity: AppCompatActivity() {
     private var controller: GraphController? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
-    private val errorHandler = ErrorHandler(this)
 
     companion object {
         val SESSION_UUID_KEY = "SESSION_UUID"
@@ -44,19 +43,6 @@ class GraphActivity: AppCompatActivity() {
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    controller?.onLocationSettingsSatisfied()
-                } else {
-                    errorHandler.showError(R.string.errors_location_services_required_to_locate)
-                }
-            }
-        }
     }
 
     override fun onDestroy() {

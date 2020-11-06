@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -27,7 +26,6 @@ class GraphController(
     private var sensorName: String?
 ): GraphViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter()
-    private var mLocateRequested = false
 
     fun onCreate() {
         EventBus.getDefault().register(this);
@@ -74,35 +72,8 @@ class GraphController(
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: LocationChanged) {
-        if (mLocateRequested) {
-            val location = LocationHelper.lastLocation()
-            location?.let { mViewMvc.centerMap(location) }
-            mLocateRequested = false
-        }
-    }
-
-    override fun locateRequested() {
-        val location = LocationHelper.lastLocation()
-        if (location == null) {
-            requestLocation()
-        } else {
-            mViewMvc.centerMap(location)
-        }
-    }
-
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         this.sensorName = measurementStream.sensorName
-    }
-
-    private fun requestLocation() {
-        mLocateRequested = true
-        LocationHelper.checkLocationServicesSettings(rootActivity)
-    }
-
-    fun onLocationSettingsSatisfied() {
-        LocationHelper.start()
     }
 
     override fun onHLUDialogValidationFailed() {

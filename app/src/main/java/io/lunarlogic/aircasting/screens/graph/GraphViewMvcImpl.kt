@@ -1,15 +1,11 @@
 package io.lunarlogic.aircasting.screens.graph
 
-import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.card.MaterialCardView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
@@ -104,10 +100,6 @@ class GraphViewMvcImpl: BaseObservableViewMvc<GraphViewMvc.Listener>, GraphViewM
     fun showSlider() {
         mMoreButton?.visibility = View.VISIBLE
         mHLUSlider.show()
-    }
-
-    override fun centerMap(location: Location) {
-//        mMapContainer.centerMap(location)
     }
 
     private fun bindSessionDetails() {

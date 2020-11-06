@@ -11,10 +11,8 @@ interface GraphViewMvc: ObservableViewMvc<GraphViewMvc.Listener> {
     fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit)
 
     fun addMeasurement(measurement: Measurement)
-    fun centerMap(location: Location)
 
     interface Listener {
-        fun locateRequested()
         fun onMeasurementStreamChanged(measurementStream: MeasurementStream)
         fun onHLUDialogValidationFailed()
     }
