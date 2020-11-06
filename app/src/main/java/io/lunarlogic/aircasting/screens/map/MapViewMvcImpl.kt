@@ -16,6 +16,8 @@ import io.lunarlogic.aircasting.screens.common.*
 import io.lunarlogic.aircasting.screens.common.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.common.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.common.hlu.HLUSlider
+import io.lunarlogic.aircasting.screens.common.session_view.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.common.session_view.StatisticsContainer
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
