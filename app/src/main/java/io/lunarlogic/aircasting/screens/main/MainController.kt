@@ -2,12 +2,14 @@ package io.lunarlogic.aircasting.screens.main
 
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
-import io.lunarlogic.aircasting.events.ApplicationClosed
+import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiService
 
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
@@ -19,7 +21,7 @@ class MainController(
 ) {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
-    val errorHandler = ErrorHandler(rootActivity)
+    private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
         if (mSettings.getAuthToken() == null) {
@@ -34,7 +36,7 @@ class MainController(
     fun onDestroy() {
         unregisterConnectivityManager()
         mSessionManager?.onStop()
-        EventBus.getDefault().post(ApplicationClosed())
+        EventBus.getDefault().post(DisconnectExternalSensorsEvent())
     }
 
     private fun showLoginScreen() {
@@ -43,13 +45,25 @@ class MainController(
     }
 
     private fun setupDashboard() {
-        errorHandler.registerUser(mSettings.getEmail())
+        mErrorHandler.registerUser(mSettings.getEmail())
 
         val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService)
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity)
         registerConnectivityManager()
+
+        sync(apiService)
+    }
+
+    private fun sync(apiService: ApiService) {
+        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler)
+
+        mMobileSessionsSyncService.sync({
+            mViewMvc.showLoader()
+        }, {
+            mViewMvc.hideLoader()
+        })
     }
 
     private fun registerConnectivityManager() {

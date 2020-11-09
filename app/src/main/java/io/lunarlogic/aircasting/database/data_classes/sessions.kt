@@ -20,10 +20,12 @@ data class SessionDBObject(
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
     @ColumnInfo(name = "end_time") val endTime: Date?,
+    @ColumnInfo(name = "latitude") val latitude: Double?,
+    @ColumnInfo(name = "longitude") val longitude: Double?,
     @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW,
     @ColumnInfo(name = "version") val version: Int = 0,
     @ColumnInfo(name = "deleted") val deleted: Boolean = false,
-    @ColumnInfo(name = "followed") val followed: Boolean = false
+    @ColumnInfo(name = "followed_at") val followedAt: Date? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -37,10 +39,12 @@ data class SessionDBObject(
                 session.tags,
                 session.startTime,
                 session.endTime,
+                session.location?.latitude,
+                session.location?.longitude,
                 session.status,
                 session.version,
                 session.deleted,
-                session.followed
+                session.followedAt
             )
 }
 
@@ -78,7 +82,7 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND followed=1 ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY followed_at DESC")
     fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
@@ -104,6 +108,9 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
     fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
+
+    @Query("UPDATE sessions SET followed_at=:followedAt WHERE uuid=:uuid")
+    fun updateFollowedAt(uuid: String, followedAt: Date?)
 
     @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND status=:existingStatus")
     fun updateStatusAndEndTimeForSessionTypeAndExistingStatus(newStatus: Session.Status, endTime: Date, type: Session.Type, existingStatus: Session.Status)

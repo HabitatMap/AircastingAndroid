@@ -4,11 +4,13 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.lunarlogic.aircasting.BuildConfig
 
 class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
+    private val TAG = "ErrorHandler"
     private val crashlytics = FirebaseCrashlytics.getInstance()
 
     override fun handleMessage(message: Message) {
@@ -18,6 +20,7 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun handle(exception: BaseException) {
         exception.cause?.printStackTrace()
+        exception.messageToDisplay?.let { Log.e(TAG, exception.messageToDisplay) }
 
         if (!BuildConfig.DEBUG) {
             exception.messageToDisplay?.let { crashlytics.log(it) }

@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
+import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.sensor.Session
 import io.lunarlogic.aircasting.sensor.SessionBuilder
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
@@ -34,7 +35,7 @@ class NewSessionActivity : AppCompatActivity() {
     lateinit var bluetoothManager: BluetoothManager
 
     @Inject
-    lateinit var airbeam2Connector: AirBeam2Connector
+    lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
 
     @Inject
     lateinit var audioReader: AudioReader
@@ -77,7 +78,7 @@ class NewSessionActivity : AppCompatActivity() {
             supportFragmentManager,
             permissionsManager,
             bluetoothManager,
-            airbeam2Connector,
+            airbeamConnectorFactory,
             audioReader,
             sessionBuilder,
             sessionType

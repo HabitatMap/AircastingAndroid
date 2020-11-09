@@ -33,8 +33,15 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         return mSessionPresenters.size
     }
 
+    private fun removeObsoleteSessions() {
+        mSessionPresenters.keys
+            .filter { uuid -> !mSessionUUIDS.contains(uuid) }
+            .forEach { uuid -> mSessionPresenters.remove(uuid) }
+    }
+
     fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
         mSessionUUIDS = sessions.map { session -> session.uuid }
+        removeObsoleteSessions()
 
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {

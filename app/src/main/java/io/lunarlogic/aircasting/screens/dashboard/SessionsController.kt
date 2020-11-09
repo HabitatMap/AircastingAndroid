@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
@@ -40,6 +41,8 @@ abstract class SessionsController(
             val sensorThresholds = getSensorThresholds(sessions)
 
             if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
+                hideLoader(coroutineScope)
+
                 if (sessions.size > 0) {
                     updateSensorThresholds(sensorThresholds)
                     showSessionsView(coroutineScope, sessions)
@@ -49,6 +52,12 @@ abstract class SessionsController(
 
                 updateSessionsCache(sessions)
             }
+        }
+    }
+
+    private fun hideLoader(coroutineScope: CoroutineScope) {
+        DatabaseProvider.backToUIThread(coroutineScope) {
+            mViewMvc.hideLoader()
         }
     }
 
@@ -79,7 +88,9 @@ abstract class SessionsController(
     }
 
     private fun anySessionChanged(sessions: List<Session>): Boolean {
-        return mSessions.isEmpty() || sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
+        return mSessions.isEmpty() ||
+                mSessions.size != sessions.size ||
+                sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
     }
 
     private fun updateSessionsCache(sessions: List<Session>) {
@@ -98,7 +109,6 @@ abstract class SessionsController(
 
     fun onCreate() {
         mViewMvc.showLoader()
-        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
     }
 
     fun onResume() {
@@ -116,7 +126,26 @@ abstract class SessionsController(
     }
 
     override fun onSwipeToRefreshTriggered() {
-        mMobileSessionsSyncService.sync({ mViewMvc.hideLoader() })
+        mMobileSessionsSyncService.sync({
+            mViewMvc.showLoader()
+        }, {
+            mViewMvc.hideLoader()
+        })
+    }
+
+    override fun onFollowButtonClicked(session: Session) {
+        updateFollowedAt(session)
+        NavigationController.goToDashboard(DashboardPagerAdapter.FOLLOWING_TAB_INDEX)
+    }
+
+    override fun onUnfollowButtonClicked(session: Session) {
+        updateFollowedAt(session)
+    }
+
+    private fun updateFollowedAt(session: Session) {
+        DatabaseProvider.runQuery {
+            mSessionsViewModel.updateFollowedAt(session)
+        }
     }
 
     override fun onMapButtonClicked(sessionUUID: String, sensorName: String?) {

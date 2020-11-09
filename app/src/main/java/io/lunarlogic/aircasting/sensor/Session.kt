@@ -1,18 +1,16 @@
 package io.lunarlogic.aircasting.sensor
 
-import android.location.Location
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
-import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
 val TAGS_SEPARATOR = " "
 
 class Session(
+    val uuid: String,
     val deviceId: String?,
     private val mType: Type,
     private var mName: String,
@@ -20,13 +18,13 @@ class Session(
     private var mStatus: Status,
     private val mStartTime: Date = Date(),
     var endTime: Date? = null,
-    val uuid: String = generateUUID(),
     var version: Int = 0,
     var deleted: Boolean = false,
-    var followed: Boolean = false,
+    var followedAt: Date? = null,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
+        sessionDBObject.uuid,
         sessionDBObject.deviceId,
         sessionDBObject.type,
         sessionDBObject.name,
@@ -34,13 +32,17 @@ class Session(
         sessionDBObject.status,
         sessionDBObject.startTime,
         sessionDBObject.endTime,
-        sessionDBObject.uuid,
         sessionDBObject.version,
         sessionDBObject.deleted,
-        sessionDBObject.followed
-    )
+        sessionDBObject.followedAt
+    ) {
+        if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
+            this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
+        }
+    }
 
     constructor(
+        sessionUUID: String,
         deviceId: String?,
         mType: Type,
         mName: String,
@@ -49,7 +51,7 @@ class Session(
         indoor: Boolean?,
         streamingMethod: StreamingMethod?,
         location: Location?
-    ): this(deviceId, mType, mName, mTags, mStatus) {
+    ): this(sessionUUID, deviceId, mType, mName, mTags, mStatus) {
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
         this.location = location
@@ -102,8 +104,8 @@ class Session(
         }
     }
 
-    val DEFAULT_DATE_FORMAT = "MM/dd/yyyy"
-    val DEFAULT_HOUR_FORMAT = "HH:mm"
+    private val DATE_FORMAT = "MM/dd/yy"
+    private val HOUR_FORMAT = "HH:mm"
 
     val type get() = mType
     val name get() = mName
@@ -118,6 +120,7 @@ class Session(
     val streams get() = mStreams
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
+    val followed get() = followedAt != null
 
     val displayedType get() = when(type) {
         Type.MOBILE -> "mobile"
@@ -131,6 +134,14 @@ class Session(
     fun stopRecording() {
         endTime = Date()
         mStatus = Status.FINISHED
+    }
+
+    fun unfollow() {
+        followedAt = null
+    }
+
+    fun follow() {
+        followedAt = Date()
     }
 
     fun isUploadable(): Boolean {
@@ -162,13 +173,19 @@ class Session(
     }
 
     fun durationString(): String {
-        val dateFormatter = dateTimeFormatter(DEFAULT_DATE_FORMAT)
-        val hourFormatter = dateTimeFormatter(DEFAULT_HOUR_FORMAT)
+        val dateFormatter = dateTimeFormatter(DATE_FORMAT)
+        val hourFormatter = dateTimeFormatter(HOUR_FORMAT)
 
         var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
-        if (endTime != null) {
+
+        if (endTime == null) return durationString
+
+        if (endTime!!.day != startTime.day) {
+            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
+        } else {
             durationString += "-${hourFormatter.format(endTime)}"
         }
+
         return durationString
     }
 

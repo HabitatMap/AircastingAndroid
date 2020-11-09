@@ -1,40 +1,51 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import java.io.OutputStream
 import io.lunarlogic.aircasting.sensor.Session
 
 class AirBeam2Configurator(private val mSettings: Settings) {
     private val mHexMessagesBuilder = HexMessagesBuilder()
 
-    fun configureSessionType(session: Session, outputStream: OutputStream) {
-        when(session.type) {
-            Session.Type.MOBILE -> configureMobileSession(outputStream)
-            Session.Type.FIXED -> configureFixedSession(session, outputStream)
-        }
+    fun sendAuth(sessionUUID: String, outputStream: OutputStream) {
+        sendUUID(sessionUUID, outputStream)
+        sleepFor(3000)
+        sendAuthToken(mSettings.getAuthToken()!!, outputStream)
     }
 
-    fun configureFixedSessionDetails(
-        location: Session.Location,
-        streamingMethod: Session.StreamingMethod,
+    fun configure(
+        session: Session,
         wifiSSID: String?,
         wifiPassword: String?,
         outputStream: OutputStream
-    ) {
-        sleepFor(3000)
-        configureLocation(location.latitude, location.longitude, outputStream)
-        sleepFor(3000)
-        configureStreamingMethod(streamingMethod, wifiSSID, wifiPassword, outputStream)
+    ){
+        when(session.type) {
+            Session.Type.MOBILE -> configureMobileSession(outputStream)
+            Session.Type.FIXED -> configureFixedSession(session, wifiSSID, wifiPassword, outputStream)
+        }
     }
 
     private fun configureMobileSession(outputStream: OutputStream) {
         sendMessage(mHexMessagesBuilder.bluetoothConfigurationMessage, outputStream)
     }
 
-    private fun configureFixedSession(session: Session, outputStream: OutputStream) {
-        sendUUID(session.uuid, outputStream)
+    private fun configureFixedSession(
+        session: Session,
+        wifiSSID: String?,
+        wifiPassword: String?,
+        outputStream: OutputStream
+    ) {
+        val location = session.location
+        val streamingMethod = session.streamingMethod
+
+        location ?: return
+        streamingMethod ?: return
+
         sleepFor(3000)
-        sendAuthToken(mSettings.getAuthToken()!!, outputStream)
+        configureLocation(location.latitude, location.longitude, outputStream)
+        sleepFor(3000)
+        configureStreamingMethod(streamingMethod, wifiSSID, wifiPassword, outputStream)
     }
 
     private fun sendUUID(uuid: String, outputStream: OutputStream) {

@@ -12,6 +12,9 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.nhaarman.mockito_kotlin.any
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
@@ -19,6 +22,9 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.main.MainActivity
+import io.lunarlogic.aircasting.sensor.Measurement
+import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.sensor.Session
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
@@ -26,7 +32,9 @@ import org.junit.*
 import org.junit.runner.RunWith
 
 import org.mockito.MockitoAnnotations
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 @RunWith(AndroidJUnit4::class)
@@ -78,6 +86,7 @@ class FixedSessionTest {
     @After
     fun cleanup() {
         mockWebServer.shutdown()
+        clearDatabase()
     }
 
     @Test
@@ -139,8 +148,8 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed outdoor session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Fixed: ")));
+        onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed outdoor session")))
+        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")));
     }
 
     @Test
@@ -196,7 +205,59 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's fixed indoor session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Fixed: ")));
+        onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed indoor session")))
+        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")));
+    }
+
+    @Test
+    fun testFollowAndUnfollow() {
+        settings.login("X", "TOKEN")
+
+        val sessionsRepository = SessionsRepository()
+        val measurementStreamRepository = MeasurementStreamsRepository()
+        val measurementsRepository = MeasurementsRepository()
+
+        val session = Session(
+            Session.generateUUID(),
+            "device_id",
+            Session.Type.FIXED,
+            "New session to follow",
+            ArrayList(),
+            Session.Status.FINISHED
+        )
+        val stream = MeasurementStream(
+            "AirBeam2:0018961070D6",
+            "AirBeam2-F",
+            "Temperature",
+            "F",
+            "degrees Fahrenheit",
+            "F",
+            15,
+            45,
+            75,
+            100,
+            135
+        )
+        val measurements = listOf(Measurement(70.0, Date()))
+
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRepository.insert(session)
+            val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
+            measurementsRepository.insertAll(streamId, sessionId, measurements)
+        }
+
+        testRule.launchActivity(null)
+        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
+
+        onView(allOf(withId(R.id.expand_session_button), isDisplayed())).perform(click())
+        onView(withId(R.id.follow_button)).perform(click())
+        Thread.sleep(3000)
+
+        onView(allOf(withId(R.id.expand_session_button), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        Thread.sleep(1000)
+        onView(withId(R.id.unfollow_button)).perform(click())
+        Thread.sleep(2000)
+        onView(withText("New session to follow")).check(matches(not(isDisplayed())))
     }
 }

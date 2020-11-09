@@ -7,6 +7,8 @@ class SessionResponse(
     val tag_list: String,
     val start_time: String,
     val end_time: String,
+    val latitude: Double,
+    val longitude: Double,
     val deleted: Boolean,
     val version: Int,
     val streams: HashMap<String, SessionStreamResponse>

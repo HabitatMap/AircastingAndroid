@@ -12,11 +12,12 @@ class SessionDetailsViewFactory() {
             parent: ViewGroup?,
             fragmentManager: FragmentManager,
             deviceId: String,
+            sessionUUID: String,
             sessionType: Session.Type
         ): SessionDetailsViewMvc {
             return when(sessionType) {
-                Session.Type.MOBILE -> MobileSessionDetailsViewMvcImpl(inflater, parent, deviceId)
-                Session.Type.FIXED -> FixedSessionDetailsViewMvcImpl(inflater, parent, fragmentManager, deviceId)
+                Session.Type.MOBILE -> MobileSessionDetailsViewMvcImpl(inflater, parent, sessionUUID, deviceId)
+                Session.Type.FIXED -> FixedSessionDetailsViewMvcImpl(inflater, parent, fragmentManager, sessionUUID, deviceId)
             }
         }
     }

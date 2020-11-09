@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor
 
 class SessionBuilder {
     fun build(
+        sessionUUID: String,
         deviceId: String?,
         type: Session.Type,
         name: String,
@@ -14,6 +15,7 @@ class SessionBuilder {
         val location = calculateLocation(type, indoor, currentLocation)
 
         return Session(
+            sessionUUID,
             deviceId,
             type,
             name,

@@ -14,20 +14,6 @@ class SelectDeviceController(
     private val mListener: SelectDeviceViewMvc.Listener
 ) : BroadcastReceiver(), SelectDeviceViewMvc.OnRefreshListener {
 
-    fun onStart() {
-        bindDevices()
-        registerListener(mListener)
-        registerBluetoothDeviceFoundReceiver()
-        mViewMvc.registerOnRefreshListener(this)
-        bluetoothManager.startDiscovery()
-    }
-
-    fun onStop() {
-        unregisterListener(mListener)
-        unRegisterBluetoothDeviceFoundReceiver()
-        bluetoothManager.cancelDiscovery()
-    }
-
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action) {
             BluetoothDevice.ACTION_FOUND -> {
@@ -39,9 +25,32 @@ class SelectDeviceController(
         }
     }
 
-    override fun onRefreshClicked() {
-        bluetoothManager.cancelDiscovery()
+    fun onStart() {
+        bindDevices()
+        registerListener(mListener)
+        registerBluetoothDeviceFoundReceiver()
+        mViewMvc.registerOnRefreshListener(this)
+
+        startScan()
+    }
+
+    fun onStop() {
+        unregisterListener(mListener)
+        unRegisterBluetoothDeviceFoundReceiver()
+        stopScan()
+    }
+
+    private fun startScan() {
         bluetoothManager.startDiscovery()
+    }
+
+    private fun stopScan() {
+        bluetoothManager.cancelDiscovery()
+    }
+
+    override fun onRefreshClicked() {
+        stopScan()
+        startScan()
     }
 
     private fun bindDevices() {
