@@ -138,7 +138,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun bindLoader(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.loading) {
             showLoader()
-            println("MARYSIA: showing loader")
         } else {
             hideLoader()
         }
