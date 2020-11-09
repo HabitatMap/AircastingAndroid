@@ -10,73 +10,12 @@
         layout="@layout/app_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/session_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
-        android:layout_marginEnd="@dimen/keyline_10"
-        android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="parent" />
+    <include layout="@layout/session_details" />
 
-    <TextView
-        android:id="@+id/session_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
-        android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_4"
-        android:textAppearance="?attr/textAppearanceHeadline2"
-        android:textColor="@color/aircasting_dark_blue"
-        android:fontFamily="@font/moderat_trial_medium"
-        app:layout_constraintTop_toBottomOf="@+id/session_date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/session_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
-        android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_4"
-        android:textAppearance="?attr/textAppearanceHeadline6"
-        android:textColor="@color/aircasting_dark_blue"
-        android:textSize="@dimen/text_size_xs"
-        app:layout_constraintTop_toBottomOf="@+id/session_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/session_measurements_description"
-        android:text="@string/session_measurements_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
-        android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintTop_toBottomOf="@+id/session_info"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TableLayout
-        android:id="@+id/measurements_table"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
-        android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
-
-        <TableRow android:id="@+id/measurement_headers" />
-        <TableRow android:id="@+id/measurement_values" />
-    </TableLayout>
+    <include layout="@layout/measurements_table" />
 
     <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/main_content_barrier"
+        android:id="@+id/main_content_start_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
@@ -90,8 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@id/main_content_barrier"
-        app:layout_constraintBottom_toTopOf="@id/more_button" />
+        app:layout_constraintTop_toBottomOf="@id/main_content_start_barrier"
+        app:layout_constraintBottom_toTopOf="@id/main_content_end_barrier" />
 
     <ImageView android:id="@+id/locate_button"
         android:layout_width="wrap_content"
@@ -104,23 +43,14 @@
         app:layout_constraintBottom_toBottomOf="@id/map"
         app:layout_constraintEnd_toEndOf="@id/map" />
 
-    <ImageView android:id="@+id/more_button"
-        style="@style/Widget.AppCompat.ActionButton"
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/main_content_end_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_more_horizontal"
-        android:tint="@color/aircasting_grey_500"
-        android:paddingStart="@dimen/keyline_4"
-        android:paddingEnd="@dimen/keyline_4"
-        android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@id/map"
-        app:layout_constraintBottom_toTopOf="@id/hlu"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="more_button" />
 
     <include layout="@layout/hlu_slider"
-        android:id="@+id/hlu"
         app:layout_constraintTop_toBottomOf="@id/more_button"
         app:layout_constraintBottom_toBottomOf="parent" />
 

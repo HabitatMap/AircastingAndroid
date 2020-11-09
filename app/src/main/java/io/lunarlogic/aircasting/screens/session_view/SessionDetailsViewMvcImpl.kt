@@ -16,7 +16,8 @@ import io.lunarlogic.aircasting.screens.common.*
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
-import kotlinx.android.synthetic.main.activity_map.view.*
+import kotlinx.android.synthetic.main.session_details.view.*
+import kotlinx.android.synthetic.main.hlu_slider.view.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
