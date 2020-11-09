@@ -23,13 +23,7 @@
 
     <include android:id="@+id/statistics_view" layout="@layout/map_statistics_view" />
 
-    <View
-        android:id="@+id/graph"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@id/main_content_start_barrier"
-        app:layout_constraintBottom_toTopOf="@id/main_content_end_barrier" />
+    <include layout="@layout/graph" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/main_content_end_barrier"
