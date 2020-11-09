@@ -75,6 +75,13 @@
         <TableRow android:id="@+id/measurement_values" />
     </TableLayout>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/main_content_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="measurements_table" />
+
     <include android:id="@+id/statistics_view" layout="@layout/map_statistics_view" />
 
     <View
