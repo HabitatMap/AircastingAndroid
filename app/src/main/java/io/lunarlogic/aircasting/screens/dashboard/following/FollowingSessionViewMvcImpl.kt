@@ -38,6 +38,8 @@ class FollowingSessionViewMvcImpl:
         return true
     }
 
+    override fun showExpandedMeasurementsTableValues() = true
+      
     override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
         mUnfollowButton.visibility = View.VISIBLE
         mFollowButton.visibility = View.GONE
