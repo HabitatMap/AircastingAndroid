@@ -83,8 +83,16 @@ class GraphContainer {
         ) }
 
         val dataSet = LineDataSet(entries, "")
+        setupLineAppearance(dataSet)
 
         return LineData(dataSet)
+    }
+
+    private fun setupLineAppearance(dataSet: LineDataSet) {
+        dataSet.color = Color.WHITE
+        dataSet.setDrawCircles(false)
+        dataSet.setDrawValues(false)
+        dataSet.setDrawHighlightIndicators(false)
     }
 
     private fun updateValueAxis(from: Float, to: Float) {
