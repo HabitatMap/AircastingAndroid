@@ -34,6 +34,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mCollapseSessionButton: ImageView
     protected val mChart: Chart
     protected val mChartView: ConstraintLayout?
+    protected val mMeasurementsDescription: TextView?
 
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
@@ -55,6 +56,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mDateTextView = findViewById(R.id.session_date)
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
+        mMeasurementsDescription = findViewById(R.id.session_measurements_description)
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -130,6 +132,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)
         bindSessionDetails()
+        bindMeasurementsDescription(sessionPresenter)
         bindMeasurementsTable()
         bindChartData()
         bindFollowButtons(sessionPresenter)
@@ -166,6 +169,14 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mInfoTextView.text = session?.infoString()
     }
 
+    private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.expanded) {
+            bindExpandedMeasurementsDesctription()
+        } else {
+            bindCollapsedMeasurementsDesctription()
+        }
+    }
+
     protected open fun bindMeasurementsTable() {
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
     }
@@ -192,6 +203,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         if (showChart()) {
             mChartView?.visibility = View.VISIBLE
         }
+        bindExpandedMeasurementsDesctription()
     }
 
     protected open fun collapseSessionCard() {
@@ -201,6 +213,15 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mChartView?.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
+        bindCollapsedMeasurementsDesctription()
+    }
+
+    protected open fun bindExpandedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.parameters)
+    }
+
+    protected open fun bindCollapsedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
     override fun showLoader() {

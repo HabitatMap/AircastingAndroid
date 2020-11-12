@@ -19,18 +19,19 @@ class MobileDormantSessionViewMvcImpl(
     MobileDormantSessionViewMvc,
     SessionActionsBottomSheet.Listener
 {
-    private val mMeasurementsDescriptionTextView: TextView?
-
-    init {
-        mMeasurementsDescriptionTextView = this.rootView?.session_measurements_description
-        setCollapsedMeasurementDescriptionText()
-    }
-
     override fun showMeasurementsTableValues(): Boolean {
         return false
     }
 
     override fun showExpandedMeasurementsTableValues() = true
+
+    override fun bindCollapsedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.parameters)
+    }
+
+    override fun bindExpandedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
+    }
 
     override fun buildBottomSheet(): BottomSheet {
         return SessionActionsBottomSheet(this)
@@ -43,23 +44,5 @@ class MobileDormantSessionViewMvcImpl(
             listener.onSessionDeleteClicked(mSessionPresenter!!.session!!)
         }
         dismissBottomSheet()
-    }
-
-    override fun expandSessionCard() {
-        super.expandSessionCard()
-        setExpandedMeasurementDescriptionText()
-    }
-
-    override fun collapseSessionCard() {
-        super.collapseSessionCard()
-        setCollapsedMeasurementDescriptionText()
-    }
-
-    private fun setCollapsedMeasurementDescriptionText() {
-        mMeasurementsDescriptionTextView?.text = context.getString(R.string.parameters)
-    }
-
-    private fun setExpandedMeasurementDescriptionText() {
-        mMeasurementsDescriptionTextView?.text = context.getString(R.string.session_avg_measurements_description)
     }
 }

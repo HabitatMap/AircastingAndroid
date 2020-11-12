@@ -21,6 +21,14 @@ class MobileActiveSessionViewMvcImpl(
         return true
     }
 
+    override fun bindCollapsedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.session_last_sec_measurements_description)
+    }
+
+    override fun bindExpandedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.session_last_sec_measurements_description)
+    }
+
     override fun showExpandedMeasurementsTableValues() = true
 
     override fun buildBottomSheet(): BottomSheet? {

@@ -21,18 +21,20 @@ class FixedSessionViewMvcImpl(
     FixedSessionViewMvc,
     SessionActionsBottomSheet.Listener
 {
-    private val mMeasurementsDescriptionTextView: TextView?
-
-    init {
-        mMeasurementsDescriptionTextView = this.rootView?.session_measurements_description
-        setMeasurementDescriptionText()
-    }
 
     override fun showMeasurementsTableValues(): Boolean {
         return false
     }
 
     override fun showExpandedMeasurementsTableValues() = false
+
+    override fun bindCollapsedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.parameters)
+    }
+
+    override fun bindExpandedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.parameters)
+    }
 
     override fun buildBottomSheet(): BottomSheet {
         return SessionActionsBottomSheet(this)
@@ -53,9 +55,5 @@ class FixedSessionViewMvcImpl(
             listener.onSessionDeleteClicked(mSessionPresenter!!.session!!)
         }
         dismissBottomSheet()
-    }
-
-    private fun setMeasurementDescriptionText() {
-        mMeasurementsDescriptionTextView?.text = context.getString(R.string.parameters)
     }
 }
