@@ -90,7 +90,7 @@ class MeasurementsTableContainer {
         mSessionPresenter = sessionPresenter
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
         mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
-
+        
         val session = mSessionPresenter?.session
         if (session != null && session.streams.count() > 0) {
             resetMeasurementsView()

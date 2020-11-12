@@ -24,6 +24,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
+    private val mSessionMeasurementsDescription: TextView?
 
     private var mSessionPresenter: SessionPresenter? = null
 
@@ -47,6 +48,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_info
+        mSessionMeasurementsDescription = this.rootView?.session_measurements_description
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -110,6 +112,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
         mSessionTagsTextView?.text = session.infoString()
+        if (mSessionPresenter?.isMobileDormant() ?: false) mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {

@@ -48,7 +48,7 @@ class SessionPresenter() {
     }
 
     fun isMobileDormant(): Boolean {
-        return isFixed() && !isRecording()
+        return !isFixed() && !isRecording()
     }
 
     fun isRecording(): Boolean {
