@@ -30,7 +30,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
-    private val mStatisticsContainer: StatisticsContainer
+    private var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
 
@@ -80,7 +80,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
     override fun addMeasurement(measurement: Measurement) {
         mMapContainer.addMeasurement(measurement)
-        mStatisticsContainer.addMeasurement(measurement)
+        mStatisticsContainer?.addMeasurement(measurement)
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
@@ -92,7 +92,11 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
         mMapContainer.bindSession(mSessionPresenter)
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
-        mStatisticsContainer.bindSession(mSessionPresenter)
+        if(mSessionPresenter?.isMobileDormant() ?: false) {
+            mStatisticsContainer = null
+        } else {
+            mStatisticsContainer?.bindSession(mSessionPresenter)
+        }
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
     }
 
@@ -118,7 +122,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
         mMapContainer.refresh(mSessionPresenter)
-        mStatisticsContainer.refresh(mSessionPresenter)
+        mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
 
         mListener?.onMeasurementStreamChanged(measurementStream)
@@ -127,7 +131,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         mMeasurementsTableContainer.refresh()
         mMapContainer.refresh(mSessionPresenter)
-        mStatisticsContainer.refresh(mSessionPresenter)
+        mStatisticsContainer?.refresh(mSessionPresenter)
 
         mOnSensorThresholdChanged?.invoke(sensorThreshold)
     }
