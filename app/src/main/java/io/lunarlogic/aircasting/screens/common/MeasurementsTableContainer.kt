@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.common
 
+import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ class MeasurementsTableContainer {
 
     private var mSelectable: Boolean
     private var mDisplayValues: Boolean
+    private var mDisplayAvarages: Boolean = false
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
@@ -87,6 +89,7 @@ class MeasurementsTableContainer {
     ) {
         mSessionPresenter = sessionPresenter
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
+        mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
 
         val session = mSessionPresenter?.session
         if (session != null && session.streams.count() > 0) {
@@ -107,7 +110,7 @@ class MeasurementsTableContainer {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             bindStream(stream)
-            bindAvgMeasurement(stream)
+            bindMeasurement(stream)
         }
     }
 
@@ -183,8 +186,8 @@ class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    private fun bindAvgMeasurement(stream: MeasurementStream) {
-        val measurementValue = stream.getAvgMeasurement() ?: return
+    private fun bindMeasurement(stream: MeasurementStream) {
+        val measurementValue = (if (mDisplayAvarages) stream.getAvgMeasurement() else stream.measurements.lastOrNull()?.value) ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
         valueView.background = null
