@@ -36,6 +36,8 @@ class MobileDormantSessionViewMvcImpl(
         return SessionActionsBottomSheet(this)
     }
 
+    override fun showChart() = false
+
     override fun deleteSessionPressed() {
         for (listener in listeners) {
             listener.onSessionDeleteClicked(mSessionPresenter!!.session!!)
