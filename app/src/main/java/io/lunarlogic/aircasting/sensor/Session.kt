@@ -72,13 +72,21 @@ class Session(
 
     enum class Type(val value: Int){
         MOBILE(0),
-        FIXED(1)
+        FIXED(1);
+
+        companion object {
+            fun fromInt(value: Int) = Type.values().first { it.value == value }
+        }
     }
 
     enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
-        FINISHED(1)
+        FINISHED(1);
+
+        companion object {
+            fun fromInt(value: Int) = Status.values().first { it.value == value }
+        }
     }
 
     enum class StreamingMethod(val value: Int) {

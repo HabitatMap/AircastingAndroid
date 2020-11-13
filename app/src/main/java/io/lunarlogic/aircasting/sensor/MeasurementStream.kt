@@ -124,6 +124,15 @@ class MeasurementStream(
         }
     }
 
+    fun getAvgMeasurement(): Double? {
+        if(measurements.isEmpty()) return null
+        return calculateSum() / measurements.size
+    }
+
+    fun calculateSum(): Double {
+        return measurements.sumByDouble { it.value }
+    }
+
     private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
         val allMeasurements = ArrayList<Measurement?>(measurements)
         val size = allMeasurements.size

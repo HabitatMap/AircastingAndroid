@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 import io.lunarlogic.aircasting.sensor.Session
+import kotlinx.android.synthetic.main.session_card.view.*
 
 class FollowingSessionViewMvcImpl:
     SessionViewMvcImpl<SessionCardListener>,
@@ -19,7 +20,6 @@ class FollowingSessionViewMvcImpl:
 
     val noMeasurementsIcon: ImageView?
     val noMeasurementsLabels: View?
-    val measurementsDescription: TextView?
 
     constructor(
         inflater: LayoutInflater,
@@ -31,7 +31,6 @@ class FollowingSessionViewMvcImpl:
 
         noMeasurementsIcon = this.rootView?.findViewById(R.id.session_no_measurements_icon)
         noMeasurementsLabels = this.rootView?.findViewById(R.id.session_no_measurements_labels)
-        measurementsDescription = this.rootView?.findViewById(R.id.session_measurements_description)
     }
 
     override fun showMeasurementsTableValues(): Boolean {
@@ -59,8 +58,16 @@ class FollowingSessionViewMvcImpl:
         }
     }
 
+    override fun bindCollapsedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
+    }
+
+    override fun bindExpandedMeasurementsDesctription() {
+        mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
+    }
+
     private fun showNoMeasurementsInfo() {
-        measurementsDescription?.visibility = View.GONE
+        mMeasurementsDescription?.visibility = View.GONE
 
         noMeasurementsIcon?.visibility = View.VISIBLE
         noMeasurementsLabels?.visibility = View.VISIBLE
@@ -69,7 +76,7 @@ class FollowingSessionViewMvcImpl:
     }
 
     private fun hideNoMeasurementsInfo() {
-        measurementsDescription?.visibility = View.VISIBLE
+        mMeasurementsDescription?.visibility = View.VISIBLE
 
         noMeasurementsIcon?.visibility = View.GONE
         noMeasurementsLabels?.visibility = View.GONE

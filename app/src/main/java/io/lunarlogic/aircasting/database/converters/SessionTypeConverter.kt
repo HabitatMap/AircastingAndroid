@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.sensor.Session
 class SessionTypeConverter {
     @TypeConverter
     fun fromInt(value: Int): Session.Type {
-        val type = Session.Type.values().filter { type -> type.value == value }.first()
+        val type = Session.Type.fromInt(value)
         return Session.Type.valueOf(type.name)
     }
 

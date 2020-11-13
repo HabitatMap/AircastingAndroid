@@ -17,19 +17,20 @@ import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
+abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
     private val mFragmentManager: FragmentManager?
     private var mListener: MapViewMvc.Listener? = null
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
+    protected val mSessionMeasurementsDescription: TextView?
 
     private var mSessionPresenter: SessionPresenter? = null
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
-    private val mStatisticsContainer: StatisticsContainer
+    protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
 
@@ -47,6 +48,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
         mSessionTagsTextView = this.rootView?.session_info
+        mSessionMeasurementsDescription = this.rootView?.session_measurements_description
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -78,7 +80,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
     override fun addMeasurement(measurement: Measurement) {
         mMapContainer.addMeasurement(measurement)
-        mStatisticsContainer.addMeasurement(measurement)
+        mStatisticsContainer?.addMeasurement(measurement)
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter?, onSensorThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
@@ -90,8 +92,12 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
         mMapContainer.bindSession(mSessionPresenter)
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
-        mStatisticsContainer.bindSession(mSessionPresenter)
+        bindStatisticsContainer()
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+    }
+
+    open fun bindStatisticsContainer() {
+        mStatisticsContainer?.bindSession(mSessionPresenter)
     }
 
     fun showSlider() {
@@ -110,12 +116,17 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
         mSessionTagsTextView?.text = session.infoString()
+        bindSessionMeasurementsDescription()
+    }
+
+    open fun bindSessionMeasurementsDescription() {
+        mSessionMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
         mMapContainer.refresh(mSessionPresenter)
-        mStatisticsContainer.refresh(mSessionPresenter)
+        mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
 
         mListener?.onMeasurementStreamChanged(measurementStream)
@@ -124,7 +135,7 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
     private fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         mMeasurementsTableContainer.refresh()
         mMapContainer.refresh(mSessionPresenter)
-        mStatisticsContainer.refresh(mSessionPresenter)
+        mStatisticsContainer?.refresh(mSessionPresenter)
 
         mOnSensorThresholdChanged?.invoke(sensorThreshold)
     }

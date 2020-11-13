@@ -79,7 +79,7 @@ class StatisticsContainer {
 
         if (stream != null) {
             if (mSum == null) {
-                mSum = calculateSum(stream)
+                mSum = stream.calculateSum()
             }
 
             avg = mSum!! / stream.measurements.size
@@ -101,23 +101,11 @@ class StatisticsContainer {
     }
 
     private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?) {
-        valueView?.text = formatStatistic(value)
+        valueView?.text = Measurement.formatValue(value)
 
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color)
         circleIndicator?.setColorFilter(color)
-    }
-
-    private fun formatStatistic(value: Double?): String {
-        if (value == null) {
-            return "-"
-        } else {
-            return "%.0f".format(value)
-        }
-    }
-
-    private fun calculateSum(stream: MeasurementStream): Double {
-        return stream.measurements.sumByDouble { it.value }
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {

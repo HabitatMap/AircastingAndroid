@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.common
 
+import io.lunarlogic.aircasting.screens.common.SelectedSensorBorder
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.core.view.get
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.sensor.Measurement
 import io.lunarlogic.aircasting.sensor.MeasurementStream
 import kotlinx.android.synthetic.main.session_card.view.*
 
@@ -25,6 +27,7 @@ class MeasurementsTableContainer {
 
     private var mSelectable: Boolean
     private var mDisplayValues: Boolean
+    private var mDisplayAvarages: Boolean = false
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
@@ -86,6 +89,7 @@ class MeasurementsTableContainer {
     ) {
         mSessionPresenter = sessionPresenter
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
+        mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
 
         val session = mSessionPresenter?.session
         if (session != null && session.streams.count() > 0) {
@@ -106,7 +110,7 @@ class MeasurementsTableContainer {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             bindStream(stream)
-            bindLastMeasurement(stream)
+            bindMeasurement(stream)
         }
     }
 
@@ -182,8 +186,14 @@ class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    private fun bindLastMeasurement(stream: MeasurementStream) {
-        val measurement = stream.measurements.lastOrNull() ?: return
+    private fun bindMeasurement(stream: MeasurementStream) {
+        val measurementValue = if (mDisplayAvarages) {
+            stream.getAvgMeasurement()
+        } else {
+            stream.measurements.lastOrNull()?.value
+        }
+
+        measurementValue ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
         valueView.background = null
@@ -191,9 +201,9 @@ class MeasurementsTableContainer {
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
-        valueTextView.text = measurement.valueString()
+        valueTextView.text = Measurement.formatValue(measurementValue)
 
-        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.sensorThresholdFor(stream))
+        val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         circleView.setColorFilter(color)
         mLastMeasurementColors[stream] = color
 
