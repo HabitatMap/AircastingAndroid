@@ -4,7 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.components.LimitLine
+import com.github.mikephil.charting.data.CombinedData
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -12,11 +16,13 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
 import kotlinx.android.synthetic.main.graph.view.*
 
+
 class GraphContainer {
     private val mContext: Context
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mSessionPresenter: SessionPresenter? = null
+    private var mSamples: List<Measurement> = emptyList()
     private val mGraph: TargetZoneCombinedChart?
 
     private val mGraphDataGenerator = GraphDataGenerator()
@@ -40,16 +46,11 @@ class GraphContainer {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
+        mSamples = mSessionPresenter?.selectedStream?.measurements ?: emptyList()
 
         drawSession()
     }
 
-    private fun buildEntries(): List<Entry> {
-        val measurements = mSessionPresenter?.selectedStream?.measurements
-        measurements ?: return emptyList()
-
-        return mGraphDataGenerator.generate(measurements)
-    }
 
     fun addMeasurement(measurement: Measurement) {
         // TODO
@@ -60,27 +61,50 @@ class GraphContainer {
     }
 
     private fun drawSession() {
-        updateData()
-        updateThresholds()
+        val result = mGraphDataGenerator.generate(mSamples)
+
+        drawData(result.entries)
+        drawMidnightPointLines(result.midnightPoints)
+        drawThresholds()
+
         mGraph?.invalidate()
     }
 
-    private fun updateData() {
+    private fun drawData(entries: List<Entry>) {
         val combinedData = CombinedData()
-        combinedData.setData(buildLineData())
+        val lineData = buildLineData(entries)
+        combinedData.setData(lineData)
         mGraph?.data = combinedData
     }
 
-    private fun buildLineData(): LineData {
-        val entries = buildEntries()
-
+    private fun buildLineData(entries: List<Entry>): LineData {
         val dataSet = LineDataSet(entries, "")
         setupLineAppearance(dataSet)
 
         return LineData(dataSet)
     }
 
-    private fun updateThresholds() {
+    private fun drawMidnightPointLines(midnightPoints: List<Float>) {
+        midnightPoints.forEach { midnightPoint ->
+            val line = midnightPointLine(midnightPoint)
+            val axis = mGraph?.xAxis
+            axis?.addLimitLine(line)
+            axis?.setDrawLimitLinesBehindData(true)
+        }
+    }
+
+    private fun midnightPointLine(limit: Float): LimitLine {
+        val line = LimitLine(limit, "Midnight")
+        line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
+        line.lineColor = Color.BLACK
+        line.lineWidth = 1f
+        line.enableDashedLine(20f, 10f, 0f)
+        line.textColor = Color.BLACK
+        line.textSize = 12f
+        return line
+    }
+
+    private fun drawThresholds() {
         val threshold = mSessionPresenter?.selectedSensorThreshold()
         threshold ?: return
 

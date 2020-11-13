@@ -9,7 +9,7 @@ import com.github.mikephil.charting.charts.CombinedChart
 
 class TargetZoneCombinedChart: CombinedChart {
     protected var mYAxisSafeZonePaint: Paint? = null
-    private var mTargetZones: MutableList<TargetZoneCombinedChart.TargetZone>? = null
+    private var mTargetZones: MutableList<TargetZone>? = null
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
@@ -47,7 +47,7 @@ class TargetZoneCombinedChart: CombinedChart {
         super.onDraw(canvas)
     }
 
-    fun addTargetZone(targetZone: TargetZoneCombinedChart.TargetZone) {
+    fun addTargetZone(targetZone: TargetZone) {
         mTargetZones!!.add(targetZone)
     }
 
