@@ -187,7 +187,13 @@ class MeasurementsTableContainer {
     }
 
     private fun bindMeasurement(stream: MeasurementStream) {
-        val measurementValue = (if (mDisplayAvarages) stream.getAvgMeasurement() else stream.measurements.lastOrNull()?.value) ?: return
+        val measurementValue = if (mDisplayAvarages) {
+            stream.getAvgMeasurement()
+        } else {
+            stream.measurements.lastOrNull()?.value
+        }
+
+        measurementValue ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
         valueView.background = null
