@@ -17,8 +17,9 @@ class GraphContainer {
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mSessionPresenter: SessionPresenter? = null
-    private var mMeasurements: List<Measurement> = emptyList()
     private val mGraph: TargetZoneCombinedChart?
+
+    private val mGraphDataGenerator = GraphDataGenerator()
 
 
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
@@ -39,9 +40,15 @@ class GraphContainer {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        mMeasurements = sessionPresenter?.selectedStream?.measurements ?: emptyList() // TODO
 
         drawSession()
+    }
+
+    private fun buildEntries(): List<Entry> {
+        val measurements = mSessionPresenter?.selectedStream?.measurements
+        measurements ?: return emptyList()
+
+        return mGraphDataGenerator.generate(measurements)
     }
 
     fun addMeasurement(measurement: Measurement) {
@@ -60,8 +67,17 @@ class GraphContainer {
 
     private fun updateData() {
         val combinedData = CombinedData()
-        combinedData.setData(buildEntries())
+        combinedData.setData(buildLineData())
         mGraph?.data = combinedData
+    }
+
+    private fun buildLineData(): LineData {
+        val entries = buildEntries()
+
+        val dataSet = LineDataSet(entries, "")
+        setupLineAppearance(dataSet)
+
+        return LineData(dataSet)
     }
 
     private fun updateThresholds() {
@@ -74,18 +90,6 @@ class GraphContainer {
         MeasurementColor.levels(threshold, mContext).forEach { level ->
             mGraph?.addTargetZone(TargetZone(level.color, level.from.toFloat(), level.to.toFloat()))
         }
-    }
-
-    private fun buildEntries(): LineData {
-        val entries = mMeasurements.mapIndexed { index, measurement ->  Entry(
-            index.toFloat(),
-            measurement.value.toFloat()
-        ) }
-
-        val dataSet = LineDataSet(entries, "")
-        setupLineAppearance(dataSet)
-
-        return LineData(dataSet)
     }
 
     private fun setupLineAppearance(dataSet: LineDataSet) {
