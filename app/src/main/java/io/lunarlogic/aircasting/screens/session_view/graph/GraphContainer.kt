@@ -22,7 +22,6 @@ class GraphContainer {
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mSessionPresenter: SessionPresenter? = null
-    private var mSamples: List<Measurement> = emptyList()
     private val mGraph: TargetZoneCombinedChart?
 
     private val mGraphDataGenerator = GraphDataGenerator()
@@ -46,14 +45,13 @@ class GraphContainer {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        mSamples = mSessionPresenter?.selectedStream?.measurements ?: emptyList()
 
         drawSession()
     }
 
 
     fun addMeasurement(measurement: Measurement) {
-        // TODO
+        refresh(mSessionPresenter)
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
@@ -61,13 +59,18 @@ class GraphContainer {
     }
 
     private fun drawSession() {
-        val result = mGraphDataGenerator.generate(mSamples)
+        val result = generateData()
 
         drawData(result.entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
 
         mGraph?.invalidate()
+    }
+
+    private fun generateData(): GraphDataGenerator.Result {
+        val samples = mSessionPresenter?.selectedStream?.measurements ?: emptyList()
+        return mGraphDataGenerator.generate(samples)
     }
 
     private fun drawData(entries: List<Entry>) {
