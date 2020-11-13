@@ -79,7 +79,7 @@ class StatisticsContainer {
 
         if (stream != null) {
             if (mSum == null) {
-                mSum = calculateSum(stream)
+                mSum = stream.calculateSum()
             }
 
             avg = mSum!! / stream.measurements.size
@@ -106,10 +106,6 @@ class StatisticsContainer {
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color)
         circleIndicator?.setColorFilter(color)
-    }
-
-    private fun calculateSum(stream: MeasurementStream): Double {
-        return stream.measurements.sumByDouble { it.value }
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {

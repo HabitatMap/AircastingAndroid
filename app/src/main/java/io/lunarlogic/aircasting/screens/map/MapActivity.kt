@@ -28,15 +28,15 @@ class MapActivity: AppCompatActivity() {
             context: Context?,
             sensorName: String?,
             sessionUUID: String,
-            sessionType: Int,
-            sessionStatus: Int
+            sessionType: Session.Type,
+            sessionStatus: Session.Status
         ) {
             context?.let{
                 val intent = Intent(it, MapActivity::class.java)
                 intent.putExtra(SENSOR_NAME_KEY, sensorName)
                 intent.putExtra(SESSION_UUID_KEY, sessionUUID)
-                intent.putExtra(SESSION_TYPE_KEY, sessionType)
-                intent.putExtra(SESSION_STATUS_KEY, sessionStatus)
+                intent.putExtra(SESSION_TYPE_KEY, sessionType.value)
+                intent.putExtra(SESSION_STATUS_KEY, sessionStatus.value)
                 it.startActivity(intent)
             }
         }

@@ -15,10 +15,13 @@ open class MapViewMvcImplFactory {
             sessionType: Session.Type,
             sessionStatus: Session.Status
         ): MapViewMvcImpl {
-            return when {
-                sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.FINISHED -> MapViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
-                sessionType == Session.Type.MOBILE && sessionStatus != Session.Status.FINISHED -> MapViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)
-                sessionType == Session.Type.FIXED -> MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
+            if (sessionType == Session.Type.FIXED) {
+                return MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
+            }
+
+            return when(sessionStatus) {
+                Session.Status.FINISHED -> MapViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
+                Session.Status.RECORDING -> MapViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)
                 else -> MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
             }
         }

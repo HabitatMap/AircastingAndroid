@@ -129,7 +129,7 @@ class MeasurementStream(
         return calculateSum() / measurements.size
     }
 
-    private fun calculateSum(): Double {
+    fun calculateSum(): Double {
         return measurements.sumByDouble { it.value }
     }
 
