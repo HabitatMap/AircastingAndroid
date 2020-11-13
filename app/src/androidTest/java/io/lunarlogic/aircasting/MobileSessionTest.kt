@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -121,7 +122,7 @@ class MobileSessionTest {
 
         onView(withId(R.id.expand_session_button)).perform(click())
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
-        onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
+        onView(withId(R.id.chart_container)).check(doesNotExist())
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(1000)
