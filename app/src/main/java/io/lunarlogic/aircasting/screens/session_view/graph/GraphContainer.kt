@@ -3,18 +3,21 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
 import kotlinx.android.synthetic.main.graph.view.*
+import java.util.*
 
 
 class GraphContainer {
@@ -23,13 +26,19 @@ class GraphContainer {
 
     private var mSessionPresenter: SessionPresenter? = null
     private val mGraph: TargetZoneCombinedChart?
+    private val mFromLabel: TextView?
+    private val mToLabel: TextView?
 
     private val mGraphDataGenerator = GraphDataGenerator()
+
+    private val DATE_FORMAT = "HH:mm"
 
 
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
         mGraph = rootView?.graph
+        mFromLabel = rootView?.from_label
+        mToLabel = rootView?.to_label
 
         setupGraph()
     }
@@ -64,6 +73,7 @@ class GraphContainer {
         drawData(result.entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
+        drawLabels(result.entries)
 
         mGraph?.invalidate()
     }
@@ -94,6 +104,21 @@ class GraphContainer {
             axis?.addLimitLine(line)
             axis?.setDrawLimitLinesBehindData(true)
         }
+    }
+
+    private fun drawLabels(entries: List<Entry>) {
+        val firstEntry = entries.firstOrNull() ?: return
+        val lastEntry = entries.lastOrNull() ?: return
+
+        val startDate = mGraphDataGenerator.dateFromFloat(firstEntry.x)
+        val endDate = mGraphDataGenerator.dateFromFloat(lastEntry.x)
+
+        mFromLabel?.text = dateString(startDate)
+        mToLabel?.text = dateString(endDate)
+    }
+
+    private fun dateString(date: Date): String {
+        return DateConverter.toDateString(date, TimeZone.getDefault(), DATE_FORMAT)
     }
 
     private fun midnightPointLine(limit: Float): LimitLine {

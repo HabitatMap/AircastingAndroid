@@ -8,4 +8,30 @@
         android:layout_marginTop="@dimen/keyline_4"
         app:layout_constraintTop_toBottomOf="@id/main_content_start_barrier"
         app:layout_constraintBottom_toTopOf="@id/main_content_end_barrier" />
+
+    <TextView
+        android:id="@+id/from_label"
+        android:text="from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_2"
+        android:layout_marginStart="@dimen/keyline_4"
+        android:layout_marginBottom="@dimen/keyline_3"
+        android:textSize="@dimen/text_size_xxs"
+        app:layout_constraintTop_toBottomOf="@id/graph"
+        app:layout_constraintBottom_toTopOf="@id/hlu"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/to_label"
+        android:text="to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_2"
+        android:layout_marginEnd="@dimen/keyline_4"
+        android:layout_marginBottom="@dimen/keyline_3"
+        android:textSize="@dimen/text_size_xxs"
+        app:layout_constraintTop_toBottomOf="@id/graph"
+        app:layout_constraintBottom_toTopOf="@id/hlu"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </merge>

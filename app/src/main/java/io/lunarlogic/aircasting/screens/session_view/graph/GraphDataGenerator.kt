@@ -10,6 +10,7 @@ class GraphDataGenerator {
     private var cumulativeValue = 0.0
     private var cumulativeTime: Long = 0
     private var count = 0
+    private var startTime = Date()
 
     private val DEFAULT_LIMIT = 1000
 
@@ -25,7 +26,9 @@ class GraphDataGenerator {
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
-        var lastDateDayOfMonth = CalendarUtils.dayOfMonth(firstMeasurement.time)
+        startTime = firstMeasurement.time
+
+        var lastDateDayOfMonth = CalendarUtils.dayOfMonth(startTime)
 
         for (measurement in samples) {
             add(measurement)
@@ -35,12 +38,12 @@ class GraphDataGenerator {
                 fill -= 1.0
                 val date = getAverageDate()
 
-                entries.add(buildAverageEntry(date, firstMeasurement.time))
+                entries.add(buildAverageEntry(date))
 
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
                 if (lastDateDayOfMonth != dateOfMonth) {
                     lastDateDayOfMonth = dateOfMonth
-                    midnightPoints.add(convertDateToFloat(date, firstMeasurement.time))
+                    midnightPoints.add(convertDateToFloat(date))
                 }
 
                 reset()
@@ -49,10 +52,14 @@ class GraphDataGenerator {
 
         if (count > 0) {
             val date = getAverageDate()
-            entries.add(buildAverageEntry(date, firstMeasurement.time))
+            entries.add(buildAverageEntry(date))
         }
 
         return Result(entries, midnightPoints)
+    }
+
+    fun dateFromFloat(float: Float): Date {
+        return Date(float.toLong() + startTime.time)
     }
 
     private fun getAverageDate(): Date {
@@ -63,13 +70,13 @@ class GraphDataGenerator {
         return (cumulativeValue / count)
     }
 
-    private fun buildAverageEntry(date: Date, startTime: Date): Entry {
-        val time = convertDateToFloat(date, startTime)
+    private fun buildAverageEntry(date: Date): Entry {
+        val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
         return Entry(time, value)
     }
 
-    private fun convertDateToFloat(date: Date, startTime: Date): Float {
+    private fun convertDateToFloat(date: Date): Float {
         // we need to substract startTime because
         // otherwise we lose precision while converting Long to Float
         // and Float is needed for the MPAndroidChart library
