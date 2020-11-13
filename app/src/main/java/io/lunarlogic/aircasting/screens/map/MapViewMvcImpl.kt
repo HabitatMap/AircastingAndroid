@@ -17,20 +17,20 @@ import io.lunarlogic.aircasting.sensor.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
-class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
+abstract class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, MapViewMvc.HLUDialogListener {
     private val mFragmentManager: FragmentManager?
     private var mListener: MapViewMvc.Listener? = null
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
     private val mSessionTagsTextView: TextView?
-    private val mSessionMeasurementsDescription: TextView?
+    protected val mSessionMeasurementsDescription: TextView?
 
     private var mSessionPresenter: SessionPresenter? = null
 
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mMapContainer: MapContainer
-    private var mStatisticsContainer: StatisticsContainer?
+    protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
 
@@ -92,12 +92,12 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
 
         mMapContainer.bindSession(mSessionPresenter)
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
-        if(mSessionPresenter?.isMobileDormant() ?: false) {
-            mStatisticsContainer = null
-        } else {
-            mStatisticsContainer?.bindSession(mSessionPresenter)
-        }
+        bindStatisticsContainer()
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+    }
+
+    open fun bindStatisticsContainer() {
+        mStatisticsContainer?.bindSession(mSessionPresenter)
     }
 
     fun showSlider() {
@@ -116,7 +116,11 @@ class MapViewMvcImpl: BaseObservableViewMvc<MapViewMvc.Listener>, MapViewMvc, Ma
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
         mSessionTagsTextView?.text = session.infoString()
-        if (mSessionPresenter?.isMobileDormant() ?: false) mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
+        bindSessionMeasurementsDescription()
+    }
+
+    open fun bindSessionMeasurementsDescription() {
+        mSessionMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {

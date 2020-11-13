@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
+import io.lunarlogic.aircasting.sensor.Session
 
 class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null
@@ -18,14 +19,24 @@ class MapActivity: AppCompatActivity() {
     private val errorHandler = ErrorHandler(this)
 
     companion object {
-        val SESSION_UUID_KEY = "SESSION_UUID"
         val SENSOR_NAME_KEY = "SENSOR_NAME"
+        val SESSION_UUID_KEY = "SESSION_UUID"
+        val SESSION_TYPE_KEY = "SESSION_TYPE"
+        val SESSION_STATUS_KEY = "SESSION_STATUS"
 
-        fun start(context: Context?, sessionUUID: String, sensorName: String?) {
+        fun start(
+            context: Context?,
+            sensorName: String?,
+            sessionUUID: String,
+            sessionType: Int,
+            sessionStatus: Int
+        ) {
             context?.let{
                 val intent = Intent(it, MapActivity::class.java)
-                intent.putExtra(SESSION_UUID_KEY, sessionUUID)
                 intent.putExtra(SENSOR_NAME_KEY, sensorName)
+                intent.putExtra(SESSION_UUID_KEY, sessionUUID)
+                intent.putExtra(SESSION_TYPE_KEY, sessionType)
+                intent.putExtra(SESSION_STATUS_KEY, sessionStatus)
                 it.startActivity(intent)
             }
         }
@@ -34,10 +45,12 @@ class MapActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
+        val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
+        val sessionType: Int = intent.extras?.getInt(SESSION_TYPE_KEY) as Int
+        val sessionStatus: Int = intent.extras?.getInt(SESSION_STATUS_KEY) as Int
 
-        val view = MapViewMvcImpl(layoutInflater, null, supportFragmentManager)
+        val view = MapViewMvcImplFactory.get(layoutInflater, null, supportFragmentManager, Session.Type.fromInt(sessionType), Session.Status.fromInt(sessionStatus))
         controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName)
 
         controller?.onCreate()
