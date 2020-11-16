@@ -9,7 +9,7 @@ class MapViewFixedMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-): MapDetailsViewMvcImpl(inflater, parent, supportFragmentManager) {
+): MapViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text = context.getString(R.string.session_measurements_description)

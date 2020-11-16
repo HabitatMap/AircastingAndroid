@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 
 
-class GraphDetailsViewMvcImpl: SessionDetailsViewMvcImpl {
+class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     private val graphContainer: GraphContainer
 
     constructor(

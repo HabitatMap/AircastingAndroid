@@ -13,7 +13,7 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 
 
-abstract class MapDetailsViewMvcImpl: SessionDetailsViewMvcImpl {
+abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     private val mMapContainer: MapContainer
 
     constructor(

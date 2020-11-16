@@ -14,7 +14,7 @@ open class MapViewMvcImplFactory {
             supportFragmentManager: FragmentManager?,
             sessionType: Session.Type,
             sessionStatus: Session.Status
-        ): MapDetailsViewMvcImpl {
+        ): MapViewMvcImpl {
             if (sessionType == Session.Type.FIXED) {
                 return MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
             }

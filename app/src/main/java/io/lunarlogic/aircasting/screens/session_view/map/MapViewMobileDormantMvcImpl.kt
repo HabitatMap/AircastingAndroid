@@ -9,7 +9,7 @@ class MapViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-): MapDetailsViewMvcImpl(inflater, parent, supportFragmentManager) {
+): MapViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindStatisticsContainer() {
         mStatisticsContainer = null

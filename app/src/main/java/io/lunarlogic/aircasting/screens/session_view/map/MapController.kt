@@ -10,7 +10,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class MapControllerDetails(
+class MapController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc,

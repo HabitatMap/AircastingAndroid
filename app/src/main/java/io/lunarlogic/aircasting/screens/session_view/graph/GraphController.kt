@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewControlle
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 
 
-class GraphControllerDetails(
+class GraphController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc,
