@@ -35,7 +35,8 @@ class GraphContainer: OnChartGestureListener {
     private val mGraphDataGenerator = GraphDataGenerator()
 
     private val DATE_FORMAT = "HH:mm"
-
+    private val DEFAULT_VISIBLE_SPAN = 10 * 60 * 1000 // 10 minutes
+    private var shouldZoomToDefault = true
 
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
@@ -54,13 +55,11 @@ class GraphContainer: OnChartGestureListener {
         mListener = null
     }
 
-
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
 
         drawSession()
     }
-
 
     fun addMeasurement(measurement: Measurement) {
         refresh(mSessionPresenter)
@@ -74,13 +73,11 @@ class GraphContainer: OnChartGestureListener {
         val result = generateData()
 
         val entries = result.entries
-        val firstEntry = entries.firstOrNull() ?: return
-        val lastEntry = entries.lastOrNull() ?: return
 
+        zoom(entries)
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-        drawLabels(firstEntry.x, lastEntry.x)
 
         mGraph?.invalidate()
     }
@@ -95,6 +92,26 @@ class GraphContainer: OnChartGestureListener {
         val lineData = buildLineData(entries)
         combinedData.setData(lineData)
         mGraph?.data = combinedData
+    }
+
+    private fun zoom(entries: List<Entry>) {
+        if (shouldZoomToDefault == false) return
+        mGraph ?: return
+
+        val first = entries.firstOrNull() ?: return
+        val last = entries.lastOrNull() ?: return
+
+        val span = last.x - first.x
+        val zoom = span / DEFAULT_VISIBLE_SPAN
+        val centerX = span / 2
+        val centerY = (last.y - first.y) / 2
+
+        mGraph.zoom(zoom, 1f, centerX, centerY)
+        mGraph.moveViewToX(first.x)
+
+        drawLabels(first.x, first.x + DEFAULT_VISIBLE_SPAN)
+
+        shouldZoomToDefault = false
     }
 
     private fun buildLineData(entries: List<Entry>): LineData {
