@@ -9,7 +9,6 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class ChartData(
-
     var session: Session
 ) {
     var entriesStartTime: String = ""
@@ -28,7 +27,7 @@ class ChartData(
         return mEntriesPerStream[streamKey(stream)]
     }
 
-    fun averageFrequency(): Int {
+    private fun averageFrequency(): Int {
         return when (session.type) {
             Session.Type.MOBILE -> Calendar.MINUTE
             Session.Type.FIXED -> Calendar.HOUR
