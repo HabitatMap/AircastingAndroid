@@ -50,7 +50,13 @@ class MapActivity: AppCompatActivity() {
         val sessionType: Int = intent.extras?.getInt(SESSION_TYPE_KEY) as Int
         val sessionStatus: Int = intent.extras?.getInt(SESSION_STATUS_KEY) as Int
 
-        val view = MapViewMvcImplFactory.get(layoutInflater, null, supportFragmentManager, Session.Type.fromInt(sessionType), Session.Status.fromInt(sessionStatus))
+        val view = MapViewMvcImplFactory.get(
+            layoutInflater,
+            null,
+            supportFragmentManager,
+            Session.Type.fromInt(sessionType),
+            Session.Status.fromInt(sessionStatus)
+        )
         controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName)
 
         controller?.onCreate()

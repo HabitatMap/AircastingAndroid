@@ -35,14 +35,15 @@ class GraphContainer: OnChartGestureListener {
     private val mGraphDataGenerator = GraphDataGenerator()
 
     private val DATE_FORMAT = "HH:mm"
-    private val DEFAULT_VISIBLE_SPAN = 10 * 60 * 1000 // 10 minutes
+    private val mDefaultZoomSpan: Int
     private var shouldZoomToDefault = true
 
-    constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
         mToLabel = rootView?.to_label
+        mDefaultZoomSpan = defaultZoomSpan
 
         setupGraph()
     }
@@ -102,14 +103,14 @@ class GraphContainer: OnChartGestureListener {
         val last = entries.lastOrNull() ?: return
 
         val span = last.x - first.x
-        val zoom = span / DEFAULT_VISIBLE_SPAN
+        val zoom = span / mDefaultZoomSpan
         val centerX = span / 2
         val centerY = (last.y - first.y) / 2
 
         mGraph.zoom(zoom, 1f, centerX, centerY)
         mGraph.moveViewToX(first.x)
 
-        drawLabels(first.x, first.x + DEFAULT_VISIBLE_SPAN)
+        drawLabels(first.x, first.x + mDefaultZoomSpan)
 
         shouldZoomToDefault = false
     }

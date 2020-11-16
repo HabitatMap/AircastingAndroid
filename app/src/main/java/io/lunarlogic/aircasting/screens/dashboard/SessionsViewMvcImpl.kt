@@ -130,7 +130,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
-            listener.onGraphButtonClicked(session.uuid, measurementStream?.sensorName)
+            listener.onGraphButtonClicked(session, measurementStream?.sensorName)
         }
     }
 }

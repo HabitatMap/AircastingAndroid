@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 
 
-class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
+abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     private val graphContainer: GraphContainer
 
     constructor(
@@ -20,8 +20,10 @@ class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, supportFragmentManager)
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan())
     }
+
+    abstract fun defaultZoomSpan(): Int
 
     override fun layoutId(): Int {
         return R.layout.activity_graph
