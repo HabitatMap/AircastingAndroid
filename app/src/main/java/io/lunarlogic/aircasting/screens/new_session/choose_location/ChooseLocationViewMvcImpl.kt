@@ -18,8 +18,7 @@ import com.google.android.gms.common.api.Status
 import android.view.View
 import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.BitmapHelper
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 
 class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Listener>, ChooseLocationViewMvc,

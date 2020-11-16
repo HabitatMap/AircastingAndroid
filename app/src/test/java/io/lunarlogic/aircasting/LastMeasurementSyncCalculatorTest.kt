@@ -2,10 +2,8 @@ package io.lunarlogic.aircasting
 
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.networking.services.LastMeasurementSyncCalculator
-import io.lunarlogic.aircasting.sensor.Session
 import org.junit.Assert
 import org.junit.Test
-import kotlin.collections.ArrayList
 
 class LastMeasurementSyncCalculatorTest {
     val sessionEndTime = DateConverter.fromString("1987-07-23T11:00:00")!!

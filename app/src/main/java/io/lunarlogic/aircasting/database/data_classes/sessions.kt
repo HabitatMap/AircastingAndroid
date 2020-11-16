@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 import java.util.*
 import kotlin.collections.ArrayList
 

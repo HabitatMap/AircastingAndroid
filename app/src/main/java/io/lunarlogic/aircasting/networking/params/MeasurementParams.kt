@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.networking.params
 
-import io.lunarlogic.aircasting.sensor.Measurement
+import io.lunarlogic.aircasting.models.Measurement
 import java.util.*
 
 val MILLISECONDS_IN_SECOND = 1000

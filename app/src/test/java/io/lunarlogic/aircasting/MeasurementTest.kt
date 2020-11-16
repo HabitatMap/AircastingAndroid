@@ -1,8 +1,7 @@
 package io.lunarlogic.aircasting
 
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.SensorThreshold
 import org.junit.Test
 
 import org.junit.Assert.*

@@ -12,9 +12,9 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
-import io.lunarlogic.aircasting.screens.common.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.models.MeasurementStream
 import kotlinx.android.synthetic.main.session_card.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -39,6 +39,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
     private var mMapButton: Button
+    private var mGraphButton: Button
     private var mLoader: ImageView?
 
     protected var mSessionPresenter: SessionPresenter? = null
@@ -99,6 +100,11 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
+        }
+
+        mGraphButton = findViewById(R.id.graph_button)
+        mGraphButton.setOnClickListener {
+            onGraphButtonClicked()
         }
 
         mActionsButton.setOnClickListener {
@@ -262,6 +268,17 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mSessionPresenter?.session?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onMapButtonClicked(
+                    it,
+                    mSessionPresenter?.selectedStream
+                )
+            }
+        }
+    }
+
+    private fun onGraphButtonClicked() {
+        mSessionPresenter?.session?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onGraphButtonClicked(
                     it,
                     mSessionPresenter?.selectedStream
                 )

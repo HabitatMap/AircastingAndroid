@@ -3,8 +3,8 @@ package io.lunarlogic.aircasting.screens.dashboard.charts
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.lib.DateConverter
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Session
 import java.util.*
 import kotlin.collections.HashMap
 

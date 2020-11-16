@@ -3,13 +3,10 @@ package io.lunarlogic.aircasting.screens.new_session.confirmation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.SupportMapFragment
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class FixedSessionConfirmationViewMvcImpl : ConfirmationViewMvcImpl {
     constructor(

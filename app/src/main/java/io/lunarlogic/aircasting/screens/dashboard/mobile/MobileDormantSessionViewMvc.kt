@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.dashboard.mobile
 
 import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvc
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 interface MobileDormantSessionViewMvc:
     SessionViewMvc<MobileDormantSessionViewMvc.Listener> {

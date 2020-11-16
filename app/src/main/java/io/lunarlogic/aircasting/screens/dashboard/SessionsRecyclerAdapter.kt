@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
 
 
 abstract class SessionsRecyclerAdapter<ListenerType>(

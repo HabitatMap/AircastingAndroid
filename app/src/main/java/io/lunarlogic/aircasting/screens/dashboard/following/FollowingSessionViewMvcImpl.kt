@@ -4,15 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
-import io.lunarlogic.aircasting.sensor.Session
-import kotlinx.android.synthetic.main.session_card.view.*
 
 class FollowingSessionViewMvcImpl:
     SessionViewMvcImpl<SessionCardListener>,

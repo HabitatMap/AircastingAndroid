@@ -1,9 +1,9 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
 
 class SessionPresenter() {
     var session: Session? = null
@@ -12,6 +12,8 @@ class SessionPresenter() {
     var expanded: Boolean = false
     var loading: Boolean = false
     var chartData: ChartData? = null
+    var sessionUUID: String? = null
+    var initialSensorName: String? = null
 
     constructor(
         session: Session,
@@ -26,6 +28,11 @@ class SessionPresenter() {
         this.loading = loading
         this.sensorThresholds = sensorThresholds
         this.chartData = ChartData(session)
+    }
+
+    constructor(sessionUUID: String, initialSensorName: String?): this() {
+        this.sessionUUID = sessionUUID
+        this.initialSensorName = initialSensorName
     }
 
     fun selectedSensorThreshold(): SensorThreshold? {

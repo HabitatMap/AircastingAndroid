@@ -3,19 +3,20 @@ package io.lunarlogic.aircasting.lib
 import android.content.Context
 import androidx.core.content.res.ResourcesCompat
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.sensor.Measurement
-import io.lunarlogic.aircasting.sensor.SensorThreshold
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.SensorThreshold
 
 class MeasurementColor {
     companion object {
-        private val FALLBACK_COLOR = R.color.aircasting_grey_500
+        val LOW_COLOR = R.color.session_color_indicator_low
+        val MEDIUM_COLOR = R.color.session_color_indicator_medium
+        val HIGH_COLOR = R.color.session_color_indicator_high
+        val VERY_HIGH_COLOR = R.color.session_color_indicator_very_high
 
-        private val LEVEL_COLORS_IDS = arrayOf(
-            R.color.session_color_indicator_low,
-            R.color.session_color_indicator_medium,
-            R.color.session_color_indicator_high,
-            R.color.session_color_indicator_very_high
-        )
+        private val FALLBACK_COLOR = R.color.aircasting_grey_500
+        private val LEVEL_COLORS_IDS = arrayOf(LOW_COLOR, MEDIUM_COLOR, HIGH_COLOR, VERY_HIGH_COLOR)
+
+        class Level(val from: Int, val to: Int, val color: Int)
 
         fun forMap(context: Context, measurement: Measurement, sensorThreshold: SensorThreshold?): Int {
             sensorThreshold ?: return colorWithResourceId(context, FALLBACK_COLOR)
@@ -30,6 +31,15 @@ class MeasurementColor {
 
             val level = Measurement.getLevel(value, sensorThreshold)
             return colorForLevel(context, level)
+        }
+
+        fun levels(threshold: SensorThreshold, context: Context): Array<Level> {
+            return arrayOf(
+                Level(threshold.thresholdVeryLow, threshold.thresholdLow, colorWithResourceId(context, LOW_COLOR)),
+                Level(threshold.thresholdLow, threshold.thresholdMedium, colorWithResourceId(context, MEDIUM_COLOR)),
+                Level(threshold.thresholdMedium, threshold.thresholdHigh, colorWithResourceId(context, HIGH_COLOR)),
+                Level(threshold.thresholdHigh, threshold.thresholdVeryHigh, colorWithResourceId(context, VERY_HIGH_COLOR))
+            )
         }
 
         private fun colorForLevel(context: Context, level: Measurement.Level): Int {
