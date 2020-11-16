@@ -128,6 +128,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
+        println("MARYSIA: bindSession()")
         bindLoader(sessionPresenter)
         bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)

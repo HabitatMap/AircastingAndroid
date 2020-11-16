@@ -14,11 +14,22 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.sensor.Session
 import java.text.DecimalFormat
 import kotlinx.android.synthetic.main.session_card.view.*
+import java.sql.Date
+import java.sql.Time
+import java.sql.Timestamp
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class Chart {
+    private val MINUTE_IN_MILLISECONDS = 60 * 1000
+    private val HOUR_IN_MILLISECONDS = 60 * 60 * 1000
+
     private val mContext: Context
     private val mRootView: View?
     private val mChartStartTimeTextView: TextView?
@@ -30,6 +41,8 @@ class Chart {
     private var mLineChart: LineChart?
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
+    private var mLastUpdate: Timestamp? = null
+    private var mRefreshFrequency: Int
 
     constructor(
         context: Context,
@@ -42,20 +55,26 @@ class Chart {
         mChartStartTimeTextView = mRootView?.chart_start_time
         mChartEndTimeTextView = mRootView?.chart_end_time
         mChartUnitTextView = mRootView?.chart_unit
+
+        mRefreshFrequency = getRefreshFrequency()
     }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
-        val session = sessionPresenter?.session
-        mSessionPresenter = sessionPresenter
-        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+        if(mLastUpdate == null || (System.currentTimeMillis() - mLastUpdate?.time!!) >= mRefreshFrequency) {
+            mLastUpdate = Timestamp(System.currentTimeMillis())
+            val session = sessionPresenter?.session
+            mSessionPresenter = sessionPresenter
+            mEntries =
+                sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 
-        resetChart()
-        if (session != null && session?.streams.count() > 0) {
-            mDataSet = prepareDataSet()
-            drawChart()
-            setTimesAndUnit()
+            resetChart()
+            if (session != null && session?.streams.count() > 0) {
+                mDataSet = prepareDataSet()
+                drawChart()
+                setTimesAndUnit()
+            }
         }
     }
 
@@ -65,6 +84,7 @@ class Chart {
     }
 
     private fun drawChart() {
+        println("MARYSIA: timestamp: "+mLastUpdate)
         // Horizontal grid and no Y Axis labels
         val rightYAxis = mLineChart?.axisRight
         rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
@@ -172,6 +192,14 @@ class Chart {
             return R.string.fixed_session_units_label
         } else {
             return R.string.mobile_session_units_label
+        }
+    }
+
+    private fun getRefreshFrequency(): Int {
+        return when (mSessionPresenter?.session?.type) {
+            Session.Type.MOBILE -> MINUTE_IN_MILLISECONDS
+            Session.Type.FIXED -> HOUR_IN_MILLISECONDS
+            else -> MINUTE_IN_MILLISECONDS
         }
     }
 }
