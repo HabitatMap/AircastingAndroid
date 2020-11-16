@@ -18,9 +18,6 @@ import java.sql.Timestamp
 
 
 class Chart {
-    private val MINUTE_IN_MILLISECONDS = 60 * 1000
-    private val HOUR_IN_MILLISECONDS = 60 * 60 * 1000
-
     private val mContext: Context
     private val mRootView: View?
     private val mChartStartTimeTextView: TextView?
@@ -33,8 +30,7 @@ class Chart {
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
 
-    private var mLastRefreshTime: Timestamp? = null
-    private var mRefreshFrequency: Int
+    private var mChartRefreshService: ChartRefreshService
 
     constructor(
         context: Context,
@@ -48,14 +44,13 @@ class Chart {
         mChartEndTimeTextView = mRootView?.chart_end_time
         mChartUnitTextView = mRootView?.chart_unit
 
-        mRefreshFrequency = getRefreshFrequency()
+        mChartRefreshService = ChartRefreshService(mSessionPresenter?.session)
     }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
-        if(shouldBeRefreshed()) {
-            mLastRefreshTime = Timestamp(System.currentTimeMillis())
+        if(mChartRefreshService.shouldBeRefreshed()) {
             val session = sessionPresenter?.session
             mSessionPresenter = sessionPresenter
             mEntries =
@@ -63,21 +58,12 @@ class Chart {
 
             resetChart()
             if (session != null && session?.streams.count() > 0) {
+                mChartRefreshService.setLastRefreshTime()
                 mDataSet = prepareDataSet()
                 drawChart()
                 setTimesAndUnit()
             }
         }
-    }
-
-    private fun shouldBeRefreshed(): Boolean {
-       return mLastRefreshTime == null || timeFromLastRefresh() >= mRefreshFrequency
-    }
-
-    private fun timeFromLastRefresh(): Long {
-        val lastRefreshTime = mLastRefreshTime?.time ?: 0
-
-        return System.currentTimeMillis() - lastRefreshTime
     }
 
     private fun resetChart() {
@@ -193,14 +179,6 @@ class Chart {
             return R.string.fixed_session_units_label
         } else {
             return R.string.mobile_session_units_label
-        }
-    }
-
-    private fun getRefreshFrequency(): Int {
-        return when (mSessionPresenter?.session?.type) {
-            Session.Type.MOBILE -> MINUTE_IN_MILLISECONDS
-            Session.Type.FIXED -> HOUR_IN_MILLISECONDS
-            else -> MINUTE_IN_MILLISECONDS
         }
     }
 }
