@@ -183,6 +183,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph ?: return
 
         mGraph.setPinchZoom(true)
+        mGraph.isScaleYEnabled = false
         mGraph.description = null
         mGraph.legend?.isEnabled = false
         mGraph.axisLeft?.setDrawLabels(false)
