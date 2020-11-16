@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
@@ -10,6 +11,8 @@ import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.listener.ChartTouchListener
+import com.github.mikephil.charting.listener.OnChartGestureListener
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
@@ -20,7 +23,7 @@ import kotlinx.android.synthetic.main.graph.view.*
 import java.util.*
 
 
-class GraphContainer {
+class GraphContainer: OnChartGestureListener {
     private val mContext: Context
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
@@ -70,10 +73,14 @@ class GraphContainer {
     private fun drawSession() {
         val result = generateData()
 
-        drawData(result.entries)
+        val entries = result.entries
+        val firstEntry = entries.firstOrNull() ?: return
+        val lastEntry = entries.lastOrNull() ?: return
+
+        drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-        drawLabels(result.entries)
+        drawLabels(firstEntry.x, lastEntry.x)
 
         mGraph?.invalidate()
     }
@@ -106,12 +113,9 @@ class GraphContainer {
         }
     }
 
-    private fun drawLabels(entries: List<Entry>) {
-        val firstEntry = entries.firstOrNull() ?: return
-        val lastEntry = entries.lastOrNull() ?: return
-
-        val startDate = mGraphDataGenerator.dateFromFloat(firstEntry.x)
-        val endDate = mGraphDataGenerator.dateFromFloat(lastEntry.x)
+    private fun drawLabels(from: Float, to: Float) {
+        val startDate = mGraphDataGenerator.dateFromFloat(from)
+        val endDate = mGraphDataGenerator.dateFromFloat(to)
 
         mFromLabel?.text = dateString(startDate)
         mToLabel?.text = dateString(endDate)
@@ -171,5 +175,24 @@ class GraphContainer {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
+
+        mGraph.onChartGestureListener = this
+    }
+
+    override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
+    override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
+    override fun onChartLongPressed(me: MotionEvent?) {}
+    override fun onChartDoubleTapped(me: MotionEvent?) {}
+    override fun onChartSingleTapped(me: MotionEvent?) {}
+    override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
+    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
+
+    override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+        mGraph ?: return
+
+        val from = mGraph.lowestVisibleX
+        val to = mGraph.highestVisibleX
+
+        drawLabels(from, to)
     }
 }
