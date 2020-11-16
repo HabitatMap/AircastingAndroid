@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.session_details.view.*
+import kotlinx.android.synthetic.main.measurements_table.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 
 
