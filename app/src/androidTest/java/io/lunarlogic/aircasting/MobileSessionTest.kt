@@ -122,7 +122,7 @@ class MobileSessionTest {
 
         onView(withId(R.id.expand_session_button)).perform(click())
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
-        onView(withId(R.id.chart_container)).check(doesNotExist())
+        onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(1000)
@@ -144,7 +144,8 @@ class MobileSessionTest {
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")));
         onView(withId(R.id.expand_session_button)).perform(click())
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
-        onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
+        onView(withId(R.id.chart_container)).check(matches(not(isDisplayed())))
+
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(1000)
