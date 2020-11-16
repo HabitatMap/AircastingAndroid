@@ -6,24 +6,15 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.sensor.Session
-import java.text.DecimalFormat
 import kotlinx.android.synthetic.main.session_card.view.*
-import java.sql.Date
-import java.sql.Time
 import java.sql.Timestamp
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 
 class Chart {
@@ -41,7 +32,8 @@ class Chart {
     private var mLineChart: LineChart?
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
-    private var mLastUpdate: Timestamp? = null
+
+    private var mLastRefreshTime: Timestamp? = null
     private var mRefreshFrequency: Int
 
     constructor(
@@ -62,8 +54,8 @@ class Chart {
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
-        if(mLastUpdate == null || (System.currentTimeMillis() - mLastUpdate?.time!!) >= mRefreshFrequency) {
-            mLastUpdate = Timestamp(System.currentTimeMillis())
+        if(shouldBeRefreshed()) {
+            mLastRefreshTime = Timestamp(System.currentTimeMillis())
             val session = sessionPresenter?.session
             mSessionPresenter = sessionPresenter
             mEntries =
@@ -78,13 +70,22 @@ class Chart {
         }
     }
 
+    private fun shouldBeRefreshed(): Boolean {
+       return mLastRefreshTime == null || timeFromLastRefresh() >= mRefreshFrequency
+    }
+
+    private fun timeFromLastRefresh(): Long {
+        val lastRefreshTime = mLastRefreshTime?.time ?: 0
+
+        return System.currentTimeMillis() - lastRefreshTime
+    }
+
     private fun resetChart() {
         mLineChart?.data?.clearValues()
         mLineChart?.clear()
     }
 
     private fun drawChart() {
-        println("MARYSIA: timestamp: "+mLastUpdate)
         // Horizontal grid and no Y Axis labels
         val rightYAxis = mLineChart?.axisRight
         rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
