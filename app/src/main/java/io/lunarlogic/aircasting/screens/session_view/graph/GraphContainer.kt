@@ -21,7 +21,6 @@ import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedCha
 import kotlinx.android.synthetic.main.graph.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
