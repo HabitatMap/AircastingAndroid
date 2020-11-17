@@ -121,13 +121,13 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
-        bindStatisticsContainer()
+        mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 
     protected open fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         mMeasurementsTableContainer.refresh()
-        bindStatisticsContainer()
+        mStatisticsContainer?.refresh(mSessionPresenter)
 
         mListener?.onSensorThresholdChanged(sensorThreshold)
     }
