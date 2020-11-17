@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
-import io.lunarlogic.aircasting.sensor.Session
-import io.lunarlogic.aircasting.sensor.SessionBuilder
+import io.lunarlogic.aircasting.models.Session
 import javax.inject.Inject
 
 class SessionDetailsFragment() : Fragment() {

@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
-import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
+import io.lunarlogic.aircasting.models.SessionsViewModel
 
 
 class FollowingFragment : Fragment() {

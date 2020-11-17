@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.database.converters
 
 import androidx.room.TypeConverter
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class SessionTypeConverter {
     @TypeConverter

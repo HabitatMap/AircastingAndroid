@@ -15,8 +15,8 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.Session
-import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.network_list_item.view.*
 
 

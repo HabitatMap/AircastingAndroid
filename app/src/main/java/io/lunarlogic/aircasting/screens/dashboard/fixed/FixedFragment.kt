@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.screens.dashboard.SessionsViewModel
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import javax.inject.Inject
 
 

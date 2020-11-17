@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/session_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:textAppearance="?attr/textAppearanceBody2"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/session_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceHeadline2"
+        android:textColor="@color/aircasting_dark_blue"
+        android:fontFamily="@font/moderat_trial_medium"
+        app:layout_constraintTop_toBottomOf="@+id/session_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/session_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textColor="@color/aircasting_dark_blue"
+        android:textSize="@dimen/text_size_xs"
+        app:layout_constraintTop_toBottomOf="@+id/session_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</merge>

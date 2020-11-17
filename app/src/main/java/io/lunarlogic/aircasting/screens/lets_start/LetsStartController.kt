@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.lets_start
 
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class LetsStartController(
     private val mRootActivity: FragmentActivity?,

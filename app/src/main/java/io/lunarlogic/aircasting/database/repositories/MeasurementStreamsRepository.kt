@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.database.repositories
 
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.models.MeasurementStream
 
 class MeasurementStreamsRepository {
     private val mDatabase = DatabaseProvider.get()

@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import io.lunarlogic.aircasting.networking.GzippedSession
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SessionParams
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

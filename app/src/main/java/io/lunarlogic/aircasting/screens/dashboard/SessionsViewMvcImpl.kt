@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.MeasurementStream
-import io.lunarlogic.aircasting.sensor.SensorThreshold
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
 
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
@@ -125,6 +125,12 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
             listener.onMapButtonClicked(session, measurementStream?.sensorName)
+        }
+    }
+
+    fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?) {
+        for (listener in listeners) {
+            listener.onGraphButtonClicked(session, measurementStream?.sensorName)
         }
     }
 }

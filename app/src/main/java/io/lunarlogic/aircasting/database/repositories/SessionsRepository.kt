@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.database.repositories
 
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 import java.util.*
 
 class SessionsRepository {

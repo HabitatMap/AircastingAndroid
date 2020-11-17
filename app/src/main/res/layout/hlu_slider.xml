@@ -2,10 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/hlu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="@id/more_button"
+    app:layout_constraintTop_toBottomOf="@id/main_content_end_barrier"
     app:layout_constraintBottom_toBottomOf="parent">
+
+    <ImageView android:id="@+id/more_button"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_more_horizontal"
+        android:tint="@color/aircasting_grey_500"
+        android:paddingStart="@dimen/keyline_4"
+        android:paddingEnd="@dimen/keyline_4"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/track"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/track"

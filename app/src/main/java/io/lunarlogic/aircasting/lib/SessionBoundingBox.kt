@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.lib
 
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.LatLngBounds
-import io.lunarlogic.aircasting.sensor.Measurement
+import io.lunarlogic.aircasting.models.Measurement
 
 class SessionBoundingBox {
     companion object {

@@ -37,6 +37,7 @@
     <string name="follow_button">follow</string>
     <string name="unfollow_button">unfollow</string>
     <string name="map_button">map</string>
+    <string name="graph_button">graph</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>

@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.networking.params
 
-import io.lunarlogic.aircasting.sensor.MeasurementStream
+import io.lunarlogic.aircasting.models.MeasurementStream
 
 class MeasurementStreamParams {
     constructor(stream: MeasurementStream) {

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.new_session.session_details.*
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
 
 class FakeFixedSessionDetailsController(
     private val mContext: Context?,

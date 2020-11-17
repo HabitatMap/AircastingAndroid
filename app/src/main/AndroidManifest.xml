@@ -49,7 +49,10 @@
             android:name=".screens.new_session.NewSessionActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name=".screens.map.MapActivity"
+            android:name=".screens.session_view.map.MapActivity"
+            android:screenOrientation="portrait" />
+        <activity android:label=""
+            android:name="io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity"
             android:screenOrientation="portrait" />
 
         <meta-data

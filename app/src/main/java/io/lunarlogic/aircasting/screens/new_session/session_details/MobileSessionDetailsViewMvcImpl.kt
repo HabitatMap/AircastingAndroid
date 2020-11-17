@@ -3,11 +3,10 @@ package io.lunarlogic.aircasting.screens.new_session.session_details
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.sensor.Session
-import io.lunarlogic.aircasting.sensor.TAGS_SEPARATOR
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 
 class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     private var sessionUUID: String

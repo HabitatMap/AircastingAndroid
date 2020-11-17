@@ -12,7 +12,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.sensor.Session
 import kotlinx.android.synthetic.main.session_card.view.*
 import java.sql.Timestamp
 
