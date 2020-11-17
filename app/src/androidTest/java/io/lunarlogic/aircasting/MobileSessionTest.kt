@@ -133,11 +133,26 @@ class MobileSessionTest {
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
-        onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
-        onView(isRoot()).perform(pressBack());
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
 
+        onView(isRoot()).perform(pressBack());
+
+        expandCard()
+        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
+
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        Thread.sleep(1000)
+        openGraph()
+        Thread.sleep(3000)
+
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        onView(withId(R.id.hlu)).check(matches(isDisplayed()))
+
+        onView(isRoot()).perform(pressBack());
+
+        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
         
         Thread.sleep(4000)
@@ -202,14 +217,24 @@ class MobileSessionTest {
         onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
     }
 
-    private fun openMap(retryCount: Int = 0) {
+    private fun openMap() {
+        clickButtonWithRetry(R.id.map_button, { onView(withId(R.id.map)).check(matches(isDisplayed())) })
+    }
+
+    private fun openGraph() {
+        clickButtonWithRetry(R.id.graph_button, { onView(withId(R.id.graph)).check(matches(isDisplayed())) })
+    }
+
+    private fun clickButtonWithRetry(id: Int, assertBlock: () -> Unit, retryCount: Int = 0) {
         if (retryCount >= 3) {
             return
         }
 
         try {
-            onView(withId(R.id.map_button)).perform(click())
+            onView(withId(id)).perform(click())
+            assertBlock()
         } catch(e: NoMatchingViewException) {
+            println("ANIA NoMatchingViewException")
             Thread.sleep(1000)
             stopSession(retryCount + 1)
         }
@@ -234,11 +259,15 @@ class MobileSessionTest {
             return
         }
 
-        onView(withId(R.id.expand_session_button)).perform(click())
+        try {
+            onView(withId(R.id.expand_session_button)).perform(click())
 
-        val expandButton = testRule.activity.findViewById<ImageView>(R.id.expand_session_button)
+            val expandButton = testRule.activity.findViewById<ImageView>(R.id.expand_session_button)
 
-        if(expandButton != null && expandButton.visibility == View.VISIBLE) {
+            if (expandButton != null && expandButton.visibility == View.VISIBLE) {
+                expandCard(retryCount + 1)
+            }
+        } catch(e: Exception) {
             expandCard(retryCount + 1)
         }
     }
