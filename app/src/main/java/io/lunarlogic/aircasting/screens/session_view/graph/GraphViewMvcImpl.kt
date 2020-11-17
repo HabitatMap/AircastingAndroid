@@ -40,6 +40,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     override fun addMeasurement(measurement: Measurement) {
+        super.addMeasurement(measurement)
         graphContainer.addMeasurement(measurement)
     }
 
