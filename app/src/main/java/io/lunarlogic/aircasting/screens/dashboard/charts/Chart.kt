@@ -6,15 +6,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import java.text.DecimalFormat
 import kotlinx.android.synthetic.main.session_card.view.*
 
 

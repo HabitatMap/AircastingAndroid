@@ -20,6 +20,10 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
 import kotlinx.android.synthetic.main.graph.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -110,7 +114,9 @@ class GraphContainer: OnChartGestureListener {
         mGraph.zoom(zoom, 1f, centerX, centerY)
         mGraph.moveViewToX(first.x)
 
-        drawLabels(first.x, first.x + mDefaultZoomSpan)
+        val from = first.x
+        val to = Math.min(from + mDefaultZoomSpan, last.x)
+        drawLabels(from, to)
 
         shouldZoomToDefault = false
     }
@@ -207,11 +213,23 @@ class GraphContainer: OnChartGestureListener {
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
 
     override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+        updateLabelsBasedOnVisibleRange()
+    }
+
+    private fun updateLabelsBasedOnVisibleRange() {
         mGraph ?: return
 
-        val from = mGraph.lowestVisibleX
-        val to = mGraph.highestVisibleX
+        GlobalScope.launch(Dispatchers.IO) {
+            // we need to wait a bit for drag to finish when there is fling gesture
+            // onChartFling does not work properly
+            Thread.sleep(500)
 
-        drawLabels(from, to)
+            launch(Dispatchers.Main) {
+                val from = mGraph.lowestVisibleX
+                val to = mGraph.highestVisibleX
+
+                drawLabels(from, to)
+            }
+        }
     }
 }
