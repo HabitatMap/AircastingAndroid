@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard.charts
 
-import io.lunarlogic.aircasting.sensor.Session
+import io.lunarlogic.aircasting.models.Session
+
 
 class ChartRefreshService {
     private val MINUTE_IN_MILLISECONDS = 60 * 1000
