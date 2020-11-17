@@ -218,11 +218,21 @@ class MobileSessionTest {
     }
 
     private fun openMap() {
-        clickButtonWithRetry(R.id.map_button, { onView(withId(R.id.map)).check(matches(isDisplayed())) })
+        clickButtonWithRetry(
+            R.id.map_button,
+            { onView(withId(R.id.map)).check(matches(isDisplayed())) })
     }
 
     private fun openGraph() {
-        clickButtonWithRetry(R.id.graph_button, { onView(withId(R.id.graph)).check(matches(isDisplayed())) })
+        clickButtonWithRetry(
+            R.id.graph_button,
+            { onView(withId(R.id.graph)).check(matches(isDisplayed())) })
+    }
+
+    private fun expandCard() {
+        clickButtonWithRetry(
+            R.id.expand_session_button,
+            { onView(withId(R.id.collapse_session_button)).check(matches(isDisplayed())) })
     }
 
     private fun clickButtonWithRetry(id: Int, assertBlock: () -> Unit, retryCount: Int = 0) {
@@ -233,10 +243,9 @@ class MobileSessionTest {
         try {
             onView(withId(id)).perform(click())
             assertBlock()
-        } catch(e: NoMatchingViewException) {
-            println("ANIA NoMatchingViewException")
+        } catch(e: Exception) {
             Thread.sleep(1000)
-            stopSession(retryCount + 1)
+            clickButtonWithRetry(id, assertBlock, retryCount + 1)
         }
     }
 
@@ -251,24 +260,6 @@ class MobileSessionTest {
             onView(withId(R.id.stop_session_button)).perform(click())
         } catch(e: NoMatchingViewException) {
             stopSession(retryCount + 1)
-        }
-    }
-
-    private fun expandCard(retryCount: Int = 0) {
-        if (retryCount >= 3) {
-            return
-        }
-
-        try {
-            onView(withId(R.id.expand_session_button)).perform(click())
-
-            val expandButton = testRule.activity.findViewById<ImageView>(R.id.expand_session_button)
-
-            if (expandButton != null && expandButton.visibility == View.VISIBLE) {
-                expandCard(retryCount + 1)
-            }
-        } catch(e: Exception) {
-            expandCard(retryCount + 1)
         }
     }
 }
