@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
@@ -174,6 +173,7 @@ class GraphContainer: OnChartGestureListener {
 
     private fun setupLineAppearance(dataSet: LineDataSet) {
         dataSet.color = Color.WHITE
+        dataSet.lineWidth = 1.5f
         dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
         dataSet.setDrawHighlightIndicators(false)
