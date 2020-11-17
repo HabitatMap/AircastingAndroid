@@ -27,6 +27,13 @@ class ChartData(
         return mEntriesPerStream[streamKey(stream)]
     }
 
+    private fun averageFrequency(): Int {
+        return when (session.type) {
+            Session.Type.MOBILE -> Calendar.MINUTE
+            Session.Type.FIXED -> Calendar.HOUR
+        }
+    }
+
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
@@ -40,12 +47,6 @@ class ChartData(
         return endString
     }
 
-    private fun averageFrequency(): Int {
-        return when (session.type) {
-            Session.Type.MOBILE -> Calendar.MINUTE
-            Session.Type.FIXED -> Calendar.HOUR
-        }
-    }
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
         session.streamsSortedByDetailedType().forEach { stream ->

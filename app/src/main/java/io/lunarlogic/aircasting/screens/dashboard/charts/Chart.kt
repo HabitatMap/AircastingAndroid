@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.session_card.view.*
+import java.sql.Timestamp
 
 
 class Chart {
@@ -28,6 +29,8 @@ class Chart {
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
 
+    private var mChartRefreshService: ChartRefreshService
+
     constructor(
         context: Context,
         rootView: View?
@@ -39,20 +42,26 @@ class Chart {
         mChartStartTimeTextView = mRootView?.chart_start_time
         mChartEndTimeTextView = mRootView?.chart_end_time
         mChartUnitTextView = mRootView?.chart_unit
+
+        mChartRefreshService = ChartRefreshService(mSessionPresenter?.session)
     }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
-        val session = sessionPresenter?.session
-        mSessionPresenter = sessionPresenter
-        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+        if(mChartRefreshService.shouldBeRefreshed()) {
+            val session = sessionPresenter?.session
+            mSessionPresenter = sessionPresenter
+            mEntries =
+                sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 
-        resetChart()
-        if (session != null && session?.streams.count() > 0) {
-            mDataSet = prepareDataSet()
-            drawChart()
-            setTimesAndUnit()
+            resetChart()
+            if (session != null && session?.streams.count() > 0) {
+                mChartRefreshService.setLastRefreshTime()
+                mDataSet = prepareDataSet()
+                drawChart()
+                setTimesAndUnit()
+            }
         }
     }
 
