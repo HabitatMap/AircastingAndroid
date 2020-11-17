@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting
 
+import android.view.View
+import android.widget.ImageView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -120,7 +122,7 @@ class MobileSessionTest {
         val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
-        onView(withId(R.id.expand_session_button)).perform(click())
+        expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
@@ -142,7 +144,7 @@ class MobileSessionTest {
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")));
-        onView(withId(R.id.expand_session_button)).perform(click())
+        expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(not(isDisplayed())))
 
@@ -224,6 +226,20 @@ class MobileSessionTest {
             onView(withId(R.id.stop_session_button)).perform(click())
         } catch(e: NoMatchingViewException) {
             stopSession(retryCount + 1)
+        }
+    }
+
+    private fun expandCard(retryCount: Int = 0) {
+        if (retryCount >= 3) {
+            return
+        }
+
+        onView(withId(R.id.expand_session_button)).perform(click())
+
+        val expandButton = testRule.activity.findViewById<ImageView>(R.id.expand_session_button)
+
+        if(expandButton != null && expandButton.visibility == View.VISIBLE) {
+            expandCard(retryCount + 1)
         }
     }
 }
