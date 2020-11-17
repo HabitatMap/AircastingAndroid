@@ -116,6 +116,9 @@ class MeasurementStream(
     fun getLastMeasurements(amount: Int): MutableList<Measurement>? {
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList<Measurement>(measurements)
+
+        if (amount >= allMeasurements.size) return allMeasurements
+
         val size = allMeasurements.size
         return if (size > amount) {
             allMeasurements.subList(size - amount, size)
