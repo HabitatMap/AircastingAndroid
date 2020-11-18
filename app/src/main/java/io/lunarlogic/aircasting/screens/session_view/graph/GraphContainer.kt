@@ -83,6 +83,7 @@ class GraphContainer: OnChartGestureListener {
         drawThresholds()
 
         mGraph?.invalidate()
+        mGraph?.resetViewPortOffsets()
     }
 
     private fun generateData(): GraphDataGenerator.Result {
