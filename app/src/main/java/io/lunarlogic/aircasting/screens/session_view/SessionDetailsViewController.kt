@@ -38,7 +38,7 @@ abstract class SessionDetailsViewController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        if (event.sensorName == sensorName) {
+        if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
