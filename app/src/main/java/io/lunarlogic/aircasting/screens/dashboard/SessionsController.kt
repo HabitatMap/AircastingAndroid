@@ -4,7 +4,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -33,11 +35,11 @@ abstract class SessionsController(
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected lateinit var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>
+    protected lateinit var mSessionsLiveData: LiveData<PagedList<SessionWithStreamsDBObject>>
     private var mSessions = hashMapOf<String, Session>()
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
-    private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { dbSessions ->
+    private var mSessionsObserver = Observer<PagedList<SessionWithStreamsDBObject>> { dbSessions ->
         DatabaseProvider.runQuery { coroutineScope ->
             val sessions = dbSessions.map { dbSession -> Session(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
@@ -45,9 +47,9 @@ abstract class SessionsController(
             if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
                 hideLoader(coroutineScope)
 
-                if (sessions.size > 0) {
+                if (dbSessions.size > 0) {
                     updateSensorThresholds(sensorThresholds)
-                    showSessionsView(coroutineScope, sessions)
+                    showSessionsView(coroutineScope, dbSessions)
                 } else {
                     showEmptyView(coroutineScope)
                 }
@@ -63,9 +65,9 @@ abstract class SessionsController(
         }
     }
 
-    private fun showSessionsView(coroutineScope: CoroutineScope, sessions: List<Session>) {
+    private fun showSessionsView(coroutineScope: CoroutineScope, dbSessions: PagedList<SessionWithStreamsDBObject>) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.showSessionsView(sessions, mSensorThresholds)
+            mViewMvc.showSessionsView(dbSessions, mSensorThresholds)
         }
     }
 
@@ -107,7 +109,7 @@ abstract class SessionsController(
         mSessionsLiveData.removeObserver(mSessionsObserver)
     }
 
-    abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
+    abstract fun loadSessions(): LiveData<PagedList<SessionWithStreamsDBObject>>
 
     fun onCreate() {
         mViewMvc.showLoader()
