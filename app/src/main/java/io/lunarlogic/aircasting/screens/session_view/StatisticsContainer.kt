@@ -10,7 +10,7 @@ import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.android.synthetic.main.map_statistics_view.view.*
+import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 
 class StatisticsContainer {
     private val mContext: Context
