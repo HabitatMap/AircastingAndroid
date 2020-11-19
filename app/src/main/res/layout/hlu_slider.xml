@@ -5,7 +5,6 @@
     android:id="@+id/hlu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="@id/main_content_end_barrier"
     app:layout_constraintBottom_toBottomOf="parent">
 
     <ImageView android:id="@+id/more_button"
