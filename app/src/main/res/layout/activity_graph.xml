@@ -15,7 +15,7 @@
     <include layout="@layout/measurements_table" />
 
     <include android:id="@+id/statistics_view"
-        layout="@layout/map_statistics_view" />
+        layout="@layout/session_details_statistics_view" />
 
     <include layout="@layout/graph" />
 
