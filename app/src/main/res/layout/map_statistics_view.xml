@@ -7,7 +7,7 @@
     style="@style/Widget.Aircasting.Cards"
     android:layout_marginTop="@dimen/keyline_6"
     android:layout_marginStart="@dimen/keyline_4"
-    app:layout_constraintTop_toBottomOf="@id/main_content_start_barrier"
+    app:layout_constraintTop_toBottomOf="@id/measurements_table"
     app:layout_constraintStart_toStartOf="parent"
     android:visibility="gone">
 
@@ -36,6 +36,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/avg_label"
             app:layout_constraintEnd_toEndOf="@id/peak_label"
+            android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8" />
 
         <TextView
@@ -46,7 +47,8 @@
             style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/now_label"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/keyline_8"/>
 
 
         <ImageView

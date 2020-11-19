@@ -18,6 +18,7 @@
         android:tint="@color/aircasting_grey_500"
         android:paddingStart="@dimen/keyline_4"
         android:paddingEnd="@dimen/keyline_4"
+        android:layout_marginBottom="@dimen/keyline_2"
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/track"
