@@ -49,9 +49,10 @@ class Chart {
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
+        val session = sessionPresenter?.session
+        mSessionPresenter = sessionPresenter
+
         if(mChartRefreshService.shouldBeRefreshed()) {
-            val session = sessionPresenter?.session
-            mSessionPresenter = sessionPresenter
             mEntries =
                 sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 
@@ -60,9 +61,9 @@ class Chart {
                 mChartRefreshService.setLastRefreshTime()
                 mDataSet = prepareDataSet()
                 drawChart()
-                setTimesAndUnit()
             }
         }
+        setTimesAndUnit()
     }
 
     private fun resetChart() {
