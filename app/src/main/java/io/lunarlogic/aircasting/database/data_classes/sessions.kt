@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 import io.lunarlogic.aircasting.models.Session
 import java.util.*
@@ -77,13 +78,13 @@ class StreamWithMeasurementsDBObject {
 @Dao
 interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
+    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): DataSource.Factory<Int, SessionWithStreamsDBObject>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
-    fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
+    fun loadAllByType(type: Session.Type): DataSource.Factory<Int, SessionWithStreamsDBObject>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY followed_at DESC")
-    fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>>
+    fun loadFollowingWithMeasurements(): DataSource.Factory<Int, SessionWithStreamsDBObject>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun byType(type: Session.Type): List<SessionDBObject>
