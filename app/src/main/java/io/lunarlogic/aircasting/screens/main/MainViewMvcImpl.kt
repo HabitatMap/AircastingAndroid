@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
     private val rootActivity: AppCompatActivity
     private val loader: ImageView?
-    private val loaderOverlay: View?
 
     constructor(
         inflater: LayoutInflater,
@@ -28,7 +27,6 @@ class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
         this.rootActivity = rootActivity
 
         this.loader = rootView?.loader
-        this.loaderOverlay = rootView?.loader_overlay
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
@@ -47,12 +45,10 @@ class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
 
     override fun showLoader() {
         AnimatedLoader(loader).start()
-        loaderOverlay?.visibility = View.VISIBLE
         loader?.visibility = View.VISIBLE
     }
 
     override fun hideLoader() {
         loader?.visibility = View.GONE
-        loaderOverlay?.visibility = View.GONE
     }
 }

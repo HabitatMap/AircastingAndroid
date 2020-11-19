@@ -44,9 +44,9 @@ abstract class SessionsController(
             val sessions = dbSessions.map { dbSession -> Session(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
 
-            if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
-                hideLoader(coroutineScope)
+            hideLoader(coroutineScope)
 
+            if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
                 if (dbSessions.size > 0) {
                     updateSensorThresholds(sensorThresholds)
                     showSessionsView(coroutineScope, dbSessions)
