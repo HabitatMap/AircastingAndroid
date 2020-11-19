@@ -47,12 +47,13 @@ class Chart {
     }
 
     fun bindChart(
-        sessionPresenter: SessionPresenter?
+        sessionPresenter: SessionPresenter?,
+        streamChanged: Boolean = false
     ) {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
-        if(mChartRefreshService.shouldBeRefreshed()) {
+        if(streamChanged || mChartRefreshService.shouldBeRefreshed()) {
             mEntries =
                 sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
 

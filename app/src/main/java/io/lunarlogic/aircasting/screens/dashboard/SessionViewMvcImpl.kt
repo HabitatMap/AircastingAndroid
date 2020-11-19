@@ -187,10 +187,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
     }
 
-    private fun bindChartData() {
+    private fun bindChartData(streamChanged: Boolean = false) {
         if (!showChart()) return
 
-        mChart.bindChart(mSessionPresenter)
+        mChart.bindChart(mSessionPresenter, streamChanged)
     }
 
     protected open fun bindFollowButtons(sessionPresenter: SessionPresenter) {
@@ -241,7 +241,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
-        bindChartData()
+        bindChartData(true)
     }
 
     private fun onFollowButtonClicked() {
