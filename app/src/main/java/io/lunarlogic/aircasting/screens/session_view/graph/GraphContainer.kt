@@ -83,7 +83,7 @@ class GraphContainer: OnChartGestureListener {
         drawThresholds()
 
         mGraph?.invalidate()
-        mGraph?.resetViewPortOffsets()
+        mGraph?.setViewPortOffsets(0f, 0f, 0f, 0f)
     }
 
     private fun generateData(): GraphDataGenerator.Result {
@@ -200,7 +200,6 @@ class GraphContainer: OnChartGestureListener {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
-        mGraph.setViewPortOffsets(0f, 0f, 0f, 0f)
 
         mGraph.onChartGestureListener = this
     }
