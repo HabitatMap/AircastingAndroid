@@ -33,8 +33,9 @@ class ChartData(
 
     fun refresh(session: Session) {
         mSession = session
-        initData()
+
         if(mChartRefreshService.shouldBeRefreshed()) {
+            initData()
             calculate()
             mChartRefreshService.setLastRefreshTime()
         }
