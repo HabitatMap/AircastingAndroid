@@ -47,7 +47,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
                 sessionPresenter!!.session = session
-                sessionPresenter!!.chartData = ChartData(session)
+                sessionPresenter!!.chartData?.refresh(session)
             } else {
                 val sessionPresenter = SessionPresenter(session, sensorThresholds)
                 mSessionPresenters[session.uuid] = sessionPresenter
