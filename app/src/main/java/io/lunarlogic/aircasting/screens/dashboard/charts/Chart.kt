@@ -54,11 +54,10 @@ class Chart {
         mSessionPresenter = sessionPresenter
 
         if(streamChanged || mChartRefreshService.shouldBeRefreshed()) {
-            mEntries =
-                sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+            setEntries(sessionPresenter)
 
-            resetChart()
             if (session != null && session?.streams.count() > 0) {
+                resetChart()
                 mChartRefreshService.setLastRefreshTime()
                 mDataSet = prepareDataSet()
                 drawChart()
@@ -70,6 +69,11 @@ class Chart {
     private fun resetChart() {
         mLineChart?.data?.clearValues()
         mLineChart?.clear()
+    }
+
+    private fun setEntries(sessionPresenter: SessionPresenter?) {
+        mEntries =
+            sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
     }
 
     private fun drawChart() {
