@@ -47,17 +47,17 @@ class Chart {
     }
 
     fun bindChart(
-        sessionPresenter: SessionPresenter?
+        sessionPresenter: SessionPresenter?,
+        streamChanged: Boolean = false
     ) {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
-        if(mChartRefreshService.shouldBeRefreshed()) {
-            mEntries =
-                sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+        if(streamChanged || mChartRefreshService.shouldBeRefreshed()) {
+            setEntries(sessionPresenter)
 
-            resetChart()
             if (session != null && session?.streams.count() > 0) {
+                resetChart()
                 mChartRefreshService.setLastRefreshTime()
                 mDataSet = prepareDataSet()
                 drawChart()
@@ -69,6 +69,11 @@ class Chart {
     private fun resetChart() {
         mLineChart?.data?.clearValues()
         mLineChart?.clear()
+    }
+
+    private fun setEntries(sessionPresenter: SessionPresenter?) {
+        mEntries =
+            sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
     }
 
     private fun drawChart() {
