@@ -19,9 +19,10 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Todo: here should be added code analogic to Dashboard fragment I guess
-        val root = inflater.inflate(R.layout.fragment_settings, container, false)
+        // Todo: here should be added code analogic to Dashboard fragment I guess, childFragmentManager <??>
+        val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
+        controller = SettingsController(view)
 
-        return root
+        return view.rootView
     }
 }

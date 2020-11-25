@@ -6,5 +6,9 @@ class SettingsController(
     private val mView: SettingsViewMvc
 ) {
 
+    fun onCreate(){
+
+    }
+
 
 }
