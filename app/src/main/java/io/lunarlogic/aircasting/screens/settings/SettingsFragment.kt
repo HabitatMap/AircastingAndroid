@@ -12,20 +12,16 @@ import io.lunarlogic.aircasting.R
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var settingsViewModel: SettingsViewModel
+    private var controller : SettingsController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        settingsViewModel =
-            ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        // Todo: here should be added code analogic to Dashboard fragment I guess
         val root = inflater.inflate(R.layout.fragment_settings, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_settings) //todo: pokazuje jakiś błąd przy 'this':
-        settingsViewModel.text.observe(this, Observer {
-//            textView.text = it
-        })
+
         return root
     }
 }
