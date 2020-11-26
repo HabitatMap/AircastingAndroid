@@ -21,10 +21,20 @@ class SettingsFragment : Fragment() {
     ): View? {
         // Todo: here should be added code analogic to Dashboard fragment I guess, childFragmentManager <??>
         val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
-        controller = SettingsController(view)
+        controller = SettingsController(context, view) //todo: why 'this' is not right here??
 
         controller?.onCreate()
 
         return view.rootView
+    }
+
+    override fun onStart() {
+        super.onStart()
+        controller?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        controller?.onStop()
     }
 }

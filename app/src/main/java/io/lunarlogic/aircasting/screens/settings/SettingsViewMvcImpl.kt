@@ -23,7 +23,10 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     }
 
     private fun onMyaccountClicked() {
-        //Todo: going to my account activity with signout button
+        //Todo: going to MyAccountActivity
+        for(listener in listeners){
+            listener.onMyAccountClicked()
+        }
 
     }
 

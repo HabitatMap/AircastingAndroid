@@ -54,6 +54,9 @@
         <activity android:label=""
             android:name="io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".screens.settings.myaccount.MyAccountActivity"
+            android:screenOrientation="portrait"/>
+
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

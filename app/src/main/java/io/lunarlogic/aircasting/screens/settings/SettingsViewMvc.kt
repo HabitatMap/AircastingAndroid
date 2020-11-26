@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.screens.new_session.LoginViewMvc
 interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
 
     interface Listener {
-        fun onSignoutClicked()
+        fun onMyAccountClicked()
     }
 
 
