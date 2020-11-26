@@ -9,7 +9,6 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, SettingsViewMvc  {
 
-
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?,
         fragmentManager: FragmentManager?  //todo: is this fragment meneger needed ??
@@ -24,7 +23,8 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     }
 
     private fun onMyaccountClicked() {
-        TODO("Not yet implemented")
+        //Todo: going to my account activity with signout button
+
     }
 
 
