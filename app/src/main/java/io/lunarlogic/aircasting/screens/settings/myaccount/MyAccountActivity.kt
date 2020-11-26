@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.lunarlogic.aircasting.screens.new_session.LoginActivity
-import io.lunarlogic.aircasting.screens.new_session.LoginController
-import io.lunarlogic.aircasting.screens.new_session.LoginViewMvcImpl
+import io.lunarlogic.aircasting.lib.Settings
+import javax.inject.Inject
 
 class MyAccountActivity : AppCompatActivity() {
 
     private var controller: MyAccountController? = null
+
+    @Inject
+    lateinit var settings: Settings  //Todo: this settings a bit random for now <?>
 
     companion object{
         fun start(context: Context?) {
@@ -27,7 +29,7 @@ class MyAccountActivity : AppCompatActivity() {
         // todo: do i need AirCastingApplication injection here??
 
         val view = MyAccountViewMvcImpl(layoutInflater, null)
-        controller = MyAccountController(view)
+        controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)
     }

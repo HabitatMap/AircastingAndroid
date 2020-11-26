@@ -5,8 +5,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.new_session.LoginViewMvc
-import kotlin.math.sign
 
 class MyAccountViewMvcImpl : BaseObservableViewMvc<MyAccountViewMvc.Listener>, MyAccountViewMvc {
 

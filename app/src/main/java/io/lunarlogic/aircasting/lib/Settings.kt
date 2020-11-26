@@ -32,4 +32,15 @@ open class Settings(mApplication: Application) {
         editor.putString(key, value)
         editor.commit()
     }
+
+    /////////// TODO: ADDED METHODS, should it be clear() or remove(key) ?
+    open fun logout(){
+        deleteFromSettings()
+    }
+
+    private fun deleteFromSettings(){
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
 }
