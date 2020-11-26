@@ -7,9 +7,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import kotlinx.android.synthetic.main.session_card.view.*
 
 
 class DiffCallback: DiffUtil.ItemCallback<SessionWithStreamsDBObject>() {
@@ -57,16 +59,25 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             .forEach { uuid -> mSessionPresenters.remove(uuid) }
     }
 
-    fun bindSessions(dbSessions: PagedList<SessionWithStreamsDBObject>, sensorThresholds: HashMap<String, SensorThreshold>) {
+    fun bindSessions(dbSessions:
+                     PagedList<SessionWithStreamsDBObject>, sensorThresholds: HashMap<String, SensorThreshold>) {
         submitList(dbSessions)
 
         val sessions = dbSessions.map { Session(it) }
+        println("MARYSIA: sessions types "+sessions.map {session -> session.type})
         mSessionUUIDS = sessions.map { session -> session.uuid }
         removeObsoleteSessions()
-
+        println("MARYSIA: sessions types "+sessions.map {session -> session.type})
         sessions.forEach { session ->
+            if(session.type == Session.Type.FIXED) {
+                println("MARYSIA: fixed sessin being updated? ")
+            }
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
+                if(session.type == Session.Type.FIXED) {
+                    val lastMeasurement: Measurement? = sessionPresenter?.selectedStream?.measurements?.lastOrNull()
+                    println("MARYSIA: fixed session end time "+session.endTime)
+                }
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {

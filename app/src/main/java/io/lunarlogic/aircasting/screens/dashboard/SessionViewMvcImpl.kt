@@ -15,6 +15,7 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Session
 import kotlinx.android.synthetic.main.session_card.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -134,6 +135,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
+        if(sessionPresenter.session?.type == Session.Type.FIXED) {
+            println("MARYSIA: bind session")
+        }
         bindLoader(sessionPresenter)
         bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)

@@ -23,7 +23,8 @@ class ChartData(
 
     init {
         initData()
-        calculate()
+        calculateTimes()
+        calculateAverages()
         mChartRefreshService.setLastRefreshTime()
     }
 
@@ -33,10 +34,12 @@ class ChartData(
 
     fun refresh(session: Session) {
         mSession = session
+        mEndTime = mSession.endTime ?: Date()
+        calculateTimes()
 
         if(mChartRefreshService.shouldBeRefreshed()) {
             initData()
-            calculate()
+            calculateAverages()
             mChartRefreshService.setLastRefreshTime()
         }
     }
@@ -48,11 +51,6 @@ class ChartData(
         mMeasurementStreams = initStreams()
     }
 
-    private fun calculate() {
-        calculateAverages()
-        calculateTimes()
-    }
-
     private fun averageFrequency(): Int {
         return when (mSession.type) {
             Session.Type.MOBILE -> Calendar.MINUTE
@@ -62,6 +60,7 @@ class ChartData(
 
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
+        println("MARYSIA: maxenrties count"+mMaxEntriesCount)
         calendar.time = mEndTime
         calendar.add(averageFrequency(), -mMaxEntriesCount)
         val startString = DateConverter.toDateString(calendar.time, TimeZone.getDefault(), "HH:mm")

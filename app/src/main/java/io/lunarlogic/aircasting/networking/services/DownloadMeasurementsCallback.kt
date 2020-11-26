@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.DownloadMeasurementsError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
 import io.lunarlogic.aircasting.models.Measurement
@@ -14,6 +15,7 @@ import io.lunarlogic.aircasting.models.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 class DownloadMeasurementsCallback(
     private val sessionId: Long,
@@ -30,8 +32,13 @@ class DownloadMeasurementsCallback(
     ) {
         if (response.isSuccessful) {
             val body = response.body()
+
             body?.streams?.let { streams ->
                 DatabaseProvider.runQuery {
+                    session.endTime = DateConverter.fromString(body?.end_time)
+                    if (session.isFixed()){
+                        println("MARYSIA: updating endtime to "+body?.end_time)
+                    }
                     val streamResponses = streams.values
                     streamResponses.forEach { streamResponse ->
                         saveStreamData(streamResponse)
@@ -63,5 +70,9 @@ class DownloadMeasurementsCallback(
         measurementsRepository.insertAll(streamId, sessionId, measurements)
 
         sessionsRepository.update(session)
+    }
+
+    private fun setSessionEndTime(endTime: Date) {
+        session.endTime = endTime
     }
 }
