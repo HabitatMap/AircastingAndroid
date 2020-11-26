@@ -23,8 +23,9 @@ class ChartData(
 
     init {
         initData()
-        calculateTimes()
         calculateAverages()
+        calculateTimes()
+
         mChartRefreshService.setLastRefreshTime()
     }
 
@@ -45,6 +46,7 @@ class ChartData(
     }
 
     private fun initData() {
+        println("MARYSIA: endTime session: "+mSession.endTime)
         mEndTime = mSession.endTime ?: Date()
         mEntriesPerStream = HashMap()
         mMaxEntriesCount = 0
