@@ -36,9 +36,7 @@ class DownloadMeasurementsCallback(
             body?.streams?.let { streams ->
                 DatabaseProvider.runQuery {
                     session.endTime = DateConverter.fromString(body?.end_time)
-                    if (session.isFixed()){
-                        println("MARYSIA: updating endtime to "+body?.end_time)
-                    }
+
                     val streamResponses = streams.values
                     streamResponses.forEach { streamResponse ->
                         saveStreamData(streamResponse)
@@ -70,9 +68,5 @@ class DownloadMeasurementsCallback(
         measurementsRepository.insertAll(streamId, sessionId, measurements)
 
         sessionsRepository.update(session)
-    }
-
-    private fun setSessionEndTime(endTime: Date) {
-        session.endTime = endTime
     }
 }

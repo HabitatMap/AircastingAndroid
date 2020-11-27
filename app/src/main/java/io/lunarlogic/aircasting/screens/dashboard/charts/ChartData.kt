@@ -46,7 +46,6 @@ class ChartData(
     }
 
     private fun initData() {
-        println("MARYSIA: endTime session: "+mSession.endTime)
         mEndTime = mSession.endTime ?: Date()
         mEntriesPerStream = HashMap()
         mMaxEntriesCount = 0
@@ -62,7 +61,6 @@ class ChartData(
 
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
-        println("MARYSIA: maxenrties count"+mMaxEntriesCount)
         calendar.time = mEndTime
         calendar.add(averageFrequency(), -mMaxEntriesCount)
         val startString = DateConverter.toDateString(calendar.time, TimeZone.getDefault(), "HH:mm")

@@ -136,7 +136,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         if(sessionPresenter.session?.type == Session.Type.FIXED) {
-            println("MARYSIA: bind session")
         }
         bindLoader(sessionPresenter)
         bindExpanded(sessionPresenter)

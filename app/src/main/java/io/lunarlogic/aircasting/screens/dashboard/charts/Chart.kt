@@ -54,12 +54,9 @@ class Chart {
         mSessionPresenter = sessionPresenter
 
         if(streamChanged || mChartRefreshService.shouldBeRefreshed()) {
-            println("MARYSIA: shold be refreshed")
             setEntries(sessionPresenter)
 
             if (session != null && session?.streams.count() > 0) {
-                println("MARYSIA: session not null, session streams present")
-                println("MARYSIA: session endTime: "+session.endTime)
                 resetChart()
                 mChartRefreshService.setLastRefreshTime()
                 mDataSet = prepareDataSet()
@@ -173,9 +170,6 @@ class Chart {
     }
 
     private fun setTimesAndUnit() {
-        if(mSessionPresenter?.session?.isFixed() ?: false) {
-            println("MARYSIA: setTimesAndUnit: "+mSessionPresenter?.chartData?.entriesEndTime)
-        }
         mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
         mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
         mChartUnitTextView?.text = chartUnitText()
