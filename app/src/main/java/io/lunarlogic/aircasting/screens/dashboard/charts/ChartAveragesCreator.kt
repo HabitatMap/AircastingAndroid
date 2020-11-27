@@ -98,6 +98,7 @@ class ChartAveragesCreator {
             }
         }
         if (periodData.size > 0) {
+            println("MARYSIA: chart avarages creator: periodData.size: "+periodData.size)
             for (dataChunk in Lists.reverse<List<Measurement>?>(periodData)) {
                 if (xValue < 0) {
                     return entries

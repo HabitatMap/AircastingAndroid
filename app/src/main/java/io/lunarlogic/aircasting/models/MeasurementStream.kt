@@ -119,6 +119,7 @@ class MeasurementStream(
 
         if (amount >= allMeasurements.size) return allMeasurements
 
+        // TODO: seems like a duplication
         val size = allMeasurements.size
         return if (size > amount) {
             allMeasurements.subList(size - amount, size)
