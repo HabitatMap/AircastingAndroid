@@ -140,7 +140,8 @@ class Chart {
         val dataSet = LineDataSet(mEntries, "")
 
         // Making the line a curve, not a polyline
-        dataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        dataSet.cubicIntensity = 0.15f
 
         // Circle colors
         dataSet.circleRadius = 3.5f
