@@ -135,8 +135,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
-        if(sessionPresenter.session?.type == Session.Type.FIXED) {
-        }
         bindLoader(sessionPresenter)
         bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)

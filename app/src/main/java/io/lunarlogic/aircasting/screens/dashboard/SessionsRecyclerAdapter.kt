@@ -59,21 +59,15 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             .forEach { uuid -> mSessionPresenters.remove(uuid) }
     }
 
-    fun bindSessions(dbSessions:
-                     PagedList<SessionWithStreamsDBObject>, sensorThresholds: HashMap<String, SensorThreshold>) {
+    fun bindSessions(dbSessions: PagedList<SessionWithStreamsDBObject>, sensorThresholds: HashMap<String, SensorThreshold>) {
         submitList(dbSessions)
 
         val sessions = dbSessions.map { Session(it) }
         mSessionUUIDS = sessions.map { session -> session.uuid }
         removeObsoleteSessions()
         sessions.forEach { session ->
-            if(session.type == Session.Type.FIXED) {
-            }
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                if(session.type == Session.Type.FIXED) {
-                    val lastMeasurement: Measurement? = sessionPresenter?.selectedStream?.measurements?.lastOrNull()
-                }
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
