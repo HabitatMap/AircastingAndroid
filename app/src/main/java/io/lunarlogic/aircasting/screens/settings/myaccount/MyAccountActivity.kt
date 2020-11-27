@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ class MyAccountActivity : AppCompatActivity() {
         controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)
+        setSupportActionBar(findViewById(R.id.topAppBar))
     }
 
     override fun onStart() {
@@ -43,6 +45,5 @@ class MyAccountActivity : AppCompatActivity() {
         super.onStop()
         controller?.onStop()
     }
-
 
 }
