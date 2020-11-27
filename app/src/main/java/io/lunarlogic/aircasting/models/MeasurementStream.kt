@@ -117,15 +117,11 @@ class MeasurementStream(
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList<Measurement>(measurements)
 
-        if (amount >= allMeasurements.size) return allMeasurements
+        val measurementsSize = allMeasurements.size
 
-        // TODO: seems like a duplication
-        val size = allMeasurements.size
-        return if (size > amount) {
-            allMeasurements.subList(size - amount, size)
-        } else {
-            allMeasurements
-        }
+        if (amount >= measurementsSize) return allMeasurements
+        
+        return allMeasurements.subList(measurementsSize - amount, measurementsSize)
     }
 
     fun getAvgMeasurement(): Double? {
