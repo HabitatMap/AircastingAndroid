@@ -8,24 +8,14 @@
 
     <Button
         android:id="@+id/myAccount_Button"
-        android:layout_width="384dp"
-        android:layout_height="67dp"
+        style="@style/Widget.Aircasting.BottomSheetTextButton"
+        android:layout_width="356dp"
+        android:layout_height="56dp"
         android:layout_marginTop="28dp"
         android:text="@string/my_account"
         android:textAlignment="viewStart"
+        android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.592"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="64dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:elevation="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/myAccount_Button"
-        app:layout_constraintTop_toTopOf="@+id/myAccount_Button"
-        app:srcCompat="@drawable/ic_baseline_chevron_right_black" />
 </androidx.constraintlayout.widget.ConstraintLayout>
