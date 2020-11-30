@@ -88,6 +88,10 @@ class StatisticsContainer {
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
+        if (mNow == null && stream != null) {
+            mNow = getNowValue(stream)
+        }
+
         bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator)
     }
 
@@ -109,5 +113,9 @@ class StatisticsContainer {
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         return stream.measurements.maxBy { it.value }?.value ?: 0.0
+    }
+
+    private fun getNowValue(stream: MeasurementStream): Double? {
+        return stream.measurements.lastOrNull()?.value
     }
 }
