@@ -15,6 +15,7 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Session
 import kotlinx.android.synthetic.main.session_card.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,

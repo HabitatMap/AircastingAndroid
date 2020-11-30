@@ -7,9 +7,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import kotlinx.android.synthetic.main.session_card.view.*
 
 
 class DiffCallback: DiffUtil.ItemCallback<SessionWithStreamsDBObject>() {
@@ -63,7 +65,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         val sessions = dbSessions.map { Session(it) }
         mSessionUUIDS = sessions.map { session -> session.uuid }
         removeObsoleteSessions()
-
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]

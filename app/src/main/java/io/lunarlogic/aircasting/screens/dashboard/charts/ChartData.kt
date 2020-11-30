@@ -23,7 +23,9 @@ class ChartData(
 
     init {
         initData()
-        calculate()
+        calculateAverages()
+        calculateTimes()
+
         mChartRefreshService.setLastRefreshTime()
     }
 
@@ -33,10 +35,12 @@ class ChartData(
 
     fun refresh(session: Session) {
         mSession = session
+        mEndTime = mSession.endTime ?: Date()
+        calculateTimes()
 
         if(mChartRefreshService.shouldBeRefreshed()) {
             initData()
-            calculate()
+            calculateAverages()
             mChartRefreshService.setLastRefreshTime()
         }
     }
@@ -46,11 +50,6 @@ class ChartData(
         mEntriesPerStream = HashMap()
         mMaxEntriesCount = 0
         mMeasurementStreams = initStreams()
-    }
-
-    private fun calculate() {
-        calculateAverages()
-        calculateTimes()
     }
 
     private fun averageFrequency(): Int {
