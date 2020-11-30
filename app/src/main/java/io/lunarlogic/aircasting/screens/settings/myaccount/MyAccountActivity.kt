@@ -37,7 +37,6 @@ class MyAccountActivity : AppCompatActivity() {
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
-
     }
 
     override fun onStart() {

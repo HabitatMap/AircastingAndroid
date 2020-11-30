@@ -22,8 +22,6 @@ class SettingsFragment : Fragment() {
         val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
         controller = SettingsController(context, view)
 
-        controller?.onCreate()
-
         return view.rootView
     }
 

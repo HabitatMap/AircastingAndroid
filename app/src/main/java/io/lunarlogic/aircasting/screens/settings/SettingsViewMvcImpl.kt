@@ -11,7 +11,7 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?,
-        fragmentManager: FragmentManager?  //todo: is this fragment meneger needed ??
+        fragmentManager: FragmentManager?
     ) : super(){
         this.rootView = inflater.inflate(R.layout.fragment_settings, parent, false)
 
@@ -23,7 +23,6 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     }
 
     private fun onMyaccountClicked() {
-        //Todo: going to MyAccountActivity
         for(listener in listeners){
             listener.onMyAccountClicked()
         }

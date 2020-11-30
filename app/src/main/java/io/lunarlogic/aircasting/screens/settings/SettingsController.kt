@@ -10,10 +10,6 @@ class SettingsController(
     private val mViewMvc: SettingsViewMvc
 ) : SettingsViewMvc.Listener {
 
-    fun onCreate(){
-        // Todo: do i really need this one??
-    }
-
     fun onStart(){
         mViewMvc.registerListener(this)
     }

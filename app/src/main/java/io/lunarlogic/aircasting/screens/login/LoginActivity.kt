@@ -47,6 +47,6 @@ class LoginActivity: AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
+        // Doing nothing here, we need it to prevent going back after log out
     }
 }
