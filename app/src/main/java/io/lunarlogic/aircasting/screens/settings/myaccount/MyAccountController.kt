@@ -27,10 +27,9 @@ class MyAccountController(
     override fun onSignOutClicked() {
         mSettings.logout()
         GlobalScope.launch(Dispatchers.IO) {
-            DatabaseProvider.mAppDatabase?.clearAllTables() //metoda do odzyskania mAppDatabase <jakiś g
-            // zrobić metode na DatabaseProviderze <?>, obczaić jak na tych Repository to działa
+            DatabaseProvider.mAppDatabase?.clearAllTables()
         }
-        LoginActivity.start(mContext) //upewnic się że nie moge wrócić do wcześniejszego ekranu!
+        LoginActivity.start(mContext)
     }
 
 }
