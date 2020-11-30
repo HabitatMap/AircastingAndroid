@@ -23,8 +23,9 @@ class MyAccountController(
     override fun onSignOutClicked() {
         // Todo: check if below lines are fine
         mSettings.logout()
-        DatabaseProvider.mAppDatabase?.clearAllTables()
-        LoginActivity.start(mContext)
+        DatabaseProvider.mAppDatabase?.clearAllTables() //metoda do odzyskania mAppDatabase <jakiś g
+        // zrobić metode na DatabaseProviderze <?>, obczaić jak na tych Repository to działa
+        LoginActivity.start(mContext) //upewnic się że nie moge wrócić do wcześniejszego ekranu!xd
     }
 
 }

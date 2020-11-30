@@ -19,9 +19,8 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Todo: here should be added code analogic to Dashboard fragment I guess, childFragmentManager <??>
         val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
-        controller = SettingsController(context, view) //todo: why 'this' is not right here??
+        controller = SettingsController(context, view)
 
         controller?.onCreate()
 

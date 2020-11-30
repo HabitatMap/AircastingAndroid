@@ -9,13 +9,14 @@
     <Button
         android:id="@+id/myAccount_Button"
         style="@style/Widget.Aircasting.BottomSheetTextButton"
-        android:layout_width="356dp"
-        android:layout_height="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_marginTop="28dp"
+        android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
         android:text="@string/my_account"
         android:textAlignment="viewStart"
-        android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
