@@ -35,12 +35,11 @@ class DownloadMeasurementsCallback(
 
             body?.streams?.let { streams ->
                 DatabaseProvider.runQuery {
-                    session.endTime = DateConverter.fromString(body?.end_time)
-
                     val streamResponses = streams.values
                     streamResponses.forEach { streamResponse ->
                         saveStreamData(streamResponse)
                     }
+                    updateSessionEndTime(body?.end_time)
                 }
             }
         } else {
@@ -66,7 +65,10 @@ class DownloadMeasurementsCallback(
         )
         val measurements = streamResponse.measurements.map { response -> Measurement(response) }
         measurementsRepository.insertAll(streamId, sessionId, measurements)
+    }
 
+    private fun updateSessionEndTime(endTimeString: String?) {
+        if(endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
         sessionsRepository.update(session)
     }
 }
