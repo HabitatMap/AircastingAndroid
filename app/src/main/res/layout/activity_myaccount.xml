@@ -6,30 +6,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include android:id="@+id/app_bar_layout"
+        layout="@layout/prominent_app_bar"
+        />
 
     <Button
         android:id="@+id/sign_out_button"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="108dp"
         android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
         android:text="@string/sign_out"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
 
     <TextView
         android:id="@+id/login_state_textView"
-        android:layout_width="241dp"
-        android:layout_height="38dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_marginBottom="12dp"
-        android:text="You are currently logged in as"
+        android:background="@color/aircasting_white"
+        android:paddingLeft="@dimen/keyline_2"
+        android:paddingTop="@dimen/keyline_2"
+        android:paddingRight="@dimen/keyline_2"
+        android:paddingBottom="@dimen/keyline_2"
+        android:text="@string/you_are_currently_logged_in_as"
+        android:textAppearance="?attr/textAppearanceHeadline4"
         app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

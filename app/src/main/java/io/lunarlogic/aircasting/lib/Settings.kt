@@ -33,7 +33,6 @@ open class Settings(mApplication: Application) {
         editor.commit()
     }
 
-    /////////// TODO: ADDED METHODS, should it be clear() or remove(key) ?
     open fun logout(){
         deleteFromSettings()
     }

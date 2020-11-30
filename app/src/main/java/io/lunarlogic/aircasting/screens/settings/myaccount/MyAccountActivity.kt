@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class MyAccountActivity : AppCompatActivity() {
     private var controller: MyAccountController? = null
 
     @Inject
-    lateinit var settings: Settings  //Todo: this settings a bit random for now
+    lateinit var settings: Settings
 
     companion object{
         fun start(context: Context?) {
@@ -28,7 +29,6 @@ class MyAccountActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // todo: do i need AirCastingApplication injection here??
         (application as AircastingApplication)
             .appComponent.inject(this)
 
@@ -36,6 +36,7 @@ class MyAccountActivity : AppCompatActivity() {
         controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)
+        AppBar.setup(view.rootView, this)
 
     }
 

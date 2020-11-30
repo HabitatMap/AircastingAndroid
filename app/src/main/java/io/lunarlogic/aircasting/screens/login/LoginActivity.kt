@@ -45,4 +45,8 @@ class LoginActivity: AppCompatActivity() {
         super.onStop()
         controller!!.onStop()
     }
+
+    override fun onBackPressed() {
+
+    }
 }

@@ -7,4 +7,6 @@ interface MyAccountViewMvc : ObservableViewMvc<MyAccountViewMvc.Listener> {
     interface Listener{
         fun onSignOutClicked()
     }
+
+    fun bindAccountDetail(email : String?)
 }
