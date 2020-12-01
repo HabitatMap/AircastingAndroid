@@ -1,20 +1,26 @@
 package io.lunarlogic.aircasting
 
+import androidx.room.Database
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.AppModule
 import io.lunarlogic.aircasting.di.MockWebServerModule
 import io.lunarlogic.aircasting.di.PermissionsModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
+import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,8 +31,6 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class MyAccountTest {
 
-    //TODO: test case'y??
-
     @Inject
     lateinit var settings: Settings
 
@@ -34,9 +38,10 @@ class MyAccountTest {
     val testRule : ActivityTestRule<MyAccountActivity>
             = ActivityTestRule(MyAccountActivity::class.java, false, false)
 
+    val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
+
     private fun setupDagger(){
         // todo: for now its just copied from LoginTest, have to think if its ok
-        val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
@@ -48,34 +53,49 @@ class MyAccountTest {
         testAppComponent.inject(this)
     }
 
+    private fun setupDatabase(){
+        DatabaseProvider.setup(app)
+    }
+
     @Before
     fun setup(){
-        // todo: anything more here??
         setupDagger()
+        setupDatabase()
     }
 
     @After
     fun cleanup(){
-
+        testRule.finishActivity()
     }
 
     @Test
     fun MyAccountTest1(){
-        //todo: some initializations before activity launch ?
-        // i need to have right values in settings here
+        //todo: some more initializations before activity launch ?
+        settings.login("michal@lunarlogic.io", "XYZ123FAKETOKEN")
 
         testRule.launchActivity(null)
 
         // checking if text on text view matches what I want:
-        onView(withId(R.id.login_state_textView)).check(matches(withText("")))
+        onView(withId(R.id.login_state_textView)).check(matches(withText("You are currently logged in as ${settings.getEmail()}")))
 
         //  performing click on button:
         onView(withId(R.id.sign_out_button)).perform(click())
 
         Thread.sleep(2000)
-        // after sleep assertions about: 1) settings values 2) database values 3) launched activity <??>
 
+        assertEquals(settings.getAuthToken(), null)
+        assertEquals(settings.getEmail(), null)
+
+        //checking if database tables are empty:
+        val measurements = DatabaseProvider.get().measurements().getAll()
+        val streams = DatabaseProvider.get().measurementStreams().getAll()
+        //val sessions = DatabaseProvider.get().sessions() todo: sessions nie ma getAll()
+        //val sensor = DatabaseProvider.get().sessions() todo: sensor_threshold nie ma getAll()
+
+        assert(measurements.isEmpty())
+        assert(streams.isEmpty())
+        // checking if LoginActivity is launched:
+        intended(hasComponent(LoginActivity::class.java.getName()))
     }
-
 
 }
