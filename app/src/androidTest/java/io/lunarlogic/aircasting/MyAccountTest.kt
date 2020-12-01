@@ -1,12 +1,15 @@
 package io.lunarlogic.aircasting
 
+import android.content.Intent
 import androidx.room.Database
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -34,14 +37,13 @@ class MyAccountTest {
     @Inject
     lateinit var settings: Settings
 
-    @Rule
+    @get:Rule
     val testRule : ActivityTestRule<MyAccountActivity>
             = ActivityTestRule(MyAccountActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
     private fun setupDagger(){
-        // todo: for now its just copied from LoginTest, have to think if its ok
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
@@ -69,8 +71,8 @@ class MyAccountTest {
     }
 
     @Test
-    fun MyAccountTest1(){
-        //todo: some more initializations before activity launch ?
+    fun MyAccountTest(){
+        Intents.init()
         settings.login("michal@lunarlogic.io", "XYZ123FAKETOKEN")
 
         testRule.launchActivity(null)
@@ -89,11 +91,14 @@ class MyAccountTest {
         //checking if database tables are empty:
         val measurements = DatabaseProvider.get().measurements().getAll()
         val streams = DatabaseProvider.get().measurementStreams().getAll()
-        //val sessions = DatabaseProvider.get().sessions() todo: sessions nie ma getAll()
-        //val sensor = DatabaseProvider.get().sessions() todo: sensor_threshold nie ma getAll()
+        //val sessions = DatabaseProvider.get().sessions().getAll() //todo: sessions nie ma getAll()
+        //val sensor_thresholds = DatabaseProvider.get().sensorThresholds().getAll() //todo: sensor_threshold nie ma getAll()
 
         assert(measurements.isEmpty())
         assert(streams.isEmpty())
+//        assert(sessions.isEmpty())
+//        assert(sensor_thresholds.isEmpty())
+
         // checking if LoginActivity is launched:
         intended(hasComponent(LoginActivity::class.java.getName()))
     }
