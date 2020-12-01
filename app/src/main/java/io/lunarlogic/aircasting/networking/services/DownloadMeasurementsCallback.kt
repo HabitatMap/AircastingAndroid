@@ -4,6 +4,7 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.NewFixedMeasurementsEvent
 import io.lunarlogic.aircasting.exceptions.DownloadMeasurementsError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -12,6 +13,7 @@ import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResp
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,6 +42,7 @@ class DownloadMeasurementsCallback(
                         saveStreamData(streamResponse)
                     }
                     updateSessionEndTime(body?.end_time)
+                    EventBus.getDefault().post(NewFixedMeasurementsEvent(session))
                 }
             }
         } else {

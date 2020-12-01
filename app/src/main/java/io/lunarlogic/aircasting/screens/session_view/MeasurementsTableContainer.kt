@@ -191,7 +191,6 @@ class MeasurementsTableContainer {
         } else {
             stream.measurements.lastOrNull()?.value
         }
-
         measurementValue ?: return
 
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)

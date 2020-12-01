@@ -17,7 +17,9 @@ class AirBeam3Reader(
 
         if (!dataString.isEmpty()) {
             val newMeasurementEvent = responseParser.parse(dataString)
-            newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
+            newMeasurementEvent?.let {
+                EventBus.getDefault().post(newMeasurementEvent)
+            }
         }
     }
 }

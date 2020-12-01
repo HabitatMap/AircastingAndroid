@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.NewFixedMeasurementsEvent
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
@@ -43,6 +44,13 @@ abstract class SessionDetailsViewController(
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
             mViewMvc.addMeasurement(measurement)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: NewFixedMeasurementsEvent) {
+        if (event.session.uuid == mSessionPresenter.sessionUUID) {
+            mViewMvc.addFixedMeasurements()
         }
     }
 

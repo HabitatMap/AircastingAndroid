@@ -66,6 +66,15 @@ class StatisticsContainer {
         }
     }
 
+    fun addFixedMeasurement(sessionPresenter: SessionPresenter?) {
+        val stream = sessionPresenter?.selectedStream
+        mSum = stream?.calculateSum()
+        mNow = getNowValue(stream)
+        if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
+            mPeak = mNow
+        }
+    }
+
     fun refresh(sessionPresenter: SessionPresenter?) {
         mSum = null
         mPeak = null
@@ -115,7 +124,7 @@ class StatisticsContainer {
         return stream.measurements.maxBy { it.value }?.value ?: 0.0
     }
 
-    private fun getNowValue(stream: MeasurementStream): Double? {
-        return stream.measurements.lastOrNull()?.value
+    private fun getNowValue(stream: MeasurementStream?): Double? {
+        return stream?.measurements?.lastOrNull()?.value
     }
 }
