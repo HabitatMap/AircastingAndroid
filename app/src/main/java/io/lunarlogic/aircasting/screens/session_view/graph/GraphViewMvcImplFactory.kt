@@ -4,9 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewFixedMvcImpl
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileActiveMvcImpl
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileDormantMvcImpl
 
 
 class GraphViewMvcImplFactory {
@@ -23,15 +20,10 @@ class GraphViewMvcImplFactory {
             }
 //
             return when(sessionStatus) {
-                Session.Status.FINISHED -> GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager)
-                Session.Status.RECORDING -> GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager)
+                Session.Status.FINISHED -> GraphViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
+                Session.Status.RECORDING -> GraphViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)
                 else -> GraphViewFixedMvcImpl(inflater, parent, supportFragmentManager)
-            } //TODO: differ between dormant and actove session
-//            return when(sessionType) {
-//                Session.Type.MOBILE -> GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager)
-//                Session.Type.FIXED -> GraphViewFixedMvcImpl(inflater, parent, supportFragmentManager)
-//                else -> GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager)
-//            }
+            }
         }
     }
 }
