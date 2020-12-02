@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 
 class GraphActivity: AppCompatActivity() {
     private var controller: GraphController? = null
@@ -38,7 +37,7 @@ class GraphActivity: AppCompatActivity() {
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
         val sessionType: Int = intent.extras?.getInt(SESSION_TYPE_KEY) as Int
-        val sessionStatus: Int = intent.extras?.getInt(MapActivity.SESSION_STATUS_KEY) as Int
+        val sessionStatus: Int = intent.extras?.getInt(SESSION_STATUS_KEY) as Int
 
         val view = GraphViewMvcImplFactory.get(
             layoutInflater,
