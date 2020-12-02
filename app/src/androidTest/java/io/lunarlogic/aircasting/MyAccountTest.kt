@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting
 import android.content.Intent
 import androidx.room.Database
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -15,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.AppModule
 import io.lunarlogic.aircasting.di.MockWebServerModule
@@ -42,7 +44,8 @@ class MyAccountTest {
             = ActivityTestRule(MyAccountActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-    val db = DatabaseProvider.get()
+
+    lateinit var db : AppDatabase
 
     private fun setupDagger(){
         val permissionsModule = PermissionsModule()
@@ -58,6 +61,7 @@ class MyAccountTest {
 
     private fun setupDatabase(){
         DatabaseProvider.setup(app)
+        db = DatabaseProvider.get()
     }
 
     @Before
@@ -103,7 +107,10 @@ class MyAccountTest {
         // checking if LoginActivity is launched:
         intended(hasComponent(LoginActivity::class.java.name))
 
-        // todo: back button click i sprawdzenie czy na LoginActivity
+        // checking if LoginActivity is still launched after back press:
+        Espresso.pressBack()
+        intended(hasComponent(LoginActivity::class.java.name))
+
     }
 
 }
