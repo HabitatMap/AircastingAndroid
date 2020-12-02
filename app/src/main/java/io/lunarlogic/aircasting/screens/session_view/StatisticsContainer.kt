@@ -72,8 +72,9 @@ class StatisticsContainer {
 
     private fun bindLastMeasurement(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
-        mSum = stream?.calculateSum()
+
         mNow = getNowValue(stream)
+        mSum?.let { mSum = it + (mNow ?: 0.0) }
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
         }
@@ -93,7 +94,6 @@ class StatisticsContainer {
             if (mSum == null) {
                 mSum = stream.calculateSum()
             }
-
             avg = mSum!! / stream.measurements.size
         }
 
