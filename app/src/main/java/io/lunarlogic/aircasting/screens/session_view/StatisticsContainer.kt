@@ -51,23 +51,10 @@ class StatisticsContainer {
 
         mStatisticsView?.visibility = View.VISIBLE
 
-        if(sessionPresenter != null && sessionPresenter?.isFixed()) {
-            bindLastMeasurement(sessionPresenter)
-        }
-
+        bindLastMeasurement(sessionPresenter)
         bindAvgStatistics(stream)
         bindNowStatistics(stream)
         bindPeakStatistics(stream)
-    }
-
-    fun addMeasurement(measurement: Measurement) {
-        mSum?.let { mSum = it + measurement.value }
-
-        mNow = measurement.value
-
-        if (mPeak != null && measurement.value > mPeak!!) {
-            mPeak = measurement.value
-        }
     }
 
     private fun bindLastMeasurement(sessionPresenter: SessionPresenter?) {
