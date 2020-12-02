@@ -42,6 +42,7 @@ class MyAccountTest {
             = ActivityTestRule(MyAccountActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
+    val db = DatabaseProvider.get()
 
     private fun setupDagger(){
         val permissionsModule = PermissionsModule()
@@ -89,15 +90,15 @@ class MyAccountTest {
         assertEquals(null, settings.getEmail())
 
         //checking if database tables are empty:
-        val measurements = DatabaseProvider.get().measurements().getAll() //DatabaseProvider.get() do zmiany
-        val streams = DatabaseProvider.get().measurementStreams().getAll()
-        //val sessions = DatabaseProvider.get().sessions().getAll() //todo: sessions nie ma getAll()
-        //val sensor_thresholds = DatabaseProvider.get().sensorThresholds().getAll() //todo: sensor_threshold nie ma getAll()
+        val measurements = db.measurements().getAll() //DatabaseProvider.get() do zmiany
+        val streams = db.measurementStreams().getAll()
+        val sessions = db.sessions().getAll()
+        val sensor_thresholds = db.sensorThresholds().getAll()
 
         assert(measurements.isEmpty())
         assert(streams.isEmpty())
-//        assert(sessions.isEmpty())
-//        assert(sensor_thresholds.isEmpty())
+        assert(sessions.isEmpty())
+        assert(sensor_thresholds.isEmpty())
 
         // checking if LoginActivity is launched:
         intended(hasComponent(LoginActivity::class.java.name))

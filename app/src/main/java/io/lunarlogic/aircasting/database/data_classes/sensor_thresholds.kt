@@ -32,6 +32,9 @@ data class SensorThresholdDBObject(
 
 @Dao
 interface SensorThresholdDao {
+    @Query("SELECT * FROM sensor_thresholds")
+    fun getAll() : List<SensorThresholdDBObject>
+
     @Query("SELECT * FROM sensor_thresholds WHERE sensor_name in (:sensorNames)")
     fun allBySensorNames(sensorNames: List<String>): List<SensorThresholdDBObject>
 
