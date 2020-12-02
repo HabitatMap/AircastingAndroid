@@ -85,11 +85,11 @@ class MyAccountTest {
 
         Thread.sleep(2000)
 
-        assertEquals(settings.getAuthToken(), null)
-        assertEquals(settings.getEmail(), null)
+        assertEquals(null, settings.getAuthToken()) // todo: to przebadać normalnie w appce
+        assertEquals(null, settings.getEmail())
 
         //checking if database tables are empty:
-        val measurements = DatabaseProvider.get().measurements().getAll()
+        val measurements = DatabaseProvider.get().measurements().getAll() //DatabaseProvider.get() do zmiany
         val streams = DatabaseProvider.get().measurementStreams().getAll()
         //val sessions = DatabaseProvider.get().sessions().getAll() //todo: sessions nie ma getAll()
         //val sensor_thresholds = DatabaseProvider.get().sensorThresholds().getAll() //todo: sensor_threshold nie ma getAll()
@@ -100,7 +100,9 @@ class MyAccountTest {
 //        assert(sensor_thresholds.isEmpty())
 
         // checking if LoginActivity is launched:
-        intended(hasComponent(LoginActivity::class.java.getName()))
+        intended(hasComponent(LoginActivity::class.java.name))
+
+        // todo: back button click i sprawdzenie czy na LoginActivity
     }
 
 }
