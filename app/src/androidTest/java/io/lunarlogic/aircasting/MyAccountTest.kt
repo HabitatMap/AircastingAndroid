@@ -90,7 +90,7 @@ class MyAccountTest {
 
         Thread.sleep(2000)
 
-        assertEquals(null, settings.getAuthToken()) // todo: to przebadać normalnie w appce
+        assertEquals(null, settings.getAuthToken())
         assertEquals(null, settings.getEmail())
 
         //checking if database tables are empty:
