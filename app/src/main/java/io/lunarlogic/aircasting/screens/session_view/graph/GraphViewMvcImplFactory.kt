@@ -18,7 +18,7 @@ class GraphViewMvcImplFactory {
             if (sessionType == Session.Type.FIXED) {
                 return GraphViewFixedMvcImpl(inflater, parent, supportFragmentManager)
             }
-//
+
             return when(sessionStatus) {
                 Session.Status.FINISHED -> GraphViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
                 Session.Status.RECORDING -> GraphViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)

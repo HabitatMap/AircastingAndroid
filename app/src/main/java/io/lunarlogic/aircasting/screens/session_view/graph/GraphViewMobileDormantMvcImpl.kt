@@ -8,11 +8,7 @@ class GraphViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
-
-    override fun defaultZoomSpan(): Int {
-        return 10 * 60 * 1000 // 10 minutes
-    }
+): GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindStatisticsContainer() {
         mStatisticsContainer = null

@@ -4,8 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 
-class GraphViewMobileActiveMvcImpl(
+
+abstract class GraphViewMobileMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-    ): GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager)
+): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
+
+    override fun defaultZoomSpan(): Int {
+        return 10 * 60 * 1000 // 10 minutes
+    }
+}
