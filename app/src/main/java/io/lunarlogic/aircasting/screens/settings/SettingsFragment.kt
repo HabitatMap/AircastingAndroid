@@ -12,20 +12,26 @@ import io.lunarlogic.aircasting.R
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var settingsViewModel: SettingsViewModel
+    private var controller : SettingsController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        settingsViewModel =
-            ViewModelProviders.of(this).get(SettingsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_settings, container, false)
-        val textView: TextView = root.findViewById(R.id.text_settings)
-        settingsViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
-        return root
+        val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
+        controller = SettingsController(context, view)
+
+        return view.rootView
+    }
+
+    override fun onStart() {
+        super.onStart()
+        controller?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        controller?.onStop()
     }
 }

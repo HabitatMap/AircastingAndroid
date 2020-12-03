@@ -4,16 +4,18 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 
 class FakeSettings(application: AircastingApplication): Settings(application) {
-    private var mEmail: String? = null
-    private var mToken: String? = null
+    private var preferences : HashMap<String, String> = HashMap()
 
-    override fun getAuthToken(): String? {
-        return mToken
+    override fun getFromSettings(key: String): String? {
+        return preferences.get(key)
     }
 
-    override fun login(email: String, authToken: String) {
-        this.mEmail = email
-        this.mToken = authToken
+    override fun saveToSettings(key: String, value: String) {
+        this.preferences.put(key, value)
+    }
+
+    override fun logout(){
+        preferences.clear()
     }
 }
 

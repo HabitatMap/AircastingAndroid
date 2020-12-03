@@ -11,6 +11,8 @@ import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
+import io.lunarlogic.aircasting.screens.settings.SettingsFragment
+import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 import javax.inject.Singleton
 
 @Singleton
@@ -34,4 +36,7 @@ interface AppComponent {
     fun inject(fragment: FixedFragment)
     fun inject(activity: NewSessionActivity)
     fun inject(fragment: SessionDetailsFragment)
+
+    fun inject(fragment: SettingsFragment)
+    fun inject(activity: MyAccountActivity)
 }

@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
 
-class LoginController(
+class  LoginController(
     private val mContext: Context,
     private val mViewMvc: LoginViewMvc,
     private val mSettings: Settings

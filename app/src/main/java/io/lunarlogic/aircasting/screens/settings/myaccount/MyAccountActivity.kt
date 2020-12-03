@@ -1,23 +1,26 @@
-package io.lunarlogic.aircasting.screens.new_session
+package io.lunarlogic.aircasting.screens.settings.myaccount
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 
-class LoginActivity: AppCompatActivity() {
-    private var controller: LoginController? = null
+class MyAccountActivity : AppCompatActivity() {
+
+    private var controller: MyAccountController? = null
 
     @Inject
     lateinit var settings: Settings
 
-    companion object {
+    companion object{
         fun start(context: Context?) {
             context?.let{
-                val intent = Intent(it, LoginActivity::class.java)
+                val intent = Intent(it, MyAccountActivity::class.java)
                 it.startActivity(intent)
             }
         }
@@ -29,24 +32,21 @@ class LoginActivity: AppCompatActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LoginViewMvcImpl(layoutInflater, null)
-        controller = LoginController(this, view, settings)
+        val view = MyAccountViewMvcImpl(layoutInflater, null)
+        controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)
+        AppBar.setup(view.rootView, this)
     }
 
     override fun onStart() {
         super.onStart()
-        controller!!.onStart()
+        controller?.onStart()
     }
-
 
     override fun onStop() {
         super.onStop()
-        controller!!.onStop()
+        controller?.onStop()
     }
 
-    override fun onBackPressed() {
-        // Doing nothing here, we need it to prevent going back after log out
-    }
 }
