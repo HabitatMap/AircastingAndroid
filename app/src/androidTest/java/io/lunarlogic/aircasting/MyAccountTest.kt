@@ -93,16 +93,16 @@ class MyAccountTest {
         assertEquals(null, settings.getAuthToken())
         assertEquals(null, settings.getEmail())
 
-        //checking if database tables are empty:
-        val measurements = db.measurements().getAll() //DatabaseProvider.get() do zmiany
+        // checking if database tables are empty:
+        val measurements = db.measurements().getAll()
         val streams = db.measurementStreams().getAll()
         val sessions = db.sessions().getAll()
-        val sensor_thresholds = db.sensorThresholds().getAll()
+        val sensorThresholds = db.sensorThresholds().getAll()
 
         assert(measurements.isEmpty())
         assert(streams.isEmpty())
         assert(sessions.isEmpty())
-        assert(sensor_thresholds.isEmpty())
+        assert(sensorThresholds.isEmpty())
 
         // checking if LoginActivity is launched:
         intended(hasComponent(LoginActivity::class.java.name))
