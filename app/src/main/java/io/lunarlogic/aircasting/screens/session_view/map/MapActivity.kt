@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 
 class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null
@@ -21,22 +22,19 @@ class MapActivity: AppCompatActivity() {
     companion object {
         val SENSOR_NAME_KEY = "SENSOR_NAME"
         val SESSION_UUID_KEY = "SESSION_UUID"
-        val SESSION_TYPE_KEY = "SESSION_TYPE"
-        val SESSION_STATUS_KEY = "SESSION_STATUS"
+        val SESSION_TAB_KEY = "SESSION_TAB"
 
         fun start(
             context: Context?,
             sensorName: String?,
             sessionUUID: String,
-            sessionType: Session.Type,
-            sessionStatus: Session.Status
+            sessionTab: SessionsTab
         ) {
             context?.let{
                 val intent = Intent(it, MapActivity::class.java)
                 intent.putExtra(SENSOR_NAME_KEY, sensorName)
                 intent.putExtra(SESSION_UUID_KEY, sessionUUID)
-                intent.putExtra(SESSION_TYPE_KEY, sessionType.value)
-                intent.putExtra(SESSION_STATUS_KEY, sessionStatus.value)
+                intent.putExtra(SESSION_TAB_KEY, sessionTab.value)
                 it.startActivity(intent)
             }
         }
@@ -47,15 +45,13 @@ class MapActivity: AppCompatActivity() {
 
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
-        val sessionType: Int = intent.extras?.getInt(SESSION_TYPE_KEY) as Int
-        val sessionStatus: Int = intent.extras?.getInt(SESSION_STATUS_KEY) as Int
+        val sessionTab: Int = intent.extras?.getInt(SESSION_TAB_KEY) as Int
 
         val view = MapViewMvcImplFactory.get(
             layoutInflater,
             null,
             supportFragmentManager,
-            Session.Type.fromInt(sessionType),
-            Session.Status.fromInt(sessionStatus)
+            SessionsTab.fromInt(sessionTab)
         )
         controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName)
 
