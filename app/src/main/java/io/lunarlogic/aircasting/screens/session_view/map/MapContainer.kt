@@ -185,7 +185,7 @@ class MapContainer: OnMapReadyCallback {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
-    fun addMeasurement(measurement: Measurement) {
+    fun addMobileMeasurement(measurement: Measurement) {
         if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
         }

@@ -40,7 +40,7 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun addMeasurement(measurement: Measurement) {
         super.addMeasurement(measurement)
-        mMapContainer.addMeasurement(measurement)
+        mMapContainer.addMobileMeasurement(measurement)
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
