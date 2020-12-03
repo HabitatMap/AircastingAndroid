@@ -51,18 +51,19 @@ class StatisticsContainer {
 
         mStatisticsView?.visibility = View.VISIBLE
 
+        bindLastMeasurement(sessionPresenter)
         bindAvgStatistics(stream)
         bindNowStatistics(stream)
         bindPeakStatistics(stream)
     }
 
-    fun addMeasurement(measurement: Measurement) {
-        mSum?.let { mSum = it + measurement.value }
+    private fun bindLastMeasurement(sessionPresenter: SessionPresenter?) {
+        val stream = sessionPresenter?.selectedStream
 
-        mNow = measurement.value
-
-        if (mPeak != null && measurement.value > mPeak!!) {
-            mPeak = measurement.value
+        mNow = getNowValue(stream)
+        mSum?.let { mSum = it + (mNow ?: 0.0) }
+        if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
+            mPeak = mNow
         }
     }
 
@@ -80,7 +81,6 @@ class StatisticsContainer {
             if (mSum == null) {
                 mSum = stream.calculateSum()
             }
-
             avg = mSum!! / stream.measurements.size
         }
 
@@ -88,6 +88,9 @@ class StatisticsContainer {
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
+        if (mNow == null && stream != null) {
+            mNow = getNowValue(stream)
+        }
         bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator)
     }
 
@@ -109,5 +112,9 @@ class StatisticsContainer {
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         return stream.measurements.maxBy { it.value }?.value ?: 0.0
+    }
+
+    private fun getNowValue(stream: MeasurementStream?): Double? {
+        return stream?.measurements?.lastOrNull()?.value
     }
 }

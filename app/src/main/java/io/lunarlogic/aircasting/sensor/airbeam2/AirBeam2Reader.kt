@@ -8,6 +8,12 @@ import org.greenrobot.eventbus.EventBus
 import java.io.InputStream
 import java.io.InputStreamReader
 
+/**
+ * This reader will be effectively use only in MOBILE sessions
+ * Only when AirBeam is in the MOBILE mode the data is sent to the Android device
+ * No NewMeasurementEvent will be posted for FIXED sessions
+ */
+
 class AirBeam2Reader(private val mErrorHandler: ErrorHandler) {
     fun run(inputStream: InputStream) {
         val inputStreamReader = InputStreamReader(inputStream)

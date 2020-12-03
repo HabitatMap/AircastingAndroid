@@ -93,6 +93,9 @@ class MapContainer: OnMapReadyCallback {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
 
+        if (mSessionPresenter?.isFixed() == true) {
+            drawFixedMeasurement()
+        }
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.MAP_LOADED.value) {
             setup()
@@ -131,7 +134,8 @@ class MapContainer: OnMapReadyCallback {
         }
     }
 
-    private fun drawLastMeasurementMarker(point: LatLng, color: Int) {
+    private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
+        if (point == null || color == null) return
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
 
         val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_dot_20, color)
@@ -181,26 +185,22 @@ class MapContainer: OnMapReadyCallback {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
-    fun addMeasurement(measurement: Measurement) {
-        if (measurement.latitude == null || measurement.longitude == null) return
-
-        val point = LatLng(measurement.latitude, measurement.longitude)
-        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
-
-        if (mSessionPresenter?.isFixed() == true) {
-            drawFixedMeasurement(point, color)
-        } else if (mSessionPresenter?.isRecording() == true) {
-            drawMobileMeasurement(point, color)
+    fun addMobileMeasurement(measurement: Measurement) {
+        if (mSessionPresenter?.isRecording() == true) {
+            drawMobileMeasurement(measurementColorPoint(measurement))
         }
     }
 
-    private fun drawFixedMeasurement(point: LatLng, color: Int) {
-        drawLastMeasurementMarker(point, color)
+    private fun drawFixedMeasurement() {
+        val colorPoint = measurementColorPoint(mMeasurements.last())
+        drawLastMeasurementMarker(colorPoint?.point, colorPoint?.color)
     }
 
-    private fun drawMobileMeasurement(point: LatLng, color: Int) {
-        mMeasurementPoints.add(point)
-        mMeasurementSpans.add(StyleSpan(color))
+    private fun drawMobileMeasurement(colorPoint: ColorPoint?) {
+        if (colorPoint == null) return
+
+        mMeasurementPoints.add(colorPoint.point)
+        mMeasurementSpans.add(StyleSpan(colorPoint.color))
 
         if (mMeasurementsLine == null) {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
@@ -209,7 +209,16 @@ class MapContainer: OnMapReadyCallback {
         mMeasurementsLine?.setPoints(mMeasurementPoints)
         mMeasurementsLine?.setSpans(mMeasurementSpans)
 
-        drawLastMeasurementMarker(point, color)
+        drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
+    }
+
+    private fun measurementColorPoint(measurement: Measurement) : ColorPoint? {
+        if (measurement.latitude == null || measurement.longitude == null) return null
+
+        val point = LatLng(measurement.latitude, measurement.longitude)
+        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
+
+        return ColorPoint(point, color)
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
@@ -238,3 +247,5 @@ class MapContainer: OnMapReadyCallback {
             .startCap(RoundCap())
     }
 }
+
+data class ColorPoint(val point: LatLng, val color: Int)
