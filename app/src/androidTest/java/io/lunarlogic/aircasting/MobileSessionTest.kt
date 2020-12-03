@@ -242,6 +242,7 @@ class MobileSessionTest {
 
         try {
             onView(withId(id)).perform(click())
+            Thread.sleep(2000)
             assertBlock()
         } catch(e: Exception) {
             Thread.sleep(1000)
