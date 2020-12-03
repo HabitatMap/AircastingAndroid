@@ -39,11 +39,6 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         graphContainer.unregisterListener()
     }
 
-    override fun addMeasurement(measurement: Measurement) {
-        super.addMeasurement(measurement)
-        graphContainer.addMeasurement(measurement)
-    }
-
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         graphContainer.bindSession(mSessionPresenter)

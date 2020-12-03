@@ -64,10 +64,6 @@ class GraphContainer: OnChartGestureListener {
         drawSession()
     }
 
-    fun addMeasurement(measurement: Measurement) {
-        refresh(mSessionPresenter)
-    }
-
     fun refresh(sessionPresenter: SessionPresenter?) {
         bindSession(sessionPresenter)
     }

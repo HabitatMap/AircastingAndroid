@@ -92,7 +92,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
     }
 
-    fun showSlider() {
+    private fun showSlider() {
         mMoreButton?.visibility = View.VISIBLE
         mHLUSlider.show()
     }
