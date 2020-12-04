@@ -16,7 +16,7 @@ open class MapViewMvcImplFactory {
             sessionTab: SessionsTab
         ): MapViewMvcImpl {
             return when(sessionTab){
-                SessionsTab.FOLLOWING -> MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
+                SessionsTab.FOLLOWING -> MapViewFollowingMvcImpl(inflater, parent, supportFragmentManager)
                 SessionsTab.FIXED -> MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
                 SessionsTab.MOBILE_DORMANT -> MapViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
                 SessionsTab.MOBILE_ACTIVE -> MapViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)
