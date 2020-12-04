@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard.fixed
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
@@ -26,7 +25,7 @@ class FixedController(
         mSessionsLiveData = loadSessions()
     }
 
-    override fun loadSessions(): LiveData<PagedList<SessionWithStreamsDBObject>> {
+    override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
         return mSessionsViewModel.loadFixedSessionsWithMeasurements()
     }
 

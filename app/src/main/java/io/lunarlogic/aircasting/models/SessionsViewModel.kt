@@ -2,42 +2,31 @@ package io.lunarlogic.aircasting.models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.PagedList
-import androidx.paging.toLiveData
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 
 class SessionsViewModel(): ViewModel() {
-    private val CONFIG = PagedList.Config.Builder()
-        .setPageSize(100)
-        .setPrefetchDistance(50)
-        .setEnablePlaceholders(false)
-        .build()
     private val mDatabase = DatabaseProvider.get()
 
     fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
     }
 
-    fun loadFollowingSessionsWithMeasurements(): LiveData<PagedList<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions()
-            .loadFollowingWithMeasurements()
-            .toLiveData(CONFIG)
+    fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadFollowingWithMeasurements()
     }
 
-    fun loadMobileActiveSessionsWithMeasurements(): LiveData<PagedList<SessionWithStreamsDBObject>> {
+    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return loadAllMobileByStatusWithMeasurements(Session.Status.RECORDING)
     }
 
-    fun loadMobileDormantSessionsWithMeasurements(): LiveData<PagedList<SessionWithStreamsDBObject>> {
+    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return loadAllMobileByStatusWithMeasurements(Session.Status.FINISHED)
     }
 
-    fun loadFixedSessionsWithMeasurements(): LiveData<PagedList<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions()
-            .loadAllByType(Session.Type.FIXED)
-            .toLiveData(CONFIG)
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
@@ -88,9 +77,7 @@ class SessionsViewModel(): ViewModel() {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
 
-    private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<PagedList<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions()
-            .loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, status)
-            .toLiveData(CONFIG)
+    private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, status)
     }
 }

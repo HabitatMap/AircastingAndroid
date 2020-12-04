@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard.following
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -24,7 +23,7 @@ class FollowingController(
         mSessionsLiveData = loadSessions()
     }
 
-    override fun loadSessions(): LiveData<PagedList<SessionWithStreamsDBObject>> {
+    override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
         return mSessionsViewModel.loadFollowingSessionsWithMeasurements()
     }
 
