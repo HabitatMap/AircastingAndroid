@@ -153,11 +153,11 @@ abstract class SessionsController(
     }
 
     override fun onMapButtonClicked(session: Session, sensorName: String?) {
-        MapActivity.start(mRootActivity, sensorName, session.uuid, session.type, session.status)
+        MapActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
     }
 
     override fun onGraphButtonClicked(session: Session, sensorName: String?) {
-        GraphActivity.start(mRootActivity, sensorName, session.uuid, session.type)
+        GraphActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
     }
 
     override fun onExpandSessionCard(session: Session) {

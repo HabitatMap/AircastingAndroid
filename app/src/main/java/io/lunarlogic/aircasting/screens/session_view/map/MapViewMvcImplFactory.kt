@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 
 
 open class MapViewMvcImplFactory {
@@ -12,17 +13,13 @@ open class MapViewMvcImplFactory {
             inflater: LayoutInflater,
             parent: ViewGroup?,
             supportFragmentManager: FragmentManager?,
-            sessionType: Session.Type,
-            sessionStatus: Session.Status
+            sessionTab: SessionsTab
         ): MapViewMvcImpl {
-            if (sessionType == Session.Type.FIXED) {
-                return MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
-            }
-
-            return when(sessionStatus) {
-                Session.Status.FINISHED -> MapViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
-                Session.Status.RECORDING -> MapViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)
-                else -> MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
+            return when(sessionTab){
+                SessionsTab.FOLLOWING -> MapViewFollowingMvcImpl(inflater, parent, supportFragmentManager)
+                SessionsTab.FIXED -> MapViewFixedMvcImpl(inflater, parent, supportFragmentManager)
+                SessionsTab.MOBILE_DORMANT -> MapViewMobileDormantMvcImpl(inflater, parent, supportFragmentManager)
+                SessionsTab.MOBILE_ACTIVE -> MapViewMobileActiveMvcImpl(inflater, parent, supportFragmentManager)
             }
         }
     }

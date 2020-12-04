@@ -2,6 +2,10 @@ package io.lunarlogic.aircasting.models
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
+import io.lunarlogic.aircasting.screens.session_view.map.MapViewFixedMvcImpl
+import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileActiveMvcImpl
+import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileDormantMvcImpl
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import java.text.SimpleDateFormat
 import java.util.*
@@ -133,6 +137,18 @@ class Session(
     val displayedType get() = when(type) {
         Type.MOBILE -> "mobile"
         Type.FIXED -> "fixed"
+    }
+
+    val tab get() = run {
+        if (followed) SessionsTab.FOLLOWING else {
+            if (isFixed()) SessionsTab.FIXED else {
+                when(status) {
+                    Status.FINISHED -> SessionsTab.MOBILE_DORMANT
+                    Status.RECORDING -> SessionsTab.MOBILE_ACTIVE
+                    else -> SessionsTab.MOBILE_DORMANT
+                }
+            }
+        }
     }
 
     fun startRecording() {

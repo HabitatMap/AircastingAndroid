@@ -11,6 +11,17 @@ import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileActiveFragment
 import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileDormantFragment
 import io.lunarlogic.aircasting.models.Session
 
+enum class SessionsTab(val value: Int){
+    FOLLOWING(0),
+    MOBILE_ACTIVE(1),
+    MOBILE_DORMANT(2),
+    FIXED(3);
+
+    companion object {
+        fun fromInt(value: Int) = values().first { it.value == value }
+    }
+}
+
 class DashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
@@ -22,10 +33,10 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
     )
 
     companion object {
-        val FOLLOWING_TAB_INDEX = 0
-        val MOBILE_ACTIVE_TAB_INDEX = 1
-        val MOBILE_DORMANT_TAB_INDEX = 2
-        val FIXED_TAB_INDEX = 3
+        val FOLLOWING_TAB_INDEX = SessionsTab.FOLLOWING.value
+        val MOBILE_ACTIVE_TAB_INDEX = SessionsTab.MOBILE_ACTIVE.value
+        val MOBILE_DORMANT_TAB_INDEX = SessionsTab.MOBILE_DORMANT.value
+        val FIXED_TAB_INDEX = SessionsTab.FIXED.value
 
         val TABS_COUNT = 4
 
