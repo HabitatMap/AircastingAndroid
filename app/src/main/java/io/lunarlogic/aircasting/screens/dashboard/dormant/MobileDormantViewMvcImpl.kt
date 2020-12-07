@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard.mobile
+package io.lunarlogic.aircasting.screens.dashboard.dormant
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,27 +7,28 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
 import io.lunarlogic.aircasting.models.Session
 
-class MobileActiveViewMvcImpl(
+
+class MobileDormantViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
-): SessionsViewMvcImpl<MobileActiveSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
-    MobileActiveSessionViewMvc.Listener {
+): SessionsViewMvcImpl<MobileDormantSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+    MobileDormantSessionViewMvc.Listener {
 
     override fun buildAdapter(
         inflater: LayoutInflater,
         supportFragmentManager: FragmentManager
-    ): SessionsRecyclerAdapter<MobileActiveSessionViewMvc.Listener> {
-        return MobileActiveRecyclerAdapter(
+    ): SessionsRecyclerAdapter<MobileDormantSessionViewMvc.Listener> {
+        return MobileDormantRecyclerAdapter(
             inflater,
             this,
             supportFragmentManager
         )
     }
 
-    override fun onSessionStopClicked(session: Session) {
+    override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
-            listener.onStopSessionClicked(session.uuid)
+            listener.onDeleteSessionClicked(session.uuid)
         }
     }
 }

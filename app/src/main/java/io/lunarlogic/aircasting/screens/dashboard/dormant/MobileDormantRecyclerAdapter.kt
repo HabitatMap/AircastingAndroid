@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.dashboard.mobile
+package io.lunarlogic.aircasting.screens.dashboard.dormant
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
