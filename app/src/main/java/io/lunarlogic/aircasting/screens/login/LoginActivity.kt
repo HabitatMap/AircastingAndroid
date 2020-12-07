@@ -21,6 +21,15 @@ class LoginActivity: AppCompatActivity() {
                 it.startActivity(intent)
             }
         }
+
+        fun startAfterSignout(context: Context?){
+            context?.let{
+                val intent = Intent(it, LoginActivity::class.java)
+                //TODO: when pressing back from CreateAccountActivity its goin out of app <- needs to be fixed
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                it.startActivity(intent)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +55,4 @@ class LoginActivity: AppCompatActivity() {
         controller!!.onStop()
     }
 
-    override fun onBackPressed() {
-        // TODO: this override needs to be deleted
-        // Doing nothing here, we need it to prevent going back after log out
-    }
 }
