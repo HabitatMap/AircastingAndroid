@@ -29,6 +29,7 @@ class MyAccountController(
         GlobalScope.launch(Dispatchers.IO) {
             DatabaseProvider.mAppDatabase?.clearAllTables()
         }
+        // TODO: somehow i should add Flags to intent that starts loginActivity here
         LoginActivity.start(mContext)
     }
 
