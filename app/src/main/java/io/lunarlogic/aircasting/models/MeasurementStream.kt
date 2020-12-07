@@ -51,7 +51,7 @@ class MeasurementStream(
 
     constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject):
             this(streamWithMeasurementsDBObject.stream) {
-        this.measurements = streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
+        this.mMeasurements = streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
             Measurement(measurementDBObject)
         }
     }
@@ -73,14 +73,15 @@ class MeasurementStream(
     constructor(
         sessionStreamWithMeasurementsResponse: SessionStreamWithMeasurementsResponse
     ): this(sessionStreamWithMeasurementsResponse as SessionStreamResponse) {
-        this.measurements = sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
+        this.mMeasurements = sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
             Measurement(measurementResponse)
         }
     }
 
     val detailedType: String?
 
-    var measurements = listOf<Measurement>()
+    private var mMeasurements = listOf<Measurement>()
+    val measurements get() = mMeasurements
 
     init {
         val split = sensorName.split("-")
