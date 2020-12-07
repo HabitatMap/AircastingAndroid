@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
@@ -46,7 +47,8 @@ class MainActivity: AppCompatActivity() {
         controller?.onCreate()
 
         setContentView(view.rootView)
-        setSupportActionBar(findViewById(R.id.topAppBar))
+        AppBar.setup(view.rootView, this)
+//        setSupportActionBar(findViewById(R.id.topAppBar))
 
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)

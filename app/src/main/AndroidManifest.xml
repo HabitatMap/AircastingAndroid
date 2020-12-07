@@ -54,7 +54,7 @@
         <activity android:label=""
             android:name="io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity"
             android:screenOrientation="portrait" />
-        <activity android:label=""
+        <activity android:label="jgjhg"
             android:name=".screens.settings.myaccount.MyAccountActivity"
             android:screenOrientation="portrait"/>
 

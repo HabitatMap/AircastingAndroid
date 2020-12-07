@@ -16,7 +16,6 @@
         android:text="@string/my_account"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,17 +29,36 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/crowd_map_settings_button"
                 style="@style/Widget.Aircasting.BottomSheetTextButton"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="60dp"
                 android:paddingStart="25dp"
                 android:text="Contribute to crowd map"
                 android:textAlignment="viewStart"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/crowd_map_descr"
+                tools:layout_editor_absoluteX="-5dp" />
+
+            <TextView
+                android:id="@+id/crowd_map_descr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Data contributed to the CrowdMap is \npublicly available at aircasting.org"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:paddingStart="25dp"
+                android:paddingBottom="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/backend_settings_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/crowd_map_settings_button"
+                app:layout_constraintVertical_bias="0.0" />
 
             <Switch
                 android:id="@+id/crowd_map_settings_switch"
@@ -52,26 +70,28 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:id="@+id/separator1"
-                android:visibility="visible"
-                android:background="@color/aircasting_grey_50"
-                app:layout_constraintTop_toBottomOf="@id/crowd_map_settings_button"
+                android:background="@color/aircasting_grey_100"
+                app:layout_constraintTop_toBottomOf="@id/crowd_map_descr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/backend_settings_button"/>
 
             <Button
                 android:id="@+id/backend_settings_button"
                 style="@style/Widget.Aircasting.BottomSheetTextButton"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="61dp"
                 android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                 android:paddingStart="25dp"
                 android:text="Backend settings"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/crowd_map_descr"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/separator1" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_editor_absoluteY="97dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
