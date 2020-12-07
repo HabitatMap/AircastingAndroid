@@ -20,13 +20,14 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onMyaccountClicked()
         }
 
+        //TODO: button listeners to be added
+
     }
 
     private fun onMyaccountClicked() {
         for(listener in listeners){
             listener.onMyAccountClicked()
         }
-
     }
 
 

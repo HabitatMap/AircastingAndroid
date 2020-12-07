@@ -3,20 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:background="@color/aircasting_grey_50">
 
     <Button
         android:id="@+id/myAccount_Button"
         style="@style/Widget.Aircasting.BottomSheetTextButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="28dp"
         android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
+        android:paddingStart="25dp"
         android:text="@string/my_account"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myAccount_Button">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/crowd_map_settings_button"
+                style="@style/Widget.Aircasting.BottomSheetTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:paddingStart="25dp"
+                android:text="Contribute to crowd map"
+                android:textAlignment="viewStart"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Switch
+                android:id="@+id/crowd_map_settings_switch"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                app:layout_constraintBottom_toBottomOf="@+id/crowd_map_settings_button"
+                app:layout_constraintEnd_toEndOf="@+id/crowd_map_settings_button"
+                app:layout_constraintTop_toTopOf="@+id/crowd_map_settings_button"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/separator1"
+                android:visibility="visible"
+                android:background="@color/aircasting_grey_50"
+                app:layout_constraintTop_toBottomOf="@id/crowd_map_settings_button"
+                app:layout_constraintBottom_toTopOf="@id/backend_settings_button"/>
+
+            <Button
+                android:id="@+id/backend_settings_button"
+                style="@style/Widget.Aircasting.BottomSheetTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
+                android:paddingStart="25dp"
+                android:text="Backend settings"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/separator1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

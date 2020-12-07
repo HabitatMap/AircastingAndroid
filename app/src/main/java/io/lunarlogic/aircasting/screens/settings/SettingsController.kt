@@ -22,4 +22,12 @@ class SettingsController(
         MyAccountActivity.start(mContext)
     }
 
+    override fun onBackendSettingsClicked() {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onContributeCrowdMapSwitched() {
+        //TODO("Not yet implemented")
+    }
+
 }

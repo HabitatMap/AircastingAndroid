@@ -97,6 +97,7 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
+        Thread.sleep(5000)
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
@@ -154,7 +155,7 @@ class MobileSessionTest {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
-        
+
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
@@ -162,7 +163,6 @@ class MobileSessionTest {
         expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(not(isDisplayed())))
-
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(1000)
