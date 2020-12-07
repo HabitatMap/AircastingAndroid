@@ -27,7 +27,7 @@ class SessionPresenter() {
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-        this.chartData = ChartData(session)
+        this.chartData = ChartData(session) // TODO load this only on certain tabs??
     }
 
     constructor(sessionUUID: String, initialSensorName: String?): this() {
