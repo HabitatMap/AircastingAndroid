@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.ActiveSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
@@ -12,15 +13,21 @@ import io.lunarlogic.aircasting.models.Session
 
 class FollowingController(
     mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
-    override fun loadSessions(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return mSessionsViewModel.loadFollowingSessionsWithMeasurements()
+    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun registerSessionsObserver() {
+        mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
+    }
+
+    override fun unregisterSessionsObserver() {
+        mSessionsObserver.stop()
     }
 
     override fun onRecordNewSessionClicked() {
@@ -28,10 +35,10 @@ class FollowingController(
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {
-
+        // do nothing
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
-
+        // do nothing
     }
 }

@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.ActiveSessionsObserver
+import io.lunarlogic.aircasting.models.DormantSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
@@ -13,16 +15,22 @@ import io.lunarlogic.aircasting.models.Session
 import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
-    private val mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    mRootActivity: FragmentActivity?,
+    mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mLifecycleOwner: LifecycleOwner,
+    mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
-    override fun loadSessions(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return mSessionsViewModel.loadMobileDormantSessionsWithMeasurements()
+    private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun registerSessionsObserver() {
+        mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurements())
+    }
+
+    override fun unregisterSessionsObserver() {
+        mSessionsObserver.stop()
     }
 
     override fun onRecordNewSessionClicked() {

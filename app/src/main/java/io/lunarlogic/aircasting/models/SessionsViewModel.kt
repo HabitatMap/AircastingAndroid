@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 
 class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()
@@ -18,14 +19,14 @@ class SessionsViewModel(): ViewModel() {
     }
 
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return loadAllMobileByStatusWithMeasurements(Session.Status.RECORDING)
+        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, Session.Status.RECORDING)
     }
 
-    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return loadAllMobileByStatusWithMeasurements(Session.Status.FINISHED)
+    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatus(Session.Type.MOBILE, Session.Status.FINISHED)
     }
 
-    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
@@ -75,9 +76,5 @@ class SessionsViewModel(): ViewModel() {
 
     fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
-    }
-
-    private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, status)
     }
 }

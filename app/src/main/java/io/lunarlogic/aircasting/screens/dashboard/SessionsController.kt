@@ -3,9 +3,8 @@ package io.lunarlogic.aircasting.screens.dashboard
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -15,28 +14,25 @@ import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
-import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsObserver
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import kotlinx.coroutines.CoroutineScope
 
 
 abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mLifecycleOwner: LifecycleOwner,
-    private val mSettings: Settings
+    protected val mLifecycleOwner: LifecycleOwner,
+    mSettings: Settings
 ) : SessionsViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected var mSessionsObserver = SessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-
-    abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
+    protected abstract fun registerSessionsObserver()
+    protected abstract fun unregisterSessionsObserver()
 
     fun onCreate() {
         mViewMvc.showLoader()
@@ -50,14 +46,6 @@ abstract class SessionsController(
     fun onPause() {
         unregisterSessionsObserver()
         mViewMvc.unregisterListener(this)
-    }
-
-    private fun registerSessionsObserver() {
-        mSessionsObserver.observe(loadSessions())
-    }
-
-    private fun unregisterSessionsObserver() {
-        mSessionsObserver.stop()
     }
 
     protected fun startNewSession(sessionType: Session.Type) {

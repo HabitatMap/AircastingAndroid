@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasu
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.ActiveSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
@@ -16,15 +17,21 @@ import org.greenrobot.eventbus.EventBus
 
 class MobileActiveController(
     mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
-    override fun loadSessions(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return mSessionsViewModel.loadMobileActiveSessionsWithMeasurements()
+    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun registerSessionsObserver() {
+        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
+    }
+
+    override fun unregisterSessionsObserver() {
+        mSessionsObserver.stop()
     }
 
     override fun onRecordNewSessionClicked() {
