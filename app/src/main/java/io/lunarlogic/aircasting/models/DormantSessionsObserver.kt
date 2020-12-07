@@ -8,7 +8,7 @@ import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import kotlinx.coroutines.CoroutineScope
 
-abstract class SessionsObserver(
+class DormantSessionsObserver(
     private val mLifecycleOwner: LifecycleOwner,
     private val mSessionsViewModel: SessionsViewModel,
     private val mViewMvc: SessionsViewMvc
