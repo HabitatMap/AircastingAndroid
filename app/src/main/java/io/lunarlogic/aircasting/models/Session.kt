@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.models
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.session_view.map.MapViewFixedMvcImpl
@@ -59,6 +60,13 @@ class Session(
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
         this.location = location
+    }
+
+    constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject):
+            this(sessionWithStreamsDBObject.session) {
+        this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
+            MeasurementStream(streamWithMeasurementsDBObject)
+        }
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):

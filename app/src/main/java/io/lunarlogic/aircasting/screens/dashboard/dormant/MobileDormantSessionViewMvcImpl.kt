@@ -1,14 +1,12 @@
-package io.lunarlogic.aircasting.screens.dashboard.mobile
+package io.lunarlogic.aircasting.screens.dashboard.dormant
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
-import kotlinx.android.synthetic.main.session_card.view.*
 
 class MobileDormantSessionViewMvcImpl(
     inflater: LayoutInflater,
