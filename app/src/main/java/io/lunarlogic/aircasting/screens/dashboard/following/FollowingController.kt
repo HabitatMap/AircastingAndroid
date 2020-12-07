@@ -41,4 +41,8 @@ class FollowingController(
     override fun onDeleteSessionClicked(sessionUUID: String) {
         // do nothing
     }
+
+    override fun onExpandSessionCard(session: Session) {
+        // do nothing
+    }
 }

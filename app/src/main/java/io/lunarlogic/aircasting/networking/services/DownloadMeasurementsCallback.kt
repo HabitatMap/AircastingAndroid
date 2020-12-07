@@ -15,7 +15,6 @@ import io.lunarlogic.aircasting.models.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 class DownloadMeasurementsCallback(
     private val sessionId: Long,
@@ -36,17 +35,19 @@ class DownloadMeasurementsCallback(
             body?.streams?.let { streams ->
                 DatabaseProvider.runQuery {
                     val streamResponses = streams.values
+
                     streamResponses.forEach { streamResponse ->
                         saveStreamData(streamResponse)
                     }
                     updateSessionEndTime(body?.end_time)
+
+                    finallyCallback?.invoke()
                 }
             }
         } else {
             errorHandler.handleAndDisplay(DownloadMeasurementsError())
+            finallyCallback?.invoke()
         }
-
-        finallyCallback?.invoke()
     }
 
     override fun onFailure(

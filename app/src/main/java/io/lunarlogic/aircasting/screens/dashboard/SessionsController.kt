@@ -23,7 +23,7 @@ abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    protected val mLifecycleOwner: LifecycleOwner,
+    mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ) : SessionsViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mRootActivity!!)
@@ -83,10 +83,24 @@ abstract class SessionsController(
         GraphActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
     }
 
+    protected fun reloadSession(session: Session) {
+        DatabaseProvider.runQuery { scope ->
+            val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            dbSessionWithMeasurements?.let {
+                val reloadedSession = Session(dbSessionWithMeasurements)
+
+                DatabaseProvider.backToUIThread(scope) {
+                    mViewMvc.reloadSession(reloadedSession)
+                    mViewMvc.hideLoaderFor(session)
+                }
+            }
+        }
+    }
+
     override fun onExpandSessionCard(session: Session) {
         if (session.isIncomplete()) {
             mViewMvc.showLoaderFor(session)
-            val finallyCallback = { mViewMvc.hideLoaderFor(session) }
+            val finallyCallback = { reloadSession(session) }
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
         }
     }
