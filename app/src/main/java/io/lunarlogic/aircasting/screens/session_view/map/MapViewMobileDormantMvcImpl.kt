@@ -16,6 +16,6 @@ class MapViewMobileDormantMvcImpl(
     }
 
     override fun bindSessionMeasurementsDescription() {
-        mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
+        mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description_long)
     }
 }
