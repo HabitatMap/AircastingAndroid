@@ -23,8 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:text="adress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +35,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="port"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adress_edittext" />
@@ -45,7 +44,7 @@
         android:id="@+id/confirmation_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="OK"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/port_edittext" />
