@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
@@ -79,6 +80,10 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     override fun hideLoaderFor(session: Session) {
         mAdapter.hideLoaderFor(session)
+    }
+
+    override fun reloadSession(session: Session) {
+        mAdapter.reloadSession(session)
     }
 
     override fun showLoader() {

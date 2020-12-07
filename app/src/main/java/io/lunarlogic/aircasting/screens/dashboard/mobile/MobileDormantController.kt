@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.mobile
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
@@ -16,7 +17,7 @@ import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
     mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc,
+    private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
@@ -44,5 +45,22 @@ class MobileDormantController(
 
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
+    }
+
+    override fun onExpandSessionCard(session: Session) {
+        super.onExpandSessionCard(session)
+
+        if (session.isIncomplete()) {
+            DatabaseProvider.runQuery { scope ->
+                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                dbSessionWithMeasurements?.let {
+                    val reloadedSession = Session(dbSessionWithMeasurements)
+
+                    DatabaseProvider.backToUIThread(scope) {
+                        mViewMvc.reloadSession(reloadedSession)
+                    }
+                }
+            }
+        }
     }
 }

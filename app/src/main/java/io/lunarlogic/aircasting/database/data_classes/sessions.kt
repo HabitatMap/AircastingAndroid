@@ -118,6 +118,9 @@ interface SessionDao {
     fun loadLiveDataSessionAndMeasurementsByUUID(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
