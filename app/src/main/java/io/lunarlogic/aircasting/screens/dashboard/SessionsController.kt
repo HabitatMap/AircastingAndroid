@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsObserver
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import kotlinx.coroutines.CoroutineScope
 
@@ -33,79 +34,7 @@ abstract class SessionsController(
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected lateinit var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>
-    private var mSessions = hashMapOf<String, Session>()
-    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
-
-    private var mSessionsObserver = Observer<List<SessionWithStreamsDBObject>> { dbSessions ->
-        DatabaseProvider.runQuery { coroutineScope ->
-            val sessions = dbSessions.map { dbSession -> Session(dbSession) }
-            val sensorThresholds = getSensorThresholds(sessions)
-
-            hideLoader(coroutineScope)
-
-            if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
-                if (dbSessions.size > 0) {
-                    updateSensorThresholds(sensorThresholds)
-                    showSessionsView(coroutineScope, sessions)
-                } else {
-                    showEmptyView(coroutineScope)
-                }
-
-                updateSessionsCache(sessions)
-            }
-        }
-    }
-
-    private fun hideLoader(coroutineScope: CoroutineScope) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.hideLoader()
-        }
-    }
-
-    private fun showSessionsView(coroutineScope: CoroutineScope, sessions: List<Session>) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.showSessionsView(sessions, mSensorThresholds)
-        }
-    }
-
-    private fun showEmptyView(coroutineScope: CoroutineScope) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.showEmptyView()
-        }
-    }
-
-    private fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {
-        val streams = sessions.flatMap { it.streams }.distinctBy { it.sensorName }
-        return mSessionsViewModel.findOrCreateSensorThresholds(streams)
-    }
-
-    private fun anySensorThresholdChanged(sensorThresholds: List<SensorThreshold>): Boolean {
-        return mSensorThresholds.isEmpty() ||
-                sensorThresholds.any { threshold -> threshold.hasChangedFrom(mSensorThresholds[threshold.sensorName]) }
-    }
-
-    private fun updateSensorThresholds(sensorThresholds: List<SensorThreshold>) {
-        sensorThresholds.forEach { mSensorThresholds[it.sensorName] = it }
-    }
-
-    private fun anySessionChanged(sessions: List<Session>): Boolean {
-        return mSessions.isEmpty() ||
-                mSessions.size != sessions.size ||
-                sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
-    }
-
-    private fun updateSessionsCache(sessions: List<Session>) {
-        sessions.forEach { session -> mSessions[session.uuid] = session }
-    }
-
-    fun registerSessionsObserver() {
-        mSessionsLiveData.observe(mLifecycleOwner, mSessionsObserver)
-    }
-
-    fun unregisterSessionsObserver() {
-        mSessionsLiveData.removeObserver(mSessionsObserver)
-    }
+    protected var mSessionsObserver = SessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     abstract fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>>
 
@@ -121,6 +50,14 @@ abstract class SessionsController(
     fun onPause() {
         unregisterSessionsObserver()
         mViewMvc.unregisterListener(this)
+    }
+
+    private fun registerSessionsObserver() {
+        mSessionsObserver.observe(loadSessions())
+    }
+
+    private fun unregisterSessionsObserver() {
+        mSessionsObserver.stop()
     }
 
     protected fun startNewSession(sessionType: Session.Type) {

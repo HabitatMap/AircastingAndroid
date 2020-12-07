@@ -21,10 +21,6 @@ class MobileDormantController(
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
-    init {
-        mSessionsLiveData = loadSessions()
-    }
-
     override fun loadSessions(): LiveData<List<SessionWithStreamsDBObject>> {
         return mSessionsViewModel.loadMobileDormantSessionsWithMeasurements()
     }
