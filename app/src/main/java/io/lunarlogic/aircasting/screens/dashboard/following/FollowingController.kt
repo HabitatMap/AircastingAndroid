@@ -3,7 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.following
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.models.ActiveSessionsObserver
+import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc

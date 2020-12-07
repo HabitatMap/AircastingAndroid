@@ -1,9 +1,12 @@
-package io.lunarlogic.aircasting.models
+package io.lunarlogic.aircasting.models.observers
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import kotlinx.coroutines.CoroutineScope
 
