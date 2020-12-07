@@ -4,28 +4,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 
 class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()
 
-    fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsDBObject?> {
+    fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
     }
 
-    fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+    fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return mDatabase.sessions().loadFollowingWithMeasurements()
     }
 
-    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return loadAllMobileByStatusWithMeasurements(Session.Status.RECORDING)
     }
 
-    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return loadAllMobileByStatusWithMeasurements(Session.Status.FINISHED)
     }
 
-    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
@@ -77,7 +77,7 @@ class SessionsViewModel(): ViewModel() {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
 
-    private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsDBObject>> {
+    private fun loadAllMobileByStatusWithMeasurements(status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, status)
     }
 }

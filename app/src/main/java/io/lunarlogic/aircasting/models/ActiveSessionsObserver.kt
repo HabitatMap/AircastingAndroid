@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import kotlinx.coroutines.CoroutineScope
 
@@ -16,9 +16,9 @@ class ActiveSessionsObserver(
     private var mSessions = hashMapOf<String, Session>()
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
-    private var mSessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>? = null
+    private var mSessionsLiveData: LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>? = null
 
-    private var mObserver: Observer<List<SessionWithStreamsDBObject>> = Observer { dbSessions ->
+    private var mObserver: Observer<List<SessionWithStreamsAndMeasurementsDBObject>> = Observer { dbSessions ->
         DatabaseProvider.runQuery { coroutineScope ->
             val sessions = dbSessions.map { dbSession -> Session(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
@@ -31,7 +31,7 @@ class ActiveSessionsObserver(
         }
     }
 
-    fun observe(sessionsLiveData: LiveData<List<SessionWithStreamsDBObject>>) {
+    fun observe(sessionsLiveData: LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>) {
         mSessionsLiveData = sessionsLiveData
         mSessionsLiveData?.observe(mLifecycleOwner, mObserver)
     }
