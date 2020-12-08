@@ -212,7 +212,8 @@
     </style>
 
     <style name="TextAppearance.Aircasting.SettingsDescription" parent="@style/TextAppearance.Aircasting.Body2">
-        <item name="lineHeight">@dimen/keyline_4</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="lineHeight">@dimen/keyline_5</item>
     </style>
 
     <!-- Styles -->
