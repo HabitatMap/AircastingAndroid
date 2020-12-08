@@ -20,7 +20,6 @@ abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ) : SessionsViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mRootActivity!!)
