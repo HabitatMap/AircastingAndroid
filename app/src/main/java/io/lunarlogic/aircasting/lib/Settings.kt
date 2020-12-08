@@ -53,7 +53,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun crowdMapSettingSwitched(){
-        val check = sharedPreferences.getBoolean(CROWD_MAP_SETTING, false) //todo: is this false for sure? got from stackoverflow
+        val check = sharedPreferences.getBoolean(CROWD_MAP_SETTING, false)
         val editor = sharedPreferences.edit()
         editor.putBoolean(CROWD_MAP_SETTING, !check)
         editor.apply()
@@ -78,7 +78,7 @@ open class Settings(mApplication: Application) {
         //TODO: not sure if its needed and why should it be used
         val editor = sharedPreferences.edit()
 //        editor.putString(ADRESS_BACKEND_SETTING, adress)
-//        editor.putString(PORT_BACKEND_SETTING, adress)
+//        editor.putString(PORT_BACKEND_SETTING, port)
         editor.apply()
     }
 }

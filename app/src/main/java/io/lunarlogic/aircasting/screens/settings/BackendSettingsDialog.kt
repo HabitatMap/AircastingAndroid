@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.settings
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -30,10 +31,10 @@ class BackendSettingsDialog(
     }
 
     private fun settingsConfirmed() {
-        // TODO: need to change values in sharedPreferences (settings) here based on EditText field values
-        val adress_value = adress_edittext.text.toString()
-        val port_value = port_edittext.text.toString()
+        val adress_value = mView.adress_edittext.text.toString()
+        val port_value = mView.port_edittext.text.toString()
         mSettings.backendSettingsChanged(adress_value, port_value)
+        Log.i("SETTINGS_DIALOG", "Adress and port values added to sharedPreferences")
         dismiss()
     }
 

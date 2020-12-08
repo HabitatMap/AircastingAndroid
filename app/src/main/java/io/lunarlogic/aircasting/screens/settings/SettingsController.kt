@@ -25,9 +25,7 @@ class SettingsController(
     }
 
     override fun onBackendSettingsClicked() {
-        // todo:  moving to dialog, analogicznie do tego co mi Ania podesłała
         BackendSettingsDialog(fragmentManager, mSettings).show()
-        // todo: mSettings.backendSettingsChanged() od wartości odtrzymanych z dialogu <- to w dialogu sie dzieje chyba
     }
 
     override fun onContributeCrowdMapSwitched() {

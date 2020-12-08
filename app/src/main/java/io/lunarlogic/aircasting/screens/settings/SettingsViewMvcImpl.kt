@@ -34,7 +34,6 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         backendSettingsButton?.setOnClickListener {
             onBackendSettingsClicked()
         }
-
     }
 
     private fun onBackendSettingsClicked() {
