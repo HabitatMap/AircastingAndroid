@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import io.lunarlogic.aircasting.models.Session
@@ -20,6 +21,7 @@ class AirBeam3Configurator(
     companion object {
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
         val MAX_MTU = 517
+        val DATE_FORMAT = "dd/MM/yy-HH:mm:ss"
     }
 
     private val CONFIGURATION_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
@@ -53,18 +55,19 @@ class AirBeam3Configurator(
         wifiPassword: String?
     ){
         val location = session.location ?: return
+        val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
 
         if (session.isFixed()) {
             when (session.streamingMethod) {
-                Session.StreamingMethod.WIFI -> configureFixedWifi(location, wifiSSID, wifiPassword)
-                Session.StreamingMethod.CELLULAR -> configureFixedCellular(location)
+                Session.StreamingMethod.WIFI -> configureFixedWifi(location, dateString, wifiSSID, wifiPassword)
+                Session.StreamingMethod.CELLULAR -> configureFixedCellular(location, dateString)
             }
         } else {
-            configureMobileSession(location)
+            configureMobileSession(location, dateString)
         }
     }
 
-    private fun configureMobileSession(location: Session.Location) {
+    private fun configureMobileSession(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -72,11 +75,13 @@ class AirBeam3Configurator(
             .add(sleep(500))
             .add(sendLocationConfiguration(location))
             .add(sleep(500))
+            .add(sendCurrentTimeConfiguration(dateString))
+            .add(sleep(500))
             .add(requestMtu(MAX_MTU))
             .enqueue()
     }
 
-    private fun configureFixedWifi(location: Session.Location, wifiSSID: String?, wifiPassword: String?) {
+    private fun configureFixedWifi(location: Session.Location, dateString: String, wifiSSID: String?, wifiPassword: String?) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         wifiSSID ?: return
@@ -85,15 +90,19 @@ class AirBeam3Configurator(
         beginAtomicRequestQueue()
             .add(sendLocationConfiguration(location))
             .add(sleep(500))
+            .add(sendCurrentTimeConfiguration(dateString))
+            .add(sleep(500))
             .add(sendWifiConfiguration(wifiSSID, wifiPassword))
             .enqueue()
     }
 
-    private fun configureFixedCellular(location: Session.Location) {
+    private fun configureFixedCellular(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
             .add(sendLocationConfiguration(location))
+            .add(sleep(500))
+            .add(sendCurrentTimeConfiguration(dateString))
             .add(sleep(500))
             .add(cellularModeRequest())
             .add(sleep(1000))
@@ -182,6 +191,11 @@ class AirBeam3Configurator(
     private fun mobileModeRequest(): WriteRequest {
         return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage)
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("mobile mode", status)) }
+    }
+
+    private fun sendCurrentTimeConfiguration(dateString: String): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.currentTimeMessage(dateString))
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("current time", status)) }
     }
 
     private fun sendLocationConfiguration(location: Session.Location): WriteRequest {
