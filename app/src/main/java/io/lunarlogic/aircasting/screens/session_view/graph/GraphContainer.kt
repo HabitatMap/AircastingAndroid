@@ -79,6 +79,7 @@ class GraphContainer: OnChartGestureListener {
         drawThresholds()
 
         mGraph?.invalidate()
+        mGraph?.calculateOffsets()
         mGraph?.setViewPortOffsets(0f, 0f, 0f, 0f)
     }
 
