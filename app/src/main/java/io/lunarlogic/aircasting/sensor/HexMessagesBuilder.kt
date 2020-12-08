@@ -12,6 +12,7 @@ class HexMessagesBuilder {
     private val UUID_CODE = 0x04.toByte()
     private val AUTH_TOKEN_CODE = 0x05.toByte()
     private val LAT_LNG_CODE = 0x06.toByte()
+    private val CURRENT_TIME_CODE = 0x08.toByte()
 
     private val BLUETOOTH_CONFIGURATION_MESSAGE =
         byteArrayOf(BEGIN_MESSAGE_CODE, BLUETOOTH_STREAMING_METHOD_CODE, END_MESSAGE_CODE)
@@ -35,6 +36,10 @@ class HexMessagesBuilder {
     fun locationMessage(lat: Double, lng: Double): ByteArray {
         val rawLatLngStr = "${lng},${lat}"
         return buildMessage(rawLatLngStr, LAT_LNG_CODE)
+    }
+
+    fun currentTimeMessage(dateString: String): ByteArray {
+        return buildMessage(dateString, CURRENT_TIME_CODE)
     }
 
     fun wifiConfigurationMessage(wifiSSID: String, wifiPassword: String): ByteArray {
