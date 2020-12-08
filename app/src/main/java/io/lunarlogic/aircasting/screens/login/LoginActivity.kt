@@ -16,8 +16,16 @@ class LoginActivity: AppCompatActivity() {
 
     companion object {
         fun start(context: Context?) {
-            context?.let{
+            context?.let {
                 val intent = Intent(it, LoginActivity::class.java)
+                it.startActivity(intent)
+            }
+        }
+
+        fun startAfterSignOut(context: Context?) {
+            context?.let {
+                val intent = Intent(it, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 it.startActivity(intent)
             }
         }
@@ -44,9 +52,5 @@ class LoginActivity: AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         controller!!.onStop()
-    }
-
-    override fun onBackPressed() {
-        // Doing nothing here, we need it to prevent going back after log out
     }
 }
