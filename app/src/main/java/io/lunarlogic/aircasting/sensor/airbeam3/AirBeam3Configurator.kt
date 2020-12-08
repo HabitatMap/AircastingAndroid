@@ -52,23 +52,25 @@ class AirBeam3Configurator(
         wifiSSID: String?,
         wifiPassword: String?
     ){
-        if (session.isFixed()) {
-            val location = session.location ?: return
+        val location = session.location ?: return
 
+        if (session.isFixed()) {
             when (session.streamingMethod) {
                 Session.StreamingMethod.WIFI -> configureFixedWifi(location, wifiSSID, wifiPassword)
                 Session.StreamingMethod.CELLULAR -> configureFixedCellular(location)
             }
         } else {
-            configureMobileSession()
+            configureMobileSession(location)
         }
     }
 
-    private fun configureMobileSession() {
+    private fun configureMobileSession(location: Session.Location) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
             .add(mobileModeRequest())
+            .add(sleep(500))
+            .add(sendLocationConfiguration(location))
             .add(sleep(500))
             .add(requestMtu(MAX_MTU))
             .enqueue()
