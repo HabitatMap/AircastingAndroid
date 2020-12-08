@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.settings.myaccount
 
 import android.content.Context
-import androidx.room.Database
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
@@ -29,7 +28,6 @@ class MyAccountController(
         GlobalScope.launch(Dispatchers.IO) {
             DatabaseProvider.mAppDatabase?.clearAllTables()
         }
-        LoginActivity.startAfterSignout(mContext)
+        LoginActivity.startAfterSignOut(mContext)
     }
-
 }

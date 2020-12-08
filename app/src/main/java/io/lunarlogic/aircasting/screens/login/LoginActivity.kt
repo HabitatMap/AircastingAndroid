@@ -16,16 +16,15 @@ class LoginActivity: AppCompatActivity() {
 
     companion object {
         fun start(context: Context?) {
-            context?.let{
+            context?.let {
                 val intent = Intent(it, LoginActivity::class.java)
                 it.startActivity(intent)
             }
         }
 
-        fun startAfterSignout(context: Context?){
-            context?.let{
+        fun startAfterSignOut(context: Context?) {
+            context?.let {
                 val intent = Intent(it, LoginActivity::class.java)
-                //TODO: when pressing back from CreateAccountActivity its goin out of app <- needs to be fixed
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 it.startActivity(intent)
             }
@@ -54,5 +53,4 @@ class LoginActivity: AppCompatActivity() {
         super.onStop()
         controller!!.onStop()
     }
-
 }
