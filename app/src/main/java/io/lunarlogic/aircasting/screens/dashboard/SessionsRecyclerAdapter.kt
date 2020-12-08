@@ -2,39 +2,15 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
-import androidx.paging.PagedList
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
-import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
-import kotlinx.android.synthetic.main.session_card.view.*
 
-
-class DiffCallback: DiffUtil.ItemCallback<SessionWithStreamsDBObject>() {
-    override fun areItemsTheSame(
-        oldItem: SessionWithStreamsDBObject,
-        newItem: SessionWithStreamsDBObject
-    ): Boolean {
-        return oldItem.session.id == newItem.session.id
-    }
-
-    override fun areContentsTheSame(
-        oldItem: SessionWithStreamsDBObject,
-        newItem: SessionWithStreamsDBObject
-    ): Boolean {
-        return oldItem.session == oldItem.session
-    }
-
-}
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager
-): PagedListAdapter<SessionWithStreamsDBObject, SessionsRecyclerAdapter<ListenerType>.MyViewHolder>(DiffCallback()) {
+): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
@@ -45,12 +21,15 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val dbSessionWithStreams = getItem(position) ?: return
-
-        val sessionPresenter = mSessionPresenters[dbSessionWithStreams.session.uuid]
+        val uuid = mSessionUUIDS.get(position)
+        val sessionPresenter = mSessionPresenters[uuid]
         sessionPresenter?.let {
             holder.view.bindSession(sessionPresenter)
         }
+    }
+
+    override fun getItemCount(): Int {
+        return mSessionPresenters.size
     }
 
     private fun removeObsoleteSessions() {
@@ -59,10 +38,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             .forEach { uuid -> mSessionPresenters.remove(uuid) }
     }
 
-    fun bindSessions(dbSessions: PagedList<SessionWithStreamsDBObject>, sensorThresholds: HashMap<String, SensorThreshold>) {
-        submitList(dbSessions)
-
-        val sessions = dbSessions.map { Session(it) }
+    fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
         mSessionUUIDS = sessions.map { session -> session.uuid }
         removeObsoleteSessions()
         sessions.forEach { session ->
@@ -89,6 +65,13 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     fun hideLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = false
+
+        notifyDataSetChanged()
+    }
+
+    fun reloadSession(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
+        sessionPresenter?.session = session
 
         notifyDataSetChanged()
     }

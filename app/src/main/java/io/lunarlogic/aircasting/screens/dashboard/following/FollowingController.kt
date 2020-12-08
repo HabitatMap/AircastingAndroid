@@ -2,10 +2,8 @@ package io.lunarlogic.aircasting.screens.dashboard.following
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
@@ -13,19 +11,21 @@ import io.lunarlogic.aircasting.models.Session
 
 class FollowingController(
     mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
-    init {
-        mSessionsLiveData = loadSessions()
+    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun registerSessionsObserver() {
+        mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
     }
 
-    override fun loadSessions(): LiveData<PagedList<SessionWithStreamsDBObject>> {
-        return mSessionsViewModel.loadFollowingSessionsWithMeasurements()
+    override fun unregisterSessionsObserver() {
+        mSessionsObserver.stop()
     }
 
     override fun onRecordNewSessionClicked() {
@@ -33,10 +33,14 @@ class FollowingController(
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {
-
+        // do nothing
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
+        // do nothing
+    }
 
+    override fun onExpandSessionCard(session: Session) {
+        // do nothing
     }
 }

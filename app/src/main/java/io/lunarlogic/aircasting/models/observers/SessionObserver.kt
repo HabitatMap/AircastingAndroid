@@ -1,8 +1,10 @@
-package io.lunarlogic.aircasting.models
+package io.lunarlogic.aircasting.models.observers
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.coroutines.CoroutineScope
 
@@ -35,7 +37,8 @@ class SessionObserver(
                 selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
             }
 
-            val measurementStream = session.streams.firstOrNull { it.sensorName == selectedSensorName }
+            val measurementStream =
+                session.streams.firstOrNull { it.sensorName == selectedSensorName }
             mSessionPresenter.selectedStream = measurementStream
 
             val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)

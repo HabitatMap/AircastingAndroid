@@ -1,7 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import androidx.paging.PagedList
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
@@ -21,10 +19,11 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onExpandSessionCard(session: Session)
     }
 
-    fun showSessionsView(dbSessions: PagedList<SessionWithStreamsDBObject>, sensorThresholds: HashMap<String, SensorThreshold>)
+    fun showSessionsView(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>)
     fun showEmptyView()
     fun showLoaderFor(session: Session)
     fun hideLoaderFor(session: Session)
+    fun reloadSession(session: Session)
     fun showLoader()
     fun hideLoader()
 }

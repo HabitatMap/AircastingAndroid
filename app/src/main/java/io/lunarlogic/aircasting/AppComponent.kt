@@ -5,8 +5,8 @@ import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
 import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
-import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileActiveFragment
-import io.lunarlogic.aircasting.screens.dashboard.mobile.MobileDormantFragment
+import io.lunarlogic.aircasting.screens.dashboard.active.MobileActiveFragment
+import io.lunarlogic.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity

@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
 import androidx.room.*
 import io.lunarlogic.aircasting.models.Session
 import java.util.*
@@ -49,8 +48,19 @@ data class SessionDBObject(
             )
 }
 
-
 class SessionWithStreamsDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<MeasurementStreamDBObject>
+}
+
+class SessionWithStreamsAndMeasurementsDBObject {
     @Embedded
     lateinit var session: SessionDBObject
 
@@ -81,13 +91,16 @@ interface SessionDao {
     fun getAll() : List<SessionDBObject>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): DataSource.Factory<Int, SessionWithStreamsDBObject>
+    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
+    fun loadAllByTypeAndStatus(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
-    fun loadAllByType(type: Session.Type): DataSource.Factory<Int, SessionWithStreamsDBObject>
+    fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY followed_at DESC")
-    fun loadFollowingWithMeasurements(): DataSource.Factory<Int, SessionWithStreamsDBObject>
+    fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun byType(type: Session.Type): List<SessionDBObject>
@@ -99,10 +112,13 @@ interface SessionDao {
     fun insert(session: SessionDBObject): Long
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsDBObject?
+    fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadLiveDataSessionAndMeasurementsByUUID(uuid: String): LiveData<SessionWithStreamsDBObject?>
+    fun loadLiveDataSessionAndMeasurementsByUUID(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?>
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?

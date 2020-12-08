@@ -2,11 +2,9 @@ package io.lunarlogic.aircasting.screens.dashboard.fixed
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
@@ -14,20 +12,22 @@ import io.lunarlogic.aircasting.models.Session
 import org.greenrobot.eventbus.EventBus
 
 class FixedController(
-    private val mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    mRootActivity: FragmentActivity?,
+    mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mLifecycleOwner: LifecycleOwner,
+    mLifecycleOwner: LifecycleOwner,
     mSettings: Settings
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mLifecycleOwner, mSettings),
     SessionsViewMvc.Listener {
 
-    init {
-        mSessionsLiveData = loadSessions()
+    private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun registerSessionsObserver() {
+        mSessionsObserver.observe(mSessionsViewModel.loadFixedSessionsWithMeasurements())
     }
 
-    override fun loadSessions(): LiveData<PagedList<SessionWithStreamsDBObject>> {
-        return mSessionsViewModel.loadFixedSessionsWithMeasurements()
+    override fun unregisterSessionsObserver() {
+        mSessionsObserver.stop()
     }
 
     override fun onRecordNewSessionClicked() {

@@ -14,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.42"
+        versionName "1.43"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
@@ -76,7 +76,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation "androidx.paging:paging-runtime-ktx:2.1.2"
 
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     // for complex recycler views
