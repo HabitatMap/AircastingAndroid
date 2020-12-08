@@ -73,13 +73,15 @@ class GraphContainer: OnChartGestureListener {
 
         val entries = result.entries
 
-        zoom(entries)
+
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
+        zoom(entries)
 
         mGraph?.invalidate()
         mGraph?.setViewPortOffsets(0f, 0f, 0f, 0f)
+
     }
 
     private fun generateData(): GraphDataGenerator.Result {
@@ -156,13 +158,16 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun drawThresholds() {
+        println("MARYSIA: drawThresholds")
         val threshold = mSessionPresenter?.selectedSensorThreshold()
+        println("MARYSIA: threshold: "+threshold)
         threshold ?: return
 
         updateValueAxis(threshold.from, threshold.to)
 
         mGraph?.clearTargetZones()
         MeasurementColor.levels(threshold, mContext).forEach { level ->
+            println("MARYSIA: adding target zone : "+level.color + " from "+level.from.toFloat() + " to "+ level.to.toFloat())
             mGraph?.addTargetZone(TargetZone(level.color, level.from.toFloat(), level.to.toFloat()))
         }
     }
