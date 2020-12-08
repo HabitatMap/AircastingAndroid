@@ -21,7 +21,7 @@
             android:id="@+id/login_state_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/you_are_currently_logged_in_as"
+            android:text="@string/my_account_info"
             android:textAlignment="viewStart"
             android:layout_marginTop="25dp"
             android:layout_marginStart="50dp"
@@ -35,7 +35,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
             android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
-            android:text="@string/sign_out"
+            android:text="@string/my_account_sign_out"
             android:textAlignment="viewStart" />
 
     </com.google.android.material.card.MaterialCardView>

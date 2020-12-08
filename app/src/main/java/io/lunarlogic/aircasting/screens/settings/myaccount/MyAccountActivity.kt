@@ -34,7 +34,7 @@ class MyAccountActivity : AppCompatActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = MyAccountViewMvcImpl(layoutInflater, null)
+        val view = MyAccountViewMvcImpl(this, layoutInflater, null)
         controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)

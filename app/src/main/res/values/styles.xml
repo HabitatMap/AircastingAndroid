@@ -210,6 +210,10 @@
         <item name="android:textSize">@dimen/text_size_xxs</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.SettingsDescription" parent="@style/TextAppearance.Aircasting.Body2">
+        <item name="lineHeight">@dimen/keyline_4</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->
@@ -312,6 +316,25 @@
         <item name="android:fontFamily">@font/muli_semi_bold</item>
         <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
         <item name="strokeColor">@color/aircasting_blue_400</item>
+    </style>
+
+    <style name="Widget.Aircasting.SettingsButtons" parent="@style/Widget.Aircasting.TextButton">
+        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:textColor">@color/aircasting_grey_800</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:padding">@dimen/keyline_4</item>
+        <item name="android:paddingStart">@dimen/keyline_8</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">@font/muli_bold</item>
+        <item name="android:fontFamily">@font/muli_bold</item>
+    </style>
+
+    <style name="Widget.Aircasting.SettingsDescription" parent="">
+        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:padding">@dimen/keyline_4</item>
+        <item name="android:paddingStart">@dimen/keyline_8</item>
     </style>
 
     <!-- Cards -->
