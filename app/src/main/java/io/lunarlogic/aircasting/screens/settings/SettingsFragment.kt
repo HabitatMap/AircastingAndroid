@@ -4,17 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.AppBar
+import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.lib.Settings
+import javax.inject.Inject
 
 class SettingsFragment : Fragment() {
 
     private var controller : SettingsController? = null
+
+    @Inject
+    lateinit var settings: Settings
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,7 +22,11 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
-        controller = SettingsController(context, view)
+
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
+
+        controller = SettingsController(context, view, settings, childFragmentManager)
 
         return view.rootView
     }

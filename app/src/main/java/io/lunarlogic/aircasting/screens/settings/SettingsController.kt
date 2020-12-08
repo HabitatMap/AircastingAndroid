@@ -1,13 +1,15 @@
 package io.lunarlogic.aircasting.screens.settings
 
 import android.content.Context
-import android.provider.Settings
-import android.view.View
+import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 
 class SettingsController(
     private val mContext: Context?,
-    private val mViewMvc: SettingsViewMvc
+    private val mViewMvc: SettingsViewMvc,
+    private val mSettings: Settings,
+    private val fragmentManager: FragmentManager
 ) : SettingsViewMvc.Listener {
 
     fun onStart(){
@@ -23,11 +25,13 @@ class SettingsController(
     }
 
     override fun onBackendSettingsClicked() {
-        //TODO("Not yet implemented")
+        // todo:  moving to dialog, analogicznie do tego co mi Ania podesłała
+        BackendSettingsDialog(fragmentManager, mSettings).show()
+        // todo: mSettings.backendSettingsChanged() od wartości odtrzymanych z dialogu <- to w dialogu sie dzieje chyba
     }
 
     override fun onContributeCrowdMapSwitched() {
-        //TODO("Not yet implemented")
+        mSettings.crowdMapSettingSwitched()
     }
 
 }
