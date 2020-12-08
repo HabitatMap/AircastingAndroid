@@ -272,7 +272,8 @@
 
     <style name="ThemeOverlay.Aircasting.Switch" parent="">
         <item name="colorOnSurface">@color/aircasting_blue_400</item>
-        <item name="colorSecondary">@color/aircasting_white</item>
+        <item name="colorSurface">@color/aircasting_white</item>
+        <item name="colorAccent">@color/aircasting_blue_400</item>
     </style>
 
     <style name="Widget.Aircasting.IconButton" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon">
