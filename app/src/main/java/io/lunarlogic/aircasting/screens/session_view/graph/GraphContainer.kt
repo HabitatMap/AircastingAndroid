@@ -73,15 +73,14 @@ class GraphContainer: OnChartGestureListener {
 
         val entries = result.entries
 
+        zoom(entries)
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-        zoom(entries)
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
         mGraph?.setViewPortOffsets(0f, 0f, 0f, 0f)
-
     }
 
     private fun generateData(): GraphDataGenerator.Result {
