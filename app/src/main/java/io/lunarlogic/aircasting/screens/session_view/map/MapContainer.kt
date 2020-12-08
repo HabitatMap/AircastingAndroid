@@ -100,7 +100,7 @@ class MapContainer: OnMapReadyCallback {
         if (status.get() == Status.MAP_LOADED.value) {
             setup()
         }
-        status.set(Status.SESSION_LOADED.value)
+        if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
@@ -176,12 +176,12 @@ class MapContainer: OnMapReadyCallback {
         centerMap(position)
     }
 
-    fun centerMap(location: Session.Location) {
+    private fun centerMap(location: Session.Location) {
         val position = LatLng(location.latitude, location.longitude)
         centerMap(position)
     }
 
-    fun centerMap(position: LatLng) {
+    private fun centerMap(position: LatLng) {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
