@@ -7,12 +7,12 @@ import android.widget.Button
 import android.widget.TextView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import kotlinx.android.synthetic.main.network_password_dialog.view.*
+import kotlinx.android.synthetic.main.activity_myaccount.view.*
 
 class MyAccountViewMvcImpl : BaseObservableViewMvc<MyAccountViewMvc.Listener>, MyAccountViewMvc {
 
     private val mContext: Context
-    private var loginStateTextView: TextView
+    private var headerTextView: TextView?
 
     constructor(
         context: Context,
@@ -21,21 +21,21 @@ class MyAccountViewMvcImpl : BaseObservableViewMvc<MyAccountViewMvc.Listener>, M
         this.rootView = inflater.inflate(R.layout.activity_myaccount, parent, false)
         mContext = context
 
-        val signOutButton = findViewById<Button>(R.id.sign_out_button)
-        signOutButton.setOnClickListener {
+        val signOutButton = rootView?.sign_out_button
+        signOutButton?.setOnClickListener {
             signOutClicked()
         }
 
-        loginStateTextView = findViewById(R.id.login_state_textView)
+        headerTextView = rootView?.header
     }
 
     private fun signOutClicked() {
-        for(listener in listeners){
+        for (listener in listeners) {
             listener.onSignOutClicked()
         }
     }
 
     override fun bindAccountDetail(email : String?){
-        loginStateTextView.text = mContext.getString(R.string.my_account_info).format(email)
+        headerTextView?.text = mContext.getString(R.string.my_account_info).format(email)
     }
 }

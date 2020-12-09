@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/aircasting_grey_50">
@@ -12,32 +11,44 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_4"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/login_state_textView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/my_account_info"
-            android:textAlignment="viewStart"
-            android:layout_marginTop="25dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"/>
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/keyline_6"
+            android:paddingBottom="@dimen/keyline_6">
 
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="75dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
-            android:text="@string/my_account_sign_out"
-            android:textAlignment="viewStart" />
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="@dimen/keyline_10"
+                android:layout_marginEnd="@dimen/keyline_10"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/sign_out_button" />
 
+            <Button
+                android:id="@+id/sign_out_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/keyline_6"
+                android:layout_marginStart="@dimen/keyline_10"
+                android:layout_marginEnd="@dimen/keyline_10"
+                android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
+                android:text="@string/my_account_sign_out"
+                android:textAlignment="viewStart"
+                app:layout_constraintTop_toBottomOf="@id/header"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
