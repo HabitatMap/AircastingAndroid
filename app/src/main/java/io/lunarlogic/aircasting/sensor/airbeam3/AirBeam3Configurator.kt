@@ -71,11 +71,11 @@ class AirBeam3Configurator(
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(mobileModeRequest())
-            .add(sleep(500))
             .add(sendLocationConfiguration(location))
             .add(sleep(500))
             .add(sendCurrentTimeConfiguration(dateString))
+            .add(sleep(500))
+            .add(mobileModeRequest())
             .add(sleep(500))
             .add(requestMtu(MAX_MTU))
             .enqueue()
