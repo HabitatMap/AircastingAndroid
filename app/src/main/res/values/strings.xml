@@ -190,6 +190,8 @@
     <string name="settings_contribute_to_crowdmap">Contribute to crowd map</string>
     <string name="settings_contribute_to_crowdmap_description">Data contributed to the CrowdMap is publicly available at aircasting.org</string>
     <string name="settings_backend_settings">Backend settings</string>
+    <string name="settings_backend_url">Url</string>
+    <string name="settings_backend_port">Port</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>

@@ -28,8 +28,8 @@ class SettingsController(
         BackendSettingsDialog(fragmentManager, mSettings).show()
     }
 
-    override fun onContributeCrowdMapSwitched() {
-        mSettings.crowdMapSettingSwitched()
+    override fun onToggleCrowdMapEnabled() {
+        mSettings.toggleCrowdMapEnabled()
     }
 
 }

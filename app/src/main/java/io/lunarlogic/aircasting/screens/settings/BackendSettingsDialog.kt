@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseDialog
-import kotlinx.android.synthetic.main.backend_settings_dialog.*
 import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 
 class BackendSettingsDialog(
@@ -19,7 +18,7 @@ class BackendSettingsDialog(
     override fun setupView(inflater: LayoutInflater): View {
         mView = inflater.inflate(R.layout.backend_settings_dialog, null)
 
-        mView.confirmation_button.setOnClickListener {
+        mView.ok_button.setOnClickListener {
             settingsConfirmed()
         }
 
@@ -31,12 +30,10 @@ class BackendSettingsDialog(
     }
 
     private fun settingsConfirmed() {
-        val adress_value = mView.adress_edittext.text.toString()
-        val port_value = mView.port_edittext.text.toString()
-        mSettings.backendSettingsChanged(adress_value, port_value)
+        val addressValue = mView.url_input.text.toString() // TODO
+        val portValue = mView.port_input.text.toString()
+        mSettings.backendSettingsChanged(addressValue, portValue)
         Log.i("SETTINGS_DIALOG", "Adress and port values added to sharedPreferences")
         dismiss()
     }
-
-
 }

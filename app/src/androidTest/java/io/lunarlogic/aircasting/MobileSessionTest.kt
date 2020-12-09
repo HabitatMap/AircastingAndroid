@@ -97,7 +97,6 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
-        Thread.sleep(5000)
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())

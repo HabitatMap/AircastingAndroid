@@ -1,63 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@drawable/dialog_background">
 
-<TextView
-        android:id="@+id/dialog_title_textview"
+    <TextView
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Backend settings"
-        android:padding="25dp"
-        android:textAppearance="?attr/textAppearanceHeadline1"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="5dp" />
+        style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+        android:text="@string/settings_backend_settings"
+        android:textSize="@dimen/text_size_m"
+        app:lineHeight="@dimen/keyline_6"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6" />
 
-    <EditText
-        android:id="@+id/adress_edittext"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/url"
+        style="@style/Widget.Aircasting.TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:ems="10"
-        android:text="adress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_title_textview" />
+        app:hintEnabled="false"
+        android:hint="@string/settings_backend_url"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8">
 
-    <EditText
-        android:id="@+id/port_edittext"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/url_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:hint="@string/settings_backend_url"
+            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+            android:textColor="@color/aircasting_grey_700"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/port"
+        style="@style/Widget.Aircasting.TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="port"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adress_edittext" />
+        app:hintEnabled="false"
+        android:hint="@string/settings_backend_port"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/port_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:hint="@string/settings_backend_port"
+            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+            android:textColor="@color/aircasting_grey_700"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/confirmation_button"
+        android:id="@+id/ok_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="OK"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/port_edittext" />
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/ok" />
 
     <Button
         android:id="@+id/cancel_button"
+        style="@style/Widget.Aircasting.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmation_button"
-        app:layout_constraintVertical_bias="0.017" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:fontFamily="@font/moderat_trial_bold"
+        android:textSize="@dimen/button_text_size"
+        android:text="@string/cancel"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

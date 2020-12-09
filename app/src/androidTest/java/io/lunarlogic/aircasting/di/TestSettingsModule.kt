@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.lib.Settings
 class FakeSettings(application: AircastingApplication): Settings(application) {
     private var preferences : HashMap<String, String> = HashMap()
 
-    override fun getFromSettings(key: String): String? {
+    override fun getStringFromSettings(key: String): String? {
         return preferences.get(key)
     }
 
