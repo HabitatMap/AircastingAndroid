@@ -25,7 +25,9 @@ class SettingsController(
     }
 
     override fun onBackendSettingsClicked() {
-        BackendSettingsDialog(fragmentManager, mSettings).show()
+        val url = mSettings.getBackendUrl()
+        val port = mSettings.getBackendPort()
+        BackendSettingsDialog(fragmentManager, mSettings, url, port).show()
     }
 
     override fun onToggleCrowdMapEnabled() {
