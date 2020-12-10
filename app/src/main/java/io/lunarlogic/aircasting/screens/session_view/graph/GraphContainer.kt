@@ -80,7 +80,6 @@ class GraphContainer: OnChartGestureListener {
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
-        mGraph?.setViewPortOffsets(0f, 0f, 0f, 0f)
     }
 
     private fun generateData(): GraphDataGenerator.Result {
@@ -103,26 +102,13 @@ class GraphContainer: OnChartGestureListener {
         val last = entries.lastOrNull() ?: return
 
         val span = last.x - first.x
-        println("MARYSIA: graph FROM  Math.max(last.x - mDefaultZoomSpan, first.x): "+mGraphDataGenerator.dateFromFloat(Math.max(last.x - mDefaultZoomSpan, first.x)))
-        println("MARYSIA: graph TO last.x: "+mGraphDataGenerator.dateFromFloat(last.x))
         val zoom = span / mDefaultZoomSpan
-//        val zoom = mDefaultZoomSpan.toFloat()
-        println("MARYSIA: span: "+span)
-        println("MARYSIA: zoom: "+zoom)
-//        val centerX = span / 2
-        val centerX = last.x - mDefaultZoomSpan/2
-
-        println("MARYSIA: centerX: "+centerX)
+        val centerX = last.x - Math.min(mDefaultZoomSpan.toFloat(), span)/2
         val centerY = (last.y - first.y) / 2
 
         mGraph.zoom(zoom, 1f, centerX, centerY)
 
-//        val from = first.x
         val from = Math.max(last.x - mDefaultZoomSpan, first.x)
-        println("MARYSIA: Math.max(last.x - mDefaultZoomSpan, first.x): "+Math.max(last.x - mDefaultZoomSpan, first.x))
-        println("MARYSIA:last.x - mDefaultZoomSpan: "+(last.x - mDefaultZoomSpan))
-        println("MARYSIA:first.x: "+first.x)
-//        mGraph.moveViewToX(last.x)
         val to = last.x
         drawLabels(from, to)
 
