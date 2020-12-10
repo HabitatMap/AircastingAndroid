@@ -30,6 +30,7 @@
                 android:textAlignment="viewStart"
                 android:layout_marginStart="@dimen/keyline_10"
                 android:layout_marginEnd="@dimen/keyline_10"
+                android:textAppearance="@style/TextAppearance.Aircasting.Cards.Body1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +46,7 @@
                 android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
                 android:text="@string/my_account_sign_out"
                 android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.Aircasting.Cards.Headline1"
                 app:layout_constraintTop_toBottomOf="@id/header"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
