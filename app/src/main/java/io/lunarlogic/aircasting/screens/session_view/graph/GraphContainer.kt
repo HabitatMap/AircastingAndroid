@@ -80,7 +80,6 @@ class GraphContainer: OnChartGestureListener {
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
-        mGraph?.setViewPortOffsets(0f, 0f, 0f, 0f)
     }
 
     private fun generateData(): GraphDataGenerator.Result {
@@ -104,14 +103,13 @@ class GraphContainer: OnChartGestureListener {
 
         val span = last.x - first.x
         val zoom = span / mDefaultZoomSpan
-        val centerX = span / 2
+        val centerX = last.x - Math.min(mDefaultZoomSpan.toFloat(), span)/2
         val centerY = (last.y - first.y) / 2
 
         mGraph.zoom(zoom, 1f, centerX, centerY)
-        mGraph.moveViewToX(first.x)
 
-        val from = first.x
-        val to = Math.min(from + mDefaultZoomSpan, last.x)
+        val from = Math.max(last.x - mDefaultZoomSpan, first.x)
+        val to = last.x
         drawLabels(from, to)
 
         shouldZoomToDefault = false
