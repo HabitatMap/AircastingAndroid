@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 
 class BackendSettingsDialog(
     mFragmentManager : FragmentManager,
-    private val mSettings : Settings,
     private val mUrl: String,
-    private val mPort: String
+    private val mPort: String,
+    private val listener: SettingsViewMvc.BackendSettingsDialogListener
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
@@ -37,7 +37,7 @@ class BackendSettingsDialog(
     private fun settingsConfirmed() {
         val urlValue = mView.url_input.text.toString().trim()
         val portValue = mView.port_input.text.toString().trim()
-        mSettings.backendSettingsChanged(urlValue, portValue) // TODO: move to controller
+        listener.confirmClicked(urlValue, portValue)
         Log.i("SETTINGS_DIALOG", "Adress and port values added to sharedPreferences")
         dismiss()
     }

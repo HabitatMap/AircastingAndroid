@@ -10,7 +10,7 @@ class SettingsController(
     private val mViewMvc: SettingsViewMvc,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager
-) : SettingsViewMvc.Listener {
+) : SettingsViewMvc.Listener, SettingsViewMvc.BackendSettingsDialogListener {
 
     fun onStart(){
         mViewMvc.registerListener(this)
@@ -25,13 +25,22 @@ class SettingsController(
     }
 
     override fun onBackendSettingsClicked() {
-        val url = mSettings.getBackendUrl()
-        val port = mSettings.getBackendPort()
-        BackendSettingsDialog(fragmentManager, mSettings, url, port).show()
+        startBackendSettingsDialog()
     }
 
     override fun onToggleCrowdMapEnabled() {
         mSettings.toggleCrowdMapEnabled()
     }
+
+    override fun confirmClicked(urlValue: String, portValue: String) {
+        mSettings.backendSettingsChanged(urlValue, portValue)
+    }
+
+    fun startBackendSettingsDialog(){
+        val url = mSettings.getBackendUrl()
+        val port = mSettings.getBackendPort()
+        BackendSettingsDialog(fragmentManager, url, port, this).show()
+    }
+
 
 }
