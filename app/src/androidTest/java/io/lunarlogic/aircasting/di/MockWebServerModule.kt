@@ -13,7 +13,7 @@ class MockWebServerModule {
     fun providesMockWebServer(): MockWebServer {
         val mockWebServer = MockWebServer()
         val baseUrl = mockWebServer.url("/")
-        ApiServiceFactory.baseUrl = baseUrl
+        ApiServiceFactory.baseUrl = baseUrl //TODO: has to be changed
         return mockWebServer
     }
 }

@@ -46,7 +46,7 @@ interface ApiService {
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 }
 
-class ApiServiceFactory(private val mSettings: Settings) {
+open class ApiServiceFactory(private val mSettings: Settings) {
     private val READ_TIMEOUT_SECONDS: Long = 60
 
     fun get(interceptors: List<Interceptor>): ApiService {
@@ -106,7 +106,7 @@ class ApiServiceFactory(private val mSettings: Settings) {
         )
     }
 
-    private fun baseUrl() : HttpUrl {
+    protected open fun baseUrl() : HttpUrl {
         return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
     }
 
