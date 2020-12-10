@@ -9,9 +9,10 @@ import androidx.fragment.app.activityViewModels
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import javax.inject.Inject
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+
 
 class MobileActiveFragment : Fragment() {
     private var controller: MobileActiveController? = null
@@ -22,6 +23,9 @@ class MobileActiveFragment : Fragment() {
 
     @Inject
     lateinit var airbeamReconnector: AirBeamReconnector
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     private var sessionsRequested = false
 
@@ -44,6 +48,7 @@ class MobileActiveFragment : Fragment() {
             sessionsViewModel,
             viewLifecycleOwner,
             settings,
+            apiServiceFactory,
             airbeamReconnector
         )
 

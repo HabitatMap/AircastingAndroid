@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 
 
 class MobileDormantFragment : Fragment() {
@@ -18,6 +19,9 @@ class MobileDormantFragment : Fragment() {
 
     @Inject
     lateinit var settings: Settings
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     private var sessionsRequested = false
 
@@ -39,7 +43,8 @@ class MobileDormantFragment : Fragment() {
             view,
             sessionsViewModel,
             viewLifecycleOwner,
-            settings
+            settings,
+            apiServiceFactory
         )
 
         if (sessionsRequested) {

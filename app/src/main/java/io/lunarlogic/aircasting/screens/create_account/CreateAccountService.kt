@@ -15,13 +15,17 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CreateAccountService(val mSettings: Settings, private val mErrorHandler: ErrorHandler) {
+class CreateAccountService(
+    val mSettings: Settings,
+    private val mErrorHandler: ErrorHandler,
+    private val mApiServiceFactory: ApiServiceFactory
+) {
     fun performCreateAccount(
         username: String, password: String, email: String, send_emails: Boolean,
         successCallback: () -> Unit,
         errorCallback: (CreateAccountErrorResponse) -> Unit
     ) {
-        val apiService = ApiServiceFactory.get(emptyList())
+        val apiService = mApiServiceFactory.get(emptyList())
         val createAccountParams = CreateAccountParams(
             username,
             password,

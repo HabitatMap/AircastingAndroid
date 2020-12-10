@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
 
 class LoginActivity: AppCompatActivity() {
@@ -13,6 +14,9 @@ class LoginActivity: AppCompatActivity() {
 
     @Inject
     lateinit var settings: Settings
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
         fun start(context: Context?) {
@@ -38,7 +42,7 @@ class LoginActivity: AppCompatActivity() {
             .appComponent.inject(this)
 
         val view = LoginViewMvcImpl(layoutInflater, null)
-        controller = LoginController(this, view, settings)
+        controller = LoginController(this, view, settings, apiServiceFactory)
 
         setContentView(view.rootView)
     }

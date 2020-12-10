@@ -6,16 +6,18 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.responses.CreateAccountErrorResponse
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 
 class CreateAccountController(
     private val mContext: Context,
     private val mViewMvc: CreateAccountViewMvcImpl,
-    private val mSettings: Settings
+    private val mSettings: Settings,
+    private val mApiServiceFactory: ApiServiceFactory
 ) : CreateAccountViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mContext)
-    private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler)
+    private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)

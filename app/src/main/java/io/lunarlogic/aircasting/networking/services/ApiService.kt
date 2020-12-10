@@ -46,10 +46,7 @@ interface ApiService {
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 }
 
-class ApiServiceFactory {
-    @Inject
-    lateinit var settings : Settings
-
+class ApiServiceFactory(private val mSettings: Settings) {
     private val READ_TIMEOUT_SECONDS: Long = 60
 
     fun get(interceptors: List<Interceptor>): ApiService {
@@ -110,7 +107,7 @@ class ApiServiceFactory {
     }
 
     private fun baseUrl() : HttpUrl {
-        return HttpUrl.get(settings.getBackendUrl() + ":" + settings.getBackendPort())
+        return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
     }
 
     private fun encodedCredentials(username: String, password: String): String {

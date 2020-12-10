@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
 
 class MainActivity: AppCompatActivity() {
@@ -21,6 +22,9 @@ class MainActivity: AppCompatActivity() {
 
     @Inject
     lateinit var settings: Settings
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
         fun start(context: Context?) {
@@ -42,7 +46,7 @@ class MainActivity: AppCompatActivity() {
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings)
+        controller = MainController(this, view, settings, apiServiceFactory)
 
         controller?.onCreate()
 

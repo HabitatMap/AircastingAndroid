@@ -17,7 +17,8 @@ import org.greenrobot.eventbus.EventBus
 class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvc,
-    private val mSettings: Settings
+    private val mSettings: Settings,
+    private val mApiServiceFactory: ApiServiceFactory
 ) {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
@@ -47,7 +48,7 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
+        val apiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService)
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity)

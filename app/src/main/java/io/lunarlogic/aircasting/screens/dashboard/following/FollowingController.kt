@@ -8,14 +8,16 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 
 class FollowingController(
     mRootActivity: FragmentActivity?,
     mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    mSettings: Settings
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings),
+    mSettings: Settings,
+    mApiServiceFactory: ApiServiceFactory
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
