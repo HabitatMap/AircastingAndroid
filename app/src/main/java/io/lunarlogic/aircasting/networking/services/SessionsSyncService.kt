@@ -45,6 +45,10 @@ class SessionsSyncService {
 
             return mSingleton!!
         }
+
+        fun destroy() {
+            mSingleton = null
+        }
     }
 
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
