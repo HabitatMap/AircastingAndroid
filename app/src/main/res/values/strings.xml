@@ -30,6 +30,8 @@
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
     <string name="record_new_session">Record new session</string>
+    <string name="disconnect_session">Disconnect session</string>
+    <string name="reconnect_session">Reconnect session</string>
     <string name="stop_session">Finish recording session</string>
     <string name="delete_session">Delete session</string>
     <string name="ok">OK</string>

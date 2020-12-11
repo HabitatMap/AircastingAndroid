@@ -41,6 +41,10 @@ open class AirBeam2Connector(
         mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
+    override fun reconnectMobileSession() {
+        // TODO: ?
+    }
+
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice

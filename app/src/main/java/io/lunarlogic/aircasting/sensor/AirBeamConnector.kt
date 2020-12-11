@@ -1,10 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.bluetooth.BluetoothAdapter
-import io.lunarlogic.aircasting.events.ConfigureSession
-import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
-import io.lunarlogic.aircasting.events.SendSessionAuth
-import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
@@ -38,6 +35,8 @@ abstract class AirBeamConnector {
             start(deviceItem)
         }
     }
+
+    abstract fun reconnectMobileSession()
 
     private fun disconnect() {
         unregisterFromEventBus()

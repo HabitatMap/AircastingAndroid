@@ -50,6 +50,10 @@ open class AirBeam3Connector(
         airBeam3Configurator.sendAuth(uuid)
     }
 
+    override fun reconnectMobileSession() {
+        airBeam3Configurator.reconnectMobileSession()
+    }
+
     override fun onDeviceConnecting(device: BluetoothDevice) {}
     override fun onDeviceConnected(device: BluetoothDevice) {}
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {}
