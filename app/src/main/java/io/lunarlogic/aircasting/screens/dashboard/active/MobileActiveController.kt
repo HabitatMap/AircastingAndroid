@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
+import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import org.greenrobot.eventbus.EventBus
 
 class MobileActiveController(
@@ -25,13 +26,11 @@ class MobileActiveController(
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
-    private val airBeamConnectorFactory: AirBeamConnectorFactory
+    private val airBeamReconnector: AirBeamReconnector
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings),
-    SessionsViewMvc.Listener, AirBeamConnector.Listener {
+    SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-    private var mDeviceIdToReconnect: String? = null
-    private var mAirBeamConnector: AirBeamConnector? = null
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
@@ -65,48 +64,10 @@ class MobileActiveController(
     }
 
     override fun onDisconnectSessionClicked(sessionUUID: String) {
-        disconnect()
+        airBeamReconnector.disconnect()
     }
 
     override fun onReconnectSessionClicked(deviceId: String) {
-        // disconnecting first to make sure the connector thread is stopped correctly etc
-        disconnect()
-
-        println("ANIA RECONNECT $deviceId")
-        mDeviceIdToReconnect = deviceId
-
-        val bm = BluetoothManager()
-        // TODO: lookup in pairedDevices (for AB1 and AB2) if in paired devices that awesome
-        // but otherwise start discovery again
-        registerBluetoothDeviceFoundReceiver()
-        bm.startDiscovery()
-    }
-
-    // TODO: move following methods to separate class
-    override fun onBluetoothDeviceFound(deviceItem: DeviceItem) {
-        if (deviceItem.id == mDeviceIdToReconnect) {
-            unRegisterBluetoothDeviceFoundReceiver()
-            reconnect(deviceItem)
-        }
-    }
-
-    private fun disconnect() {
-        EventBus.getDefault().post(DisconnectExternalSensorsEvent())
-    }
-
-    private fun reconnect(deviceItem: DeviceItem) {
-        println("ANIA reconnecting to " + deviceItem.displayName() + "...")
-        mAirBeamConnector = airBeamConnectorFactory.get(deviceItem)
-        mAirBeamConnector?.registerListener(this)
-        try {
-            mAirBeamConnector?.connect(deviceItem)
-        } catch (e: BLENotSupported) {
-            mErrorHandler.handleAndDisplay(e)
-        }
-    }
-
-    override fun onConnectionSuccessful(deviceId: String) {
-        println("ANIA RECONNECTED!")
-        mAirBeamConnector?.reconnectMobileSession()
+        airBeamReconnector.reconnect(deviceId)
     }
 }
