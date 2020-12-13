@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.sensor
 
+import android.util.Log
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.AirBeamResponseParsingError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -30,8 +31,9 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
 
     fun parse(line: String): NewMeasurementEvent? {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
         if (parts.size < Fields.values().size) {
-            errorHandler.handle(AirBeamResponseParsingError(line))
+            AirBeamResponseParsingError(line).printStackTrace()
             return null
         }
 
@@ -57,7 +59,7 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
 
             measuredValue = java.lang.Double.parseDouble(parts[Fields.MEASUREMENT_VALUE.ordinal])
         } catch (e: NumberFormatException) {
-            errorHandler.handle(AirBeamResponseParsingError(line, e))
+            AirBeamResponseParsingError(line, e).printStackTrace()
             return null
         }
 
