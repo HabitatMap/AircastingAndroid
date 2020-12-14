@@ -48,8 +48,6 @@ class FixedSessionTest {
     @Inject
     lateinit var bluetoothManager: BluetoothManager
 
-    @Inject
-    lateinit var mockWebServer: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -64,7 +62,6 @@ class FixedSessionTest {
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .sensorsModule(TestSensorsModule(app))
-            .mockWebServerModule(MockWebServerModule())
             .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
         app.appComponent = testAppComponent
@@ -85,7 +82,7 @@ class FixedSessionTest {
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+//        mockWebServer.shutdown()
         clearDatabase()
     }
 

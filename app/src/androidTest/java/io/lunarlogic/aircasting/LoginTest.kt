@@ -30,9 +30,6 @@ class LoginTest {
     @Inject
     lateinit var settings: Settings
 
-    @Inject
-    lateinit var mockWebServer: MockWebServer
-
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
             = ActivityTestRule(MainActivity::class.java, false, false)
@@ -42,10 +39,9 @@ class LoginTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .apiModule(FakeApiServiceFactoryModule(mockWebServer))
+            .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -58,7 +54,7 @@ class LoginTest {
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+//        mockWebServer.shutdown()
     }
 
     @Test
@@ -75,13 +71,13 @@ class LoginTest {
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(JsonBody.build(emptyMap<String, String>()))
 
-        MockWebServerDispatcher.set(
-            mapOf(
-                "/api/user.json" to loginResponse,
-                "/api/user/sessions/sync_with_versioning.json" to syncResponse
-            ),
-            mockWebServer
-        )
+//        MockWebServerDispatcher.set(
+//            mapOf(
+//                "/api/user.json" to loginResponse,
+//                "/api/user/sessions/sync_with_versioning.json" to syncResponse
+//            ),
+//            mockWebServer
+//        )
 
         testRule.launchActivity(null)
 

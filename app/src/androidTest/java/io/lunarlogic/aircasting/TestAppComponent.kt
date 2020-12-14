@@ -12,7 +12,6 @@ import javax.inject.Singleton
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
-        MockWebServerModule::class,
         NewSessionWizardModule::class
     ]
 )

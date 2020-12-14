@@ -14,6 +14,7 @@ import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
@@ -32,7 +33,7 @@ class CreateAccountTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var mockWebServer: MockWebServer
+    lateinit var apiFactory: ApiServiceFactory
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -43,10 +44,9 @@ class CreateAccountTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .apiModule(FakeApiServiceFactoryModule(mockWebServer))
+            .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -85,7 +85,7 @@ class CreateAccountTest {
                 "/api/user.json" to createAccountResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            mockWebServer
+            (apiFactory as FakeApiServiceFactory).mockWebServer
         )
 
         testRule.launchActivity(null)
@@ -127,7 +127,7 @@ class CreateAccountTest {
                 "/api/user.json" to createAccountErrorResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            mockWebServer
+            (apiFactory as FakeApiServiceFactory).mockWebServer
         )
 
         testRule.launchActivity(null)

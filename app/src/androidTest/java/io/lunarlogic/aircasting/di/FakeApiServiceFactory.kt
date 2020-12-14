@@ -5,15 +5,23 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import okhttp3.HttpUrl
 import okhttp3.mockwebserver.MockWebServer
 
-class FakeApiServiceFactory(mSettings: Settings, val mockWebServer: MockWebServer) : ApiServiceFactory(mSettings) {
+class TestMockWebServerFactory: MockWebServerFactory() {
+    fun getMockWebServer(): MockWebServer = MockWebServer()
+}
 
+class FakeApiServiceFactory(mSettings: Settings, val mockWebServer: MockWebServer) : ApiServiceFactory(mSettings) {
     override fun baseUrl(): HttpUrl {
+        println("ANIA")
         return mockWebServer.url("/")
     }
 
 }
 
-class FakeApiServiceFactoryModule(val mockWebServer: MockWebServer) : ApiModule(){
-    override fun providesApiServiceFactory(settings: Settings): ApiServiceFactory
-                            = FakeApiServiceFactory(settings, mockWebServer)
+class FakeApiServiceFactoryModule() : ApiModule(){
+    override fun providesMockWebServerFactory(): MockWebServerFactory = TestMockWebServerFactory()
+
+    override fun providesApiServiceFactory(settings: Settings, mockWebServerFactory: MockWebServerFactory): ApiServiceFactory {
+        val mockWebServer = (mockWebServerFactory as TestMockWebServerFactory).getMockWebServer()
+        return FakeApiServiceFactory(settings, mockWebServer)
+    }
 }

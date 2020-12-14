@@ -43,9 +43,6 @@ class MobileSessionTest {
     @Inject
     lateinit var permissionsManager: PermissionsManager
 
-    @Inject
-    lateinit var mockWebServer: MockWebServer
-
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
             = ActivityTestRule(MainActivity::class.java, false, false)
@@ -59,7 +56,6 @@ class MobileSessionTest {
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .sensorsModule(TestSensorsModule(app))
-            .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -79,7 +75,7 @@ class MobileSessionTest {
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+//        mockWebServer.shutdown()
     }
 
     @Test

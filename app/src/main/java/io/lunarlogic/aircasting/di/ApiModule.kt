@@ -8,9 +8,15 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Singleton
 
+open class MockWebServerFactory
+
 @Module
 open class ApiModule {
     @Provides
     @Singleton
-    open fun providesApiServiceFactory(settings: Settings): ApiServiceFactory = ApiServiceFactory(settings)
+    open fun providesMockWebServerFactory(): MockWebServerFactory = MockWebServerFactory()
+
+    @Provides
+    @Singleton
+    open fun providesApiServiceFactory(settings: Settings, mockWebServerFactory: MockWebServerFactory): ApiServiceFactory = ApiServiceFactory(settings)
 }

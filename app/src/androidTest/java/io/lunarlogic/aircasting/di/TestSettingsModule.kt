@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.di
 
-import android.icu.text.StringPrepParseException
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 

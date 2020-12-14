@@ -50,7 +50,6 @@ class MyAccountTest {
             .appModule(AppModule(app))
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
