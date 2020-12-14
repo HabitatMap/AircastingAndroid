@@ -14,6 +14,7 @@ import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
@@ -29,6 +30,9 @@ import javax.inject.Inject
 class LoginTest {
     @Inject
     lateinit var settings: Settings
+
+    @Inject
+    lateinit var apiFactory: ApiServiceFactory
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -50,11 +54,12 @@ class LoginTest {
     @Before
     fun setup() {
         setupDagger()
+        (apiFactory as FakeApiServiceFactory).mockWebServer.start()
     }
 
     @After
     fun cleanup() {
-//        mockWebServer.shutdown()
+        (apiFactory as FakeApiServiceFactory).mockWebServer.shutdown()
     }
 
     @Test
@@ -71,13 +76,13 @@ class LoginTest {
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(JsonBody.build(emptyMap<String, String>()))
 
-//        MockWebServerDispatcher.set(
-//            mapOf(
-//                "/api/user.json" to loginResponse,
-//                "/api/user/sessions/sync_with_versioning.json" to syncResponse
-//            ),
-//            mockWebServer
-//        )
+        MockWebServerDispatcher.set(
+            mapOf(
+                "/api/user.json" to loginResponse,
+                "/api/user/sessions/sync_with_versioning.json" to syncResponse
+            ),
+            (apiFactory as FakeApiServiceFactory).mockWebServer
+        )
 
         testRule.launchActivity(null)
 

@@ -16,8 +16,6 @@ import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers
 import org.junit.*
 import org.junit.Assert.assertEquals
 
@@ -55,11 +53,12 @@ class CreateAccountTest {
     @Before
     fun setup() {
         setupDagger()
+        (apiFactory as FakeApiServiceFactory).mockWebServer.start()
     }
 
     @After
     fun cleanup() {
-//        mockWebServer.shutdown()
+        (apiFactory as FakeApiServiceFactory).mockWebServer.shutdown()
     }
 
     @Test
