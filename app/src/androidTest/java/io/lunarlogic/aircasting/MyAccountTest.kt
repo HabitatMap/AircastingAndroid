@@ -18,10 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.MockWebServerModule
-import io.lunarlogic.aircasting.di.PermissionsModule
-import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
@@ -83,7 +80,7 @@ class MyAccountTest {
         testRule.launchActivity(null)
 
         // checking if text on text view matches what I want:
-        onView(withId(R.id.login_state_textView)).check(matches(withText("You are currently logged in as ${settings.getEmail()}")))
+        onView(withId(R.id.header)).check(matches(withText("You are currently logged in as ${settings.getEmail()}")))
 
         //  performing click on button:
         onView(withId(R.id.sign_out_button)).perform(click())

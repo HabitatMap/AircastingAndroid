@@ -14,8 +14,8 @@ open class Settings(mApplication: Application) {
     protected val BACKEND_PORT_KEY = "backend_port"
 
     private val DEFAULT_CROWD_MAP_ENABLED = true
-    private val DEFAULT_BACKEND_URL = "http://aircasting.org"
-    private val DEFAULT_BACKEND_PORT = "80"
+    protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
+    protected val DEFAULT_BACKEND_PORT = "80"
 
     private val sharedPreferences: SharedPreferences
 
@@ -41,11 +41,11 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
 
-    fun getBackendUrl(): String {
+    open fun getBackendUrl(): String {
         return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL)!!
     }
 
-    fun getBackendPort(): String {
+    open fun getBackendPort(): String {
         return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)!!
     }
 

@@ -9,11 +9,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import io.lunarlogic.aircasting.di.*
 import okhttp3.mockwebserver.MockResponse
-import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.MockWebServerModule
-import io.lunarlogic.aircasting.di.PermissionsModule
-import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
 import io.lunarlogic.aircasting.lib.Settings
@@ -46,6 +43,7 @@ class CreateAccountTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(FakeApiServiceFactoryModule(mockWebServer))
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .mockWebServerModule(MockWebServerModule())
@@ -61,7 +59,7 @@ class CreateAccountTest {
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+//        mockWebServer.shutdown()
     }
 
     @Test

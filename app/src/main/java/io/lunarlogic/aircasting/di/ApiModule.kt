@@ -9,8 +9,8 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Singleton
 
 @Module
-class ApiModule {
+open class ApiModule {
     @Provides
     @Singleton
-    fun providesApiServiceFactory(settings: Settings): ApiServiceFactory = ApiServiceFactory(settings)
+    open fun providesApiServiceFactory(settings: Settings): ApiServiceFactory = ApiServiceFactory(settings)
 }
