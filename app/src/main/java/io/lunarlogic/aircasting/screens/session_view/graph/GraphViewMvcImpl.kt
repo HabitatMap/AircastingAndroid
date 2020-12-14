@@ -23,7 +23,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         graphContainer = GraphContainer(rootView, context, defaultZoomSpan())
     }
 
-    abstract fun defaultZoomSpan(): Int
+    abstract fun defaultZoomSpan(): Int?
 
     override fun layoutId(): Int {
         return R.layout.activity_graph

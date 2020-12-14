@@ -38,10 +38,10 @@ class GraphContainer: OnChartGestureListener {
     private val mGraphDataGenerator = GraphDataGenerator()
 
     private val DATE_FORMAT = "HH:mm"
-    private val mDefaultZoomSpan: Int
+    private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
@@ -102,20 +102,21 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun zoom(entries: List<Entry>) {
-        if (shouldZoomToDefault == false) return
+        if (!shouldZoomToDefault) return
         mGraph ?: return
 
         val first = entries.firstOrNull() ?: return
         val last = entries.lastOrNull() ?: return
 
         val span = last.x - first.x
-        val zoom = span / mDefaultZoomSpan
-        val centerX = last.x - Math.min(mDefaultZoomSpan.toFloat(), span)/2
+        val zoomSpan: Float = mDefaultZoomSpan?.toFloat() ?: span
+        val zoom = span / zoomSpan
+        val centerX = last.x - Math.min(zoomSpan, span)/2
         val centerY = (last.y - first.y) / 2
 
         mGraph.zoom(zoom, 1f, centerX, centerY)
 
-        val from = Math.max(last.x - mDefaultZoomSpan, first.x)
+        val from = Math.max(last.x - zoomSpan, first.x)
         val to = last.x
         drawLabels(from, to)
 

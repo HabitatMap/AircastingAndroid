@@ -10,7 +10,7 @@ open class GraphViewFixedMvcImpl(
     supportFragmentManager: FragmentManager?
 ): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
 
-    override fun defaultZoomSpan(): Int {
+    override fun defaultZoomSpan(): Int? {
         return 24 * 60 * 60 * 1000 // 24 hours
     }
 }
