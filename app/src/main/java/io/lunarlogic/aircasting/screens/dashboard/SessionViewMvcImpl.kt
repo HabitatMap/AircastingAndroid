@@ -22,6 +22,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected val mLayoutInflater: LayoutInflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mDisconnectedView: View
+    private val mReconnectButton: Button
+    private val mFinishButton: Button
 
     private val mDateTextView: TextView
     private val mNameTextView: TextView
@@ -59,7 +61,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
         mMeasurementsDescription = findViewById(R.id.session_measurements_description)
+
         mDisconnectedView = findViewById(R.id.disconnected_view)
+        mReconnectButton = findViewById(R.id.disconnected_view_bluetooth_device_reconnect_button)
+        mReconnectButton.setOnClickListener { reconnectSessionPressed() }
+        mFinishButton = findViewById(R.id.disconnected_view_bluetooth_device_finish_button)
+        mFinishButton.setOnClickListener { stopSessionPressed() }
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -310,4 +317,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
     }
+
+    protected open fun reconnectSessionPressed() {}
+    protected open fun stopSessionPressed() {}
 }

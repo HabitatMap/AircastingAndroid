@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.active_session_actions.view.*
 class ActiveSessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mListener) {
     interface Listener: BottomSheet.Listener {
         fun disconnectSessionPressed()
-        fun reconnectSessionPressed()
         fun stopSessionPressed()
     }
 
@@ -29,11 +28,6 @@ class ActiveSessionActionsBottomSheet(private val mListener: Listener): BottomSh
         val disconnectButton = view?.disconnect_session_button
         disconnectButton?.setOnClickListener {
             mListener.disconnectSessionPressed()
-        }
-
-        val reconnectButton = view?.reconnect_session_button
-        reconnectButton?.setOnClickListener {
-            mListener.reconnectSessionPressed()
         }
 
         val stopButton = view?.stop_session_button

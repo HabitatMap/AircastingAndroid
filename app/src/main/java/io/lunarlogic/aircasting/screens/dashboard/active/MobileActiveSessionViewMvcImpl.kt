@@ -42,17 +42,16 @@ class MobileActiveSessionViewMvcImpl(
         dismissBottomSheet()
     }
 
-    override fun reconnectSessionPressed() {
-        for (listener in listeners) {
-            listener.onSessionReconnectClicked(mSessionPresenter!!.session!!)
-        }
-        dismissBottomSheet()
-    }
-
     override fun stopSessionPressed() {
         for (listener in listeners) {
             listener.onSessionStopClicked(mSessionPresenter!!.session!!)
         }
         dismissBottomSheet()
+    }
+
+    override fun reconnectSessionPressed() {
+        for (listener in listeners) {
+            listener.onSessionReconnectClicked(mSessionPresenter!!.session!!)
+        }
     }
 }
