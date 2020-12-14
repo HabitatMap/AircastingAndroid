@@ -46,6 +46,7 @@ class FixedSessionViewMvcImpl(
         if (sessionPresenter.session?.followed == true) {
             mFollowButton.visibility = View.GONE
         } else {
+            mFollowButton.visibility = View.VISIBLE
             mUnfollowButton.visibility = View.GONE
         }
     }
