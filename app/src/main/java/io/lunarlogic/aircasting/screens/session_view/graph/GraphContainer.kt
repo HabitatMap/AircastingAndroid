@@ -26,6 +26,7 @@ import java.util.*
 
 
 class GraphContainer: OnChartGestureListener {
+    private val LAST_24H_FIXED_MEASUREMENTS_NUMBER = 24 * 60
     private val mContext: Context
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
@@ -70,7 +71,6 @@ class GraphContainer: OnChartGestureListener {
 
     private fun drawSession() {
         val result = generateData()
-
         val entries = result.entries
 
         zoom(entries)
@@ -83,8 +83,15 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        val samples = mSessionPresenter?.selectedStream?.measurements ?: emptyList()
-        return mGraphDataGenerator.generate(samples)
+        return mGraphDataGenerator.generate(getSamples() )
+    }
+
+    private fun getSamples(): List<Measurement> {
+        return if(mSessionPresenter?.isFixed() == true) {
+           mSessionPresenter?.selectedStream?.getLastMeasurements(LAST_24H_FIXED_MEASUREMENTS_NUMBER) ?: emptyList()
+        } else {
+           mSessionPresenter?.selectedStream?.measurements ?: emptyList()
+        }
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -123,12 +130,13 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun drawMidnightPointLines(midnightPoints: List<Float>) {
+        val axis = mGraph?.xAxis
+        axis?.removeAllLimitLines()
         midnightPoints.forEach { midnightPoint ->
             val line = midnightPointLine(midnightPoint)
-            val axis = mGraph?.xAxis
             axis?.addLimitLine(line)
-            axis?.setDrawLimitLinesBehindData(true)
         }
+        axis?.setDrawLimitLinesBehindData(true)
     }
 
     private fun drawLabels(from: Float, to: Float) {
