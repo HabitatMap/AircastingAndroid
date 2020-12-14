@@ -9,9 +9,13 @@ class GraphViewMobileActiveMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-    ): GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager) {
+    ): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text = context.getString(R.string.session_last_sec_measurements_description)
+    }
+
+    override fun defaultZoomSpan(): Int? {
+        return 30 * 60 * 1000 // 30 minutes
     }
 }

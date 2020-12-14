@@ -41,6 +41,7 @@ class GraphDataGenerator {
                 entries.add(buildAverageEntry(date))
 
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
+
                 if (lastDateDayOfMonth != dateOfMonth) {
                     lastDateDayOfMonth = dateOfMonth
                     midnightPoints.add(convertDateToFloat(date))

@@ -9,7 +9,7 @@ class GraphViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-): GraphViewMobileMvcImpl(inflater, parent, supportFragmentManager) {
+): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description_long)
@@ -17,5 +17,9 @@ class GraphViewMobileDormantMvcImpl(
 
     override fun bindStatisticsContainer() {
         mStatisticsContainer = null
+    }
+
+    override fun defaultZoomSpan(): Int? {
+        return null // will fallback to entire session span
     }
 }

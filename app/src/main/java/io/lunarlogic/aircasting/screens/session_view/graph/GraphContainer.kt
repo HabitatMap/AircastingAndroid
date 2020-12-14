@@ -26,6 +26,7 @@ import java.util.*
 
 
 class GraphContainer: OnChartGestureListener {
+    private val LAST_24H_FIXED_MEASUREMENTS_NUMBER = 24 * 60
     private val mContext: Context
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
@@ -37,10 +38,10 @@ class GraphContainer: OnChartGestureListener {
     private val mGraphDataGenerator = GraphDataGenerator()
 
     private val DATE_FORMAT = "HH:mm"
-    private val mDefaultZoomSpan: Int
+    private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
@@ -70,7 +71,6 @@ class GraphContainer: OnChartGestureListener {
 
     private fun drawSession() {
         val result = generateData()
-
         val entries = result.entries
 
         zoom(entries)
@@ -83,8 +83,15 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        val samples = mSessionPresenter?.selectedStream?.measurements ?: emptyList()
-        return mGraphDataGenerator.generate(samples)
+        return mGraphDataGenerator.generate(getSamples() )
+    }
+
+    private fun getSamples(): List<Measurement> {
+        return if(mSessionPresenter?.isFixed() == true) {
+           mSessionPresenter?.selectedStream?.getLastMeasurements(LAST_24H_FIXED_MEASUREMENTS_NUMBER) ?: emptyList()
+        } else {
+           mSessionPresenter?.selectedStream?.measurements ?: emptyList()
+        }
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -95,20 +102,21 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun zoom(entries: List<Entry>) {
-        if (shouldZoomToDefault == false) return
+        if (!shouldZoomToDefault) return
         mGraph ?: return
 
         val first = entries.firstOrNull() ?: return
         val last = entries.lastOrNull() ?: return
 
         val span = last.x - first.x
-        val zoom = span / mDefaultZoomSpan
-        val centerX = last.x - Math.min(mDefaultZoomSpan.toFloat(), span)/2
+        val zoomSpan: Float = mDefaultZoomSpan?.toFloat() ?: span
+        val zoom = span / zoomSpan
+        val centerX = last.x - Math.min(zoomSpan, span)/2
         val centerY = (last.y - first.y) / 2
 
         mGraph.zoom(zoom, 1f, centerX, centerY)
 
-        val from = Math.max(last.x - mDefaultZoomSpan, first.x)
+        val from = Math.max(last.x - zoomSpan, first.x)
         val to = last.x
         drawLabels(from, to)
 
@@ -123,12 +131,13 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun drawMidnightPointLines(midnightPoints: List<Float>) {
+        val axis = mGraph?.xAxis
+        axis?.removeAllLimitLines()
         midnightPoints.forEach { midnightPoint ->
             val line = midnightPointLine(midnightPoint)
-            val axis = mGraph?.xAxis
             axis?.addLimitLine(line)
-            axis?.setDrawLimitLinesBehindData(true)
         }
+        axis?.setDrawLimitLinesBehindData(true)
     }
 
     private fun drawLabels(from: Float, to: Float) {
