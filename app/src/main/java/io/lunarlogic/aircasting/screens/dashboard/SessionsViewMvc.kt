@@ -11,7 +11,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onRecordNewSessionClicked()
         fun onSwipeToRefreshTriggered()
         fun onDisconnectSessionClicked(sessionUUID: String)
-        fun onReconnectSessionClicked(deviceId: String)
+        fun onReconnectSessionClicked(session: Session)
         fun onStopSessionClicked(sessionUUID: String)
         fun onDeleteSessionClicked(sessionUUID: String)
         fun onFollowButtonClicked(session: Session)

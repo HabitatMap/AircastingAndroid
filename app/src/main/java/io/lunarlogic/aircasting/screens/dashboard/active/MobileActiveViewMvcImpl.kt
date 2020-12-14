@@ -34,7 +34,7 @@ class MobileActiveViewMvcImpl(
     override fun onSessionReconnectClicked(session: Session) {
         for (listener in listeners) {
             session.deviceId?.let { deviceId ->
-                listener.onReconnectSessionClicked(deviceId)
+                listener.onReconnectSessionClicked(session)
             }
         }
     }

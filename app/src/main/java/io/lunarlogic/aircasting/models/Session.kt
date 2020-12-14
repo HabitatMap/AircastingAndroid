@@ -94,7 +94,8 @@ class Session(
     enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
-        FINISHED(1);
+        FINISHED(1),
+        DISCONNECTED(2);
 
         companion object {
             fun fromInt(value: Int) = Status.values().first { it.value == value }
@@ -187,6 +188,10 @@ class Session(
 
     fun isRecording(): Boolean {
         return status == Status.RECORDING
+    }
+
+    fun isDisconnected(): Boolean {
+        return status == Status.DISCONNECTED
     }
 
     fun isIncomplete(): Boolean {

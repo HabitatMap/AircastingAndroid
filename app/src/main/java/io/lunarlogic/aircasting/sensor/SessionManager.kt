@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
+import androidx.room.Database
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
@@ -46,7 +47,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStart() {
         registerToEventBus()
-        stopMobileSessions()
+        disconnectMobileSessions()
         fixedSessionDownloadMeasurementsService.start()
     }
 
@@ -62,8 +63,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().unregister(this);
     }
 
-    private fun stopMobileSessions() {
-        DatabaseProvider.runQuery { sessionsRespository.stopMobileSessions() }
+    private fun disconnectMobileSessions() {
+        DatabaseProvider.runQuery {
+            DatabaseProvider.get().sessions().getAll().forEach { println("ANIA " + it.name + " " + it.status) }
+            sessionsRespository.disconnectMobileSessions()
+        }
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {

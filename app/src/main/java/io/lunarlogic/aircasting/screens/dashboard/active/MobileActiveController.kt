@@ -67,7 +67,7 @@ class MobileActiveController(
         airBeamReconnector.disconnect()
     }
 
-    override fun onReconnectSessionClicked(deviceId: String) {
-        airBeamReconnector.reconnect(deviceId)
+    override fun onReconnectSessionClicked(session: Session) {
+        airBeamReconnector.reconnect(session)
     }
 }

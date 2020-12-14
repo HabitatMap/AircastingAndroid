@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.di
 import dagger.Module
 import dagger.Provides
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
@@ -26,8 +27,9 @@ open class SensorsModule {
     open fun providesAirBeamReconnector(
         application: AircastingApplication,
         airBeamConnectorFactory: AirBeamConnectorFactory,
-        errorHandler: ErrorHandler
-    ): AirBeamReconnector = AirBeamReconnector(application, airBeamConnectorFactory, errorHandler)
+        errorHandler: ErrorHandler,
+        sessionsRepository: SessionsRepository
+    ): AirBeamReconnector = AirBeamReconnector(application, airBeamConnectorFactory, errorHandler, sessionsRepository)
 
     @Provides
     @Singleton
@@ -36,4 +38,8 @@ open class SensorsModule {
     @Provides
     @Singleton
     open fun providesAudioReader(): AudioReader = AudioReader()
+
+    @Provides
+    @Singleton
+    open fun providesSessionRepository(): SessionsRepository = SessionsRepository()
 }

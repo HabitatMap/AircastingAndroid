@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.converters.SessionStatusListConverter
 import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
@@ -23,7 +24,8 @@ class SessionsViewModel(): ViewModel() {
     }
 
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(Session.Type.MOBILE, Session.Status.RECORDING)
+        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(
+            Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
     }
 
     fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {

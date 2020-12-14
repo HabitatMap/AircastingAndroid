@@ -15,13 +15,13 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.models.Session
 import kotlinx.android.synthetic.main.session_card.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
     protected val mLayoutInflater: LayoutInflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
+    private val mDisconnectedView: View
 
     private val mDateTextView: TextView
     private val mNameTextView: TextView
@@ -59,6 +59,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
         mMeasurementsDescription = findViewById(R.id.session_measurements_description)
+        mDisconnectedView = findViewById(R.id.disconnected_view)
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -140,6 +141,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         bindSelectedStream(sessionPresenter)
         bindSessionDetails()
         bindMeasurementsDescription(sessionPresenter)
+        bindDisconnectedInfo(sessionPresenter)
         bindMeasurementsTable()
         bindChartData()
         bindFollowButtons(sessionPresenter)
@@ -181,6 +183,14 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             bindExpandedMeasurementsDesctription()
         } else {
             bindCollapsedMeasurementsDesctription()
+        }
+    }
+
+    private fun bindDisconnectedInfo(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.isDisconnected()) {
+            mDisconnectedView.visibility = View.VISIBLE
+        } else {
+            mDisconnectedView.visibility = View.GONE
         }
     }
 

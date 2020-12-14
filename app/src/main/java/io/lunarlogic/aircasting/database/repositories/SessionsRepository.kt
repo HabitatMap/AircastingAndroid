@@ -49,9 +49,9 @@ class SessionsRepository {
             .loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
     }
 
-    fun stopMobileSessions() {
+    fun disconnectMobileSessions() {
         mDatabase.sessions().updateStatusAndEndTimeForSessionTypeAndExistingStatus(
-            Session.Status.FINISHED, Date(), Session.Type.MOBILE, Session.Status.RECORDING)
+            Session.Status.DISCONNECTED, Date(), Session.Type.MOBILE, Session.Status.RECORDING)
     }
 
     fun finishedSessions(): List<Session> {
@@ -85,5 +85,10 @@ class SessionsRepository {
             update(session)
             return null
         }
+    }
+
+    fun updateSessionStatus(session: Session, status: Session.Status) {
+//        session.status = status
+        mDatabase.sessions().updateStatus(session.uuid, status)
     }
 }

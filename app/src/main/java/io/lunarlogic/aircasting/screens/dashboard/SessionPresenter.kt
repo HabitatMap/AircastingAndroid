@@ -63,6 +63,10 @@ class SessionPresenter() {
         return session?.isRecording() == true
     }
 
+    fun isDisconnected(): Boolean {
+        return session?.isDisconnected() == true
+    }
+
     fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {
         val hash = hashMapOf<String, SensorThreshold>()
         sensorThresholds.forEach {
