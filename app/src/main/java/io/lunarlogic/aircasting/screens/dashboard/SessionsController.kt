@@ -92,9 +92,8 @@ abstract class SessionsController(
         }
     }
 
-    override fun onDisconnectSessionClicked(sessionUUID: String) {}
-
-    override fun onReconnectSessionClicked(deviceId: Session) {}
+    override fun onDisconnectSessionClicked(session: Session) {}
+    override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
         if (session.isIncomplete()) {

@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
+import io.lunarlogic.aircasting.events.SensorDisconnectedEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
@@ -24,14 +25,14 @@ class AirBeamReconnector(
     private var mSession: Session? = null
     private var mAirBeamConnector: AirBeamConnector? = null
 
-    fun disconnect() {
-        EventBus.getDefault().post(DisconnectExternalSensorsEvent())
-        println("ANIA disconnected")
+    fun disconnect(session: Session) {
+        sendDisconnectedEvent(session)
+        updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
     fun reconnect(session: Session) {
         // disconnecting first to make sure the connector thread is stopped correctly etc
-        disconnect()
+        sendDisconnectedEvent(session)
 
         mSession = session
 
@@ -81,11 +82,19 @@ class AirBeamReconnector(
 
     override fun onConnectionSuccessful(deviceId: String) {
         mAirBeamConnector?.reconnectMobileSession()
-        mSession?.let { session ->
+        updateSessionStatus(mSession, Session.Status.RECORDING)
+    }
+
+    private fun sendDisconnectedEvent(session: Session) {
+        val deviceId = session.deviceId
+        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId)) }
+    }
+
+    private fun updateSessionStatus(session: Session?, status: Session.Status) {
+        session?.let { session ->
             DatabaseProvider.runQuery {
-                mSessionsRepository.updateSessionStatus(session, Session.Status.RECORDING)
+                mSessionsRepository.updateSessionStatus(session, status)
             }
         }
-        println("ANIA reconnected")
     }
 }

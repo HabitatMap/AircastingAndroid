@@ -63,8 +63,8 @@ class MobileActiveController(
         // do nothing
     }
 
-    override fun onDisconnectSessionClicked(sessionUUID: String) {
-        airBeamReconnector.disconnect()
+    override fun onDisconnectSessionClicked(session: Session) {
+        airBeamReconnector.disconnect(session)
     }
 
     override fun onReconnectSessionClicked(session: Session) {

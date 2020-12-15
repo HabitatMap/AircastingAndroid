@@ -19,12 +19,16 @@ abstract class AirBeamConnector {
     protected val connectionStarted = AtomicBoolean(false)
     protected val cancelStarted = AtomicBoolean(false)
 
+    private var mDeviceItem: DeviceItem? = null
+
     abstract protected fun start(deviceItem: DeviceItem)
     abstract protected fun stop()
     abstract protected fun sendAuth(sessionUUID: String)
     abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
     fun connect(deviceItem: DeviceItem) {
+        mDeviceItem = deviceItem
+
         // Cancel discovery because it otherwise slows down the connection.
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         bluetoothAdapter?.cancelDiscovery()
@@ -74,6 +78,13 @@ abstract class AirBeamConnector {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
         disconnect()
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        if (mDeviceItem?.id == event.deviceId) {
+            disconnect()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

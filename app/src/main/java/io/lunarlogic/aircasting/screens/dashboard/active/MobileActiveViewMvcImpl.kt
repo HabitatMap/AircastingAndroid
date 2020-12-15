@@ -27,7 +27,7 @@ class MobileActiveViewMvcImpl(
 
     override fun onSessionDisconnectClicked(session: Session) {
         for (listener in listeners) {
-            listener.onDisconnectSessionClicked(session.uuid)
+            listener.onDisconnectSessionClicked(session)
         }
     }
 
