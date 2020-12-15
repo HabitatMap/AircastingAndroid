@@ -16,6 +16,7 @@ import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Session
 import kotlinx.android.synthetic.main.session_card.view.*
 
 
@@ -109,7 +110,7 @@ class MeasurementsTableContainer {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             bindStream(stream)
-            bindMeasurement(stream)
+            bindMeasurement(session, stream)
         }
     }
 
@@ -185,7 +186,7 @@ class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    private fun bindMeasurement(stream: MeasurementStream) {
+    private fun bindMeasurement(session: Session, stream: MeasurementStream) {
         val measurementValue = if (mDisplayAvarages) {
             stream.getAvgMeasurement()
         } else {
@@ -194,16 +195,20 @@ class MeasurementsTableContainer {
 
         measurementValue ?: return
 
-        val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
-        valueView.background = null
-
+        val valueView = renderValueView()
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
-        valueTextView.text = Measurement.formatValue(measurementValue)
-
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
-        circleView.setColorFilter(color)
+        if (session.isDisconnected()) {
+            valueTextView.text = "-"
+            circleView.visibility = View.GONE
+        } else {
+            valueTextView.text = Measurement.formatValue(measurementValue)
+            circleView.visibility = View.VISIBLE
+            circleView.setColorFilter(color)
+        }
+
         mLastMeasurementColors[stream] = color
 
         mMeasurementValues?.addView(valueView)
@@ -220,5 +225,11 @@ class MeasurementsTableContainer {
                 valueView.background = SelectedSensorBorder(color)
             }
         }
+    }
+
+    private fun renderValueView(): View {
+        val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
+        valueView.background = null
+        return valueView
     }
 }
