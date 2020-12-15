@@ -196,8 +196,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun bindDisconnectedInfo(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.isDisconnected()) {
             mDisconnectedView.visibility = View.VISIBLE
+            mActionsButton.visibility = View.GONE
         } else {
             mDisconnectedView.visibility = View.GONE
+            mActionsButton.visibility = View.VISIBLE
         }
     }
 
