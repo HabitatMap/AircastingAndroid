@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
 import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
@@ -53,12 +54,12 @@ class CreateAccountTest {
     @Before
     fun setup() {
         setupDagger()
-        (apiFactory as FakeApiServiceFactory).mockWebServer.start()
+        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
     }
 
     @After
     fun cleanup() {
-        (apiFactory as FakeApiServiceFactory).mockWebServer.shutdown()
+        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.shutdown()
     }
 
     @Test
@@ -84,7 +85,7 @@ class CreateAccountTest {
                 "/api/user.json" to createAccountResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            (apiFactory as FakeApiServiceFactory).mockWebServer
+            FakeApiServiceFactoryConversion(apiFactory).mockWebServer
         )
 
         testRule.launchActivity(null)
@@ -126,7 +127,7 @@ class CreateAccountTest {
                 "/api/user.json" to createAccountErrorResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            (apiFactory as FakeApiServiceFactory).mockWebServer
+            FakeApiServiceFactoryConversion(apiFactory).mockWebServer
         )
 
         testRule.launchActivity(null)

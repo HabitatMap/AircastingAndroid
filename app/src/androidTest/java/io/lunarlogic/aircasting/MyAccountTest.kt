@@ -19,7 +19,9 @@ import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 import junit.framework.Assert.assertEquals
@@ -36,6 +38,9 @@ class MyAccountTest {
     @Inject
     lateinit var settings: Settings
 
+    @Inject
+    lateinit var apiFactory: ApiServiceFactory
+
     @get:Rule
     val testRule : ActivityTestRule<MyAccountActivity>
             = ActivityTestRule(MyAccountActivity::class.java, false, false)
@@ -48,6 +53,7 @@ class MyAccountTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .build()
@@ -64,6 +70,7 @@ class MyAccountTest {
     fun setup(){
         setupDagger()
         setupDatabase()
+        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
     }
 
     @After

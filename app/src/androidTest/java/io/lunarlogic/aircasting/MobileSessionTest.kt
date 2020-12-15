@@ -17,8 +17,10 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import okhttp3.mockwebserver.MockWebServer
@@ -38,6 +40,12 @@ class MobileSessionTest {
     lateinit var settings: Settings
 
     @Inject
+    lateinit var apiFactory: ApiServiceFactory
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
     lateinit var bluetoothManager: BluetoothManager
 
     @Inject
@@ -53,6 +61,7 @@ class MobileSessionTest {
         val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .sensorsModule(TestSensorsModule(app))
@@ -71,11 +80,12 @@ class MobileSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
+        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
     }
 
     @After
     fun cleanup() {
-//        mockWebServer.shutdown()
+        //mockWebServer.shutdown()
     }
 
     @Test

@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 
 class BackendSettingsDialog(
     mFragmentManager : FragmentManager,
-    private val mUrl: String,
-    private val mPort: String,
+    private val mUrl: String?,
+    private val mPort: String?,
     private val listener: SettingsViewMvc.BackendSettingsDialogListener
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View

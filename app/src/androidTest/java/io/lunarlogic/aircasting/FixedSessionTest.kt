@@ -16,6 +16,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
 import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
@@ -25,6 +26,7 @@ import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
@@ -43,6 +45,9 @@ class FixedSessionTest {
     lateinit var settings: Settings
 
     @Inject
+    lateinit var apiFactory: ApiServiceFactory
+
+    @Inject
     lateinit var permissionsManager: PermissionsManager
 
     @Inject
@@ -59,6 +64,7 @@ class FixedSessionTest {
         val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .sensorsModule(TestSensorsModule(app))
@@ -78,6 +84,7 @@ class FixedSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
+        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
     }
 
     @After

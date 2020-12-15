@@ -41,12 +41,12 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
 
-    open fun getBackendUrl(): String {
-        return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL)!!
+    open fun getBackendUrl(): String? {
+        return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL)
     }
 
-    open fun getBackendPort(): String {
-        return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)!!
+    open fun getBackendPort(): String? {
+        return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)
     }
 
     fun backendSettingsChanged(url: String, port: String) {

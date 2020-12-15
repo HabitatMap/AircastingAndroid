@@ -11,6 +11,7 @@ class FakeSettings(application: AircastingApplication): Settings(application) {
         return preferences.get(key)
     }
 
+
     override fun saveToSettings(key: String, value: String) {
         this.preferences.put(key, value)
     }
