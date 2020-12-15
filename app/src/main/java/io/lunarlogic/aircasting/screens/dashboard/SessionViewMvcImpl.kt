@@ -208,9 +208,11 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         if (sessionPresenter.isDisconnected()) {
             mDisconnectedView.visibility = View.VISIBLE
             mActionsButton.visibility = View.GONE
+            mExpandSessionButton.visibility = View.GONE
         } else {
             mDisconnectedView.visibility = View.GONE
             mActionsButton.visibility = View.VISIBLE
+            mExpandSessionButton.visibility = View.VISIBLE
         }
     }
 
