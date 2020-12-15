@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
-import androidx.room.Database
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository

@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.sensor
 
-import android.util.Log
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.AirBeamResponseParsingError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
