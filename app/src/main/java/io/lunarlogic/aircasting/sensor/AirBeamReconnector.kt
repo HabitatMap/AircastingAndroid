@@ -19,7 +19,8 @@ class AirBeamReconnector(
     private val mContext: Context,
     private val mAirBeamConnectorFactory: AirBeamConnectorFactory,
     private val mErrorHandler: ErrorHandler,
-    private val mSessionsRepository: SessionsRepository
+    private val mSessionsRepository: SessionsRepository,
+    private val mBluetoothManager: BluetoothManager
 ): BroadcastReceiver(), AirBeamConnector.Listener {
     private var mSession: Session? = null
     private var mAirBeamConnector: AirBeamConnector? = null
@@ -37,11 +38,18 @@ class AirBeamReconnector(
         mSession = session
         mCallback = callback
 
-        val bm = BluetoothManager()
-        // TODO: lookup in pairedDevices (for AB1 and AB2) if in paired devices that awesome
-        // but otherwise start discovery again
-        registerBluetoothDeviceFoundReceiver()
-        bm.startDiscovery()
+        val deviceItem = getDeviceItemFromPairedDevices(session)
+
+        if (deviceItem != null) {
+            reconnect(deviceItem)
+        } else {
+            registerBluetoothDeviceFoundReceiver()
+            mBluetoothManager.startDiscovery()
+        }
+    }
+
+    private fun getDeviceItemFromPairedDevices(session: Session): DeviceItem? {
+        return mBluetoothManager.pairedDeviceItems().find { deviceItem -> deviceItem.id == session.deviceId }
     }
 
     private fun registerBluetoothDeviceFoundReceiver() {

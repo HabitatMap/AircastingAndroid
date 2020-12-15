@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.di
 import dagger.Module
 import dagger.Provides
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
@@ -28,8 +29,9 @@ open class SensorsModule {
         application: AircastingApplication,
         airBeamConnectorFactory: AirBeamConnectorFactory,
         errorHandler: ErrorHandler,
-        sessionsRepository: SessionsRepository
-    ): AirBeamReconnector = AirBeamReconnector(application, airBeamConnectorFactory, errorHandler, sessionsRepository)
+        sessionsRepository: SessionsRepository,
+        bluetoothManager: BluetoothManager
+    ): AirBeamReconnector = AirBeamReconnector(application, airBeamConnectorFactory, errorHandler, sessionsRepository, bluetoothManager)
 
     @Provides
     @Singleton
