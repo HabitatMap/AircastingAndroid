@@ -15,6 +15,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
@@ -40,13 +41,15 @@ class GraphContainer: OnChartGestureListener {
     private val DATE_FORMAT = "HH:mm"
     private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
+    private var mOnTimeSpanChanged: (timeSpan: SessionTimeSpan) -> Unit
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: SessionTimeSpan) -> Unit) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
         mToLabel = rootView?.to_label
         mDefaultZoomSpan = defaultZoomSpan
+        mOnTimeSpanChanged = onTimeSpanChanged
 
         setupGraph()
     }
@@ -218,6 +221,7 @@ class GraphContainer: OnChartGestureListener {
 
     override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
         updateLabelsBasedOnVisibleRange()
+        updateSessionPresenterSpan()
     }
 
     private fun updateLabelsBasedOnVisibleRange() {
@@ -236,4 +240,14 @@ class GraphContainer: OnChartGestureListener {
             }
         }
     }
+
+    private fun updateSessionPresenterSpan() {
+        mGraph ?: return
+
+        val from = mGraph.lowestVisibleX
+        val to = mGraph.highestVisibleX
+        mOnTimeSpanChanged.invoke(SessionTimeSpan(mGraphDataGenerator.dateFromFloat(from), mGraphDataGenerator.dateFromFloat(to)))
+    }
 }
+
+data class SessionTimeSpan(val from: Date, val to: Date)

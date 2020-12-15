@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.session_view.graph.SessionTimeSpan
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 
@@ -31,6 +32,8 @@ class StatisticsContainer {
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
+    private var mVisibleTimeSpan: SessionTimeSpan? = null
+
     constructor(rootView: View?, context: Context) {
         mContext = context
 
@@ -45,9 +48,10 @@ class StatisticsContainer {
         mPeakCircleIndicator = rootView?.peak_circle_indicator
     }
 
-    fun bindSession(sessionPresenter: SessionPresenter?) {
+    fun bindSession(sessionPresenter: SessionPresenter?, visibleTimeSpan: SessionTimeSpan? = null) {
         val stream = sessionPresenter?.selectedStream
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
+        mVisibleTimeSpan = visibleTimeSpan
 
         mStatisticsView?.visibility = View.VISIBLE
 
@@ -67,11 +71,11 @@ class StatisticsContainer {
         }
     }
 
-    fun refresh(sessionPresenter: SessionPresenter?) {
+    fun refresh(sessionPresenter: SessionPresenter?, visibleTimeSpan: SessionTimeSpan? = null) {
         mSum = null
         mPeak = null
         mNow = null
-        bindSession(sessionPresenter)
+        bindSession(sessionPresenter, visibleTimeSpan)
     }
 
     private fun bindAvgStatistics(stream: MeasurementStream?) {
@@ -79,9 +83,9 @@ class StatisticsContainer {
 
         if (stream != null) {
             if (mSum == null) {
-                mSum = stream.calculateSum()
+                mSum = calculateSum(stream)
             }
-            avg = mSum!! / stream.measurements.size
+            avg = mSum!! / calculateMeasurementsSize(stream)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
@@ -108,6 +112,19 @@ class StatisticsContainer {
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color)
         circleIndicator?.setColorFilter(color)
+    }
+
+    private fun calculateSum(stream: MeasurementStream?): Double? {
+        return stream?.calculateSum(mVisibleTimeSpan)
+    }
+
+    private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
+        val measurements = if(mVisibleTimeSpan != null) {
+            val range = mVisibleTimeSpan!!.from..mVisibleTimeSpan!!.to
+            stream.measurements.filter { it.time in range}
+        } else stream.measurements
+
+        return measurements.size
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {

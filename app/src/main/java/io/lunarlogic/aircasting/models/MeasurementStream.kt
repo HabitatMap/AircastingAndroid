@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBOb
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
+import io.lunarlogic.aircasting.screens.session_view.graph.SessionTimeSpan
 import java.util.*
 
 class MeasurementStream(
@@ -129,8 +130,20 @@ class MeasurementStream(
         return calculateSum() / measurements.size
     }
 
-    fun calculateSum(): Double {
-        return measurements.sumByDouble { it.value }
+    fun calculateSum(visibleTimeSpan: SessionTimeSpan? = null): Double {
+        var sum: Double = 0.0
+        if (visibleTimeSpan != null) {
+            val range = visibleTimeSpan.from..visibleTimeSpan.to
+            measurements.forEach { measurement ->
+                if (measurement.time in range) {
+                    sum += measurement.value
+                }
+            }
+        } else {
+            sum = measurements.sumByDouble { it.value }
+        }
+
+        return sum
     }
 
     private fun getFirstMeasurements(amount: Int): List<Measurement?>? {

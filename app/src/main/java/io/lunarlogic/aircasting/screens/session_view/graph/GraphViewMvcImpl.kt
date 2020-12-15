@@ -20,7 +20,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan())
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(),  this::onTimeSpanChanged)
     }
 
     abstract fun defaultZoomSpan(): Int?
@@ -52,5 +52,9 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
         graphContainer.refresh(mSessionPresenter)
+    }
+
+    private fun onTimeSpanChanged(timeSpan: SessionTimeSpan) {
+        mStatisticsContainer?.refresh(mSessionPresenter, timeSpan)
     }
 }
