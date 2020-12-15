@@ -138,8 +138,11 @@ interface SessionDao {
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
     fun updateStatus(uuid: String, status: Session.Status)
 
-    @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND status=:existingStatus")
-    fun updateStatusAndEndTimeForSessionTypeAndExistingStatus(newStatus: Session.Status, endTime: Date, type: Session.Type, existingStatus: Session.Status)
+    @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
+    fun updateStatusForSessionWithDeviceIdAndExistingStatus(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
+
+    @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND status=:existingStatus")
+    fun updateStatusForSessionTypeAndExistingStatus(newStatus: Session.Status, type: Session.Type, existingStatus: Session.Status)
 
     @Query("DELETE FROM sessions")
     fun deleteAll()

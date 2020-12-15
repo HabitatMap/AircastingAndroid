@@ -57,6 +57,10 @@ abstract class AirBeamConnector {
         mListener?.onConnectionSuccessful(deviceId)
     }
 
+    fun onDisconnected(deviceId: String) {
+        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
+    }
+
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SendSessionAuth) {
         sendAuth(event.sessionUUID)

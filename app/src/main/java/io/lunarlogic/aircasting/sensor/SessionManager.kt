@@ -36,6 +36,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        disconnectSession(event.deviceId)
+    }
+
+    @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
     }
@@ -65,7 +70,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun disconnectMobileSessions() {
         DatabaseProvider.runQuery {
-            DatabaseProvider.get().sessions().getAll().forEach { println("ANIA " + it.name + " " + it.status) }
             sessionsRespository.disconnectMobileSessions()
         }
     }
@@ -109,6 +113,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 sessionsRespository.update(it)
                 sessionsSyncService.sync()
             }
+        }
+    }
+
+    private fun disconnectSession(deviceId: String) {
+        DatabaseProvider.runQuery {
+            sessionsRespository.disconnectSession(deviceId)
         }
     }
 

@@ -42,7 +42,7 @@ open class AirBeam2Connector(
     }
 
     override fun reconnectMobileSession() {
-        // TODO: ?
+        // nothing is needed here
     }
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
@@ -66,6 +66,8 @@ open class AirBeam2Connector(
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
+                onDisconnected(deviceItem.id)
+
                 if (!cancelStarted.get()) {
                     val message = mErrorHandler.obtainMessage(
                         ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED,

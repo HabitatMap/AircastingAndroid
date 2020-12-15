@@ -203,6 +203,7 @@ class Session(
                 session.tags != tags ||
                 session.streams.size != streams.size ||
                 session.measurementsCount() != measurementsCount() ||
+                session.status != status ||
                 session.endTime != endTime
     }
 

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
@@ -81,7 +82,9 @@ class AirBeamReconnector(
     override fun onConnectionSuccessful(deviceId: String) {
         mAirBeamConnector?.reconnectMobileSession()
         mSession?.let { session ->
-            mSessionsRepository.updateSessionStatus(session, Session.Status.RECORDING)
+            DatabaseProvider.runQuery {
+                mSessionsRepository.updateSessionStatus(session, Session.Status.RECORDING)
+            }
         }
         println("ANIA reconnected")
     }
