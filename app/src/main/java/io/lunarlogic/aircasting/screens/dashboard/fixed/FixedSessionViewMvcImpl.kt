@@ -45,6 +45,7 @@ class FixedSessionViewMvcImpl(
     override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.session?.followed == true) {
             mFollowButton.visibility = View.GONE
+            mUnfollowButton.visibility = View.VISIBLE
         } else {
             mFollowButton.visibility = View.VISIBLE
             mUnfollowButton.visibility = View.GONE

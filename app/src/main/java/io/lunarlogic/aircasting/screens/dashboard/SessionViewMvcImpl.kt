@@ -259,6 +259,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun onUnfollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
             session.unfollow()
+            bindFollowButtons(mSessionPresenter!!)
+            
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onUnfollowButtonClicked(session)
             }
