@@ -16,7 +16,7 @@ class UnknownError(cause: Exception):
     BaseException(cause, "Something went wrong, please contact our support")
 
 class AirBeam2ConnectionOpenFailed(cause: Exception):
-    BaseException(cause, "AirBeam connection failed. If you agreed on pairing and still see this error, please contact support")
+    BaseException(cause, "AirBeam connection failed. Please try again.")
 
 class AirBeam2ConfiguringFailed(cause: Exception):
     BaseException(cause)
