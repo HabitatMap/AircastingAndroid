@@ -6,4 +6,6 @@ interface SessionViewMvc<ListenerType>: ObservableViewMvc<ListenerType> {
     fun bindSession(sessionPresenter: SessionPresenter)
     fun showLoader()
     fun hideLoader()
+    fun showReconnectingLoader()
+    fun hideReconnectingLoader()
 }

@@ -25,6 +25,20 @@ class MobileActiveViewMvcImpl(
         )
     }
 
+    override fun onSessionDisconnectClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onDisconnectSessionClicked(session)
+        }
+    }
+
+    override fun onSessionReconnectClicked(session: Session) {
+        for (listener in listeners) {
+            session.deviceId?.let { deviceId ->
+                listener.onReconnectSessionClicked(session)
+            }
+        }
+    }
+
     override fun onSessionStopClicked(session: Session) {
         for (listener in listeners) {
             listener.onStopSessionClicked(session.uuid)

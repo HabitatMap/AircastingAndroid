@@ -233,6 +233,10 @@ class NewSessionController(
         wizardNavigator.goToAirBeamConnected(deviceId, this)
     }
 
+    override fun onConnectionFailed(deviceId: String) {
+        // ignore
+    }
+
     override fun onAirBeamConnectedContinueClicked(deviceId: String) {
         val sessionUUID = Session.generateUUID()
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))

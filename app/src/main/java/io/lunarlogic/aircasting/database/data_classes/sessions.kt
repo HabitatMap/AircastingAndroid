@@ -93,6 +93,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
+    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
+
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatus(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
 
@@ -132,8 +135,14 @@ interface SessionDao {
     @Query("UPDATE sessions SET followed_at=:followedAt WHERE uuid=:uuid")
     fun updateFollowedAt(uuid: String, followedAt: Date?)
 
-    @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND status=:existingStatus")
-    fun updateStatusAndEndTimeForSessionTypeAndExistingStatus(newStatus: Session.Status, endTime: Date, type: Session.Type, existingStatus: Session.Status)
+    @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
+    fun updateStatus(uuid: String, status: Session.Status)
+
+    @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
+    fun updateStatusForSessionWithDeviceIdAndExistingStatus(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
+
+    @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND status=:existingStatus")
+    fun updateStatusForSessionTypeAndExistingStatus(newStatus: Session.Status, type: Session.Type, existingStatus: Session.Status)
 
     @Query("DELETE FROM sessions")
     fun deleteAll()

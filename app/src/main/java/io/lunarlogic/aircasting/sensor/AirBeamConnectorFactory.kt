@@ -16,7 +16,7 @@ open class AirBeamConnectorFactory(
         when(deviceItem.type) {
             DeviceItem.Type.AIRBEAM2 -> return AirBeam2Connector(mSettings, mErrorHandler)
             DeviceItem.Type.AIRBEAM3 -> return AirBeam3Connector(mContext, mSettings, mErrorHandler)
-            else -> return null
+            else -> return AirBeam2Connector(mSettings, mErrorHandler)
         }
     }
 }

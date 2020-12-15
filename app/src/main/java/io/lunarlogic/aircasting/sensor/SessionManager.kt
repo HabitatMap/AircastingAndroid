@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
+import androidx.room.Database
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
@@ -35,6 +36,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        disconnectSession(event.deviceId)
+    }
+
+    @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
     }
@@ -46,7 +52,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStart() {
         registerToEventBus()
-        stopMobileSessions()
+        disconnectMobileSessions()
         fixedSessionDownloadMeasurementsService.start()
     }
 
@@ -62,8 +68,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().unregister(this);
     }
 
-    private fun stopMobileSessions() {
-        DatabaseProvider.runQuery { sessionsRespository.stopMobileSessions() }
+    private fun disconnectMobileSessions() {
+        DatabaseProvider.runQuery {
+            sessionsRespository.disconnectMobileSessions()
+        }
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {
@@ -105,6 +113,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 sessionsRespository.update(it)
                 sessionsSyncService.sync()
             }
+        }
+    }
+
+    private fun disconnectSession(deviceId: String) {
+        DatabaseProvider.runQuery {
+            sessionsRespository.disconnectSession(deviceId)
         }
     }
 

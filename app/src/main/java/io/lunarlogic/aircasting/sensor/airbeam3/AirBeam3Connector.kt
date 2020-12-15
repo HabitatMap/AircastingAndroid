@@ -50,10 +50,20 @@ open class AirBeam3Connector(
         airBeam3Configurator.sendAuth(uuid)
     }
 
+    override fun reconnectMobileSession() {
+        airBeam3Configurator.reconnectMobileSession()
+    }
+
     override fun onDeviceConnecting(device: BluetoothDevice) {}
     override fun onDeviceConnected(device: BluetoothDevice) {}
-    override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {}
+    override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
+        val deviceItem = DeviceItem(device)
+        onConnectionFailed(deviceItem.id)
+    }
     override fun onDeviceReady(device: BluetoothDevice) {}
     override fun onDeviceDisconnecting(device: BluetoothDevice) {}
-    override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {}
+    override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
+        val deviceItem = DeviceItem(device)
+        onDisconnected(deviceItem.id)
+    }
 }

@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -22,7 +21,7 @@ abstract class SessionsController(
     private val mSessionsViewModel: SessionsViewModel,
     mSettings: Settings
 ) : SessionsViewMvc.Listener {
-    private val mErrorHandler = ErrorHandler(mRootActivity!!)
+    protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
@@ -92,6 +91,9 @@ abstract class SessionsController(
             }
         }
     }
+
+    override fun onDisconnectSessionClicked(session: Session) {}
+    override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
         if (session.isIncomplete()) {

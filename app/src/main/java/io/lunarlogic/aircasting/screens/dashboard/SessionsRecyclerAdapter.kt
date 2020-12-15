@@ -69,6 +69,20 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         notifyDataSetChanged()
     }
 
+    fun showReconnectingLoaderFor(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
+        sessionPresenter?.reconnecting = true
+
+        notifyDataSetChanged()
+    }
+
+    fun hideReconnectingLoaderFor(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
+        sessionPresenter?.reconnecting = false
+
+        notifyDataSetChanged()
+    }
+
     fun reloadSession(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.session = session

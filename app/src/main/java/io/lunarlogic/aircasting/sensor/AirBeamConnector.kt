@@ -1,10 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.bluetooth.BluetoothAdapter
-import io.lunarlogic.aircasting.events.ConfigureSession
-import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
-import io.lunarlogic.aircasting.events.SendSessionAuth
-import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
@@ -15,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 abstract class AirBeamConnector {
     interface Listener {
         fun onConnectionSuccessful(deviceId: String)
+        fun onConnectionFailed(deviceId: String)
     }
 
     private var mListener: Listener? = null
@@ -22,12 +20,16 @@ abstract class AirBeamConnector {
     protected val connectionStarted = AtomicBoolean(false)
     protected val cancelStarted = AtomicBoolean(false)
 
+    private var mDeviceItem: DeviceItem? = null
+
     abstract protected fun start(deviceItem: DeviceItem)
     abstract protected fun stop()
     abstract protected fun sendAuth(sessionUUID: String)
     abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
     fun connect(deviceItem: DeviceItem) {
+        mDeviceItem = deviceItem
+
         // Cancel discovery because it otherwise slows down the connection.
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         bluetoothAdapter?.cancelDiscovery()
@@ -38,6 +40,8 @@ abstract class AirBeamConnector {
             start(deviceItem)
         }
     }
+
+    abstract fun reconnectMobileSession()
 
     private fun disconnect() {
         unregisterFromEventBus()
@@ -58,6 +62,14 @@ abstract class AirBeamConnector {
         mListener?.onConnectionSuccessful(deviceId)
     }
 
+    fun onConnectionFailed(deviceId: String) {
+        mListener?.onConnectionFailed(deviceId)
+    }
+
+    fun onDisconnected(deviceId: String) {
+        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
+    }
+
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SendSessionAuth) {
         sendAuth(event.sessionUUID)
@@ -71,6 +83,13 @@ abstract class AirBeamConnector {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
         disconnect()
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        if (mDeviceItem?.id == event.deviceId) {
+            disconnect()
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

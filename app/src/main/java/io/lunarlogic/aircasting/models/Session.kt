@@ -94,7 +94,8 @@ class Session(
     enum class Status(val value: Int){
         NEW(-1),
         RECORDING(0),
-        FINISHED(1);
+        FINISHED(1),
+        DISCONNECTED(2);
 
         companion object {
             fun fromInt(value: Int) = Status.values().first { it.value == value }
@@ -189,6 +190,10 @@ class Session(
         return status == Status.RECORDING
     }
 
+    fun isDisconnected(): Boolean {
+        return status == Status.DISCONNECTED
+    }
+
     fun isIncomplete(): Boolean {
         return streams.isEmpty() || measurementsCount() == 0
     }
@@ -198,6 +203,7 @@ class Session(
                 session.tags != tags ||
                 session.streams.size != streams.size ||
                 session.measurementsCount() != measurementsCount() ||
+                session.status != status ||
                 session.endTime != endTime
     }
 

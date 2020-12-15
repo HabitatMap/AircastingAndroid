@@ -26,6 +26,8 @@ class ChartAveragesCreator {
         val measurements: MutableList<Measurement>? =
             stream.getMeasurementsForPeriod(MAX_AVERAGES_AMOUNT, MOBILE_FREQUENCY_DIVISOR)
 
+        if (measurementsInPeriod == 0) return mutableListOf()
+
         periodData = Lists.partition(measurements, measurementsInPeriod)
         val reversedPeriodData: List<List<Measurement>?> =
             Lists.reverse<List<Measurement>?>(periodData)

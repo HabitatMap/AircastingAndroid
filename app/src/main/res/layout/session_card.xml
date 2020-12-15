@@ -109,6 +109,8 @@
             <TableRow android:id="@+id/measurement_values" />
         </TableLayout>
 
+        <include layout="@layout/disconnected_view" />
+
         <ImageView
             android:id="@+id/loader"
             android:layout_width="match_parent"

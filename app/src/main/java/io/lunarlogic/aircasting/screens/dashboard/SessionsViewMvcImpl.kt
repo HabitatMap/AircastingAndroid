@@ -82,6 +82,14 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mAdapter.hideLoaderFor(session)
     }
 
+    override fun showReconnectingLoaderFor(session: Session) {
+        mAdapter.showReconnectingLoaderFor(session)
+    }
+
+    override fun hideReconnectingLoaderFor(session: Session) {
+        mAdapter.hideReconnectingLoaderFor(session)
+    }
+
     override fun reloadSession(session: Session) {
         mAdapter.reloadSession(session)
     }

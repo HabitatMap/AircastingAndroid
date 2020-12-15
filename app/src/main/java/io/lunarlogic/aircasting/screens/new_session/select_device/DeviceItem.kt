@@ -16,7 +16,7 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     init {
         name = mBluetoothDevice.name ?: "Unknown"
         address = mBluetoothDevice.address
-        id = name.split(":").last()
+        id = name.split(":", "-").last()
         type = getType(name)
     }
 

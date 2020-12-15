@@ -3,10 +3,13 @@ package io.lunarlogic.aircasting.di
 import dagger.Module
 import dagger.Provides
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.SessionBuilder
+import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import javax.inject.Singleton
 
@@ -22,9 +25,23 @@ open class SensorsModule {
 
     @Provides
     @Singleton
+    open fun providesAirBeamReconnector(
+        application: AircastingApplication,
+        airBeamConnectorFactory: AirBeamConnectorFactory,
+        errorHandler: ErrorHandler,
+        sessionsRepository: SessionsRepository,
+        bluetoothManager: BluetoothManager
+    ): AirBeamReconnector = AirBeamReconnector(application, airBeamConnectorFactory, errorHandler, sessionsRepository, bluetoothManager)
+
+    @Provides
+    @Singleton
     fun prodivesSessionBuilder(): SessionBuilder = SessionBuilder()
 
     @Provides
     @Singleton
     open fun providesAudioReader(): AudioReader = AudioReader()
+
+    @Provides
+    @Singleton
+    open fun providesSessionRepository(): SessionsRepository = SessionsRepository()
 }

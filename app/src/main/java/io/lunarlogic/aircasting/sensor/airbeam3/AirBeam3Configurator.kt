@@ -67,6 +67,16 @@ class AirBeam3Configurator(
         }
     }
 
+    fun reconnectMobileSession() {
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        beginAtomicRequestQueue()
+            .add(mobileModeRequest())
+            .add(sleep(500))
+            .add(requestMtu(MAX_MTU))
+            .enqueue()
+    }
+
     private fun configureMobileSession(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 

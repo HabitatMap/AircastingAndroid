@@ -41,6 +41,10 @@ open class AirBeam2Connector(
         mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
+    override fun reconnectMobileSession() {
+        // nothing is needed here
+    }
+
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
@@ -62,6 +66,10 @@ open class AirBeam2Connector(
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
+                val deviceId = deviceItem.id
+                onDisconnected(deviceId)
+                onConnectionFailed(deviceId)
+
                 if (!cancelStarted.get()) {
                     val message = mErrorHandler.obtainMessage(
                         ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED,
@@ -71,6 +79,8 @@ open class AirBeam2Connector(
                     cancel()
                 }
             } catch(e: Exception) {
+                onConnectionFailed(deviceItem.id)
+
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIRCASTING_UNKNOWN_ERROR, UnknownError(e))
                 message.sendToTarget()
                 cancel()
