@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
-import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.events.SensorDisconnectedEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -24,17 +23,19 @@ class AirBeamReconnector(
 ): BroadcastReceiver(), AirBeamConnector.Listener {
     private var mSession: Session? = null
     private var mAirBeamConnector: AirBeamConnector? = null
+    private var mCallback: (() -> Unit)? = null
 
     fun disconnect(session: Session) {
         sendDisconnectedEvent(session)
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
-    fun reconnect(session: Session) {
+    fun reconnect(session: Session, callback: () -> Unit) {
         // disconnecting first to make sure the connector thread is stopped correctly etc
         sendDisconnectedEvent(session)
 
         mSession = session
+        mCallback = callback
 
         val bm = BluetoothManager()
         // TODO: lookup in pairedDevices (for AB1 and AB2) if in paired devices that awesome
@@ -83,6 +84,12 @@ class AirBeamReconnector(
     override fun onConnectionSuccessful(deviceId: String) {
         mAirBeamConnector?.reconnectMobileSession()
         updateSessionStatus(mSession, Session.Status.RECORDING)
+
+        mCallback?.invoke()
+    }
+
+    override fun onConnectionFailed(deviceId: String) {
+        mCallback?.invoke()
     }
 
     private fun sendDisconnectedEvent(session: Session) {

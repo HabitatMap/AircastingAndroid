@@ -18,11 +18,14 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 class MobileActiveController(
     mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc,
+    private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
@@ -68,6 +71,11 @@ class MobileActiveController(
     }
 
     override fun onReconnectSessionClicked(session: Session) {
-        airBeamReconnector.reconnect(session)
+        mViewMvc.showReconnectingLoaderFor(session)
+        airBeamReconnector.reconnect(session, {
+            GlobalScope.launch(Dispatchers.Main) {
+                mViewMvc.hideReconnectingLoaderFor(session)
+            }
+        })
     }
 }

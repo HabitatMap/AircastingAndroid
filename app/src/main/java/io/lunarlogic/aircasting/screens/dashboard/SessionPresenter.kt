@@ -12,6 +12,7 @@ class SessionPresenter() {
     var sensorThresholds: HashMap<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
     var loading: Boolean = false
+    var reconnecting: Boolean = false
     var chartData: ChartData? = null
     var sessionUUID: String? = null
     var initialSensorName: String? = null

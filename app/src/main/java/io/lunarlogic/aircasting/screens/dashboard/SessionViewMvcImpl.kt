@@ -23,6 +23,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
     private val mDisconnectedView: View
     private val mReconnectButton: Button
+    private val mReconnectingLoader: ImageView
     private val mFinishButton: Button
 
     private val mDateTextView: TextView
@@ -65,6 +66,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mDisconnectedView = findViewById(R.id.disconnected_view)
         mReconnectButton = findViewById(R.id.disconnected_view_bluetooth_device_reconnect_button)
         mReconnectButton.setOnClickListener { reconnectSessionPressed() }
+        mReconnectingLoader = findViewById(R.id.reconnecting_loader)
         mFinishButton = findViewById(R.id.disconnected_view_bluetooth_device_finish_button)
         mFinishButton.setOnClickListener { stopSessionPressed() }
 
@@ -144,6 +146,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         bindLoader(sessionPresenter)
+        bindReconnectingLoader(sessionPresenter)
         bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)
         bindSessionDetails()
@@ -159,6 +162,14 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             showLoader()
         } else {
             hideLoader()
+        }
+    }
+
+    private fun bindReconnectingLoader(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.reconnecting) {
+            showReconnectingLoader()
+        } else {
+            hideReconnectingLoader()
         }
     }
 
@@ -257,6 +268,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun hideLoader() {
         mLoader?.visibility = View.GONE
+    }
+
+    override fun showReconnectingLoader() {
+        AnimatedLoader(mReconnectingLoader).start()
+        mReconnectingLoader.visibility = View.VISIBLE
+        mReconnectButton.isEnabled = false
+        mReconnectButton.translationY = 6f
+        mReconnectButton.translationZ = -6f
+    }
+
+    override fun hideReconnectingLoader() {
+        mReconnectingLoader.visibility = View.GONE
+        mReconnectButton.isEnabled = true
+        mReconnectButton.translationY = -6f
+        mReconnectButton.translationZ = 6f
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {

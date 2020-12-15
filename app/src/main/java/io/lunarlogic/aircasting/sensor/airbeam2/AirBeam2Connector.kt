@@ -66,7 +66,9 @@ open class AirBeam2Connector(
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
-                onDisconnected(deviceItem.id)
+                val deviceId = deviceItem.id
+                onDisconnected(deviceId)
+                onConnectionFailed(deviceId)
 
                 if (!cancelStarted.get()) {
                     val message = mErrorHandler.obtainMessage(
@@ -77,6 +79,8 @@ open class AirBeam2Connector(
                     cancel()
                 }
             } catch(e: Exception) {
+                onConnectionFailed(deviceItem.id)
+
                 val message = mErrorHandler.obtainMessage(ResultCodes.AIRCASTING_UNKNOWN_ERROR, UnknownError(e))
                 message.sendToTarget()
                 cancel()
