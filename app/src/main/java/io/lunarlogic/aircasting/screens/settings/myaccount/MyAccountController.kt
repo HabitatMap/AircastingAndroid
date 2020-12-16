@@ -28,8 +28,8 @@ class MyAccountController(
         mSettings.logout()
         SessionsSyncService.destroy()
 
-        GlobalScope.launch(Dispatchers.IO) {
-            DatabaseProvider.mAppDatabase?.clearAllTables()
+        DatabaseProvider.runQuery {
+            DatabaseProvider.get().clearAllTables()
         }
         LoginActivity.startAfterSignOut(mContext)
     }
