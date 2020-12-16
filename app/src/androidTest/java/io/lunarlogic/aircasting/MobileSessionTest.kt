@@ -14,11 +14,10 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.TestPermissionsModule
 import io.lunarlogic.aircasting.di.TestSensorsModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
-import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
@@ -40,7 +39,7 @@ class MobileSessionTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var apiFactory: ApiServiceFactory
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
@@ -82,12 +81,12 @@ class MobileSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
-        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
-//        mockWebServer.shutdown()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test

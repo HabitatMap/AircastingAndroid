@@ -10,12 +10,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
@@ -34,7 +34,7 @@ class LoginTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var apiFactory: ApiServiceFactory
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -56,12 +56,12 @@ class LoginTest {
     @Before
     fun setup() {
         setupDagger()
-        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
-        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.shutdown()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test
@@ -83,7 +83,7 @@ class LoginTest {
                 "/api/user.json" to loginResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            getFakeApiServiceFactoryFrom(apiFactory).mockWebServer
+            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
         )
 
         testRule.launchActivity(null)

@@ -15,9 +15,9 @@ import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
@@ -37,7 +37,7 @@ class MyAccountTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var apiFactory: ApiServiceFactory
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     @get:Rule
     val testRule : ActivityTestRule<MyAccountActivity>
@@ -68,12 +68,13 @@ class MyAccountTest {
     fun setup(){
         setupDagger()
         setupDatabase()
-        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup(){
         testRule.finishActivity()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test
