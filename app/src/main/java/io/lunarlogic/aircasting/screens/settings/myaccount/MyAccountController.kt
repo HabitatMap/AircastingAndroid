@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.settings.myaccount
 import android.content.Context
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,8 +26,10 @@ class MyAccountController(
 
     override fun onSignOutClicked() {
         mSettings.logout()
-        GlobalScope.launch(Dispatchers.IO) {
-            DatabaseProvider.mAppDatabase?.clearAllTables()
+        SessionsSyncService.destroy()
+
+        DatabaseProvider.runQuery {
+            DatabaseProvider.get().clearAllTables()
         }
         LoginActivity.startAfterSignOut(mContext)
     }
