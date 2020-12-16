@@ -9,7 +9,6 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
-import io.lunarlogic.aircasting.screens.session_view.graph.SessionTimeSpan
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import java.util.*
@@ -129,22 +128,20 @@ class StatisticsContainer {
     }
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
-        val measurements = if(mVisibleTimeSpan != null) {
-            stream.measurements.filter { it.time in mVisibleTimeSpan!!}
-        } else stream.measurements
-
-        return measurements.size
+        return streamMeasurements(stream).size
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
-        val measurements = if (mVisibleTimeSpan == null) {
-            stream.measurements
-        } else {
-            stream.measurements.filter { it.time in mVisibleTimeSpan!!}
-        }
-        return measurements.maxBy { it.value }?.value ?: 0.0
+        return streamMeasurements(stream).maxBy { it.value }?.value ?: 0.0
     }
 
+    private fun streamMeasurements(stream: MeasurementStream): List<Measurement> {
+        return if (mVisibleTimeSpan == null) {
+            stream.measurements
+        } else {
+            stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!)
+        }
+    }
     private fun getNowValue(stream: MeasurementStream?): Double? {
         return stream?.measurements?.lastOrNull()?.value
     }

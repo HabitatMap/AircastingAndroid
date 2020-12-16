@@ -6,7 +6,6 @@ import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBOb
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
-import io.lunarlogic.aircasting.screens.session_view.graph.SessionTimeSpan
 import java.util.*
 
 class MeasurementStream(
@@ -114,6 +113,10 @@ class MeasurementStream(
         }
     }
 
+    fun getMeasurementsForTimeSpan(timeSpan: ClosedRange<Date>): List<Measurement> {
+        return measurements.filter { it.time in timeSpan}
+    }
+
     fun getLastMeasurements(amount: Int): MutableList<Measurement>? {
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList<Measurement>(measurements)
@@ -135,14 +138,7 @@ class MeasurementStream(
     }
 
     fun calculateSum(visibleTimeSpan: ClosedRange<Date>): Double {
-        var sum = 0.0
-        measurements.forEach { measurement ->
-            if (measurement.time in visibleTimeSpan) {
-                sum += measurement.value
-            }
-        }
-
-        return sum
+        return getMeasurementsForTimeSpan(visibleTimeSpan).sumByDouble { it.value }
     }
 
     private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
