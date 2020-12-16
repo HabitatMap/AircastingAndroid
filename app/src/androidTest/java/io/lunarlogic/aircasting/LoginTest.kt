@@ -10,7 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import okhttp3.mockwebserver.MockResponse
@@ -45,7 +45,7 @@ class LoginTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .apiModule(FakeApiServiceFactoryModule())
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .build()

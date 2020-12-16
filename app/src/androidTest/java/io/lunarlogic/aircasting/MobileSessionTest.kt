@@ -14,7 +14,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.TestPermissionsModule
 import io.lunarlogic.aircasting.di.TestSensorsModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
@@ -59,7 +59,7 @@ class MobileSessionTest {
             TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .apiModule(FakeApiServiceFactoryModule())
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .sensorsModule(

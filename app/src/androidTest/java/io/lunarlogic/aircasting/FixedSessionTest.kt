@@ -16,7 +16,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.mocks.FakeFixedSessionDetailsController
 import io.lunarlogic.aircasting.di.TestNewSessionWizardModule
 import io.lunarlogic.aircasting.di.TestPermissionsModule
@@ -70,7 +70,7 @@ class FixedSessionTest {
             TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .apiModule(FakeApiServiceFactoryModule())
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .sensorsModule(

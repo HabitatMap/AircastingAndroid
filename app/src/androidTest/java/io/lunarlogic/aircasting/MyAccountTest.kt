@@ -15,7 +15,7 @@ import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactory
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import io.lunarlogic.aircasting.lib.Settings
@@ -51,7 +51,7 @@ class MyAccountTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
-            .apiModule(FakeApiServiceFactoryModule())
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .build()
