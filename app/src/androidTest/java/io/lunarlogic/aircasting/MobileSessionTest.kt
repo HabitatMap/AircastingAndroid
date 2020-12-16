@@ -43,9 +43,6 @@ class MobileSessionTest {
     lateinit var apiFactory: ApiServiceFactory
 
     @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
-    @Inject
     lateinit var bluetoothManager: BluetoothManager
 
     @Inject
