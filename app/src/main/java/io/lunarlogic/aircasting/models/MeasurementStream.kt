@@ -130,17 +130,17 @@ class MeasurementStream(
         return calculateSum() / measurements.size
     }
 
-    fun calculateSum(visibleTimeSpan: SessionTimeSpan? = null): Double {
-        var sum: Double = 0.0
-        if (visibleTimeSpan != null) {
-            val range = visibleTimeSpan.from..visibleTimeSpan.to
-            measurements.forEach { measurement ->
-                if (measurement.time in range) {
-                    sum += measurement.value
-                }
+    fun calculateSum(): Double {
+        return measurements.sumByDouble { it.value }
+    }
+
+    fun calculateSum(visibleTimeSpan: SessionTimeSpan): Double {
+        var sum = 0.0
+        val range = visibleTimeSpan.from..visibleTimeSpan.to
+        measurements.forEach { measurement ->
+            if (measurement.time in range) {
+                sum += measurement.value
             }
-        } else {
-            sum = measurements.sumByDouble { it.value }
         }
 
         return sum

@@ -80,12 +80,20 @@ class StatisticsContainer {
 
     private fun bindAvgStatistics(stream: MeasurementStream?) {
         var avg: Double? = null
+        val sum: Double
 
         if (stream != null) {
             if (mSum == null) {
-                mSum = calculateSum(stream)
+                mSum = stream?.calculateSum()
             }
-            avg = mSum!! / calculateMeasurementsSize(stream)
+
+            sum = if (mVisibleTimeSpan != null) {
+                stream?.calculateSum(mVisibleTimeSpan!!)
+            } else {
+                mSum!!
+            }
+
+            avg = sum / calculateMeasurementsSize(stream)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
@@ -112,10 +120,6 @@ class StatisticsContainer {
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color)
         circleIndicator?.setColorFilter(color)
-    }
-
-    private fun calculateSum(stream: MeasurementStream?): Double? {
-        return stream?.calculateSum(mVisibleTimeSpan)
     }
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
