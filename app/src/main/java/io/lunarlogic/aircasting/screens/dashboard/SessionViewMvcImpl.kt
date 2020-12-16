@@ -21,6 +21,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
     protected val mLayoutInflater: LayoutInflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
+
+    private val mSessionCardLayout: ViewGroup
+
     private val mDisconnectedView: View
     private val mReconnectButton: Button
     private val mReconnectingLoader: ImageView
@@ -57,6 +60,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         this.rootView = inflater.inflate(R.layout.session_card, parent, false)
         mSupportFragmentManager = supportFragmentManager
+
+        mSessionCardLayout = findViewById(R.id.session_card_layout)
 
         mDateTextView = findViewById(R.id.session_date)
         mNameTextView = findViewById(R.id.session_name)
@@ -209,10 +214,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             mDisconnectedView.visibility = View.VISIBLE
             mActionsButton.visibility = View.GONE
             mExpandSessionButton.visibility = View.GONE
+            mSessionCardLayout.background = context.getDrawable(R.drawable.top_border)
         } else {
             mDisconnectedView.visibility = View.GONE
             mActionsButton.visibility = View.VISIBLE
             mExpandSessionButton.visibility = View.VISIBLE
+            mSessionCardLayout.background = null
         }
     }
 

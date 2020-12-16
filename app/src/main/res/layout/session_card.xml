@@ -8,6 +8,7 @@
     android:layout_margin="@dimen/keyline_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/session_card_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/keyline_4" >
