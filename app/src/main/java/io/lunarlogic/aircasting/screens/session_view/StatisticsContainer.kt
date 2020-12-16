@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.session_view.graph.SessionTimeSpan
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
+import java.util.*
 
 class StatisticsContainer {
     private val mContext: Context
@@ -32,7 +33,7 @@ class StatisticsContainer {
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
-    private var mVisibleTimeSpan: SessionTimeSpan? = null
+    private var mVisibleTimeSpan: ClosedRange<Date>? = null
 
     constructor(rootView: View?, context: Context) {
         mContext = context
@@ -48,7 +49,7 @@ class StatisticsContainer {
         mPeakCircleIndicator = rootView?.peak_circle_indicator
     }
 
-    fun bindSession(sessionPresenter: SessionPresenter?, visibleTimeSpan: SessionTimeSpan? = null) {
+    fun bindSession(sessionPresenter: SessionPresenter?, visibleTimeSpan: ClosedRange<Date>? = null) {
         val stream = sessionPresenter?.selectedStream
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
         mVisibleTimeSpan = visibleTimeSpan
@@ -71,7 +72,7 @@ class StatisticsContainer {
         }
     }
 
-    fun refresh(sessionPresenter: SessionPresenter?, visibleTimeSpan: SessionTimeSpan? = null) {
+    fun refresh(sessionPresenter: SessionPresenter?, visibleTimeSpan: ClosedRange<Date>? = null) {
         mSum = null
         mPeak = null
         mNow = null
@@ -111,7 +112,12 @@ class StatisticsContainer {
             mPeak = calculatePeak(stream)
         }
 
-        bindStatisticValues(stream, mPeak, mPeakValue, mPeakCircleIndicator)
+        val peak = if (mVisibleTimeSpan == null) {
+            mPeak
+        } else {
+            stream?.let { calculatePeak(it) }
+        }
+        bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
 
     private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?) {
@@ -124,15 +130,19 @@ class StatisticsContainer {
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
         val measurements = if(mVisibleTimeSpan != null) {
-            val range = mVisibleTimeSpan!!.from..mVisibleTimeSpan!!.to
-            stream.measurements.filter { it.time in range}
+            stream.measurements.filter { it.time in mVisibleTimeSpan!!}
         } else stream.measurements
 
         return measurements.size
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
-        return stream.measurements.maxBy { it.value }?.value ?: 0.0
+        val measurements = if (mVisibleTimeSpan == null) {
+            stream.measurements
+        } else {
+            stream.measurements.filter { it.time in mVisibleTimeSpan!!}
+        }
+        return measurements.maxBy { it.value }?.value ?: 0.0
     }
 
     private fun getNowValue(stream: MeasurementStream?): Double? {

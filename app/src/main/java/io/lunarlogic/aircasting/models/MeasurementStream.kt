@@ -134,11 +134,10 @@ class MeasurementStream(
         return measurements.sumByDouble { it.value }
     }
 
-    fun calculateSum(visibleTimeSpan: SessionTimeSpan): Double {
+    fun calculateSum(visibleTimeSpan: ClosedRange<Date>): Double {
         var sum = 0.0
-        val range = visibleTimeSpan.from..visibleTimeSpan.to
         measurements.forEach { measurement ->
-            if (measurement.time in range) {
+            if (measurement.time in visibleTimeSpan) {
                 sum += measurement.value
             }
         }

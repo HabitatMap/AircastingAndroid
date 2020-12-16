@@ -41,9 +41,9 @@ class GraphContainer: OnChartGestureListener {
     private val DATE_FORMAT = "HH:mm"
     private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
-    private var mOnTimeSpanChanged: (timeSpan: SessionTimeSpan) -> Unit
+    private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: SessionTimeSpan) -> Unit) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
@@ -246,8 +246,7 @@ class GraphContainer: OnChartGestureListener {
 
         val from = mGraph.lowestVisibleX
         val to = mGraph.highestVisibleX
-        mOnTimeSpanChanged.invoke(SessionTimeSpan(mGraphDataGenerator.dateFromFloat(from), mGraphDataGenerator.dateFromFloat(to)))
+        val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+        mOnTimeSpanChanged.invoke(timeSpan)
     }
 }
-
-data class SessionTimeSpan(val from: Date, val to: Date)

@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
+import java.util.*
 
 
 abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
@@ -54,7 +55,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         graphContainer.refresh(mSessionPresenter)
     }
 
-    private fun onTimeSpanChanged(timeSpan: SessionTimeSpan) {
+    private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {
         mStatisticsContainer?.refresh(mSessionPresenter, timeSpan)
     }
 }
