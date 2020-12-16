@@ -16,7 +16,13 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.mocks.FakeFixedSessionDetailsController
+import io.lunarlogic.aircasting.di.TestNewSessionWizardModule
+import io.lunarlogic.aircasting.di.TestPermissionsModule
+import io.lunarlogic.aircasting.di.TestSensorsModule
+import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
@@ -27,7 +33,6 @@ import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 
@@ -61,13 +66,18 @@ class FixedSessionTest {
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
     private fun setupDagger() {
-        val permissionsModule = TestPermissionsModule()
+        val permissionsModule =
+            TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app))
+            .sensorsModule(
+                TestSensorsModule(
+                    app
+                )
+            )
             .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
         app.appComponent = testAppComponent
@@ -84,7 +94,7 @@ class FixedSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
-        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
+        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
     }
 
     @After

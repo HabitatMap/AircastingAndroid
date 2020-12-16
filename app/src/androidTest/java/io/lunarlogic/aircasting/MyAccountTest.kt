@@ -1,7 +1,5 @@
 package io.lunarlogic.aircasting
 
-import android.content.Intent
-import androidx.room.Database
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -10,16 +8,16 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
@@ -70,7 +68,7 @@ class MyAccountTest {
     fun setup(){
         setupDagger()
         setupDatabase()
-        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
+        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
     }
 
     @After

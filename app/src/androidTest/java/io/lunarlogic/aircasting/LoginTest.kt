@@ -10,7 +10,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
@@ -54,12 +56,12 @@ class LoginTest {
     @Before
     fun setup() {
         setupDagger()
-        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
+        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
     }
 
     @After
     fun cleanup() {
-        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.shutdown()
+        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.shutdown()
     }
 
     @Test
@@ -81,7 +83,7 @@ class LoginTest {
                 "/api/user.json" to loginResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            FakeApiServiceFactoryConversion(apiFactory).mockWebServer
+            getFakeApiServiceFactoryFrom(apiFactory).mockWebServer
         )
 
         testRule.launchActivity(null)

@@ -1,13 +1,10 @@
 package io.lunarlogic.aircasting
 
-import android.view.View
-import android.widget.ImageView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,13 +14,16 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.helpers.FakeApiServiceFactoryConversion
+import io.lunarlogic.aircasting.di.mocks.FakeApiServiceFactoryModule
+import io.lunarlogic.aircasting.di.TestPermissionsModule
+import io.lunarlogic.aircasting.di.TestSensorsModule
+import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -55,13 +55,18 @@ class MobileSessionTest {
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
     private fun setupDagger() {
-        val permissionsModule = TestPermissionsModule()
+        val permissionsModule =
+            TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(FakeApiServiceFactoryModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app))
+            .sensorsModule(
+                TestSensorsModule(
+                    app
+                )
+            )
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -77,12 +82,12 @@ class MobileSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
-        FakeApiServiceFactoryConversion(apiFactory).mockWebServer.start()
+        getFakeApiServiceFactoryFrom(apiFactory).mockWebServer.start()
     }
 
     @After
     fun cleanup() {
-        //mockWebServer.shutdown()
+//        mockWebServer.shutdown()
     }
 
     @Test
