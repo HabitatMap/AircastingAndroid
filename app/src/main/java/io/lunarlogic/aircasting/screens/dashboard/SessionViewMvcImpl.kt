@@ -127,12 +127,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun showExpandedMeasurementsTableValues(): Boolean
-    protected abstract fun buildBottomSheet(): BottomSheet?
+    protected abstract fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet?
 
     protected open fun showChart() = true
 
     private fun actionsButtonClicked() {
-        mBottomSheet = buildBottomSheet()
+        mBottomSheet = buildBottomSheet(mSessionPresenter)
         mBottomSheet?.show(mSupportFragmentManager)
     }
 

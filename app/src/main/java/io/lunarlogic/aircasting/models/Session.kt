@@ -4,9 +4,7 @@ import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewFixedMvcImpl
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileActiveMvcImpl
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileDormantMvcImpl
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import java.text.SimpleDateFormat
 import java.util.*
@@ -183,6 +181,10 @@ class Session(
 
     fun isMobile(): Boolean {
         return type == Type.MOBILE
+    }
+
+    fun isAirBeam3(): Boolean {
+        return DeviceItem.isAirBeam3(sensorPackageNamesString())
     }
 
     fun isRecording(): Boolean {

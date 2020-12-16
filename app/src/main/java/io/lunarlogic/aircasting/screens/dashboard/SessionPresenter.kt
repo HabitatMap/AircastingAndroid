@@ -71,6 +71,10 @@ class SessionPresenter() {
         return session?.isDisconnected() == true
     }
 
+    fun isDisconnectable(): Boolean {
+        return session?.isAirBeam3() == true
+    }
+
     fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {
         val hash = hashMapOf<String, SensorThreshold>()
         sensorThresholds.forEach {
