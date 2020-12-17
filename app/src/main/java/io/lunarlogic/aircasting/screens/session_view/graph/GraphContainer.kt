@@ -15,7 +15,6 @@ import com.github.mikephil.charting.listener.OnChartGestureListener
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
@@ -220,11 +219,11 @@ class GraphContainer: OnChartGestureListener {
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
 
     override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
-        updateLabelsBasedOnVisibleRange()
-        updateSessionPresenterSpan()
+        updateLabelsBasedOnVisibleTimeSpan()
+        updateVisibleTimeSpan()
     }
 
-    private fun updateLabelsBasedOnVisibleRange() {
+    private fun updateLabelsBasedOnVisibleTimeSpan() {
         mGraph ?: return
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -241,7 +240,7 @@ class GraphContainer: OnChartGestureListener {
         }
     }
 
-    private fun updateSessionPresenterSpan() {
+    private fun updateVisibleTimeSpan() {
         mGraph ?: return
 
         val from = mGraph.lowestVisibleX
