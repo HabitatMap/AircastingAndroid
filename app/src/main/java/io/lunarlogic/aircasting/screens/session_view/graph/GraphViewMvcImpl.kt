@@ -21,7 +21,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(),  this::onTimeSpanChanged)
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged)
     }
 
     abstract fun defaultZoomSpan(): Int?
@@ -56,6 +56,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {
-        mStatisticsContainer?.refresh(mSessionPresenter, timeSpan)
+        mSessionPresenter?.visibleTimeSpan = timeSpan
+        mStatisticsContainer?.refresh(mSessionPresenter)
     }
 }

@@ -48,10 +48,10 @@ class StatisticsContainer {
         mPeakCircleIndicator = rootView?.peak_circle_indicator
     }
 
-    fun bindSession(sessionPresenter: SessionPresenter?, visibleTimeSpan: ClosedRange<Date>? = null) {
+    fun bindSession(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
-        mVisibleTimeSpan = visibleTimeSpan
+        mVisibleTimeSpan = sessionPresenter?.visibleTimeSpan
 
         mStatisticsView?.visibility = View.VISIBLE
 
@@ -71,26 +71,25 @@ class StatisticsContainer {
         }
     }
 
-    fun refresh(sessionPresenter: SessionPresenter?, visibleTimeSpan: ClosedRange<Date>? = null) {
+    fun refresh(sessionPresenter: SessionPresenter?) {
         mSum = null
         mPeak = null
         mNow = null
-        bindSession(sessionPresenter, visibleTimeSpan)
+        bindSession(sessionPresenter)
     }
 
     private fun bindAvgStatistics(stream: MeasurementStream?) {
         var avg: Double? = null
-        val sum: Double
 
         if (stream != null) {
             if (mSum == null) {
-                mSum = stream?.calculateSum()
+                mSum = stream.calculateSum()
             }
 
-            sum = if (mVisibleTimeSpan != null) {
-                stream?.calculateSum(mVisibleTimeSpan!!)
-            } else {
+            val sum = if (mVisibleTimeSpan == null) {
                 mSum!!
+            } else {
+                stream.calculateSum(mVisibleTimeSpan!!)
             }
 
             avg = sum / calculateMeasurementsSize(stream)
