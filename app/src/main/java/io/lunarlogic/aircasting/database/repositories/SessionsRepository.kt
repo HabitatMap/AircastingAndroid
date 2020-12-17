@@ -50,13 +50,11 @@ class SessionsRepository {
     }
 
     fun disconnectMobileSessions() {
-        mDatabase.sessions().updateStatusForSessionTypeAndExistingStatus(
-            Session.Status.DISCONNECTED, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, Session.Type.MOBILE, Session.Status.RECORDING)
     }
 
     fun disconnectSession(deviceId: String) {
-        mDatabase.sessions().updateStatusForSessionWithDeviceIdAndExistingStatus(
-            Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
+        mDatabase.sessions().disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }
 
     fun finishedSessions(): List<Session> {
