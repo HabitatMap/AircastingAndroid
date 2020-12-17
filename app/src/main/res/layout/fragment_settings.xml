@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/settings_contribute_to_crowdmap_description"
                 android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                app:layout_constraintBottom_toTopOf="@+id/backend_settings_button"
+                app:layout_constraintBottom_toTopOf="@+id/separator1"
                 app:layout_constraintEnd_toEndOf="@id/description_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/crowd_map_settings_button" />
@@ -62,15 +62,60 @@
                 android:id="@+id/crowd_map_settings_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 app:layout_constraintBottom_toBottomOf="@+id/crowd_map_settings_button"
                 app:layout_constraintEnd_toEndOf="@+id/crowd_map_settings_button"
                 app:layout_constraintTop_toTopOf="@+id/crowd_map_settings_button" />
 
             <View
+                android:id="@+id/separator1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
                 app:layout_constraintTop_toBottomOf="@id/crowd_map_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/map_settings_button"/>
+
+            <TextView
+                android:id="@+id/map_settings_button"
+                style="@style/Widget.Aircasting.SettingsButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable maps"
+                app:layout_constraintTop_toTopOf="@id/separator2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/map_enable_description" />
+
+            <TextView
+                android:id="@+id/map_enable_description"
+                style="@style/Widget.Aircasting.SettingsDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="If you switch it off..."
+                android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
+                app:layout_constraintTop_toBottomOf="@id/map_settings_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/description_guideline"
+                app:layout_constraintBottom_toTopOf="@id/separator2"
+                />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/map_settings_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                app:layout_constraintBottom_toBottomOf="@+id/map_settings_button"
+                app:layout_constraintEnd_toEndOf="@+id/map_settings_button"
+                app:layout_constraintTop_toTopOf="@+id/map_settings_button"/>
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/aircasting_grey_100"
+                app:layout_constraintTop_toBottomOf="@id/map_enable_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/backend_settings_button"/>

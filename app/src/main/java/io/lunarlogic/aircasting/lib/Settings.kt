@@ -10,10 +10,12 @@ open class Settings(mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
+    protected val MAPS_ENABLED_KEY = "maps_enabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
 
     private val DEFAULT_CROWD_MAP_ENABLED = true
+    private val DEFAULT_MAPS_ENABLED = true
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
 
@@ -31,14 +33,12 @@ open class Settings(mApplication: Application) {
         return getStringFromSettings(EMAIL_KEY)
     }
 
-    fun toggleCrowdMapEnabled() {
-        val enabled = !isCrowdMapEnabled()
-        saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
-        Log.i("SETTINGS", enabled.toString())
-    }
-
     fun isCrowdMapEnabled(): Boolean {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
+    }
+
+    fun areMapsEnabled(): Boolean {
+        return getBooleanFromSettings(MAPS_ENABLED_KEY, DEFAULT_MAPS_ENABLED)
     }
 
     open fun getBackendUrl(): String? {
@@ -47,6 +47,18 @@ open class Settings(mApplication: Application) {
 
     open fun getBackendPort(): String? {
         return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)
+    }
+
+    fun toggleMapSettingsEnabled(){
+        val enabled = !areMapsEnabled()
+        saveToSettings(MAPS_ENABLED_KEY, enabled)
+        Log.i("SETTINGS", enabled.toString())
+    }
+
+    fun toggleCrowdMapEnabled() {
+        val enabled = !isCrowdMapEnabled()
+        saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
+        Log.i("SETTINGS", enabled.toString())
     }
 
     fun backendSettingsChanged(url: String, port: String) {

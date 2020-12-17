@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SyncError
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class SessionsSyncService {
     private val apiService: ApiService
     private val errorHandler: ErrorHandler
+    private val settings: Settings
 
     private val uploadService: MobileSessionUploadService
     private val downloadService: SessionDownloadService
@@ -27,20 +29,21 @@ class SessionsSyncService {
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
 
-    private constructor(apiService: ApiService, errorHandler: ErrorHandler) {
+    private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
         this.apiService = apiService
         this.errorHandler = errorHandler
+        this.settings = settings
 
-        this.uploadService = MobileSessionUploadService(apiService, errorHandler)
+        this.uploadService = MobileSessionUploadService(apiService, errorHandler, settings)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
     }
 
     companion object {
         private var mSingleton: SessionsSyncService? = null
 
-        fun get(apiService: ApiService, errorHandler: ErrorHandler): SessionsSyncService {
+        fun get(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings): SessionsSyncService {
             if (mSingleton == null) {
-                mSingleton = SessionsSyncService(apiService, errorHandler)
+                mSingleton = SessionsSyncService(apiService, errorHandler, settings)
             }
 
             return mSingleton!!
@@ -108,7 +111,7 @@ class SessionsSyncService {
     private fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
             val session = sessionRepository.loadSessionAndMeasurementsByUUID(uuid)
-            if (session != null && session.isUploadable()) { // TODO: move isUploadable here and check it from settings (disable map setting)
+            if (session != null && isUploadable(session)) {
                 val onUploadSuccess = {
                     // TODO: handle update notes etc
                 }
@@ -127,5 +130,10 @@ class SessionsSyncService {
             }
             downloadService.download(uuid, onDownloadSuccess)
         }
+    }
+
+    private fun isUploadable(session: Session): Boolean{
+        //handle false if mobile && disabled maps
+        return !(settings.areMapsEnabled() && session.type==Session.Type.MOBILE)
     }
 }

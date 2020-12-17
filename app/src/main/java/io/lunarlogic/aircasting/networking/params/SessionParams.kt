@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.lib.DateConverter
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.sensor.microphone.DEFAULT_CALIBRATION
@@ -11,13 +12,20 @@ class SessionParams {
         val FIXED_SESSION_TYPE = "FixedSession"
     }
 
-    constructor(session: Session) {
+    constructor(session: Session, settings: Settings?) {
         this.uuid = session.uuid
         this.type = when(session.type) {
             Session.Type.FIXED -> FIXED_SESSION_TYPE
             Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
-        // TODO: this.contribute = based on session type and settings (contribute setting)
+
+        // this.contribute based on session type and settings (contribute setting)
+        this.contribute = when(this.type){
+            FIXED_SESSION_TYPE -> true
+            MOBILE_SESSION_TYPE -> settings!!.isCrowdMapEnabled() // non null asserted, because settings=null only for Fixed_Session_Type
+            else -> true
+        }
+
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
         this.end_time = DateConverter.toDateString(session.endTime!!)
@@ -40,7 +48,7 @@ class SessionParams {
     val start_time: String
     val end_time: String
     val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only
-    val contribute = true // TODO: handle from settings
+    val contribute: Boolean
     val is_indoor: Boolean
     val notes = listOf<String>() // TODO: handle after adding notes
     val version: Int

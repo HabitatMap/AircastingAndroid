@@ -49,16 +49,16 @@ class MainController(
         mErrorHandler.registerUser(mSettings.getEmail())
 
         val apiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
-        mSessionManager = SessionManager(rootActivity, apiService)
+        mSessionManager = SessionManager(rootActivity, apiService, mSettings)
 
-        mConnectivityManager = ConnectivityManager(apiService, rootActivity)
+        mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)
         registerConnectivityManager()
 
         sync(apiService)
     }
 
     private fun sync(apiService: ApiService) {
-        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler)
+        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings)
 
         mMobileSessionsSyncService.sync({
             mViewMvc.showLoader()

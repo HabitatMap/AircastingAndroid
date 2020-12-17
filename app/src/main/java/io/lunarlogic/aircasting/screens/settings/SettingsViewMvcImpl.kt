@@ -29,6 +29,11 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onToggleCrowdMapEnabled()
         }
 
+        val mapEnabledSwitch = rootView?.map_settings_switch
+        mapEnabledSwitch?.setOnCheckedChangeListener { p0, p1 ->
+            Log.i("SETTINGS_FRAGMENT", "Map Switch switched")
+            onToggleMapsEnabled()
+        }
         val backendSettingsButton = rootView?.findViewById<Button>(R.id.backend_settings_button)
         backendSettingsButton?.setOnClickListener {
             onBackendSettingsClicked()
@@ -44,6 +49,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     private fun onToggleCrowdMapEnabled() {
         for(listener in listeners){
             listener.onToggleCrowdMapEnabled()
+        }
+    }
+
+    private fun onToggleMapsEnabled(){
+        for(listener in listeners){
+            listener.onToggleMapsEnabled()
         }
     }
 

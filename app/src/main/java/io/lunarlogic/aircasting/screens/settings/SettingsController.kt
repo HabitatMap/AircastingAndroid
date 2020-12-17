@@ -32,6 +32,10 @@ class SettingsController(
         mSettings.toggleCrowdMapEnabled()
     }
 
+    override fun onToggleMapsEnabled() {
+        mSettings.toggleMapSettingsEnabled()
+    }
+
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
     }
