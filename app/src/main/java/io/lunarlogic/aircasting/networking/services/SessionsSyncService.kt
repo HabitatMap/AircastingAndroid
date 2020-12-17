@@ -108,7 +108,7 @@ class SessionsSyncService {
     private fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
             val session = sessionRepository.loadSessionAndMeasurementsByUUID(uuid)
-            if (session != null && session.isUploadable()) {
+            if (session != null && session.isUploadable()) { // TODO: move isUploadable here and check it from settings (disable map setting)
                 val onUploadSuccess = {
                     // TODO: handle update notes etc
                 }

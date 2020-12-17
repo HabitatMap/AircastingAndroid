@@ -17,6 +17,7 @@ class SessionParams {
             Session.Type.FIXED -> FIXED_SESSION_TYPE
             Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
+        // TODO: this.contribute = based on session type and settings (contribute setting)
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
         this.end_time = DateConverter.toDateString(session.endTime!!)
