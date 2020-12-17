@@ -284,15 +284,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         AnimatedLoader(mReconnectingLoader).start()
         mReconnectingLoader.visibility = View.VISIBLE
         mReconnectButton.isEnabled = false
-        mReconnectButton.translationY = 6f
-        mReconnectButton.translationZ = -6f
+
+        // we need to revert default translation set in
+        // Widget.Aircasting.Button for disabled button state
+        mReconnectButton.translationY = -context.resources.getDimension(R.dimen.button_shadow_y_translation)
+        mReconnectButton.translationZ = -context.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
     override fun hideReconnectingLoader() {
         mReconnectingLoader.visibility = View.GONE
         mReconnectButton.isEnabled = true
-        mReconnectButton.translationY = -6f
-        mReconnectButton.translationZ = 6f
+
+        // we need to set default translation from Widget.Aircasting.Button
+        // back again after reverting in showReconnectingLoader()
+        mReconnectButton.translationY = context.resources.getDimension(R.dimen.button_shadow_y_translation)
+        mReconnectButton.translationZ = context.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
