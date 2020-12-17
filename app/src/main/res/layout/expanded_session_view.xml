@@ -5,6 +5,43 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chart_container"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="100dp"
+            />
+        <TextView
+            android:id="@+id/chart_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chart_view" />
+        <TextView
+            android:id="@+id/chart_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chart_view" />
+        <TextView
+            android:id="@+id/chart_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+            android:layout_marginTop="@dimen/keyline_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chart_end_time" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Button
         style="@style/Widget.Aircasting.ExpandedCardButtons"
         android:id="@+id/follow_button"
@@ -13,7 +50,7 @@
         android:text="@string/follow_button"
         android:backgroundTint="@color/aircasting_blue_400"
         android:textColor="@color/aircasting_white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -23,7 +60,7 @@
         android:layout_height="wrap_content"
         android:text="@string/unfollow_button"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -33,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="@string/map_button"
         android:layout_marginEnd="@dimen/keyline_2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintEnd_toStartOf="@id/graph_button" />
 
     <Button
@@ -42,6 +79,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/graph_button"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

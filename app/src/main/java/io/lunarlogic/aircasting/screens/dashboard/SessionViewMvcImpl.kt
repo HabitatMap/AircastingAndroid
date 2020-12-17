@@ -15,7 +15,7 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
-import kotlinx.android.synthetic.main.session_card.view.*
+import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
@@ -215,6 +215,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             mActionsButton.visibility = View.GONE
             mExpandSessionButton.visibility = View.GONE
             mSessionCardLayout.background = context.getDrawable(R.drawable.top_border)
+
+            mExpandedSessionView.visibility = View.GONE
         } else {
             mDisconnectedView.visibility = View.GONE
             mActionsButton.visibility = View.VISIBLE
@@ -256,7 +258,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
-        mChartView?.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
