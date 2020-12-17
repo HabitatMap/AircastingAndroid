@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.models.Session
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 open class AirBeam2Connector(
@@ -18,6 +19,8 @@ open class AirBeam2Connector(
 ): AirBeamConnector() {
     private val mAirBeamConfigurator = AirBeam2Configurator(mSettings)
     private val mAirBeam2Reader = AirBeam2Reader(mErrorHandler)
+
+    private val connectionEstablished = AtomicBoolean(false)
 
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
@@ -54,6 +57,8 @@ open class AirBeam2Connector(
         private lateinit var mOutputStream: OutputStream
 
         override fun run() {
+            connectionEstablished.set(false)
+
             try {
                 mmSocket?.use { socket ->
                     socket.connect()
@@ -63,6 +68,7 @@ open class AirBeam2Connector(
                     mOutputStream = socket.outputStream
 
                     onConnectionSuccessful(deviceItem.id)
+                    connectionEstablished.set(true)
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
@@ -70,7 +76,7 @@ open class AirBeam2Connector(
                 onDisconnected(deviceId)
                 onConnectionFailed(deviceId)
 
-                if (!cancelStarted.get()) {
+                if (!cancelStarted.get() && !connectionEstablished.get()) {
                     val message = mErrorHandler.obtainMessage(
                         ResultCodes.AIR_BEAM2_CONNECTION_OPEN_FAILED,
                         AirBeam2ConnectionOpenFailed(e)
