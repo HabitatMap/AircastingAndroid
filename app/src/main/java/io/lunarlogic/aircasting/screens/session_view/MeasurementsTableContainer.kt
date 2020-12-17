@@ -110,7 +110,7 @@ class MeasurementsTableContainer {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             bindStream(stream)
-            bindMeasurement(session, stream)
+            bindMeasurement(stream)
         }
     }
 
@@ -186,30 +186,13 @@ class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    private fun bindMeasurement(session: Session, stream: MeasurementStream) {
-        val measurementValue = if (mDisplayAvarages) {
-            stream.getAvgMeasurement()
-        } else {
-            stream.measurements.lastOrNull()?.value
-        }
-
-        measurementValue ?: return
-
-        val valueView = renderValueView()
-        val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
-        val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
+    private fun bindMeasurement(stream: MeasurementStream) {
+        val measurementValue = getMeasurementValue(stream) ?: return
 
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
-        if (session.isDisconnected()) {
-            valueTextView.text = "-"
-            circleView.visibility = View.GONE
-        } else {
-            valueTextView.text = Measurement.formatValue(measurementValue)
-            circleView.visibility = View.VISIBLE
-            circleView.setColorFilter(color)
-        }
-
         mLastMeasurementColors[stream] = color
+
+        val valueView = renderValueView(measurementValue, color)
 
         mMeasurementValues?.addView(valueView)
         
@@ -227,8 +210,29 @@ class MeasurementsTableContainer {
         }
     }
 
-    private fun renderValueView(): View {
+    private fun getMeasurementValue(stream: MeasurementStream): Double? {
+        return if (mDisplayAvarages) {
+            stream.getAvgMeasurement()
+        } else {
+            stream.measurements.lastOrNull()?.value
+        }
+    }
+
+    private fun renderValueView(measurementValue: Double, color: Int): View {
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
+
+        val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
+        val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
+
+        if (mSessionPresenter?.isDisconnected() == true) {
+            valueTextView.text = "-"
+            circleView.visibility = View.GONE
+        } else {
+            valueTextView.text = Measurement.formatValue(measurementValue)
+            circleView.visibility = View.VISIBLE
+            circleView.setColorFilter(color)
+        }
+
         valueView.background = null
         return valueView
     }
