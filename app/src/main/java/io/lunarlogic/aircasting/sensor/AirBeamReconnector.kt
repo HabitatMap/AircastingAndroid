@@ -14,6 +14,8 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
     private val mContext: Context,
@@ -23,8 +25,10 @@ class AirBeamReconnector(
     private val mBluetoothManager: BluetoothManager
 ): BroadcastReceiver(), AirBeamConnector.Listener {
     private var mSession: Session? = null
+    private var mDeviceItem: DeviceItem? = null
     private var mAirBeamConnector: AirBeamConnector? = null
     private var mCallback: (() -> Unit)? = null
+    private val DISCOVERY_TIMEOUT = 5000L
 
     fun disconnect(session: Session) {
         sendDisconnectedEvent(session)
@@ -45,7 +49,16 @@ class AirBeamReconnector(
         } else {
             registerBluetoothDeviceFoundReceiver()
             mBluetoothManager.startDiscovery()
+            failAfterTimeout()
         }
+    }
+
+    private fun failAfterTimeout() {
+        Timer().schedule(timerTask {
+            if (mDeviceItem == null) {
+                onDiscoveryFailed()
+            }
+        }, DISCOVERY_TIMEOUT)
     }
 
     private fun getDeviceItemFromPairedDevices(session: Session): DeviceItem? {
@@ -74,6 +87,7 @@ class AirBeamReconnector(
 
     private fun onBluetoothDeviceFound(deviceItem: DeviceItem) {
         if (deviceItem.id == mSession?.deviceId) {
+            mDeviceItem = deviceItem
             unRegisterBluetoothDeviceFoundReceiver()
             reconnect(deviceItem)
         }
@@ -97,6 +111,10 @@ class AirBeamReconnector(
     }
 
     override fun onConnectionFailed(deviceId: String) {
+        mCallback?.invoke()
+    }
+
+    fun onDiscoveryFailed() {
         mCallback?.invoke()
     }
 
