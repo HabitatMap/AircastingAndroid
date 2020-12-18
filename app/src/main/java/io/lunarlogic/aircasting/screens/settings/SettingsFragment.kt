@@ -21,11 +21,10 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = SettingsViewMvcImpl(inflater, container, childFragmentManager)
-
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
+        val view = SettingsViewMvcImpl(inflater, container, settings)
         controller = SettingsController(context, view, settings, childFragmentManager)
 
         return view.rootView

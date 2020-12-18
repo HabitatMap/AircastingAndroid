@@ -38,7 +38,6 @@ class BackendSettingsDialog(
         val urlValue = mView.url_input.text.toString().trim()
         val portValue = mView.port_input.text.toString().trim()
         listener.confirmClicked(urlValue, portValue)
-        Log.i("SETTINGS_DIALOG", "Adress and port values added to sharedPreferences")
         dismiss()
     }
 }
