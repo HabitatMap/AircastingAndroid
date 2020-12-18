@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_17_18
 import io.lunarlogic.aircasting.database.migrations.MIGRATION_18_19
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_19_20
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,14 +21,15 @@ import kotlinx.coroutines.launch
         MeasurementDBObject::class,
         SensorThresholdDBObject::class
     ),
-    version = 19,
+    version = 20,
     exportSchema = true
 )
 @TypeConverters(
     DateConverter::class,
     TagsConverter::class,
     SessionStatusConverter::class,
-    SessionTypeConverter::class
+    SessionTypeConverter::class,
+    DeviceTypeConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessions(): SessionDao
@@ -55,7 +57,8 @@ class DatabaseProvider {
                 ).addMigrations(
                     MIGRATION_16_17,
                     MIGRATION_17_18,
-                    MIGRATION_18_19
+                    MIGRATION_18_19,
+                    MIGRATION_19_20
                 ).build()
             }
 

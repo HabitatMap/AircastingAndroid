@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import kotlinx.android.synthetic.main.network_list_item.view.*
 
 
@@ -24,7 +25,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     FixedSessionDetailsViewMvc, FixedSessionDetailsViewMvc.OnPasswordProvidedListener {
     private val fragmentManager: FragmentManager
     private var sessionUUID: String
-    private var deviceId: String
+    private var deviceItem: DeviceItem
     private var indoor = true
     private var streamingMethod = Session.StreamingMethod.CELLULAR
     private var streamingMethodChangedListener: FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener? = null
@@ -43,12 +44,12 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         parent: ViewGroup?,
         fragmentManager: FragmentManager,
         sessionUUID: String,
-        deviceId: String
+        deviceItem: DeviceItem
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_fixed_session_details, parent, false)
         this.fragmentManager = fragmentManager
         this.sessionUUID = sessionUUID
-        this.deviceId = deviceId
+        this.deviceItem = deviceItem
 
         val indoorToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.indoor_toggle)
         indoorToggle?.addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -203,7 +204,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         val errorMessage = validate(sessionName, wifiName, wifiPassword)
 
         if (errorMessage == null) {
-            notifyAboutSuccess(deviceId, sessionName, sessionTags, wifiName, wifiPassword)
+            notifyAboutSuccess(sessionName, sessionTags, wifiName, wifiPassword)
         } else {
             notifyAboutValidationError(errorMessage)
         }
@@ -216,7 +217,6 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     }
 
     private fun notifyAboutSuccess(
-        deviceId: String,
         sessionName: String,
         sessionTags: ArrayList<String>,
         wifiName: String,
@@ -225,7 +225,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         for (listener in listeners) {
             listener.onSessionDetailsContinueClicked(
                 sessionUUID,
-                deviceId,
+                deviceItem,
                 Session.Type.FIXED,
                 sessionName,
                 sessionTags,

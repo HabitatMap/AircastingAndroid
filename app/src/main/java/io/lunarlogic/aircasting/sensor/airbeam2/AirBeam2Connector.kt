@@ -51,7 +51,7 @@ open class AirBeam2Connector(
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
-            device.createRfcommSocketToServiceRecord(SPP_SERIAL)
+            device?.createRfcommSocketToServiceRecord(SPP_SERIAL)
         }
 
         private lateinit var mOutputStream: OutputStream
@@ -67,7 +67,7 @@ open class AirBeam2Connector(
 
                     mOutputStream = socket.outputStream
 
-                    onConnectionSuccessful(deviceItem.id)
+                    onConnectionSuccessful(deviceItem)
                     connectionEstablished.set(true)
                     mAirBeam2Reader.run(socket.inputStream)
                 }

@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
 
-open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
+open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
     open val name: String
     open val address: String
     open val id: String
@@ -32,8 +32,8 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     }
 
     init {
-        name = mBluetoothDevice.name ?: "Unknown"
-        address = mBluetoothDevice.address
+        name = mBluetoothDevice?.name ?: "Unknown"
+        address = mBluetoothDevice?.address ?: ""
         id = name.split(":", "-").last()
         type = getType(name)
     }
@@ -41,7 +41,12 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice) {
     enum class Type(val value: Int) {
         OTHER(-1),
         AIRBEAM2(0),
-        AIRBEAM3(1)
+        AIRBEAM3(1),
+        MIC(2);
+
+        companion object {
+            fun fromInt(value: Int) = values().first { it.value == value }
+        }
     }
 
     val bluetoothDevice get() = mBluetoothDevice

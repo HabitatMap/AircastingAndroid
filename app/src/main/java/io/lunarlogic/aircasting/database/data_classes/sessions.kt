@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.database.data_classes
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -16,6 +17,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
     @ColumnInfo(name = "type") val type: Session.Type,
     @ColumnInfo(name = "device_id") val deviceId: String?,
+    @ColumnInfo(name = "device_type") val deviceType: DeviceItem.Type?,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
@@ -35,6 +37,7 @@ data class SessionDBObject(
                 session.uuid,
                 session.type,
                 session.deviceId,
+                session.deviceType,
                 session.name,
                 session.tags,
                 session.startTime,

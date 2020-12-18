@@ -89,7 +89,7 @@ class AirBeamReconnector(
         }
     }
 
-    override fun onConnectionSuccessful(deviceId: String) {
+    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
         mAirBeamConnector?.reconnectMobileSession()
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
