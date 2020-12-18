@@ -2,42 +2,66 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/aircasting_grey_50">
 
     <include android:id="@+id/app_bar_layout"
-        layout="@layout/prominent_app_bar"
-        />
-
-    <Button
-        android:id="@+id/sign_out_button"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="108dp"
-        android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
-        android:text="@string/sign_out"
-        android:textAlignment="viewStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
+        layout="@layout/app_bar" />
 
     <TextView
-        android:id="@+id/login_state_textView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="12dp"
+        android:id="@+id/title"
+        style="@style/TextAppearance.Aircasting.AppBar"
         android:background="@color/aircasting_white"
-        android:paddingLeft="@dimen/keyline_2"
-        android:paddingTop="@dimen/keyline_2"
-        android:paddingRight="@dimen/keyline_2"
-        android:paddingBottom="@dimen/keyline_2"
-        android:text="@string/you_are_currently_logged_in_as"
-        android:textAppearance="?attr/textAppearanceHeadline4"
-        app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.005"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/keyline_10"
+        android:paddingBottom="@dimen/keyline_4"
+        android:text="My account"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/keyline_6"
+            android:paddingBottom="@dimen/keyline_6">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="@dimen/keyline_10"
+                android:layout_marginEnd="@dimen/keyline_10"
+                android:textAppearance="@style/TextAppearance.Aircasting.Cards.Body1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/sign_out_button" />
+
+            <Button
+                android:id="@+id/sign_out_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/keyline_6"
+                android:layout_marginStart="@dimen/keyline_10"
+                android:layout_marginEnd="@dimen/keyline_10"
+                android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
+                android:text="@string/my_account_sign_out"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.Aircasting.Cards.Headline1"
+                app:layout_constraintTop_toBottomOf="@id/header"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

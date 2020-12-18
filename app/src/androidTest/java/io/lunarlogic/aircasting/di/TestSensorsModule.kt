@@ -1,6 +1,8 @@
 package io.lunarlogic.aircasting.di
 
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.di.mocks.FakeAirBeamConnectorFactory
+import io.lunarlogic.aircasting.di.mocks.FakeAudioReader
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
@@ -15,8 +17,13 @@ class TestSensorsModule(
         settings: Settings,
         errorHandler: ErrorHandler
     ): AirBeamConnectorFactory {
-        return FakeAirBeamConnectorFactory(app, settings, errorHandler)
+        return FakeAirBeamConnectorFactory(
+            app,
+            settings,
+            errorHandler
+        )
     }
 
-    override fun providesAudioReader(): AudioReader = FakeAudioReader(app)
+    override fun providesAudioReader(): AudioReader =
+        FakeAudioReader(app)
 }

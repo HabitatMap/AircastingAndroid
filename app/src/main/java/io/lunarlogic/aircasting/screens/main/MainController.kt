@@ -17,7 +17,8 @@ import org.greenrobot.eventbus.EventBus
 class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvc,
-    private val mSettings: Settings
+    private val mSettings: Settings,
+    private val mApiServiceFactory: ApiServiceFactory
 ) {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
@@ -47,17 +48,17 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-        mSessionManager = SessionManager(rootActivity, apiService)
+        val apiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+        mSessionManager = SessionManager(rootActivity, apiService, mSettings)
 
-        mConnectivityManager = ConnectivityManager(apiService, rootActivity)
+        mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)
         registerConnectivityManager()
 
         sync(apiService)
     }
 
     private fun sync(apiService: ApiService) {
-        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler)
+        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings)
 
         mMobileSessionsSyncService.sync({
             mViewMvc.showLoader()

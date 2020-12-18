@@ -184,7 +184,16 @@
     <!-- Chart -->
     <string name="fixed_session_units_label">1 hr avg</string>
     <string name="mobile_session_units_label">1 min avg</string>
-    <string name="sign_out">Sign out</string>
-    <string name="my_account">My account</string>
-    <string name="you_are_currently_logged_in_as">You are currently logged in as ...</string>
+
+    <!-- Settings -->
+    <string name="settings_my_account">My account</string>
+    <string name="settings_contribute_to_crowdmap">Contribute to crowd map</string>
+    <string name="settings_contribute_to_crowdmap_description">Data contributed to the CrowdMap is publicly available at aircasting.org</string>
+    <string name="settings_backend_settings">Backend settings</string>
+    <string name="settings_backend_url">Url</string>
+    <string name="settings_backend_port">Port</string>
+
+    <!-- My account -->
+    <string name="my_account_sign_out">Sign out</string>
+    <string name="my_account_info">You are currently logged in as\n%1$s</string>
 </resources>

@@ -9,16 +9,16 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import okhttp3.mockwebserver.MockResponse
-import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.MockWebServerModule
-import io.lunarlogic.aircasting.di.PermissionsModule
+import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
+import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.Assert.assertEquals
 
@@ -34,7 +34,7 @@ class LoginTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var mockWebServer: MockWebServer
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -45,9 +45,9 @@ class LoginTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -56,11 +56,12 @@ class LoginTest {
     @Before
     fun setup() {
         setupDagger()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test
@@ -82,7 +83,7 @@ class LoginTest {
                 "/api/user.json" to loginResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            mockWebServer
+            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
         )
 
         testRule.launchActivity(null)

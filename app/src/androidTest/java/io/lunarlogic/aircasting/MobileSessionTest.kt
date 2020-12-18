@@ -1,13 +1,10 @@
 package io.lunarlogic.aircasting
 
-import android.view.View
-import android.widget.ImageView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,11 +14,15 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.di.TestPermissionsModule
+import io.lunarlogic.aircasting.di.TestSensorsModule
+import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -38,13 +39,13 @@ class MobileSessionTest {
     lateinit var settings: Settings
 
     @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
     lateinit var bluetoothManager: BluetoothManager
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var mockWebServer: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -53,13 +54,18 @@ class MobileSessionTest {
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
     private fun setupDagger() {
-        val permissionsModule = TestPermissionsModule()
+        val permissionsModule =
+            TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app))
-            .mockWebServerModule(MockWebServerModule())
+            .sensorsModule(
+                TestSensorsModule(
+                    app
+                )
+            )
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -75,11 +81,12 @@ class MobileSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test
@@ -154,7 +161,7 @@ class MobileSessionTest {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
-        
+
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
@@ -162,7 +169,6 @@ class MobileSessionTest {
         expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(not(isDisplayed())))
-
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(1000)

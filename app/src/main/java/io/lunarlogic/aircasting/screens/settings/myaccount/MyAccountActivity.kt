@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
+import kotlinx.android.synthetic.main.app_bar.*
 import javax.inject.Inject
 
 class MyAccountActivity : AppCompatActivity() {
@@ -32,11 +34,12 @@ class MyAccountActivity : AppCompatActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = MyAccountViewMvcImpl(layoutInflater, null)
+        val view = MyAccountViewMvcImpl(this, layoutInflater, null)
         controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
+
     }
 
     override fun onStart() {

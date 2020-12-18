@@ -1,6 +1,7 @@
-package io.lunarlogic.aircasting.di
+package io.lunarlogic.aircasting.di.mocks
 
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.di.mocks.FakeAirBeam2Connector
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
@@ -13,6 +14,10 @@ class FakeAirBeamConnectorFactory(
     private val mErrorHandler: ErrorHandler
 ): AirBeamConnectorFactory(app, mSettings, mErrorHandler) {
     override fun get(deviceItem: DeviceItem): AirBeamConnector? {
-        return FakeAirBeam2Connector(app, mSettings, mErrorHandler)
+        return FakeAirBeam2Connector(
+            app,
+            mSettings,
+            mErrorHandler
+        )
     }
 }

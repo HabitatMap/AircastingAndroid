@@ -19,11 +19,13 @@ abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    mSettings: Settings
+    mSettings: Settings,
+    mApiServiceFactory: ApiServiceFactory
 ) : SessionsViewMvc.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
-    private val mApiService =  ApiServiceFactory.get(mSettings.getAuthToken()!!)
-    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler)
+    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+
+    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
     protected abstract fun registerSessionsObserver()

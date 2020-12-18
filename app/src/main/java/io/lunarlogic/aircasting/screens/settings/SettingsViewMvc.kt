@@ -5,9 +5,15 @@ import io.lunarlogic.aircasting.screens.new_session.LoginViewMvc
 
 interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
 
-    interface Listener {
-        fun onMyAccountClicked()
+    //TODO: maybe i should make some interface like 'BackendSettingsViewMvc and place below interface there?:
+    interface BackendSettingsDialogListener{
+        fun confirmClicked(urlValue: String, portValue: String)
     }
 
-
+    interface Listener {
+        fun onMyAccountClicked()
+        fun onBackendSettingsClicked()
+        fun onToggleCrowdMapEnabled()
+        fun onToggleMapsEnabled()
+    }
 }

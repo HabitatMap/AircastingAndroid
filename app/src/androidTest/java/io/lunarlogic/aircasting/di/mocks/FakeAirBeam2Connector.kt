@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.di
+package io.lunarlogic.aircasting.di.mocks
 
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R

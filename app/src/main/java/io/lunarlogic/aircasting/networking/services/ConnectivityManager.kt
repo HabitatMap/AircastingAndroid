@@ -9,9 +9,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.Settings
 
-class ConnectivityManager(apiService: ApiService, context: Context): BroadcastReceiver() {
-    val sessionSyncService = SessionsSyncService.get(apiService, ErrorHandler(context))
+class ConnectivityManager(apiService: ApiService, context: Context, settings: Settings): BroadcastReceiver() {
+    val sessionSyncService = SessionsSyncService.get(apiService, ErrorHandler(context), settings)
 
     companion object {
         val ACTION = ConnectivityManager.CONNECTIVITY_ACTION

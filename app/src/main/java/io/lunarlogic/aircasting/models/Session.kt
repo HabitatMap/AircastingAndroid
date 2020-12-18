@@ -177,13 +177,12 @@ class Session(
         followedAt = Date()
     }
 
-    fun isUploadable(): Boolean {
-        // TODO: handle false if mobile && locationless
-        return true
-    }
-
     fun isFixed(): Boolean {
         return type == Type.FIXED
+    }
+
+    fun isMobile(): Boolean {
+        return type == Type.MOBILE
     }
 
     fun isRecording(): Boolean {

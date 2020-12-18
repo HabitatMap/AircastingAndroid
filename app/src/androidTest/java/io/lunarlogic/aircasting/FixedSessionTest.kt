@@ -16,6 +16,13 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.di.mocks.FakeFixedSessionDetailsController
+import io.lunarlogic.aircasting.di.TestNewSessionWizardModule
+import io.lunarlogic.aircasting.di.TestPermissionsModule
+import io.lunarlogic.aircasting.di.TestSensorsModule
+import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.helpers.selectTabAtPosition
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
@@ -25,7 +32,7 @@ import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
-import okhttp3.mockwebserver.MockWebServer
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 
@@ -43,13 +50,14 @@ class FixedSessionTest {
     lateinit var settings: Settings
 
     @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
     lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
 
-    @Inject
-    lateinit var mockWebServer: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
@@ -58,13 +66,18 @@ class FixedSessionTest {
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
     private fun setupDagger() {
-        val permissionsModule = TestPermissionsModule()
+        val permissionsModule =
+            TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .sensorsModule(TestSensorsModule(app))
-            .mockWebServerModule(MockWebServerModule())
+            .sensorsModule(
+                TestSensorsModule(
+                    app
+                )
+            )
             .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
         app.appComponent = testAppComponent
@@ -81,11 +94,12 @@ class FixedSessionTest {
         MockitoAnnotations.initMocks(this)
         setupDagger()
         clearDatabase()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
-        mockWebServer.shutdown()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
         clearDatabase()
     }
 

@@ -1,7 +1,5 @@
 package io.lunarlogic.aircasting
 
-import android.content.Intent
-import androidx.room.Database
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -10,19 +8,18 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.MockWebServerModule
-import io.lunarlogic.aircasting.di.PermissionsModule
+import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.di.TestSettingsModule
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
+import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 import junit.framework.Assert.assertEquals
@@ -39,6 +36,9 @@ class MyAccountTest {
     @Inject
     lateinit var settings: Settings
 
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
     @get:Rule
     val testRule : ActivityTestRule<MyAccountActivity>
             = ActivityTestRule(MyAccountActivity::class.java, false, false)
@@ -51,9 +51,9 @@ class MyAccountTest {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
+            .apiModule(TestApiModule())
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
-            .mockWebServerModule(MockWebServerModule())
             .build()
         app.appComponent = testAppComponent
         testAppComponent.inject(this)
@@ -68,11 +68,13 @@ class MyAccountTest {
     fun setup(){
         setupDagger()
         setupDatabase()
+        getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup(){
         testRule.finishActivity()
+        getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test
@@ -83,7 +85,7 @@ class MyAccountTest {
         testRule.launchActivity(null)
 
         // checking if text on text view matches what I want:
-        onView(withId(R.id.login_state_textView)).check(matches(withText("You are currently logged in as ${settings.getEmail()}")))
+        onView(withId(R.id.header)).check(matches(withText("You are currently logged in as ${settings.getEmail()}")))
 
         //  performing click on button:
         onView(withId(R.id.sign_out_button)).perform(click())

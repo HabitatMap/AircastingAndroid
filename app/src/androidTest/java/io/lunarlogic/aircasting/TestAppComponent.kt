@@ -8,10 +8,10 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AppModule::class,
+        ApiModule::class,
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
-        MockWebServerModule::class,
         NewSessionWizardModule::class
     ]
 )
