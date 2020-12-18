@@ -71,6 +71,7 @@
 
     <style name="TextAppearance.Aircasting.AppBar" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
+        <item name="android:textColor">@color/aircasting_dark_blue</item>
         <item name="android:textSize">@dimen/action_bar_title_text_size</item>
     </style>
 

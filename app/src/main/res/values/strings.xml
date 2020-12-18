@@ -195,5 +195,5 @@
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
-    <string name="my_account_info">You are currently logged in as %1$s</string>
+    <string name="my_account_info">You are currently logged in as\n%1$s</string>
 </resources>
