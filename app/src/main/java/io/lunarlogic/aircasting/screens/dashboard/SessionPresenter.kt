@@ -5,6 +5,8 @@ import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import java.util.*
+import kotlin.collections.HashMap
 
 class SessionPresenter() {
     var session: Session? = null
@@ -16,6 +18,7 @@ class SessionPresenter() {
     var chartData: ChartData? = null
     var sessionUUID: String? = null
     var initialSensorName: String? = null
+    var visibleTimeSpan: ClosedRange<Date>? = null
 
     constructor(
         session: Session,
