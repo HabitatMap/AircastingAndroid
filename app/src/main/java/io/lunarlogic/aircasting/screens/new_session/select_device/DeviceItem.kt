@@ -12,28 +12,6 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
         private val AIRBEAM1_NAME_REGEX = "airbeam"
         private val AIRBEAM2_NAME_REGEX = "airbeam2"
         private val AIRBEAM3_NAME_REGEX = "airbeam3"
-
-        fun isAirBeam3(sensorPackageName: String?): Boolean {
-            return getType(sensorPackageName) == Type.AIRBEAM3
-        }
-
-        private fun getType(name: String?): Type {
-            name ?: return Type.OTHER
-
-            if (name.contains(AIRBEAM2_NAME_REGEX, true)) {
-                return Type.AIRBEAM2
-            }
-
-            if (name.contains(AIRBEAM3_NAME_REGEX, true)) {
-                return Type.AIRBEAM3
-            }
-
-            if (name.contains(AIRBEAM1_NAME_REGEX, true)) {
-                return Type.AIRBEAM1
-            }
-
-            return Type.OTHER
-        }
     }
 
     init {
@@ -67,5 +45,23 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
 
     fun isAirBeam(): Boolean {
         return arrayOf(Type.AIRBEAM1, Type.AIRBEAM2, Type.AIRBEAM3).contains(type)
+    }
+
+    private fun getType(name: String?): Type {
+        name ?: return Type.OTHER
+
+        if (name.contains(AIRBEAM2_NAME_REGEX, true)) {
+            return Type.AIRBEAM2
+        }
+
+        if (name.contains(AIRBEAM3_NAME_REGEX, true)) {
+            return Type.AIRBEAM3
+        }
+
+        if (name.contains(AIRBEAM1_NAME_REGEX, true)) {
+            return Type.AIRBEAM1
+        }
+
+        return Type.OTHER
     }
 }

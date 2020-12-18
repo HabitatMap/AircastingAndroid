@@ -188,7 +188,7 @@ class Session(
     }
 
     fun isAirBeam3(): Boolean {
-        return DeviceItem.isAirBeam3(sensorPackageNamesString())
+        return deviceType == DeviceItem.Type.AIRBEAM3
     }
 
     fun isRecording(): Boolean {
