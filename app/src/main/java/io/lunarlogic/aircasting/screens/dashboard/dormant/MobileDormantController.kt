@@ -36,6 +36,11 @@ class MobileDormantController(
         startNewSession(Session.Type.MOBILE)
     }
 
+    override fun onEditSessionClicked() {
+        TODO("Not yet implemented")
+        // TODO: in this function the controller should start edit session dialog i guess
+    }
+
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
@@ -44,4 +49,6 @@ class MobileDormantController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
+
+
 }

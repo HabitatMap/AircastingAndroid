@@ -26,6 +26,12 @@ class MobileDormantViewMvcImpl(
         )
     }
 
+    override fun onSessionEditClicked() {
+        for (listener in listeners) {
+            listener.onEditSessionClicked() //TODO: should i put this function to SessionViewMvc ???F
+        }
+    }
+
     override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
             listener.onDeleteSessionClicked(session.uuid)
