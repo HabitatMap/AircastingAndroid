@@ -9,6 +9,7 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
     open val type: Type
 
     companion object {
+        private val AIRBEAM1_NAME_REGEX = "airbeam"
         private val AIRBEAM2_NAME_REGEX = "airbeam2"
         private val AIRBEAM3_NAME_REGEX = "airbeam3"
 
@@ -27,6 +28,10 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
                 return Type.AIRBEAM3
             }
 
+            if (name.contains(AIRBEAM1_NAME_REGEX, true)) {
+                return Type.AIRBEAM1
+            }
+
             return Type.OTHER
         }
     }
@@ -40,9 +45,10 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
 
     enum class Type(val value: Int) {
         OTHER(-1),
-        AIRBEAM2(0),
-        AIRBEAM3(1),
-        MIC(2);
+        MIC(0),
+        AIRBEAM1(1),
+        AIRBEAM2(2),
+        AIRBEAM3(3);
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
@@ -60,6 +66,6 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
     }
 
     fun isAirBeam(): Boolean {
-        return arrayOf(Type.AIRBEAM2, Type.AIRBEAM3).contains(type)
+        return arrayOf(Type.AIRBEAM1, Type.AIRBEAM2, Type.AIRBEAM3).contains(type)
     }
 }
