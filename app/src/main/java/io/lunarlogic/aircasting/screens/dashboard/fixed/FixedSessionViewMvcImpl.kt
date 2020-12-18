@@ -36,7 +36,7 @@ class FixedSessionViewMvcImpl(
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
-    override fun buildBottomSheet(): BottomSheet {
+    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
         return SessionActionsBottomSheet(this)
     }
 

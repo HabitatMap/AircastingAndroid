@@ -4,9 +4,8 @@ import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewFixedMvcImpl
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileActiveMvcImpl
-import io.lunarlogic.aircasting.screens.session_view.map.MapViewMobileDormantMvcImpl
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,6 +16,7 @@ val TAGS_SEPARATOR = " "
 class Session(
     val uuid: String,
     val deviceId: String?,
+    val deviceType: DeviceItem.Type?,
     private val mType: Type,
     private var mName: String,
     private var mTags: ArrayList<String>,
@@ -31,6 +31,7 @@ class Session(
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
         sessionDBObject.deviceId,
+        sessionDBObject.deviceType,
         sessionDBObject.type,
         sessionDBObject.name,
         sessionDBObject.tags,
@@ -49,6 +50,7 @@ class Session(
     constructor(
         sessionUUID: String,
         deviceId: String?,
+        deviceType: DeviceItem.Type?,
         mType: Type,
         mName: String,
         mTags: ArrayList<String>,
@@ -56,7 +58,7 @@ class Session(
         indoor: Boolean?,
         streamingMethod: StreamingMethod?,
         location: Location?
-    ): this(sessionUUID, deviceId, mType, mName, mTags, mStatus) {
+    ): this(sessionUUID, deviceId, deviceType, mType, mName, mTags, mStatus) {
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
         this.location = location
@@ -87,7 +89,7 @@ class Session(
         FIXED(1);
 
         companion object {
-            fun fromInt(value: Int) = Type.values().first { it.value == value }
+            fun fromInt(value: Int) = values().first { it.value == value }
         }
     }
 
@@ -185,6 +187,10 @@ class Session(
         return type == Type.MOBILE
     }
 
+    fun isAirBeam3(): Boolean {
+        return deviceType == DeviceItem.Type.AIRBEAM3
+    }
+
     fun isRecording(): Boolean {
         return status == Status.RECORDING
     }
@@ -236,7 +242,7 @@ class Session(
         val packageNames = mStreams.mapNotNull { s ->
             val name = s.sensorPackageName.split(":", "-").firstOrNull()
             when (name) {
-                MicrophoneReader.deviceId -> PHONE_MIC_SENSOR_PACKAGE_NAME
+                MicrophoneDeviceItem.DEFAULT_ID -> PHONE_MIC_SENSOR_PACKAGE_NAME
                 else -> name
             }
         }

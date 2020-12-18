@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
 class AirBeamConnectedFragment() : Fragment() {
 
     private var controller: AirBeamConnectedController? = null
     lateinit var listener: AirBeamConnectedViewMvc.Listener
-    lateinit var deviceId: String
+    lateinit var deviceItem: DeviceItem
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,7 +22,7 @@ class AirBeamConnectedFragment() : Fragment() {
             AirBeamConnectedViewMvcImpl(
                 layoutInflater,
                 null,
-                deviceId
+                deviceItem
             )
         controller =
             AirBeamConnectedController(requireContext(), view)

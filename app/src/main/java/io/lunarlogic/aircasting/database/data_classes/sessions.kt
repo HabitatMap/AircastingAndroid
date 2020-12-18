@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.database.data_classes
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -16,6 +17,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
     @ColumnInfo(name = "type") val type: Session.Type,
     @ColumnInfo(name = "device_id") val deviceId: String?,
+    @ColumnInfo(name = "device_type") val deviceType: DeviceItem.Type?,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "tags") val tags: ArrayList<String> = arrayListOf(),
     @ColumnInfo(name = "start_time") val startTime: Date,
@@ -35,6 +37,7 @@ data class SessionDBObject(
                 session.uuid,
                 session.type,
                 session.deviceId,
+                session.deviceType,
                 session.name,
                 session.tags,
                 session.startTime,
@@ -139,10 +142,13 @@ interface SessionDao {
     fun updateStatus(uuid: String, status: Session.Status)
 
     @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
-    fun updateStatusForSessionWithDeviceIdAndExistingStatus(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
+    fun disconnectSession(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
 
-    @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND status=:existingStatus")
-    fun updateStatusForSessionTypeAndExistingStatus(newStatus: Session.Status, type: Session.Type, existingStatus: Session.Status)
+    @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND device_type!=:deviceType AND status=:existingStatus")
+    fun disconnectSessions(newStatus: Session.Status, deviceType: DeviceItem.Type?, type: Session.Type, existingStatus: Session.Status)
+
+    @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND device_type=:deviceType AND status=:existingStatus")
+    fun finishSessions(newStatus: Session.Status, endTime: Date, deviceType: DeviceItem.Type?, type: Session.Type, existingStatus: Session.Status)
 
     @Query("DELETE FROM sessions")
     fun deleteAll()

@@ -32,6 +32,7 @@ import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -39,7 +40,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import java.util.*
-
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -123,7 +123,7 @@ class NewSessionController(
     }
 
     override fun onMicrophoneDeviceSelected() {
-        wizardNavigator.goToSessionDetails(Session.generateUUID(), Session.Type.MOBILE, MicrophoneReader.deviceId, this)
+        wizardNavigator.goToSessionDetails(Session.generateUUID(), Session.Type.MOBILE, MicrophoneDeviceItem(), this)
 
         if (permissionsManager.audioPermissionsGranted(mContextActivity)) {
             startMicrophoneSession()
@@ -229,18 +229,18 @@ class NewSessionController(
         }
     }
 
-    override fun onConnectionSuccessful(deviceId: String) {
-        wizardNavigator.goToAirBeamConnected(deviceId, this)
+    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        wizardNavigator.goToAirBeamConnected(deviceItem, this)
     }
 
     override fun onConnectionFailed(deviceId: String) {
         // ignore
     }
 
-    override fun onAirBeamConnectedContinueClicked(deviceId: String) {
+    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem) {
         val sessionUUID = Session.generateUUID()
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceId, this)
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
 
     override fun validationFailed(errorMessage: String) {
@@ -250,7 +250,7 @@ class NewSessionController(
 
     override fun onSessionDetailsContinueClicked(
         sessionUUID: String,
-        deviceId: String,
+        deviceItem: DeviceItem,
         sessionType: Session.Type,
         sessionName: String,
         sessionTags: ArrayList<String>,
@@ -263,7 +263,7 @@ class NewSessionController(
         val currentLocation = Session.Location.get(LocationHelper.lastLocation())
         val session = sessionBuilder.build(
             sessionUUID,
-            deviceId,
+            deviceItem,
             sessionType,
             sessionName,
             sessionTags,

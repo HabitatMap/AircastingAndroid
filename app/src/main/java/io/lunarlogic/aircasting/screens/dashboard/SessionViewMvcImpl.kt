@@ -15,12 +15,15 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
-import kotlinx.android.synthetic.main.session_card.view.*
+import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
     protected val mLayoutInflater: LayoutInflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
+
+    private val mSessionCardLayout: ViewGroup
+
     private val mDisconnectedView: View
     private val mReconnectButton: Button
     private val mReconnectingLoader: ImageView
@@ -57,6 +60,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         this.rootView = inflater.inflate(R.layout.session_card, parent, false)
         mSupportFragmentManager = supportFragmentManager
+
+        mSessionCardLayout = findViewById(R.id.session_card_layout)
 
         mDateTextView = findViewById(R.id.session_date)
         mNameTextView = findViewById(R.id.session_name)
@@ -127,12 +132,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun showExpandedMeasurementsTableValues(): Boolean
-    protected abstract fun buildBottomSheet(): BottomSheet?
+    protected abstract fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet?
 
     protected open fun showChart() = true
 
     private fun actionsButtonClicked() {
-        mBottomSheet = buildBottomSheet()
+        mBottomSheet = buildBottomSheet(mSessionPresenter)
         mBottomSheet?.show(mSupportFragmentManager)
     }
 
@@ -209,10 +214,14 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             mDisconnectedView.visibility = View.VISIBLE
             mActionsButton.visibility = View.GONE
             mExpandSessionButton.visibility = View.GONE
+            mSessionCardLayout.background = context.getDrawable(R.drawable.top_border)
+
+            mExpandedSessionView.visibility = View.GONE
         } else {
             mDisconnectedView.visibility = View.GONE
             mActionsButton.visibility = View.VISIBLE
             mExpandSessionButton.visibility = View.VISIBLE
+            mSessionCardLayout.background = null
         }
     }
 
@@ -249,7 +258,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
-        mChartView?.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
@@ -276,15 +284,19 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         AnimatedLoader(mReconnectingLoader).start()
         mReconnectingLoader.visibility = View.VISIBLE
         mReconnectButton.isEnabled = false
-        mReconnectButton.translationY = 6f
-        mReconnectButton.translationZ = -6f
+
+        // we need to revert default translation set in
+        // Widget.Aircasting.Button for disabled button state
+        mReconnectButton.translationZ = -context.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
     override fun hideReconnectingLoader() {
         mReconnectingLoader.visibility = View.GONE
         mReconnectButton.isEnabled = true
-        mReconnectButton.translationY = -6f
-        mReconnectButton.translationZ = 6f
+
+        // we need to set default translation from Widget.Aircasting.Button
+        // back again after reverting in showReconnectingLoader()
+        mReconnectButton.translationZ = context.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {

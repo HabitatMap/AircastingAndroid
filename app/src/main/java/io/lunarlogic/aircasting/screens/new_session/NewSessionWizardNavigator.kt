@@ -11,13 +11,10 @@ import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocati
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeFragment
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.*
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,
@@ -77,19 +74,19 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToAirBeamConnected(deviceId: String, listener: AirBeamConnectedViewMvc.Listener) {
+    fun goToAirBeamConnected(deviceItem: DeviceItem, listener: AirBeamConnectedViewMvc.Listener) {
         incrementStepProgress()
         val fragment = AirBeamConnectedFragment()
         fragment.listener = listener
-        fragment.deviceId = deviceId
+        fragment.deviceItem = deviceItem
         goToFragment(fragment)
     }
 
-    fun goToSessionDetails(sessionUUID: String, sessionType: Session.Type, deviceId: String, listener: SessionDetailsViewMvc.Listener) {
+    fun goToSessionDetails(sessionUUID: String, sessionType: Session.Type, deviceItem: DeviceItem, listener: SessionDetailsViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = listener
-        fragment.deviceId = deviceId
+        fragment.deviceItem = deviceItem
         fragment.sessionUUID = sessionUUID
         fragment.sessionType = sessionType
         goToFragment(fragment)

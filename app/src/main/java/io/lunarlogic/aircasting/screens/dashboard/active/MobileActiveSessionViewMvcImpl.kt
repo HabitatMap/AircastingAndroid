@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionActionsBottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 
 class MobileActiveSessionViewMvcImpl(
@@ -31,8 +32,8 @@ class MobileActiveSessionViewMvcImpl(
 
     override fun showExpandedMeasurementsTableValues() = true
 
-    override fun buildBottomSheet(): BottomSheet? {
-        return ActiveSessionActionsBottomSheet(this)
+    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
+        return ActiveSessionActionsBottomSheet(this, sessionPresenter)
     }
 
     override fun disconnectSessionPressed() {

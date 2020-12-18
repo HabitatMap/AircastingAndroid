@@ -1,9 +1,11 @@
 package io.lunarlogic.aircasting.models
 
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+
 class SessionBuilder {
     fun build(
         sessionUUID: String,
-        deviceId: String?,
+        deviceItem: DeviceItem,
         type: Session.Type,
         name: String,
         tags: ArrayList<String>,
@@ -16,7 +18,8 @@ class SessionBuilder {
 
         return Session(
             sessionUUID,
-            deviceId,
+            deviceItem.id,
+            deviceItem.type,
             type,
             name,
             tags,

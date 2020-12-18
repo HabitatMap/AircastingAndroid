@@ -6,17 +6,18 @@ import android.widget.Button
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
 class AirBeamConnectedViewMvcImpl : BaseObservableViewMvc<AirBeamConnectedViewMvc.Listener>, AirBeamConnectedViewMvc {
-    var deviceId: String
+    var deviceItem: DeviceItem
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        deviceId: String
+        deviceItem: DeviceItem
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_airbeam_connected, parent, false)
-        this.deviceId = deviceId
+        this.deviceItem = deviceItem
         val button = rootView?.findViewById<Button>(R.id.airbeam_connected_continue_button)
         button?.setOnClickListener {
             onAirBeamConnectedContinueClicked()
@@ -25,7 +26,7 @@ class AirBeamConnectedViewMvcImpl : BaseObservableViewMvc<AirBeamConnectedViewMv
 
     private fun onAirBeamConnectedContinueClicked() {
         for (listener in listeners) {
-            listener.onAirBeamConnectedContinueClicked(deviceId)
+            listener.onAirBeamConnectedContinueClicked(deviceItem)
         }
     }
 }

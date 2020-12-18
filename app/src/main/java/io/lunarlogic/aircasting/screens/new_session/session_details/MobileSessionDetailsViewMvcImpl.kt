@@ -7,20 +7,21 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
 class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     private var sessionUUID: String
-    private var deviceId: String
+    private var deviceItem: DeviceItem
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         sessionUUID: String,
-        deviceId: String
+        deviceItem: DeviceItem
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_mobile_session_details, parent, false)
         this.sessionUUID = sessionUUID
-        this.deviceId = deviceId
+        this.deviceItem = deviceItem
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
@@ -49,7 +50,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
 
     private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(sessionUUID, deviceId, Session.Type.MOBILE, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(sessionUUID, deviceItem, Session.Type.MOBILE, sessionName, sessionTags)
         }
     }
 
