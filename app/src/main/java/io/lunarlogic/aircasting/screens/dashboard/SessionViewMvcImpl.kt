@@ -287,7 +287,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         // we need to revert default translation set in
         // Widget.Aircasting.Button for disabled button state
-        mReconnectButton.translationY = -context.resources.getDimension(R.dimen.button_shadow_y_translation)
         mReconnectButton.translationZ = -context.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
@@ -297,7 +296,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         // we need to set default translation from Widget.Aircasting.Button
         // back again after reverting in showReconnectingLoader()
-        mReconnectButton.translationY = context.resources.getDimension(R.dimen.button_shadow_y_translation)
         mReconnectButton.translationZ = context.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
