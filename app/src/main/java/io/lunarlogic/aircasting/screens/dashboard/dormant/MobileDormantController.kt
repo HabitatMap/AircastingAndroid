@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.dormant
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.DeleteSessionEvent

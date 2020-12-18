@@ -197,4 +197,7 @@
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
     <string name="edit_session">Edit session</string>
+    <string name="edit_session_data">Edit session data</string>
+    <string name="tags_bottom_sheet_input">Tags:</string>
+    <string name="session_name_bottom_sheet_input">Session name</string>
 </resources>
