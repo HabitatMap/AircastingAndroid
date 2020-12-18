@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.database.repositories
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
 
 class SessionsRepository {
@@ -49,8 +50,12 @@ class SessionsRepository {
             .loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
     }
 
-    fun disconnectMobileSessions() {
-        mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, Session.Type.MOBILE, Session.Status.RECORDING)
+    fun disconnectMobileBluetoothSessions() {
+        mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+    }
+
+    fun finishMobileMicSessions() {
+        mDatabase.sessions().finishSessions(Session.Status.FINISHED, Date(), DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
     }
 
     fun disconnectSession(deviceId: String) {

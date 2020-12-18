@@ -52,7 +52,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStart() {
         registerToEventBus()
-        disconnectMobileSessions()
+        updateMobileSessions()
         fixedSessionDownloadMeasurementsService.start()
     }
 
@@ -68,9 +68,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().unregister(this);
     }
 
-    private fun disconnectMobileSessions() {
+    private fun updateMobileSessions() {
         DatabaseProvider.runQuery {
-            sessionsRespository.disconnectMobileSessions()
+            sessionsRespository.disconnectMobileBluetoothSessions()
+            sessionsRespository.finishMobileMicSessions()
         }
     }
 

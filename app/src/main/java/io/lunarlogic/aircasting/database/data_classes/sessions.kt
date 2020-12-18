@@ -144,8 +144,11 @@ interface SessionDao {
     @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
     fun disconnectSession(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
 
-    @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND status=:existingStatus")
-    fun disconnectSessions(newStatus: Session.Status, type: Session.Type, existingStatus: Session.Status)
+    @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND device_type!=:deviceType AND status=:existingStatus")
+    fun disconnectSessions(newStatus: Session.Status, deviceType: DeviceItem.Type?, type: Session.Type, existingStatus: Session.Status)
+
+    @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND device_type=:deviceType AND status=:existingStatus")
+    fun finishSessions(newStatus: Session.Status, endTime: Date, deviceType: DeviceItem.Type?, type: Session.Type, existingStatus: Session.Status)
 
     @Query("DELETE FROM sessions")
     fun deleteAll()
