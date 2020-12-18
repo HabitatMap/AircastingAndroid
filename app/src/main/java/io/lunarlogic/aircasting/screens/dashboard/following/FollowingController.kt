@@ -38,6 +38,11 @@ class FollowingController(
         // do nothing
     }
 
+    override fun onEditSessionClicked() {
+        // do nothing
+        // TODO: same as MobileActive and Fixed controller
+    }
+
     override fun onDeleteSessionClicked(sessionUUID: String) {
         // do nothing
     }

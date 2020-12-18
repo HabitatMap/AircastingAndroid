@@ -35,6 +35,10 @@ class FixedController(
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.FIXED)
     }
+    override fun onEditSessionClicked() {
+        // do nothing
+        // TODO: same as in MobileActiveController
+    }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
@@ -44,4 +48,6 @@ class FixedController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
+
+
 }

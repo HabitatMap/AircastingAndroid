@@ -37,8 +37,9 @@ class MobileDormantController(
     }
 
     override fun onEditSessionClicked() {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
         // TODO: in this function the controller should start edit session dialog i guess
+        // we have to read session here and modify it accordingly to users input- together with sesionId, list of tags and session name: String
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
