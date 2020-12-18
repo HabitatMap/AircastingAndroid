@@ -133,7 +133,6 @@ class SessionsSyncService {
     }
 
     private fun isUploadable(session: Session): Boolean{
-        //handle false if mobile && disabled maps
-        return settings.areMapsEnabled() && session.type==Session.Type.MOBILE
+        return settings.areMapsEnabled() && session.isMobile()
     }
 }

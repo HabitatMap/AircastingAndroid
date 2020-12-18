@@ -181,6 +181,10 @@ class Session(
         return type == Type.FIXED
     }
 
+    fun isMobile(): Boolean {
+        return type == Type.MOBILE
+    }
+
     fun isRecording(): Boolean {
         return status == Status.RECORDING
     }

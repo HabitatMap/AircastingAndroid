@@ -19,10 +19,9 @@ class SessionParams {
             Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
 
-        // this.contribute based on session type and settings (contribute setting)
         this.contribute = when(this.type){
             FIXED_SESSION_TYPE -> true
-            MOBILE_SESSION_TYPE -> settings!!.isCrowdMapEnabled() // non null asserted, because settings=null only for Fixed_Session_Type
+            MOBILE_SESSION_TYPE -> settings?.isCrowdMapEnabled() == true
             else -> true
         }
 
