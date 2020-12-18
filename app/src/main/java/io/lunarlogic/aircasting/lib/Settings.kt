@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.lib
 import android.app.Application
 import android.content.SharedPreferences
 import android.util.Log
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
 open class Settings(mApplication: Application) {
     private val PRIVATE_MODE = 0
@@ -52,18 +53,17 @@ open class Settings(mApplication: Application) {
     fun toggleMapSettingsEnabled(){
         val enabled = !areMapsEnabled()
         saveToSettings(MAPS_ENABLED_KEY, enabled)
-        Log.i("SETTINGS", enabled.toString())
     }
 
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
-        Log.i("SETTINGS", enabled.toString())
     }
 
     fun backendSettingsChanged(url: String, port: String) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
+        SessionsSyncService.destroy()
     }
 
     fun login(email: String, authToken: String) {
