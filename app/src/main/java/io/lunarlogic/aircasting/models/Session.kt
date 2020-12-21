@@ -253,4 +253,9 @@ class Session(
         formatter.timeZone = TimeZone.getDefault()
         return formatter
     }
+
+    fun sessionEdited(newName: String, newTags: ArrayList<String>){
+        name = newName
+        tags = newTags
+    }
 }

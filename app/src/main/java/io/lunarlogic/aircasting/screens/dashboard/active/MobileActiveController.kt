@@ -60,7 +60,7 @@ class MobileActiveController(
         NavigationController.goToDashboard(tabId)
     }
 
-    override fun onEditSessionClicked() {
+    override fun onEditSessionClicked(sessionUUID: String) {
         // do nothing
         //TODO: its implemented here because of the interface
     }

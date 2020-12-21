@@ -7,7 +7,7 @@ import io.lunarlogic.aircasting.models.Session
 interface MobileDormantSessionViewMvc:
     SessionViewMvc<MobileDormantSessionViewMvc.Listener> {
     interface Listener: SessionCardListener {
-        fun onSessionEditClicked()  //TODO: not quite sure if that should be here (for now)
+        fun onSessionEditClicked(session: Session)  //TODO: not quite sure if that should be here (for now)
         fun onSessionDeleteClicked(session: Session)
     }
 }

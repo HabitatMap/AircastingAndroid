@@ -7,6 +7,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.Aircasting.BottomSheetCard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" >
@@ -78,6 +79,7 @@
                     android:id="@+id/edit_data_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="Edit data"
                     app:layout_constraintTop_toBottomOf="@id/tags"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +90,7 @@
                     style="@style/Widget.Aircasting.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="Cancel"
                     app:layout_constraintTop_toBottomOf="@id/edit_data_button"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

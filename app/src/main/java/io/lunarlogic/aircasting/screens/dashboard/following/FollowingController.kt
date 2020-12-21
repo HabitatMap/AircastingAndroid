@@ -38,7 +38,7 @@ class FollowingController(
         // do nothing
     }
 
-    override fun onEditSessionClicked() {
+    override fun onEditSessionClicked(sessionUUID: String) {
         // do nothing
         // TODO: same as MobileActive and Fixed controller
     }

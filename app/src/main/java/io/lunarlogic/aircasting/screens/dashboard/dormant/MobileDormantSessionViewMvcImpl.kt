@@ -39,7 +39,7 @@ class MobileDormantSessionViewMvcImpl(
 
     override fun editSessionPressed() {
         for(listener in listeners){
-            listener.onSessionEditClicked()
+            listener.onSessionEditClicked(mSessionPresenter!!.session!!)
         }
     }
 

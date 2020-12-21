@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
+import io.lunarlogic.aircasting.screens.lets_start.MoreInfoBottomSheet
 
 
 class MobileDormantViewMvcImpl(
@@ -14,6 +16,8 @@ class MobileDormantViewMvcImpl(
     supportFragmentManager: FragmentManager
 ): SessionsViewMvcImpl<MobileDormantSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     MobileDormantSessionViewMvc.Listener {
+
+
 
     override fun buildAdapter(
         inflater: LayoutInflater,
@@ -26,9 +30,9 @@ class MobileDormantViewMvcImpl(
         )
     }
 
-    override fun onSessionEditClicked() {
+    override fun onSessionEditClicked(session: Session) {
         for (listener in listeners) {
-            listener.onEditSessionClicked() //TODO: should i put this function to SessionViewMvc ???F
+            listener.onEditSessionClicked(session.uuid) //TODO: should i put this function to SessionViewMvc ???F
         }
     }
 
@@ -37,4 +41,6 @@ class MobileDormantViewMvcImpl(
             listener.onDeleteSessionClicked(session.uuid)
         }
     }
+
+
 }

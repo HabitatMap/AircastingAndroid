@@ -1,9 +1,13 @@
 package io.lunarlogic.aircasting.screens.dashboard.dormant
 
 import android.util.Log
+import android.widget.EditText
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
+import io.lunarlogic.aircasting.events.EditSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -11,6 +15,9 @@ import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
+import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
@@ -19,11 +26,13 @@ class MobileDormantController(
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
+    mApiServiceFactory: ApiServiceFactory,
+    private val fragmentManager: FragmentManager
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory),
-    SessionsViewMvc.Listener {
+    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var dialog: EditSessionBottomSheet? = null
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurements())
@@ -37,10 +46,8 @@ class MobileDormantController(
         startNewSession(Session.Type.MOBILE)
     }
 
-    override fun onEditSessionClicked() {
-        //TODO("Not yet implemented")
-        // TODO: in this function the controller should start edit session dialog i guess
-        // we have to read session here and modify it accordingly to users input- together with sesionId, list of tags and session name: String
+    override fun onEditSessionClicked(sessionUUID: String) {
+        startEditSessionBottomSheet(sessionUUID)
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
@@ -50,6 +57,26 @@ class MobileDormantController(
 
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
+    }
+
+    private fun startEditSessionBottomSheet(sessionUUID: String) {
+        dialog = EditSessionBottomSheet(this, sessionUUID)
+        dialog?.show(fragmentManager, "TAG")
+    }
+
+    override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
+        val editData = dialog?.editDataConfirmed()
+        editSessionEventPost(editData?.first, editData?.second, editData?.third)
+        dialog?.dismiss()
+    }
+
+    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
+        dialog?.dismiss()
+    }
+
+    fun editSessionEventPost(sessionId: String?, sessionName: String?, tags: String?){
+        val event = EditSessionEvent(sessionId, sessionName, tags)
+        EventBus.getDefault().post(event)
     }
 
 

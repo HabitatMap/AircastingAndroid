@@ -35,7 +35,7 @@ class FixedController(
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.FIXED)
     }
-    override fun onEditSessionClicked() {
+    override fun onEditSessionClicked(sessionUUID: String) {
         // do nothing
         // TODO: same as in MobileActiveController
     }
