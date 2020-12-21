@@ -130,10 +130,10 @@ class Session(
 
     val type get() = mType
     var name get() = mName
-        set(value) {name = value}
+        set(value) {mName = value}
 
     var tags get() = mTags
-        set(value) {tags = value}
+        set(value) {mTags = value}
 
     val startTime get() = mStartTime
 
