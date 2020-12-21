@@ -10,7 +10,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/aircasting_blue_50"
-        android:padding="@dimen/keyline_8">
+        android:padding="@dimen/keyline_8"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/disconnected_view_bluetooth_device_header"

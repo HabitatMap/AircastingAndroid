@@ -40,10 +40,16 @@
     <string name="unfollow_button">unfollow</string>
     <string name="map_button">map</string>
     <string name="graph_button">graph</string>
+
     <string name="disconnected_view_bluetooth_device_header">Measurement device\ndisconnected</string>
     <string name="disconnected_view_bluetooth_device_description">Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.</string>
     <string name="disconnected_view_bluetooth_device_reconnect_button">Reconnect</string>
     <string name="disconnected_view_bluetooth_device_finish_button">Finish session</string>
+
+    <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
+    <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
+    <string name="disconnected_view_airbeam3_sync_button">Finish recording &amp; sync</string>
+    <string name="disconnected_view_airbeam3_finish_button">Finish recording &amp; don\'t sync</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
