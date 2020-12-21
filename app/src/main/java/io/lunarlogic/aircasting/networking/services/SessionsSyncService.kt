@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.networking.services
 
+import android.util.Log
 import com.google.gson.Gson
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
@@ -133,6 +134,6 @@ class SessionsSyncService {
     }
 
     private fun isUploadable(session: Session): Boolean{
-        return settings.areMapsEnabled() && session.isMobile()
+        return !settings.areMapsDisabled() && session.isMobile() // '!' before mapsDisabled
     }
 }

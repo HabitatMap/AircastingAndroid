@@ -37,8 +37,8 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
 
-    fun areMapsEnabled(): Boolean {
-        return !(getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)) // I return !isDisabled in fact to make it easier later on
+    fun areMapsDisabled(): Boolean {
+        return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
     }
 
     open fun getBackendUrl(): String? {
@@ -50,7 +50,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun toggleMapSettingsEnabled(){
-        val enabled = !areMapsEnabled()
+        val enabled = !areMapsDisabled()
         saveToSettings(MAPS_DISABLED_KEY, enabled)
     }
 
