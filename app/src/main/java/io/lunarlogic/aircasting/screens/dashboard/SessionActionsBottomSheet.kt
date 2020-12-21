@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
 
         val editButton = view?.findViewById<Button>(R.id.edit_session_button)
         editButton?.setOnClickListener {
+            Log.i("BOTTOM_SHEET", "Edit clicked")
             mListener.editSessionPressed()
         }
 

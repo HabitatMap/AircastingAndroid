@@ -131,7 +131,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         DatabaseProvider.runQuery {
             val session = sessionsRespository.loadSessionAndMeasurementsByUUID(event.sessionUUID!!)
             session?.let{
-            it.sessionEdited(event.newName!!, event.newTags!!) //TODO: bug with StackOverflow . . .
+            it.sessionEdited(event.newName!!, event.newTags!!)
                 sessionsRespository.update(it)
                 sessionsSyncService.sync()
             }

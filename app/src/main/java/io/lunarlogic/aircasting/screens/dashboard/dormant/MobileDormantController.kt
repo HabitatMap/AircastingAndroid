@@ -48,8 +48,7 @@ class MobileDormantController(
     }
 
     override fun onEditSessionClicked(session: Session) {
-//        val session = mSessionsViewModel.loadSessionWithMeasurements(sessionUUID)
-        startEditSessionBottomSheet(session) // tutaj potrzebuję przekazać sesję, ale dostaję liveData linijke wyżej
+        startEditSessionBottomSheet(session)
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
@@ -63,7 +62,7 @@ class MobileDormantController(
 
     private fun startEditSessionBottomSheet(session: Session) {
         dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "TAG")
+        dialog?.show(fragmentManager, "MobileDormantEdit")
     }
 
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet

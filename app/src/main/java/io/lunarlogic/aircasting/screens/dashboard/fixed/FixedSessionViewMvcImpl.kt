@@ -53,8 +53,9 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun editSessionPressed() {
-        // do nothing (??)
-        // TODO: same as MobileActive and Fixed controllers
+        for (listener in listeners) {
+            listener.onSessionEditClicked(mSessionPresenter!!.session!!)
+        }
     }
 
     override fun deleteSessionPressed() {

@@ -32,7 +32,7 @@ class MobileDormantViewMvcImpl(
 
     override fun onSessionEditClicked(session: Session) {
         for (listener in listeners) {
-            listener.onEditSessionClicked(session) //TODO: should i put this function to SessionViewMvc ???F
+            listener.onEditSessionClicked(session)
         }
     }
 

@@ -18,7 +18,7 @@ import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.screens.lets_start.MoreInfoBottomSheet
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
-class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() { //todo: here i need session: Session probably
+class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener{
         fun onEditDataPressed()
         fun onCancelPressed()
@@ -34,10 +34,10 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         val view = inflater.inflate(R.layout.edit_session_bottom_sheet, container, false)
 
         val sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
-//        sessionNameInput?.text = session.name  // m.in ze względu na to potrzebuję przekaząc sesję jako argument do konstruktora
+        sessionNameInput?.setText(session.name)
 
         val tagsInput = view?.findViewById<EditText>(R.id.tags_input)
-//        tagsInput?.text = session.tags
+        tagsInput?.setText(session.tags.toString())  // TODO: here we got a problem with [] around tags, because of this .toString()
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
         editDataButton?.setOnClickListener {
