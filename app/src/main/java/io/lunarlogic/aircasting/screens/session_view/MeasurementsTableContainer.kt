@@ -27,7 +27,8 @@ class MeasurementsTableContainer {
 
     private var mSelectable: Boolean
     private var mDisplayValues: Boolean
-    private var mDisplayAvarages: Boolean = false
+    private var mDisplayAvarages = false
+    private var mDisplayDisconnectedIndicator = false
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
@@ -42,7 +43,13 @@ class MeasurementsTableContainer {
     private var mSessionPresenter: SessionPresenter? = null
     private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
 
-    constructor(context: Context, inflater: LayoutInflater, rootView: View?, selectable: Boolean = false, displayValues: Boolean = false) {
+    constructor(
+        context: Context,
+        inflater: LayoutInflater,
+        rootView: View?,
+        selectable: Boolean = false,
+        displayValues: Boolean = false
+    ) {
         mContext = context
         mRootView = rootView
         mLayoutInflater = inflater
@@ -90,6 +97,7 @@ class MeasurementsTableContainer {
         mSessionPresenter = sessionPresenter
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
         mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
+        mDisplayDisconnectedIndicator = mSessionPresenter?.isMobileActive() ?: false
 
         val session = mSessionPresenter?.session
         if (session != null && session.streams.count() > 0) {
@@ -224,7 +232,7 @@ class MeasurementsTableContainer {
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
         val valueTextView = valueView.findViewById<TextView>(R.id.measurement_value)
 
-        if (mSessionPresenter?.isDisconnected() == true) {
+        if (mDisplayDisconnectedIndicator && mSessionPresenter?.isDisconnected() == true) {
             valueTextView.text = "-"
             circleView.visibility = View.GONE
         } else {
