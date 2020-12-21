@@ -18,7 +18,7 @@ import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.screens.lets_start.MoreInfoBottomSheet
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
-class EditSessionBottomSheet(private val mListener: Listener, private val sessionUUID: String): BottomSheetDialogFragment() { //todo: here i need session: Session probably
+class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() { //todo: here i need session: Session probably
     interface Listener{
         fun onEditDataPressed()
         fun onCancelPressed()
@@ -61,7 +61,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         val sessionName = view?.session_name_input?.text.toString().trim()
         val tags = view?.tags_input?.text.toString().trim()
         val tags_list = getSessionTags(tags)
-        return Triple(sessionUUID, sessionName, tags_list)
+        return Triple(session.uuid, sessionName, tags_list)
     }
 
     private fun getSessionTags(tags: String): ArrayList<String> {

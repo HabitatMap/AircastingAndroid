@@ -13,7 +13,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onDisconnectSessionClicked(session: Session)
         fun onReconnectSessionClicked(session: Session)
         fun onStopSessionClicked(sessionUUID: String)
-        fun onEditSessionClicked(sessionUUID: String) // TODO: not yet sure about this
+        fun onEditSessionClicked(session: Session) // TODO: not yet sure about this
         fun onDeleteSessionClicked(sessionUUID: String)
         fun onFollowButtonClicked(session: Session)
         fun onUnfollowButtonClicked(session: Session)
