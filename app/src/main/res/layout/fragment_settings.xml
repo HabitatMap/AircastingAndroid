@@ -62,7 +62,6 @@
                 android:id="@+id/crowd_map_settings_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 app:layout_constraintBottom_toBottomOf="@+id/crowd_map_settings_button"
                 app:layout_constraintEnd_toEndOf="@+id/crowd_map_settings_button"
                 app:layout_constraintTop_toTopOf="@+id/crowd_map_settings_button" />
@@ -105,7 +104,6 @@
                 android:id="@+id/map_settings_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
                 app:layout_constraintBottom_toBottomOf="@+id/map_settings_button"
                 app:layout_constraintEnd_toEndOf="@+id/map_settings_button"
                 app:layout_constraintTop_toTopOf="@+id/map_settings_button"/>
