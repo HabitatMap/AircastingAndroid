@@ -192,8 +192,11 @@
     <string name="settings_backend_settings">Backend settings</string>
     <string name="settings_backend_url">Url</string>
     <string name="settings_backend_port">Port</string>
+    <string name="map_enable_description">Turns off GPS tracking &amp; session syncing. Use \'Share file\' to retrieve your measurements via email.</string>
+    <string name="disable_mapping">Disable mapping</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
+
 </resources>

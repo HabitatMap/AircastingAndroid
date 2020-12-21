@@ -28,7 +28,7 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         }
 
         val mapEnabledSwitch = rootView?.map_settings_switch
-        mapEnabledSwitch?.isChecked = mSettings.areMapsEnabled()
+        mapEnabledSwitch?.isChecked = mSettings.areMapsDisabled()
         mapEnabledSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleMapsEnabled()
         }
