@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
 open class Settings(mApplication: Application) {
@@ -11,12 +10,12 @@ open class Settings(mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
-    protected val MAPS_ENABLED_KEY = "maps_enabled"
+    protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
 
     private val DEFAULT_CROWD_MAP_ENABLED = true
-    private val DEFAULT_MAPS_ENABLED = true
+    private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
 
@@ -39,7 +38,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun areMapsEnabled(): Boolean {
-        return getBooleanFromSettings(MAPS_ENABLED_KEY, DEFAULT_MAPS_ENABLED)
+        return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
     }
 
     open fun getBackendUrl(): String? {
@@ -52,7 +51,7 @@ open class Settings(mApplication: Application) {
 
     fun toggleMapSettingsEnabled(){
         val enabled = !areMapsEnabled()
-        saveToSettings(MAPS_ENABLED_KEY, enabled)
+        saveToSettings(MAPS_DISABLED_KEY, enabled)
     }
 
     fun toggleCrowdMapEnabled() {
