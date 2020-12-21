@@ -38,7 +38,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun areMapsEnabled(): Boolean {
-        return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
+        return !(getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)) // I return !isDisabled in fact to make it easier later on
     }
 
     open fun getBackendUrl(): String? {
