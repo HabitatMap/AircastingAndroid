@@ -41,14 +41,17 @@ class GraphContainer: OnChartGestureListener {
     private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
+    private var mGetMeasurementsSample: () -> List<Measurement>
+    private var mMeasurementsSample: List<Measurement> = listOf()
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
         mToLabel = rootView?.to_label
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
+        mGetMeasurementsSample = getMeasurementsSample
 
         setupGraph()
     }
@@ -63,6 +66,7 @@ class GraphContainer: OnChartGestureListener {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
+        mMeasurementsSample = mGetMeasurementsSample.invoke()
 
         drawSession()
     }
@@ -90,15 +94,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(getSamples() )
-    }
-
-    private fun getSamples(): List<Measurement> {
-        return if(mSessionPresenter?.isFixed() == true) {
-           mSessionPresenter?.selectedStream?.getLastMeasurements(LAST_24H_FIXED_MEASUREMENTS_NUMBER) ?: emptyList()
-        } else {
-           mSessionPresenter?.selectedStream?.measurements ?: emptyList()
-        }
+        return mGraphDataGenerator.generate(mMeasurementsSample)
     }
 
     private fun drawData(entries: List<Entry>) {
