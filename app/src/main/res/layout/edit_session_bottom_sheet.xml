@@ -7,7 +7,6 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.Aircasting.BottomSheetCard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" >
@@ -34,9 +33,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/edit_session_data"
-                android:textAppearance="@style/TextAppearance.Aircasting.Headline2"
                 android:textColor="@color/aircasting_blue_400"
-                android:layout_marginBottom="@dimen/keyline_10"
+                android:textSize="@dimen/text_size_m"
+                app:lineHeight="@dimen/keyline_6"
+                android:layout_marginTop="@dimen/keyline_8"
+                android:layout_marginStart="@dimen/keyline_8"
+                android:layout_marginEnd="@dimen/keyline_8"
                 app:layout_constraintTop_toBottomOf="@+id/close_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -55,7 +57,8 @@
                         android:id="@+id/session_name_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/session_name_bottom_sheet_input" />
+                        android:hint="@string/session_name_bottom_sheet_input"
+                        android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -72,13 +75,15 @@
                         android:id="@+id/tags_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/tags_bottom_sheet_input" />
+                        android:hint="@string/tags_bottom_sheet_input"
+                        android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/edit_data_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/Widget.Aircasting.BottomSheetTextButton"
                     android:text="Edit data"
                     app:layout_constraintTop_toBottomOf="@id/tags"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"

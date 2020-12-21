@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
@@ -47,7 +48,8 @@ class MobileDormantController(
     }
 
     override fun onEditSessionClicked(sessionUUID: String) {
-        startEditSessionBottomSheet(sessionUUID)
+//        val session = mSessionsViewModel.loadSessionWithMeasurements(sessionUUID)
+        startEditSessionBottomSheet(sessionUUID) // tutaj potrzebuję przekazać sesję, ale dostaję liveData linijke wyżej
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
@@ -74,7 +76,7 @@ class MobileDormantController(
         dialog?.dismiss()
     }
 
-    fun editSessionEventPost(sessionId: String?, sessionName: String?, tags: String?){
+    fun editSessionEventPost(sessionId: String?, sessionName: String?, tags: ArrayList<String>?){
         val event = EditSessionEvent(sessionId, sessionName, tags)
         EventBus.getDefault().post(event)
     }

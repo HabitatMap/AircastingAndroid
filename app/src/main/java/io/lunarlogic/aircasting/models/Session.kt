@@ -129,8 +129,12 @@ class Session(
     private val HOUR_FORMAT = "HH:mm"
 
     val type get() = mType
-    val name get() = mName
-    val tags get() = mTags
+    var name get() = mName
+        set(value) {name = value}
+
+    var tags get() = mTags
+        set(value) {tags = value}
+
     val startTime get() = mStartTime
 
     private var mIndoor: Boolean? = null
@@ -255,7 +259,7 @@ class Session(
     }
 
     fun sessionEdited(newName: String, newTags: ArrayList<String>){
-        name = newName
-        tags = newTags
+        this.name = newName
+        this.tags = newTags
     }
 }
