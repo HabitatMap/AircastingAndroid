@@ -62,7 +62,6 @@ class MobileActiveController(
 
     override fun onEditSessionClicked(session: Session) {
         // do nothing
-        //TODO: its implemented here because of the interface
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {

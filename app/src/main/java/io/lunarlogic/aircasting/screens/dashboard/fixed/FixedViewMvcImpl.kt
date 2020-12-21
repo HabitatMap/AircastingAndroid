@@ -29,7 +29,6 @@ class FixedViewMvcImpl(
 
     override fun onSessionEditClicked(session: Session) {
         for (listener in listeners) {
-            Log.i("FIXED_IMPL", "Edit session clicked")
             listener.onEditSessionClicked(session)
         }
     }

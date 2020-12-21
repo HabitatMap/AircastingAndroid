@@ -28,7 +28,6 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
 
         val editButton = view?.findViewById<Button>(R.id.edit_session_button)
         editButton?.setOnClickListener {
-            Log.i("BOTTOM_SHEET", "Edit clicked")
             mListener.editSessionPressed()
         }
 
