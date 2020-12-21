@@ -21,10 +21,14 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged)
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample)
     }
 
     abstract fun defaultZoomSpan(): Int?
+
+    open fun measurementsSample(): List<Measurement> {
+        return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
+    }
 
     override fun layoutId(): Int {
         return R.layout.activity_graph
