@@ -32,15 +32,15 @@
             <TextView
                 android:id="@+id/title"
                 style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-                android:textSize="@dimen/text_size_m"
+                android:textSize="@dimen/text_size_xl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/edit_session_data"
                 android:textColor="@color/aircasting_dark_blue"
                 app:lineHeight="@dimen/keyline_6"
                 android:layout_marginTop="@dimen/keyline_8"
-                android:layout_marginStart="@dimen/keyline_8"
-                android:layout_marginEnd="@dimen/keyline_8"
+                android:layout_marginStart="@dimen/keyline_6"
+                android:layout_marginEnd="@dimen/keyline_6"
                 android:layout_marginBottom="@dimen/keyline_6"
                 app:layout_constraintTop_toBottomOf="@+id/close_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -56,15 +56,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/keyline_6"
-                    android:layout_marginStart="@dimen/keyline_8"
-                    android:layout_marginEnd="@dimen/keyline_8">
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/session_name_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                        android:textColor="@color/aircasting_grey_700" />
+                        android:textColor="@color/aircasting_grey_700"
+                        android:backgroundTint="@color/aircasting_grey_100"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -77,8 +78,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/keyline_6"
-                    android:layout_marginStart="@dimen/keyline_8"
-                    android:layout_marginEnd="@dimen/keyline_8"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -86,7 +87,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                        android:textColor="@color/aircasting_grey_700" />
+                        android:textColor="@color/aircasting_grey_700"
+                        android:backgroundTint="@color/aircasting_grey_100"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
@@ -99,8 +101,8 @@
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginStart="@dimen/keyline_8"
-                    android:layout_marginEnd="@dimen/keyline_8"/>
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"/>
 
                 <Button
                     android:id="@+id/cancel_button"
@@ -112,8 +114,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginStart="@dimen/keyline_8"
-                    android:layout_marginEnd="@dimen/keyline_8"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:fontFamily="@font/moderat_trial_bold"
                     android:textSize="@dimen/button_text_size"
                     android:textColor="@color/aircasting_blue_400"/>
