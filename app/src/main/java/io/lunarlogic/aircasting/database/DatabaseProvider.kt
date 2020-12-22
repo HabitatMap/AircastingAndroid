@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.room.*
 import io.lunarlogic.aircasting.database.converters.*
 import io.lunarlogic.aircasting.database.data_classes.*
-import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
-import io.lunarlogic.aircasting.database.migrations.MIGRATION_17_18
-import io.lunarlogic.aircasting.database.migrations.MIGRATION_18_19
-import io.lunarlogic.aircasting.database.migrations.MIGRATION_19_20
+import io.lunarlogic.aircasting.database.migrations.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,7 +18,7 @@ import kotlinx.coroutines.launch
         MeasurementDBObject::class,
         SensorThresholdDBObject::class
     ),
-    version = 20,
+    version = 21,
     exportSchema = true
 )
 @TypeConverters(
@@ -58,7 +55,8 @@ class DatabaseProvider {
                     MIGRATION_16_17,
                     MIGRATION_17_18,
                     MIGRATION_18_19,
-                    MIGRATION_19_20
+                    MIGRATION_19_20,
+                    MIGRATION_20_21
                 ).build()
             }
 

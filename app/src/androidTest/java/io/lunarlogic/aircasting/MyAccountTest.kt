@@ -23,6 +23,7 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -85,7 +86,7 @@ class MyAccountTest {
         testRule.launchActivity(null)
 
         // checking if text on text view matches what I want:
-        onView(withId(R.id.header)).check(matches(withText("You are currently logged in as ${settings.getEmail()}")))
+        onView(withId(R.id.header)).check(matches(withText("You are currently logged in as\n${settings.getEmail()}")))
 
         //  performing click on button:
         onView(withId(R.id.sign_out_button)).perform(click())
@@ -109,10 +110,8 @@ class MyAccountTest {
         // checking if LoginActivity is launched:
         intended(hasComponent(LoginActivity::class.java.name))
 
-        // checking if LoginActivity is still launched after back press:
-        Espresso.pressBack()
-        intended(hasComponent(LoginActivity::class.java.name))
-
+        Espresso.pressBackUnconditionally()
+        assertTrue(testRule.activity.isDestroyed)
     }
 
 }

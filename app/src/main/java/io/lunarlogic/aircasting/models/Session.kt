@@ -6,7 +6,6 @@ import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
-import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -26,6 +25,8 @@ class Session(
     var version: Int = 0,
     var deleted: Boolean = false,
     var followedAt: Date? = null,
+    var contribute: Boolean = true,
+    var locationless: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
@@ -40,7 +41,9 @@ class Session(
         sessionDBObject.endTime,
         sessionDBObject.version,
         sessionDBObject.deleted,
-        sessionDBObject.followedAt
+        sessionDBObject.followedAt,
+        sessionDBObject.contribute,
+        sessionDBObject.locationless
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
@@ -57,11 +60,15 @@ class Session(
         mStatus: Status,
         indoor: Boolean?,
         streamingMethod: StreamingMethod?,
-        location: Location?
+        location: Location?,
+        contribute: Boolean,
+        locationless: Boolean
     ): this(sessionUUID, deviceId, deviceType, mType, mName, mTags, mStatus) {
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
         this.location = location
+        this.contribute = contribute
+        this.locationless = locationless
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject):

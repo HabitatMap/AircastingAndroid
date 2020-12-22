@@ -33,6 +33,7 @@ import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 
@@ -234,9 +235,10 @@ class FixedSessionTest {
         val session = Session(
             Session.generateUUID(),
             "device_id",
+            DeviceItem.Type.AIRBEAM2,
             Session.Type.FIXED,
             "New session to follow",
-            ArrayList(),
+            ArrayList<String>(),
             Session.Status.FINISHED
         )
         val stream = MeasurementStream(
