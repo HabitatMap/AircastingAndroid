@@ -62,7 +62,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
             mExpandSessionButton.visibility = View.VISIBLE
             mSessionCardLayout.background = null
 
-            bindExpanded(sessionPresenter)
+            super.bindExpanded(sessionPresenter)
         }
     }
 
