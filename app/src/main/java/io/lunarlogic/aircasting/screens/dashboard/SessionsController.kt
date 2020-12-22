@@ -16,6 +16,7 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.SessionDownloadService
 import org.greenrobot.eventbus.EventBus
 
 
@@ -127,7 +128,9 @@ abstract class SessionsController(
     }
 
     override fun onEditSessionClicked(session: Session) {
-        startEditSessionBottomSheet(session)    }
+        mMobileSessionsSyncService.sync() // TODO: probably it would be to easy if the .sync() was enough??
+        startEditSessionBottomSheet(session)
+    }
 
     private fun startEditSessionBottomSheet(session: Session) {
         dialog = EditSessionBottomSheet(this, session)
