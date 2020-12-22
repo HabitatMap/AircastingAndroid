@@ -36,6 +36,10 @@ class MobileDormantViewMvcImpl(
         }
     }
 
+    override fun onSessionShareClicked(session: Session) {
+        TODO("Not yet implemented")
+    }
+
     override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
             listener.onDeleteSessionClicked(session.uuid)

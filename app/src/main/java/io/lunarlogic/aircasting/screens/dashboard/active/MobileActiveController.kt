@@ -64,6 +64,10 @@ class MobileActiveController(
         // do nothing
     }
 
+    override fun onShareSessionClicked(session: Session) {
+        // do nothing
+    }
+
     override fun onDeleteSessionClicked(sessionUUID: String) {
         // do nothing
     }
