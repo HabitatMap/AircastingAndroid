@@ -14,9 +14,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.TestPermissionsModule
-import io.lunarlogic.aircasting.di.TestSensorsModule
-import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.helpers.stubPairedDevice
 import io.lunarlogic.aircasting.lib.Settings
@@ -250,7 +247,7 @@ class MobileSessionTest {
             onView(withId(id)).perform(click())
             Thread.sleep(2000)
             assertBlock()
-        } catch(e: Exception) {
+        } catch(e: Throwable) {
             Thread.sleep(1000)
             clickButtonWithRetry(id, assertBlock, retryCount + 1)
         }
