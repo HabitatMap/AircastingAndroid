@@ -6,9 +6,13 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvc
 
 interface MobileActiveSessionViewMvc:
     SessionViewMvc<MobileActiveSessionViewMvc.Listener> {
-    interface Listener: SessionCardListener {
-        fun onSessionDisconnectClicked(session: Session)
+
+    interface DisconnectedViewListener {
         fun onSessionReconnectClicked(session: Session)
         fun onSessionStopClicked(session: Session)
+    }
+
+    interface Listener: SessionCardListener, DisconnectedViewListener {
+        fun onSessionDisconnectClicked(session: Session)
     }
 }

@@ -2,10 +2,7 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
@@ -15,9 +12,6 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
-import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.sensor.AirBeamConnector
-import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
