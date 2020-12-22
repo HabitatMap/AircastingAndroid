@@ -258,7 +258,7 @@ class Session(
         return formatter
     }
 
-    fun sessionEdited(newName: String, newTags: ArrayList<String>){
+    fun setNameAndTags(newName: String, newTags: ArrayList<String>){
         this.name = newName
         this.tags = newTags
     }

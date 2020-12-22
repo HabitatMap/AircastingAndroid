@@ -1,21 +1,17 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.database.converters.TagsConverter
-import io.lunarlogic.aircasting.events.EditSessionEvent
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
-import io.lunarlogic.aircasting.screens.lets_start.MoreInfoBottomSheet
+import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
 class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
@@ -57,11 +53,11 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         return view
     }
 
-    fun editDataConfirmed(): Session{
+    fun editDataConfirmed(): Session {
         val sessionName = view?.session_name_input?.text.toString().trim()
         val tags = view?.tags_input?.text.toString().trim()
-        val tag_list = getSessionTags(tags)
-        session.sessionEdited(sessionName, tag_list)
+        val tagList = getSessionTags(tags)
+        session.setNameAndTags(sessionName, tagList)
         return session
     }
 
@@ -69,7 +65,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         return ArrayList(tags.split(TAGS_SEPARATOR))
     }
 
-    private fun prepairTagsString(listString: String): String{
+    private fun prepairTagsString(listString: String): String {
         var listStringNew = listString.replace("[", "")
         listStringNew = listStringNew.replace("]", "")
         listStringNew = listStringNew.replace(",", "")
