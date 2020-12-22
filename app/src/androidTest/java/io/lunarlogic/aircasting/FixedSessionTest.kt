@@ -21,10 +21,7 @@ import io.lunarlogic.aircasting.di.TestNewSessionWizardModule
 import io.lunarlogic.aircasting.di.TestPermissionsModule
 import io.lunarlogic.aircasting.di.TestSensorsModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
-import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
-import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
-import io.lunarlogic.aircasting.helpers.selectTabAtPosition
-import io.lunarlogic.aircasting.helpers.stubPairedDevice
+import io.lunarlogic.aircasting.helpers.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
@@ -265,11 +262,11 @@ class FixedSessionTest {
         testRule.launchActivity(null)
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
 
-        onView(allOf(withId(R.id.expand_session_button), isDisplayed())).perform(click())
+        expandCard()
         onView(withId(R.id.follow_button)).perform(click())
         Thread.sleep(3000)
 
-        onView(allOf(withId(R.id.expand_session_button), isDisplayed())).perform(click())
+        expandCard()
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
         Thread.sleep(1000)
         onView(withId(R.id.unfollow_button)).perform(click())
