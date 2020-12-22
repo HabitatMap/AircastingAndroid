@@ -25,7 +25,7 @@ class FakeAirBeam2Connector(
         override fun run() {
             sleep(2000) // imitate connection time
 
-            onConnectionSuccessful(deviceItem.id)
+            onConnectionSuccessful(deviceItem)
 
             while (true) {
                 val inputStream = app.resources.openRawResource(R.raw.airbeam2_stream)

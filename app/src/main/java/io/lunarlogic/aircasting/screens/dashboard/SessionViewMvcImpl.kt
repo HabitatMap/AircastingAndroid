@@ -139,8 +139,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         bindLoader(sessionPresenter)
-        bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)
+        bindExpanded(sessionPresenter)
         bindSessionDetails()
         bindMeasurementsDescription(sessionPresenter)
         bindMeasurementsTable()
@@ -156,7 +156,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
     }
 
-    private fun bindExpanded(sessionPresenter: SessionPresenter) {
+    open protected fun bindExpanded(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.expanded) {
             expandSessionCard()
         } else {
@@ -186,8 +186,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             bindCollapsedMeasurementsDesctription()
         }
     }
-
-
 
     protected open fun bindMeasurementsTable() {
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)

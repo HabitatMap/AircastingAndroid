@@ -45,17 +45,13 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
         return ActiveSessionActionsBottomSheet(this, sessionPresenter)
     }
 
-    override fun bindSession(sessionPresenter: SessionPresenter) {
-        super.bindSession(sessionPresenter)
-        bindDisconnectedInfo(sessionPresenter)
-    }
-
-    private fun bindDisconnectedInfo(sessionPresenter: SessionPresenter) {
+    override fun bindExpanded(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.isDisconnected()) {
             mDisconnectedView.show(sessionPresenter)
 
             mActionsButton.visibility = View.GONE
-            mExpandSessionButton.visibility = View.GONE
+            mExpandSessionButton.visibility = View.INVISIBLE
+            mCollapseSessionButton.visibility = View.INVISIBLE
             mSessionCardLayout.background = context.getDrawable(R.drawable.top_border)
 
             mExpandedSessionView.visibility = View.GONE
@@ -65,6 +61,8 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
             mActionsButton.visibility = View.VISIBLE
             mExpandSessionButton.visibility = View.VISIBLE
             mSessionCardLayout.background = null
+
+            bindExpanded(sessionPresenter)
         }
     }
 
