@@ -134,7 +134,7 @@ abstract class SessionsController(
 
     private fun startEditSessionBottomSheet(session: Session) {
         dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "MobileDormantEdit")
+        dialog?.show(fragmentManager, "Session edit")
     }
 
     private fun editSessionEventPost(session: Session){
