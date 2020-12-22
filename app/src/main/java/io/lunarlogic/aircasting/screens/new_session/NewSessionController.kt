@@ -18,6 +18,7 @@ import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -50,6 +51,7 @@ class NewSessionController(
     private val airBeamConnectorFactory: AirBeamConnectorFactory,
     audioReader: AudioReader,
     private val sessionBuilder: SessionBuilder,
+    private val settings: Settings,
     private val sessionType: Session.Type
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
@@ -270,7 +272,8 @@ class NewSessionController(
             Session.Status.NEW,
             indoor,
             streamingMethod,
-            currentLocation
+            currentLocation,
+            settings
         )
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword

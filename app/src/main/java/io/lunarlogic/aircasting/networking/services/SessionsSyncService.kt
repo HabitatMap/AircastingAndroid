@@ -35,7 +35,7 @@ class SessionsSyncService {
         this.errorHandler = errorHandler
         this.settings = settings
 
-        this.uploadService = MobileSessionUploadService(apiService, errorHandler, settings)
+        this.uploadService = MobileSessionUploadService(apiService, errorHandler)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
     }
 
@@ -133,7 +133,7 @@ class SessionsSyncService {
         }
     }
 
-    private fun isUploadable(session: Session): Boolean{
-        return !settings.areMapsDisabled() && session.isMobile() // '!' before mapsDisabled
+    private fun isUploadable(session: Session): Boolean {
+        return !session.locationless && session.isMobile()
     }
 }

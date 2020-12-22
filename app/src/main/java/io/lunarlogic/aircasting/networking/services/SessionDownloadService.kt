@@ -55,6 +55,8 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             sessionResponse.version,
             sessionResponse.deleted,
             null,
+            sessionResponse.contribute,
+            false,
             streams
         )
 

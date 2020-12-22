@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import io.lunarlogic.aircasting.networking.GzippedSession
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
@@ -13,11 +12,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class FixedSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler, private val settings: Settings) {
+class FixedSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     fun upload(session: Session, successCallback: () -> Unit = {}) {
         session.endTime = Date()
 
-        val sessionParams = SessionParams(session, settings)
+        val sessionParams = SessionParams(session)
 
         val sessionBody = CreateSessionBody(
             GzippedSession.get(sessionParams)
