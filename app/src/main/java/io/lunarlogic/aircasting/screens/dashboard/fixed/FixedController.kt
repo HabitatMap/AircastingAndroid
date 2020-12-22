@@ -23,13 +23,11 @@ class FixedController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val fragmentManager: FragmentManager
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory),
+    fragmentManager: FragmentManager
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-    private var dialog: EditSessionBottomSheet? = null
-
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFixedSessionsWithMeasurements())
@@ -42,9 +40,6 @@ class FixedController(
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.FIXED)
     }
-    override fun onEditSessionClicked(session: Session) {
-        startEditSessionBottomSheet(session)
-    }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
@@ -54,30 +49,5 @@ class FixedController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
-
-    private fun startEditSessionBottomSheet(session: Session) {
-        dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "FixedEdit")
-    }
-
-    override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
-        val editData = dialog?.editDataConfirmed()
-        if(editData == null){
-            Log.e("EDIT_SESS", "Edit data is null")
-        }else{
-            editSessionEventPost(editData)
-        }
-        dialog?.dismiss()
-    }
-
-    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
-        dialog?.dismiss()
-    }
-
-    fun editSessionEventPost(session: Session){
-        val event = EditSessionEvent(session)
-        EventBus.getDefault().post(event)
-    }
-
 
 }
