@@ -11,7 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
-import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
 class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
@@ -33,7 +32,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         sessionNameInput?.setText(session.name)
 
         val tagsInput = view?.findViewById<EditText>(R.id.tags_input)
-        tagsInput?.setText(prepairTagsString(session.tags.toString()))
+        tagsInput?.setText(tagsFromString(session.tags.toString()))
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
         editDataButton?.setOnClickListener {
@@ -65,7 +64,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         return ArrayList(tags.split(TAGS_SEPARATOR))
     }
 
-    private fun prepairTagsString(listString: String): String {
+    private fun tagsFromString(listString: String): String {
         var listStringNew = listString.replace("[", "")
         listStringNew = listStringNew.replace("]", "")
         listStringNew = listStringNew.replace(",", "")
