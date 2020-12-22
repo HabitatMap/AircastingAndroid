@@ -30,7 +30,7 @@ class MobileDormantController(
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
-    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+    SessionsViewMvc.Listener{
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
@@ -45,10 +45,6 @@ class MobileDormantController(
 
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.MOBILE)
-    }
-
-    override fun onShareSessionClicked(session: Session) {
-        TODO("Not yet implemented")
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {

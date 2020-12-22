@@ -27,14 +27,17 @@ abstract class SessionsController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener,
+    EditSessionBottomSheet.Listener,
+    ShareSessionBottomSheet.Listener{
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected var dialog: EditSessionBottomSheet? = null
+    protected var editDialog: EditSessionBottomSheet? = null //todo: guess these 2 declarations are quite rough now
+    protected var shareDialog: ShareSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -113,28 +116,43 @@ abstract class SessionsController(
         }
     }
 
+    override fun onEditSessionClicked(session: Session) { // handling button in BottomSheet
+        mMobileSessionsSyncService.sync() // TODO: probably it would be to easy if the .sync() was enough??
+        startEditSessionBottomSheet(session)
+    }
+
+    override fun onShareSessionClicked(session: Session) { // handling button in BottomSheet
+        startShareSessionBottomSheet(session)
+    }
+
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
-        val editData = dialog?.editDataConfirmed()
+        val editData = editDialog?.editDataConfirmed()
         if(editData == null){
             Log.e("EDIT_SESS", "Edit data is null")
         }else{
             editSessionEventPost(editData)
         }
-        dialog?.dismiss()
+        editDialog?.dismiss()
     }
 
-    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
-        dialog?.dismiss()
+    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet, ShareSessionBottomSheet
+        editDialog?.dismiss()
+        shareDialog?.dismiss()
     }
 
-    override fun onEditSessionClicked(session: Session) {
-        mMobileSessionsSyncService.sync() // TODO: probably it would be to easy if the .sync() was enough??
-        startEditSessionBottomSheet(session)
+    override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
+        //TODO("Not yet implemented")
+        // Share link possibly not yet needed
+    }
+
+    override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
+        //TODO("Not yet implemented")
+        //This is the place to provide share file functionality
     }
 
     private fun startEditSessionBottomSheet(session: Session) {
-        dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "Session edit")
+        editDialog = EditSessionBottomSheet(this, session)
+        editDialog?.show(fragmentManager, "Session edit")
     }
 
     private fun editSessionEventPost(session: Session){
@@ -142,4 +160,8 @@ abstract class SessionsController(
         EventBus.getDefault().post(event)
     }
 
+    private fun startShareSessionBottomSheet(session: Session){
+        shareDialog = ShareSessionBottomSheet(this, session)
+        shareDialog?.show(fragmentManager, "Session share")
+    }
 }

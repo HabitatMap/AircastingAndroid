@@ -25,7 +25,7 @@ class FixedController(
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
-    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+    SessionsViewMvc.Listener{
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
@@ -41,10 +41,6 @@ class FixedController(
         startNewSession(Session.Type.FIXED)
     }
 
-    override fun onShareSessionClicked(session: Session) {
-        TODO("Not yet implemented")
-    }
-
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
@@ -53,7 +49,5 @@ class FixedController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
-
-
 
 }
