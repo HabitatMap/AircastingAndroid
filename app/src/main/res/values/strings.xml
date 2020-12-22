@@ -44,6 +44,10 @@
     <string name="disconnected_view_bluetooth_device_description">Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.</string>
     <string name="disconnected_view_bluetooth_device_reconnect_button">Reconnect</string>
     <string name="disconnected_view_bluetooth_device_finish_button">Finish session</string>
+    <string name="edit_session">Edit session</string>
+    <string name="edit_session_data">Edit session data</string>
+    <string name="tags_bottom_sheet_input">Tags:</string>
+    <string name="session_name_bottom_sheet_input">Session name</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
@@ -196,8 +200,5 @@
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
-    <string name="edit_session">Edit session</string>
-    <string name="edit_session_data">Edit session data</string>
-    <string name="tags_bottom_sheet_input">Tags:</string>
-    <string name="session_name_bottom_sheet_input">Session name</string>
+
 </resources>
