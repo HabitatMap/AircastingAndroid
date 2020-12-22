@@ -225,7 +225,7 @@ class MeasurementsTableContainer {
     }
 
     private fun shouldDisplayDisconnectedIndicator(): Boolean {
-        return mSessionPresenter?.isMobileActive() == true && mSessionPresenter?.isDisconnected() == true
+        return mSessionPresenter?.isFixed() == false && mSessionPresenter?.isDisconnected() == true
     }
 
     private fun renderValueView(measurementValue: Double, color: Int): View {
