@@ -57,11 +57,12 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         return view
     }
 
-    fun editDataConfirmed(): Triple<String, String, ArrayList<String>>{
+    fun editDataConfirmed(): Session{
         val sessionName = view?.session_name_input?.text.toString().trim()
         val tags = view?.tags_input?.text.toString().trim()
-        val tags_list = getSessionTags(tags)
-        return Triple(session.uuid, sessionName, tags_list)
+        val tag_list = getSessionTags(tags)
+        session.sessionEdited(sessionName, tag_list)
+        return session
     }
 
     private fun getSessionTags(tags: String): ArrayList<String> {

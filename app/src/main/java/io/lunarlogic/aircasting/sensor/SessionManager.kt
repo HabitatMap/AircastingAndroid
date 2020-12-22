@@ -129,12 +129,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun editSession(event: EditSessionEvent) {
         DatabaseProvider.runQuery {
-            val session = sessionsRespository.loadSessionAndMeasurementsByUUID(event.sessionUUID!!)
-            session?.let{
-            it.sessionEdited(event.newName!!, event.newTags!!)
-                sessionsRespository.update(it)
+                sessionsRespository.update(event.session)
                 sessionsSyncService.sync()
-            }
         }
     }
 

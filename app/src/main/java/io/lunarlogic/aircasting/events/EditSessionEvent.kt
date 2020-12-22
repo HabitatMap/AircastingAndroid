@@ -1,3 +1,5 @@
 package io.lunarlogic.aircasting.events
 
-class EditSessionEvent(val sessionUUID: String?, val newName: String?, val newTags: ArrayList<String>?)
+import io.lunarlogic.aircasting.models.Session
+
+class EditSessionEvent(val session: Session)

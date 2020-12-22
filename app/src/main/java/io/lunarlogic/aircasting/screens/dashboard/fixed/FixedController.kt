@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -61,7 +62,11 @@ class FixedController(
 
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
         val editData = dialog?.editDataConfirmed()
-        editSessionEventPost(editData?.first, editData?.second, editData?.third)
+        if(editData == null){
+            Log.e("EDIT_SESS", "Edit data is null")
+        }else{
+            editSessionEventPost(editData)
+        }
         dialog?.dismiss()
     }
 
@@ -69,8 +74,8 @@ class FixedController(
         dialog?.dismiss()
     }
 
-    fun editSessionEventPost(sessionId: String?, sessionName: String?, tags: ArrayList<String>?){
-        val event = EditSessionEvent(sessionId, sessionName, tags)
+    fun editSessionEventPost(session: Session){
+        val event = EditSessionEvent(session)
         EventBus.getDefault().post(event)
     }
 
