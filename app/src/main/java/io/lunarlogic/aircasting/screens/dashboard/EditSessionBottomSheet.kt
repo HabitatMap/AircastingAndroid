@@ -37,7 +37,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         sessionNameInput?.setText(session.name)
 
         val tagsInput = view?.findViewById<EditText>(R.id.tags_input)
-        tagsInput?.setText(session.tags.toString())  // TODO: here we got a problem with [] around tags, because of this .toString()
+        tagsInput?.setText(prepairTagsString(session.tags.toString()))
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
         editDataButton?.setOnClickListener {
@@ -67,6 +67,13 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
 
     private fun getSessionTags(tags: String): ArrayList<String> {
         return ArrayList(tags.split(TAGS_SEPARATOR))
+    }
+
+    private fun prepairTagsString(listString: String): String{
+        var listStringNew = listString.replace("[", "")
+        listStringNew = listStringNew.replace("]", "")
+        listStringNew = listStringNew.replace(",", "")
+        return listStringNew
     }
 
 }
