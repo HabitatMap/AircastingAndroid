@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.os.Bundle
+import android.view.InputDevice
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 
-class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Listener, private val session: Session): BottomSheetDialogFragment() {
+class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Listener, val session: Session): BottomSheetDialogFragment() {
     interface Listener{
         fun onShareLinkPressed()
         fun onShareFilePressed()
         fun onCancelPressed()
     }
+
+    var emailInput: EditText? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,7 +28,7 @@ class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Lis
     ): View? {
         val view = inflater.inflate(R.layout.share_session_bottom_sheet, container, false)
 
-        val emailInput = view?.findViewById<EditText>(R.id.email_input)
+        emailInput = view?.findViewById(R.id.email_input)
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
         shareLinkButton?.setOnClickListener {
@@ -50,5 +53,8 @@ class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Lis
         return view
     }
 
+    fun shareFilePressed(): String{
+        return emailInput?.text.toString().trim()
+    }
 
 }
