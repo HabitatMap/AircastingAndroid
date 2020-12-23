@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.CsvHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
@@ -141,7 +142,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun shareSession(event: ShareSessionEvent) {
         // todo: csvHelper usage to get csv file from event.session (?)
-        // todo: call to api to send email with file (from sessionRepository maybe??)
+        // todo: call to api to send email with file (from sessionService maybe??)
+
     }
 
     private fun deleteSession(sessionUUID: String) {

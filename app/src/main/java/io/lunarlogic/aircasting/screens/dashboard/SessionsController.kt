@@ -143,7 +143,7 @@ abstract class SessionsController(
 
     override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
         // TODO("Not yet implemented")
-        // Share link possibly not yet needed
+        // Share link possibly not yet needed in MVP ??
     }
 
     override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet

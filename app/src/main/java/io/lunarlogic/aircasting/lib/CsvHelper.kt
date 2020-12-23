@@ -18,7 +18,7 @@ class CsvHelper {
         // todo: jakiś header dodać na górze tego csv-a
         // TODO- this is just a first version/ trial of working with csv, needs to be improved later on
 
-        fun sessionToCsv(){
+        fun sessionToCsv(session: Session) {
             fileWriter = FileWriter("something.csv")
             csvWriter = CSVWriter(fileWriter)
 
