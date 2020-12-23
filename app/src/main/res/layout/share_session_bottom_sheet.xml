@@ -55,7 +55,86 @@ android:background="@drawable/dialog_background">
             app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/share_link_button"/>
+            app:layout_constraintBottom_toTopOf="@id/label1"/>
+
+        <ImageView
+            android:id="@+id/radio1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_radio"
+            app:layout_constraintTop_toBottomOf="@id/select_stream_text_view"
+            app:layout_constraintEnd_toStartOf="@id/label1"/>
+
+        <TextView
+            android:id="@+id/label1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+            android:layout_marginStart="@dimen/keyline_4"
+            android:text="PM1"
+            app:layout_constraintTop_toBottomOf="@id/select_stream_text_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/radio2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_radio"
+            app:layout_constraintTop_toBottomOf="@id/label1"
+            app:layout_constraintEnd_toStartOf="@id/label2"/>
+
+        <TextView
+            android:id="@+id/label2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+            android:layout_marginStart="@dimen/keyline_4"
+            android:text="PM2.5"
+            app:layout_constraintTop_toBottomOf="@id/label1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/label3"/>
+
+        <ImageView
+            android:id="@+id/radio3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_radio"
+            app:layout_constraintTop_toBottomOf="@id/label2"
+            app:layout_constraintEnd_toStartOf="@id/label3"/>
+
+        <TextView
+            android:id="@+id/label3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+            android:layout_marginStart="@dimen/keyline_4"
+            android:text="RH"
+            app:layout_constraintTop_toBottomOf="@id/label2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/label4"/>
+
+        <ImageView
+            android:id="@+id/radio4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_radio"
+            app:layout_constraintTop_toBottomOf="@id/label3"
+            app:layout_constraintEnd_toStartOf="@id/label4"/>
+
+        <TextView
+            android:id="@+id/label4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_4"
+            android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+            android:text="F"
+            app:layout_constraintBottom_toTopOf="@id/share_link_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label3" />
 
         <Button
             android:id="@+id/share_link_button"
@@ -63,7 +142,7 @@ android:background="@drawable/dialog_background">
             android:layout_height="wrap_content"
             android:text="@string/share_link"
             style="@style/Widget.Aircasting.BottomSheetAcceptButton"
-            app:layout_constraintTop_toBottomOf="@id/select_stream_text_view"
+            app:layout_constraintTop_toBottomOf="@id/label4"
             app:layout_constraintBottom_toTopOf="@+id/email_csv_text_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -97,9 +176,9 @@ android:background="@drawable/dialog_background">
                 android:id="@+id/email_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:backgroundTint="@color/aircasting_grey_100"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                android:backgroundTint="@color/aircasting_grey_100"/>
+                android:textColor="@color/aircasting_grey_700" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
