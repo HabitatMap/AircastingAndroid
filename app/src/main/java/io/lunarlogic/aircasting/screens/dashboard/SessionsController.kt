@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.EditSessionEvent
+import io.lunarlogic.aircasting.events.ShareSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -139,13 +140,19 @@ abstract class SessionsController(
     }
 
     override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
-        //TODO("Not yet implemented")
+        // TODO("Not yet implemented")
         // Share link possibly not yet needed
     }
 
     override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
-        //TODO("Not yet implemented")
-        //This is the place to provide share file functionality
+        if(shareDialog != null){
+            val session = shareDialog!!.session
+            val email = shareDialog!!.shareFilePressed()
+            shareSessionEventPost(session, email)
+        }else{
+            Log.e("SHARE_SESS", "Share dialog is null")
+        }
+
     }
 
     private fun startEditSessionBottomSheet(session: Session) {
@@ -156,6 +163,11 @@ abstract class SessionsController(
     private fun editSessionEventPost(session: Session){
         val event = EditSessionEvent(session)
         EventBus.getDefault().post(event)
+    }
+
+    private fun shareSessionEventPost(session: Session, email: String){
+        val event = ShareSessionEvent(session, email)
+        EventBus.getDefault().post(event)   //TODO: not handled in SessionManager yet
     }
 
     private fun startShareSessionBottomSheet(session: Session){

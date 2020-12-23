@@ -52,6 +52,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
+    fun onMessageEvent(event: ShareSessionEvent){
+        shareSession(event)
+    }
+
+    @Subscribe
     fun onMessageEvent(event: DeleteSessionEvent) {
         deleteSession(event.sessionUUID)
     }
@@ -135,6 +140,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 sessionsRespository.update(event.session)
             }
         }
+    }
+
+    private fun shareSession(event: ShareSessionEvent) {
+        // todo: csvHelper usage to get csv file from event.session (?)
+        // todo: call to api to send email with file (from sessionRepository maybe??)
     }
 
     private fun deleteSession(sessionUUID: String) {
