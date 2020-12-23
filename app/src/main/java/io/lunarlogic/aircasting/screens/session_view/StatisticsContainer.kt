@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
+import java.util.*
 
 class StatisticsContainer {
     private val mContext: Context
@@ -31,6 +32,8 @@ class StatisticsContainer {
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
+    private var mVisibleTimeSpan: ClosedRange<Date>? = null
+
     constructor(rootView: View?, context: Context) {
         mContext = context
 
@@ -48,6 +51,7 @@ class StatisticsContainer {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
+        mVisibleTimeSpan = sessionPresenter?.visibleTimeSpan
 
         mStatisticsView?.visibility = View.VISIBLE
 
@@ -81,7 +85,14 @@ class StatisticsContainer {
             if (mSum == null) {
                 mSum = stream.calculateSum()
             }
-            avg = mSum!! / stream.measurements.size
+
+            val sum = if (mVisibleTimeSpan == null) {
+                mSum!!
+            } else {
+                stream.calculateSum(mVisibleTimeSpan!!)
+            }
+
+            avg = sum / calculateMeasurementsSize(stream)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
@@ -99,7 +110,12 @@ class StatisticsContainer {
             mPeak = calculatePeak(stream)
         }
 
-        bindStatisticValues(stream, mPeak, mPeakValue, mPeakCircleIndicator)
+        val peak = if (mVisibleTimeSpan == null) {
+            mPeak
+        } else {
+            stream?.let { calculatePeak(it) }
+        }
+        bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
 
     private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?) {
@@ -110,10 +126,21 @@ class StatisticsContainer {
         circleIndicator?.setColorFilter(color)
     }
 
-    private fun calculatePeak(stream: MeasurementStream): Double {
-        return stream.measurements.maxBy { it.value }?.value ?: 0.0
+    private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
+        return streamMeasurements(stream).size
     }
 
+    private fun calculatePeak(stream: MeasurementStream): Double {
+        return streamMeasurements(stream).maxBy { it.value }?.value ?: 0.0
+    }
+
+    private fun streamMeasurements(stream: MeasurementStream): List<Measurement> {
+        return if (mVisibleTimeSpan == null) {
+            stream.measurements
+        } else {
+            stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!)
+        }
+    }
     private fun getNowValue(stream: MeasurementStream?): Double? {
         return stream?.measurements?.lastOrNull()?.value
     }

@@ -5,6 +5,8 @@ import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import java.util.*
+import kotlin.collections.HashMap
 
 class SessionPresenter() {
     var session: Session? = null
@@ -16,6 +18,7 @@ class SessionPresenter() {
     var chartData: ChartData? = null
     var sessionUUID: String? = null
     var initialSensorName: String? = null
+    var visibleTimeSpan: ClosedRange<Date>? = null
 
     constructor(
         session: Session,
@@ -60,12 +63,20 @@ class SessionPresenter() {
         return !isFixed() && !isRecording()
     }
 
+    fun isMobileActive(): Boolean {
+        return !isFixed() && isRecording()
+    }
+
     fun isRecording(): Boolean {
         return session?.isRecording() == true
     }
 
     fun isDisconnected(): Boolean {
         return session?.isDisconnected() == true
+    }
+
+    fun isDisconnectable(): Boolean {
+        return session?.isAirBeam3() == true
     }
 
     fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {

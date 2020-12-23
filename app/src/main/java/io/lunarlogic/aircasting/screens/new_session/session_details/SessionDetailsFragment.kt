@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import javax.inject.Inject
 
 class SessionDetailsFragment() : Fragment() {
     private var controller: SessionDetailsController? = null
     lateinit var listener: SessionDetailsViewMvc.Listener
-    lateinit var deviceId: String
+    lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
     lateinit var sessionType: Session.Type
 
@@ -27,7 +28,7 @@ class SessionDetailsFragment() : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceId, sessionUUID, sessionType)
+        val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, sessionType)
         controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
         controller?.onCreate()
 

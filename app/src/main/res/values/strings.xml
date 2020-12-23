@@ -30,7 +30,7 @@
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
     <string name="record_new_session">Record new session</string>
-    <string name="disconnect_session">Disconnect session</string>
+    <string name="disconnect_session">Disconnect AirBeam3</string>
     <string name="reconnect_session">Reconnect session</string>
     <string name="stop_session">Finish recording session</string>
     <string name="delete_session">Delete session</string>
@@ -40,6 +40,7 @@
     <string name="unfollow_button">unfollow</string>
     <string name="map_button">map</string>
     <string name="graph_button">graph</string>
+
     <string name="disconnected_view_bluetooth_device_header">Measurement device\ndisconnected</string>
     <string name="disconnected_view_bluetooth_device_description">Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.</string>
     <string name="disconnected_view_bluetooth_device_reconnect_button">Reconnect</string>
@@ -49,6 +50,11 @@
     <string name="tags_bottom_sheet_input">Tags:</string>
     <string name="session_name_bottom_sheet_input">Session name</string>
     <string name="edit_data">Edit data</string>
+
+    <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
+    <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
+    <string name="disconnected_view_airbeam3_sync_button">Finish recording &amp; sync</string>
+    <string name="disconnected_view_airbeam3_finish_button">Finish recording &amp; don\'t sync</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
@@ -197,10 +203,10 @@
     <string name="settings_backend_settings">Backend settings</string>
     <string name="settings_backend_url">Url</string>
     <string name="settings_backend_port">Port</string>
+    <string name="map_enable_description">Turns off GPS tracking &amp; session syncing. Use \'Share file\' to retrieve your measurements via email.</string>
+    <string name="disable_mapping">Disable mapping</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
-
-
 </resources>

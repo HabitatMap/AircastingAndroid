@@ -26,10 +26,12 @@ open class AirBeam3Connector(
 
         airBeam3Configurator.setConnectionObserver(this)
 
-        airBeam3Configurator.connect(deviceItem.bluetoothDevice)
+        val bluetoothDevice = deviceItem.bluetoothDevice ?: return
+
+        airBeam3Configurator.connect(bluetoothDevice)
             .timeout(100000)
             .retry(3, 100)
-            .done { _ -> onConnectionSuccessful(deviceItem.id) }
+            .done { _ -> onConnectionSuccessful(deviceItem) }
             .enqueue()
     }
 

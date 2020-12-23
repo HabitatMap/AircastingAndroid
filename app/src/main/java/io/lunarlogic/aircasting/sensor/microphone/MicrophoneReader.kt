@@ -4,7 +4,20 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.AudioReaderError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
+
+class MicrophoneDeviceItem: DeviceItem() {
+    companion object {
+        val DEFAULT_ID = "Builtin"
+    }
+
+    override val id: String
+        get() = DEFAULT_ID
+
+    override val type: Type
+        get() = Type.MIC
+}
 
 class MicrophoneReader(private val mAudioReader: AudioReader, private val mErrorHandler: ErrorHandler): AudioReader.Listener() {
     private val SAMPLE_RATE = 44100
@@ -13,11 +26,7 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     private val MEASUREMENT_TYPE = "Sound Level"
     private val SHORT_TYPE = "dB"
     private val SENSOR_NAME = "Phone Microphone-dB"
-    private val SENSOR_PACKAGE_NAME = deviceId
-
-    companion object {
-        val deviceId = "Builtin"
-    }
+    private val SENSOR_PACKAGE_NAME = MicrophoneDeviceItem.DEFAULT_ID
 
     private val VERY_LOW = 20
     private val LOW = 60

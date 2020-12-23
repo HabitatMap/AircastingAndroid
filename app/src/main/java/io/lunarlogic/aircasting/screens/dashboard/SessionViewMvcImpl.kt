@@ -15,25 +15,23 @@ import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
 import io.lunarlogic.aircasting.models.MeasurementStream
-import kotlinx.android.synthetic.main.session_card.view.*
+import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType>, BottomSheet.Listener {
     protected val mLayoutInflater: LayoutInflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
-    private val mDisconnectedView: View
-    private val mReconnectButton: Button
-    private val mReconnectingLoader: ImageView
-    private val mFinishButton: Button
+
+    protected val mSessionCardLayout: ViewGroup
 
     private val mDateTextView: TextView
     private val mNameTextView: TextView
     private val mInfoTextView: TextView
-    private val mActionsButton: ImageView
+    protected val mActionsButton: ImageView
     private val mSupportFragmentManager: FragmentManager
     protected var mBottomSheet: BottomSheet? = null
 
-    private var mExpandedSessionView: View
+    protected var mExpandedSessionView: View
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
     protected val mChart: Chart
@@ -58,17 +56,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         this.rootView = inflater.inflate(R.layout.session_card, parent, false)
         mSupportFragmentManager = supportFragmentManager
 
+        mSessionCardLayout = findViewById(R.id.session_card_layout)
+
         mDateTextView = findViewById(R.id.session_date)
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
         mMeasurementsDescription = findViewById(R.id.session_measurements_description)
-
-        mDisconnectedView = findViewById(R.id.disconnected_view)
-        mReconnectButton = findViewById(R.id.disconnected_view_bluetooth_device_reconnect_button)
-        mReconnectButton.setOnClickListener { reconnectSessionPressed() }
-        mReconnectingLoader = findViewById(R.id.reconnecting_loader)
-        mFinishButton = findViewById(R.id.disconnected_view_bluetooth_device_finish_button)
-        mFinishButton.setOnClickListener { stopSessionPressed() }
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -127,12 +120,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun showExpandedMeasurementsTableValues(): Boolean
-    protected abstract fun buildBottomSheet(): BottomSheet?
+    protected abstract fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet?
 
     protected open fun showChart() = true
 
     private fun actionsButtonClicked() {
-        mBottomSheet = buildBottomSheet()
+        mBottomSheet = buildBottomSheet(mSessionPresenter)
         mBottomSheet?.show(mSupportFragmentManager)
     }
 
@@ -146,12 +139,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         bindLoader(sessionPresenter)
-        bindReconnectingLoader(sessionPresenter)
-        bindExpanded(sessionPresenter)
         bindSelectedStream(sessionPresenter)
+        bindExpanded(sessionPresenter)
         bindSessionDetails()
         bindMeasurementsDescription(sessionPresenter)
-        bindDisconnectedInfo(sessionPresenter)
         bindMeasurementsTable()
         bindChartData()
         bindFollowButtons(sessionPresenter)
@@ -165,15 +156,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
     }
 
-    private fun bindReconnectingLoader(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.reconnecting) {
-            showReconnectingLoader()
-        } else {
-            hideReconnectingLoader()
-        }
-    }
-
-    private fun bindExpanded(sessionPresenter: SessionPresenter) {
+    open protected fun bindExpanded(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.expanded) {
             expandSessionCard()
         } else {
@@ -201,18 +184,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             bindExpandedMeasurementsDesctription()
         } else {
             bindCollapsedMeasurementsDesctription()
-        }
-    }
-
-    private fun bindDisconnectedInfo(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.isDisconnected()) {
-            mDisconnectedView.visibility = View.VISIBLE
-            mActionsButton.visibility = View.GONE
-            mExpandSessionButton.visibility = View.GONE
-        } else {
-            mDisconnectedView.visibility = View.GONE
-            mActionsButton.visibility = View.VISIBLE
-            mExpandSessionButton.visibility = View.VISIBLE
         }
     }
 
@@ -249,7 +220,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mCollapseSessionButton.visibility = View.INVISIBLE
         mExpandSessionButton.visibility = View.VISIBLE
         mExpandedSessionView.visibility = View.GONE
-        mChartView?.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
@@ -270,21 +240,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun hideLoader() {
         mLoader?.visibility = View.GONE
-    }
-
-    override fun showReconnectingLoader() {
-        AnimatedLoader(mReconnectingLoader).start()
-        mReconnectingLoader.visibility = View.VISIBLE
-        mReconnectButton.isEnabled = false
-        mReconnectButton.translationY = 6f
-        mReconnectButton.translationZ = -6f
-    }
-
-    override fun hideReconnectingLoader() {
-        mReconnectingLoader.visibility = View.GONE
-        mReconnectButton.isEnabled = true
-        mReconnectButton.translationY = -6f
-        mReconnectButton.translationZ = 6f
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
@@ -349,7 +304,4 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
     }
-
-    protected open fun reconnectSessionPressed() {}
-    protected open fun stopSessionPressed() {}
 }

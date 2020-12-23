@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 
 class MobileDormantSessionViewMvcImpl(
@@ -31,7 +32,7 @@ class MobileDormantSessionViewMvcImpl(
         mMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
     }
 
-    override fun buildBottomSheet(): BottomSheet {
+    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
         return SessionActionsBottomSheet(this)
     }
 
