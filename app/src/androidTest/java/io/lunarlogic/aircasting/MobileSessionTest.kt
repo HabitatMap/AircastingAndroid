@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -14,11 +13,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
-import io.lunarlogic.aircasting.di.TestPermissionsModule
-import io.lunarlogic.aircasting.di.TestSensorsModule
-import io.lunarlogic.aircasting.di.TestSettingsModule
-import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
-import io.lunarlogic.aircasting.helpers.stubPairedDevice
+import io.lunarlogic.aircasting.helpers.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
@@ -221,52 +216,5 @@ class MobileSessionTest {
         onView(withId(R.id.delete_session_button)).perform(click())
         Thread.sleep(2000)
         onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
-    }
-
-    private fun openMap() {
-        clickButtonWithRetry(
-            R.id.map_button,
-            { onView(withId(R.id.map)).check(matches(isDisplayed())) })
-    }
-
-    private fun openGraph() {
-        clickButtonWithRetry(
-            R.id.graph_button,
-            { onView(withId(R.id.graph)).check(matches(isDisplayed())) })
-    }
-
-    private fun expandCard() {
-        clickButtonWithRetry(
-            R.id.expand_session_button,
-            { onView(withId(R.id.collapse_session_button)).check(matches(isDisplayed())) })
-    }
-
-    private fun clickButtonWithRetry(id: Int, assertBlock: () -> Unit, retryCount: Int = 0) {
-        if (retryCount >= 3) {
-            return
-        }
-
-        try {
-            onView(withId(id)).perform(click())
-            Thread.sleep(2000)
-            assertBlock()
-        } catch(e: Exception) {
-            Thread.sleep(1000)
-            clickButtonWithRetry(id, assertBlock, retryCount + 1)
-        }
-    }
-
-    private fun stopSession(retryCount: Int = 0) {
-        if (retryCount >= 3) {
-            return
-        }
-
-        try {
-            onView(withId(R.id.session_actions_button)).perform(click())
-            Thread.sleep(1000)
-            onView(withId(R.id.stop_session_button)).perform(click())
-        } catch(e: NoMatchingViewException) {
-            stopSession(retryCount + 1)
-        }
     }
 }

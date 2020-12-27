@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
 open class Settings(mApplication: Application) {
     private val PRIVATE_MODE = 0
@@ -10,12 +10,12 @@ open class Settings(mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
-    protected val MAPS_ENABLED_KEY = "maps_enabled"
+    protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
 
     private val DEFAULT_CROWD_MAP_ENABLED = true
-    private val DEFAULT_MAPS_ENABLED = true
+    private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
 
@@ -37,8 +37,8 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
 
-    fun areMapsEnabled(): Boolean {
-        return getBooleanFromSettings(MAPS_ENABLED_KEY, DEFAULT_MAPS_ENABLED)
+    fun areMapsDisabled(): Boolean {
+        return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
     }
 
     open fun getBackendUrl(): String? {
@@ -50,20 +50,19 @@ open class Settings(mApplication: Application) {
     }
 
     fun toggleMapSettingsEnabled(){
-        val enabled = !areMapsEnabled()
-        saveToSettings(MAPS_ENABLED_KEY, enabled)
-        Log.i("SETTINGS", enabled.toString())
+        val enabled = !areMapsDisabled()
+        saveToSettings(MAPS_DISABLED_KEY, enabled)
     }
 
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
-        Log.i("SETTINGS", enabled.toString())
     }
 
     fun backendSettingsChanged(url: String, port: String) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
+        SessionsSyncService.destroy()
     }
 
     fun login(email: String, authToken: String) {

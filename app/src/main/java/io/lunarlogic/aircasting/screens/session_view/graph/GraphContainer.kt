@@ -40,13 +40,18 @@ class GraphContainer: OnChartGestureListener {
     private val DATE_FORMAT = "HH:mm"
     private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
+    private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
+    private var mGetMeasurementsSample: () -> List<Measurement>
+    private var mMeasurementsSample: List<Measurement> = listOf()
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
         mToLabel = rootView?.to_label
         mDefaultZoomSpan = defaultZoomSpan
+        mOnTimeSpanChanged = onTimeSpanChanged
+        mGetMeasurementsSample = getMeasurementsSample
 
         setupGraph()
     }
@@ -61,6 +66,7 @@ class GraphContainer: OnChartGestureListener {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
+        mMeasurementsSample = mGetMeasurementsSample.invoke()
 
         drawSession()
     }
@@ -88,15 +94,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(getSamples() )
-    }
-
-    private fun getSamples(): List<Measurement> {
-        return if(mSessionPresenter?.isFixed() == true) {
-           mSessionPresenter?.selectedStream?.getLastMeasurements(LAST_24H_FIXED_MEASUREMENTS_NUMBER) ?: emptyList()
-        } else {
-           mSessionPresenter?.selectedStream?.measurements ?: emptyList()
-        }
+        return mGraphDataGenerator.generate(mMeasurementsSample)
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -222,10 +220,11 @@ class GraphContainer: OnChartGestureListener {
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
 
     override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
-        updateLabelsBasedOnVisibleRange()
+        updateLabelsBasedOnVisibleTimeSpan()
+        updateVisibleTimeSpan()
     }
 
-    private fun updateLabelsBasedOnVisibleRange() {
+    private fun updateLabelsBasedOnVisibleTimeSpan() {
         mGraph ?: return
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -240,5 +239,14 @@ class GraphContainer: OnChartGestureListener {
                 drawLabels(from, to)
             }
         }
+    }
+
+    private fun updateVisibleTimeSpan() {
+        mGraph ?: return
+
+        val from = mGraph.lowestVisibleX
+        val to = mGraph.highestVisibleX
+        val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+        mOnTimeSpanChanged.invoke(timeSpan)
     }
 }

@@ -12,19 +12,14 @@ class SessionParams {
         val FIXED_SESSION_TYPE = "FixedSession"
     }
 
-    constructor(session: Session, settings: Settings?) {
+    constructor(session: Session) {
         this.uuid = session.uuid
         this.type = when(session.type) {
             Session.Type.FIXED -> FIXED_SESSION_TYPE
             Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
 
-        this.contribute = when(this.type){
-            FIXED_SESSION_TYPE -> true
-            MOBILE_SESSION_TYPE -> settings?.isCrowdMapEnabled() == true
-            else -> true
-        }
-
+        this.contribute = session.contribute
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
         this.end_time = DateConverter.toDateString(session.endTime!!)

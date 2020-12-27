@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
+import java.util.*
 
 
 abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
@@ -20,10 +21,14 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan())
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample)
     }
 
     abstract fun defaultZoomSpan(): Int?
+
+    open fun measurementsSample(): List<Measurement> {
+        return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
+    }
 
     override fun layoutId(): Int {
         return R.layout.activity_graph
@@ -52,5 +57,10 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
         graphContainer.refresh(mSessionPresenter)
+    }
+
+    private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {
+        mSessionPresenter?.visibleTimeSpan = timeSpan
+        mStatisticsContainer?.refresh(mSessionPresenter)
     }
 }

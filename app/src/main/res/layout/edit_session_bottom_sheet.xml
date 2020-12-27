@@ -63,6 +63,7 @@
                         android:id="@+id/session_name_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:inputType="text"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                         android:textColor="@color/aircasting_grey_700"
                         android:backgroundTint="@color/aircasting_grey_100"/>
@@ -86,6 +87,7 @@
                         android:id="@+id/tags_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="text"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                         android:textColor="@color/aircasting_grey_700"
                         android:backgroundTint="@color/aircasting_grey_100"/>

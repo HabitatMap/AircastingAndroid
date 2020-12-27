@@ -113,6 +113,10 @@ class MeasurementStream(
         }
     }
 
+    fun getMeasurementsForTimeSpan(timeSpan: ClosedRange<Date>): List<Measurement> {
+        return measurements.filter { it.time in timeSpan}
+    }
+
     fun getLastMeasurements(amount: Int): MutableList<Measurement>? {
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList<Measurement>(measurements)
@@ -131,6 +135,10 @@ class MeasurementStream(
 
     fun calculateSum(): Double {
         return measurements.sumByDouble { it.value }
+    }
+
+    fun calculateSum(visibleTimeSpan: ClosedRange<Date>): Double {
+        return getMeasurementsForTimeSpan(visibleTimeSpan).sumByDouble { it.value }
     }
 
     private fun getFirstMeasurements(amount: Int): List<Measurement?>? {

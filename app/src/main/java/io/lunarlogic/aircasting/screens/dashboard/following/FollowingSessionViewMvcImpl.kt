@@ -41,7 +41,7 @@ class FollowingSessionViewMvcImpl:
         mFollowButton.visibility = View.GONE
     }
 
-    override fun buildBottomSheet(): BottomSheet? {
+    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
         return null;
     }
 

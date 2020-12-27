@@ -45,6 +45,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
         val session = Session(
             sessionResponse.uuid,
             null,
+            null,
             sessionType(sessionResponse.type),
             sessionResponse.title,
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
@@ -54,6 +55,8 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             sessionResponse.version,
             sessionResponse.deleted,
             null,
+            sessionResponse.contribute,
+            false,
             streams
         )
 

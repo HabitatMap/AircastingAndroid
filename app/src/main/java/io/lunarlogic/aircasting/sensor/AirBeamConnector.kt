@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class AirBeamConnector {
     interface Listener {
-        fun onConnectionSuccessful(deviceId: String)
+        fun onConnectionSuccessful(deviceItem: DeviceItem)
         fun onConnectionFailed(deviceId: String)
     }
 
@@ -58,8 +58,8 @@ abstract class AirBeamConnector {
         mListener = listener
     }
 
-    fun onConnectionSuccessful(deviceId: String) {
-        mListener?.onConnectionSuccessful(deviceId)
+    fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        mListener?.onConnectionSuccessful(deviceItem)
     }
 
     fun onConnectionFailed(deviceId: String) {

@@ -78,6 +78,7 @@ class NewSessionActivity : AppCompatActivity() {
             airbeamConnectorFactory,
             audioReader,
             sessionBuilder,
+            settings,
             sessionType
         )
         controller?.onCreate()

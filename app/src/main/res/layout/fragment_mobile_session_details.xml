@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
                 android:hint="@string/session_details_session_name_hint"
+                android:inputType="text"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                 android:textColor="@color/aircasting_grey_700"
                 />
@@ -69,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
                 android:hint="@string/session_details_session_tags_hint"
+                android:inputType="text"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                 android:textColor="@color/aircasting_grey_700"
                 />
