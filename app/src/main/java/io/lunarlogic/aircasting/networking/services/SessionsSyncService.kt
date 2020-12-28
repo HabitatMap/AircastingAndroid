@@ -85,6 +85,7 @@ class SessionsSyncService {
                                 delete(body.deleted)
                                 upload(body.upload)
                                 download(body.download)
+                                // TODO: here we can send an update for sessions which have higher version number than in api
                             }
                         }
                     } else {
