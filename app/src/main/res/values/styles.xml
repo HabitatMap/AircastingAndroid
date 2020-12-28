@@ -310,7 +310,7 @@
         <item name="android:textColor">@color/aircasting_white</item>
         <item name="android:textSize">@dimen/text_size_m</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:padding">@dimen/keyline_2</item>
+        <item name="android:padding">@dimen/keyline_4</item>
         <item name="android:textAllCaps">false</item>
         <item name="fontFamily">@font/moderat_trial_medium</item>
         <item name="android:fontFamily">@font/moderat_trial_medium</item>
