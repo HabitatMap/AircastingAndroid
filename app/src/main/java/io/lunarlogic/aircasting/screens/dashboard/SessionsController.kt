@@ -115,7 +115,7 @@ abstract class SessionsController(
 
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
         val editData = dialog?.editDataConfirmed()
-        if(editData == null){
+        if (editData == null) {
             Log.e("EDIT_SESS", "Edit data is null")
         }else{
             editSessionEventPost(editData)
