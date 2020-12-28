@@ -1,4 +1,4 @@
 package io.lunarlogic.aircasting.networking.params
 
 
-class UpdateSessionBody(val uuid: String, val data: String)
+class UpdateSessionBody(val data: String)

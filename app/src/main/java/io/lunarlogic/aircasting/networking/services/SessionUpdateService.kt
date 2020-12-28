@@ -23,11 +23,10 @@ class SessionUpdateService(private val apiService: ApiService, private val error
     fun update(session: Session) {
         val sessionParams = SessionParams(session)
 
-        val sessionBody = UpdateSessionBody(
-            session.uuid,
-            GzippedSession.get(sessionParams)
-        )
-        val call = apiService.updateSession(sessionBody)
+        val gson = Gson()
+        val jsonData = gson.toJson(sessionParams)
+        val call = apiService.updateSession(UpdateSessionBody(jsonData))
+
         call.enqueue(object : Callback<SessionResponse> {
             override fun onResponse(call: Call<SessionResponse>, response: Response<SessionResponse>) {
                 if (response.isSuccessful) {
