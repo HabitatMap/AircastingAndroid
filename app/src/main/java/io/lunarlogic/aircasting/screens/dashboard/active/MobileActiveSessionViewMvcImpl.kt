@@ -50,8 +50,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
             mDisconnectedView.show(sessionPresenter)
 
             mActionsButton.visibility = View.GONE
-            mExpandSessionButton.visibility = View.INVISIBLE
-            mCollapseSessionButton.visibility = View.INVISIBLE
+            setExpandCollapseButton()
             mSessionCardLayout.background = context.getDrawable(R.drawable.top_border)
 
             mExpandedSessionView.visibility = View.GONE
@@ -59,7 +58,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
             mDisconnectedView.hide()
 
             mActionsButton.visibility = View.VISIBLE
-            mExpandSessionButton.visibility = View.VISIBLE
+            setExpandCollapseButton()
             mSessionCardLayout.background = null
 
             super.bindExpanded(sessionPresenter)

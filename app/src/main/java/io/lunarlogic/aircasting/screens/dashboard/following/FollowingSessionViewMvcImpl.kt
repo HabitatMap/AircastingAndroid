@@ -65,19 +65,15 @@ class FollowingSessionViewMvcImpl:
 
     private fun showNoMeasurementsInfo() {
         mMeasurementsDescription?.visibility = View.GONE
-
         noMeasurementsIcon?.visibility = View.VISIBLE
         noMeasurementsLabels?.visibility = View.VISIBLE
-
-        mExpandSessionButton.visibility = View.GONE
+        setExpandCollapseButton()
     }
 
     private fun hideNoMeasurementsInfo() {
         mMeasurementsDescription?.visibility = View.VISIBLE
-
         noMeasurementsIcon?.visibility = View.GONE
         noMeasurementsLabels?.visibility = View.GONE
-
-        mExpandSessionButton.visibility = View.VISIBLE
+        setExpandCollapseButton()
     }
 }

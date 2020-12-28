@@ -83,13 +83,13 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mExpandedSessionView = findViewById(R.id.expanded_session_view)
         mExpandSessionButton = findViewById(R.id.expand_session_button)
         mExpandSessionButton.setOnClickListener {
-            expandSessionCard()
             onExpandSessionCardClicked()
+            expandSessionCard()
         }
         mCollapseSessionButton = findViewById(R.id.collapse_session_button)
         mCollapseSessionButton.setOnClickListener {
-            collapseSessionCard()
             onCollapseSessionCardClicked()
+            collapseSessionCard()
         }
         mFollowButton = findViewById(R.id.follow_button)
         mFollowButton.setOnClickListener {
@@ -156,7 +156,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
     }
 
-    open protected fun bindExpanded(sessionPresenter: SessionPresenter) {
+    protected open fun bindExpanded(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.expanded) {
             expandSessionCard()
         } else {
@@ -203,8 +203,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun expandSessionCard() {
-        mExpandSessionButton.visibility = View.INVISIBLE
-        mCollapseSessionButton.visibility = View.VISIBLE
+        setExpandCollapseButton()
         mExpandedSessionView.visibility = View.VISIBLE
         if(showExpandedMeasurementsTableValues()){
             mMeasurementsTableContainer.makeSelectable()
@@ -217,12 +216,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun collapseSessionCard() {
-        mCollapseSessionButton.visibility = View.INVISIBLE
-        mExpandSessionButton.visibility = View.VISIBLE
+        setExpandCollapseButton()
         mExpandedSessionView.visibility = View.GONE
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
+    }
+
+    protected fun setExpandCollapseButton() {
+        if (mSessionPresenter?.expanded == true) {
+            mExpandSessionButton.visibility = View.INVISIBLE
+            mCollapseSessionButton.visibility = View.VISIBLE
+        } else {
+            mExpandSessionButton.visibility = View.VISIBLE
+            mCollapseSessionButton.visibility = View.INVISIBLE
+        }
     }
 
     protected open fun bindExpandedMeasurementsDesctription() {
