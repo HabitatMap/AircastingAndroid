@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
@@ -20,6 +21,7 @@ class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Lis
     }
 
     var emailInput: EditText? = null
+    var radioGroup: RadioGroup? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +31,9 @@ class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Lis
         val view = inflater.inflate(R.layout.share_session_bottom_sheet, container, false)
 
         emailInput = view?.findViewById(R.id.email_input)
+        radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
+
+        // TODO: handling clicks on RadioButtons in radioGroup
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
         shareLinkButton?.setOnClickListener {
