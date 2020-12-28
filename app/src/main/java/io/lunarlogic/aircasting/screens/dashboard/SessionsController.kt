@@ -128,7 +128,6 @@ abstract class SessionsController(
     }
 
     override fun onEditSessionClicked(session: Session) {
-        mMobileSessionsSyncService.sync() // TODO: probably it would be to easy if the .sync() was enough??
         startEditSessionBottomSheet(session)
     }
 

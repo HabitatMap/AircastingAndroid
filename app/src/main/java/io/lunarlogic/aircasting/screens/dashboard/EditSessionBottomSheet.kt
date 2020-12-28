@@ -19,8 +19,6 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         fun onCancelPressed()
     }
 
-    private val TAG = "EditSessionBottomSheet"
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
