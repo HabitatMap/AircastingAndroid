@@ -18,9 +18,8 @@ class ExportSessionService(private val apiService: ApiService, private val error
     fun export(email: String, uuid: String, successCallback: (() -> Unit)) {
         val exportSessionParams = ExportSessionParams(email, uuid)
 
-        val gson = Gson()
-        val jsonData = gson.toJson(ExportSessionBody(exportSessionParams))
-        val call = apiService.sendSessionByEmail(jsonData)
+        val exportSessionBody = ExportSessionBody(exportSessionParams)
+        val call = apiService.sendSessionByEmail(exportSessionBody)
 
         call.enqueue(object : Callback<ExportSessionResponse> {
             override fun onResponse(call: Call<ExportSessionResponse>, response: Response<ExportSessionResponse>) {
