@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RadioGroup
+import android.widget.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ShareHelper
 import io.lunarlogic.aircasting.models.Session
 
 class ShareSessionBottomSheet(
@@ -25,6 +23,7 @@ class ShareSessionBottomSheet(
 
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
+    var chosenSensor: String = "P1"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +36,16 @@ class ShareSessionBottomSheet(
         radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
 
         // TODO: handling clicks on RadioButtons in radioGroup
+        radioGroup?.setOnCheckedChangeListener(object: RadioGroup.OnCheckedChangeListener{
+            override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
+                when(checkedId){
+                    R.id.radio1 -> chosenSensor = "PM1"  // TODO: check in old app the sensor names!!
+                    R.id.radio2 -> chosenSensor = "PM2.5"
+                    R.id.radio3 -> chosenSensor = "RH"
+                    R.id.radio4 -> chosenSensor = "F"
+                }
+            }
+        })
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
         shareLinkButton?.setOnClickListener {
@@ -68,9 +77,8 @@ class ShareSessionBottomSheet(
     fun shareLinkPressed(){
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "This is my text to send.") //todo: this text to be filled with text and link
-            putExtra(Intent.EXTRA_SUBJECT, "subject") // todo: representational subject to be set
-            //todo: link creation to be done<?> (where?) <- maybe in some ShareHelper
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(activity, session, chosenSensor))
+            putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
             type = "text/plain"
         }
         val chooser = Intent.createChooser(sendIntent, "Share link")
