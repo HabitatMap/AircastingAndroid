@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.EditSessionEvent
-import io.lunarlogic.aircasting.events.ShareSessionEvent
+import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -166,7 +166,7 @@ abstract class SessionsController(
     }
 
     private fun shareSessionEventPost(session: Session, email: String){
-        val event = ShareSessionEvent(session, email)
+        val event = ExportSessionEvent(session, email)
         EventBus.getDefault().post(event)   //TODO: not handled in SessionManager yet
     }
 
