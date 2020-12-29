@@ -49,6 +49,7 @@
     <string name="tags_bottom_sheet_input">Tags:</string>
     <string name="session_name_bottom_sheet_input">Session name</string>
     <string name="edit_data">Edit data</string>
+    <string name="share_title">View my AirCasting session</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
