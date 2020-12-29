@@ -47,7 +47,7 @@ interface ApiService {
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 
     @POST("/api/user/sessions/update_session.json")
-    fun updateSession(@Body body: UpdateSessionBody): Call<SessionResponse>
+    fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {

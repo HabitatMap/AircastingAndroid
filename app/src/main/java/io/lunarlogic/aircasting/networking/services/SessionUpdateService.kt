@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.GzippedSession
 import io.lunarlogic.aircasting.networking.params.*
 import io.lunarlogic.aircasting.networking.responses.SessionResponse
+import io.lunarlogic.aircasting.networking.responses.UpdateSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,8 +28,8 @@ class SessionUpdateService(private val apiService: ApiService, private val error
         val jsonData = gson.toJson(sessionParams)
         val call = apiService.updateSession(UpdateSessionBody(jsonData))
 
-        call.enqueue(object : Callback<SessionResponse> {
-            override fun onResponse(call: Call<SessionResponse>, response: Response<SessionResponse>) {
+        call.enqueue(object : Callback<UpdateSessionResponse> {
+            override fun onResponse(call: Call<UpdateSessionResponse>, response: Response<UpdateSessionResponse>) {
                 if (response.isSuccessful) {
                     println("HURRA! Session updated")
                     val body = response.body()
@@ -39,7 +40,7 @@ class SessionUpdateService(private val apiService: ApiService, private val error
                 }
             }
 
-            override fun onFailure(call: Call<SessionResponse>, t: Throwable) {
+            override fun onFailure(call: Call<UpdateSessionResponse>, t: Throwable) {
                 errorHandler.handle(UnexpectedAPIError(t))
             }
         })
