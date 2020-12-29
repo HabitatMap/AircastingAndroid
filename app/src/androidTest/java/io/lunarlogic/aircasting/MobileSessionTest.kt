@@ -216,5 +216,10 @@ class MobileSessionTest {
         onView(withId(R.id.delete_session_button)).perform(click())
         Thread.sleep(2000)
         onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
+
+        // TODO: test edit session
+        // onView(withId(R.id.edit_session_button)).perform(click())
+        // edit name
+       // onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session - new name")))
     }
 }

@@ -179,6 +179,8 @@
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>
+    <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
+    <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_last_min_measurements_description">Last minute measurement:</string>
