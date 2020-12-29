@@ -1,22 +1,24 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.EditSessionEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
+import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
-import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.models.SessionsViewModel
 import org.greenrobot.eventbus.EventBus
 
 
@@ -33,8 +35,15 @@ abstract class SessionsController(
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
-    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
+    protected val mMobileSessionsSyncService = SessionsSyncService.get(
+        mApiService,
+        mErrorHandler,
+        mSettings
+    )
+    private val mDownloadMeasurementsService = DownloadMeasurementsService(
+        mApiService,
+        mErrorHandler
+    )
 
     protected var editDialog: EditSessionBottomSheet? = null //todo: guess these 2 declarations are quite rough now
     protected var shareDialog: ShareSessionBottomSheet? = null
@@ -140,8 +149,7 @@ abstract class SessionsController(
     }
 
     override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
-        // TODO("Not yet implemented")
-        // Share link possibly not yet needed in MVP ??
+        shareDialog?.shareLinkPressed()
     }
 
     override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
