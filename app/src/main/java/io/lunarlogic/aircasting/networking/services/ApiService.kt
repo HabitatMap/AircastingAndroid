@@ -52,7 +52,7 @@ interface ApiService {
 
     // TODO: this call needs a huge verification (for sure call argument is now random)
     @GET("/api/sessions/export_by_uuid.json")
-    fun sendSessionByEmail(@Body body: ExportSessionBody): Call<ExportSessionResponse>
+    fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {
