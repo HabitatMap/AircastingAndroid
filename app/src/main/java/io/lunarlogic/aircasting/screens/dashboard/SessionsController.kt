@@ -117,7 +117,6 @@ abstract class SessionsController(
     }
 
     override fun onEditSessionClicked(session: Session) { // handling button in BottomSheet
-        mMobileSessionsSyncService.sync() // TODO: probably it would be to easy if the .sync() was enough??
         startEditSessionBottomSheet(session)
     }
 
@@ -168,7 +167,7 @@ abstract class SessionsController(
 
     private fun shareSessionEventPost(session: Session, email: String){
         val event = ExportSessionEvent(session, email)
-        EventBus.getDefault().post(event)   //TODO: not handled in SessionManager yet
+        EventBus.getDefault().post(event)
     }
 
     private fun startShareSessionBottomSheet(session: Session){

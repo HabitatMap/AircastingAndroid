@@ -46,7 +46,6 @@ interface ApiService {
     @POST("/api/user.json")
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 
-    // TODO: this call needs a huge verification (for sure call argument is now random)
     @GET("/api/sessions/export_by_uuid.json")
     fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
 }
