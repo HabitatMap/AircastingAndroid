@@ -7,7 +7,6 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.CsvHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
@@ -22,6 +21,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler, settings)
     private val fixedSessionDownloadMeasurementsService = FixedSessionDownloadMeasurementsService(apiService, errorHandler)
+    private val exportSessionService = ExportSessionService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -52,8 +52,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
-    fun onMessageEvent(event: ShareSessionEvent){
-        shareSession(event)
+    fun onMessageEvent(event: ExportSessionEvent){
+        exportSession(event)
     }
 
     @Subscribe
@@ -140,10 +140,9 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
-    private fun shareSession(event: ShareSessionEvent) {
-        // todo: csvHelper usage to get csv file from event.session (?)
-        // todo: call to api to send email with file (from sessionService maybe??)
-
+    private fun exportSession(event: ExportSessionEvent) {
+        // todo: call to api to send email with file, need to have email here
+        exportSessionService.export()
     }
 
     private fun deleteSession(sessionUUID: String) {
