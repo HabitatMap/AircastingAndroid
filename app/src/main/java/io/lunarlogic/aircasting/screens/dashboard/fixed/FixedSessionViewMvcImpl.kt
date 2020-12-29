@@ -55,6 +55,7 @@ class FixedSessionViewMvcImpl(
     override fun editSessionPressed() {
         for (listener in listeners) {
             listener.onSessionEditClicked(mSessionPresenter!!.session!!)
+            super.bindSession(mSessionPresenter!!)
         }
     }
 
