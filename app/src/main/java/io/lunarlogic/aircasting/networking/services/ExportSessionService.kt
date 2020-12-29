@@ -15,16 +15,15 @@ import retrofit2.Response
 
 class ExportSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     // TODO: here we would some method to do api call sending email with csv
-    fun export(email: String, uuid: String, successCallback: (() -> Unit)) {
-        val exportSessionParams = ExportSessionParams(email, uuid)
+    fun export(email: String, uuid: String) { //, successCallback: (() -> Unit)
+//        val exportSessionParams = ExportSessionParams(email, uuid)
 
-        val exportSessionBody = ExportSessionBody(exportSessionParams)
-        val call = apiService.sendSessionByEmail(exportSessionBody)
+        val call = apiService.sendSessionByEmail(email, uuid)
 
         call.enqueue(object : Callback<ExportSessionResponse> {
             override fun onResponse(call: Call<ExportSessionResponse>, response: Response<ExportSessionResponse>) {
                 if (response.isSuccessful) {
-                    successCallback.invoke()
+//                    successCallback.invoke()
                 } else {
                     errorHandler.handle(UnexpectedAPIError())
 //                    errorHandler.showError(context.getString(R.string.errors_edit_failure))
