@@ -1,7 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.InputDevice
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 
-class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Listener, val session: Session): BottomSheetDialogFragment() {
+class ShareSessionBottomSheet(
+    private val mListener: ShareSessionBottomSheet.Listener,
+    val session: Session
+): BottomSheetDialogFragment() {
     interface Listener{
         fun onShareLinkPressed()
         fun onShareFilePressed()
@@ -60,6 +63,18 @@ class ShareSessionBottomSheet(private val mListener: ShareSessionBottomSheet.Lis
 
     fun shareFilePressed(): String{
         return emailInput?.text.toString().trim()
+    }
+
+    fun shareLinkPressed(){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "This is my text to send.") //todo: this text to be filled with text and link
+            putExtra(Intent.EXTRA_SUBJECT, "subject") // todo: representational subject to be set
+            //todo: link creation to be done<?> (where?) <- maybe in some ShareHelper
+            type = "text/plain"
+        }
+        val chooser = Intent.createChooser(sendIntent, "Share link")
+        context?.startActivity(chooser)
     }
 
 }
