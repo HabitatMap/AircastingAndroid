@@ -12,6 +12,7 @@ import android.util.Base64
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.CreateAccountBody
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
+import io.lunarlogic.aircasting.networking.params.ExportSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.UpdateSessionBody
 import io.lunarlogic.aircasting.networking.responses.*
@@ -51,7 +52,7 @@ interface ApiService {
 
     // TODO: this call needs a huge verification (for sure call argument is now random)
     @GET("/api/sessions/export_by_uuid.json")
-    fun sendSessionByEmail(@Body body: SessionResponse): Call<ExportSessionResponse>
+    fun sendSessionByEmail(@Body body: ExportSessionBody): Call<ExportSessionResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {
