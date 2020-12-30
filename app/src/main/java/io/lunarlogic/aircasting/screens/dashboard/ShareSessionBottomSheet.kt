@@ -54,6 +54,7 @@ class ShareSessionBottomSheet(
         val shareFileButton = view?.findViewById<Button>(R.id.share_file_button)
         shareFileButton?.setOnClickListener {
             mListener.onShareFilePressed()
+            emailInput?.setText("")
         }
 
         val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
