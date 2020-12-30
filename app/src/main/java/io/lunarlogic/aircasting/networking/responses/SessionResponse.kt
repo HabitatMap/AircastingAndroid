@@ -11,7 +11,8 @@ class SessionResponse(
     val longitude: Double,
     val deleted: Boolean,
     val version: Int,
-    val streams: HashMap<String, SessionStreamResponse>
+    val streams: HashMap<String, SessionStreamResponse>,
+    val location: String
 
     // TODO: add contribute field after adding this functionallity
     // TODO: add notes field after adding this functionallity

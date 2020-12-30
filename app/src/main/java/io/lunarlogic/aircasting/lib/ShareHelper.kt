@@ -11,7 +11,7 @@ class ShareHelper {
 
         fun shareLink(activity: Activity?, session: Session, selectedSensorName: String): String {
             val sessionLink: String = session.location.toString() + SENSOR_PARAM + selectedSensorName  //todo: location has to be changed
-            val text =  "Here I send you link to my session\n"      //todo: refactor to be done
+            val text =  "Here I send you link to my session\n"
 //        val text: String = kotlin.String.format(sessionLinkTemplate, sessionLink)sessionLinkTemplate
 //        ContactsContract.Intents.share(activity, shareLink, shareTitle, text)
             return text + sessionLink
