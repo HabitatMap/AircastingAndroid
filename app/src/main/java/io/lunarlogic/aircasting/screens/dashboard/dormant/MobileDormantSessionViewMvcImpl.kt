@@ -49,6 +49,7 @@ class MobileDormantSessionViewMvcImpl(
         for(listener in listeners){
             listener.onSessionShareClicked(mSessionPresenter!!.session!!)
         }
+        // todo: dismissBottomSheet()
     }
 
     override fun deleteSessionPressed() {

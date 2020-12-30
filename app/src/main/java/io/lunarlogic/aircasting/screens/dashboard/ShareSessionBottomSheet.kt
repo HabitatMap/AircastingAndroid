@@ -23,7 +23,7 @@ class ShareSessionBottomSheet(
 
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
-    var chosenSensor: String = "Airbeam3-P1" //todo: refactor
+    var chosenSensor: String = "" //todo: refactor
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,10 +38,10 @@ class ShareSessionBottomSheet(
         radioGroup?.setOnCheckedChangeListener(object: RadioGroup.OnCheckedChangeListener{
             override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
                 when(checkedId){
-                    R.id.radio1 -> chosenSensor = "AirBeam3-PM1"  // TODO: hardcoded names now
-                    R.id.radio2 -> chosenSensor = "AirBeam3-PM2.5"
-                    R.id.radio3 -> chosenSensor = "AirBeam3-RH"
-                    R.id.radio4 -> chosenSensor = "AirBeam3-F"
+                    R.id.radio1 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM1"  // TODO: what about "Phone mic" ???
+                    R.id.radio2 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM2.5"
+                    R.id.radio3 -> chosenSensor = session.sensorPackageNamesString().toString() + "-RH"
+                    R.id.radio4 -> chosenSensor = session.sensorPackageNamesString().toString() + "-F"
                 }
             }
         })
