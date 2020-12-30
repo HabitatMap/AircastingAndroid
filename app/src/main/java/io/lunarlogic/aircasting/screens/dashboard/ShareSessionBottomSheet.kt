@@ -23,7 +23,7 @@ class ShareSessionBottomSheet(
 
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
-    var chosenSensor: String = "P1"
+    var chosenSensor: String = "Airbeam3-P1" //todo: refactor
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,14 +35,13 @@ class ShareSessionBottomSheet(
         emailInput = view?.findViewById(R.id.email_input)
         radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
 
-        // TODO: handling clicks on RadioButtons in radioGroup
         radioGroup?.setOnCheckedChangeListener(object: RadioGroup.OnCheckedChangeListener{
             override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
                 when(checkedId){
-                    R.id.radio1 -> chosenSensor = "PM1"  // TODO: check in old app the sensor names!!
-                    R.id.radio2 -> chosenSensor = "PM2.5"
-                    R.id.radio3 -> chosenSensor = "RH"
-                    R.id.radio4 -> chosenSensor = "F"
+                    R.id.radio1 -> chosenSensor = "AirBeam3-PM1"  // TODO: hardcoded names now
+                    R.id.radio2 -> chosenSensor = "AirBeam3-PM2.5"
+                    R.id.radio3 -> chosenSensor = "AirBeam3-RH"
+                    R.id.radio4 -> chosenSensor = "AirBeam3-F"
                 }
             }
         })
