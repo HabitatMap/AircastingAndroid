@@ -150,6 +150,7 @@ abstract class SessionsController(
 
     override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
         shareDialog?.shareLinkPressed()
+
     }
 
     override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
