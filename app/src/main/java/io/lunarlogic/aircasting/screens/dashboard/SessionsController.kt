@@ -38,6 +38,7 @@ abstract class SessionsController(
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
+    protected abstract fun forceSessionsObserverRefresh()
 
     fun onCreate() {
         mViewMvc.showLoader()
@@ -117,8 +118,9 @@ abstract class SessionsController(
         val editData = dialog?.editDataConfirmed()
         if (editData == null) {
             Log.e("EDIT_SESS", "Edit data is null")
-        }else{
+        } else {
             editSessionEventPost(editData)
+            forceSessionsObserverRefresh()
         }
         dialog?.dismiss()
     }
