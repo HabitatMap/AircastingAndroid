@@ -45,7 +45,7 @@ interface ApiService {
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 
     @GET("/api/sessions/export_by_uuid.json")
-    fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse> //todo: refactor/rename <?>
+    fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse> //todo: rename <?>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {
