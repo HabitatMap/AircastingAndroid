@@ -25,7 +25,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW,
     @ColumnInfo(name = "version") val version: Int = 0,
     @ColumnInfo(name = "deleted") val deleted: Boolean = false,
-    @ColumnInfo(name = "followed_at") val followedAt: Date? = null
+    @ColumnInfo(name = "followed_at") val followedAt: Date? = null,
+    @ColumnInfo(name = "url_location") val urlLocation: String? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -44,7 +45,8 @@ data class SessionDBObject(
                 session.status,
                 session.version,
                 session.deleted,
-                session.followedAt
+                session.followedAt,
+                session.urlLocation
             )
 }
 

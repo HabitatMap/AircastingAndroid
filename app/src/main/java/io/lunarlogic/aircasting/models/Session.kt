@@ -26,7 +26,8 @@ class Session(
     var version: Int = 0,
     var deleted: Boolean = false,
     var followedAt: Date? = null,
-    private var mStreams: List<MeasurementStream> = listOf()
+    private var mStreams: List<MeasurementStream> = listOf(),
+    var urlLocation: String? = null
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -44,6 +45,7 @@ class Session(
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
         }
+        this.urlLocation = sessionDBObject.urlLocation
     }
 
     constructor(
