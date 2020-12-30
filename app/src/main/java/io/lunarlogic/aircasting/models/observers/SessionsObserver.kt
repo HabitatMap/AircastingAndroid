@@ -15,6 +15,7 @@ abstract class SessionsObserver<Type>(
     private val mSessionsViewModel: SessionsViewModel,
     private val mViewMvc: SessionsViewMvc
 ) {
+    private var forceRefresh: Boolean = false
     private var mSessions = hashMapOf<String, Session>()
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
@@ -24,10 +25,8 @@ abstract class SessionsObserver<Type>(
         DatabaseProvider.runQuery { coroutineScope ->
             val sessions = dbSessions.map { dbSession -> buildSession(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
-
             hideLoader(coroutineScope)
-
-            if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
+            if (forceRefresh || anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
                 onSessionsChanged(coroutineScope, sessions, sensorThresholds)
             }
         }
@@ -45,6 +44,10 @@ abstract class SessionsObserver<Type>(
         mSessionsLiveData = null
     }
 
+    fun forceRefresh() {
+        forceRefresh = true
+    }
+
     private fun onSessionsChanged(coroutineScope: CoroutineScope, sessions: List<Session>, sensorThresholds: List<SensorThreshold>) {
         if (sessions.size > 0) {
             updateSensorThresholds(sensorThresholds)
@@ -54,6 +57,7 @@ abstract class SessionsObserver<Type>(
         }
 
         updateSessionsCache(sessions)
+        forceRefresh = false
     }
 
     private fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {

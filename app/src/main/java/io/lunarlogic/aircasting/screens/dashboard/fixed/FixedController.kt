@@ -37,6 +37,10 @@ class FixedController(
         mSessionsObserver.stop()
     }
 
+    override fun forceSessionsObserverRefresh() {
+        mSessionsObserver.forceRefresh()
+    }
+
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.FIXED)
     }
