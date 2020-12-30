@@ -23,7 +23,7 @@ class ShareSessionBottomSheet(
 
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
-    var chosenSensor: String = "" //todo: refactor
+    lateinit var chosenSensor: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +39,7 @@ class ShareSessionBottomSheet(
             override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
                 when(checkedId){
                     R.id.radio1 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM1"  // TODO: what about "Phone mic" ???
-                    R.id.radio2 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM2.5"
+                    R.id.radio2 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM2.5" // TODO: not sure if thats good approach
                     R.id.radio3 -> chosenSensor = session.sensorPackageNamesString().toString() + "-RH"
                     R.id.radio4 -> chosenSensor = session.sensorPackageNamesString().toString() + "-F"
                 }
