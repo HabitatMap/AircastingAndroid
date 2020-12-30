@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -161,7 +162,7 @@ abstract class SessionsController(
         }else{
             Log.e("SHARE_SESS", "Share dialog is null")
         }
-
+        Toast.makeText(shareDialog?.context, "You've just shared the file", Toast.LENGTH_LONG).show()  //todo: Toast to inform user, or maybe just dialog.dismiss() ?
     }
 
     private fun startEditSessionBottomSheet(session: Session) {
