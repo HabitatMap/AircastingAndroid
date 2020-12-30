@@ -12,13 +12,11 @@ import android.util.Base64
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.CreateAccountBody
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
-import io.lunarlogic.aircasting.networking.params.ExportSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.responses.*
 import okhttp3.HttpUrl
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
 interface ApiService {
@@ -47,7 +45,7 @@ interface ApiService {
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 
     @GET("/api/sessions/export_by_uuid.json")
-    fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
+    fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse> //todo: refactor/rename <?>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {
