@@ -52,6 +52,13 @@ class FixedSessionViewMvcImpl(
         }
     }
 
+    override fun editSessionPressed() {
+        for (listener in listeners) {
+            listener.onSessionEditClicked(mSessionPresenter!!.session!!)
+        }
+        dismissBottomSheet()
+    }
+
     override fun deleteSessionPressed() {
         for (listener in listeners) {
             listener.onSessionDeleteClicked(mSessionPresenter!!.session!!)

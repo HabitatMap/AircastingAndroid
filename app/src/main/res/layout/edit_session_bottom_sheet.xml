@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/dialog_background">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Aircasting.BottomSheetCard"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/keyline_8">
+
+                <ImageView
+                    android:id="@+id/close_button"
+                    android:src="@drawable/ic_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/keyline_4"
+                    android:paddingBottom="@dimen/keyline_4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/title"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+                    android:textSize="@dimen/text_size_xl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_session_data"
+                    android:textColor="@color/aircasting_dark_blue"
+                    app:lineHeight="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_8"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:layout_marginBottom="@dimen/keyline_6"
+                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/session_name"
+                        style="@style/Widget.Aircasting.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@+id/tags"
+                        app:layout_constraintTop_toBottomOf="@id/title"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="@dimen/keyline_6"
+                        android:layout_marginStart="@dimen/keyline_6"
+                        android:layout_marginEnd="@dimen/keyline_6">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/session_name_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="text"
+                            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                            android:textColor="@color/aircasting_grey_700"
+                            android:backgroundTint="@color/aircasting_grey_100"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tags"
+                        style="@style/Widget.Aircasting.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/session_name"
+                        app:layout_constraintBottom_toTopOf="@+id/edit_data_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="@dimen/keyline_6"
+                        android:layout_marginStart="@dimen/keyline_6"
+                        android:layout_marginEnd="@dimen/keyline_6"
+                        android:layout_marginBottom="@dimen/keyline_6">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tags_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                            android:textColor="@color/aircasting_grey_700"
+                            android:backgroundTint="@color/aircasting_grey_100"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/edit_data_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_data"
+                        style="@style/Widget.Aircasting.BottomSheetAcceptButton"
+                        app:layout_constraintTop_toBottomOf="@id/tags"
+                        app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="@dimen/keyline_6"
+                        android:layout_marginEnd="@dimen/keyline_6"/>
+
+                    <Button
+                        android:id="@+id/cancel_button"
+                        style="@style/Widget.Aircasting.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel"
+                        app:layout_constraintTop_toBottomOf="@id/edit_data_button"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="@dimen/keyline_6"
+                        android:layout_marginEnd="@dimen/keyline_6"
+                        android:fontFamily="@font/moderat_trial_bold"
+                        android:textSize="@dimen/button_text_size"
+                        android:textColor="@color/aircasting_blue_400"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

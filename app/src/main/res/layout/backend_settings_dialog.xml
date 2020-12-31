@@ -38,8 +38,7 @@
             android:minHeight="60dp"
             android:hint="@string/settings_backend_url"
             android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            android:textColor="@color/aircasting_grey_700" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,8 +60,7 @@
             android:minHeight="60dp"
             android:hint="@string/settings_backend_port"
             android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-            android:textColor="@color/aircasting_grey_700"
-            />
+            android:textColor="@color/aircasting_grey_700" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

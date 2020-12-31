@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -18,6 +19,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.main.MainActivity
+import okhttp3.mockwebserver.MockResponse
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -25,6 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import java.net.HttpURLConnection
 import javax.inject.Inject
 
 
@@ -177,6 +180,17 @@ class MobileSessionTest {
 
     @Test
     fun testMicrophoneMobileSessionRecording() {
+        val updateResponse = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+            .setBody(JsonBody.build(emptyMap<String, String>()))
+
+        MockWebServerDispatcher.set(
+            mapOf(
+                "/api/user/sessions/update_session.json" to updateResponse
+            ),
+            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+        )
+
         settings.login("X", "TOKEN")
 
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -213,8 +227,21 @@ class MobileSessionTest {
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")));
 
         onView(withId(R.id.session_actions_button)).perform(click())
+
+        // edit session test
+        onView(withId(R.id.edit_session_button)).perform(click())
+        onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile mic session"))
+        onView(withId(R.id.edit_data_button)).perform(scrollTo(), click())
+        // check if name is edited:
+        Thread.sleep(2000)
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile mic session")))
+
+        // delete session test
+        onView(withId(R.id.session_actions_button)).perform(click())
         onView(withId(R.id.delete_session_button)).perform(click())
         Thread.sleep(2000)
-        onView(withText("Ania's mobile microphone session")).check(matches(not(isDisplayed())))
+        // check if session deleted
+        onView(withText("Ania's mobile mic session")).check(matches(not(isDisplayed())))
+
     }
 }

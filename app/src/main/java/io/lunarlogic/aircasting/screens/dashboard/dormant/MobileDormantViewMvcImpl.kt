@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
+import io.lunarlogic.aircasting.screens.lets_start.MoreInfoBottomSheet
 
 
 class MobileDormantViewMvcImpl(
@@ -26,9 +28,17 @@ class MobileDormantViewMvcImpl(
         )
     }
 
+    override fun onSessionEditClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onEditSessionClicked(session)
+        }
+    }
+
     override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
             listener.onDeleteSessionClicked(session.uuid)
         }
     }
+
+
 }

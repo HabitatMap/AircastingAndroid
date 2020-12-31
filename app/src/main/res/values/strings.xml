@@ -45,6 +45,11 @@
     <string name="disconnected_view_bluetooth_device_description">Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.</string>
     <string name="disconnected_view_bluetooth_device_reconnect_button">Reconnect</string>
     <string name="disconnected_view_bluetooth_device_finish_button">Finish session</string>
+    <string name="edit_session">Edit session</string>
+    <string name="edit_session_data">Edit session data</string>
+    <string name="tags_bottom_sheet_input">Tags:</string>
+    <string name="session_name_bottom_sheet_input">Session name</string>
+    <string name="edit_data">Edit data</string>
 
     <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
     <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
@@ -174,6 +179,8 @@
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>
+    <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
+    <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_last_min_measurements_description">Last minute measurement:</string>
@@ -204,5 +211,4 @@
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
-
 </resources>

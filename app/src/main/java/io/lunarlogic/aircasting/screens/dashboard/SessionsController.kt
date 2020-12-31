@@ -1,7 +1,10 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.EditSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -13,6 +16,7 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import org.greenrobot.eventbus.EventBus
 
 
 abstract class SessionsController(
@@ -20,16 +24,20 @@ abstract class SessionsController(
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
-) : SessionsViewMvc.Listener {
+    mApiServiceFactory: ApiServiceFactory,
+    val fragmentManager: FragmentManager
+) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
+    protected var dialog: EditSessionBottomSheet? = null
+
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
+    protected abstract fun forceSessionsObserverRefresh()
 
     fun onCreate() {
         mViewMvc.showLoader()
@@ -104,4 +112,33 @@ abstract class SessionsController(
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
         }
     }
+
+    override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
+        val editedSession = dialog?.editSession()
+        editedSession?.let { session ->
+            editSessionEventPost(session)
+            forceSessionsObserverRefresh()
+        }
+
+        dialog?.dismiss()
+    }
+
+    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
+        dialog?.dismiss()
+    }
+
+    override fun onEditSessionClicked(session: Session) {
+        startEditSessionBottomSheet(session)
+    }
+
+    private fun startEditSessionBottomSheet(session: Session) {
+        dialog = EditSessionBottomSheet(this, session)
+        dialog?.show(fragmentManager, "Session edit")
+    }
+
+    private fun editSessionEventPost(session: Session){
+        val event = EditSessionEvent(session)
+        EventBus.getDefault().post(event)
+    }
+
 }

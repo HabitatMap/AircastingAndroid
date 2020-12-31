@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe
 class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
+    private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = FixedSessionDownloadMeasurementsService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
@@ -43,6 +44,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: EditSessionEvent){
+        editSession(event)
     }
 
     @Subscribe
@@ -120,6 +126,14 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun disconnectSession(deviceId: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.disconnectSession(deviceId)
+        }
+    }
+
+    private fun editSession(event: EditSessionEvent) {
+        sessionUpdateService.update(event.session) {
+            DatabaseProvider.runQuery {
+                sessionsRespository.update(event.session)
+            }
         }
     }
 

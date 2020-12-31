@@ -26,7 +26,7 @@ class MobileActiveController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory),
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -37,6 +37,10 @@ class MobileActiveController(
 
     override fun unregisterSessionsObserver() {
         mSessionsObserver.stop()
+    }
+
+    override fun forceSessionsObserverRefresh() {
+        mSessionsObserver.forceRefresh()
     }
 
     override fun onRecordNewSessionClicked() {
@@ -52,6 +56,10 @@ class MobileActiveController(
             Session.Status.FINISHED
         )
         NavigationController.goToDashboard(tabId)
+    }
+
+    override fun onEditSessionClicked(session: Session) {
+        // do nothing
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
@@ -74,4 +82,13 @@ class MobileActiveController(
             }
         })
     }
+
+    override fun onEditDataPressed() { // Edit session bottom sheet handling
+        // do nothing
+    }
+
+    override fun onCancelPressed() {
+        // do nothing
+    }
+
 }

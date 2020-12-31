@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -24,6 +25,12 @@ class FixedViewMvcImpl(
             this,
             supportFragmentManager
         )
+    }
+
+    override fun onSessionEditClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onEditSessionClicked(session)
+        }
     }
 
     override fun onSessionDeleteClicked(session: Session) {

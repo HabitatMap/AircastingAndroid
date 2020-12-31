@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.CreateAccountBody
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
+import io.lunarlogic.aircasting.networking.params.UpdateSessionBody
 import io.lunarlogic.aircasting.networking.responses.*
 import okhttp3.HttpUrl
 import retrofit2.http.*
@@ -44,6 +45,9 @@ interface ApiService {
 
     @POST("/api/user.json")
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
+
+    @POST("/api/user/sessions/update_session.json")
+    fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {

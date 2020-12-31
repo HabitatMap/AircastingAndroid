@@ -138,8 +138,12 @@ class Session(
     private val HOUR_FORMAT = "HH:mm"
 
     val type get() = mType
-    val name get() = mName
-    val tags get() = mTags
+    var name get() = mName
+        set(value) {mName = value}
+
+    var tags get() = mTags
+        set(value) {mTags = value}
+
     val startTime get() = mStartTime
 
     private var mIndoor: Boolean? = null
@@ -265,5 +269,10 @@ class Session(
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
+    }
+
+    fun setNameAndTags(newName: String, newTags: ArrayList<String>){
+        this.name = newName
+        this.tags = newTags
     }
 }

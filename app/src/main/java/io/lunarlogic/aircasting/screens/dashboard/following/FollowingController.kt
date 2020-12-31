@@ -17,7 +17,7 @@ class FollowingController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory),
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -30,11 +30,19 @@ class FollowingController(
         mSessionsObserver.stop()
     }
 
+    override fun forceSessionsObserverRefresh() {
+        mSessionsObserver.forceRefresh()
+    }
+
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.FIXED)
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {
+        // do nothing
+    }
+
+    override fun onEditSessionClicked(session: Session) {
         // do nothing
     }
 
