@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -230,7 +231,7 @@ class MobileSessionTest {
         // edit session test
         onView(withId(R.id.edit_session_button)).perform(click())
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile mic session"))
-        onView(withId(R.id.edit_data_button)).perform(click())
+        onView(withId(R.id.edit_data_button)).perform(scrollTo(), click())
         // check if name is edited:
         Thread.sleep(2000)
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile mic session")))
