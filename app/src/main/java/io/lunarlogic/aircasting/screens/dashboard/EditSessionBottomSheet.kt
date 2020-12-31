@@ -11,7 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
-import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
 class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
