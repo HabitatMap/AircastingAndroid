@@ -16,7 +16,6 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.networking.services.SessionDownloadService
 import org.greenrobot.eventbus.EventBus
 
 
@@ -115,13 +114,12 @@ abstract class SessionsController(
     }
 
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
-        val editData = dialog?.editDataConfirmed()
-        if (editData == null) {
-            Log.e("EDIT_SESS", "Edit data is null")
-        } else {
-            editSessionEventPost(editData)
+        val editedSession = dialog?.editSession()
+        editedSession?.let { session ->
+            editSessionEventPost(session)
             forceSessionsObserverRefresh()
         }
+
         dialog?.dismiss()
     }
 

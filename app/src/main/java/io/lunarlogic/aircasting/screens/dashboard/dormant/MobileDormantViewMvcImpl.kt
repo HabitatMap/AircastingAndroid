@@ -17,8 +17,6 @@ class MobileDormantViewMvcImpl(
 ): SessionsViewMvcImpl<MobileDormantSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     MobileDormantSessionViewMvc.Listener {
 
-
-
     override fun buildAdapter(
         inflater: LayoutInflater,
         supportFragmentManager: FragmentManager

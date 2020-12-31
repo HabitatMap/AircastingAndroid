@@ -18,7 +18,6 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
             GzippedSession.get(sessionParams)
         )
         val call = apiService.createMobileSession(sessionBody)
-        // TODO: maybe we can do update or create? (if the session was edited locally)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {

@@ -53,5 +53,4 @@ class FixedController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
-
 }
