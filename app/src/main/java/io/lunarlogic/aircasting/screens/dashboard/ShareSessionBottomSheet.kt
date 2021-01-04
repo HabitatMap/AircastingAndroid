@@ -77,7 +77,7 @@ class ShareSessionBottomSheet(
     fun shareLinkPressed(){
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(activity, session, chosenSensor))
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor))
             putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
             type = "text/plain"
         }
