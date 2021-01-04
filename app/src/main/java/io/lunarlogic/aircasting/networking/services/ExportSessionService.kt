@@ -19,13 +19,13 @@ class ExportSessionService(private val apiService: ApiService, private val error
                     successCallback.invoke()
                 }else{
                     errorHandler.handle(UnexpectedAPIError())
-                    errorHandler.showError(context.getString(R.string.errors_edit_failure))
+                    errorHandler.showError(context.getString(R.string.errors_edit_failure))  //todo: temporarily string for errors_edit_failure
                 }
             }
 
             override fun onFailure(call: Call<ExportSessionResponse>, t: Throwable) {
                 errorHandler.handle(UnexpectedAPIError(t))
-                errorHandler.showError(context.getString(R.string.errors_network_required_edit))
+                errorHandler.showError(context.getString(R.string.errors_network_required_edit)) //todo: ^^
             }
         })
     }
