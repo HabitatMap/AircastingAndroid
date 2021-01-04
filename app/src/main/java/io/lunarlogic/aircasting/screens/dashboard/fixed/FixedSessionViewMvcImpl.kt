@@ -66,13 +66,6 @@ class FixedSessionViewMvcImpl(
         dismissBottomSheet()
     }
 
-    override fun shareSessionPressed() {
-        for(listener in listeners){
-            listener.onSessionShareClicked(mSessionPresenter!!.session!!)
-        }
-        dismissBottomSheet()
-    }
-
     override fun deleteSessionPressed() {
         for (listener in listeners) {
             listener.onSessionDeleteClicked(mSessionPresenter!!.session!!)

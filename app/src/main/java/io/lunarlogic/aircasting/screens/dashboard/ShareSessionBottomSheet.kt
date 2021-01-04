@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ class ShareSessionBottomSheet(
         fun onCancelPressed()
     }
 
+    val fieldValues = session.streams.map { stream -> stream.sensorName }
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
@@ -38,8 +40,7 @@ class ShareSessionBottomSheet(
         setRadioButtonsForChosenSession()
 
         radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-            val fieldValues = session.streams.map { stream -> stream.sensorName }
-            chosenSensor = fieldValues.get(checkedId - 1)
+            chosenSensor = fieldValues[checkedId - 1]
         }
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
