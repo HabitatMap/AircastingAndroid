@@ -5,6 +5,10 @@ import androidx.room.*
 import io.lunarlogic.aircasting.database.converters.*
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.database.migrations.*
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_16_17
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_17_18
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_18_19
+import io.lunarlogic.aircasting.database.migrations.MIGRATION_19_20
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -57,6 +61,7 @@ class DatabaseProvider {
                     MIGRATION_18_19,
                     MIGRATION_19_20,
                     MIGRATION_20_21
+
                 ).build()
             }
 

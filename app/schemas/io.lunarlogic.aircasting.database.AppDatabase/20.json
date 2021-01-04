@@ -2,11 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 20,
-    "identityHash": "15a3bf4026fd7b7717a0c52b3bceb909",
+
+    "identityHash": "2ab331dfce4396389a733f6a7c22dab4",
     "entities": [
       {
         "tableName": "sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `url_location` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -96,6 +97,12 @@
             "fieldPath": "followedAt",
             "columnName": "followed_at",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "urlLocation",
+            "columnName": "url_location",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -383,7 +390,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"15a3bf4026fd7b7717a0c52b3bceb909\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2ab331dfce4396389a733f6a7c22dab4\")"
     ]
   }
 }
