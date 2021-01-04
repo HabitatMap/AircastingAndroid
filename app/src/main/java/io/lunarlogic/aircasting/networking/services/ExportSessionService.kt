@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.networking.services
 
+import android.content.Context
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
@@ -8,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ExportSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class ExportSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler, private val context: Context) {
     fun export(email: String, uuid: String, successCallback: () -> Unit = {}) {
         val call = apiService.exportSession(email, uuid)
 
@@ -18,13 +19,13 @@ class ExportSessionService(private val apiService: ApiService, private val error
                     successCallback.invoke()
                 }else{
                     errorHandler.handle(UnexpectedAPIError())
-                    errorHandler.showError(getString(R.string.errors_share_failure))
+                    errorHandler.showError(context.getString(R.string.errors_edit_failure))
                 }
             }
 
             override fun onFailure(call: Call<ExportSessionResponse>, t: Throwable) {
                 errorHandler.handle(UnexpectedAPIError(t))
-                errorHandler.showError(getString(R.string.errors_network_required_share))
+                errorHandler.showError(context.getString(R.string.errors_network_required_edit))
             }
         })
     }
