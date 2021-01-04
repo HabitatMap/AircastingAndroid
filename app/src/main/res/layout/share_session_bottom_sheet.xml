@@ -147,7 +147,8 @@ android:background="@drawable/dialog_background">
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/aircasting_grey_100"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700" />
+                android:textColor="@color/aircasting_grey_700"
+                android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

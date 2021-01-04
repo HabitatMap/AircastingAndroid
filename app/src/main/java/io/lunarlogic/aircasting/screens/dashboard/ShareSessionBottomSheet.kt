@@ -38,6 +38,7 @@ class ShareSessionBottomSheet(
         radioGroup?.setOnCheckedChangeListener(object: RadioGroup.OnCheckedChangeListener{
             override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
                 when(checkedId){
+                    //todo populating buttons dynamically?
                     R.id.radio1 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM1"  // TODO: what about "Phone mic" ???
                     R.id.radio2 -> chosenSensor = session.sensorPackageNamesString().toString() + "-PM2.5" // TODO: not sure if thats good approach
                     R.id.radio3 -> chosenSensor = session.sensorPackageNamesString().toString() + "-RH"
