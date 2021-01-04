@@ -155,11 +155,12 @@ abstract class SessionsController(
     }
 
     override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
-        if (shareDialog != null) {
+        shareDialog?.let {
             val session = shareDialog!!.session
             val email = shareDialog!!.shareFilePressed()
             shareSessionEventPost(session, email)
         }
+
         Toast.makeText(shareDialog?.context, "Exported sessions will be emailed within minutes. The email may end up in your spam folder.", Toast.LENGTH_LONG).show()
         shareDialog?.dismiss()
     }
@@ -182,5 +183,9 @@ abstract class SessionsController(
     private fun startShareSessionBottomSheet(session: Session){
         shareDialog = ShareSessionBottomSheet(this, session)
         shareDialog?.show(fragmentManager, "Session share")
+    }
+
+    private fun shareLinkPressed(){
+
     }
 }
