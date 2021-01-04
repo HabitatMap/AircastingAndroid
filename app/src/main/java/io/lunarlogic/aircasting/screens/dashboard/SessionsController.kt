@@ -26,14 +26,17 @@ abstract class SessionsController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener,
+    EditSessionBottomSheet.Listener,
+    ShareSessionBottomSheet.Listener{
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected var dialog: EditSessionBottomSheet? = null
+    protected var editDialog: EditSessionBottomSheet? = null //todo: guess these 2 declarations are quite rough now
+    protected var shareDialog: ShareSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -112,28 +115,42 @@ abstract class SessionsController(
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
         }
     }
+    
+    override fun onShareSessionClicked(session: Session) { // handling button in BottomSheet
+        startShareSessionBottomSheet(session)
+    }
 
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
-        val editedSession = dialog?.editSession()
+        val editedSession = editDialog?.editSession()
         editedSession?.let { session ->
             editSessionEventPost(session)
             forceSessionsObserverRefresh()
         }
-
-        dialog?.dismiss()
+        editDialog?.dismiss()
     }
 
-    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
-        dialog?.dismiss()
+    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet, ShareSessionBottomSheet
+        editDialog?.dismiss()
+        shareDialog?.dismiss()
     }
 
     override fun onEditSessionClicked(session: Session) {
         startEditSessionBottomSheet(session)
     }
 
+    override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
+        //TODO("Not yet implemented")
+        // Share link possibly not yet needed
+    }
+
+    override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
+        //TODO("Not yet implemented")
+        //This is the place to provide share file functionality
+    }
+
     private fun startEditSessionBottomSheet(session: Session) {
-        dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "Session edit")
+        editDialog = EditSessionBottomSheet(this, session)
+        editDialog?.show(fragmentManager, "Session edit")
     }
 
     private fun editSessionEventPost(session: Session){
@@ -141,4 +158,8 @@ abstract class SessionsController(
         EventBus.getDefault().post(event)
     }
 
+    private fun startShareSessionBottomSheet(session: Session){
+        shareDialog = ShareSessionBottomSheet(this, session)
+        shareDialog?.show(fragmentManager, "Session share")
+    }
 }

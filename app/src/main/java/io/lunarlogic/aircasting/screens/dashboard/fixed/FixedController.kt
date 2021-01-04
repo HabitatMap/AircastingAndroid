@@ -25,7 +25,7 @@ class FixedController(
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
-    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+    SessionsViewMvc.Listener{
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
@@ -41,17 +41,25 @@ class FixedController(
         mSessionsObserver.forceRefresh()
     }
 
-    override fun onRecordNewSessionClicked() {
-        startNewSession(Session.Type.FIXED)
+    override fun onEditSessionClicked(session: Session) {
+        TODO("Not yet implemented")
     }
 
-    override fun onShareSessionClicked(session: Session) {
-        TODO("Not yet implemented")
+    override fun onRecordNewSessionClicked() {
+        startNewSession(Session.Type.FIXED)
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
+    }
+
+    override fun onShareLinkPressed() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onShareFilePressed() {
+        TODO("Not yet implemented")
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {
