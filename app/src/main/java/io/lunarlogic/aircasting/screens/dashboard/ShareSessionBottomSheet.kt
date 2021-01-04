@@ -74,16 +74,4 @@ class ShareSessionBottomSheet(
     fun shareFilePressed(): String{
         return emailInput?.text.toString().trim()
     }
-
-    fun shareLinkPressed(){
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor))
-            putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
-            type = "text/plain"
-        }
-        val chooser = Intent.createChooser(sendIntent, getString(R.string.share_link))
-        context?.startActivity(chooser)
-    }
-
 }

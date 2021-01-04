@@ -45,7 +45,8 @@ class MobileDormantFragment : Fragment() {
             viewLifecycleOwner,
             settings,
             apiServiceFactory,
-            childFragmentManager
+            childFragmentManager,
+            context
         )
 
         if (sessionsRequested) {

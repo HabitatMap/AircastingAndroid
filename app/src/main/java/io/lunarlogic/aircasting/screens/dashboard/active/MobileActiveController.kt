@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -25,8 +26,9 @@ class MobileActiveController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager),
+    private val airBeamReconnector: AirBeamReconnector,
+    private val mContext: Context?
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)

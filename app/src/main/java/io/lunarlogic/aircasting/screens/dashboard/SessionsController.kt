@@ -1,17 +1,20 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.EditSessionEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.ShareHelper
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
@@ -29,7 +32,8 @@ abstract class SessionsController(
     private val mSessionsViewModel: SessionsViewModel,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    val fragmentManager: FragmentManager
+    val fragmentManager: FragmentManager,
+    private val context: Context?
 ) : SessionsViewMvc.Listener,
     EditSessionBottomSheet.Listener,
     ShareSessionBottomSheet.Listener {
@@ -150,7 +154,9 @@ abstract class SessionsController(
     }
 
     override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
-        shareDialog?.shareLinkPressed()
+        val session = shareDialog!!.session
+        val sensor = shareDialog!!.chosenSensor
+        shareLinkPressed(session, sensor)
         shareDialog?.dismiss()
     }
 
@@ -160,7 +166,6 @@ abstract class SessionsController(
             val email = shareDialog!!.shareFilePressed()
             shareSessionEventPost(session, email)
         }
-
         shareDialog?.dismiss()
     }
 
@@ -184,7 +189,14 @@ abstract class SessionsController(
         shareDialog?.show(fragmentManager, "Session share")
     }
 
-    private fun shareLinkPressed(){
-
+    private fun shareLinkPressed(session: Session, chosenSensor: String){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor))
+            putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
+            type = "text/plain"
+        }
+        val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
+        context?.startActivity(chooser)
     }
 }

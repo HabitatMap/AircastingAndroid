@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
+import android.content.Context
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -23,8 +24,9 @@ class FixedController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    fragmentManager: FragmentManager
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
+    fragmentManager: FragmentManager,
+    private val mContext: Context?
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
     SessionsViewMvc.Listener{
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -41,10 +43,6 @@ class FixedController(
         mSessionsObserver.forceRefresh()
     }
 
-    override fun onEditSessionClicked(session: Session) {
-        TODO("Not yet implemented")
-    }
-
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.FIXED)
     }
@@ -52,14 +50,6 @@ class FixedController(
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
-    }
-
-    override fun onShareLinkPressed() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onShareFilePressed() {
-        TODO("Not yet implemented")
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {
