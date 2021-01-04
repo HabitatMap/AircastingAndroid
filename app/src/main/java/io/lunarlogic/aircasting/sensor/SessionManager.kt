@@ -23,7 +23,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = FixedSessionDownloadMeasurementsService(apiService, errorHandler)
-    private val exportSessionService = ExportSessionService(apiService, errorHandler)
+    private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -145,9 +145,9 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun exportSession(event: ExportSessionEvent) {
-        exportSessionService.export(event.email, event.session.uuid, {
+        exportSessionService.export(event.email, event.session.uuid) {
             Toast.makeText(mContext, "Exported sessions will be emailed within minutes. The email may end up in your spam folder.", Toast.LENGTH_LONG).show()
-        })
+        }
     }
 
     private fun deleteSession(sessionUUID: String) {

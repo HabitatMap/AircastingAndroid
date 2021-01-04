@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "c5b20303bed0ff0d769747f19e1d7942",
+    "identityHash": "005ea382df9947ca3d701795dbdf1402",
     "entities": [
       {
         "tableName": "sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -109,6 +109,12 @@
             "columnName": "locationless",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "urlLocation",
+            "columnName": "url_location",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -395,7 +401,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c5b20303bed0ff0d769747f19e1d7942\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"005ea382df9947ca3d701795dbdf1402\")"
     ]
   }
 }
