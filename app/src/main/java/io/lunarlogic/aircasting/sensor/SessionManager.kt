@@ -144,7 +144,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun exportSession(event: ExportSessionEvent) {
-        // todo: call to api to send email with file, need to have email here
         exportSessionService.export(event.email, event.session.uuid)
     }
 

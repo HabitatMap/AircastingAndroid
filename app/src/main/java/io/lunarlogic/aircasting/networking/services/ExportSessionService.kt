@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ExportSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    // TODO: here we would some method to do api call sending email with csv
+
     fun export(email: String, uuid: String) { //, successCallback: (() -> Unit)
 //        val exportSessionParams = ExportSessionParams(email, uuid)
 

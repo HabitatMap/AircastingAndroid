@@ -116,7 +116,11 @@ abstract class SessionsController(
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
         }
     }
-    
+
+    override fun onEditSessionClicked(session: Session) { // handling button in BottomSheet
+        startEditSessionBottomSheet(session)
+    }
+
     override fun onShareSessionClicked(session: Session) { // handling button in BottomSheet
         startShareSessionBottomSheet(session)
     }
@@ -133,10 +137,6 @@ abstract class SessionsController(
     override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet, ShareSessionBottomSheet
         editDialog?.dismiss()
         shareDialog?.dismiss()
-    }
-
-    override fun onEditSessionClicked(session: Session) {
-        startEditSessionBottomSheet(session)
     }
 
     override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
@@ -167,7 +167,7 @@ abstract class SessionsController(
 
     private fun shareSessionEventPost(session: Session, email: String){
         val event = ExportSessionEvent(session, email)
-        EventBus.getDefault().post(event)   //TODO: not handled in SessionManager yet
+        EventBus.getDefault().post(event)
     }
 
     private fun startShareSessionBottomSheet(session: Session){

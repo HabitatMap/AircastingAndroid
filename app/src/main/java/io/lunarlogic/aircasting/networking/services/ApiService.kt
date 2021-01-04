@@ -50,7 +50,6 @@ interface ApiService {
     @POST("/api/user/sessions/update_session.json")
     fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
 
-    // TODO: this call needs a huge verification (for sure call argument is now random)
     @GET("/api/sessions/export_by_uuid.json")
     fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
 }
