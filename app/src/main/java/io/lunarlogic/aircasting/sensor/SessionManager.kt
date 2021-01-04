@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
+import android.widget.Toast
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
@@ -144,7 +145,9 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun exportSession(event: ExportSessionEvent) {
-        exportSessionService.export(event.email, event.session.uuid)
+        exportSessionService.export(event.email, event.session.uuid, {
+            Toast.makeText(mContext, "Exported sessions will be emailed within minutes. The email may end up in your spam folder.", Toast.LENGTH_LONG).show()
+        })
     }
 
     private fun deleteSession(sessionUUID: String) {

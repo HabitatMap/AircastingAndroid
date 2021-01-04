@@ -8,7 +8,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ExportSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    fun export(email: String, uuid: String) {  //TODO: I removed whole code connected with SuccessCallback (is thats ok?)
+    fun export(email: String, uuid: String, successCallback: () -> Unit = {}) {
         val call = apiService.exportSession(email, uuid)
 
         call.enqueue(object : Callback<ExportSessionResponse> {

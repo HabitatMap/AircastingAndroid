@@ -161,7 +161,6 @@ abstract class SessionsController(
             shareSessionEventPost(session, email)
         }
 
-        Toast.makeText(shareDialog?.context, "Exported sessions will be emailed within minutes. The email may end up in your spam folder.", Toast.LENGTH_LONG).show()
         shareDialog?.dismiss()
     }
 
