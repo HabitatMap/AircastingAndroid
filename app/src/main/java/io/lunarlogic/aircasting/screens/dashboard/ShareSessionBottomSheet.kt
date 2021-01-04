@@ -35,22 +35,12 @@ class ShareSessionBottomSheet(
         emailInput = view?.findViewById(R.id.email_input)
         radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
 
-        val radioButtons = session.streams.map { stream -> stream.detailedType } //todo: clean up
-        radioButtons.forEach{
-            val radioButton = RadioButton(context)
-            radioButton.id = View.generateViewId()
-            radioButton.text = it
-            val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            radioButton.layoutParams = layoutParams
-            radioGroup?.addView(radioButton)
-        }
+        setRadioButtonsForChosenSession()
 
-        radioGroup?.setOnCheckedChangeListener( object: RadioGroup.OnCheckedChangeListener {
-            override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
-                val fieldValues = session.streams.map { stream -> stream.sensorName }
-                    chosenSensor = fieldValues.get(checkedId - 1)
-                }
-            })
+        radioGroup?.setOnCheckedChangeListener { group, checkedId ->
+            val fieldValues = session.streams.map { stream -> stream.sensorName }
+            chosenSensor = fieldValues.get(checkedId - 1)
+        }
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
         shareLinkButton?.setOnClickListener {
@@ -81,6 +71,14 @@ class ShareSessionBottomSheet(
     }
 
     private fun setRadioButtonsForChosenSession(){
-
+        val radioButtons = session.streams.map { stream -> stream.detailedType }
+        radioButtons.forEach{
+            val radioButton = RadioButton(context)
+            radioButton.id = View.generateViewId()
+            radioButton.text = it
+            val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            radioButton.layoutParams = layoutParams
+            radioGroup?.addView(radioButton)
+        }
     }
 }
