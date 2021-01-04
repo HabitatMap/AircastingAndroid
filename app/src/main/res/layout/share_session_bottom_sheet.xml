@@ -68,39 +68,6 @@ android:background="@drawable/dialog_background">
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/select_stream_text_view"
             app:layout_constraintBottom_toTopOf="@id/share_link_button">
-
-        <RadioButton
-            android:id="@+id/radio1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PM1"
-            android:textColor="@color/aircasting_grey_800"
-            android:buttonTint="@color/aircasting_blue_400" />
-
-        <RadioButton
-            android:id="@+id/radio2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PM2.5"
-            android:textColor="@color/aircasting_grey_800"
-            android:buttonTint="@color/aircasting_blue_400"/>
-
-        <RadioButton
-            android:id="@+id/radio3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RH"
-            android:textColor="@color/aircasting_grey_800"
-            android:buttonTint="@color/aircasting_blue_400"/>
-
-        <RadioButton
-            android:id="@+id/radio4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="F"
-            android:textColor="@color/aircasting_grey_800"
-            android:buttonTint="@color/aircasting_blue_400"/>
-
         </RadioGroup>
 
         <Button
