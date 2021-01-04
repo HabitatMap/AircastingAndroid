@@ -45,6 +45,10 @@ class FixedController(
         startNewSession(Session.Type.FIXED)
     }
 
+    override fun onShareSessionClicked(session: Session) {
+        TODO("Not yet implemented")
+    }
+
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)

@@ -211,4 +211,10 @@
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
+    <string name="share_file">Share file</string>
+    <string name="share_session">Share session</string>
+    <string name="select_a_stream_to_share">Select a stream to share</string>
+    <string name="share_link">Share link</string>
+
+
 </resources>

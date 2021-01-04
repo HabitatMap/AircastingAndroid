@@ -51,6 +51,10 @@ class MobileDormantController(
         startNewSession(Session.Type.MOBILE)
     }
 
+    override fun onShareSessionClicked(session: Session) {
+        TODO("Not yet implemented")
+    }
+
     override fun onDeleteSessionClicked(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
@@ -59,5 +63,7 @@ class MobileDormantController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
+
+
 
 }
