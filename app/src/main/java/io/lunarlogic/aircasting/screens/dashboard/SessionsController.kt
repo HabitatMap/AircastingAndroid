@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
