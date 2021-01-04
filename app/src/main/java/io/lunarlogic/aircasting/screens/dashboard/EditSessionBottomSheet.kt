@@ -54,7 +54,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
     }
 
     fun show(manager: FragmentManager) {
-        show(manager, TAG)
+        manager?.let { show(manager, TAG) }
     }
 
     fun editSession(): Session {

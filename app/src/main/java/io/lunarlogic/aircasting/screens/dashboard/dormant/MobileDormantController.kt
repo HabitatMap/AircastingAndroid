@@ -52,5 +52,4 @@ class MobileDormantController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
-
 }

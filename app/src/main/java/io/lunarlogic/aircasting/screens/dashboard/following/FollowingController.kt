@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard.following
 
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
@@ -16,8 +17,9 @@ class FollowingController(
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager),
+    mApiServiceFactory: ApiServiceFactory,
+    fragmentManager: FragmentManager
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
