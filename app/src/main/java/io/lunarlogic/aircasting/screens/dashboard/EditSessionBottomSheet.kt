@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
@@ -18,6 +19,8 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         fun onEditDataPressed()
         fun onCancelPressed()
     }
+
+    private val TAG = "EditSessionBottomSheet"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +51,10 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         }
 
         return view
+    }
+
+    fun show(manager: FragmentManager) {
+        show(manager, TAG)
     }
 
     fun editSession(): Session {

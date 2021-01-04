@@ -132,12 +132,11 @@ abstract class SessionsController(
 
     private fun startEditSessionBottomSheet(session: Session) {
         dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "Session edit")
+        dialog?.show(fragmentManager)
     }
 
     private fun editSessionEventPost(session: Session){
         val event = EditSessionEvent(session)
         EventBus.getDefault().post(event)
     }
-
 }
