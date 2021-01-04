@@ -121,10 +121,7 @@ dependencies {
 
     // charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    // csv handling
-    implementation 'com.opencsv:opencsv:5.3'
-
+    
     // for testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'

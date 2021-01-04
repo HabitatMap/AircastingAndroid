@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.networking.services
 
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.networking.responses.ExportSessionResponse
@@ -9,9 +8,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ExportSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-
     fun export(email: String, uuid: String) {  //TODO: I removed whole code connected with SuccessCallback (is thats ok?)
-        val call = apiService.sendSessionByEmail(email, uuid)
+        val call = apiService.exportSession(email, uuid)
 
         call.enqueue(object : Callback<ExportSessionResponse> {
             override fun onResponse(call: Call<ExportSessionResponse>, response: Response<ExportSessionResponse>) {
@@ -25,5 +23,4 @@ class ExportSessionService(private val apiService: ApiService, private val error
             }
         })
     }
-
 }

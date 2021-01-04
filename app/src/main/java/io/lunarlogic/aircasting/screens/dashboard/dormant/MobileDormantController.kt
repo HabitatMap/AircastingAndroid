@@ -30,10 +30,8 @@ class MobileDormantController(
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
-    SessionsViewMvc.Listener{
-
+    SessionsViewMvc.Listener {
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurements())
@@ -59,7 +57,4 @@ class MobileDormantController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
-
-
-
 }

@@ -81,7 +81,7 @@ class ShareSessionBottomSheet(
             putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
             type = "text/plain"
         }
-        val chooser = Intent.createChooser(sendIntent, "Share link")
+        val chooser = Intent.createChooser(sendIntent, getString(R.string.share_link))
         context?.startActivity(chooser)
     }
 

@@ -49,7 +49,7 @@ interface ApiService {
     fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
 
     @GET("/api/sessions/export_by_uuid.json")
-    fun sendSessionByEmail(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse> //todo: rename <?>
+    fun exportSession(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {

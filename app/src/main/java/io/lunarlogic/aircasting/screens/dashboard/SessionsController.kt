@@ -32,7 +32,7 @@ abstract class SessionsController(
     val fragmentManager: FragmentManager
 ) : SessionsViewMvc.Listener,
     EditSessionBottomSheet.Listener,
-    ShareSessionBottomSheet.Listener{
+    ShareSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -155,14 +155,13 @@ abstract class SessionsController(
     }
 
     override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
-        if(shareDialog != null){
+        if (shareDialog != null) {
             val session = shareDialog!!.session
             val email = shareDialog!!.shareFilePressed()
             shareSessionEventPost(session, email)
-        }else{
-            Log.e("SHARE_SESS", "Share dialog is null")
         }
-        Toast.makeText(shareDialog?.context, "You've just shared the file", Toast.LENGTH_LONG).show()  //todo: Toast to inform user, or maybe just dialog.dismiss() ?
+        Toast.makeText(shareDialog?.context, "Exported sessions will be emailed within minutes. The email may end up in your spam folder.", Toast.LENGTH_LONG).show()
+        shareDialog?.dismiss()
     }
 
     private fun startEditSessionBottomSheet(session: Session) {
