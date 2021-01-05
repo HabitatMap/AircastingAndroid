@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.sensor.airbeam2
+package io.lunarlogic.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
@@ -8,7 +8,6 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 
 
@@ -48,8 +47,8 @@ open class AirBeam3Connector(
         airBeam3Configurator.configure(session, wifiSSID, wifiPassword)
     }
 
-    override fun sendAuth(uuid: String) {
-        airBeam3Configurator.sendAuth(uuid)
+    override fun sendAuth(sessionUUID: String) {
+        airBeam3Configurator.sendAuth(sessionUUID)
     }
 
     override fun reconnectMobileSession() {

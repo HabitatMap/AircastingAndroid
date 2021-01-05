@@ -50,6 +50,10 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : P
         return arrayOf(Type.AIRBEAM1, Type.AIRBEAM2, Type.AIRBEAM3).contains(type)
     }
 
+    fun isSyncable(): Boolean {
+        return arrayOf(Type.AIRBEAM3).contains(type)
+    }
+
     private fun getType(name: String?): Type {
         name ?: return Type.OTHER
 

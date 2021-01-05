@@ -7,13 +7,14 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
-import io.lunarlogic.aircasting.sensor.airbeam3.SyncService
+import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 
 
 class LetsStartController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: LetsStartViewMvc,
-    private val mContext: Context?
+    private val mContext: Context?,
+    private val mAirBeamSyncService: AirBeamSyncService
 ): LetsStartViewMvc.Listener {
 
     fun onCreate() {
@@ -38,8 +39,7 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        // TODO: move it somewhere later
-        SyncService().run()
+        mAirBeamSyncService.run()
     }
 
     override fun onMoreInfoClicked() {

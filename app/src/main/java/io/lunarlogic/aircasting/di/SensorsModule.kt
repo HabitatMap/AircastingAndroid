@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
+import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
@@ -34,6 +35,16 @@ open class SensorsModule {
         sessionsRepository: SessionsRepository,
         bluetoothManager: BluetoothManager
     ): AirBeamReconnector = AirBeamReconnector(application, sessionsRepository, bluetoothManager)
+
+    @Provides
+    @Singleton
+    open fun providesAirBeamSyncService(
+        application: AircastingApplication,
+        airBeamConnectorFactory: AirBeamConnectorFactory,
+        errorHandler: ErrorHandler,
+        sessionsRepository: SessionsRepository,
+        bluetoothManager: BluetoothManager
+    ): AirBeamSyncService = AirBeamSyncService(application, airBeamConnectorFactory, errorHandler, bluetoothManager)
 
     @Provides
     @Singleton
