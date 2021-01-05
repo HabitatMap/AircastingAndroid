@@ -15,8 +15,8 @@ class ShareSessionBottomSheet(
     val session: Session
 ): BottomSheetDialogFragment() {
     interface Listener{
-        fun onShareLinkPressed()
-        fun onShareFilePressed(emailInput: String)
+        fun onShareLinkPressed(session: Session, sensor: String)
+        fun onShareFilePressed(session: Session, emailInput: String)
         fun onCancelPressed()
     }
 
@@ -77,11 +77,11 @@ class ShareSessionBottomSheet(
 
     fun shareFilePressed(){
         val emailInput = emailInput?.text.toString().trim()
-        mListener.onShareFilePressed(emailInput)
+        mListener.onShareFilePressed(session, emailInput)
     }
 
     fun shareLinkPressed(){
-        mListener.onShareLinkPressed()
+        mListener.onShareLinkPressed(session, chosenSensor)
     }
 
     private fun setRadioButtonsForChosenSession(){

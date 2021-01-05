@@ -153,18 +153,15 @@ abstract class SessionsController(
         shareDialog?.dismiss()
     }
 
-    override fun onShareLinkPressed() { // handling button in ShareSessionBottomSheet
-        val session = shareDialog!!.session
-        val sensor = shareDialog!!.chosenSensor
+    override fun onShareLinkPressed(session: Session, sensor: String) { // handling button in ShareSessionBottomSheet
         shareLinkPressed(session, sensor)
         shareDialog?.dismiss()
     }
 
-    override fun onShareFilePressed(emailInput: String) { // handling button in ShareSessionBottomSheet
-        shareDialog?.let {
-            val session = shareDialog!!.session
-            shareSessionEventPost(session, emailInput)
-        }
+    override fun onShareFilePressed(session: Session, emailInput: String) { // handling button in ShareSessionBottomSheet
+        val event = ExportSessionEvent(session, emailInput)
+        EventBus.getDefault().post(event)
+
         shareDialog?.dismiss()
     }
 
@@ -175,11 +172,6 @@ abstract class SessionsController(
 
     private fun editSessionEventPost(session: Session){
         val event = EditSessionEvent(session)
-        EventBus.getDefault().post(event)
-    }
-
-    private fun shareSessionEventPost(session: Session, email: String){
-        val event = ExportSessionEvent(session, email)
         EventBus.getDefault().post(event)
     }
 
