@@ -50,7 +50,7 @@ class ShareSessionBottomSheet(
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
         shareLinkButton?.setOnClickListener {
-            mListener.onShareLinkPressed()
+           shareLinkPressed()
         }
 
         val shareFileButton = view?.findViewById<Button>(R.id.share_file_button)
@@ -78,6 +78,10 @@ class ShareSessionBottomSheet(
     fun shareFilePressed(){
         val emailInput = emailInput?.text.toString().trim()
         mListener.onShareFilePressed(emailInput)
+    }
+
+    fun shareLinkPressed(){
+        mListener.onShareLinkPressed()
     }
 
     private fun setRadioButtonsForChosenSession(){
