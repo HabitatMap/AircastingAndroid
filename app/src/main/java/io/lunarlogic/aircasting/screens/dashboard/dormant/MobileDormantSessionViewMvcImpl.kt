@@ -46,8 +46,10 @@ class MobileDormantSessionViewMvcImpl(
     }
 
     override fun shareSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
+
         for(listener in listeners){
-            listener.onSessionShareClicked(mSessionPresenter!!.session!!)
+            listener.onSessionShareClicked(session)
         }
         dismissBottomSheet()
     }

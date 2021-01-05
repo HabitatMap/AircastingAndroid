@@ -1,7 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.ShareHelper
 import io.lunarlogic.aircasting.models.Session
 
 class ShareSessionBottomSheet(
@@ -21,8 +18,12 @@ class ShareSessionBottomSheet(
         fun onShareFilePressed()
         fun onCancelPressed()
     }
+    class CurrentSessionStreams(
+        val sensorName: String,
+        val detailedType: String?
+    )
 
-    val fieldValues = session.streams.map { stream -> stream.sensorName }  // to ma być hashmape,
+    val fieldValues = hashMapOf<Int, CurrentSessionStreams>()
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
@@ -40,7 +41,7 @@ class ShareSessionBottomSheet(
         setRadioButtonsForChosenSession()
 
         radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-            chosenSensor = fieldValues[checkedId - 1]    // field values z kluczami id i wartościami radioButtony
+            chosenSensor = fieldValues[checkedId]?.sensorName.toString()
         }
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
@@ -51,7 +52,6 @@ class ShareSessionBottomSheet(
         val shareFileButton = view?.findViewById<Button>(R.id.share_file_button)
         shareFileButton?.setOnClickListener {
             mListener.onShareFilePressed()
-            emailInput?.setText("")
         }
 
         val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
@@ -72,15 +72,16 @@ class ShareSessionBottomSheet(
     }
 
     private fun setRadioButtonsForChosenSession(){
-//        radioGroup?.removeAllViews()
-        val radioButtons = session.streams.map { stream -> stream.detailedType }
-        radioButtons.forEach{
+        fieldValues.clear()
+        val currentSessionStreams = session.streams //.map { stream -> stream.detailedType }
+        currentSessionStreams.forEach{ stream ->
             val radioButton = RadioButton(context)
             radioButton.id = View.generateViewId()
-            radioButton.text = it
+            radioButton.text = stream.detailedType
             val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             radioButton.layoutParams = layoutParams
             radioGroup?.addView(radioButton)
+            fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
         }
     }
 }
