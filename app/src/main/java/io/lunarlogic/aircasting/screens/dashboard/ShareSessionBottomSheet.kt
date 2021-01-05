@@ -1,5 +1,8 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -93,6 +96,9 @@ class ShareSessionBottomSheet(
             radioButton.text = stream.detailedType
             val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             radioButton.layoutParams = layoutParams
+            radioButton.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.aircasting_blue_400))
+            radioButton.setTextColor(resources.getColor(R.color.aircasting_grey_800))
+            radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_StreamValue2)
             radioGroup?.addView(radioButton)
             fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
         }
