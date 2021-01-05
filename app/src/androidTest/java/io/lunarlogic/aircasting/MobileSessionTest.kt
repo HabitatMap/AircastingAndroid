@@ -231,7 +231,8 @@ class MobileSessionTest {
         // edit session test
         onView(withId(R.id.edit_session_button)).perform(click())
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile mic session"))
-        onView(withId(R.id.edit_data_button)).perform(scrollTo(), click())
+        onView(isRoot()).perform(swipeUp())
+        onView(withId(R.id.edit_data_button)).perform(click())
         // check if name is edited:
         Thread.sleep(2000)
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile mic session")))
