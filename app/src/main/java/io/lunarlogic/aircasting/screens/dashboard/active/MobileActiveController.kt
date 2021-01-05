@@ -41,10 +41,6 @@ class MobileActiveController(
         mSessionsObserver.stop()
     }
 
-    override fun forceSessionsObserverRefresh() {
-        mSessionsObserver.forceRefresh()
-    }
-
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.MOBILE)
     }
@@ -78,19 +74,18 @@ class MobileActiveController(
 
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc.showReconnectingLoaderFor(session)
-        airBeamReconnector.reconnect(session, {
+        airBeamReconnector.reconnect(session) {
             GlobalScope.launch(Dispatchers.Main) {
                 mViewMvc.hideReconnectingLoaderFor(session)
             }
-        })
+        }
     }
 
-    override fun onEditDataPressed() { // Edit session bottom sheet handling
+    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
         // do nothing
     }
 
     override fun onCancelPressed() {
         // do nothing
     }
-
 }

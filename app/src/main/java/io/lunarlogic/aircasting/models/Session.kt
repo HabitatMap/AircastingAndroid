@@ -173,6 +173,26 @@ class Session(
         }
     }
 
+    fun copy(): Session {
+        return Session(
+            this.uuid,
+            this.deviceId,
+            this.deviceType,
+            this.type,
+            this.name,
+            this.tags,
+            this.status,
+            this.startTime,
+            this.endTime,
+            this.version,
+            this.deleted,
+            this.followedAt,
+            this.contribute,
+            this.locationless,
+            this.streams
+        )
+    }
+
     fun startRecording() {
         mStatus = Status.RECORDING
     }
@@ -269,10 +289,5 @@ class Session(
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
-    }
-
-    fun setNameAndTags(newName: String, newTags: ArrayList<String>){
-        this.name = newName
-        this.tags = newTags
     }
 }

@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
 class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener{
-        fun onEditDataPressed()
+        fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
         fun onCancelPressed()
     }
 
@@ -37,7 +37,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
         editDataButton?.setOnClickListener {
-            mListener.onEditDataPressed()
+            onEditSessionPressed()
         }
 
         val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
@@ -57,12 +57,11 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         manager?.let { show(manager, TAG) }
     }
 
-    fun editSession(): Session {
-        val sessionName = view?.session_name_input?.text.toString().trim()
+    private fun onEditSessionPressed() {
+        val name = view?.session_name_input?.text.toString().trim()
         val tags = view?.tags_input?.text.toString().trim()
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
-        session.setNameAndTags(sessionName, tagList)
 
-        return session
+        mListener.onEditDataPressed(session, name, tagList)
     }
 }
