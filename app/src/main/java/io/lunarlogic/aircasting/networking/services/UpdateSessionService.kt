@@ -47,5 +47,4 @@ class UpdateSessionService(private val apiService: ApiService, private val error
             }
         })
     }
-
 }

@@ -22,7 +22,7 @@ class ShareSessionBottomSheet(
         fun onCancelPressed()
     }
 
-    val fieldValues = session.streams.map { stream -> stream.sensorName }
+    val fieldValues = session.streams.map { stream -> stream.sensorName }  // to ma być hashmape,
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
@@ -40,7 +40,7 @@ class ShareSessionBottomSheet(
         setRadioButtonsForChosenSession()
 
         radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-            chosenSensor = fieldValues[checkedId - 1]
+            chosenSensor = fieldValues[checkedId - 1]    // field values z kluczami id i wartościami radioButtony
         }
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
@@ -72,6 +72,7 @@ class ShareSessionBottomSheet(
     }
 
     private fun setRadioButtonsForChosenSession(){
+//        radioGroup?.removeAllViews()
         val radioButtons = session.streams.map { stream -> stream.detailedType }
         radioButtons.forEach{
             val radioButton = RadioButton(context)
