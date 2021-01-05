@@ -1,10 +1,9 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.events.EditSessionEvent
+import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
@@ -36,7 +35,6 @@ abstract class SessionsController(
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
-    protected abstract fun forceSessionsObserverRefresh()
 
     fun onCreate() {
         mViewMvc.showLoader()
@@ -111,12 +109,9 @@ abstract class SessionsController(
         }
     }
 
-    override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
-        val editedSession = dialog?.editSession()
-        editedSession?.let { session ->
-            editSessionEventPost(session)
-            forceSessionsObserverRefresh()
-        }
+    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // handling buttons in EditSessionBottomSheet
+        val event = UpdateSessionEvent(session, name, tags)
+        EventBus.getDefault().post(event)
 
         dialog?.dismiss()
     }
@@ -131,12 +126,6 @@ abstract class SessionsController(
 
     private fun startEditSessionBottomSheet(session: Session) {
         dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "Session edit")
+        dialog?.show(fragmentManager)
     }
-
-    private fun editSessionEventPost(session: Session){
-        val event = EditSessionEvent(session)
-        EventBus.getDefault().post(event)
-    }
-
 }

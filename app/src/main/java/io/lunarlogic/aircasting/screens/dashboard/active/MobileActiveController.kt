@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -25,8 +26,9 @@ class MobileActiveController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager),
+    private val airBeamReconnector: AirBeamReconnector,
+    fragmentManager: FragmentManager
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -37,10 +39,6 @@ class MobileActiveController(
 
     override fun unregisterSessionsObserver() {
         mSessionsObserver.stop()
-    }
-
-    override fun forceSessionsObserverRefresh() {
-        mSessionsObserver.forceRefresh()
     }
 
     override fun onRecordNewSessionClicked() {
@@ -76,19 +74,18 @@ class MobileActiveController(
 
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc.showReconnectingLoaderFor(session)
-        airBeamReconnector.reconnect(session, {
+        airBeamReconnector.reconnect(session) {
             GlobalScope.launch(Dispatchers.Main) {
                 mViewMvc.hideReconnectingLoaderFor(session)
             }
-        })
+        }
     }
 
-    override fun onEditDataPressed() { // Edit session bottom sheet handling
+    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
         // do nothing
     }
 
     override fun onCancelPressed() {
         // do nothing
     }
-
 }

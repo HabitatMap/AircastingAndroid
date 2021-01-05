@@ -53,15 +53,19 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun editSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
+
         for (listener in listeners) {
-            listener.onSessionEditClicked(mSessionPresenter!!.session!!)
+            listener.onSessionEditClicked(session)
         }
         dismissBottomSheet()
     }
 
     override fun deleteSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
+
         for (listener in listeners) {
-            listener.onSessionDeleteClicked(mSessionPresenter!!.session!!)
+            listener.onSessionDeleteClicked(session)
         }
         dismissBottomSheet()
     }

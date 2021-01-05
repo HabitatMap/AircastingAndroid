@@ -47,8 +47,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
-    fun onMessageEvent(event: EditSessionEvent){
-        editSession(event)
+    fun onMessageEvent(event: UpdateSessionEvent){
+        updateSession(event)
     }
 
     @Subscribe
@@ -129,10 +129,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
-    private fun editSession(event: EditSessionEvent) {
-        sessionUpdateService.update(event.session) {
+    private fun updateSession(event: UpdateSessionEvent) {
+        val session = event.session.copy()
+        session.name = event.name
+        session.tags = event.tags
+        sessionUpdateService.update(session) {
             DatabaseProvider.runQuery {
-                sessionsRespository.update(event.session)
+                sessionsRespository.update(session)
             }
         }
     }

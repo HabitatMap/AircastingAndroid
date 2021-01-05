@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
@@ -15,9 +16,11 @@ import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
 class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener{
-        fun onEditDataPressed()
+        fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
         fun onCancelPressed()
     }
+
+    private val TAG = "EditSessionBottomSheet"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +37,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
         editDataButton?.setOnClickListener {
-            mListener.onEditDataPressed()
+            onEditSessionPressed()
         }
 
         val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
@@ -50,12 +53,15 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         return view
     }
 
-    fun editSession(): Session {
-        val sessionName = view?.session_name_input?.text.toString().trim()
+    fun show(manager: FragmentManager) {
+        show(manager, TAG)
+    }
+
+    private fun onEditSessionPressed() {
+        val name = view?.session_name_input?.text.toString().trim()
         val tags = view?.tags_input?.text.toString().trim()
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
-        session.setNameAndTags(sessionName, tagList)
 
-        return session
+        mListener.onEditDataPressed(session, name, tagList)
     }
 }
