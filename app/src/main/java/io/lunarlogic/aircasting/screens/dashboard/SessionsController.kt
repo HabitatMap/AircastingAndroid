@@ -50,7 +50,7 @@ abstract class SessionsController(
         mErrorHandler
     )
 
-    protected var editDialog: EditSessionBottomSheet? = null //todo: guess these 2 declarations are quite rough now
+    protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
@@ -160,11 +160,10 @@ abstract class SessionsController(
         shareDialog?.dismiss()
     }
 
-    override fun onShareFilePressed() { // handling button in ShareSessionBottomSheet
+    override fun onShareFilePressed(emailInput: String) { // handling button in ShareSessionBottomSheet
         shareDialog?.let {
             val session = shareDialog!!.session
-            val email = shareDialog!!.shareFilePressed()
-            shareSessionEventPost(session, email)
+            shareSessionEventPost(session, emailInput)
         }
         shareDialog?.dismiss()
     }
@@ -186,7 +185,7 @@ abstract class SessionsController(
 
     private fun startShareSessionBottomSheet(session: Session){
         shareDialog = ShareSessionBottomSheet(this, session)
-        shareDialog?.show(fragmentManager, "Session share")
+        shareDialog?.show(fragmentManager)
     }
 
     private fun shareLinkPressed(session: Session, chosenSensor: String){

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
@@ -15,13 +16,16 @@ class ShareSessionBottomSheet(
 ): BottomSheetDialogFragment() {
     interface Listener{
         fun onShareLinkPressed()
-        fun onShareFilePressed()
+        fun onShareFilePressed(emailInput: String)
         fun onCancelPressed()
     }
+
     class CurrentSessionStreams(
         val sensorName: String,
         val detailedType: String?
     )
+
+    private val TAG = "ShareSessionBottomSheet"
 
     val fieldValues = hashMapOf<Int, CurrentSessionStreams>()
     var emailInput: EditText? = null
@@ -51,7 +55,7 @@ class ShareSessionBottomSheet(
 
         val shareFileButton = view?.findViewById<Button>(R.id.share_file_button)
         shareFileButton?.setOnClickListener {
-            mListener.onShareFilePressed()
+            shareFilePressed()
         }
 
         val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
@@ -67,13 +71,18 @@ class ShareSessionBottomSheet(
         return view
     }
 
-    fun shareFilePressed(): String{
-        return emailInput?.text.toString().trim()
+    fun show(manager: FragmentManager){
+        show(manager, TAG)
+    }
+
+    fun shareFilePressed(){
+        val emailInput = emailInput?.text.toString().trim()
+        mListener.onShareFilePressed(emailInput)
     }
 
     private fun setRadioButtonsForChosenSession(){
         fieldValues.clear()
-        val currentSessionStreams = session.streams //.map { stream -> stream.detailedType }
+        val currentSessionStreams = session.streams
         currentSessionStreams.forEach{ stream ->
             val radioButton = RadioButton(context)
             radioButton.id = View.generateViewId()
