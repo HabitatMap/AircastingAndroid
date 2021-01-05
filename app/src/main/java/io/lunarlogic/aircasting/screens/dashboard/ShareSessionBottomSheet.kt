@@ -22,7 +22,7 @@ class ShareSessionBottomSheet(
         fun onCancelPressed()
     }
 
-    val fieldValues = session.streams.map { stream -> stream.sensorName }
+    val fieldValues = session.streams.map { stream -> stream.sensorName } // hashmapa idkow i tych nowych obiektow
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
@@ -40,7 +40,7 @@ class ShareSessionBottomSheet(
         setRadioButtonsForChosenSession()
 
         radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-            chosenSensor = fieldValues[checkedId - 1]
+            chosenSensor = fieldValues[checkedId - 1] // uzyc hash mapy
         }
 
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
@@ -73,13 +73,16 @@ class ShareSessionBottomSheet(
 
     private fun setRadioButtonsForChosenSession(){
         val radioButtons = session.streams.map { stream -> stream.detailedType }
-        radioButtons.forEach{
+        // foreach session.stream
+        radioButtons.forEach{ stream ->
             val radioButton = RadioButton(context)
             radioButton.id = View.generateViewId()
-            radioButton.text = it
+            radioButton.text = stream.detailedType
             val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             radioButton.layoutParams = layoutParams
             radioGroup?.addView(radioButton)
+            // check this radioButton id here
+            // add id to hashmap[id] obiekt tej nowej klasy w ktorej bedziesz miec sensorName, detailedType?
         }
     }
 }
