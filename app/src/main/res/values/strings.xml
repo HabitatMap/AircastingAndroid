@@ -79,6 +79,10 @@
     <string name="fixed_session_start_desc">for measuring in one place</string>
     <string name="mobile_session_start_title">Mobile session</string>
     <string name="mobile_session_start_desc">for moving around</string>
+    <string name="or">or</string>
+    <string name="sync_title">Sync data from AirBeam3</string>
+    <string name="sync_description">if you recorded with AirBeam3</string>
+
     <!-- more info modal -->
     <string name="more_info_title">Session types</string>
     <string name="more_info_text_part1">If you plan on moving around with the AirBeam2 while recording air quality measurements, configure the AirBeam2 to record a</string>

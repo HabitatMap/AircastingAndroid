@@ -7,6 +7,8 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
+import io.lunarlogic.aircasting.sensor.airbeam3.SyncService
+
 
 class LetsStartController(
     private val mRootActivity: FragmentActivity?,
@@ -35,9 +37,12 @@ class LetsStartController(
         NewSessionActivity.start(mRootActivity, Session.Type.MOBILE)
     }
 
+    override fun onSyncSelected() {
+        // TODO: move it somewhere later
+        SyncService().run()
+    }
+
     override fun onMoreInfoClicked() {
         mViewMvc.showMoreInfoDialog()
     }
-
-
 }
