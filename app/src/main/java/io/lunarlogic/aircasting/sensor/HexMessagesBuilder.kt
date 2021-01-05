@@ -13,14 +13,18 @@ class HexMessagesBuilder {
     private val AUTH_TOKEN_CODE = 0x05.toByte()
     private val LAT_LNG_CODE = 0x06.toByte()
     private val CURRENT_TIME_CODE = 0x08.toByte()
+    private val SYNC_CODE = 0x09.toByte()
 
     private val BLUETOOTH_CONFIGURATION_MESSAGE =
         byteArrayOf(BEGIN_MESSAGE_CODE, BLUETOOTH_STREAMING_METHOD_CODE, END_MESSAGE_CODE)
     private val CELLULAR_CONFIGURATION_MESSAGE =
         byteArrayOf(BEGIN_MESSAGE_CODE, CELLULAR_CODE, END_MESSAGE_CODE)
+    private val SYNC_CONFIGURATION_MESSAGE =
+        byteArrayOf(BEGIN_MESSAGE_CODE, SYNC_CODE, END_MESSAGE_CODE)
 
     val bluetoothConfigurationMessage get() = BLUETOOTH_CONFIGURATION_MESSAGE
     val cellularConfigurationMessage get() = CELLULAR_CONFIGURATION_MESSAGE
+    val syncConfigurationMessage get() = SYNC_CONFIGURATION_MESSAGE
 
     fun uuidMessage(uuid: String): ByteArray {
         return buildMessage(uuid, UUID_CODE)

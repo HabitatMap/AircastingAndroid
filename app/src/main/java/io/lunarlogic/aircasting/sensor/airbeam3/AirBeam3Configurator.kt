@@ -77,6 +77,16 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
+    fun sync() {
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        beginAtomicRequestQueue()
+            .add(syncModeRequest())
+            .add(sleep(500))
+            .add(requestMtu(MAX_MTU))
+            .enqueue()
+    }
+
     private fun configureMobileSession(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
@@ -221,5 +231,10 @@ class AirBeam3Configurator(
     private fun cellularModeRequest(): WriteRequest {
         return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage)
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("cellular mode", status)) }
+    }
+
+    private fun syncModeRequest(): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.syncConfigurationMessage)
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("sync mode", status)) }
     }
 }

@@ -43,6 +43,7 @@ abstract class AirBeamConnector {
     }
 
     abstract fun reconnectMobileSession()
+    abstract fun sync()
 
     private fun disconnect() {
         unregisterFromEventBus()

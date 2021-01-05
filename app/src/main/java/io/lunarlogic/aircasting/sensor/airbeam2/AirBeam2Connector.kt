@@ -48,6 +48,10 @@ open class AirBeam2Connector(
         // nothing is needed here
     }
 
+    override fun sync() {
+        // AirBeam2 can't do sync
+    }
+
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice

@@ -85,6 +85,8 @@ class AirBeamSyncService(
         // TODO: temporary thing
         val deviceName = mDeviceItem?.displayName()
         showInfo("connection to $deviceName successful!")
+
+        mAirBeamConnector?.sync()
     }
 
     override fun onConnectionFailed(deviceId: String) {
