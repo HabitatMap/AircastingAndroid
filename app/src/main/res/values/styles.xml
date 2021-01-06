@@ -210,6 +210,22 @@
         <item name="lineHeight">32dp</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Dialog.Subtitle" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:textAlignment">center</item>
+        <item name="lineHeight">32dp</item>
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textSize">@dimen/text_size_s</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.Checkbox" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:textAlignment">center</item>
+        <item name="lineHeight">32dp</item>
+        <item name="android:fontFamily">@font/muli_medium</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
+
     <style name="TextAppearance.Aircasting.MapStatisticsLabel" parent="@style/TextAppearance.Aircasting.Body1">
         <item name="android:textAlignment">center</item>
         <item name="android:fontFamily">@font/muli_regular</item>
