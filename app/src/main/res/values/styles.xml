@@ -201,7 +201,9 @@
 
     <style name="TextAppearance.Aircasting.Checkbox" parent="@style/TextAppearance.Aircasting.Body1">
         <item name="android:textAlignment">center</item>
+        <item name="useMaterialThemeColors">false</item>
         <item name="lineHeight">32dp</item>
+        <item name="android:button">@drawable/checkbox_selector</item>
         <item name="android:fontFamily">@font/muli_medium</item>
         <item name="android:textColor">@color/aircasting_grey_400</item>
         <item name="android:textSize">@dimen/text_size_m</item>

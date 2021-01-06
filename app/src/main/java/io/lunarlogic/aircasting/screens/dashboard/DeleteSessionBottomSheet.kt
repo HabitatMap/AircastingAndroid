@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +9,15 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
+import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 
-class DeleteSessionBottomSheet(private val mListener: DeleteSessionBottomSheet.Listener, private val session: Session): BottomSheetDialogFragment() {
+
+class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener {
         fun onDeleteStreamsPressed()
         fun onCancelDeleteSessionDialogPressed()
@@ -42,7 +47,29 @@ class DeleteSessionBottomSheet(private val mListener: DeleteSessionBottomSheet.L
         }
 
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
-        // TODO: generate checkboxes with streams
+        generateStreamsOptions()
         return view
+    }
+
+    private fun generateStreamsOptions() {
+        val allStreamsCheckboxTitle = resources.getString(R.string.delete_all_data_from_session)
+        val allStreamsCheckbox = createSingleCheckbox(allStreamsCheckboxTitle)
+        mStreamsOptionsContainer?.addView(allStreamsCheckbox)
+        val sessionStreams = session.streams
+        sessionStreams.forEach { stream ->
+            val streamCheckbox = createSingleCheckbox(stream.detailedType)
+            mStreamsOptionsContainer?.addView(streamCheckbox)
+        }
+    }
+
+    private fun createSingleCheckbox(title: String?): View {
+        val checkbox = CheckBox(context)
+        checkbox.id = View.generateViewId()
+        checkbox.text = title
+        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        checkbox.layoutParams = layoutParams
+        checkbox.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.aircasting_blue_400))
+        TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
+        return checkbox
     }
 }
