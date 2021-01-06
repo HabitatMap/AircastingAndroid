@@ -26,14 +26,15 @@ abstract class SessionsController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected var dialog: EditSessionBottomSheet? = null
+    private var editSessionDialog: EditSessionBottomSheet? = null
+    private var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -114,26 +115,39 @@ abstract class SessionsController(
     }
 
     override fun onEditDataPressed() { // handling buttons in EditSessionBottomSheet
-        val editedSession = dialog?.editSession()
+        val editedSession = editSessionDialog?.editSession()
         editedSession?.let { session ->
             editSessionEventPost(session)
             forceSessionsObserverRefresh()
         }
 
-        dialog?.dismiss()
+        editSessionDialog?.dismiss()
     }
 
-    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
-        dialog?.dismiss()
+    override fun onCancelEditSessionDialogPressed() { // handling buttons in EditSessionBottomSheet
+        editSessionDialog?.dismiss()
+    }
+
+    override fun onCancelDeleteSessionDialogPressed() {
+        deleteSessionDialog?.dismiss()
     }
 
     override fun onEditSessionClicked(session: Session) {
         startEditSessionBottomSheet(session)
     }
 
+    override fun onDeleteSessionClicked(session: Session) {
+        startDeleteSessionBottomSheet(session)
+    }
+
     private fun startEditSessionBottomSheet(session: Session) {
-        dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager, "Session edit")
+        editSessionDialog = EditSessionBottomSheet(this, session)
+        editSessionDialog?.show(fragmentManager, "Session edit")
+    }
+
+    private fun startDeleteSessionBottomSheet(session: Session) {
+        deleteSessionDialog = DeleteSessionBottomSheet(this, session)
+        deleteSessionDialog?.show(fragmentManager, "Session delete")
     }
 
     private fun editSessionEventPost(session: Session){

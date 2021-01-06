@@ -46,7 +46,7 @@ class FollowingController(
         // do nothing
     }
 
-    override fun onDeleteSessionClicked(sessionUUID: String) {
+    override fun onDeleteStreamsPressed() {
         // do nothing
     }
 

@@ -36,7 +36,7 @@ class MobileDormantViewMvcImpl(
 
     override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
-            listener.onDeleteSessionClicked(session.uuid)
+            listener.onDeleteSessionClicked(session)
         }
     }
 

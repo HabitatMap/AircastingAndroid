@@ -45,9 +45,11 @@ class FixedController(
         startNewSession(Session.Type.FIXED)
     }
 
-    override fun onDeleteSessionClicked(sessionUUID: String) {
-        val event = DeleteSessionEvent(sessionUUID)
-        EventBus.getDefault().post(event)
+    override fun onDeleteStreamsPressed() {
+        // do nothing
+        // TODO: remember about DeleteSession Event and EventBus
+        // val event = DeleteSessionEvent(sessionUUID)
+        // EventBus.getDefault().post(event)
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {

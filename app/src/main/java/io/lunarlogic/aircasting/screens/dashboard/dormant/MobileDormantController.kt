@@ -51,9 +51,11 @@ class MobileDormantController(
         startNewSession(Session.Type.MOBILE)
     }
 
-    override fun onDeleteSessionClicked(sessionUUID: String) {
-        val event = DeleteSessionEvent(sessionUUID)
-        EventBus.getDefault().post(event)
+    override fun onDeleteStreamsPressed() {
+        // do nothing
+        // TODO: remember about EventBus -> I think it should be in Session Controller
+        // val event = DeleteSessionEvent(sessionUUID)
+        // EventBus.getDefault().post(event)
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {

@@ -62,7 +62,7 @@ class MobileActiveController(
         // do nothing
     }
 
-    override fun onDeleteSessionClicked(sessionUUID: String) {
+    override fun onDeleteStreamsPressed() {
         // do nothing
     }
 
@@ -87,7 +87,7 @@ class MobileActiveController(
         // do nothing
     }
 
-    override fun onCancelPressed() {
+    override fun onCancelEditSessionDialogPressed() {
         // do nothing
     }
 
