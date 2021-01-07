@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 
 class ShareSessionBottomSheet(  //todo: styles and TextAppearances to be added
@@ -90,7 +91,13 @@ class ShareSessionBottomSheet(  //todo: styles and TextAppearances to be added
     private fun setRadioButtonsForChosenSession(){
         fieldValues.clear()
         val currentSessionStreams = session.streams
-        currentSessionStreams.forEach{ stream -> //todo: all below forEach to separate method
+        currentSessionStreams.forEach { stream ->
+            setRadioButtonProperties(stream)
+        }
+
+    }
+
+    private fun setRadioButtonProperties(stream: MeasurementStream){
             val radioButton = RadioButton(context)
             radioButton.id = View.generateViewId()
             radioButton.text = stream.detailedType
@@ -101,6 +108,5 @@ class ShareSessionBottomSheet(  //todo: styles and TextAppearances to be added
             radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_StreamValue2)
             radioGroup?.addView(radioButton)
             fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
-        }
     }
 }

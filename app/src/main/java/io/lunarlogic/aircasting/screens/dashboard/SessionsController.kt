@@ -128,7 +128,7 @@ abstract class SessionsController(
     }
 
     override fun onShareLinkPressed(session: Session, sensor: String) { // handling button in ShareSessionBottomSheet
-        shareLinkPressed(session, sensor)
+        openShareIntentChooser(session, sensor)
         shareDialog?.dismiss()
     }
 
@@ -154,10 +154,10 @@ abstract class SessionsController(
         shareDialog?.show(fragmentManager)
     }
 
-    private fun shareLinkPressed(session: Session, chosenSensor: String){
+    private fun openShareIntentChooser(session: Session, chosenSensor: String){
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor))
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor, context))
             putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
             type = "text/plain"
         }

@@ -46,7 +46,7 @@ class FollowingFragment : Fragment() {
             viewLifecycleOwner,
             settings,
             apiServiceFactory,
-            childFragmentManager
+            context
         )
 
         if (sessionsRequested) {

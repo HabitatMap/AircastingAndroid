@@ -34,6 +34,12 @@ class MobileDormantViewMvcImpl(
         }
     }
 
+    override fun onSessionShareClicked(session: Session) {
+        for (listener in listeners) {
+            listener.onShareSessionClicked(session)
+        }
+    }
+
     override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
             listener.onDeleteSessionClicked(session.uuid)
