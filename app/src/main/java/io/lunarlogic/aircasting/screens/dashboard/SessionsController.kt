@@ -144,6 +144,10 @@ abstract class SessionsController(
         startEditSessionBottomSheet(session)
     }
 
+    override fun onShareSessionClicked(session: Session) {
+        startShareSessionBottomSheet(session)
+    }
+
     private fun startEditSessionBottomSheet(session: Session) {
         editDialog = EditSessionBottomSheet(this, session)
         editDialog?.show(fragmentManager)

@@ -50,8 +50,4 @@ class MobileDormantController(
     override fun onStopSessionClicked(sessionUUID: String) {
         // do nothing
     }
-
-    override fun onShareSessionClicked(session: Session) {
-        TODO("Not yet implemented")
-    }
 }

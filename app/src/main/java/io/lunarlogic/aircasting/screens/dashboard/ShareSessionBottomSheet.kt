@@ -14,7 +14,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 
-class ShareSessionBottomSheet(  //todo: styles and TextAppearances to be added
+class ShareSessionBottomSheet(
     private val mListener: ShareSessionBottomSheet.Listener,
     val session: Session
 ): BottomSheetDialogFragment() {
