@@ -8,6 +8,7 @@ interface MobileDormantSessionViewMvc:
     SessionViewMvc<MobileDormantSessionViewMvc.Listener> {
     interface Listener: SessionCardListener {
         fun onSessionEditClicked(session: Session)
+        fun onSessionShareClicked(session: Session)
         fun onSessionDeleteClicked(session: Session)
     }
 }
