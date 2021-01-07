@@ -15,6 +15,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
@@ -41,7 +42,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         disconnectSession(event.deviceId)
     }
 
-    @Subscribe
+    @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
     }
@@ -56,6 +57,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         deleteSession(event.sessionUUID)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: AppToForegroundEvent) {
+        onAppToForeground()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AppToBackgroundEvent) {
+        onAppToBackground()
+    }
+
     fun onStart() {
         registerToEventBus()
         updateMobileSessions()
@@ -63,7 +74,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     fun onStop() {
+        print("MARYSIA: sessionmanager onstop")
         unregisterFromEventBus()
+    }
+
+    fun onAppToForeground() {
+        fixedSessionDownloadMeasurementsService.resume()
+    }
+
+    fun onAppToBackground() {
+        fixedSessionDownloadMeasurementsService.pause()
     }
 
     private fun registerToEventBus() {
@@ -71,6 +91,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun unregisterFromEventBus() {
+        println("MARYSIA: unregister event bus")
         EventBus.getDefault().unregister(this);
     }
 
@@ -82,6 +103,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {
+        println("MARYSIA: downlodaMeasurement")
         val measurementStream = MeasurementStream(event)
 
         val location = LocationHelper.lastLocation()

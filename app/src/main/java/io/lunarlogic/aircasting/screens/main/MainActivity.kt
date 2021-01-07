@@ -10,11 +10,14 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 class MainActivity: AppCompatActivity() {
@@ -64,5 +67,20 @@ class MainActivity: AppCompatActivity() {
 
         controller?.onDestroy()
         LocationHelper.stop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println("MARYSIA: main activity onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        println("MARYSIA: main activity onStop")
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: NewMeasurementEvent) {
+        println("MARYSIA: new measurement event in activity")
     }
 }
