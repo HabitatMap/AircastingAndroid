@@ -38,6 +38,7 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     private var calibrationHelper = CalibrationHelper()
 
     fun start() {
+        println("MARYSIA: start microphone")
         // The AudioReader sleeps as much as it records
         val block = SAMPLE_RATE / 2
 
@@ -49,7 +50,9 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     }
 
     override fun onReadComplete(buffer: ShortArray) {
+        println("MARYSIA: onReadComplete")
         val power = signalPower.calculatePowerDb(buffer)
+        println("MARYSIA: onReadComplete power: ${power}")
         if (power != null) {
             val calibrated = calibrationHelper.calibrate(power)
             val event = NewMeasurementEvent(
@@ -57,7 +60,13 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
                 VERY_LOW, LOW, MID, HIGH, VERY_HIGH, calibrated
             )
 
-            EventBus.getDefault().post(event)
+            EventBus.getDefault().postSticky(event)
+        } else {
+            val event = NewMeasurementEvent(
+                SENSOR_PACKAGE_NAME, SENSOR_NAME, MEASUREMENT_TYPE, SHORT_TYPE, UNIT, SYMBOL,
+                VERY_LOW, LOW, MID, HIGH, VERY_HIGH, 10.0
+            )
+            EventBus.getDefault().postSticky(event)
         }
     }
 

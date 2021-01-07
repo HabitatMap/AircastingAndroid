@@ -35,6 +35,7 @@ import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -68,6 +69,7 @@ class NewSessionController(
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
     private val microphoneReader = MicrophoneReader(audioReader, errorHandler)
+    private val microphoneService = MicrophoneService()
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
 
@@ -149,7 +151,8 @@ class NewSessionController(
     }
 
     private fun startMicrophoneSession() {
-        microphoneReader.start()
+//        microphoneReader.start()
+        MicrophoneService.startService(mContextActivity, "Microphone Service is running")
     }
 
     override fun onTurnOnBluetoothOkClicked() {

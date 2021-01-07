@@ -35,6 +35,7 @@ class MainController(
     }
 
     fun onDestroy() {
+        println("MARYSIA: main controller onDestroy")
         unregisterConnectivityManager()
         mSessionManager?.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())

@@ -94,6 +94,7 @@ open class AirBeam2Connector(
         }
 
         fun cancel() {
+            println("MARYSIA:  connector cancel")
             try {
                 mmSocket?.close()
             } catch (e: IOException) {
