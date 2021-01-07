@@ -125,6 +125,7 @@ abstract class SessionsController(
 
     override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
         editDialog?.dismiss()
+        shareDialog?.dismiss()
     }
 
     override fun onShareLinkPressed(session: Session, sensor: String) { // handling button in ShareSessionBottomSheet
