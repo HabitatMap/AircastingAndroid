@@ -27,7 +27,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var sessionUUID: String
     private var deviceItem: DeviceItem
     private var indoor = true
-    private var streamingMethod = Session.StreamingMethod.CELLULAR
+    private var streamingMethod = Session.StreamingMethod.WIFI
     private var streamingMethodChangedListener: FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener? = null
     private var networksHeaderView: TextView? = null
     private var refreshNetworksListButton: Button? = null
