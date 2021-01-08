@@ -141,18 +141,10 @@
             android:layout_marginEnd="@dimen/keyline_8"
             app:singleSelection="true"
             app:selectionRequired="true"
-            app:checkedButton="@id/cellular_button"
+            app:checkedButton="@id/wifi_button"
             app:layout_constraintTop_toBottomOf="@id/streaming_method_toggle_header"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-            <Button
-                android:id="@+id/cellular_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="60dp"
-                android:layout_weight="1"
-                android:text="@string/fixed_session_details_cellular"
-                style="@style/Widget.Aircasting.ToggleButton" />
             <Button
                 android:id="@+id/wifi_button"
                 android:layout_width="wrap_content"
@@ -160,6 +152,14 @@
                 android:minHeight="60dp"
                 android:layout_weight="1"
                 android:text="@string/fixed_session_details_wifi"
+                style="@style/Widget.Aircasting.ToggleButton" />
+            <Button
+                android:id="@+id/cellular_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:layout_weight="1"
+                android:text="@string/fixed_session_details_cellular"
                 style="@style/Widget.Aircasting.ToggleButton" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
