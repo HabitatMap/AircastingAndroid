@@ -52,7 +52,7 @@ println("MARYSIA: microphpone start? onStartCommand")
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Aircasting: Microphone Service")
             .setContentText(input)
-            .setSmallIcon(R.drawable.ic_btn_speak_now)
+            .setSmallIcon(R.drawable.aircasting)
             .setContentIntent(pendingIntent)
             .build()
 
