@@ -53,7 +53,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: DeleteSessionEvent) {
-        // not invoked for now - WIP ika
         deleteSession(event.sessionUUID)
     }
 

@@ -16,14 +16,14 @@ import io.lunarlogic.aircasting.models.Session
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener {
-        fun onDeleteStreamsPressed()
+        fun onDeleteStreamsPressed(sessionUUID: String)
         fun onCancelDeleteSessionDialogPressed()
     }
     private var mStreamsOptionsContainer: LinearLayout? = null
     private var checkBoxMap: HashMap<CheckBox, Option> = HashMap()
 
     class Option(
-        val sessionUuid: String,
+        val sessionUUID: String,
         val allStreamsBoxSelected: Boolean,
         val streamName: String? = null
     )
@@ -47,7 +47,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
         val deleteStreamsButton = view?.findViewById<Button>(R.id.delete_streams_button)
         deleteStreamsButton?.setOnClickListener {
-            mListener.onDeleteStreamsPressed()
+            mListener.onDeleteStreamsPressed(session.uuid)
         }
 
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
@@ -63,7 +63,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         return selectedValues()
     }
 
-    fun getSessionToDeleteUuid(): String {
+    fun getSessionUUID(): String {
         return session.uuid
     }
 

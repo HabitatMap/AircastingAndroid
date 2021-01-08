@@ -34,7 +34,7 @@ abstract class SessionsController(
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
     private var editSessionDialog: EditSessionBottomSheet? = null
-    private var deleteSessionDialog: DeleteSessionBottomSheet? = null
+    var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()

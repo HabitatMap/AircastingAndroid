@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.DeleteSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 import org.greenrobot.eventbus.EventBus
@@ -51,11 +52,23 @@ class MobileDormantController(
         startNewSession(Session.Type.MOBILE)
     }
 
-    override fun onDeleteStreamsPressed() {
-        // do nothing
-        // TODO: remember about EventBus -> I think it should be in Session Controller
-        // val event = DeleteSessionEvent(sessionUUID)
-        // EventBus.getDefault().post(event)
+    override fun onDeleteStreamsPressed(sessionUUID: String) {
+        val allStreamsBoxSelected = deleteSessionDialog?.allStreamsBoxSelected()
+        if (allStreamsBoxSelected == true) {
+            deleteSession(sessionUUID)
+        } else  {
+            val selectedOptions = deleteSessionDialog?.getSelectedValues()
+            deleteStreams(sessionUUID, selectedOptions)
+        }
+    }
+
+    private fun deleteSession(sessionUUID: String) {
+        val event = DeleteSessionEvent(sessionUUID)
+        EventBus.getDefault().post(event)
+    }
+
+    private fun deleteStreams(sessionUUID: String, selectedOptions: ArrayList<DeleteSessionBottomSheet.Option>?) {
+        // TODO
     }
 
     override fun onStopSessionClicked(sessionUUID: String) {
