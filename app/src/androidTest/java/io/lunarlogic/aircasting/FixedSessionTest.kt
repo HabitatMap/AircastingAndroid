@@ -134,7 +134,8 @@ class FixedSessionTest {
 
         onView(withId(R.id.outdoor_button)).perform(click())
 
-//        onView(withId(R.id.networks_list_header)).check(matches(not(isDisplayed()))) todo: this line crashes this test
+        onView(withId(R.id.cellular_button)).perform(click())
+        onView(withId(R.id.networks_list_header)).check(matches(not(isDisplayed())))
         onView(withId(R.id.wifi_button)).perform(click())
 
         onView(withId(R.id.continue_button)).perform(scrollTo())
@@ -197,7 +198,8 @@ class FixedSessionTest {
 
         onView(withId(R.id.indoor_button)).perform(click())
 
-//        onView(withId(R.id.networks_list_header)).check(matches(not(isDisplayed()))) // todo: this line crashes test
+        onView(withId(R.id.cellular_button)).perform(click())
+        onView(withId(R.id.networks_list_header)).check(matches(not(isDisplayed())))
         onView(withId(R.id.wifi_button)).perform(click())
 
         onView(withId(R.id.continue_button)).perform(scrollTo())
