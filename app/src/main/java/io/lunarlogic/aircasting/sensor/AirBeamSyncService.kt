@@ -27,7 +27,11 @@ class AirBeamSyncService(
     private var mAirBeamConnector: AirBeamConnector? = null
     private val DISCOVERY_TIMEOUT = 5000L
 
-    fun run() {
+    private var clearSDCard = false
+
+    fun run(clearSDCard: Boolean = false) {
+        this.clearSDCard = clearSDCard
+
         // disconnect?
         registerBluetoothDeviceFoundReceiver()
         mBluetoothManager.startDiscovery()
@@ -86,7 +90,12 @@ class AirBeamSyncService(
         val deviceName = mDeviceItem?.displayName()
         showInfo("connection to $deviceName successful!")
 
-        mAirBeamConnector?.sync()
+        if (clearSDCard) {
+            println("ANIA clearSDCard " + clearSDCard)
+            mAirBeamConnector?.clearSDCard()
+        } else {
+            mAirBeamConnector?.sync()
+        }
     }
 
     override fun onConnectionFailed(deviceId: String) {

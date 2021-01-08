@@ -82,6 +82,8 @@
     <string name="or">or</string>
     <string name="sync_title">Sync data from AirBeam3</string>
     <string name="sync_description">if you recorded with AirBeam3</string>
+    <string name="clear_card_title">Clear SD card</string>
+    <string name="clear_card_description">This is temporary button for the testing purposes</string>
 
     <!-- more info modal -->
     <string name="more_info_title">Session types</string>

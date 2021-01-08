@@ -7,11 +7,16 @@ import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import no.nordicsemi.android.ble.BleManager
+import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
+import java.io.File
+import java.io.FileWriter
+import java.net.URLDecoder
 import java.util.*
+import kotlin.concurrent.timerTask
 
 class AirBeam3Configurator(
     context: Context,
@@ -24,17 +29,26 @@ class AirBeam3Configurator(
         val DATE_FORMAT = "dd/MM/yy-HH:mm:ss"
     }
 
+    // used for sending hex codes to the AirBeam
     private val CONFIGURATION_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
-    private val READ_CHARACTERISTIC_UUIDS = arrayListOf(
+
+    // have notifications about new measurements
+    private val MEASUREMENTS_CHARACTERISTIC_UUIDS = arrayListOf(
         UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
         UUID.fromString("0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
         UUID.fromString("0000ffe4-0000-1000-8000-00805f9b34fb"),    // PM1
         UUID.fromString("0000ffe5-0000-1000-8000-00805f9b34fb"),    // PM2.5
         UUID.fromString("0000ffe6-0000-1000-8000-00805f9b34fb")     // PM10
     )
+    // has notifications about measurements count in particular csv file on SD card
+    private val SYNC_COUNTER_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
+    // has notifications for reading measurements stored in csv files on SD card
+    private val SYNC_CHARACTERISTIC_UUID = UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
 
-    private var readCharacteristics: List<BluetoothGattCharacteristic>? = null
+    private var measurementsCharacteristics: List<BluetoothGattCharacteristic>? = null
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
+    private var syncCharacteristic: BluetoothGattCharacteristic? = null
+    private var syncCounterCharacteristic: BluetoothGattCharacteristic? = null
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
@@ -87,6 +101,15 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
+    fun clearSDCard() {
+        configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        beginAtomicRequestQueue()
+            .add(clearSDCardModeRequest())
+            .add(sleep(500))
+            .enqueue()
+    }
+
     private fun configureMobileSession(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
@@ -133,7 +156,9 @@ class AirBeam3Configurator(
         return GattCallback()
     }
 
-    private fun validateReadCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
+    private fun validateReadCharacteristic(characteristic: BluetoothGattCharacteristic?): Boolean {
+        characteristic ?: return false
+
         val properties: Int = characteristic.properties
         return properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0
     }
@@ -151,13 +176,16 @@ class AirBeam3Configurator(
 
             service ?: return false
 
-            readCharacteristics = READ_CHARACTERISTIC_UUIDS.mapNotNull { uuid -> service.getCharacteristic(uuid) }
+            measurementsCharacteristics = MEASUREMENTS_CHARACTERISTIC_UUIDS.mapNotNull { uuid -> service.getCharacteristic(uuid) }
 
-            readCharacteristics?.isEmpty() ?: return false
+            measurementsCharacteristics?.isEmpty() ?: return false
 
             configurationCharacteristic = service.getCharacteristic(CONFIGURATION_CHARACTERISTIC_UUID)
+            syncCharacteristic = service.getCharacteristic(SYNC_CHARACTERISTIC_UUID)
+            syncCounterCharacteristic = service.getCharacteristic(SYNC_COUNTER_CHARACTERISTIC_UUID)
 
-            if (readCharacteristics!!.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
+            val characteristics = measurementsCharacteristics!!.union(arrayListOf(syncCharacteristic, syncCounterCharacteristic))
+            if (characteristics.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
                 return false
             }
 
@@ -172,9 +200,59 @@ class AirBeam3Configurator(
             enableNotifications()
         }
 
+        var syncOutput = ""
+
+        fun saveSyncOutputToFile() {
+            val dir = context.filesDir
+            val file = File(dir, "sync.txt")
+            val writer = FileWriter(file)
+            writer.append(syncOutput)
+            writer.flush()
+            writer.close()
+        }
+
+        private fun enableSyncNotifications(queue: RequestQueue) {
+            val syncCharacteristic = syncCharacteristic ?: return
+            val syncCounterCharacteristic = syncCounterCharacteristic ?: return
+
+            setupSyncCounterCallback()
+            setupSyncCallback()
+
+            arrayListOf(syncCounterCharacteristic, syncCharacteristic).forEach { characteristic ->
+                queue.add(
+                    enableNotifications(characteristic)
+                        .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
+                ).add(sleep(500))
+            }
+        }
+
+        private fun setupSyncCounterCallback() {
+            val callback = setNotificationCallback(syncCounterCharacteristic)
+            callback.with { _, data ->
+                val value = data.value
+                value?.let {
+                    println("ANIA got counter! " + String(value))
+                }
+            }
+        }
+
+        private fun setupSyncCallback() {
+            val callback = setNotificationCallback(syncCharacteristic)
+            callback.with { _, data ->
+                val value = data.value
+
+                value?.let {
+                    syncOutput += String(value)
+                }
+            }
+        }
+
         private fun enableNotifications() {
             val queue = beginAtomicRequestQueue()
-            readCharacteristics?.forEach { characteristic ->
+
+            enableSyncNotifications(queue)
+
+            measurementsCharacteristics?.forEach { characteristic ->
                 val callback = setNotificationCallback(characteristic)
                 callback.with { _, data ->
                     airBeam3Reader.run(data)
@@ -193,8 +271,10 @@ class AirBeam3Configurator(
         }
 
         override fun onDeviceDisconnected() {
-            readCharacteristics = null
+            measurementsCharacteristics = null
             configurationCharacteristic = null
+            syncCharacteristic = null
+            syncCounterCharacteristic = null
         }
     }
 
@@ -236,5 +316,10 @@ class AirBeam3Configurator(
     private fun syncModeRequest(): WriteRequest {
         return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.syncConfigurationMessage)
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("sync mode", status)) }
+    }
+
+    private fun clearSDCardModeRequest(): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.clearSDCardConfigurationMessage)
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("clear SD card mode", status)) }
     }
 }

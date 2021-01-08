@@ -20,7 +20,7 @@ class MainController(
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
-    private var mSessionManager: SessionManager? = null
+    private var `mSessionManager`: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
 

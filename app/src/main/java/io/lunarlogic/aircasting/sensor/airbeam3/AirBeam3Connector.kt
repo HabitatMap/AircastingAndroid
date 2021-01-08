@@ -59,6 +59,11 @@ open class AirBeam3Connector(
         airBeam3Configurator.sync()
     }
 
+    override fun clearSDCard() {
+        println("ANIA clearSDCard")
+        airBeam3Configurator.clearSDCard()
+    }
+
     override fun onDeviceConnecting(device: BluetoothDevice) {}
     override fun onDeviceConnected(device: BluetoothDevice) {}
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {

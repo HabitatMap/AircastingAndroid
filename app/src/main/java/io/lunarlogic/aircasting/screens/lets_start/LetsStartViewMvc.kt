@@ -8,6 +8,7 @@ interface LetsStartViewMvc: ObservableViewMvc<LetsStartViewMvc.Listener> {
         fun onFixedSessionSelected()
         fun onMobileSessionSelected()
         fun onSyncSelected()
+        fun onClearSDCardSelected()
         fun onMoreInfoClicked()
     }
 }

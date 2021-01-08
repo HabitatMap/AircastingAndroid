@@ -37,6 +37,11 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
             onSyncSelected()
         }
 
+        val clearCard = rootView?.clear_card
+        clearCard?.setOnClickListener {
+            onClearSDCardSelected()
+        }
+
         val moreInfoButton = rootView?.new_session_more_info
         moreInfoButton?.setOnClickListener {
             onMoreInfoClicked()
@@ -67,6 +72,12 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     private fun onSyncSelected() {
         for (listener in listeners) {
             listener.onSyncSelected()
+        }
+    }
+
+    private fun onClearSDCardSelected() {
+        for (listener in listeners) {
+            listener.onClearSDCardSelected()
         }
     }
 

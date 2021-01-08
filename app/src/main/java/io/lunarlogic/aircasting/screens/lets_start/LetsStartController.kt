@@ -42,6 +42,10 @@ class LetsStartController(
         mAirBeamSyncService.run()
     }
 
+    override fun onClearSDCardSelected() {
+        mAirBeamSyncService.run(true)
+    }
+
     override fun onMoreInfoClicked() {
         mViewMvc.showMoreInfoDialog()
     }
