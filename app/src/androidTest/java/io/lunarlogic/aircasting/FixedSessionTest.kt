@@ -271,6 +271,6 @@ class FixedSessionTest {
         Thread.sleep(1000)
         onView(withId(R.id.unfollow_button)).perform(click())
         Thread.sleep(2000)
-        onView(withText("New session to follow")).check(matches(not(isDisplayed())))
+        onView(withText("New session to follow")).check(matches(isDisplayed()))
     }
 }
