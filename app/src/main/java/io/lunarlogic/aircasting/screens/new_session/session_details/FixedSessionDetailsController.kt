@@ -52,6 +52,8 @@ class FixedSessionDetailsController(
 
         mViewMvc.registerOnStreamingMethodChangedListener(this)
         mViewMvc.registerOnRefreshNetworksListener(this)
+
+        scanForNetworks()
     }
 
 
