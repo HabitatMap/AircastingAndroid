@@ -70,6 +70,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
             networkItem?.let { onNetworkItemClicked(it) }
         }
         networksRecyclerView?.setAdapter(networksRecyclerViewAdapter)
+        showNetworksList()
 
         val cellularButton = rootView?.findViewById<Button>(R.id.cellular_button)
         cellularButton?.setOnClickListener {
