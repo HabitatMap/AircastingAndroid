@@ -19,14 +19,12 @@ class ExportSessionService(private val apiService: ApiService, private val error
                 if (response.isSuccessful) {
                     successCallback.invoke()
                 } else {
-                    errorHandler.handle(SessionExportFailedError()) //todo: check if works fine (the text of error showing up?)
-//                    errorHandler.showError(context.getString(R.string.errors_edit_failure))  //todo: temporarily string for errors_edit_failure
+                    errorHandler.handle(SessionExportFailedError())
                 }
             }
 
             override fun onFailure(call: Call<ExportSessionResponse>, t: Throwable) {
                 errorHandler.handle(SessionExportFailedError(t))
-//                errorHandler.showError(context.getString(R.string.errors_network_required_edit)) //todo: ^^
             }
         })
     }

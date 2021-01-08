@@ -37,7 +37,7 @@ class SyncError(t: Throwable? = null):
     BaseException(Exception(t), "Session sync failed, check your network connection.")
 
 class SessionExportFailedError(t: Throwable? = null):
-        BaseException(Exception(t), "Something went wrong during session export") // todo: this text just for now
+        BaseException(Exception(t), "You need to have internet connection to export session data")
 
 class DownloadMeasurementsError(t: Throwable? = null):
     BaseException(Exception(t))
