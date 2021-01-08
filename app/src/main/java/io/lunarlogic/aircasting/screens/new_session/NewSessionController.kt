@@ -69,7 +69,6 @@ class NewSessionController(
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
     private val microphoneReader = MicrophoneReader(audioReader, errorHandler)
-    private val microphoneService = MicrophoneService()
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
 
