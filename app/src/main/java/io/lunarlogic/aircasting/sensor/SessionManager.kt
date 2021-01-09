@@ -56,6 +56,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         deleteSession(event.sessionUUID)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: DeleteStreamEvent) {
+        deleteStream(event.sessionUUID, event.sensorName)
+    }
+
     fun onStart() {
         registerToEventBus()
         updateMobileSessions()
@@ -142,5 +147,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             sessionsRespository.markForRemoval(listOf(sessionUUID))
             sessionsSyncService.sync()
         }
+    }
+
+    private fun deleteStream(sessionUUID: String, sensorName: String) {
     }
 }
