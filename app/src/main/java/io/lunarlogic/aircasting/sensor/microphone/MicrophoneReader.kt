@@ -4,6 +4,7 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.AudioReaderError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
 
@@ -19,7 +20,11 @@ class MicrophoneDeviceItem: DeviceItem() {
         get() = Type.MIC
 }
 
-class MicrophoneReader(private val mAudioReader: AudioReader, private val mErrorHandler: ErrorHandler): AudioReader.Listener() {
+class MicrophoneReader(
+    private val mAudioReader: AudioReader,
+    private val mErrorHandler: ErrorHandler,
+    private val mSettings: Settings
+): AudioReader.Listener() {
     private val SAMPLE_RATE = 44100
     private val SYMBOL = "dB"
     private val UNIT = "decibels"
@@ -35,7 +40,7 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     private val VERY_HIGH = 100
 
     private val signalPower = SignalPower()
-    private var calibrationHelper = CalibrationHelper()
+    private var calibrationHelper = CalibrationHelper(mSettings)
 
     fun start() {
         // The AudioReader sleeps as much as it records
