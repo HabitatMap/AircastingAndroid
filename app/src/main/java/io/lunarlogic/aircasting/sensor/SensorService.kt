@@ -2,17 +2,19 @@ package io.lunarlogic.aircasting.sensor
 
 import android.R
 import android.app.*
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.screens.main.MainActivity
 
 
 abstract class SensorService : Service() {
     private val CHANNEL_ID = "Aircasting ForegroundService"
+
+    companion object {
+        val MESSAGE_KEY = "inputExtraMessage"
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -20,8 +22,8 @@ abstract class SensorService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         println("MARYSIA: microphpone start? onStartCommand")
-       startSensor()
-        val input = intent?.getStringExtra("inputExtra")
+       startSensor(intent)
+        val message = intent?.getStringExtra(MESSAGE_KEY)
         createNotificationChannel()
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
@@ -30,7 +32,7 @@ abstract class SensorService : Service() {
         )
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Aircasting: Microphone Service")
-            .setContentText(input)
+            .setContentText(message)
             .setSmallIcon(R.drawable.ic_btn_speak_now)
             .setContentIntent(pendingIntent)
             .build()
@@ -40,7 +42,7 @@ abstract class SensorService : Service() {
         return START_NOT_STICKY
     }
 
-    abstract fun startSensor()
+    abstract fun startSensor(intent: Intent?)
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

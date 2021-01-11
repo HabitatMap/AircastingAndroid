@@ -23,7 +23,7 @@ class MicrophoneService : SensorService() {
         }
     }
 
-    override fun startSensor() {
+    override fun startSensor(intent: Intent?) {
         val audioReader = AudioReader()
         val errorHandler = ErrorHandler(this)
         val microphoneReader = MicrophoneReader(audioReader, errorHandler)

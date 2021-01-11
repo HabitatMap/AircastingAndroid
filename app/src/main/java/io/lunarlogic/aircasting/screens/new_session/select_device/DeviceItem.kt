@@ -1,8 +1,9 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
+import java.io.Serializable
 
-open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
+open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : Serializable {
     open val name: String
     open val address: String
     open val id: String
