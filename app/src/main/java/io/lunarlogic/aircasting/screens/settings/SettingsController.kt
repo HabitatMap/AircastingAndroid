@@ -36,6 +36,11 @@ class SettingsController(
         mSettings.toggleMapSettingsEnabled()
     }
 
+    override fun onMicrophoneSettingsClicked() {
+        TODO("Not yet implemented")
+        // todo: mSettings. something!
+    }
+
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
     }
