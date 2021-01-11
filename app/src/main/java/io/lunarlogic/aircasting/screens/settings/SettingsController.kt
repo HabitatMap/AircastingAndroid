@@ -46,7 +46,7 @@ class SettingsController(
         mSettings.backendSettingsChanged(urlValue, portValue)
     }
 
-    override fun confirmMicrophoneSettingsClicked(micValue: String) {
+    override fun confirmMicrophoneSettingsClicked(micValue: Int) {
         mSettings.microphoneSettingsChanged(micValue)
     }
 
