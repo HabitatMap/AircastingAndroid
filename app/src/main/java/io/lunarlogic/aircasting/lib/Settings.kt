@@ -35,8 +35,8 @@ open class Settings(mApplication: Application) {
         return getStringFromSettings(EMAIL_KEY)
     }
 
-    fun getMicrophoneValue(): String? {
-        return getStringFromSettings(MICROPHONE_VALUE_KEY, DEFAULT_MICROPHONE_VALUE.toString())
+    fun getMicrophoneValue(): Int {
+        return getIntFromSettings(MICROPHONE_VALUE_KEY, DEFAULT_MICROPHONE_VALUE)
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -65,7 +65,7 @@ open class Settings(mApplication: Application) {
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
     }
 
-    fun microphoneSettingsChanged(micValue: String){
+    fun microphoneSettingsChanged(micValue: Int){
         saveToSettings(MICROPHONE_VALUE_KEY, micValue)
     }
 
@@ -92,6 +92,10 @@ open class Settings(mApplication: Application) {
         return sharedPreferences.getBoolean(key, default)
     }
 
+    open fun getIntFromSettings(key: String, default: Int): Int { //todo: without default value? why sharedPreferences.getInt() requires normal Int, cant take Int?
+        return sharedPreferences.getInt(key, default)
+    }
+
     protected open fun saveToSettings(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
@@ -101,6 +105,12 @@ open class Settings(mApplication: Application) {
     protected open fun saveToSettings(key: String, value: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, value)
+        editor.commit()
+    }
+
+    protected open fun saveToSettings(key: String, value: Int){
+        val editor = sharedPreferences.edit()
+        editor.putInt(key, value)
         editor.commit()
     }
 
