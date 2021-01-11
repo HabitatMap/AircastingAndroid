@@ -9,7 +9,7 @@ class CalibrationHelper(private val mSettings: Settings) {
 
     fun calibrate(value: Double): Double {
 //        val calibration = DEFAULT_CALIBRATION // TODO: take from settings and update session params
-        val calibration = mSettings.getMicrophoneValue() //this has to be int
+        val calibration = mSettings.getMicrophoneValue()
 
         return calibrate(value, calibration)
     }

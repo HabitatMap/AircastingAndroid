@@ -23,6 +23,7 @@ class SessionParams {
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
         this.end_time = DateConverter.toDateString(session.endTime!!)
+        this.calibration = 100 // todo: JAK TO TUTAJ USTAWIC
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor ?: false
@@ -41,7 +42,8 @@ class SessionParams {
     val tag_list: String
     val start_time: String
     val end_time: String
-    val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only
+//    val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only
+    val calibration: Int
     val contribute: Boolean
     val is_indoor: Boolean
     val notes = listOf<String>() // TODO: handle after adding notes
