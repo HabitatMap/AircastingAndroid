@@ -21,7 +21,6 @@ class ShareSessionBottomSheet(
     interface Listener{
         fun onShareLinkPressed(session: Session, sensor: String)
         fun onShareFilePressed(session: Session, emailInput: String)
-        fun onCancelPressed()
     }
 
     class CurrentSessionStreams(
@@ -64,12 +63,12 @@ class ShareSessionBottomSheet(
 
         val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
         cancelButton?.setOnClickListener {
-            mListener.onCancelPressed()
+            dismiss()
         }
 
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         closeButton?.setOnClickListener {
-            mListener.onCancelPressed()
+            dismiss()
         }
 
         return view
@@ -82,10 +81,12 @@ class ShareSessionBottomSheet(
     fun shareFilePressed(){
         val emailInput = emailInput?.text.toString().trim()
         mListener.onShareFilePressed(session, emailInput)
+        dismiss()
     }
 
     fun shareLinkPressed(){
         mListener.onShareLinkPressed(session, chosenSensor)
+        dismiss()
     }
 
     private fun setRadioButtonsForChosenSession(){

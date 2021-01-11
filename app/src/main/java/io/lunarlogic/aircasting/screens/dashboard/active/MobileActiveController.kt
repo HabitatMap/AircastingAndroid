@@ -89,8 +89,4 @@ class MobileActiveController(
     override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
         // do nothing
     }
-
-    override fun onCancelPressed() {
-        // do nothing
-    }
 }
