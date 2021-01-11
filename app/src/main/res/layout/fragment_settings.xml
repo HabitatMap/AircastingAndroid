@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/aircasting_grey_50">
@@ -28,13 +33,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <Button
+                android:id="@+id/microphone_settings_button"
+                style="@style/Widget.Aircasting.SettingsButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
+                android:text="@string/microphone_maximum"
+                app:layout_constraintBottom_toTopOf="@id/microphone_settings_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/microphone_settings_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/Widget.Aircasting.SettingsDescription"
+                android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
+                android:text="@string/microphone_settings_description"
+                app:layout_constraintTop_toBottomOf="@id/microphone_settings_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/description_guideline"
+                app:layout_constraintBottom_toTopOf="@id/separator"/>
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/aircasting_grey_100"
+                app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/crowd_map_settings_button"/>
+
             <TextView
                 android:id="@+id/crowd_map_settings_button"
                 style="@style/Widget.Aircasting.SettingsButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_contribute_to_crowdmap"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/separator"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/crowd_map_description" />
@@ -127,6 +166,7 @@
                 android:text="@string/settings_backend_settings"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separator2"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -134,3 +174,5 @@
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
