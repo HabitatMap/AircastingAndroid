@@ -3,20 +3,23 @@ package io.lunarlogic.aircasting.sensor.airbeam3
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
 import java.io.File
 import java.io.FileWriter
-import java.net.URLDecoder
 import java.util.*
-import kotlin.concurrent.timerTask
 
 class AirBeam3Configurator(
     context: Context,
@@ -49,6 +52,9 @@ class AirBeam3Configurator(
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
     private var syncCharacteristic: BluetoothGattCharacteristic? = null
     private var syncCounterCharacteristic: BluetoothGattCharacteristic? = null
+    private val SYNC_FINISH = "SD_SYNC_FINISH"
+    private val SYNC_TAG = "SYNC"
+    private val CLEAR_FINISH = "SD_DELETE_FINISH"
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
@@ -231,7 +237,15 @@ class AirBeam3Configurator(
             callback.with { _, data ->
                 val value = data.value
                 value?.let {
-                    println("ANIA got counter! " + String(value))
+                    val valueString = String(value)
+
+                    if (valueString == SYNC_FINISH) {
+                        Log.d(SYNC_TAG, "Sync finished")
+                        saveSyncOutputToFile()
+                        showMessage("Syncing from SD card successfully finished. Check files/sync.txt")
+                    } else if (valueString == CLEAR_FINISH) {
+                        showMessage("SD card successfully cleared.")
+                    }
                 }
             }
         }
@@ -275,6 +289,12 @@ class AirBeam3Configurator(
             configurationCharacteristic = null
             syncCharacteristic = null
             syncCounterCharacteristic = null
+        }
+    }
+
+    private fun showMessage(message: String) {
+        GlobalScope.launch(Dispatchers.Main) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     }
 
