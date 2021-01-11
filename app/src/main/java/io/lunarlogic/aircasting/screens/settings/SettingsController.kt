@@ -10,7 +10,9 @@ class SettingsController(
     private val mViewMvc: SettingsViewMvc,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager
-) : SettingsViewMvc.Listener, SettingsViewMvc.BackendSettingsDialogListener {
+) : SettingsViewMvc.Listener,
+    SettingsViewMvc.BackendSettingsDialogListener,
+    SettingsViewMvc.MicrophoneSettingsDialogListener {
 
     fun onStart(){
         mViewMvc.registerListener(this)
@@ -37,12 +39,20 @@ class SettingsController(
     }
 
     override fun onMicrophoneSettingsClicked() {
-        TODO("Not yet implemented")
-        // todo: mSettings. something!
+        startMicrophoneSettingsDialog()
     }
 
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
+    }
+
+    override fun confirmMicrophoneSettingsClicked(micValue: String) {
+        mSettings.microphoneSettingsChanged(micValue)
+    }
+
+    private fun startMicrophoneSettingsDialog() {
+        val micValue = mSettings.getMicrophoneValue()
+        MicrophoneSettingsDialog(fragmentManager, micValue, this).show()
     }
 
     fun startBackendSettingsDialog(){
@@ -50,6 +60,4 @@ class SettingsController(
         val port = mSettings.getBackendPort()
         BackendSettingsDialog(fragmentManager, url, port, this).show()
     }
-
-
 }

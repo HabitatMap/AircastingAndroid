@@ -10,10 +10,12 @@ open class Settings(mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
+    protected val MICROPHONE_VALUE_KEY = "microphone_value"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
 
+    private val DEFAULT_MICROPHONE_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
@@ -31,6 +33,10 @@ open class Settings(mApplication: Application) {
 
     fun getEmail(): String? {
         return getStringFromSettings(EMAIL_KEY)
+    }
+
+    fun getMicrophoneValue(): String? {
+        return getStringFromSettings(MICROPHONE_VALUE_KEY, DEFAULT_MICROPHONE_VALUE.toString())
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -57,6 +63,10 @@ open class Settings(mApplication: Application) {
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
+    }
+
+    fun microphoneSettingsChanged(micValue: String){
+        saveToSettings(MICROPHONE_VALUE_KEY, micValue)
     }
 
     fun backendSettingsChanged(url: String, port: String) {

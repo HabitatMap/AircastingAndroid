@@ -11,7 +11,7 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
     }
 
     interface MicrophoneSettingsDialogListener {
-        fun confirmClicked(micValue: String)
+        fun confirmMicrophoneSettingsClicked(micValue: String)
     }
 
     interface Listener {
