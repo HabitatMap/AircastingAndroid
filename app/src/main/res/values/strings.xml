@@ -226,4 +226,5 @@
     <!-- Microphone settings -->
     <string name="microphone_maximum">Microphone maximum</string>
     <string name="microphone_settings_description">Maximum sound level processed by your phone\'s microphone. For most phones it\'s between 80 and 100</string>
+    <string name="microphone_settings">Microphone settings</string>
 </resources>
