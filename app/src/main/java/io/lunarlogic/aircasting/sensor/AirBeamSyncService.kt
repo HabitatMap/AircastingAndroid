@@ -86,12 +86,7 @@ class AirBeamSyncService(
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        // TODO: temporary thing
-        val deviceName = mDeviceItem?.displayName()
-        showInfo("connection to $deviceName successful!")
-
         if (clearSDCard) {
-            println("ANIA clearSDCard " + clearSDCard)
             mAirBeamConnector?.clearSDCard()
         } else {
             mAirBeamConnector?.sync()

@@ -56,6 +56,11 @@ class AirBeam3Configurator(
     private val SYNC_TAG = "SYNC"
     private val CLEAR_FINISH = "SD_DELETE_FINISH"
 
+    private var syncOutput = ""
+    private var count = 0
+    private var counter = 0
+    private var syncProgressToast: Toast? = null
+
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
 
@@ -206,17 +211,6 @@ class AirBeam3Configurator(
             enableNotifications()
         }
 
-        var syncOutput = ""
-
-        fun saveSyncOutputToFile() {
-            val dir = context.filesDir
-            val file = File(dir, "sync.txt")
-            val writer = FileWriter(file)
-            writer.append(syncOutput)
-            writer.flush()
-            writer.close()
-        }
-
         private fun enableSyncNotifications(queue: RequestQueue) {
             val syncCharacteristic = syncCharacteristic ?: return
             val syncCounterCharacteristic = syncCounterCharacteristic ?: return
@@ -238,6 +232,13 @@ class AirBeam3Configurator(
                 val value = data.value
                 value?.let {
                     val valueString = String(value)
+                    try {
+                        val partialCountString = valueString.split(":").lastOrNull()?.trim()
+                        val partialCount = partialCountString?.toInt()
+                        partialCount?.let { count += partialCount }
+                    } catch (e: NumberFormatException) {
+                        // ignore - this is e.g. SD_SYNC_FINISH
+                    }
 
                     if (valueString == SYNC_FINISH) {
                         Log.d(SYNC_TAG, "Sync finished")
@@ -257,6 +258,15 @@ class AirBeam3Configurator(
 
                 value?.let {
                     syncOutput += String(value)
+                    counter += 1
+
+//                    syncProgressToast?.cancel()
+                    if (syncProgressToast == null) {
+                        syncProgressToast = buildMessage("Syncing $counter/$count...")
+                    } else {
+                        syncProgressToast?.setText("Syncing $counter/$count...")
+                    }
+                    syncProgressToast?.show()
                 }
             }
         }
@@ -294,8 +304,21 @@ class AirBeam3Configurator(
 
     private fun showMessage(message: String) {
         GlobalScope.launch(Dispatchers.Main) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            buildMessage(message).show()
         }
+    }
+
+    private fun buildMessage(message: String): Toast {
+        return Toast.makeText(context, message, Toast.LENGTH_LONG)
+    }
+
+    private fun saveSyncOutputToFile() {
+        val dir = context.filesDir
+        val file = File(dir, "sync.txt")
+        val writer = FileWriter(file)
+        writer.append(syncOutput)
+        writer.flush()
+        writer.close()
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {
