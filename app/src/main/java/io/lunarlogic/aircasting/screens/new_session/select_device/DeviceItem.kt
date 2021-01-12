@@ -5,7 +5,11 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null, open var name: String = "", open var address: String = "", open var id: String = "", open var type: Type? = null) : Parcelable {
+open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : Parcelable {
+    open val name: String
+    open val address: String
+    open val id: String
+    open val type: Type
 
     companion object {
         private val AIRBEAM1_NAME_REGEX = "airbeam"
@@ -16,12 +20,11 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null, ope
     init {
         name = mBluetoothDevice?.name ?: "Unknown"
         address = mBluetoothDevice?.address ?: ""
-        id = name!!.split(":", "-").last()
+        id = name.split(":", "-").last()
         type = getType(name)
     }
 
-    @Parcelize
-    enum class Type(val value: Int) : Parcelable{
+    enum class Type(val value: Int) {
         OTHER(-1),
         MIC(0),
         AIRBEAM1(1),
