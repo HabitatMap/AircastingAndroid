@@ -5,17 +5,19 @@ import io.lunarlogic.aircasting.exceptions.AudioReaderError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import kotlinx.android.parcel.Parcelize
 import org.greenrobot.eventbus.EventBus
 
+@Parcelize
 class MicrophoneDeviceItem: DeviceItem() {
     companion object {
         val DEFAULT_ID = "Builtin"
     }
 
-    override val id: String
+    override var id: String = DEFAULT_ID
         get() = DEFAULT_ID
 
-    override val type: Type
+    override var type: Type? = Type.MIC
         get() = Type.MIC
 }
 
