@@ -15,7 +15,7 @@ open class Settings(mApplication: Application) {
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
 
-    private val DEFAULT_MICROPHONE_VALUE = 100
+    private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
@@ -35,8 +35,8 @@ open class Settings(mApplication: Application) {
         return getStringFromSettings(EMAIL_KEY)
     }
 
-    fun getMicrophoneValue(): Int {
-        return getIntFromSettings(CALIBRATION_KEY, DEFAULT_MICROPHONE_VALUE)
+    fun getCalibrationValue(): Int {
+        return getIntFromSettings(CALIBRATION_KEY, DEFAULT_CALIBRATION_VALUE)
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -65,8 +65,8 @@ open class Settings(mApplication: Application) {
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
     }
 
-    fun microphoneSettingsChanged(micValue: Int){
-        saveToSettings(CALIBRATION_KEY, micValue)
+    fun microphoneSettingsChanged(calibration: Int){
+        saveToSettings(CALIBRATION_KEY, calibration)
     }
 
     fun backendSettingsChanged(url: String, port: String) {

@@ -6,7 +6,7 @@ class CalibrationHelper(private val mSettings: Settings) {
     val OFFSET_POINT = 60.0
 
     fun calibrate(value: Double): Double {
-        val calibration = mSettings.getMicrophoneValue()
+        val calibration = mSettings.getCalibrationValue()
 
         return calibrate(value, calibration)
     }

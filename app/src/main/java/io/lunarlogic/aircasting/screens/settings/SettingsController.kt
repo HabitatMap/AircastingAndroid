@@ -46,13 +46,13 @@ class SettingsController(
         mSettings.backendSettingsChanged(urlValue, portValue)
     }
 
-    override fun confirmMicrophoneSettingsClicked(micValue: Int) {
-        mSettings.microphoneSettingsChanged(micValue)
+    override fun confirmMicrophoneSettingsClicked(calibration: Int) {
+        mSettings.microphoneSettingsChanged(calibration)
     }
 
     private fun startMicrophoneSettingsDialog() {
-        val micValue = mSettings.getMicrophoneValue()
-        MicrophoneSettingsDialog(fragmentManager, micValue, this).show()
+        val calibration = mSettings.getCalibrationValue()
+        MicrophoneSettingsDialog(fragmentManager, calibration, this).show()
     }
 
     fun startBackendSettingsDialog(){
