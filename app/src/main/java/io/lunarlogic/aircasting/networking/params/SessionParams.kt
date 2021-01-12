@@ -23,7 +23,7 @@ class SessionParams {
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
         this.end_time = DateConverter.toDateString(session.endTime!!)
-        this.calibration = 100 // todo: JAK TO TUTAJ USTAWIC
+        //this.calibration = 100 // todo: JAK TO TUTAJ USTAWIC
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor ?: false
