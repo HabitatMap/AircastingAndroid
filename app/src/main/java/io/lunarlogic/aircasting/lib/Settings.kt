@@ -10,7 +10,7 @@ open class Settings(mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
-    protected val MICROPHONE_VALUE_KEY = "microphone_value"
+    protected val CALIBRATION_KEY = "calibration"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
@@ -36,7 +36,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun getMicrophoneValue(): Int {
-        return getIntFromSettings(MICROPHONE_VALUE_KEY, DEFAULT_MICROPHONE_VALUE)
+        return getIntFromSettings(CALIBRATION_KEY, DEFAULT_MICROPHONE_VALUE)
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -66,7 +66,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun microphoneSettingsChanged(micValue: Int){
-        saveToSettings(MICROPHONE_VALUE_KEY, micValue)
+        saveToSettings(CALIBRATION_KEY, micValue)
     }
 
     fun backendSettingsChanged(url: String, port: String) {

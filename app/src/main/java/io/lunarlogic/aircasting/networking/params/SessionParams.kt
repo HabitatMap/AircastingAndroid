@@ -4,7 +4,6 @@ import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
-import io.lunarlogic.aircasting.sensor.microphone.DEFAULT_CALIBRATION
 
 class SessionParams {
     companion object {
@@ -42,8 +41,7 @@ class SessionParams {
     val tag_list: String
     val start_time: String
     val end_time: String
-//    val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only
-    val calibration: Int
+//    val calibration = DEFAULT_CALIBRATION // TODO: handle for microphone session only, do i need this for sure here??
     val contribute: Boolean
     val is_indoor: Boolean
     val notes = listOf<String>() // TODO: handle after adding notes
