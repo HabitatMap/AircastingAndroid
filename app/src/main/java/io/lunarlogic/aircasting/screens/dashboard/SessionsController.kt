@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -19,6 +20,7 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast.Companion.show
 import org.greenrobot.eventbus.EventBus
 
 
@@ -122,7 +124,12 @@ abstract class SessionsController(
     }
 
     override fun onShareLinkPressed(session: Session, sensor: String) { // handling button in ShareSessionBottomSheet
-        openShareIntentChooser(session, sensor)
+        if (session.urlLocation != null) {
+            openShareIntentChooser(session, sensor)
+        } else {
+            Toast.makeText(context, context?.getString(R.string.session_upload_pending), Toast.LENGTH_LONG).show()
+        }
+
     }
 
     override fun onShareFilePressed(session: Session, emailInput: String) { // handling button in ShareSessionBottomSheet
