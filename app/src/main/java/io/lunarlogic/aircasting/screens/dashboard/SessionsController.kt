@@ -129,7 +129,6 @@ abstract class SessionsController(
         } else {
             Toast.makeText(context, context?.getString(R.string.session_upload_pending), Toast.LENGTH_LONG).show()
         }
-
     }
 
     override fun onShareFilePressed(session: Session, emailInput: String) { // handling button in ShareSessionBottomSheet
