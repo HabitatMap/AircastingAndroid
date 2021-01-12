@@ -67,7 +67,6 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         }
 
         private fun downloadMeasurements(sessionId: Long, session: Session) {
-            println("MARYSIA: download measurements")
             GlobalScope.launch(Dispatchers.Main) {
                 val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
                 val lastMeasurementSyncTimeString =

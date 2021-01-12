@@ -74,7 +74,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     fun onStop() {
-        print("MARYSIA: sessionmanager onstop")
         unregisterFromEventBus()
     }
 
@@ -91,7 +90,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun unregisterFromEventBus() {
-        println("MARYSIA: unregister event bus")
         EventBus.getDefault().unregister(this);
     }
 
@@ -103,7 +101,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun addMeasurement(event: NewMeasurementEvent) {
-        println("MARYSIA: downlodaMeasurement")
         val measurementStream = MeasurementStream(event)
 
         val location = LocationHelper.lastLocation()

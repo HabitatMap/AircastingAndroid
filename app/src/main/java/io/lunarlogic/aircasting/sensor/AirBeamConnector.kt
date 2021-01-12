@@ -29,7 +29,6 @@ abstract class AirBeamConnector {
 
     fun connect(deviceItem: DeviceItem) {
         mDeviceItem = deviceItem
-        println("MARYSIA: connecting ${deviceItem.name}")
 
         // Cancel discovery because it otherwise slows down the connection.
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()

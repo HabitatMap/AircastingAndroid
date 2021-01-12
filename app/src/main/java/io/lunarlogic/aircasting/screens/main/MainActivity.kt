@@ -68,19 +68,4 @@ class MainActivity: AppCompatActivity() {
         controller?.onDestroy()
         LocationHelper.stop()
     }
-
-    override fun onPause() {
-        super.onPause()
-        println("MARYSIA: main activity onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        println("MARYSIA: main activity onStop")
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: NewMeasurementEvent) {
-        println("MARYSIA: new measurement event in activity")
-    }
 }

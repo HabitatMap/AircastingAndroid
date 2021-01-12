@@ -29,11 +29,7 @@ class AirBeam2Reader(private val mErrorHandler: ErrorHandler) {
 
         return object : LineProcessor<Void> {
             override fun processLine(line: String): Boolean {
-                println("MARYSIA:  responseParser.parse(line)")
                 val newMeasurementEvent = responseParser.parse(line)
-                println("MARYSIA:  responseParser event ${newMeasurementEvent}")
-                println("MARYSIA:  responseParser event ${newMeasurementEvent?.measuredValue}")
-
                 newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
 
                 return true

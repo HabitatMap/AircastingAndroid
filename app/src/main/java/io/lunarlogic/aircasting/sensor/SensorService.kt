@@ -21,7 +21,6 @@ abstract class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("MARYSIA: microphpone start? onStartCommand")
        startSensor(intent)
         val message = intent?.getStringExtra(MESSAGE_KEY)
         createNotificationChannel()
@@ -31,7 +30,7 @@ abstract class SensorService : Service() {
             0, notificationIntent, 0
         )
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Aircasting: Microphone Service")
+            .setContentTitle("Aircasting: Sensor Service")
             .setContentText(message)
             .setSmallIcon(R.drawable.ic_btn_speak_now)
             .setContentIntent(pendingIntent)

@@ -12,10 +12,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
-import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
-import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvents
-import io.lunarlogic.aircasting.events.SendSessionAuth
-import io.lunarlogic.aircasting.events.StartRecordingEvent
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
@@ -77,6 +74,7 @@ class NewSessionController(
 
     fun onCreate() {
         EventBus.getDefault().register(this);
+        // TODO: also unregister in onstop...
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
@@ -306,9 +304,8 @@ class NewSessionController(
     }
 
     @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvents) {
+    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
         val deviceItem = event.deviceItem
-        println("MARYSIA: connection successful!")
         wizardNavigator.goToAirBeamConnected(deviceItem, this)
     }
 
