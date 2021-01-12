@@ -95,7 +95,8 @@ class ShareSessionBottomSheet(
         currentSessionStreams.forEach { stream ->
             setRadioButtonProperties(stream)
         }
-
+        radioGroup?.check(fieldValues.keys.min() ?: 0)
+        chosenSensor = fieldValues[fieldValues.keys.min()]?.sensorName.toString()
     }
 
     private fun setRadioButtonProperties(stream: MeasurementStream){

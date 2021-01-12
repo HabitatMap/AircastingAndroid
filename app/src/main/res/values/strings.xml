@@ -220,7 +220,7 @@
     <string name="select_a_stream_to_share">Select a stream to share</string>
     <string name="share_link">Share link</string>
     <string name="sensor_param">sensor_name</string>
-    <string name="share_text">Here I send you link to my session \n</string>
+    <string name="share_text">View my AirCasting session: \n</string>
     <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
     <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
 </resources>
