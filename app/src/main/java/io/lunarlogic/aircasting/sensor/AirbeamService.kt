@@ -5,14 +5,13 @@ import android.content.Intent
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
-import java.io.Serializable
-import javax.inject.Inject
 
 
 class AirbeamService : SensorService(),
@@ -24,7 +23,7 @@ class AirbeamService : SensorService(),
         fun startService(context: Context, message: String, deviceItem: DeviceItem) {
             println("MARYSIA: airbeam service startService")
             val startIntent = Intent(context, AirbeamService::class.java)
-//            startIntent.putExtra(MESSAGE_KEY, message)
+            startIntent.putExtra(MESSAGE_KEY, message)
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
             ContextCompat.startForegroundService(context, startIntent)
         }
@@ -51,8 +50,8 @@ class AirbeamService : SensorService(),
             airBeamConnector?.connect(deviceItem)
         } catch (e: BLENotSupported) {
             errorHandler.handleAndDisplay(e)
-
-            // TODO sent event to event bus: ble not supported nad handle
+            val event = AirBeamConnectionBleNotSupportedEvent()
+            EventBus.getDefault().post(event)
         }
     }
 
@@ -63,6 +62,6 @@ class AirbeamService : SensorService(),
     }
 
     override fun onConnectionFailed(deviceId: String) {
-        // TODO sent event to event bus: connection failed
+        // ignore
     }
 }
