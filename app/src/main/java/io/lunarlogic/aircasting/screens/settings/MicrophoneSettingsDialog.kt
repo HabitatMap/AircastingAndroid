@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.microphone_settings_dialog.view.*
 
 class MicrophoneSettingsDialog(
     mFragmentManager : FragmentManager,
-    private val micValue: Int,
+    private val calibration: Int,
     private val listener: SettingsViewMvc.MicrophoneSettingsDialogListener
     ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
@@ -17,7 +17,7 @@ class MicrophoneSettingsDialog(
     override fun setupView(inflater: LayoutInflater): View {
         mView = inflater.inflate(R.layout.microphone_settings_dialog, null)
 
-        mView.mic_setting_input.setText(micValue.toString())
+        mView.mic_setting_input.setText(calibration.toString())
 
         mView.ok_button.setOnClickListener {
             microphoneSettingsConfirmed()
@@ -31,8 +31,8 @@ class MicrophoneSettingsDialog(
     }
 
     private fun microphoneSettingsConfirmed(){
-        val micValue = mView.mic_setting_input.text.toString().trim().toInt()
-        listener.confirmMicrophoneSettingsClicked(micValue)
+        val calibration = mView.mic_setting_input.text.toString().trim().toInt()
+        listener.confirmMicrophoneSettingsClicked(calibration)
         dismiss()
     }
 }
