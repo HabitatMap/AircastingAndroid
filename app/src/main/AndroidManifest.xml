@@ -29,6 +29,9 @@
         <service android:name=".sensor.microphone.MicrophoneService">
         </service>
 
+        <service android:name=".sensor.AirbeamService">
+        </service>
+
         <activity
             android:name=".screens.main.MainActivity"
             android:screenOrientation="portrait">
