@@ -232,6 +232,7 @@ class AirBeam3Configurator(
                 val value = data.value
                 value?.let {
                     val valueString = String(value)
+
                     try {
                         val partialCountString = valueString.split(":").lastOrNull()?.trim()
                         val partialCount = partialCountString?.toInt()
@@ -260,7 +261,6 @@ class AirBeam3Configurator(
                     syncOutput += String(value)
                     counter += 1
 
-//                    syncProgressToast?.cancel()
                     if (syncProgressToast == null) {
                         syncProgressToast = buildMessage("Syncing $counter/$count...")
                     } else {
@@ -313,10 +313,11 @@ class AirBeam3Configurator(
     }
 
     private fun saveSyncOutputToFile() {
-        val dir = context.filesDir
+        val dir = context.getExternalFilesDir("sync")
+
         val file = File(dir, "sync.txt")
         val writer = FileWriter(file)
-        writer.append(syncOutput)
+        writer.write(syncOutput)
         writer.flush()
         writer.close()
     }
