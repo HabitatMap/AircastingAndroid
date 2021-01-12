@@ -1,12 +1,18 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.ShareHelper
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
@@ -14,6 +20,7 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast.Companion.show
 import org.greenrobot.eventbus.EventBus
 
 
@@ -23,15 +30,17 @@ abstract class SessionsController(
     private val mSessionsViewModel: SessionsViewModel,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    val fragmentManager: FragmentManager
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+    val fragmentManager: FragmentManager,
+    private val context: Context?
+) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
 
-    protected var dialog: EditSessionBottomSheet? = null
+    protected var editDialog: EditSessionBottomSheet? = null
+    protected var shareDialog: ShareSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -112,20 +121,48 @@ abstract class SessionsController(
     override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // handling buttons in EditSessionBottomSheet
         val event = UpdateSessionEvent(session, name, tags)
         EventBus.getDefault().post(event)
-
-        dialog?.dismiss()
     }
 
-    override fun onCancelPressed() { // handling buttons in EditSessionBottomSheet
-        dialog?.dismiss()
+    override fun onShareLinkPressed(session: Session, sensor: String) { // handling button in ShareSessionBottomSheet
+        if (session.urlLocation != null) {
+            openShareIntentChooser(session, sensor)
+        } else {
+            Toast.makeText(context, context?.getString(R.string.session_upload_pending), Toast.LENGTH_LONG).show()
+        }
     }
+
+    override fun onShareFilePressed(session: Session, emailInput: String) { // handling button in ShareSessionBottomSheet
+        val event = ExportSessionEvent(session, emailInput)
+        EventBus.getDefault().post(event)
+    }
+
 
     override fun onEditSessionClicked(session: Session) {
         startEditSessionBottomSheet(session)
     }
 
+    override fun onShareSessionClicked(session: Session) {
+        startShareSessionBottomSheet(session)
+    }
+
     private fun startEditSessionBottomSheet(session: Session) {
-        dialog = EditSessionBottomSheet(this, session)
-        dialog?.show(fragmentManager)
+        editDialog = EditSessionBottomSheet(this, session)
+        editDialog?.show(fragmentManager)
+    }
+
+    private fun startShareSessionBottomSheet(session: Session){
+        shareDialog = ShareSessionBottomSheet(this, session)
+        shareDialog?.show(fragmentManager)
+    }
+
+    private fun openShareIntentChooser(session: Session, chosenSensor: String){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor, context))
+            putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
+            type = "text/plain"
+        }
+        val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
+        context?.startActivity(chooser)
     }
 }

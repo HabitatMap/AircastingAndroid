@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.dormant
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -21,8 +22,9 @@ class MobileDormantController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    fragmentManager: FragmentManager
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
+    fragmentManager: FragmentManager,
+    private val mContext: Context?
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)

@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -27,8 +28,8 @@ class MobileActiveController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector,
-    fragmentManager: FragmentManager
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
+    private val mContext: Context?
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -60,6 +61,10 @@ class MobileActiveController(
         // do nothing
     }
 
+    override fun onShareSessionClicked(session: Session) {
+        // do nothing
+    }
+
     override fun onDeleteSessionClicked(sessionUUID: String) {
         // do nothing
     }
@@ -82,10 +87,6 @@ class MobileActiveController(
     }
 
     override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
-        // do nothing
-    }
-
-    override fun onCancelPressed() {
         // do nothing
     }
 }

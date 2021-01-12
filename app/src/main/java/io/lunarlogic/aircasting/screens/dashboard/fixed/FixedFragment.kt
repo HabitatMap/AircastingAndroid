@@ -45,7 +45,8 @@ class FixedFragment : Fragment() {
             viewLifecycleOwner,
             settings,
             apiServiceFactory,
-            childFragmentManager
+            childFragmentManager,
+            context
         )
 
         if (sessionsRequested) {
