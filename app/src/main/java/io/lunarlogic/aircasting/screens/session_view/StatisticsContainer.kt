@@ -61,10 +61,24 @@ class StatisticsContainer {
         bindPeakStatistics(stream)
     }
 
+    fun addMeasurement(measurement: Measurement) {
+        bindLastMeasurement(measurement)
+        bindNowStatistics(measurement)
+    }
+
     private fun bindLastMeasurement(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
+        mSum?.let { mSum = it + (mNow ?: 0.0) }
+        if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
+            mPeak = mNow
+        }
+    }
+
+    private fun bindLastMeasurement(measurement: Measurement) {
+
+        mNow = measurement.value
         mSum?.let { mSum = it + (mNow ?: 0.0) }
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
@@ -103,6 +117,11 @@ class StatisticsContainer {
             mNow = getNowValue(stream)
         }
         bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator)
+    }
+
+    private fun bindNowStatistics(measurement: Measurement) {
+            mNow = measurement.value
+        bindStatisticValues(null, mNow, mNowValue, mNowCircleIndicator)
     }
 
     private fun bindPeakStatistics(stream: MeasurementStream?) {
