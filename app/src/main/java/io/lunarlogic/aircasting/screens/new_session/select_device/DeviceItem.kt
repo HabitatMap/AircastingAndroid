@@ -1,13 +1,14 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
-open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : Serializable {
-    open val name: String
-    open val address: String
-    open val id: String
-    open val type: Type
+@Parcelize
+open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null, open val name: String? = null, open val address: String? = null, open val id: String? = null, open val type: Type? = null) : Parcelable {
+
+
 
     companion object {
         private val AIRBEAM1_NAME_REGEX = "airbeam"

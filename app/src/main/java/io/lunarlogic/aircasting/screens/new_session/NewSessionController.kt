@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
+import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.SendSessionAuth
 import io.lunarlogic.aircasting.events.StartRecordingEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
@@ -32,6 +34,7 @@ import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
+import io.lunarlogic.aircasting.sensor.AirbeamService
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
@@ -41,6 +44,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 class NewSessionController(
@@ -73,6 +77,8 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
+        EventBus.getDefault().register(this);
+
         if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
         } else {
@@ -223,14 +229,16 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        val airBeamConnector = airBeamConnectorFactory.get(deviceItem)
-        airBeamConnector?.registerListener(this)
-        try {
-            airBeamConnector?.connect(deviceItem)
-        } catch (e: BLENotSupported) {
-            errorHandler.handleAndDisplay(e)
-            mContextActivity.onBackPressed()
-        }
+        AirbeamService.startService(mContextActivity, "Airbeam Service is running", deviceItem)
+//        val airBeamConnector = airBeamConnectorFactory.get(deviceItem)
+//        airBeamConnector?.registerListener(this)
+//        try {
+//            airBeamConnector?.connect(deviceItem)
+//        } catch (e: BLENotSupported) {
+//            errorHandler.handleAndDisplay(e)
+//            // register to event bus and invoke this when reveived blenotsupportted
+//            mContextActivity.onBackPressed()
+//        }
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem) {
@@ -296,5 +304,12 @@ class NewSessionController(
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
+        val deviceItem = event.deviceItem
+        println("MARYSIA: connection successful!")
+        wizardNavigator.goToAirBeamConnected(deviceItem, this)
     }
 }
