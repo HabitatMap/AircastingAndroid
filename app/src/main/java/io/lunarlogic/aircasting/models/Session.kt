@@ -255,13 +255,11 @@ class Session(
 
         var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
 
-        if (endTime == null) return durationString // if endTime == null -> wyswietla tylko start time ?
+        if (endTime == null) return durationString
 
-        if (endTime!!.day != startTime.day) { // todo: btw i think we might need some more accurate check than only day (also month and year?))
+        if (endTime!!.date != startTime.date && endTime!!.month != startTime.month && endTime!!.year != startTime.year) {
             durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
         } else {
-            val dayStart = mStartTime.day
-            val dayEnd = endTime!!.day
             durationString += "-${hourFormatter.format(endTime)}"
         }
 
