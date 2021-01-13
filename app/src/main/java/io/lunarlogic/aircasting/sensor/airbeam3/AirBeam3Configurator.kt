@@ -1,11 +1,11 @@
 package io.lunarlogic.aircasting.sensor.airbeam3
 
+import android.app.AlertDialog
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.core.view.isVisible
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.FileWriter
 import java.util.*
@@ -61,11 +62,12 @@ class AirBeam3Configurator(
     private var syncOutput = ""
     private var count = 0
     private var counter = 0
-    private var syncProgressToast: Toast? = null // TOOD: remove it after inplementing proper sync
-    private var step = 0 // TOOD: remove it after inplementing proper sync
-    private var bleCount = 0 // TOOD: remove it after inplementing proper sync
-    private var wifiCount = 0 // TOOD: remove it after inplementing proper sync
-    private var cellularCount = 0 // TOOD: remove it after inplementing proper sync
+
+    private var step = 0 // TOOD: remove it after implementing proper sync
+    private var bleCount = 0 // TOOD: remove it after implementing proper sync
+    private var wifiCount = 0 // TOOD: remove it after implementing proper sync
+    private var cellularCount = 0 // TOOD: remove it after implementing proper sync
+    class SyncEvent(val message: String) // TOOD: remove it after implementing proper sync
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
@@ -283,12 +285,7 @@ class AirBeam3Configurator(
                     syncOutput += String(value)
                     counter += 1
 
-                    if (syncProgressToast == null || syncProgressToast?.view?.isVisible != true) {
-                        syncProgressToast = buildMessage("Syncing $counter/$count...")
-                    } else {
-                        syncProgressToast?.setText("Syncing $counter/$count...")
-                    }
-                    syncProgressToast?.show()
+                    showMessage("Syncing $counter/$count...")
                 }
             }
         }
@@ -325,13 +322,7 @@ class AirBeam3Configurator(
     }
 
     private fun showMessage(message: String) {
-        GlobalScope.launch(Dispatchers.Main) {
-            buildMessage(message).show()
-        }
-    }
-
-    private fun buildMessage(message: String): Toast {
-        return Toast.makeText(context, message, Toast.LENGTH_LONG)
+        EventBus.getDefault().post(SyncEvent(message))
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync

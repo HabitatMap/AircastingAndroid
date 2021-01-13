@@ -10,9 +10,11 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -86,6 +88,8 @@ class AirBeamSyncService(
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        showInfo("Connection to ${deviceItem.displayName()} successful.")
+
         if (clearSDCard) {
             mAirBeamConnector?.clearSDCard()
         } else {
@@ -95,18 +99,15 @@ class AirBeamSyncService(
 
     override fun onConnectionFailed(deviceId: String) {
         // TODO: temporary thing
-        val deviceName = mDeviceItem?.displayName()
-        showInfo("connection $deviceName failed :( ")
+        showInfo("Connection to ${mDeviceItem?.displayName()} failed.")
     }
 
     fun onDiscoveryFailed() {
         // TODO: temporary thing
-        showInfo("discovery failed :(")
+        showInfo("Discovery failed.")
     }
 
     private fun showInfo(info: String) {
-        GlobalScope.launch(Dispatchers.Main) {
-            Toast.makeText(mContext, info, Toast.LENGTH_LONG).show()
-        }
+        EventBus.getDefault().post(AirBeam3Configurator.SyncEvent(info))
     }
 }
