@@ -5,12 +5,14 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.core.view.isVisible
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
+import io.lunarlogic.aircasting.sensor.SyncFileChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -59,7 +61,11 @@ class AirBeam3Configurator(
     private var syncOutput = ""
     private var count = 0
     private var counter = 0
-    private var syncProgressToast: Toast? = null
+    private var syncProgressToast: Toast? = null // TOOD: remove it after inplementing proper sync
+    private var step = 0 // TOOD: remove it after inplementing proper sync
+    private var bleCount = 0 // TOOD: remove it after inplementing proper sync
+    private var wifiCount = 0 // TOOD: remove it after inplementing proper sync
+    private var cellularCount = 0 // TOOD: remove it after inplementing proper sync
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
@@ -238,7 +244,16 @@ class AirBeam3Configurator(
                     try {
                         val partialCountString = valueString.split(":").lastOrNull()?.trim()
                         val partialCount = partialCountString?.toInt()
-                        partialCount?.let { count += partialCount }
+
+                        partialCount?.let {
+                            step += 1
+                            when(step) {
+                                1 -> bleCount = partialCount
+                                2 -> wifiCount = partialCount
+                                3 -> cellularCount = partialCount
+                            }
+                            count += partialCount
+                        }
                     } catch (e: NumberFormatException) {
                         // ignore - this is e.g. SD_SYNC_FINISH
                     }
@@ -248,6 +263,7 @@ class AirBeam3Configurator(
                         saveSyncOutputToFile()
                         val syncMessage = "Synced $counter/$count."
                         showMessage("Syncing from SD card successfully finished.\n$syncMessage\nCheck files/sync/sync.txt")
+                        checkOutputFile()
                     } else if (valueString == CLEAR_FINISH) {
                         showMessage("SD card successfully cleared.")
                     }
@@ -267,7 +283,7 @@ class AirBeam3Configurator(
                     syncOutput += String(value)
                     counter += 1
 
-                    if (syncProgressToast == null) {
+                    if (syncProgressToast == null || syncProgressToast?.view?.isVisible != true) {
                         syncProgressToast = buildMessage("Syncing $counter/$count...")
                     } else {
                         syncProgressToast?.setText("Syncing $counter/$count...")
@@ -318,6 +334,7 @@ class AirBeam3Configurator(
         return Toast.makeText(context, message, Toast.LENGTH_LONG)
     }
 
+    // TODO: this is temporary thing - remove this after implementing real sync
     private fun saveSyncOutputToFile() {
         val dir = context.getExternalFilesDir("sync")
 
@@ -326,6 +343,16 @@ class AirBeam3Configurator(
         writer.write(syncOutput)
         writer.flush()
         writer.close()
+    }
+
+    // TODO: this is temporary thing - remove this after implementing real sync
+    private fun checkOutputFile() {
+        showMessage("Checking sync file...")
+        if (SyncFileChecker(context).run(bleCount, wifiCount, cellularCount)) {
+            showMessage("Sync file is correct!")
+        } else {
+            showMessage("Something is wrong with the sync file :/")
+        }
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {
