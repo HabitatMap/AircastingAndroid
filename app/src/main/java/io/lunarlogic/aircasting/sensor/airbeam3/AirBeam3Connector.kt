@@ -60,7 +60,6 @@ open class AirBeam3Connector(
     }
 
     override fun clearSDCard() {
-        println("ANIA clearSDCard")
         airBeam3Configurator.clearSDCard()
     }
 

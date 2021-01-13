@@ -227,6 +227,8 @@ class AirBeam3Configurator(
         }
 
         private fun setupSyncCounterCallback() {
+            count = 0
+
             val callback = setNotificationCallback(syncCounterCharacteristic)
             callback.with { _, data ->
                 val value = data.value
@@ -244,7 +246,8 @@ class AirBeam3Configurator(
                     if (valueString == SYNC_FINISH) {
                         Log.d(SYNC_TAG, "Sync finished")
                         saveSyncOutputToFile()
-                        showMessage("Syncing from SD card successfully finished. Check files/sync.txt")
+                        val syncMessage = "Synced $counter/$count."
+                        showMessage("Syncing from SD card successfully finished.\n$syncMessage\nCheck files/sync/sync.txt")
                     } else if (valueString == CLEAR_FINISH) {
                         showMessage("SD card successfully cleared.")
                     }
@@ -253,6 +256,9 @@ class AirBeam3Configurator(
         }
 
         private fun setupSyncCallback() {
+            syncOutput = ""
+            counter = 0
+
             val callback = setNotificationCallback(syncCharacteristic)
             callback.with { _, data ->
                 val value = data.value
