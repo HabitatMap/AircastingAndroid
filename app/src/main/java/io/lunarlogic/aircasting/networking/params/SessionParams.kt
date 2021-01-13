@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.lib.DateConverter
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 
