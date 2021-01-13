@@ -79,10 +79,11 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mListener = null
     }
 
-    override fun addMeasurement(measurement: Measurement) {}
+    override fun addMeasurement(measurement: Measurement, sensorName: String) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
+        println("MARYSIA: bindSession presenter streams ${mSessionPresenter?.session?.streams}")
 
         bindSessionDetails()
         if (sessionPresenter?.selectedStream != null) showSlider()

@@ -18,7 +18,7 @@ abstract class SessionDetailsViewController(
     protected val rootActivity: AppCompatActivity,
     protected val mSessionsViewModel: SessionsViewModel,
     protected val mViewMvc: SessionDetailsViewMvc,
-    sessionUUID: String,
+    val sessionUUID: String,
     private var sensorName: String?
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
@@ -27,8 +27,17 @@ abstract class SessionDetailsViewController(
     fun onCreate() {
         EventBus.getDefault().register(this);
         mViewMvc.registerListener(this)
-
-        mSessionObserver.observe()
+        DatabaseProvider.runQuery { coroutineScope ->
+            val session = mSessionsViewModel.reloadSessionWithMeasurements(sessionUUID)
+            DatabaseProvider.backToUIThread(coroutineScope) {
+                if (session != null) mSessionPresenter.session = Session(session)
+            }
+        }
+        if(mSessionPresenter.isFixed()) {
+            mSessionObserver.observe()
+        } else {
+            mViewMvc.bindSession(mSessionPresenter)
+        }
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
@@ -39,12 +48,29 @@ abstract class SessionDetailsViewController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
+        println("MARYSIA: session : ${mSessionPresenter.session}")
+        DatabaseProvider.runQuery { coroutineScope ->
+            var selectedSensorName = mSessionPresenter.initialSensorName
+            if (mSessionPresenter.selectedStream != null) {
+                selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
+            }
+
+            val measurementStream =
+                mSessionPresenter.session?.streams?.firstOrNull { it.sensorName == selectedSensorName }
+            mSessionPresenter.selectedStream = measurementStream
+
+            mSessionPresenter?.session?.let { session ->
+                val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
+                mSessionPresenter.setSensorThresholds(sensorThresholds)
+            }
+        }
+
+//        if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
-
-            mViewMvc.addMeasurement(measurement)
-        }
+            mViewMvc.bindSession(mSessionPresenter)
+            mViewMvc.addMeasurement(measurement, event.sensorName)
+//        }
     }
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {

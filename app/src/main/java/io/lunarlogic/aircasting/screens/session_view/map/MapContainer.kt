@@ -34,6 +34,7 @@ class MapContainer: OnMapReadyCallback {
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
+    private var mMeasurementsPerStream: HashMap<String, MutableList<Measurement>> = hashMapOf()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
@@ -72,12 +73,13 @@ class MapContainer: OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         mMap = googleMap
-
+        println("MARYSIA: onMapReady")
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {
             setup()
         }
         status.set(Status.MAP_LOADED.value)
+        println("MARYSIA: measurements after map loaded? ${mMeasurements.size}")
     }
 
     fun setup() {
@@ -91,16 +93,23 @@ class MapContainer: OnMapReadyCallback {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        println("MARYSIA: selected stream ${mSessionPresenter?.selectedStream}")
+        if(mSessionPresenter?.isFixed() == true) {
+            mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        } else {
+            mMeasurements = mMeasurementsPerStream[mSessionPresenter?.selectedStream?.sensorName] ?: listOf()
+        }
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
         }
+        println("MARYSIA: status: ${status.get()}")
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.MAP_LOADED.value) {
             setup()
         }
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
+        println("MARYSIA: status: ${status.get()}")
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
@@ -109,11 +118,14 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun drawSession() {
+        println("MARYSIA: draw session")
         if (mMap == null) return
+
         if (mMeasurements.isEmpty()) return
 
         var latestPoint: LatLng? = null
         var latestColor: Int? = null
+
 
         var i = 0
         for (measurement in mMeasurements) {
@@ -185,10 +197,19 @@ class MapContainer: OnMapReadyCallback {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
     }
 
-    fun addMobileMeasurement(measurement: Measurement) {
-        if (mSessionPresenter?.isRecording() == true) {
+    fun addMobileMeasurement(measurement: Measurement, sensorName: String) {
+        println("MARYSIA: 1 addMeasurement measurements? ${mMeasurementsPerStream[sensorName]?.size}")
+//        if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
-        }
+            if ( mMeasurementsPerStream[sensorName] == null) {
+                mMeasurementsPerStream[sensorName] = mutableListOf()
+                mMeasurementsPerStream[sensorName]?.add(measurement)
+            } else {
+                mMeasurementsPerStream[sensorName]?.add(measurement)
+            }
+            println("MARYSIA: 2 addMeasurement measurements? ${mMeasurementsPerStream[sensorName]?.size}")
+            bindSession(mSessionPresenter)
+//        }
     }
 
     private fun drawFixedMeasurement() {

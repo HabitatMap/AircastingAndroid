@@ -38,9 +38,10 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
         mMapContainer.unregisterListener()
     }
 
-    override fun addMeasurement(measurement: Measurement) {
-        super.addMeasurement(measurement)
-        mMapContainer.addMobileMeasurement(measurement)
+    override fun addMeasurement(measurement: Measurement, sensorName: String) {
+        super.addMeasurement(measurement, sensorName)
+        println("MARYSIA: addMeasurement in mapviewmvcimpl")
+        mMapContainer.addMobileMeasurement(measurement, sensorName)
         mStatisticsContainer?.addMeasurement(measurement)
     }
 
