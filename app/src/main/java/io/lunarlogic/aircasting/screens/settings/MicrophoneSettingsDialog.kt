@@ -19,6 +19,7 @@ class MicrophoneSettingsDialog(
 
         mView.mic_setting_input.setText(micValue.toString())
 
+
         mView.ok_button.setOnClickListener {
             microphoneSettingsConfirmed()
         }

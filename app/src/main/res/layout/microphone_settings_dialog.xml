@@ -38,7 +38,6 @@
             android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
             android:textColor="@color/aircasting_grey_700"
             android:inputType="number"/>
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
