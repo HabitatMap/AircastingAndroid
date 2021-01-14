@@ -100,25 +100,7 @@ class AirBeamReconnector(
 
     private fun reconnect(deviceItem: DeviceItem) {
         AirbeamService.startService(mContext, "AirBeam Service is running - reconnect", deviceItem)
-//        mAirBeamConnector = mAirBeamConnectorFactory.get(deviceItem)
-//        mAirBeamConnector?.registerListener(this)
-//        try {
-//            mAirBeamConnector?.connect(deviceItem)
-//        } catch (e: BLENotSupported) {
-//            mErrorHandler.handleAndDisplay(e)
-//        }
     }
-
-//    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
-//        mAirBeamConnector?.reconnectMobileSession()
-//        updateSessionStatus(mSession, Session.Status.RECORDING)
-//
-//        mCallback?.invoke()
-//    }
-//
-//    override fun onConnectionFailed(deviceId: String) {
-//        mCallback?.invoke()
-//    }
 
     fun onDiscoveryFailed() {
         mCallback?.invoke()
