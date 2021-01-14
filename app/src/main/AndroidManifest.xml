@@ -26,10 +26,14 @@
         android:theme="@style/Theme.Aircasting"
         android:name=".AircastingApplication">
 
-        <service android:name=".sensor.microphone.MicrophoneService">
+        <service
+            android:name=".sensor.microphone.MicrophoneService"
+            android:stopWithTask="true" >
         </service>
 
-        <service android:name=".sensor.AirbeamService">
+        <service
+            android:name=".sensor.AirbeamService"
+            android:stopWithTask="true">
         </service>
 
         <activity

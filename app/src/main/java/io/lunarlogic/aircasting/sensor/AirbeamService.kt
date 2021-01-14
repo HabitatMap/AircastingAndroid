@@ -26,12 +26,6 @@ class AirbeamService : SensorService(),
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
             ContextCompat.startForegroundService(context, startIntent)
         }
-
-        fun stopService(context: Context) {
-            //TODO we must stop service when we finish session
-            val stopIntent = Intent(context, AirbeamService::class.java)
-            context.stopService(stopIntent)
-        }
     }
 
     override fun startSensor(intent: Intent?) {

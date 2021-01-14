@@ -155,7 +155,6 @@ class NewSessionController(
     }
 
     private fun startMicrophoneSession() {
-//        microphoneReader.start()
         MicrophoneService.startService(mContextActivity, "Microphone Service is running")
     }
 

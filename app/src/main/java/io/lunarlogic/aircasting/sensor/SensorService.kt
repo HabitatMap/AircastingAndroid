@@ -1,12 +1,18 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.R
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.screens.main.MainActivity
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 abstract class SensorService : Service() {
@@ -21,6 +27,8 @@ abstract class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        EventBus.getDefault().register(this);
+
        startSensor(intent)
         val message = intent?.getStringExtra(MESSAGE_KEY)
         createNotificationChannel()
@@ -41,6 +49,16 @@ abstract class SensorService : Service() {
         return START_NOT_STICKY
     }
 
+    override fun stopService(name: Intent?): Boolean {
+        EventBus.getDefault().unregister(this);
+        return super.stopService(name)
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        stopSelf()
+    }
+
     abstract fun startSensor(intent: Intent?)
 
     private fun createNotificationChannel() {
@@ -52,5 +70,10 @@ abstract class SensorService : Service() {
             val manager = getSystemService(NotificationManager::class.java)
             manager!!.createNotificationChannel(serviceChannel)
         }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: StopRecordingEvent) {
+        stopSelf()
     }
 }
