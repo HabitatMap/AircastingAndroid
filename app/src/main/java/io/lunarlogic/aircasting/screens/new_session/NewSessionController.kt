@@ -58,7 +58,6 @@ class NewSessionController(
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
-    AirBeamConnector.Listener,
     AirBeamConnectedViewMvc.Listener,
     SessionDetailsViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
@@ -74,13 +73,16 @@ class NewSessionController(
 
     fun onCreate() {
         EventBus.getDefault().register(this);
-        // TODO: also unregister in onstop...
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
         }
+    }
+
+    fun onStop() {
+        EventBus.getDefault().unregister(this)
     }
 
     private fun goToFirstStep() {
@@ -226,24 +228,7 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        AirbeamService.startService(mContextActivity, "Airbeam Service is running", deviceItem)
-//        val airBeamConnector = airBeamConnectorFactory.get(deviceItem)
-//        airBeamConnector?.registerListener(this)
-//        try {
-//            airBeamConnector?.connect(deviceItem)
-//        } catch (e: BLENotSupported) {
-//            errorHandler.handleAndDisplay(e)
-//            // register to event bus and invoke this when reveived blenotsupportted
-//            mContextActivity.onBackPressed()
-//        }
-    }
-
-    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        wizardNavigator.goToAirBeamConnected(deviceItem, this)
-    }
-
-    override fun onConnectionFailed(deviceId: String) {
-        // ignore
+        AirbeamService.startService(mContextActivity, "AirBeam Service is running", deviceItem)
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem) {

@@ -87,6 +87,11 @@ class NewSessionActivity : AppCompatActivity() {
         AppBar.setup(view.rootView, this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        controller?.onStop()
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         controller?.onBackPressed()
