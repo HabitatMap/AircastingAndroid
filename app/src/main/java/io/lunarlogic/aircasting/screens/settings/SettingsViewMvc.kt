@@ -10,10 +10,15 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
         fun confirmClicked(urlValue: String, portValue: String)
     }
 
+    interface MicrophoneSettingsDialogListener {
+        fun confirmMicrophoneSettingsClicked(calibration: Int)
+    }
+
     interface Listener {
         fun onMyAccountClicked()
         fun onBackendSettingsClicked()
         fun onToggleCrowdMapEnabled()
         fun onToggleMapsEnabled()
+        fun onMicrophoneSettingsClicked()
     }
 }

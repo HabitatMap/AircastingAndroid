@@ -213,8 +213,7 @@
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
 
-
-    <!-- Share sessuib -->
+    <!-- Share session -->
     <string name="share_file">Share file</string>
     <string name="share_session">Share session</string>
     <string name="select_a_stream_to_share">Select a stream to share</string>
@@ -223,4 +222,9 @@
     <string name="share_text">View my AirCasting session: \n</string>
     <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
     <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
+
+    <!-- Microphone settings -->
+    <string name="microphone_maximum">Microphone maximum</string>
+    <string name="microphone_settings_description">Maximum sound level processed by your phone\'s microphone. For most phones it\'s between 80 and 100</string>
+    <string name="microphone_settings">Microphone settings</string>
 </resources>

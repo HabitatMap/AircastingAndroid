@@ -1,11 +1,15 @@
 package io.lunarlogic.aircasting.sensor.microphone
 
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.AudioReaderError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MicrophoneDeviceItem: DeviceItem() {
     companion object {
@@ -19,7 +23,11 @@ class MicrophoneDeviceItem: DeviceItem() {
         get() = Type.MIC
 }
 
-class MicrophoneReader(private val mAudioReader: AudioReader, private val mErrorHandler: ErrorHandler): AudioReader.Listener() {
+class MicrophoneReader(
+    private val mAudioReader: AudioReader,
+    private val mErrorHandler: ErrorHandler,
+    private val mSettings: Settings
+): AudioReader.Listener() {
     private val SAMPLE_RATE = 44100
     private val SYMBOL = "dB"
     private val UNIT = "decibels"
@@ -35,9 +43,10 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     private val VERY_HIGH = 100
 
     private val signalPower = SignalPower()
-    private var calibrationHelper = CalibrationHelper()
+    private var calibrationHelper = CalibrationHelper(mSettings)
 
     fun start() {
+        registerToEventBus()
         // The AudioReader sleeps as much as it records
         val block = SAMPLE_RATE / 2
 
@@ -45,7 +54,13 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     }
 
     fun stop() {
+        unregisterFromEventBus()
         mAudioReader.stopReader()
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    fun onMessageEvent(event: StopRecordingEvent) {
+        stop()
     }
 
     override fun onReadComplete(buffer: ShortArray) {
@@ -64,5 +79,15 @@ class MicrophoneReader(private val mAudioReader: AudioReader, private val mError
     override fun onReadError(error: Int) {
         val message = mErrorHandler.obtainMessage(ResultCodes.AUDIO_READER_ERROR, AudioReaderError(error))
         message.sendToTarget()
+    }
+
+    protected fun registerToEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    protected fun unregisterFromEventBus() {
+        EventBus.getDefault().unregister(this);
     }
 }
