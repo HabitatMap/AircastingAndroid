@@ -262,6 +262,7 @@ class Session(
         } else {
             durationString += "-${hourFormatter.format(endTime)}"
         }
+
         return durationString
     }
 
