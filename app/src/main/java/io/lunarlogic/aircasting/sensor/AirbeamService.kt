@@ -59,4 +59,8 @@ class AirbeamService : SensorService(),
     override fun onConnectionFailed(deviceId: String) {
         // ignore
     }
+
+    override fun onDisconnect(deviceId: String) {
+        stopSelf()
+    }
 }

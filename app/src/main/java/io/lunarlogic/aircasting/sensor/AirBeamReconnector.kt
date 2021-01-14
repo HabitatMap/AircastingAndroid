@@ -8,12 +8,15 @@ import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
+import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.events.SensorDisconnectedEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -23,7 +26,7 @@ class AirBeamReconnector(
     private val mErrorHandler: ErrorHandler,
     private val mSessionsRepository: SessionsRepository,
     private val mBluetoothManager: BluetoothManager
-): BroadcastReceiver(), AirBeamConnector.Listener {
+): BroadcastReceiver() {
     private var mSession: Session? = null
     private var mDeviceItem: DeviceItem? = null
     private var mAirBeamConnector: AirBeamConnector? = null
@@ -36,6 +39,8 @@ class AirBeamReconnector(
     }
 
     fun reconnect(session: Session, callback: () -> Unit) {
+        EventBus.getDefault().register(this);
+
         // disconnecting first to make sure the connector thread is stopped correctly etc
         sendDisconnectedEvent(session)
 
@@ -94,25 +99,26 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceItem: DeviceItem) {
-        mAirBeamConnector = mAirBeamConnectorFactory.get(deviceItem)
-        mAirBeamConnector?.registerListener(this)
-        try {
-            mAirBeamConnector?.connect(deviceItem)
-        } catch (e: BLENotSupported) {
-            mErrorHandler.handleAndDisplay(e)
-        }
+        AirbeamService.startService(mContext, "AirBeam Service is running - reconnect", deviceItem)
+//        mAirBeamConnector = mAirBeamConnectorFactory.get(deviceItem)
+//        mAirBeamConnector?.registerListener(this)
+//        try {
+//            mAirBeamConnector?.connect(deviceItem)
+//        } catch (e: BLENotSupported) {
+//            mErrorHandler.handleAndDisplay(e)
+//        }
     }
 
-    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        mAirBeamConnector?.reconnectMobileSession()
-        updateSessionStatus(mSession, Session.Status.RECORDING)
-
-        mCallback?.invoke()
-    }
-
-    override fun onConnectionFailed(deviceId: String) {
-        mCallback?.invoke()
-    }
+//    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
+//        mAirBeamConnector?.reconnectMobileSession()
+//        updateSessionStatus(mSession, Session.Status.RECORDING)
+//
+//        mCallback?.invoke()
+//    }
+//
+//    override fun onConnectionFailed(deviceId: String) {
+//        mCallback?.invoke()
+//    }
 
     fun onDiscoveryFailed() {
         mCallback?.invoke()
@@ -129,5 +135,18 @@ class AirBeamReconnector(
                 mSessionsRepository.updateSessionStatus(session, status)
             }
         }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
+        mAirBeamConnector?.reconnectMobileSession()
+        updateSessionStatus(mSession, Session.Status.RECORDING)
+
+        mCallback?.invoke()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AirBeamConnectionBleNotSupportedEvent) {
+        mCallback?.invoke()
     }
 }

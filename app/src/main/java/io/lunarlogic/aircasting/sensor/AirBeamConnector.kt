@@ -13,6 +13,7 @@ abstract class AirBeamConnector {
     interface Listener {
         fun onConnectionSuccessful(deviceItem: DeviceItem)
         fun onConnectionFailed(deviceId: String)
+        fun onDisconnect(deviceId: String)
     }
 
     private var mListener: Listener? = null
@@ -68,6 +69,7 @@ abstract class AirBeamConnector {
 
     fun onDisconnected(deviceId: String) {
         EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
+        mListener?.onDisconnect(deviceId)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
