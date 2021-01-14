@@ -92,7 +92,7 @@ open class Settings(mApplication: Application) {
         return sharedPreferences.getBoolean(key, default)
     }
 
-    open fun getIntFromSettings(key: String, default: Int): Int { //todo: without default value? why sharedPreferences.getInt() requires normal Int, cant take Int?
+    open fun getIntFromSettings(key: String, default: Int): Int {
         return sharedPreferences.getInt(key, default)
     }
 
