@@ -22,10 +22,10 @@ class SyncFileChecker(private val mContext: Context) {
         val reader = FileReader(file)
         val lines = reader.readLines()
 
-        lines.forEach { line ->
+        lines.forEachIndexed { i, line ->
             val splittedLine = line.split(",")
 
-            if (splittedLine.count() != FIELDS_COUNT) {
+            if (i != lines.size - 1 && splittedLine.count() != FIELDS_COUNT) {
                 return false
             }
 
