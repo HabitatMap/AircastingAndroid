@@ -117,7 +117,7 @@ abstract class SessionsController(
 
                 DatabaseProvider.backToUIThread(scope) {
 //                    mViewMvc.reloadSession(reloadedSession) todo: i guess i dont need to do method from mViewMvc ??
-//                    mViewMvc.hideLoaderFor(session) //todo: loader to be changed
+                    mViewMvc.hideLoader() //todo: loader to be changed?
                 }
             }
         }
@@ -151,7 +151,6 @@ abstract class SessionsController(
         val event = ExportSessionEvent(session, emailInput)
         EventBus.getDefault().post(event)
     }
-
 
     override fun onEditSessionClicked(session: Session) {
         if (ConnectivityManager.isConnected(context)) {

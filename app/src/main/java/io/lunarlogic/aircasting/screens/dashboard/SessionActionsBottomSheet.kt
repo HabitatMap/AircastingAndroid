@@ -49,13 +49,4 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
 
         return view
     }
-
-    fun showLoader(){ //todo : trial for now
-        AnimatedLoader(mLoader).start()
-        mLoader?.visibility = View.VISIBLE
-    }
-
-    fun hideLoader(){ //todo : trial for now
-        mLoader?.visibility = View.GONE
-    }
 }
