@@ -30,7 +30,7 @@ class MeasurementsTableContainer {
     private var mDisplayAvarages = false
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
-    private val mLastMeasurementColors: HashMap<MeasurementStream, Int> = HashMap()
+    private val mLastMeasurementColors: HashMap<String, Int> = HashMap()
 
     private val mMeasurementsTable: TableLayout?
     private val mMeasurementHeaders: TableRow?
@@ -182,7 +182,7 @@ class MeasurementsTableContainer {
 
     private fun markMeasurementValueAsSelected(stream: MeasurementStream) {
         val index = mMeasurementStreams.indexOf(stream)
-        val color = mLastMeasurementColors[stream]
+        val color = mLastMeasurementColors[stream.sensorName]
 
         try {
             val valueView = mMeasurementValues?.get(index)
@@ -196,7 +196,7 @@ class MeasurementsTableContainer {
         val measurementValue = getMeasurementValue(stream) ?: return
 
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
-        mLastMeasurementColors[stream] = color
+        mLastMeasurementColors[stream.sensorName] = color
 
         val valueView = renderValueView(measurementValue, color)
 

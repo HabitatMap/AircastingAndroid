@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Aircasting"
+        android:largeHeap="true"
         android:name=".AircastingApplication">
         <activity
             android:name=".screens.main.MainActivity"
