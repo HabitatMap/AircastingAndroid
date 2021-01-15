@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
 import android.content.Intent
+import android.net.NetworkInfo
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -112,7 +113,7 @@ abstract class SessionsController(
 
     override fun onExpandSessionCard(session: Session) {
         if (session.isIncomplete()) {
-            mViewMvc.showLoaderFor(session)
+            mViewMvc.showLoader()
             val finallyCallback = { reloadSession(session) }
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
         }
@@ -138,7 +139,14 @@ abstract class SessionsController(
 
 
     override fun onEditSessionClicked(session: Session) {
-        startEditSessionBottomSheet(session)
+        if (canDownloadSession()) {
+            mViewMvc.showLoaderFor(session) // todo: how to show this loader properly
+            val finallyCallback = { reloadSession(session) } // todo: callback to be changed ?
+            mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
+            startEditSessionBottomSheet(session)
+        } else {
+            Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onShareSessionClicked(session: Session) {
@@ -164,5 +172,10 @@ abstract class SessionsController(
         }
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
+    }
+
+    private fun canDownloadSession(): Boolean {
+        //TODO: do i have something sort of connectivityManager ??
+        return true
     }
 }
