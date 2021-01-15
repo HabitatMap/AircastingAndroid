@@ -16,17 +16,17 @@ class ConnectivityManager(apiService: ApiService, context: Context, settings: Se
 
     companion object {
         val ACTION = ConnectivityManager.CONNECTIVITY_ACTION
+
+        fun isConnected(context: Context?): Boolean {
+            val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+            return activeNetwork?.isConnectedOrConnecting == true
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (!isInitialStickyBroadcast && isConnected(context)) {
             sessionSyncService.sync()
         }
-    }
-
-    fun isConnected(context: Context?): Boolean {
-        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return activeNetwork?.isConnectedOrConnecting == true
     }
 }

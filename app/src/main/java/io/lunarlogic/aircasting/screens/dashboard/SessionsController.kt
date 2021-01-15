@@ -21,6 +21,7 @@ import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast.Companion.show
 import org.greenrobot.eventbus.EventBus
 
@@ -153,7 +154,7 @@ abstract class SessionsController(
 
 
     override fun onEditSessionClicked(session: Session) {
-        if (canDownloadSession()) {
+        if (ConnectivityManager.isConnected(context)) {
             mViewMvc.showLoader() // todo: how to show this loader properly
             val finallyCallback = { reloadSessionBeforeEdit(session) } // callback to be changed ?
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
@@ -186,11 +187,5 @@ abstract class SessionsController(
         }
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
-    }
-
-    private fun canDownloadSession(): Boolean {
-        //TODO: i have to provide connectivityManager her somehow and call "isConnected" method i guess
-//        mRootActivity.
-        return true
     }
 }
