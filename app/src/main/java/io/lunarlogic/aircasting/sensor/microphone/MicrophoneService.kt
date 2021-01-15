@@ -10,6 +10,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MicrophoneService : SensorService() {
+    var mMicrophoneReader: MicrophoneReader = MicrophoneReader(AudioReader(), ErrorHandler(this))
 
     companion object {
         fun startService(context: Context, message: String) {
@@ -20,11 +21,11 @@ class MicrophoneService : SensorService() {
     }
 
     override fun startSensor(intent: Intent?) {
-        // TODO: can we use injector here?
+        // TODO: can we use injector here not to create this var from scratch?
+        mMicrophoneReader.start()
+    }
 
-        val audioReader = AudioReader()
-        val errorHandler = ErrorHandler(this)
-        val microphoneReader = MicrophoneReader(audioReader, errorHandler)
-        microphoneReader.start()
+    override fun onStopService() {
+        mMicrophoneReader.stop()
     }
 }

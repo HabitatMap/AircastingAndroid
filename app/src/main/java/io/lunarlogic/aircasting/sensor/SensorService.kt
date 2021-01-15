@@ -51,6 +51,8 @@ abstract class SensorService : Service() {
 
     override fun stopService(name: Intent?): Boolean {
         EventBus.getDefault().unregister(this);
+        onStopService()
+
         return super.stopService(name)
     }
 
@@ -60,6 +62,7 @@ abstract class SensorService : Service() {
     }
 
     abstract fun startSensor(intent: Intent?)
+    abstract fun onStopService()
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

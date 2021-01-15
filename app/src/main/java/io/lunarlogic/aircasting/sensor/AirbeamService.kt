@@ -45,6 +45,10 @@ class AirbeamService : SensorService(),
         }
     }
 
+    override fun onStopService() {
+        // nothing
+    }
+
     override fun onConnectionSuccessful(deviceItem: DeviceItem) {
         val event = AirBeamConnectionSuccessfulEvent(deviceItem)
         EventBus.getDefault().post(event)
