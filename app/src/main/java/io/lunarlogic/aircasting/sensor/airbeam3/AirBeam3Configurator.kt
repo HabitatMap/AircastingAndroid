@@ -13,9 +13,6 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import io.lunarlogic.aircasting.sensor.SyncFileChecker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
@@ -59,7 +56,7 @@ class AirBeam3Configurator(
     private val SYNC_TAG = "SYNC"
     private val CLEAR_FINISH = "SD_DELETE_FINISH"
 
-    private var syncOutput = ""
+    private var syncFileWriter: FileWriter? = null
     private var count = 0
     private var counter = 0
 
@@ -262,7 +259,7 @@ class AirBeam3Configurator(
 
                     if (valueString == SYNC_FINISH) {
                         Log.d(SYNC_TAG, "Sync finished")
-                        saveSyncOutputToFile()
+                        closeSyncFile()
                         val syncMessage = "Synced $counter/$count."
                         showMessage("Syncing from SD card successfully finished.\n$syncMessage\nCheck files/sync/sync.txt")
                         checkOutputFile()
@@ -274,15 +271,16 @@ class AirBeam3Configurator(
         }
 
         private fun setupSyncCallback() {
-            syncOutput = ""
             counter = 0
+            openSyncFile()
 
             val callback = setNotificationCallback(syncCharacteristic)
             callback.with { _, data ->
                 val value = data.value
 
                 value?.let {
-                    syncOutput += String(value)
+                    val line = String(value)
+                    writeToSyncFile(line)
                     counter += 1
 
                     showMessage("Syncing $counter/$count...")
@@ -326,14 +324,22 @@ class AirBeam3Configurator(
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync
-    private fun saveSyncOutputToFile() {
+    private fun openSyncFile() {
         val dir = context.getExternalFilesDir("sync")
 
         val file = File(dir, "sync.txt")
-        val writer = FileWriter(file)
-        writer.write(syncOutput)
-        writer.flush()
-        writer.close()
+        syncFileWriter = FileWriter(file)
+    }
+
+    // TODO: this is temporary thing - remove this after implementing real sync
+    private fun writeToSyncFile(line: String) {
+        syncFileWriter?.write(line)
+    }
+
+    // TODO: this is temporary thing - remove this after implementing real sync
+    private fun closeSyncFile() {
+        syncFileWriter?.flush()
+        syncFileWriter?.close()
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync
