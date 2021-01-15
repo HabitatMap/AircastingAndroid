@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.sensor
 
-import android.R
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import org.greenrobot.eventbus.EventBus
@@ -40,7 +40,7 @@ abstract class SensorService : Service() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Aircasting: Sensor Service")
             .setContentText(message)
-            .setSmallIcon(R.drawable.ic_btn_speak_now)
+            .setSmallIcon(R.drawable.aircasting)
             .setContentIntent(pendingIntent)
             .build()
 
