@@ -108,6 +108,20 @@ abstract class SessionsController(
         }
     }
 
+    protected fun reloadSessionBeforeEdit(session: Session) {
+        DatabaseProvider.runQuery { scope ->
+            val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            dbSessionWithMeasurements?.let {
+                val reloadedSession = Session(dbSessionWithMeasurements)
+
+                DatabaseProvider.backToUIThread(scope) {
+//                    mViewMvc.reloadSession(reloadedSession) todo: i guess i dont need to do method from mViewMvc ??
+//                    mViewMvc.hideLoaderFor(session) //todo: loader to be changed
+                }
+            }
+        }
+    }
+
     override fun onDisconnectSessionClicked(session: Session) {}
     override fun onReconnectSessionClicked(session: Session) {}
 
@@ -140,8 +154,8 @@ abstract class SessionsController(
 
     override fun onEditSessionClicked(session: Session) {
         if (canDownloadSession()) {
-            mViewMvc.showLoaderFor(session) // todo: how to show this loader properly
-            val finallyCallback = { reloadSession(session) } // todo: callback to be changed ?
+            mViewMvc.showLoader() // todo: how to show this loader properly
+            val finallyCallback = { reloadSessionBeforeEdit(session) } // callback to be changed ?
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
             startEditSessionBottomSheet(session)
         } else {
@@ -175,7 +189,8 @@ abstract class SessionsController(
     }
 
     private fun canDownloadSession(): Boolean {
-        //TODO: do i have something sort of connectivityManager ??
+        //TODO: i have to provide connectivityManager her somehow and call "isConnected" method i guess
+//        mRootActivity.
         return true
     }
 }

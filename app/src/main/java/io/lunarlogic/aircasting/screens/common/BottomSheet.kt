@@ -1,13 +1,16 @@
 package io.lunarlogic.aircasting.screens.common
 
+import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 
 
 abstract class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {

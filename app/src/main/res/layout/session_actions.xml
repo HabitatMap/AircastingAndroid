@@ -21,6 +21,16 @@
             android:layout_height="match_parent"
             android:padding="@dimen/keyline_8">
 
+            <ImageView
+                android:id="@+id/loader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_loader"
+                android:tint="@color/aircasting_blue_400"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/edit_session_button"/>
+
             <Button
                 android:id="@+id/edit_session_button"
                 android:layout_width="0dp"
@@ -31,7 +41,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/share_session_button"/>
+                app:layout_constraintBottom_toTopOf="@+id/share_session_button" />
 
             <Button
                 android:id="@+id/share_session_button"
