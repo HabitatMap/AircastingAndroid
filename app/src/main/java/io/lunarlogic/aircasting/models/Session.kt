@@ -257,17 +257,18 @@ class Session(
 
         if (endTime == null) return durationString
 
-        if (checkIfTheSameDay(startTime, endTime!!)) {
-            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
-        } else {
+        if (isTheSameDay(startTime, endTime!!)) {
             durationString += "-${hourFormatter.format(endTime)}"
+        } else {
+            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
         }
 
         return durationString
     }
 
-    fun checkIfTheSameDay(startTime: Date, endTime: Date): Boolean {
-        return endTime.date != startTime.date && endTime.month != startTime.month && endTime.year != startTime.year
+    fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
+        val dateFormat = SimpleDateFormat("yyyyMMdd")
+        return dateFormat.format(startTime) == dateFormat.format(endTime)
     }
 
     fun infoString(): String {
