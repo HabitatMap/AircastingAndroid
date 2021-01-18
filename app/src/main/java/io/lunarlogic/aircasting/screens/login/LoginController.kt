@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.ForgotPasswordService
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.login.ForgotPasswordDialog
 import io.lunarlogic.aircasting.screens.main.MainActivity
@@ -22,6 +23,7 @@ class  LoginController(
     LoginViewMvc.ForgotPasswordDialogListener{
     private val mErrorHandler = ErrorHandler(mContext)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
+//    private val mForgotPasswordService = ForgotPasswordService()
 
     fun onStart() {
         mViewMvc.registerListener(this)
