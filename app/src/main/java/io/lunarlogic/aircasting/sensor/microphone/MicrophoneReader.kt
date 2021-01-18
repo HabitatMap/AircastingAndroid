@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.ThreadMode
 class MicrophoneDeviceItem: DeviceItem() {
     companion object {
         val DEFAULT_ID = "Builtin"
+        val DETAILED_TYPE = "dB"
     }
 
     override val id: String
@@ -33,7 +34,7 @@ class MicrophoneReader(
     private val UNIT = "decibels"
     private val MEASUREMENT_TYPE = "Sound Level"
     private val SHORT_TYPE = "dB"
-    private val SENSOR_NAME = "Phone Microphone-dB"
+    private val SENSOR_NAME = "Phone Microphone"
     private val SENSOR_PACKAGE_NAME = MicrophoneDeviceItem.DEFAULT_ID
 
     private val VERY_LOW = 20
