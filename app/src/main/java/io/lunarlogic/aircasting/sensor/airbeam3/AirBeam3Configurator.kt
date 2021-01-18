@@ -62,7 +62,9 @@ class AirBeam3Configurator(
     private var bleCount = 0 // TOOD: remove it after implementing proper sync
     private var wifiCount = 0 // TOOD: remove it after implementing proper sync
     private var cellularCount = 0 // TOOD: remove it after implementing proper sync
+    private var syncStartedAt: Long? = null // TOOD: remove it after implementing proper sync
     class SyncEvent(val message: String) // TOOD: remove it after implementing proper sync
+    class SyncFinishedEvent(val message: String) // TOOD: remove it after implementing proper sync
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
@@ -106,6 +108,8 @@ class AirBeam3Configurator(
     }
 
     fun sync() {
+        syncStartedAt = System.currentTimeMillis()
+
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -258,9 +262,7 @@ class AirBeam3Configurator(
                     if (valueString == SYNC_FINISH) {
                         Log.d(SYNC_TAG, "Sync finished")
                         closeSyncFile()
-                        val syncMessage = "Synced $counter/$count."
-                        showMessage("Syncing from SD card successfully finished.\n$syncMessage\nCheck files/sync/sync.txt")
-                        checkOutputFile()
+                        checkOutputFileAndShowFinishMessage()
                     } else if (valueString == CLEAR_FINISH) {
                         showMessage("SD card successfully cleared.")
                     }
@@ -281,7 +283,7 @@ class AirBeam3Configurator(
                     writeToSyncFile(line)
                     counter += 1
 
-                    showMessage("Syncing $counter/$count...")
+                    showMessage("Syncing $counter/$count")
                 }
             }
         }
@@ -317,6 +319,10 @@ class AirBeam3Configurator(
         }
     }
 
+    private fun showFinishMessage(message: String) {
+        EventBus.getDefault().post(SyncFinishedEvent(message))
+    }
+
     private fun showMessage(message: String) {
         EventBus.getDefault().post(SyncEvent(message))
     }
@@ -341,13 +347,29 @@ class AirBeam3Configurator(
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync
-    private fun checkOutputFile() {
+    private fun checkOutputFileAndShowFinishMessage() {
+        val endedAt = System.currentTimeMillis()
         showMessage("Checking sync file...")
-        if (SyncFileChecker(context).run(bleCount, wifiCount, cellularCount)) {
-            showMessage("Sync file is correct!")
-        } else {
-            showMessage("Something is wrong with the sync file :/")
+
+        val syncMessage = "Synced $counter/$count."
+        var timeMessage = ""
+        syncStartedAt?.let { startedAt ->
+            val interval = (endedAt - startedAt) / (60 * 1000)
+            timeMessage = "In $interval minutes."
         }
+
+        val syncFileMessage = if (SyncFileChecker(context).run(bleCount, wifiCount, cellularCount)) {
+            "Sync file is correct!"
+        } else {
+            "Something is wrong with the sync file :/"
+        }
+
+        showFinishMessage(
+            "Syncing from SD card successfully finished.\n" +
+                    "$syncMessage\n" +
+                    "$timeMessage\n" +
+                    syncFileMessage
+        )
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {

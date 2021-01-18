@@ -56,6 +56,13 @@ class LetsStartController(
         syncProgressDialog?.setMessage(event.message)
     }
 
+    // TOOD: remove this method after implementing proper sync
+    @Subscribe
+    fun onMessageEvent(event: AirBeam3Configurator.SyncFinishedEvent) {
+        syncProgressDialog?.cancel()
+        syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage(event.message).show()
+    }
+
     override fun onClearSDCardSelected() {
         mAirBeamSyncService.run(true)
         syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage("Clear SD card started").show()
