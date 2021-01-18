@@ -140,7 +140,7 @@ class SessionsSyncService {
         }
     }
 
-    fun downloadToEdit(uuid: String) { // to be changed
+    fun downloadToEdit(uuid: String, finallyCallback: (() -> Unit)?) { // to be changed
         val onDownloadSuccess = { session: Session ->
             DatabaseProvider.runQuery {
                 sessionRepository.update(session)
