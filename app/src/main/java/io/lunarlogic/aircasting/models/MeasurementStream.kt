@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBOb
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
 class MeasurementStream(
@@ -84,8 +85,17 @@ class MeasurementStream(
     val measurements get() = mMeasurements
 
     init {
-        val split = sensorName.split("-")
-        detailedType = split.lastOrNull()
+        detailedType = buildDetailedType()
+    }
+
+    private fun buildDetailedType(): String? {
+        when (sensorPackageName) {
+            MicrophoneDeviceItem.DEFAULT_ID -> return MicrophoneDeviceItem.DETAILED_TYPE
+            else -> {
+                val split = sensorName.split("-")
+                return split.lastOrNull()
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
