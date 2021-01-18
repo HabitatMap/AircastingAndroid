@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.FileWriter
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class AirBeam3Configurator(
     context: Context,
@@ -241,6 +242,7 @@ class AirBeam3Configurator(
                 val value = data.value
                 value?.let {
                     val valueString = String(value)
+                    println("ANIA $valueString")
 
                     try {
                         val partialCountString = valueString.split(":").lastOrNull()?.trim()
@@ -279,9 +281,11 @@ class AirBeam3Configurator(
                 val value = data.value
 
                 value?.let {
-                    val line = String(value)
-                    writeToSyncFile(line)
-                    counter += 1
+                    val lines = String(value)
+                    writeToSyncFile(lines)
+
+                    val linesCount = lines.lines().filter { line -> !line.isEmpty() }.size
+                    counter += linesCount
 
                     showMessage("Syncing $counter/$count")
                 }
@@ -354,8 +358,8 @@ class AirBeam3Configurator(
         val syncMessage = "Synced $counter/$count."
         var timeMessage = ""
         syncStartedAt?.let { startedAt ->
-            val interval = (endedAt - startedAt) / (60 * 1000)
-            timeMessage = "In $interval minutes."
+            val interval = endedAt - startedAt
+            timeMessage = "In ${formatSyncDuration(interval)}."
         }
 
         val syncFileMessage = if (SyncFileChecker(context).run(bleCount, wifiCount, cellularCount)) {
@@ -370,6 +374,15 @@ class AirBeam3Configurator(
                     "$timeMessage\n" +
                     syncFileMessage
         )
+    }
+
+    private fun formatSyncDuration(duration: Long): String {
+        return String.format("%02d:%02d:%02d",
+            TimeUnit.MILLISECONDS.toHours(duration),
+            TimeUnit.MILLISECONDS.toMinutes(duration) -
+                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
+            TimeUnit.MILLISECONDS.toSeconds(duration) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {
