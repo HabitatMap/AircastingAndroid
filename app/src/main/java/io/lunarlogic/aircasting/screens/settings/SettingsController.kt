@@ -10,7 +10,9 @@ class SettingsController(
     private val mViewMvc: SettingsViewMvc,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager
-) : SettingsViewMvc.Listener, SettingsViewMvc.BackendSettingsDialogListener {
+) : SettingsViewMvc.Listener,
+    SettingsViewMvc.BackendSettingsDialogListener,
+    SettingsViewMvc.MicrophoneSettingsDialogListener {
 
     fun onStart(){
         mViewMvc.registerListener(this)
@@ -36,8 +38,21 @@ class SettingsController(
         mSettings.toggleMapSettingsEnabled()
     }
 
+    override fun onMicrophoneSettingsClicked() {
+        startMicrophoneSettingsDialog()
+    }
+
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
+    }
+
+    override fun confirmMicrophoneSettingsClicked(calibration: Int) {
+        mSettings.microphoneSettingsChanged(calibration)
+    }
+
+    private fun startMicrophoneSettingsDialog() {
+        val calibration = mSettings.getCalibrationValue()
+        MicrophoneSettingsDialog(fragmentManager, calibration, this).show()
     }
 
     fun startBackendSettingsDialog(){
@@ -45,6 +60,4 @@ class SettingsController(
         val port = mSettings.getBackendPort()
         BackendSettingsDialog(fragmentManager, url, port, this).show()
     }
-
-
 }

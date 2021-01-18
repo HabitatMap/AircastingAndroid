@@ -48,6 +48,9 @@ interface ApiService {
 
     @POST("/api/user/sessions/update_session.json")
     fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
+
+    @GET("/api/sessions/export_by_uuid.json")
+    fun exportSession(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {

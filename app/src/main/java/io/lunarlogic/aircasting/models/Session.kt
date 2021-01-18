@@ -27,7 +27,8 @@ class Session(
     var followedAt: Date? = null,
     var contribute: Boolean = true,
     var locationless: Boolean = false,
-    private var mStreams: List<MeasurementStream> = listOf()
+    private var mStreams: List<MeasurementStream> = listOf(),
+    var urlLocation: String? = null
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -48,6 +49,7 @@ class Session(
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
         }
+        this.urlLocation = sessionDBObject.urlLocation
     }
 
     constructor(
@@ -173,6 +175,26 @@ class Session(
         }
     }
 
+    fun copy(): Session {
+        return Session(
+            this.uuid,
+            this.deviceId,
+            this.deviceType,
+            this.type,
+            this.name,
+            this.tags,
+            this.status,
+            this.startTime,
+            this.endTime,
+            this.version,
+            this.deleted,
+            this.followedAt,
+            this.contribute,
+            this.locationless,
+            this.streams
+        )
+    }
+
     fun startRecording() {
         mStatus = Status.RECORDING
     }
@@ -235,13 +257,18 @@ class Session(
 
         if (endTime == null) return durationString
 
-        if (endTime!!.day != startTime.day) {
-            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
-        } else {
+        if (isTheSameDay(startTime, endTime!!)) {
             durationString += "-${hourFormatter.format(endTime)}"
+        } else {
+            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
         }
 
         return durationString
+    }
+
+    fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
+        val dateFormat = SimpleDateFormat("yyyyMMdd")
+        return dateFormat.format(startTime) == dateFormat.format(endTime)
     }
 
     fun infoString(): String {
@@ -269,10 +296,5 @@ class Session(
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
-    }
-
-    fun setNameAndTags(newName: String, newTags: ArrayList<String>){
-        this.name = newName
-        this.tags = newTags
     }
 }

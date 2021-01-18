@@ -25,7 +25,7 @@
     <!--  Dashboard -->
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty_header">Ready to get started?</string>
-    <string name="dashboard_empty_text">Record a new session to and monitor your health &amp; environment.</string>
+    <string name="dashboard_empty_text">Record a new session to monitor your health &amp; environment.</string>
     <string name="dashboard_tabs_mobile_active">Mobile active</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
@@ -50,6 +50,7 @@
     <string name="tags_bottom_sheet_input">Tags:</string>
     <string name="session_name_bottom_sheet_input">Session name</string>
     <string name="edit_data">Edit data</string>
+    <string name="share_title">View my AirCasting session</string>
 
     <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
     <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
@@ -141,7 +142,7 @@
     <string name="fixed_session_details_outdoor">Outdoor</string>
     <string name="fixed_session_details_streaming_method_header">Data transmission:</string>
     <string name="fixed_session_details_cellular">Cellular</string>
-    <string name="fixed_session_details_wifi">Wi-Fi</string>
+    <string name="fixed_session_details_wifi">WiFi</string>
     <string name="fixed_session_details_networks_list_header">Available 2.4 GHz networks:</string>
     <string name="fixed_session_details_refresh_networks_list_button"><u>Refresh</u></string>
     <string name="fixed_session_details_wifi_password_dialog_header">Provide password for \"%1$s\" network</string>
@@ -216,4 +217,19 @@
     <string name="service_notification_title">AirCasting is recording a session</string>
     <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
     <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
+
+    <!-- Share session -->
+    <string name="share_file">Share file</string>
+    <string name="share_session">Share session</string>
+    <string name="select_a_stream_to_share">Select a stream to share</string>
+    <string name="share_link">Share link</string>
+    <string name="sensor_param">sensor_name</string>
+    <string name="share_text">View my AirCasting session: \n</string>
+    <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
+    <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
+
+    <!-- Microphone settings -->
+    <string name="microphone_maximum">Microphone maximum</string>
+    <string name="microphone_settings_description">Maximum sound level processed by your phone\'s microphone. For most phones it\'s between 80 and 100</string>
+    <string name="microphone_settings">Microphone settings</string>
 </resources>

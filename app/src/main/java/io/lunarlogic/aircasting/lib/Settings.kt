@@ -10,10 +10,12 @@ open class Settings(mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
+    protected val CALIBRATION_KEY = "calibration"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
 
+    private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
@@ -31,6 +33,10 @@ open class Settings(mApplication: Application) {
 
     fun getEmail(): String? {
         return getStringFromSettings(EMAIL_KEY)
+    }
+
+    fun getCalibrationValue(): Int {
+        return getIntFromSettings(CALIBRATION_KEY, DEFAULT_CALIBRATION_VALUE)
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -59,6 +65,10 @@ open class Settings(mApplication: Application) {
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
     }
 
+    fun microphoneSettingsChanged(calibration: Int){
+        saveToSettings(CALIBRATION_KEY, calibration)
+    }
+
     fun backendSettingsChanged(url: String, port: String) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
@@ -82,6 +92,10 @@ open class Settings(mApplication: Application) {
         return sharedPreferences.getBoolean(key, default)
     }
 
+    open fun getIntFromSettings(key: String, default: Int): Int {
+        return sharedPreferences.getInt(key, default)
+    }
+
     protected open fun saveToSettings(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
@@ -91,6 +105,12 @@ open class Settings(mApplication: Application) {
     protected open fun saveToSettings(key: String, value: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, value)
+        editor.commit()
+    }
+
+    protected open fun saveToSettings(key: String, value: Int){
+        val editor = sharedPreferences.edit()
+        editor.putInt(key, value)
         editor.commit()
     }
 

@@ -36,6 +36,9 @@ class InternalAPIError():
 class SyncError(t: Throwable? = null):
     BaseException(Exception(t), "Session sync failed, check your network connection.")
 
+class SessionExportFailedError(t: Throwable? = null):
+        BaseException(Exception(t), "Something wrong happened during exporting session data.")
+
 class DownloadMeasurementsError(t: Throwable? = null):
     BaseException(Exception(t))
 

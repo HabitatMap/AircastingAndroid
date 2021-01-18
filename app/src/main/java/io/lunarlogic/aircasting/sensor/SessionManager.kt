@@ -1,6 +1,8 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
+import android.widget.Toast
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
@@ -21,6 +23,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
+    private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = FixedSessionDownloadMeasurementsService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
@@ -48,8 +51,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
-    fun onMessageEvent(event: EditSessionEvent){
-        editSession(event)
+    fun onMessageEvent(event: UpdateSessionEvent){
+        updateSession(event)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: ExportSessionEvent){
+        exportSession(event)
     }
 
     @Subscribe
@@ -148,11 +156,24 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
-    private fun editSession(event: EditSessionEvent) {
-        sessionUpdateService.update(event.session) {
+    private fun updateSession(event: UpdateSessionEvent) {
+        val session = event.session.copy()
+        session.name = event.name
+        session.tags = event.tags
+        sessionUpdateService.update(session) {
             DatabaseProvider.runQuery {
-                sessionsRespository.update(event.session)
+                sessionsRespository.update(session)
             }
+        }
+    }
+
+    private fun exportSession(event: ExportSessionEvent) {
+        exportSessionService.export(event.email, event.session.uuid) {
+            Toast.makeText(
+                mContext,
+                mContext.getString(R.string.exported_session_service_success),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 

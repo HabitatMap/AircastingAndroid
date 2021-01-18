@@ -1,11 +1,9 @@
 package io.lunarlogic.aircasting.screens.settings
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 

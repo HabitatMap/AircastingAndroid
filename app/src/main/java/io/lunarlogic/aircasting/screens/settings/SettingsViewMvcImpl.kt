@@ -21,6 +21,11 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onMyAccountClicked()
         }
 
+        val microphoneSettingsButton = rootView?.findViewById<Button>(R.id.microphone_settings_button)
+        microphoneSettingsButton?.setOnClickListener {
+            onMicrophoneSettingsClicked()
+        }
+
         val contributeToCrowdMapSwitch = rootView?.crowd_map_settings_switch
         contributeToCrowdMapSwitch?.isChecked = mSettings.isCrowdMapEnabled()
         contributeToCrowdMapSwitch?.setOnCheckedChangeListener { _, _ ->
@@ -35,6 +40,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         val backendSettingsButton = rootView?.findViewById<Button>(R.id.backend_settings_button)
         backendSettingsButton?.setOnClickListener {
             onBackendSettingsClicked()
+        }
+    }
+
+    private fun onMicrophoneSettingsClicked() {
+        for (listener in listeners) {
+            listener.onMicrophoneSettingsClicked()
         }
     }
 
