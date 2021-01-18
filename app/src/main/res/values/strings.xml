@@ -12,6 +12,7 @@
     <string name="create_account_prompt">First time here? </string>
     <string name="create_account_text_button">Create an account</string>
     <string name="forgot_your_password">Forgot your password?</string>
+    <string name="forgot_password">Forgot password</string>
 
     <!-- Create account -->
     <string name="create_account_header">Create account</string>

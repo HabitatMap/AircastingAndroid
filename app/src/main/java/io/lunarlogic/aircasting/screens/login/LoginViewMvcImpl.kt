@@ -21,6 +21,7 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
         createAccountButton?.setOnClickListener {
             onCreateAccountClicked()
         }
+
     }
 
     private fun onLoginClicked() {
