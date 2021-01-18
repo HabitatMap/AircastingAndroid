@@ -32,7 +32,9 @@ class SessionPresenter() {
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-        this.chartData = ChartData(session) // TODO load this only on certain tabs??
+        if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
+            this.chartData = ChartData(session)
+        }
     }
 
     constructor(sessionUUID: String, initialSensorName: String?): this() {
