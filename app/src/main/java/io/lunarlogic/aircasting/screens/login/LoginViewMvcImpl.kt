@@ -22,6 +22,10 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
             onCreateAccountClicked()
         }
 
+        val forgotPasswordButton = rootView?.findViewById<Button>(R.id.forgot_password_button)
+        forgotPasswordButton?.setOnClickListener {
+            onForgotPasswordClicked()
+        }
     }
 
     private fun onLoginClicked() {
@@ -30,6 +34,12 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
 
         for (listener in listeners) {
             listener.onLoginClicked(username, password)
+        }
+    }
+
+    private fun onForgotPasswordClicked() {
+        for (listener in listeners) {
+            listener.onForgotPasswordClicked()
         }
     }
 
