@@ -129,6 +129,14 @@ class SessionsSyncService {
                 }
             }
             downloadService.download(uuid, onDownloadSuccess)
+
+            // WIP
+//            val onDownloadSuccess = { session: Session ->
+//                DatabaseProvider.runQuery {
+//                    sessionRepository.update(session)
+//                }
+//            }
+//            downloadService.download(uuid, onDownloadSuccess)
         }
     }
 
