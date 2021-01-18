@@ -13,7 +13,6 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
-import java.sql.Timestamp
 
 
 class Chart {
@@ -29,8 +28,6 @@ class Chart {
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
 
-    private var mChartRefreshService: ChartRefreshService
-
     constructor(
         context: Context,
         rootView: View?
@@ -42,27 +39,21 @@ class Chart {
         mChartStartTimeTextView = mRootView?.chart_start_time
         mChartEndTimeTextView = mRootView?.chart_end_time
         mChartUnitTextView = mRootView?.chart_unit
-
-        mChartRefreshService = ChartRefreshService(mSessionPresenter?.session)
     }
 
     fun bindChart(
-        sessionPresenter: SessionPresenter?,
-        streamChanged: Boolean = false
+        sessionPresenter: SessionPresenter?
     ) {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
-        if(streamChanged || mChartRefreshService.shouldBeRefreshed()) {
             setEntries(sessionPresenter)
 
             if (session != null && session?.streams.count() > 0) {
                 resetChart()
-                mChartRefreshService.setLastRefreshTime()
                 mDataSet = prepareDataSet()
                 drawChart()
             }
-        }
         setTimesAndUnit()
     }
 
