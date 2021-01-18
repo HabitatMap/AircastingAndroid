@@ -1,11 +1,10 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
-import android.util.Log
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
-import io.lunarlogic.aircasting.events.EditSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -23,8 +22,9 @@ class FixedController(
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    fragmentManager: FragmentManager
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager),
+    fragmentManager: FragmentManager,
+    private val mContext: Context?
+): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -35,10 +35,6 @@ class FixedController(
 
     override fun unregisterSessionsObserver() {
         mSessionsObserver.stop()
-    }
-
-    override fun forceSessionsObserverRefresh() {
-        mSessionsObserver.forceRefresh()
     }
 
     override fun onRecordNewSessionClicked() {

@@ -8,6 +8,7 @@ interface FixedSessionViewMvc:
     SessionViewMvc<FixedSessionViewMvc.Listener> {
     interface Listener: SessionCardListener {
         fun onSessionEditClicked(session: Session)
+        fun onSessionShareClicked(session: Session)
         fun onSessionDeleteClicked(session: Session)
     }
 }

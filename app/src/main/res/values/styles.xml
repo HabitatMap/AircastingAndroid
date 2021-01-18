@@ -162,6 +162,18 @@
         <item name="android:textSize">@dimen/text_size_s</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.TextView.Desciprtion" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_300</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.TextView.Desciprtion2" parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/moderat_trial_regular</item>
+        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textSize">@dimen/text_size_s</item>
+    </style>
+
     <style name="TextAppearance.Aircasting.TextInput.Hint" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_500</item>
@@ -204,6 +216,19 @@
         <item name="android:textColor">@color/aircasting_grey_600</item>
         <item name="android:textSize">@dimen/text_size_s</item>
         <item name="android:layout_marginTop">@dimen/keyline_2</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.StreamValue" parent="@style/TextAppearance.Aircasting.Body1">
+        <item name="android:textAlignment">center</item>
+        <item name="android:fontFamily">@font/muli_medium</item>
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+        <item name="android:textSize">@dimen/text_size_l</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.StreamValue2" parent="TextAppearance.Aircasting.Body1">
+        <item name="android:fontFamily">@font/muli_medium</item>
+        <item name="android:textColor">@color/aircasting_grey_800</item>
+        <item name="android:textSize">@dimen/text_size_l</item>
     </style>
 
     <style name="TextAppearance.Aircasting.ChartLabels" parent="@style/TextAppearance.Aircasting.Body1">

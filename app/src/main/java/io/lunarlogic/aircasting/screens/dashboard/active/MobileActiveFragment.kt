@@ -49,7 +49,8 @@ class MobileActiveFragment : Fragment() {
             viewLifecycleOwner,
             settings,
             apiServiceFactory,
-            airbeamReconnector
+            airbeamReconnector,
+            context
         )
 
         if (sessionsRequested) {

@@ -17,10 +17,11 @@ class SessionObserver(
     fun observe() {
         val sessionUUID = mSessionPresenter.sessionUUID
         sessionUUID ?: return
+        var session: Session
 
         mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
             sessionDBObject?.let {
-                val session = Session(sessionDBObject)
+                session = Session(sessionDBObject)
                 if (session.hasChangedFrom(mSessionPresenter.session)) {
                     onSessionChanged(session)
                 }

@@ -8,8 +8,6 @@
         android:id="@+id/refresh_sessions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/keyline_4"
-        android:paddingBottom="@dimen/keyline_4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 

@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
@@ -156,9 +157,9 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun midnightPointLine(limit: Float): LimitLine {
-        val line = LimitLine(limit, "Midnight")
+        val line = LimitLine(limit, "")
         line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
-        line.lineColor = Color.BLACK
+        line.lineColor = mContext.resources.getColor(R.color.aircasting_grey_600)
         line.lineWidth = 1f
         line.enableDashedLine(20f, 10f, 0f)
         line.textColor = Color.BLACK
