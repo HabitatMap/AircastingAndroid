@@ -1,11 +1,9 @@
 package io.lunarlogic.aircasting.sensor.airbeam3
 
-import android.app.AlertDialog
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -101,9 +99,9 @@ class AirBeam3Configurator(
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(mobileModeRequest())
-            .add(sleep(500))
             .add(requestMtu(MAX_MTU))
+            .add(sleep(500))
+            .add(mobileModeRequest())
             .enqueue()
     }
 
@@ -111,9 +109,9 @@ class AirBeam3Configurator(
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(syncModeRequest())
-            .add(sleep(500))
             .add(requestMtu(MAX_MTU))
+            .add(sleep(500))
+            .add(syncModeRequest())
             .enqueue()
     }
 
@@ -134,9 +132,9 @@ class AirBeam3Configurator(
             .add(sleep(500))
             .add(sendCurrentTimeConfiguration(dateString))
             .add(sleep(500))
-            .add(mobileModeRequest())
-            .add(sleep(500))
             .add(requestMtu(MAX_MTU))
+            .add(sleep(500))
+            .add(mobileModeRequest())
             .enqueue()
     }
 
