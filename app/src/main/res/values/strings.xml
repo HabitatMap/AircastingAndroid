@@ -211,4 +211,9 @@
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
+
+    <!--  Sensor services -->
+    <string name="service_notification_title">AirCasting is recording a session</string>
+    <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
+    <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
 </resources>

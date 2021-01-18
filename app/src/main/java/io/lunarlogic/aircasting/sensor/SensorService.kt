@@ -18,10 +18,6 @@ import org.greenrobot.eventbus.Subscribe
 abstract class SensorService : Service() {
     private val CHANNEL_ID = "Aircasting ForegroundService"
 
-    companion object {
-        val MESSAGE_KEY = "inputExtraMessage"
-    }
-
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -30,7 +26,6 @@ abstract class SensorService : Service() {
         EventBus.getDefault().register(this);
 
        startSensor(intent)
-        val message = intent?.getStringExtra(MESSAGE_KEY)
         createNotificationChannel()
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
@@ -38,8 +33,8 @@ abstract class SensorService : Service() {
             0, notificationIntent, 0
         )
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Aircasting: Sensor Service")
-            .setContentText(message)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(notificationMessage())
             .setSmallIcon(R.drawable.aircasting)
             .setContentIntent(pendingIntent)
             .build()
@@ -63,6 +58,7 @@ abstract class SensorService : Service() {
 
     abstract fun startSensor(intent: Intent?)
     abstract fun onStopService()
+    abstract fun notificationMessage() : String
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

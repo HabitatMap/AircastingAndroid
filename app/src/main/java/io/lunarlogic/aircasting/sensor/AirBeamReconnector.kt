@@ -99,7 +99,7 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceItem: DeviceItem) {
-        AirbeamService.startService(mContext, "AirBeam Service is running - reconnect", deviceItem)
+        AirbeamService.startService(mContext, deviceItem)
     }
 
     fun onDiscoveryFailed() {

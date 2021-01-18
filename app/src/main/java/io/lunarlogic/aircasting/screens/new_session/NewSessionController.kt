@@ -155,7 +155,7 @@ class NewSessionController(
     }
 
     private fun startMicrophoneSession() {
-        MicrophoneService.startService(mContextActivity, "Microphone Service is running")
+        MicrophoneService.startService(mContextActivity)
     }
 
     override fun onTurnOnBluetoothOkClicked() {
@@ -227,7 +227,7 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        AirbeamService.startService(mContextActivity, "AirBeam Service is running", deviceItem)
+        AirbeamService.startService(mContextActivity, deviceItem)
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem) {

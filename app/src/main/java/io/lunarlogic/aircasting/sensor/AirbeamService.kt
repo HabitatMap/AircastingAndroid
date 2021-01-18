@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
@@ -20,9 +21,8 @@ class AirbeamService : SensorService(),
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
 
-        fun startService(context: Context, message: String, deviceItem: DeviceItem) {
+        fun startService(context: Context,deviceItem: DeviceItem) {
             val startIntent = Intent(context, AirbeamService::class.java)
-            startIntent.putExtra(MESSAGE_KEY, message)
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
             ContextCompat.startForegroundService(context, startIntent)
         }
@@ -47,6 +47,10 @@ class AirbeamService : SensorService(),
 
     override fun onStopService() {
         // nothing
+    }
+
+    override fun notificationMessage(): String {
+        return getString(R.string.ab_service_notification_message)
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem) {
