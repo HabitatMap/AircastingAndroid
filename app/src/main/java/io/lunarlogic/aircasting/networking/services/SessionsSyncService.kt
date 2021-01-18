@@ -140,6 +140,15 @@ class SessionsSyncService {
         }
     }
 
+    fun downloadToEdit(uuid: String) { // to be changed
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                sessionRepository.update(session)
+            }
+        }
+        downloadService.download(uuid, onDownloadSuccess)
+    }
+
     private fun isUploadable(session: Session): Boolean {
         return !session.locationless && session.isMobile()
     }

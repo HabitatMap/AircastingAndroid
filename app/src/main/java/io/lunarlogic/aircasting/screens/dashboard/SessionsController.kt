@@ -141,8 +141,8 @@ abstract class SessionsController(
     override fun onEditSessionClicked(session: Session) {
         if (ConnectivityManager.isConnected(context)) {
             mViewMvc.showLoader() // todo: this loader probably should be drawn on BottomSheet (?)
-            val finallyCallback = { mViewMvc.hideLoader() } // callback to be changed ?
-            mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
+            mMobileSessionsSyncService.downloadToEdit(session.uuid)
+            mViewMvc.hideLoader()
             startEditSessionBottomSheet(session)
         } else {
             Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
