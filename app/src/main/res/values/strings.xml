@@ -11,6 +11,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="create_account_prompt">First time here? </string>
     <string name="create_account_text_button">Create an account</string>
+    <string name="forgot_your_password">Forgot your password?</string>
 
     <!-- Create account -->
     <string name="create_account_header">Create account</string>
@@ -227,4 +228,5 @@
     <string name="microphone_maximum">Microphone maximum</string>
     <string name="microphone_settings_description">Maximum sound level processed by your phone\'s microphone. For most phones it\'s between 80 and 100</string>
     <string name="microphone_settings">Microphone settings</string>
+
 </resources>
