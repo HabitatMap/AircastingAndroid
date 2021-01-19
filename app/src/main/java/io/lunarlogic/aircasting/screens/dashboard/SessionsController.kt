@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
 import android.content.Intent
-import android.net.NetworkInfo
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -142,9 +141,6 @@ abstract class SessionsController(
             Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
             return
         }
-
-        startEditSessionBottomSheet(session)
-
         val onDownloadSuccess = { session: Session ->
             DatabaseProvider.runQuery {
                 mSessionRepository.update(session)
@@ -154,17 +150,23 @@ abstract class SessionsController(
         val finallyCallback = {
             editDialog?.hideLoader()
         }
-        editDialog?.showLoader()
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback) //downloadSuccess too early <?>
+        startEditSessionBottomSheet(session, onDownloadSuccess, finallyCallback)
     }
 
     override fun onShareSessionClicked(session: Session) {
         startShareSessionBottomSheet(session)
     }
 
-    private fun startEditSessionBottomSheet(session: Session) {
+    private fun startEditSessionBottomSheet(
+        session: Session,
+        onDownloadSuccess: (Session) -> Unit?,
+        finallyCallback: () -> Unit?
+    ) {
         editDialog = EditSessionBottomSheet(this, session)
         editDialog?.show(fragmentManager)
+
+        editDialog?.showLoader()
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback) //downloadSuccess too early <?>
     }
 
     private fun startShareSessionBottomSheet(session: Session){
