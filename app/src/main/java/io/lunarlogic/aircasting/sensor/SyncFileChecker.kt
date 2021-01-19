@@ -9,7 +9,7 @@ import java.io.FileWriter
 // NOTE: this class is temporary check if downloading from SD card works, before actual sync is implemeted
 // TODO: remove this class after implementing sync
 class SyncFileChecker(private val mContext: Context) {
-    private val FIELDS_COUNT = 12
+    private val FIELDS_COUNT = 13
     private val bleCounts = HashMap<String, Int>()
     private val wifiCounts = HashMap<String, Int>()
     private val cellularCounts = HashMap<String, Int>()
