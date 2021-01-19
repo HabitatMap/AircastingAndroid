@@ -27,12 +27,13 @@ class SessionDownloadService(private val apiService: ApiService, private val err
                 } else {
                     errorHandler.handle(UnexpectedAPIError())
                 }
-                 finallyCallback?.invoke() //todo: is this right place for this invoke
+                 finallyCallback?.invoke()
 
             }
 
             override fun onFailure(call: Call<SessionResponse>, t: Throwable) {
                 errorHandler.handle(UnexpectedAPIError(t))
+                finallyCallback?.invoke()
             }
         })
     }
