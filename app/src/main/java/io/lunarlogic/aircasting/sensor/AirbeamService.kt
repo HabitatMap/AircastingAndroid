@@ -10,13 +10,19 @@ import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
+import javax.inject.Inject
 
 
-class AirbeamService : SensorService(),
+class AirbeamService: SensorService(),
     AirBeamConnector.Listener {
+
+    @Inject
+    lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -28,12 +34,17 @@ class AirbeamService : SensorService(),
         }
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val app = application as AircastingApplication
+        val appComponent = app.appComponent
+        appComponent.inject(this)
+
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     override fun startSensor(intent: Intent?) {
         val deviceItem = intent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
-        val app = application as AircastingApplication
-        val errorHandler = ErrorHandler(this)
-        val airBeamConnectorFactory = AirBeamConnectorFactory(this, Settings(app), errorHandler)
-        val airBeamConnector = airBeamConnectorFactory.get(deviceItem)
+        val airBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         airBeamConnector?.registerListener(this)
         try {

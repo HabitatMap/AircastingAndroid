@@ -5,15 +5,12 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.sensor.SensorService
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
+import javax.inject.Inject
 
-class MicrophoneService : SensorService() {
-    var mMicrophoneReader: MicrophoneReader? = null
+class MicrophoneService: SensorService() {
+    @Inject
+    lateinit var microphoneReader: MicrophoneReader
 
     companion object {
         fun startService(context: Context) {
@@ -22,16 +19,20 @@ class MicrophoneService : SensorService() {
         }
     }
 
-    override fun startSensor(intent: Intent?) {
-        // TODO: can we use injector here not to create this var from scratch?
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val app = application as AircastingApplication
-        mMicrophoneReader= MicrophoneReader(AudioReader(), ErrorHandler(this), Settings(app))
+        val appComponent = app.appComponent
+        appComponent.inject(this)
 
-        mMicrophoneReader?.start()
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun startSensor(intent: Intent?) {
+        microphoneReader.start()
     }
 
     override fun onStopService() {
-        mMicrophoneReader?.stop()
+        microphoneReader.stop()
     }
 
     override fun notificationMessage(): String {

@@ -26,14 +26,11 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
-import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.AirbeamService
-import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
-import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,8 +46,6 @@ class NewSessionController(
     private val mFragmentManager: FragmentManager,
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
-    private val airBeamConnectorFactory: AirBeamConnectorFactory,
-    audioReader: AudioReader,
     private val sessionBuilder: SessionBuilder,
     private val settings: Settings,
     private val sessionType: Session.Type
@@ -67,7 +62,6 @@ class NewSessionController(
     private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
-    private val microphoneReader = MicrophoneReader(audioReader, errorHandler, settings)
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
 

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.screens.main.MainActivity
@@ -25,7 +26,7 @@ abstract class SensorService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         EventBus.getDefault().register(this);
 
-       startSensor(intent)
+        startSensor(intent)
         createNotificationChannel()
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(

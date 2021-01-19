@@ -15,7 +15,6 @@ import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
-import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity() {
@@ -30,12 +29,6 @@ class NewSessionActivity : AppCompatActivity() {
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
-
-    @Inject
-    lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
-
-    @Inject
-    lateinit var audioReader: AudioReader
 
     @Inject
     lateinit var sessionBuilder: SessionBuilder
@@ -75,8 +68,6 @@ class NewSessionActivity : AppCompatActivity() {
             supportFragmentManager,
             permissionsManager,
             bluetoothManager,
-            airbeamConnectorFactory,
-            audioReader,
             sessionBuilder,
             settings,
             sessionType

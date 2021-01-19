@@ -11,6 +11,8 @@ import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
+import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import javax.inject.Singleton
 
 @Module
@@ -36,6 +38,11 @@ open class SensorsModule {
     @Provides
     @Singleton
     fun prodivesSessionBuilder(): SessionBuilder = SessionBuilder()
+
+    @Provides
+    @Singleton
+    open fun providesMicrophoneReader(audioReader: AudioReader, errorHandler: ErrorHandler, settings: Settings): MicrophoneReader
+            = MicrophoneReader(audioReader, errorHandler, settings)
 
     @Provides
     @Singleton
