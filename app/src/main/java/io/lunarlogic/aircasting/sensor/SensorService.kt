@@ -24,7 +24,7 @@ abstract class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        EventBus.getDefault().register(this);
+        registerToEventBus()
 
         startSensor(intent)
         createNotificationChannel()
@@ -46,7 +46,7 @@ abstract class SensorService : Service() {
     }
 
     override fun stopService(name: Intent?): Boolean {
-        EventBus.getDefault().unregister(this);
+        unregisterFromEventBus()
         onStopService()
 
         return super.stopService(name)
@@ -75,5 +75,15 @@ abstract class SensorService : Service() {
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
         stopSelf()
+    }
+
+    protected fun registerToEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    protected fun unregisterFromEventBus() {
+        EventBus.getDefault().unregister(this);
     }
 }
