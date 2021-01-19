@@ -31,7 +31,7 @@ class ForgotPasswordService(private val mContext: Context,
                 if (response.isSuccessful){
                     Toast.makeText(mContext, mContext.getString(R.string.reset_email_sent), Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(mContext, mContext.getString(R.string.unknown_error), Toast.LENGTH_LONG).show()
+                    Toast.makeText(mContext, mContext.getString(R.string.errors_network_forgot_password), Toast.LENGTH_LONG).show()
                 }
             }
 
