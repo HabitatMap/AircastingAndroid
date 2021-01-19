@@ -146,8 +146,8 @@ abstract class SessionsController(
         val onDownloadSuccess = { session: Session ->
             DatabaseProvider.runQuery {
                 mSessionRepository.update(session)
-                editDialog?.reload(session)
             }
+            editDialog?.reload(session)
         }
         val finallyCallback = {
             editDialog?.hideLoader()

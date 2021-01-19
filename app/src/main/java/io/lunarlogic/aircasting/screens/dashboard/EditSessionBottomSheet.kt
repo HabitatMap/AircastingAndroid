@@ -10,6 +10,7 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
@@ -19,6 +20,9 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
         fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
     }
 
+    private var sessionNameInput: EditText? = null
+    private var tagsInput: EditText? = null
+    private var mLoader: ImageView? = null
     private val TAG = "EditSessionBottomSheet"
 
     override fun onCreateView(
@@ -28,10 +32,12 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     ): View? {
         val view = inflater.inflate(R.layout.edit_session_bottom_sheet, container, false)
 
-        val sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
+        mLoader = view?.findViewById(R.id.loader)
+
+        sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
         sessionNameInput?.setText(mSession.name)
 
-        val tagsInput = view?.findViewById<EditText>(R.id.tags_input)
+        tagsInput = view?.findViewById<EditText>(R.id.tags_input)
         tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
@@ -58,15 +64,23 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
 
     fun reload(session: Session) {
         mSession = session // is it needed?
-        // refresh inputs
+        sessionNameInput?.setText(mSession.name)
+        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))        // refresh inputs
     }
 
     fun showLoader() {
         // TODO: handle showing loader and disabling text inputs
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+        sessionNameInput?.isEnabled = false
+        tagsInput?.isEnabled = false
     }
 
     fun hideLoader() {
         // TODO: handle hiding loader and enabling text inputs
+        mLoader?.visibility = View.GONE
+        sessionNameInput?.isEnabled = true
+        tagsInput?.isEnabled = true
     }
 
     private fun onEditSessionPressed() {
