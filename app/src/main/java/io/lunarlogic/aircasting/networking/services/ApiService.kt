@@ -10,10 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.params.CreateAccountBody
-import io.lunarlogic.aircasting.networking.params.CreateSessionBody
-import io.lunarlogic.aircasting.networking.params.SyncSessionBody
-import io.lunarlogic.aircasting.networking.params.UpdateSessionBody
+import io.lunarlogic.aircasting.networking.params.*
 import io.lunarlogic.aircasting.networking.responses.*
 import okhttp3.HttpUrl
 import retrofit2.http.*
@@ -51,6 +48,9 @@ interface ApiService {
 
     @GET("/api/sessions/export_by_uuid.json")
     fun exportSession(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
+
+    @POST("/users/password.json")
+    fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {

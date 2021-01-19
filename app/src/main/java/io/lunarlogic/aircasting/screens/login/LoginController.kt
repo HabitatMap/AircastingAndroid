@@ -2,11 +2,14 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.content.Context
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.ForgotPasswordService
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
+import io.lunarlogic.aircasting.screens.login.ForgotPasswordDialog
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
 
@@ -14,10 +17,13 @@ class  LoginController(
     private val mContext: Context,
     private val mViewMvc: LoginViewMvc,
     mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
-) : LoginViewMvc.Listener {
+    mApiServiceFactory: ApiServiceFactory,
+    private val fragmentManager: FragmentManager
+) : LoginViewMvc.Listener,
+    LoginViewMvc.ForgotPasswordDialogListener {
     private val mErrorHandler = ErrorHandler(mContext)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
+    private val mForgotPasswordService = ForgotPasswordService(mContext, mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -40,7 +46,19 @@ class  LoginController(
         mLoginService.performLogin(username, password, successCallback, errorCallback)
     }
 
+    override fun onForgotPasswordClicked() {
+        startForgotPasswordDialog()
+    }
+
     override fun onCreateAccountClicked() {
         CreateAccountActivity.start(mContext)
+    }
+
+    private fun startForgotPasswordDialog() {
+        ForgotPasswordDialog(fragmentManager, this).show()
+    }
+
+    override fun confirmClicked(emailValue: String) {
+        mForgotPasswordService.resetPassword(emailValue)
     }
 }

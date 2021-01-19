@@ -6,20 +6,23 @@ import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import kotlinx.android.synthetic.main.activity_login.view.*
 
 class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?): super() {
         this.rootView = inflater.inflate(R.layout.activity_login, parent, false)
 
-        val loginButton = rootView?.findViewById<Button>(R.id.login_button)
-        loginButton?.setOnClickListener {
+        rootView?.login_button?.setOnClickListener {
             onLoginClicked()
         }
 
-        val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
-        createAccountButton?.setOnClickListener {
+        rootView?.create_account_button?.setOnClickListener {
             onCreateAccountClicked()
+        }
+
+        rootView?.forgot_password_button?.setOnClickListener {
+            onForgotPasswordClicked()
         }
     }
 
@@ -29,6 +32,12 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
 
         for (listener in listeners) {
             listener.onLoginClicked(username, password)
+        }
+    }
+
+    private fun onForgotPasswordClicked() {
+        for (listener in listeners) {
+            listener.onForgotPasswordClicked()
         }
     }
 
