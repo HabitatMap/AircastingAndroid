@@ -143,6 +143,8 @@ abstract class SessionsController(
             return
         }
 
+        startEditSessionBottomSheet(session)
+
         val onDownloadSuccess = { session: Session ->
             DatabaseProvider.runQuery {
                 mSessionRepository.update(session)
@@ -153,9 +155,7 @@ abstract class SessionsController(
             editDialog?.hideLoader()
         }
         editDialog?.showLoader()
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
-
-        startEditSessionBottomSheet(session)
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback) //downloadSuccess too early <?>
     }
 
     override fun onShareSessionClicked(session: Session) {

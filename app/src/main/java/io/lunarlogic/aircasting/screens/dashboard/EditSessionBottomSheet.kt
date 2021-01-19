@@ -32,7 +32,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     ): View? {
         val view = inflater.inflate(R.layout.edit_session_bottom_sheet, container, false)
 
-        mLoader = view?.findViewById(R.id.loader)
+        mLoader = view?.findViewById(R.id.edit_loader)
 
         sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
         sessionNameInput?.setText(mSession.name)
@@ -55,6 +55,8 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
             dismiss()
         }
 
+        showLoader()
+
         return view
     }
 
@@ -65,11 +67,10 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     fun reload(session: Session) {
         mSession = session // is it needed?
         sessionNameInput?.setText(mSession.name)
-        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))        // refresh inputs
+        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
     }
 
     fun showLoader() {
-        // TODO: handle showing loader and disabling text inputs
         AnimatedLoader(mLoader).start()
         mLoader?.visibility = View.VISIBLE
         sessionNameInput?.isEnabled = false
@@ -77,7 +78,6 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     }
 
     fun hideLoader() {
-        // TODO: handle hiding loader and enabling text inputs
         mLoader?.visibility = View.GONE
         sessionNameInput?.isEnabled = true
         tagsInput?.isEnabled = true
