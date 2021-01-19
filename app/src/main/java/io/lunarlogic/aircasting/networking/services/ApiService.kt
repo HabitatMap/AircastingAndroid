@@ -49,9 +49,8 @@ interface ApiService {
     @GET("/api/sessions/export_by_uuid.json")
     fun exportSession(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
 
-    //TODO: Add forgot call to be added (probably with ForgotPasswordService ??)
     @POST("/users/password.json")
-    fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse> //todo: @Body and the Response class to think of
+    fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {

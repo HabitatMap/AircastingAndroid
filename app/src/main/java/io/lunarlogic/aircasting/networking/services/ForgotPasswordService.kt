@@ -12,9 +12,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ForgotPasswordService(private val mContext: Context,
-                            private val mErrorHandler: ErrorHandler,
-                            private val mApiServiceFactory: ApiServiceFactory) {
+class ForgotPasswordService(
+    private val mContext: Context,
+    private val mErrorHandler: ErrorHandler,
+    private val mApiServiceFactory: ApiServiceFactory
+    ) {
     fun resetPassword(login: String) {
 
         val apiService = mApiServiceFactory.get(emptyList())
@@ -24,10 +26,7 @@ class ForgotPasswordService(private val mContext: Context,
         val call = apiService.resetPassword(forgotPasswordBody)
 
         call.enqueue(object: Callback<ForgotPasswordResponse> {
-            override fun onResponse(
-                call: Call<ForgotPasswordResponse>,
-                response: Response<ForgotPasswordResponse>
-            ) {
+            override fun onResponse(call: Call<ForgotPasswordResponse>, response: Response<ForgotPasswordResponse>) {
                 if (response.isSuccessful){
                     Toast.makeText(mContext, mContext.getString(R.string.reset_email_sent), Toast.LENGTH_LONG).show()
                 } else {
@@ -38,7 +37,6 @@ class ForgotPasswordService(private val mContext: Context,
             override fun onFailure(call: Call<ForgotPasswordResponse>, t: Throwable) {
                 mErrorHandler.handleAndDisplay(UnexpectedAPIError(t))
             }
-
         })
     }
 }
