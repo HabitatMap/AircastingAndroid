@@ -13,7 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SessionDownloadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    fun download(uuid: String, successCallback: (Session) -> Unit) {
+    fun download(uuid: String, successCallback: (Session) -> Unit, finallyCallback: (() -> Unit?)? = null) {
         val call = apiService.downloadSession(uuid)
         call.enqueue(object : Callback<SessionResponse> {
             override fun onResponse(call: Call<SessionResponse>, response: Response<SessionResponse>) {

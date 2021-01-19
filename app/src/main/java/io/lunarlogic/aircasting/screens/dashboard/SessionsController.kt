@@ -8,21 +8,18 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.DownloadMeasurementsService
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.networking.services.ConnectivityManager
-import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast.Companion.show
+import io.lunarlogic.aircasting.networking.services.*
 import org.greenrobot.eventbus.EventBus
 
 
@@ -40,6 +37,8 @@ abstract class SessionsController(
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
+    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    private val mSessionRepository = SessionsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
@@ -139,15 +138,24 @@ abstract class SessionsController(
     }
 
     override fun onEditSessionClicked(session: Session) {
-        if (ConnectivityManager.isConnected(context)) {
-            mViewMvc.showLoader() // todo: this loader probably should be drawn on BottomSheet (?)
-            val finallyCallback = { reloadSession(session)}
-            mMobileSessionsSyncService.downloadToEdit(session.uuid, finallyCallback)
-            mViewMvc.hideLoader()
-            startEditSessionBottomSheet(session)
-        } else {
+        if (!ConnectivityManager.isConnected(context)) {
             Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
+            return
         }
+
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+                editDialog?.reload(session)
+            }
+        }
+        val finallyCallback = {
+            editDialog?.hideLoader()
+        }
+        editDialog?.showLoader()
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+
+        startEditSessionBottomSheet(session)
     }
 
     override fun onShareSessionClicked(session: Session) {
