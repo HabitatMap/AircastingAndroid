@@ -23,7 +23,7 @@ class  LoginController(
     LoginViewMvc.ForgotPasswordDialogListener{
     private val mErrorHandler = ErrorHandler(mContext)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
-//    private val mForgotPasswordService = ForgotPasswordService()
+    private val mForgotPasswordService = ForgotPasswordService(mContext, mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -59,6 +59,7 @@ class  LoginController(
     }
 
     override fun confirmClicked(emailValue: String) {
-        //TODO: tutaj zaczyna sie ta bardziej backendowa czesc- jakis event bus i call do api... cos tego czy inaczej??? gdzie mialbym ten Event wyslac?
+        //TODO: tutaj zaczyna sie ta bardziej backendowa czesc
+        mForgotPasswordService.resetPassword(emailValue)
     }
 }
