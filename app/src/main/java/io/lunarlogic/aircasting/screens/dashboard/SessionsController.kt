@@ -150,23 +150,17 @@ abstract class SessionsController(
         val finallyCallback = {
             editDialog?.hideLoader()
         }
-        startEditSessionBottomSheet(session, onDownloadSuccess, finallyCallback)
+        startEditSessionBottomSheet(session)
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
     }
 
     override fun onShareSessionClicked(session: Session) {
         startShareSessionBottomSheet(session)
     }
 
-    private fun startEditSessionBottomSheet(
-        session: Session,
-        onDownloadSuccess: (Session) -> Unit?,
-        finallyCallback: () -> Unit?
-    ) {
+    private fun startEditSessionBottomSheet(session: Session) {
         editDialog = EditSessionBottomSheet(this, session)
         editDialog?.show(fragmentManager)
-
-        editDialog?.showLoader()
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback) //downloadSuccess too early <?>
     }
 
     private fun startShareSessionBottomSheet(session: Session){

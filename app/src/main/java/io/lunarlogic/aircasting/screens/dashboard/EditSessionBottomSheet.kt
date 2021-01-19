@@ -65,7 +65,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     }
 
     fun reload(session: Session) {
-        mSession = session // is it needed?
+        mSession = session
         sessionNameInput?.setText(mSession.name)
         tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
     }
