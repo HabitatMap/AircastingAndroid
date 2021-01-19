@@ -5,6 +5,7 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.exceptions.SyncCanceledError
 import io.lunarlogic.aircasting.exceptions.SyncError
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
@@ -28,6 +29,7 @@ class SessionsSyncService {
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
+    private var call: Call<SyncResponse>? = null
 
     private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
         this.apiService = apiService
@@ -52,6 +54,10 @@ class SessionsSyncService {
         fun destroy() {
             mSingleton = null
         }
+
+        fun cancel() {
+            mSingleton?.call?.cancel()
+        }
     }
 
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
@@ -66,9 +72,9 @@ class SessionsSyncService {
             val sessions = sessionRepository.finishedSessions()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
-            val call = apiService.sync(SyncSessionBody(jsonData))
+            call = apiService.sync(SyncSessionBody(jsonData))
 
-            call.enqueue(object : Callback<SyncResponse> {
+            call!!.enqueue(object : Callback<SyncResponse> {
                 override fun onResponse(
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
@@ -92,9 +98,14 @@ class SessionsSyncService {
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
+                    val error = if (call.isCanceled()) {
+                        SyncCanceledError(t)
+                    } else {
+                        SyncError(t)
+                    }
                     syncStarted.set(false)
                     hideLoaderCallback?.invoke()
-                    errorHandler.handleAndDisplay(SyncError(t))
+                    errorHandler.handleAndDisplay(error)
                 }
             })
         }

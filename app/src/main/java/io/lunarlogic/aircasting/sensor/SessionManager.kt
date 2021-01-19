@@ -64,6 +64,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         deleteSession(event.sessionUUID)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: LogoutEvent) {
+        fixedSessionDownloadMeasurementsService.stop()
+    }
+
     fun onStart() {
         registerToEventBus()
         updateMobileSessions()
