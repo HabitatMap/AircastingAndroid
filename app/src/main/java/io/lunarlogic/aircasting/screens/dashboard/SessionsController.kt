@@ -112,7 +112,7 @@ abstract class SessionsController(
 
     override fun onExpandSessionCard(session: Session) {
         if (session.isIncomplete()) {
-            mViewMvc.showLoader()
+            mViewMvc.showLoaderFor(session)
             val finallyCallback = { reloadSession(session) }
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
         }
