@@ -263,6 +263,7 @@ class NewSessionController(
     ) {
 
         val currentLocation = Session.Location.get(LocationHelper.lastLocation())
+
         val session = sessionBuilder.build(
             sessionUUID,
             deviceItem,

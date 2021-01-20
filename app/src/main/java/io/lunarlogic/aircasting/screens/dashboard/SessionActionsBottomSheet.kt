@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 
 class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mListener) {
@@ -14,6 +16,8 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
         fun shareSessionPressed()
         fun deleteSessionPressed()
     }
+
+    var mLoader: ImageView? = null
 
     override fun layoutId(): Int {
         return R.layout.session_actions;
@@ -25,6 +29,8 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
         savedInstanceState: Bundle?
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
+
+        mLoader = view?.findViewById(R.id.loader)
 
         val editButton = view?.findViewById<Button>(R.id.edit_session_button)
         editButton?.setOnClickListener {
