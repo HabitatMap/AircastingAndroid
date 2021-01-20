@@ -100,6 +100,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions")
     fun getAll() : List<SessionDBObject>
 
+    @Query("SELECT count(id) FROM sessions")
+    fun getCount() : Int
+
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 

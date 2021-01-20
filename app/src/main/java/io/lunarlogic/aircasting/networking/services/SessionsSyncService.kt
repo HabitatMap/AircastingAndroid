@@ -29,7 +29,7 @@ class SessionsSyncService {
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
-    private var call: Call<SyncResponse>? = null
+    private var mCall: Call<SyncResponse>? = null
 
     private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
         this.apiService = apiService
@@ -56,11 +56,12 @@ class SessionsSyncService {
         }
 
         fun cancel() {
-            mSingleton?.call?.cancel()
+            mSingleton?.mCall?.cancel()
         }
     }
 
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
+        println("MARYSIA: sync, call canceled? ${mCall?.isCanceled}")
         if (syncStarted.get()) {
             return
         }
@@ -72,13 +73,14 @@ class SessionsSyncService {
             val sessions = sessionRepository.finishedSessions()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
-            call = apiService.sync(SyncSessionBody(jsonData))
+            mCall = apiService.sync(SyncSessionBody(jsonData))
 
-            call!!.enqueue(object : Callback<SyncResponse> {
+            mCall!!.enqueue(object : Callback<SyncResponse> {
                 override fun onResponse(
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
                 ) {
+                    println("MARYSIA: sync onResponse, call canceled? ${call?.isCanceled}")
                     syncStarted.set(false)
                     hideLoaderCallback?.invoke()
 
@@ -98,6 +100,7 @@ class SessionsSyncService {
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
+                    println("MARYSIA: sync, call canceled? ${call?.isCanceled}")
                     val error = if (call.isCanceled()) {
                         SyncCanceledError(t)
                     } else {

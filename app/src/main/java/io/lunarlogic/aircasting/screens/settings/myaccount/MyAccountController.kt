@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.events.LogoutEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -32,11 +33,23 @@ class MyAccountController(
         SessionsSyncService.cancel()
         SessionsSyncService.destroy()
 
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                DatabaseProvider.get().clearAllTables()
+            }
+            query.await()
+        }
+
         DatabaseProvider.runQuery {
-            DatabaseProvider.get().clearAllTables()
+            val count = DatabaseProvider.get().sessions().getCount()
+            println("MARYSIA: sessions count ${count}")
         }
 
         Thread.sleep(3000)
         LoginActivity.startAfterSignOut(mContext)
+    }
+
+    fun count() : Int = runBlocking {
+        DatabaseProvider.get().sessions().getCount()
     }
 }
