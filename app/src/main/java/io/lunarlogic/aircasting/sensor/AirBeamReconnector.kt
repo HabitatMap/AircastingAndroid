@@ -11,8 +11,6 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.events.SensorDisconnectedEvent
-import io.lunarlogic.aircasting.exceptions.BLENotSupported
-import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
@@ -22,8 +20,6 @@ import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
     private val mContext: Context,
-    private val mAirBeamConnectorFactory: AirBeamConnectorFactory,
-    private val mErrorHandler: ErrorHandler,
     private val mSessionsRepository: SessionsRepository,
     private val mBluetoothManager: BluetoothManager
 ): BroadcastReceiver() {

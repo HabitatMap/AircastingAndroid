@@ -33,7 +33,7 @@ open class SensorsModule {
         errorHandler: ErrorHandler,
         sessionsRepository: SessionsRepository,
         bluetoothManager: BluetoothManager
-    ): AirBeamReconnector = AirBeamReconnector(application, airBeamConnectorFactory, errorHandler, sessionsRepository, bluetoothManager)
+    ): AirBeamReconnector = AirBeamReconnector(application, sessionsRepository, bluetoothManager)
 
     @Provides
     @Singleton
