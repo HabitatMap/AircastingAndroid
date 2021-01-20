@@ -27,7 +27,7 @@ class AirbeamService: SensorService(),
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
 
-        fun startService(context: Context,deviceItem: DeviceItem) {
+        fun startService(context: Context, deviceItem: DeviceItem) {
             val startIntent = Intent(context, AirbeamService::class.java)
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
             ContextCompat.startForegroundService(context, startIntent)
