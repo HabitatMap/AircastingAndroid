@@ -46,7 +46,7 @@ abstract class SensorService : Service() {
 
         startForeground(1, notification)
 
-        return START_NOT_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun stopService(name: Intent?): Boolean {
