@@ -17,6 +17,10 @@ import org.greenrobot.eventbus.Subscribe
 
 
 abstract class SensorService : Service() {
+    // all devices need to connect in the Foreground Service,
+    // otherwise measurements will not record when the app is in background
+    // https://trello.com/c/ysfz8lDq/1087-mobile-active-measurements-should-continue-recording-when-app-is-in-background
+
     private val CHANNEL_ID = "Aircasting ForegroundService"
 
     override fun onBind(intent: Intent?): IBinder? {
