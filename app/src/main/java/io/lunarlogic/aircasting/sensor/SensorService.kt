@@ -15,6 +15,10 @@ import io.lunarlogic.aircasting.screens.main.MainActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
+/**
+ * Sessions are recorded in foreground service, so they are still recorded
+ * if the app is in the background or the screen is off
+ */
 
 abstract class SensorService : Service() {
     // all devices need to connect in the Foreground Service,
