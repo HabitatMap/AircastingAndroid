@@ -26,7 +26,6 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
-import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.sensor.AirbeamService
@@ -288,7 +287,7 @@ class NewSessionController(
     }
 
     @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionBleNotSupportedEvent) {
+    fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         mContextActivity.onBackPressed()
     }
 }

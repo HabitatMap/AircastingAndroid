@@ -8,7 +8,7 @@ import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
-import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
+import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.events.SensorDisconnectedEvent
 import io.lunarlogic.aircasting.models.Session
@@ -124,7 +124,7 @@ class AirBeamReconnector(
     }
 
     @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionBleNotSupportedEvent) {
+    fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         mCallback?.invoke()
     }
 }

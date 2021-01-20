@@ -6,7 +6,7 @@ import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.events.AirBeamConnectionBleNotSupportedEvent
+import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -51,8 +51,7 @@ class AirbeamService: SensorService(),
             airBeamConnector?.connect(deviceItem)
         } catch (e: BLENotSupported) {
             errorHandler.handleAndDisplay(e)
-            val event = AirBeamConnectionBleNotSupportedEvent()
-            EventBus.getDefault().post(event)
+            onConnectionFailed()
         }
     }
 
@@ -70,10 +69,15 @@ class AirbeamService: SensorService(),
     }
 
     override fun onConnectionFailed(deviceId: String) {
-        // ignore
+        onConnectionFailed()
     }
 
     override fun onDisconnect(deviceId: String) {
         stopSelf()
+    }
+
+    private fun onConnectionFailed() {
+        val event = AirBeamConnectionFailedEvent()
+        EventBus.getDefault().post(event)
     }
 }
