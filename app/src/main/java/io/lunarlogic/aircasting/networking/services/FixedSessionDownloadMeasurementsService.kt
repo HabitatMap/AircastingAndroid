@@ -23,15 +23,28 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         thread.start()
     }
 
+    fun pause() {
+        thread.paused = true
+    }
+
+    fun resume() {
+        thread.paused = false
+    }
+
     // TODO: consider using WorkManager
     // https://developer.android.com/topic/libraries/architecture/workmanager/basics
     private inner class DownloadThread(): Thread() {
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
+        var paused = false
 
         override fun run() {
             while (true) {
                 downloadMeasurements()
                 sleep(POLL_INTERVAL)
+
+                while(paused) {
+                    sleep(1000)
+                }
             }
         }
 

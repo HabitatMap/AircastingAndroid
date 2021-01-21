@@ -1,8 +1,11 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) {
+@Parcelize
+open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : Parcelable {
     open val name: String
     open val address: String
     open val id: String

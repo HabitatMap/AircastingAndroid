@@ -107,8 +107,8 @@ class FixedSessionTest {
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        val airBeamAddress = "00:18:96:10:70:D6"
-        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
+        val airBeamAddress = FakeDeviceItem.ADDRESS
+        stubPairedDevice(bluetoothManager)
 
         testRule.launchActivity(null)
 
@@ -171,8 +171,8 @@ class FixedSessionTest {
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        val airBeamAddress = "00:18:96:10:70:D6"
-        stubPairedDevice(bluetoothManager, "0018961070D6", "AirBeam2", airBeamAddress)
+        val airBeamAddress = FakeDeviceItem.ADDRESS
+        stubPairedDevice(bluetoothManager)
 
         testRule.launchActivity(null)
 

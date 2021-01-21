@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.di.mocks
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.helpers.stubDeviceItem
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
@@ -17,6 +18,9 @@ class FakeAirBeam2Connector(
     private var mThread: ConnectThread? = null
 
     override fun start(deviceItem: DeviceItem) {
+        // Mockito seems to not work well with ForegroundServices so it's needed there again
+        val deviceItem = stubDeviceItem()
+
         mThread = ConnectThread(deviceItem)
         mThread?.start()
     }

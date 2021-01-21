@@ -7,10 +7,12 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import kotlinx.android.parcel.Parcelize
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+@Parcelize
 class MicrophoneDeviceItem: DeviceItem() {
     companion object {
         val DEFAULT_ID = "Builtin"
