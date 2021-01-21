@@ -25,4 +25,6 @@
     <color name="session_color_indicator_very_high">#E65F5E</color>
 
     <color name="mtrl_textinput_default_box_stroke_color">@color/aircasting_grey_100</color>
+
+    <color name="black_trial">#8CFFFFFF</color>
 </resources>
