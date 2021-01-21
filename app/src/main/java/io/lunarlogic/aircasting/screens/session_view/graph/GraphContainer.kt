@@ -181,7 +181,7 @@ class GraphContainer: OnChartGestureListener {
 
     private fun setupLineAppearance(dataSet: LineDataSet) {
         dataSet.color = Color.WHITE
-        dataSet.lineWidth = 1.5f
+        dataSet.lineWidth = 4.0f   // todo: this value has to be set to the design i guess (while line thicker)
         dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
         dataSet.setDrawHighlightIndicators(false)
