@@ -16,8 +16,7 @@
             android:id="@+id/chart_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minHeight="100dp"
-            />
+            android:minHeight="100dp" />
         <TextView
             android:id="@+id/chart_start_time"
             android:layout_width="wrap_content"

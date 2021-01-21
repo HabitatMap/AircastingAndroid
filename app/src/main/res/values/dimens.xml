@@ -47,4 +47,6 @@
 
     <dimen name="map_height">300dp</dimen>
     <dimen name="hlu_slider_thumb_radius">10dp</dimen>
+
+    <dimen name ="bottom_navigation_icon_size">32dp</dimen>
 </resources>
