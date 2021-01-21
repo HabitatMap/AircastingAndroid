@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.screens.main.MainActivity
@@ -16,15 +15,12 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 /**
- * Sessions are recorded in foreground service, so they are still recorded
- * if the app is in the background or the screen is off
+ * All of the devices need to connect (microphone/bluetooth) in the Foreground Service,
+ * otherwise measurements will not record when the app is in background
+ * https://trello.com/c/ysfz8lDq/1087-mobile-active-measurements-should-continue-recording-when-app-is-in-background
  */
 
 abstract class SensorService : Service() {
-    // all devices need to connect in the Foreground Service,
-    // otherwise measurements will not record when the app is in background
-    // https://trello.com/c/ysfz8lDq/1087-mobile-active-measurements-should-continue-recording-when-app-is-in-background
-
     private val CHANNEL_ID = "Aircasting ForegroundService"
 
     override fun onBind(intent: Intent?): IBinder? {
