@@ -62,8 +62,8 @@ class SessionsRepository {
         mDatabase.sessions().disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }
 
-    fun finishedSessions(): List<Session> {
-        return mDatabase.sessions().byStatus(Session.Status.FINISHED)
+    fun toSync(): List<Session> {
+        return mDatabase.sessions().byStatus(Session.Status.FINISHED).union(mDatabase.sessions().byType(Session.Type.FIXED))
             .map { dbObject -> Session(dbObject) }
     }
 

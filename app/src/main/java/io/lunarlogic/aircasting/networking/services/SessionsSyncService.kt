@@ -63,7 +63,7 @@ class SessionsSyncService {
         showLoaderCallback?.invoke()
 
         DatabaseProvider.runQuery {
-            val sessions = sessionRepository.finishedSessions()
+            val sessions = sessionRepository.toSync()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
             val call = apiService.sync(SyncSessionBody(jsonData))
@@ -133,6 +133,6 @@ class SessionsSyncService {
     }
 
     private fun isUploadable(session: Session): Boolean {
-        return !session.locationless && session.isMobile()
+        return !session.locationless && session.isMobile() || session.isFixed()
     }
 }
