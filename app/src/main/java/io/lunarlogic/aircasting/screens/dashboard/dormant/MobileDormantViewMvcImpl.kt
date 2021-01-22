@@ -51,5 +51,7 @@ class MobileDormantViewMvcImpl(
         return R.id.empty_dashboard //todo: maybe empty_mobile_dashboard ???
     }
 
-
+    override fun recordNewSessionButtonId(): Int {
+        return R.id.dashboard_record_new_session_button
+    }
 }

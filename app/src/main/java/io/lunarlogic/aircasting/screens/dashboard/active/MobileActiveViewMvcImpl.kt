@@ -49,4 +49,8 @@ class MobileActiveViewMvcImpl(
     override fun layoutId(): Int {
         return R.id.empty_mobile_active_dashboard
     }
+
+    override fun recordNewSessionButtonId(): Int {
+        return R.id.dashboard_mobile_active_record_new_session_button
+    }
 }
