@@ -102,6 +102,10 @@ class AirBeamSyncService(
         showInfo("Connection to ${mDeviceItem?.displayName()} failed.")
     }
 
+    override fun onDisconnect(deviceId: String) {
+        // TODO: implement?
+    }
+
     fun onDiscoveryFailed() {
         // TODO: temporary thing
         showInfo("Discovery failed.")
