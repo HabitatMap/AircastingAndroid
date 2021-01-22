@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.dormant
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
 import io.lunarlogic.aircasting.models.Session
@@ -44,6 +45,10 @@ class MobileDormantViewMvcImpl(
         for (listener in listeners) {
             listener.onDeleteSessionClicked(session.uuid)
         }
+    }
+
+    override fun layoutId(): Int {
+        return R.id.empty_dashboard //todo: maybe empty_mobile_dashboard ???
     }
 
 

@@ -25,4 +25,8 @@ class FollowingViewMvcImpl(
             supportFragmentManager
         )
     }
+
+    override fun layoutId(): Int {
+        return R.id.empty_dashboard
+    }
 }
