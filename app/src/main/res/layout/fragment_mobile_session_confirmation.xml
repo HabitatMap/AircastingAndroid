@@ -48,20 +48,27 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/map"
-            android:name="com.google.android.libraries.maps.SupportMapFragment"
+        <LinearLayout
+            android:id="@+id/map_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/map_height"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            map:uiRotateGestures="false"
-            map:uiScrollGestures="false"
-            map:uiTiltGestures="false"
-            map:uiZoomControls="true"
-            map:uiZoomGestures="true"
-            app:layout_constraintTop_toBottomOf="@id/instructions" />
+            app:layout_constraintTop_toBottomOf="@id/instructions" >
+
+            <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/map"
+                android:name="com.google.android.libraries.maps.SupportMapFragment"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                map:uiRotateGestures="false"
+                map:uiScrollGestures="false"
+                map:uiTiltGestures="false"
+                map:uiZoomControls="true"
+                map:uiZoomGestures="true" />
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/start_recording_button"
@@ -72,7 +79,7 @@
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/session_confirmation_start_recording_button"
-            app:layout_constraintTop_toBottomOf="@id/map"
+            app:layout_constraintTop_toBottomOf="@id/map_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

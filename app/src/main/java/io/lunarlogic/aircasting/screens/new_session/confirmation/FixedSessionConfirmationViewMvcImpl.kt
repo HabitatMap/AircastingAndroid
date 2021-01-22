@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.new_session.confirmation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -29,6 +30,10 @@ class FixedSessionConfirmationViewMvcImpl : ConfirmationViewMvcImpl {
     }
 
     override fun updateLocation(latitude: Double?, longitude: Double?) {
+        // do nothing, static map
+    }
+
+    override fun recordingWithoutLocation() {
         // do nothing, static map
     }
 }

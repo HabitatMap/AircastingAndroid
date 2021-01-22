@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
+import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
@@ -36,6 +37,7 @@ interface AppComponent {
     fun inject(fragment: FollowingFragment)
     fun inject(fragment: MobileActiveFragment)
     fun inject(fragment: MobileDormantFragment)
+    fun inject(fragment: ConfirmationFragment)
     fun inject(fragment: FixedFragment)
     fun inject(activity: NewSessionActivity)
     fun inject(fragment: SessionDetailsFragment)

@@ -65,7 +65,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         googleMap ?: return
         mMap = googleMap
 
-        val sessionLocation = session!!.location!!
+        val sessionLocation = session!!.location!! // todo : tutaj uwaga?
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
         val marker = MarkerOptions()
