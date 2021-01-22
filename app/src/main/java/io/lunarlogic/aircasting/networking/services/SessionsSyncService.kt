@@ -21,7 +21,7 @@ class SessionsSyncService {
     private val errorHandler: ErrorHandler
     private val settings: Settings
 
-    private val uploadService: MobileSessionUploadService
+    private val uploadService: SessionUploadService
     private val downloadService: SessionDownloadService
 
     private val sessionRepository = SessionsRepository()
@@ -34,7 +34,7 @@ class SessionsSyncService {
         this.errorHandler = errorHandler
         this.settings = settings
 
-        this.uploadService = MobileSessionUploadService(apiService, errorHandler)
+        this.uploadService = SessionUploadService(apiService, errorHandler)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
     }
 

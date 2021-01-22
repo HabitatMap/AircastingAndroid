@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 interface ApiService {
     @POST("/api/sessions")
-    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+    fun createSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
     @POST("/api/realtime/sessions.json")
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
