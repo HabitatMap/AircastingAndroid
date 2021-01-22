@@ -35,7 +35,7 @@ class ConfirmationController(
         // do nothing
     }
 
-    override fun areMapsDisabled(): Boolean{
+    override fun areMapsDisabled(): Boolean {
         return mSettings.areMapsDisabled()
     }
 
