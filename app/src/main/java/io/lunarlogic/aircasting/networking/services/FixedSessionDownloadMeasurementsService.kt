@@ -25,6 +25,7 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
 
     fun stop() {
         thread.cancel()
+    }
 
     fun pause() {
         thread.paused = true
@@ -36,7 +37,7 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
 
     // TODO: consider using WorkManager
     // https://developer.android.com/topic/libraries/architecture/workmanager/basics
-    private inner class DownloadThread(): Thread() {
+    private inner class DownloadThread() : Thread() {
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
 
@@ -45,9 +46,9 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
                 while (!isInterrupted) {
                     downloadMeasurements()
                     sleep(POLL_INTERVAL)
-                  
-                    while(paused) {
-                      sleep(1000)
+
+                    while (paused) {
+                        sleep(1000)
                     }
                 }
             } catch (e: InterruptedException) {
@@ -82,11 +83,15 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
                 val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
                 val lastMeasurementSyncTimeString =
                     DateConverter.toDateString(lastMeasurementSyncTime)
-                val call = apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
+                val call =
+                    apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
 
-                call.enqueue(DownloadMeasurementsCallback(
-                    sessionId, session, sessionsRepository, measurementStreamsRepository,
-                    measurementsRepository, errorHandler))
+                call.enqueue(
+                    DownloadMeasurementsCallback(
+                        sessionId, session, sessionsRepository, measurementStreamsRepository,
+                        measurementsRepository, errorHandler
+                    )
+                )
             }
         }
     }
