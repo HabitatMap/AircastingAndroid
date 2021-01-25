@@ -67,7 +67,7 @@ class NewSessionController(
     fun onCreate() {
         EventBus.getDefault().register(this);
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {  // todo: this is the place to change flow!
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
@@ -79,7 +79,7 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn() || areMapsDisabled()) {   // todo: another place to change flow
+        if (areLocationServicesOn() || areMapsDisabled()) {
             startNewSessionWizard()
         } else {
             wizardNavigator.goToTurnOnLocationServices(this)
@@ -246,7 +246,7 @@ class NewSessionController(
         wifiPassword: String?
     ) {
 
-        val currentLocation = Session.Location.get(LocationHelper.lastLocation()) //todo: some changes needed here maybe??
+        val currentLocation = Session.Location.get(LocationHelper.lastLocation())
 
         val session = sessionBuilder.build(
             sessionUUID,

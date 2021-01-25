@@ -48,27 +48,20 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/map_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/map_height"
-            android:layout_marginTop="@dimen/keyline_8"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/instructions" >
-
-            <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/map"
                 android:name="com.google.android.libraries.maps.SupportMapFragment"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/map_height"
                 android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/keyline_8"
+                android:layout_marginStart="@dimen/keyline_8"
+                android:layout_marginEnd="@dimen/keyline_8"
+                app:layout_constraintTop_toBottomOf="@id/instructions"
                 map:uiRotateGestures="false"
                 map:uiScrollGestures="false"
                 map:uiTiltGestures="false"
                 map:uiZoomControls="true"
                 map:uiZoomGestures="true" />
-        </LinearLayout>
-
 
         <Button
             android:id="@+id/start_recording_button"
