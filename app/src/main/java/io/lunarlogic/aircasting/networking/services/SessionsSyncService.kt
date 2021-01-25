@@ -52,11 +52,8 @@ class SessionsSyncService {
         }
 
         fun destroy() {
-            mSingleton = null
-        }
-
-        fun cancel() {
             mSingleton?.mCall?.cancel()
+            mSingleton = null
         }
     }
 

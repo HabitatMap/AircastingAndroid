@@ -30,7 +30,6 @@ class MyAccountController(
         EventBus.getDefault().post(event)
 
         mSettings.logout()
-        SessionsSyncService.cancel()
         SessionsSyncService.destroy()
 
         // to make sure downloading sessions stopped before we star deleting them
@@ -46,9 +45,5 @@ class MyAccountController(
         Thread.sleep(1000)
 
         LoginActivity.startAfterSignOut(mContext)
-    }
-
-    fun count() : Int = runBlocking {
-        DatabaseProvider.get().sessions().getCount()
     }
 }
