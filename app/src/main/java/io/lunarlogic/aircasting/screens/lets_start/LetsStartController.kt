@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
+import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -47,7 +48,11 @@ class LetsStartController(
 
     override fun onSyncSelected() {
         mAirBeamSyncService.run()
-        syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage("Sync started").show()
+        syncProgressDialog = AlertDialog.Builder(mRootActivity)
+            .setCancelable(false)
+            .setPositiveButton("Ok", null)
+            .setMessage("Sync started")
+            .show()
     }
 
     // TOOD: remove this method after implementing proper sync
@@ -60,7 +65,11 @@ class LetsStartController(
     @Subscribe
     fun onMessageEvent(event: AirBeam3Configurator.SyncFinishedEvent) {
         syncProgressDialog?.cancel()
-        syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage(event.message).show()
+        syncProgressDialog = AlertDialog.Builder(mRootActivity)
+            .setCancelable(false)
+            .setPositiveButton("Ok", null)
+            .setMessage(event.message)
+            .show()
     }
 
     override fun onClearSDCardSelected() {
