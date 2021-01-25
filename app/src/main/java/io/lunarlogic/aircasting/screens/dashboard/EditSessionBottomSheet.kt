@@ -10,15 +10,19 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
-class EditSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
+class EditSessionBottomSheet(private val mListener: Listener, private var mSession: Session): BottomSheetDialogFragment() {
     interface Listener{
         fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
     }
 
+    private var sessionNameInput: EditText? = null
+    private var tagsInput: EditText? = null
+    private var mLoader: ImageView? = null
     private val TAG = "EditSessionBottomSheet"
 
     override fun onCreateView(
@@ -28,11 +32,13 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
     ): View? {
         val view = inflater.inflate(R.layout.edit_session_bottom_sheet, container, false)
 
-        val sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
-        sessionNameInput?.setText(session.name)
+        mLoader = view?.findViewById(R.id.edit_loader)
 
-        val tagsInput = view?.findViewById<EditText>(R.id.tags_input)
-        tagsInput?.setText(session.tags.joinToString(TAGS_SEPARATOR))
+        sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
+        sessionNameInput?.setText(mSession.name)
+
+        tagsInput = view?.findViewById<EditText>(R.id.tags_input)
+        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
 
         val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
         editDataButton?.setOnClickListener {
@@ -49,6 +55,8 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
             dismiss()
         }
 
+        showLoader()
+
         return view
     }
 
@@ -56,11 +64,30 @@ class EditSessionBottomSheet(private val mListener: Listener, private val sessio
         show(manager, TAG)
     }
 
+    fun reload(session: Session) {
+        mSession = session
+        sessionNameInput?.setText(mSession.name)
+        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
+    }
+
+    fun showLoader() {
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+        sessionNameInput?.isEnabled = false
+        tagsInput?.isEnabled = false
+    }
+
+    fun hideLoader() {
+        mLoader?.visibility = View.GONE
+        sessionNameInput?.isEnabled = true
+        tagsInput?.isEnabled = true
+    }
+
     private fun onEditSessionPressed() {
         val name = view?.session_name_input?.text.toString().trim()
         val tags = view?.tags_input?.text.toString().trim()
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
         dismiss()
-        mListener.onEditDataPressed(session, name, tagList)
+        mListener.onEditDataPressed(mSession, name, tagList)
     }
 }

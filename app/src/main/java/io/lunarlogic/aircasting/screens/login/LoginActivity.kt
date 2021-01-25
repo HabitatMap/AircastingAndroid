@@ -42,7 +42,7 @@ class LoginActivity: AppCompatActivity() {
             .appComponent.inject(this)
 
         val view = LoginViewMvcImpl(layoutInflater, null)
-        controller = LoginController(this, view, settings, apiServiceFactory)
+        controller = LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
 
         setContentView(view.rootView)
     }

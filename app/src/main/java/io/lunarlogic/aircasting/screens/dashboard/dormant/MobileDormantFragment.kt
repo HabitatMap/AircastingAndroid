@@ -38,6 +38,7 @@ class MobileDormantFragment : Fragment() {
             null,
             childFragmentManager
         )
+
         controller = MobileDormantController(
             activity,
             view,

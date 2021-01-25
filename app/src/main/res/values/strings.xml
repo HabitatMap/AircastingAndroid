@@ -11,6 +11,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="create_account_prompt">First time here? </string>
     <string name="create_account_text_button">Create an account</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="forgot_password">Forgot password</string>
 
     <!-- Create account -->
     <string name="create_account_header">Create account</string>
@@ -21,6 +23,9 @@
     <string name="login_text_button">Sign in</string>
     <string name="send_emails">Send me emails from AirCasting</string>
     <string name="create_account_errors_message">There are errors in the form. Please fix them before continuing.</string>
+
+    <!-- Forgot password -->
+    <string name="profile_name_email_hint">Profile name or email</string>
 
     <!--  Dashboard -->
     <string name="title_settings">Settings</string>
@@ -181,6 +186,7 @@
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>
     <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
+    <string name="errors_network_forgot_password">You need to have internet connection to reset your password</string>
     <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
@@ -213,6 +219,11 @@
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
 
+    <!--  Sensor services -->
+    <string name="service_notification_title">AirCasting is recording a session</string>
+    <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
+    <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
+
     <!-- Share session -->
     <string name="share_file">Share file</string>
     <string name="share_session">Share session</string>
@@ -227,4 +238,6 @@
     <string name="microphone_maximum">Microphone maximum</string>
     <string name="microphone_settings_description">Maximum sound level processed by your phone\'s microphone. For most phones it\'s between 80 and 100</string>
     <string name="microphone_settings">Microphone settings</string>
+    <string name="reset_email_sent">An email with further instructions has been sent</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

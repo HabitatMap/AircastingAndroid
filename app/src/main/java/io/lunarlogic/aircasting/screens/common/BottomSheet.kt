@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 
-
 abstract class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
     interface Listener {
         fun cancelPressed()

@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
@@ -44,7 +45,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         disconnectSession(event.deviceId)
     }
 
-    @Subscribe
+    @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
     }
@@ -68,6 +69,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     fun onMessageEvent(event: LogoutEvent) {
         fixedSessionDownloadMeasurementsService.stop()
     }
+  
+    @Subscribe
+    fun onMessageEvent(event: AppToForegroundEvent) {
+        onAppToForeground()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AppToBackgroundEvent) {
+        onAppToBackground()
+    }
 
     fun onStart() {
         registerToEventBus()
@@ -77,6 +88,14 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStop() {
         unregisterFromEventBus()
+    }
+
+    fun onAppToForeground() {
+        fixedSessionDownloadMeasurementsService.resume()
+    }
+
+    fun onAppToBackground() {
+        fixedSessionDownloadMeasurementsService.pause()
     }
 
     private fun registerToEventBus() {
