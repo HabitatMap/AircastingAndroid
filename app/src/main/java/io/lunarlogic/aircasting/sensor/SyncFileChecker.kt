@@ -25,9 +25,7 @@ class SyncFileChecker(private val mContext: Context) {
         lines.forEachIndexed { i, line ->
             val splittedLine = line.split(",")
 
-            val isLastLineEmpty = i == lines.size - 1 && line.isBlank()
-
-            if (!isLastLineEmpty && splittedLine.count() != FIELDS_COUNT) {
+            if (!line.isBlank() && splittedLine.count() != FIELDS_COUNT) {
                 return false
             }
 
