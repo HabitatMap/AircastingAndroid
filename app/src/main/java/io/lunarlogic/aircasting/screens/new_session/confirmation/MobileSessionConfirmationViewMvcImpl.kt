@@ -15,8 +15,11 @@ class MobileSessionConfirmationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?,
-    session: Session
+    session: Session   //todo: do konstruktora jako parametr przekazać to areMapsDisabled()
 ) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session) {
+
+//    constructor()
+
 
     override fun layoutId(): Int {
         return R.layout.fragment_mobile_session_confirmation
@@ -26,7 +29,7 @@ class MobileSessionConfirmationViewMvcImpl(
         updateMarkerPosition(latitude, longitude)
     }
 
-    override fun recordingWithoutLocation() {
+    override fun recordingWithoutLocation() { //todo: to przy tworzeniu widoku
         for (listener in listeners) {
             if (listener.areMapsDisabled()){
                 val instructions = rootView?.findViewById<TextView>(R.id.instructions)
