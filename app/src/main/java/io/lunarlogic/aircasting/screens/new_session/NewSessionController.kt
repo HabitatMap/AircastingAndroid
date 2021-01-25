@@ -281,7 +281,7 @@ class NewSessionController(
         mContextActivity.finish()
     }
 
-    override fun areMapsDisabled(): Boolean {
+    fun areMapsDisabled(): Boolean {
         return settings.areMapsDisabled()
     }
 

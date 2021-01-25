@@ -27,15 +27,13 @@ class ConfirmationController(
 
     fun onStart(context: Context?) {
         KeyboardHelper.hideKeyboard(context)
-
-        mViewMvc.recordingWithoutLocation()
     }
 
     override fun onStartRecordingClicked(session: Session) {
         // do nothing
     }
 
-    override fun areMapsDisabled(): Boolean {
+    fun areMapsDisabled(): Boolean {
         return mSettings.areMapsDisabled()
     }
 

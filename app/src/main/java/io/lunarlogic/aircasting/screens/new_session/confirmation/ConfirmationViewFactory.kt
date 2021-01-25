@@ -11,11 +11,12 @@ class ConfirmationViewFactory() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             supportFragmentManager: FragmentManager?,
-            session: Session
+            session: Session,
+            areMapsDisabled: Boolean
         ): ConfirmationViewMvc {
             return when(session.type) {
                 Session.Type.MOBILE -> MobileSessionConfirmationViewMvcImpl(
-                    inflater, container, supportFragmentManager, session)
+                    inflater, container, supportFragmentManager, session, areMapsDisabled)
                 Session.Type.FIXED -> FixedSessionConfirmationViewMvcImpl(
                     inflater, container, supportFragmentManager, session)
             }

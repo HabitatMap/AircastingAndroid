@@ -26,7 +26,7 @@ class ConfirmationFragment() : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session)
+        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
         controller = ConfirmationController(context, view, settings)
         return view.rootView
     }
