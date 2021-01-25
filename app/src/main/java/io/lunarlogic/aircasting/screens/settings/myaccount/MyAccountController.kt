@@ -41,9 +41,6 @@ class MyAccountController(
             query.await()
         }
 
-        // to make sure everything has been deleted
-        Thread.sleep(1000)
-
         LoginActivity.startAfterSignOut(mContext)
     }
 }
