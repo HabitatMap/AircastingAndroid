@@ -16,7 +16,10 @@ class SessionDownloadService(private val apiService: ApiService, private val err
     fun download(uuid: String, successCallback: (Session) -> Unit) {
         val call = apiService.downloadSession(uuid)
         call.enqueue(object : Callback<SessionResponse> {
-            override fun onResponse(call: Call<SessionResponse>, response: Response<SessionResponse>) {
+            override fun onResponse(
+                call: Call<SessionResponse>,
+                response: Response<SessionResponse>
+            ) {
                 if (response.isSuccessful) {
                     val body = response.body()
 

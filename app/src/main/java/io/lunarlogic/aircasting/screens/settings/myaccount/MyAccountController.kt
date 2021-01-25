@@ -33,6 +33,8 @@ class MyAccountController(
         SessionsSyncService.cancel()
         SessionsSyncService.destroy()
 
+        // to make sure downloading sessions stopped before we star deleting them
+        Thread.sleep(1000)
         runBlocking {
             val query = GlobalScope.async(Dispatchers.IO) {
                 DatabaseProvider.get().clearAllTables()
@@ -40,12 +42,9 @@ class MyAccountController(
             query.await()
         }
 
-        DatabaseProvider.runQuery {
-            val count = DatabaseProvider.get().sessions().getCount()
-            println("MARYSIA: sessions count ${count}")
-        }
+        // to make sure everything has been deleted
+        Thread.sleep(1000)
 
-        Thread.sleep(3000)
         LoginActivity.startAfterSignOut(mContext)
     }
 

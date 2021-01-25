@@ -138,11 +138,20 @@ class SessionsSyncService {
         uuids.forEach { uuid ->
             val onDownloadSuccess = { session: Session ->
                 DatabaseProvider.runQuery {
-                    val sessionId = sessionRepository.updateOrCreate(session)
-                    sessionId?.let { measurementStreamsRepository.insert(sessionId, session.streams) }
+                    if (mCall?.isCanceled != true) {
+                        val sessionId = sessionRepository.updateOrCreate(session)
+                        sessionId?.let {
+                            measurementStreamsRepository.insert(
+                                sessionId,
+                                session.streams
+                            )
+                        }
+                    }
                 }
             }
-            downloadService.download(uuid, onDownloadSuccess)
+            if (mCall?.isCanceled != true) {
+                downloadService.download(uuid, onDownloadSuccess)
+            }
         }
     }
 
