@@ -71,7 +71,7 @@ class SessionsSyncService {
             val jsonData = gson.toJson(syncParams)
             mCall = apiService.sync(SyncSessionBody(jsonData))
 
-            mCall!!.enqueue(object : Callback<SyncResponse> {
+            mCall?.enqueue(object : Callback<SyncResponse> {
                 override fun onResponse(
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
