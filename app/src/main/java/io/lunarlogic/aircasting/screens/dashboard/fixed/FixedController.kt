@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
@@ -40,8 +41,8 @@ class FixedController(
     }
 
     override fun onRecordNewSessionClicked() {
-        if (!ConnectivityManager.isConnected(mContext)){
-            Toast.makeText(mContext, "You need to have internet connection to create fixed session", Toast.LENGTH_LONG).show()
+        if (!ConnectivityManager.isConnected(mContext)) {
+            Toast.makeText(mContext, mContext?.getString(R.string.fixed_session_no_internet_connection), Toast.LENGTH_LONG).show()
             return
         }
 
