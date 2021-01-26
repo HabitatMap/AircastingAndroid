@@ -14,12 +14,13 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.observers.AppLifecycleObserver
 import io.lunarlogic.aircasting.networking.services.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) {
+class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) : AppLifecycleObserver.Listener {
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
@@ -69,16 +70,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     fun onMessageEvent(event: LogoutEvent) {
         fixedSessionDownloadMeasurementsService.stop()
     }
-  
-    @Subscribe
-    fun onMessageEvent(event: AppToForegroundEvent) {
-        onAppToForeground()
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: AppToBackgroundEvent) {
-        onAppToBackground()
-    }
 
     fun onStart() {
         registerToEventBus()
@@ -90,11 +81,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         unregisterFromEventBus()
     }
 
-    fun onAppToForeground() {
+    override fun onAppToForeground() {
+        println("MARYSIA: Fixed session download resume")
         fixedSessionDownloadMeasurementsService.resume()
     }
 
-    fun onAppToBackground() {
+    override fun onAppToBackground() {
+        println("MARYSIA: Fixed session download pause")
         fixedSessionDownloadMeasurementsService.pause()
     }
 

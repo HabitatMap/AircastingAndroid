@@ -12,12 +12,13 @@ import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.observers.AppLifecycleObserver
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SessionsSyncService {
+class SessionsSyncService :  AppLifecycleObserver.Listener {
     private val apiService: ApiService
     private val errorHandler: ErrorHandler
     private val settings: Settings
@@ -29,7 +30,9 @@ class SessionsSyncService {
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
+    private var syncInBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
+
 
     private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
         this.apiService = apiService
@@ -58,7 +61,7 @@ class SessionsSyncService {
     }
 
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
-        if (syncStarted.get()) {
+        if (syncStarted.get() || syncInBackground.get()) {
             return
         }
 
@@ -90,16 +93,14 @@ class SessionsSyncService {
                             }
                         }
                     } else {
-                        errorHandler.handleAndDisplay(SyncError())
+                        handleSyncError(call)
                     }
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
                     hideLoaderCallback?.invoke()
-                    if (!call.isCanceled) {
-                        errorHandler.handleAndDisplay(SyncError(t))
-                    }
+                    handleSyncError(call, t)
                 }
             })
         }
@@ -148,5 +149,19 @@ class SessionsSyncService {
 
     private fun isUploadable(session: Session): Boolean {
         return !session.locationless && session.isMobile()
+    }
+
+    private fun handleSyncError(call: Call<SyncResponse>, t: Throwable? = null) {
+        if (!call.isCanceled && !syncInBackground.get()) {
+            errorHandler.handleAndDisplay(SyncError(t))
+        }
+    }
+
+    override fun onAppToForeground() {
+        syncInBackground.set(false)
+    }
+
+    override fun onAppToBackground() {
+        syncInBackground.set(true)
     }
 }
