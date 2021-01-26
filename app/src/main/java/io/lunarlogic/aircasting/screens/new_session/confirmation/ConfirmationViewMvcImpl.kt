@@ -63,7 +63,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
             val instructions = rootView?.findViewById<TextView>(R.id.instructions)
             instructions?.visibility = View.GONE
 
-            val map = rootView?.findViewById<View>(R.id.map) //todo: map instead of map layout, remove map_layout from xml
+            val map = rootView?.findViewById<View>(R.id.map)
             map?.visibility = View.GONE
         }
     }
@@ -81,7 +81,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         googleMap ?: return
         mMap = googleMap
 
-        val sessionLocation = session!!.location!!
+        val sessionLocation = session?.location ?: return
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
         val marker = MarkerOptions()
