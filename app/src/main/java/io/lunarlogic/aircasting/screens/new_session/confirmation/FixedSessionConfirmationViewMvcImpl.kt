@@ -10,14 +10,14 @@ class FixedSessionConfirmationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?,
-    private val session: Session
+    session: Session
 ) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session) {
     override fun layoutId(): Int {
         return R.layout.fragment_fixed_session_confirmation
     }
 
     override fun shouldInitMap(): Boolean {
-        return session.indoor == false
+        return session?.indoor == false
     }
 
     override fun updateLocation(latitude: Double?, longitude: Double?) {

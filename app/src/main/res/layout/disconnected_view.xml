@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.Aircasting.TextButton"
-            android:fontFamily="@font/moderat_trial_bold"
+            android:fontFamily="@font/muli_bold"
             android:textSize="@dimen/button_text_size"
             android:text="@string/disconnected_view_bluetooth_device_finish_button"
             app:layout_constraintTop_toBottomOf="@id/disconnected_view_bluetooth_device_reconnect_button"
