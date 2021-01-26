@@ -36,6 +36,7 @@ class FixedSessionDetailsController(
                         .map { Network(it.SSID, it.level, it.frequency) }
                         .filter { !it.name.isEmpty() }
                         .filter { it.frequency <= Network.MAX_FREQUENCY }
+                        .distinct()
                     mViewMvc.bindNetworks(networkList)
                 }
             }
