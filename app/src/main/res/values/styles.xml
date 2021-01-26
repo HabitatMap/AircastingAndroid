@@ -223,7 +223,13 @@
         <item name="lineHeight">32dp</item>
         <item name="android:fontFamily">@font/muli_medium</item>
         <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:button">@drawable/checkbox_selector</item>
         <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Aircasting.Checkbox</item>
+    </style>
+
+    <style name="ThemeOverlay.Aircasting.Checkbox" parent="">
+        <item name="colorPrimary">@color/aircasting_grey_700</item>
     </style>
 
     <style name="TextAppearance.Aircasting.MapStatisticsLabel" parent="@style/TextAppearance.Aircasting.Body1">

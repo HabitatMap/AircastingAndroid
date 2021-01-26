@@ -50,16 +50,15 @@ class FixedController(
         NavigationController.goToLetsStart()
     }
 
-    override fun onDeleteSessionClicked(sessionUUID: String) {
-        val event = DeleteSessionEvent(sessionUUID)
-        EventBus.getDefault().post(event)
-    }
-
     override fun onFinishSessionConfirmed(session: Session) {
         // do nothing
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
+    }
+
+    override fun onDeleteStreamsPressed() {
+        TODO("Not yet implemented")
     }
 }

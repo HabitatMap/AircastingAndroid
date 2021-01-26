@@ -31,7 +31,7 @@ abstract class SessionsController(
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
     private val context: Context?
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -42,6 +42,7 @@ abstract class SessionsController(
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
+    private var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -161,6 +162,10 @@ abstract class SessionsController(
         startShareSessionBottomSheet(session)
     }
 
+    override fun onDeleteSessionClicked(session: Session){
+        startDeleteSessionBottomSheet(session)
+    }
+
     private fun startEditSessionBottomSheet(session: Session) {
         editDialog = EditSessionBottomSheet(this, session, context)
         editDialog?.show(fragmentManager)
@@ -169,6 +174,11 @@ abstract class SessionsController(
     private fun startShareSessionBottomSheet(session: Session){
         shareDialog = ShareSessionBottomSheet(this, session, context)
         shareDialog?.show(fragmentManager)
+    }
+
+    private fun startDeleteSessionBottomSheet(session: Session) {
+        deleteSessionDialog = DeleteSessionBottomSheet(this, session)
+        deleteSessionDialog?.show(fragmentManager, "Session delete")
     }
 
     private fun openShareIntentChooser(session: Session, chosenSensor: String){
