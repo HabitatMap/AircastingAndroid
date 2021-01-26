@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.screens.dashboard.DeleteSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 import org.greenrobot.eventbus.EventBus
@@ -51,7 +52,26 @@ class MobileDormantController(
         // do nothing
     }
 
-    override fun onDeleteStreamsPressed() {
-        TODO("Not yet implemented")
+    override fun onDeleteStreamsPressed(session: Session) {
+        val selectedOptions = deleteSessionDialog?.getSelectedValues()
+        val allStreamsBoxSelected: Boolean = deleteSessionDialog?.allStreamsBoxSelected()!!
+        if (deleteAllStreamsSelected(allStreamsBoxSelected, selectedOptions?.size, session.streams.size )) {
+            deleteSession(session.uuid)
+        } else  {
+            deleteStreams(session.uuid, selectedOptions)
+        }
+    }
+
+    private fun deleteSession(sessionUUID: String) {
+        val event = DeleteSessionEvent(sessionUUID)
+        EventBus.getDefault().post(event)
+    }
+
+    private fun deleteStreams(sessionUUID: String, selectedOptions: ArrayList<DeleteSessionBottomSheet.Option>?) {
+        // TODO
+    }
+
+    private fun deleteAllStreamsSelected(allStreamsBoxSelected: Boolean, selectedOptionsCount: Int?, sessionStreamsCount: Int?): Boolean {
+        return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
     }
 }

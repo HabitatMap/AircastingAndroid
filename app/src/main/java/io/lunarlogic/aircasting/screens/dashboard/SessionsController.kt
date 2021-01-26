@@ -42,7 +42,7 @@ abstract class SessionsController(
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
-    private var deleteSessionDialog: DeleteSessionBottomSheet? = null
+    protected var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()

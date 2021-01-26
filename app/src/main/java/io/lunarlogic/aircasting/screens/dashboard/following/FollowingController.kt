@@ -54,8 +54,8 @@ class FollowingController(
         // do nothing
     }
 
-    override fun onDeleteStreamsPressed() {
-        TODO("Not yet implemented")
+    override fun onDeleteStreamsPressed(session: Session) {
+        // do nothing
     }
 
     override fun onExpandSessionCard(session: Session) {

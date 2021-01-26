@@ -16,14 +16,14 @@ import io.lunarlogic.aircasting.models.Session
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener {
-        fun onDeleteStreamsPressed()
+        fun onDeleteStreamsPressed(session: Session)
     }
     private var mStreamsOptionsContainer: LinearLayout? = null
     private var checkBoxMap: HashMap<CheckBox, Option> = HashMap()
 
     class Option(
         val sessionUUID: String,
-        val allStreamsBoxSelected: Boolean,
+        val allStreamsBoxSelected: Boolean = false,
         val streamName: String? = null
     )
 
@@ -46,7 +46,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         }
 
         deleteStreamsButton?.setOnClickListener {
-            mListener.onDeleteStreamsPressed()
+            mListener.onDeleteStreamsPressed(session)
         }
 
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
@@ -56,6 +56,27 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
             checkbox.setOnCheckedChangeListener { _, _ -> }
         }
         return view
+    }
+
+    fun getSelectedValues(): ArrayList<Option> {
+        return selectedValues()
+    }
+
+    fun allStreamsBoxSelected(): Boolean {
+        return selectedValues().any { it.allStreamsBoxSelected }
+    }
+
+    private fun selectedValues(): ArrayList<Option> {
+        val values = ArrayList<Option>()
+        if (checkBoxMap.isEmpty()) {
+            return values
+        }
+        for ((key, value) in checkBoxMap) {
+            if (key.isChecked) {
+                values.add(value)
+            }
+        }
+        return values
     }
 
     private fun generateStreamsOptions() {
