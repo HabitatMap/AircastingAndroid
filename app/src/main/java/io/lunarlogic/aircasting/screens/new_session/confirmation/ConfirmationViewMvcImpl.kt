@@ -2,8 +2,10 @@ package io.lunarlogic.aircasting.screens.new_session.confirmation
 
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
@@ -41,8 +43,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
 
-        val mapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+        initMap(supportFragmentManager)
 
         val startRecordingButton = rootView?.findViewById<Button>(R.id.start_recording_button)
         startRecordingButton?.setOnClickListener {
@@ -51,6 +52,21 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     }
 
     abstract fun layoutId(): Int
+    abstract fun shouldInitMap(): Boolean
+
+    private fun initMap(supportFragmentManager: FragmentManager?) {
+        if (shouldInitMap()) {
+            val mapFragment =
+                supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+            mapFragment?.getMapAsync(this)
+        } else {
+            val instructions = rootView?.findViewById<TextView>(R.id.instructions)
+            instructions?.visibility = View.GONE
+
+            val map = rootView?.findViewById<View>(R.id.map)
+            map?.visibility = View.GONE
+        }
+    }
 
     protected fun updateMarkerPosition(latitude: Double?, longitude: Double?) {
         if (latitude == null || longitude == null) return
@@ -65,7 +81,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         googleMap ?: return
         mMap = googleMap
 
-        val sessionLocation = session!!.location!!
+        val sessionLocation = session?.location ?: return
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
         val marker = MarkerOptions()

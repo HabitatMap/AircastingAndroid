@@ -67,7 +67,7 @@ class NewSessionController(
     fun onCreate() {
         EventBus.getDefault().register(this);
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
@@ -79,7 +79,7 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn()) {
+        if (areLocationServicesOn() || areMapsDisabled()) {
             startNewSessionWizard()
         } else {
             wizardNavigator.goToTurnOnLocationServices(this)
@@ -279,6 +279,10 @@ class NewSessionController(
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
+    }
+
+    fun areMapsDisabled(): Boolean {
+        return settings.areMapsDisabled()
     }
 
     @Subscribe

@@ -3,13 +3,16 @@ package io.lunarlogic.aircasting.screens.new_session.confirmation
 import android.content.Context
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.lib.KeyboardHelper
+import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class ConfirmationController(
     private val mContext: Context?,
-    private val mViewMvc: ConfirmationViewMvc
-) {
+    private val mViewMvc: ConfirmationViewMvc,
+    private val mSettings: Settings
+): ConfirmationViewMvc.Listener {
     fun registerToEventBus() {
         EventBus.getDefault().register(this);
     }
@@ -24,6 +27,14 @@ class ConfirmationController(
 
     fun onStart(context: Context?) {
         KeyboardHelper.hideKeyboard(context)
+    }
+
+    override fun onStartRecordingClicked(session: Session) {
+        // do nothing
+    }
+
+    fun areMapsDisabled(): Boolean {
+        return mSettings.areMapsDisabled()
     }
 
     @Subscribe
