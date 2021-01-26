@@ -243,4 +243,6 @@
     <string name="dashboard_empty_mobile_active_header">Start recording a mobile session</string>
     <string name="dashboard_empty_mobile_active_text">If you plan on moving around while recording measurements.</string>
     <string name="record_mobile_session">Record mobile session</string>
+    <string name="the_session_will_be_moved_to_mobile_dormant_tab_and_you_won_t_be_able_too_ad_new_measurements_to_it">The session will be moved to Mobile Dormant tab and you won\'t be able too ad new measurements to it</string>
+    <string name="finish_recording">Finish recording</string>
 </resources>

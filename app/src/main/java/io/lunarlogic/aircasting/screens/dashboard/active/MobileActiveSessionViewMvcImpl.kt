@@ -24,7 +24,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
         parent: ViewGroup,
         supportFragmentManager: FragmentManager
     ): super(inflater, parent, supportFragmentManager) {
-        mDisconnectedView = DisconnectedView(context, this.rootView, this)
+        mDisconnectedView = DisconnectedView(context, this.rootView, supportFragmentManager, this)
     }
 
     override fun showMeasurementsTableValues(): Boolean {
