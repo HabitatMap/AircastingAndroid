@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.Session
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.disconnected_view.view.*
 class DisconnectedView {
     private val mContext: Context
     private val mListener: MobileActiveSessionViewMvc.DisconnectedViewListener
+    private val mSupportFragmentManager: FragmentManager
 
     private val mDisconnectedView: View?
     private val mHeader: TextView?
@@ -22,9 +24,10 @@ class DisconnectedView {
     private val mSecondaryButton: Button?
     private val mReconnectingLoader: ImageView?
 
-    constructor(context: Context, rootView: View?, listener: MobileActiveSessionViewMvc.DisconnectedViewListener) {
+    constructor(context: Context, rootView: View?, supportFragmentManager: FragmentManager, listener: MobileActiveSessionViewMvc.DisconnectedViewListener) {
         mContext = context
         mListener = listener
+        mSupportFragmentManager = supportFragmentManager
 
         mDisconnectedView = rootView?.disconnected_view
         mHeader = rootView?.disconnected_view_bluetooth_device_header
@@ -68,7 +71,7 @@ class DisconnectedView {
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_finish_button)
 
         mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(session) }
-        mSecondaryButton?.setOnClickListener { mListener.onSessionStopClicked(session) }
+        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show() }
     }
 
     private fun bindAirBeam3(session: Session) {
@@ -78,6 +81,7 @@ class DisconnectedView {
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_airbeam3_finish_button)
 
         mPrimaryButton?.setOnClickListener {
+            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
             // TODO: add when sync will be implemented
         }
         mSecondaryButton?.setOnClickListener { mListener.onSessionStopClicked(session) }

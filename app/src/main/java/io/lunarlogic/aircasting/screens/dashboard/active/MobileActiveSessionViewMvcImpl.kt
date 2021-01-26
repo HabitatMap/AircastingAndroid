@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
@@ -18,13 +19,15 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
 {
 
     private val mDisconnectedView: DisconnectedView
+    private val mSupportFragmentManager: FragmentManager
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup,
         supportFragmentManager: FragmentManager
     ): super(inflater, parent, supportFragmentManager) {
-        mDisconnectedView = DisconnectedView(context, this.rootView, this)
+        mDisconnectedView = DisconnectedView(context, this.rootView, supportFragmentManager, this)
+        mSupportFragmentManager = supportFragmentManager
     }
 
     override fun showMeasurementsTableValues(): Boolean {
@@ -42,7 +45,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
     override fun showExpandedMeasurementsTableValues() = true
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
-        return ActiveSessionActionsBottomSheet(this, sessionPresenter)
+        return ActiveSessionActionsBottomSheet(this, sessionPresenter, mSupportFragmentManager)
     }
 
     override fun bindExpanded(sessionPresenter: SessionPresenter) {
