@@ -246,4 +246,9 @@
     <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
     <string name="the_session_will_be_moved_to_mobile_dormant_tab_and_you_won_t_be_able_too_ad_new_measurements_to_it">The session will be moved to Mobile Dormant tab and you won\'t be able too ad new measurements to it</string>
     <string name="finish_recording">Finish recording</string>
+    <string name="dialog_finish_recording_text_part1">The session will be moved to</string>
+    <string name="dialog_finish_recording_text_part2">Mobile Dormant</string>
+    <string name="dialog_finish_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
+    <string name="dialog_finish_recording_header_part1">Finish recording \n</string>
+    <string name="dialog_finish_recording_header_part3">\?</string>
 </resources>
