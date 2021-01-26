@@ -72,10 +72,7 @@ class DisconnectedView {
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_finish_button)
 
         mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(session) }
-        mSecondaryButton?.setOnClickListener {
-            DisconnectedViewFinishDialog(mSupportFragmentManager, mListener, session).show() //todo: listener tez do przekazania i tam onStopClicked?
-//            mListener.onSessionStopClicked(session)
-        }
+        mSecondaryButton?.setOnClickListener { DisconnectedViewFinishDialog(mSupportFragmentManager, mListener, session).show() }
     }
 
     private fun bindAirBeam3(session: Session) {
