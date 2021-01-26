@@ -25,4 +25,12 @@ class FollowingViewMvcImpl(
             supportFragmentManager
         )
     }
+
+    override fun layoutId(): Int {
+        return R.id.empty_dashboard
+    }
+
+    override fun recordNewSessionButtonId(): Int {
+        return R.id.dashboard_record_new_session_button
+    }
 }

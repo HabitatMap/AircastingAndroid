@@ -28,4 +28,15 @@
         android:layout_marginRight="@dimen/keyline_12"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include
+        android:id="@+id/empty_mobile_active_dashboard"
+        layout="@layout/empty_mobile_active_dashboard"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:layout_marginLeft="@dimen/keyline_12"
+        android:layout_marginRight="@dimen/keyline_12"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

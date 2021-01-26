@@ -30,8 +30,8 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
 
-        mEmptyView = rootView?.findViewById(R.id.empty_dashboard)
-        mRecordSessionButton = rootView?.findViewById(R.id.dashboard_record_new_session_button)
+        mEmptyView = rootView?.findViewById(layoutId())
+        mRecordSessionButton = rootView?.findViewById(recordNewSessionButtonId())
         mRecordSessionButton?.setOnClickListener {
             onRecordNewSessionClicked()
         }
@@ -43,6 +43,9 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
         setupSwipeToRefreshLayout()
     }
+
+    abstract fun layoutId(): Int
+    abstract fun recordNewSessionButtonId(): Int
 
     abstract fun buildAdapter(
         inflater: LayoutInflater,

@@ -30,7 +30,7 @@
     <!--  Dashboard -->
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty_header">Ready to get started?</string>
-    <string name="dashboard_empty_text">Record a new session to monitor your health &amp; environment.</string>
+    <string name="dashboard_empty_text">Explore &amp; follow existing AirCasting sessions or use your own device to record a new session and monitor your health &amp; environment.</string>
     <string name="dashboard_tabs_mobile_active">Mobile active</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
@@ -240,4 +240,7 @@
     <string name="microphone_settings">Microphone settings</string>
     <string name="reset_email_sent">An email with further instructions has been sent</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="dashboard_empty_mobile_active_header">Start recording a mobile session</string>
+    <string name="dashboard_empty_mobile_active_text">If you plan on moving around while recording measurements.</string>
+    <string name="record_mobile_session">Record mobile session</string>
 </resources>
