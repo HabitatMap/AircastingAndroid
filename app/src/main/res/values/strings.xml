@@ -243,5 +243,6 @@
     <string name="microphone_settings">Microphone settings</string>
     <string name="reset_email_sent">An email with further instructions has been sent</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="fixed_session_no_internet_connection">You need to have internet connection to create fixed session</string>
 
 </resources>
