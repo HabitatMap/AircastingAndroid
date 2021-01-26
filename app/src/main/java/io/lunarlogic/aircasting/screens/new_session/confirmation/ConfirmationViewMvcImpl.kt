@@ -24,7 +24,7 @@ import io.lunarlogic.aircasting.models.Session
 
 abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
     OnMapReadyCallback {
-    private var session: Session? = null
+    protected var session: Session? = null
 
     private val DEFAULT_ZOOM = 16f
 
