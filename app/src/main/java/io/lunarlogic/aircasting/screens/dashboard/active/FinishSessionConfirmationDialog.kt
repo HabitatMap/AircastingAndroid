@@ -9,13 +9,17 @@ import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseDialog
+import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import kotlinx.android.synthetic.main.disconnected_view_finish_session_dialog.view.*
+import org.greenrobot.eventbus.EventBus
 
 class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-    private val mListener: MobileActiveSessionViewMvc.DisconnectedViewListener,
+//    private val mListener: MobileActiveSessionViewMvc.DisconnectedViewListener,
     private val mSession: Session
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
@@ -38,7 +42,15 @@ class FinishSessionConfirmationDialog(
     }
 
     private fun finishSessionConfirmed(){
-        mListener.onSessionStopClicked(mSession)
+//        mListener.onSessionStopClicked(mSession)
+        val event = StopRecordingEvent(mSession.uuid)
+        EventBus.getDefault().post(event)
+
+        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
+        )
+        NavigationController.goToDashboard(tabId)
     }
 
     private fun buildDescription(): SpannableStringBuilder {
