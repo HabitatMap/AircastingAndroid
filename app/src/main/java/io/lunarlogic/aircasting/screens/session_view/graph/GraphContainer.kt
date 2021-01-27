@@ -186,6 +186,8 @@ class GraphContainer: OnChartGestureListener {
         dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
         dataSet.setDrawHighlightIndicators(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        dataSet.cubicIntensity = 0.04f
     }
 
     private fun updateValueAxis(from: Float, to: Float) {
