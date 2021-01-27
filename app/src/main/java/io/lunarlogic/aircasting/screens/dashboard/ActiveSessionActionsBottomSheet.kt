@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionConfirmationDialog
 import kotlinx.android.synthetic.main.active_session_actions.view.*
 
 class ActiveSessionActionsBottomSheet(
     private val mListener: Listener,
-    private val mSessionPresenter: SessionPresenter?
+    private val mSessionPresenter: SessionPresenter?,
+    private val mSupportFragmentManager: FragmentManager
 ): BottomSheet(mListener) {
     interface Listener: BottomSheet.Listener {
         fun disconnectSessionPressed()
@@ -48,7 +52,8 @@ class ActiveSessionActionsBottomSheet(
 
     private fun setupStopButton(view: View?) {
         val stopButton = view?.stop_session_button
-        stopButton?.setOnClickListener {
+        stopButton?.setOnClickListener { //todo: showing FinishSEssionConfirmationDialog here <?>
+//            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, mSessionPresenter!!.session!!).show() //mSessionPresenter.session
             mListener.stopSessionPressed()
         }
     }
