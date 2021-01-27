@@ -8,6 +8,7 @@
         android:layout_marginStart="@dimen/keyline_10"
         android:layout_marginEnd="@dimen/keyline_10"
         android:textAppearance="?attr/textAppearanceBody2"
+        android:textColor="@color/aircasting_grey_300"
         app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />

@@ -106,7 +106,7 @@ class ShareSessionBottomSheet(
             val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             radioButton.layoutParams = layoutParams
             radioButton.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.aircasting_blue_400))
-            radioButton.setTextColor(resources.getColor(R.color.aircasting_grey_800))
+            radioButton.setTextColor(resources.getColor(R.color.aircasting_grey_700))
             radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_StreamValue2)
             radioGroup?.addView(radioButton)
             fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)

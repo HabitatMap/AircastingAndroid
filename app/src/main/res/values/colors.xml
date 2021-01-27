@@ -10,12 +10,8 @@
     <color name="aircasting_grey_0">#FAFAFA</color>
     <color name="aircasting_grey_50">#55F1F4F4</color>
     <color name="aircasting_grey_100">#EAECF2</color>
-    <color name="aircasting_grey_300">#CACCCC</color>
-    <color name="aircasting_grey_400">#A1A2A6</color>
-    <color name="aircasting_grey_500">#949599</color>
-    <color name="aircasting_grey_600">#858B93</color>
+    <color name="aircasting_grey_300">#A1A2A6</color>
     <color name="aircasting_grey_700">#737578</color>
-    <color name="aircasting_grey_800">#464C55</color>
     <color name="aircasting_black_overlay">#40000000</color>
 
     <color name="session_color_indicator_low">#96D788</color>

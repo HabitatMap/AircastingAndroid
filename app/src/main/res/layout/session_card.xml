@@ -18,6 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="@color/aircasting_grey_300"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/session_actions_button" />
@@ -30,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_more_horizontal"
-            android:tint="@color/aircasting_grey_400"
+            android:tint="@color/aircasting_grey_700"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/session_date"
             app:layout_constraintEnd_toEndOf="parent" />

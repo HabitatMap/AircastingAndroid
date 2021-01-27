@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_xs"
-        android:textColor="@color/aircasting_grey_400"
+        android:textColor="@color/aircasting_grey_700"
         android:layout_marginStart="3dp"
         android:padding="@dimen/keyline_1"/>
 
