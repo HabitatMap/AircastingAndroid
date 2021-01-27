@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.cardview.widget.CardView
@@ -17,7 +18,8 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager
+        supportFragmentManager: FragmentManager,
+        isSDCardSyncEnabled: Boolean
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
         mSupportFragmentManager = supportFragmentManager
@@ -32,19 +34,26 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
             onMobileSessionSelected()
         }
 
-        val syncCard = rootView?.sync_card
-        syncCard?.setOnClickListener {
-            onSyncSelected()
-        }
-
-        val clearCard = rootView?.clear_card
-        clearCard?.setOnClickListener {
-            onClearSDCardSelected()
-        }
-
         val moreInfoButton = rootView?.new_session_more_info
         moreInfoButton?.setOnClickListener {
             onMoreInfoClicked()
+        }
+
+        if (isSDCardSyncEnabled) {
+            val orLabel = rootView?.or
+            orLabel?.visibility = View.VISIBLE
+
+            val syncCard = rootView?.sync_card
+            syncCard?.visibility = View.VISIBLE
+            syncCard?.setOnClickListener {
+                onSyncSelected()
+            }
+
+            val clearCard = rootView?.clear_card
+            clearCard?.visibility = View.VISIBLE
+            clearCard?.setOnClickListener {
+                onClearSDCardSelected()
+            }
         }
     }
 

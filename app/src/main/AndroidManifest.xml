@@ -78,6 +78,10 @@
             android:value="${crashlyticsCollectionEnabled}" />
 
         <meta-data
+            android:name="sd_card_sync_enabled"
+            android:value="${sdCardSyncEnabled}" />
+
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps_api_key" />
 

@@ -10,7 +10,6 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
-import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 

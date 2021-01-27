@@ -166,6 +166,7 @@
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_8"
         android:paddingStart="@dimen/keyline_10"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/new_session_more_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fixed_session_start_card" />
@@ -179,6 +180,7 @@
         android:clickable="true"
         android:focusable="true"
         android:layout_marginStart="@dimen/keyline_8"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/fixed_session_start_card"
         app:layout_constraintTop_toBottomOf="@+id/or"
@@ -224,6 +226,7 @@
         android:clickable="true"
         android:focusable="true"
         android:layout_marginStart="@dimen/keyline_8"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/sync_card"
         app:layout_constraintEnd_toEndOf="@id/mobile_session_start_card"
         app:layout_constraintTop_toBottomOf="@+id/or"

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.lib.isSdCardSyncEnabled
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import javax.inject.Inject
 
@@ -23,7 +24,8 @@ class LetsStartFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
+        val isSDCardSyncEnabled = context?.isSdCardSyncEnabled() == true
+        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager, isSDCardSyncEnabled)
         controller = LetsStartController(activity, view, context, airBeamSyncService)
         controller?.onCreate()
 
