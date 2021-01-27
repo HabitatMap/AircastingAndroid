@@ -6,10 +6,12 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import retrofit2.Call
 import java.util.*
 
 
@@ -23,6 +25,10 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         thread.start()
     }
 
+    fun stop() {
+        thread.cancel()
+    }
+
     fun pause() {
         thread.paused = true
     }
@@ -33,19 +39,32 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
 
     // TODO: consider using WorkManager
     // https://developer.android.com/topic/libraries/architecture/workmanager/basics
-    private inner class DownloadThread(): Thread() {
+    private inner class DownloadThread() : Thread() {
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
+        private var call: Call<SessionWithMeasurementsResponse>? = null
+        private var callback: DownloadMeasurementsCallback? = null
+
 
         override fun run() {
-            while (true) {
-                downloadMeasurements()
-                sleep(POLL_INTERVAL)
+            try {
+                while (!isInterrupted) {
+                    downloadMeasurements()
+                    sleep(POLL_INTERVAL)
 
-                while(paused) {
-                    sleep(1000)
+                    while (paused) {
+                        sleep(1000)
+                    }
                 }
+            } catch (e: InterruptedException) {
+                return
             }
+        }
+
+        fun cancel() {
+            interrupt()
+            call?.cancel()
+            callback?.cancel()
         }
 
         private fun downloadMeasurements() {
@@ -67,15 +86,18 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         }
 
         private fun downloadMeasurements(sessionId: Long, session: Session) {
+            callback =  DownloadMeasurementsCallback(
+                sessionId, session, sessionsRepository, measurementStreamsRepository,
+                measurementsRepository, errorHandler, null
+            )
             GlobalScope.launch(Dispatchers.Main) {
                 val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
                 val lastMeasurementSyncTimeString =
                     DateConverter.toDateString(lastMeasurementSyncTime)
-                val call = apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
+                call =
+                    apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
 
-                call.enqueue(DownloadMeasurementsCallback(
-                    sessionId, session, sessionsRepository, measurementStreamsRepository,
-                    measurementsRepository, errorHandler))
+                call?.enqueue(callback)
             }
         }
     }

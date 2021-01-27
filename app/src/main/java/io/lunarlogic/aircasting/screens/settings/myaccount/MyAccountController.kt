@@ -2,12 +2,13 @@ package io.lunarlogic.aircasting.screens.settings.myaccount
 
 import android.content.Context
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.LogoutEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class MyAccountController(
     private val mContext: Context,
@@ -25,12 +26,22 @@ class MyAccountController(
     }
 
     override fun onSignOutClicked() {
-        mSettings.logout()
-        SessionsSyncService.destroy()
+        EventBus.getDefault().post(LogoutEvent())
 
-        DatabaseProvider.runQuery {
-            DatabaseProvider.get().clearAllTables()
-        }
+        mSettings.logout()
+        clearDatabase()
+
         LoginActivity.startAfterSignOut(mContext)
+    }
+
+    private fun clearDatabase() {
+        // to make sure downloading sessions stopped before we start deleting them
+        Thread.sleep(1000)
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                DatabaseProvider.get().clearAllTables()
+            }
+            query.await()
+        }
     }
 }

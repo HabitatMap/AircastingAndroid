@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.observers.AppLifecycleObserver
 import io.lunarlogic.aircasting.networking.services.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -66,6 +67,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
+    fun onMessageEvent(event: LogoutEvent) {
+        fixedSessionDownloadMeasurementsService.stop()
+        SessionsSyncService.destroy()
+    }
+
+    @Subscribe
     fun onMessageEvent(event: AppToForegroundEvent) {
         onAppToForeground()
     }
@@ -87,10 +94,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
+        sessionsSyncService.resume()
     }
 
     fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
+        sessionsSyncService.pause()
     }
 
     private fun registerToEventBus() {

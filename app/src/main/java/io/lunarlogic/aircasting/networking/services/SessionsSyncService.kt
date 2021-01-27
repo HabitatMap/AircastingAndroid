@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.observers.AppLifecycleObserver
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +29,10 @@ class SessionsSyncService {
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
+    private var syncInBackground = AtomicBoolean(false)
+    private var triedToSyncBackground = AtomicBoolean(false)
+    private var mCall: Call<SyncResponse>? = null
+
 
     private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
         this.apiService = apiService
@@ -50,12 +55,22 @@ class SessionsSyncService {
         }
 
         fun destroy() {
+            mSingleton?.destroy()
             mSingleton = null
         }
     }
 
+    fun destroy() {
+        mCall?.cancel()
+    }
+
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
-        if (syncStarted.get()) {
+        // This will happen if we regain connectivity when app is in background.
+        // When in foreground again, it should sync
+        if (syncInBackground.get()) {
+            triedToSyncBackground.set(true)
+        }
+        if (syncStarted.get() || syncInBackground.get()) {
             return
         }
 
@@ -66,9 +81,9 @@ class SessionsSyncService {
             val sessions = sessionRepository.finishedSessions()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
-            val call = apiService.sync(SyncSessionBody(jsonData))
+            mCall = apiService.sync(SyncSessionBody(jsonData))
 
-            call.enqueue(object : Callback<SyncResponse> {
+            mCall?.enqueue(object : Callback<SyncResponse> {
                 override fun onResponse(
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
@@ -87,14 +102,14 @@ class SessionsSyncService {
                             }
                         }
                     } else {
-                        errorHandler.handleAndDisplay(SyncError())
+                        handleSyncError(call)
                     }
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
                     hideLoaderCallback?.invoke()
-                    errorHandler.handleAndDisplay(SyncError(t))
+                    handleSyncError(call, t)
                 }
             })
         }
@@ -124,15 +139,42 @@ class SessionsSyncService {
         uuids.forEach { uuid ->
             val onDownloadSuccess = { session: Session ->
                 DatabaseProvider.runQuery {
-                    val sessionId = sessionRepository.updateOrCreate(session)
-                    sessionId?.let { measurementStreamsRepository.insert(sessionId, session.streams) }
+                    if (mCall?.isCanceled != true) {
+                        val sessionId = sessionRepository.updateOrCreate(session)
+                        sessionId?.let {
+                            measurementStreamsRepository.insert(
+                                sessionId,
+                                session.streams
+                            )
+                        }
+                    }
                 }
             }
-            downloadService.download(uuid, onDownloadSuccess)
+            if (mCall?.isCanceled != true) {
+                downloadService.download(uuid, onDownloadSuccess)
+            }
         }
     }
 
     private fun isUploadable(session: Session): Boolean {
         return !session.locationless && session.isMobile()
+    }
+
+    private fun handleSyncError(call: Call<SyncResponse>, t: Throwable? = null) {
+        if (!call.isCanceled && !syncInBackground.get()) {
+            errorHandler.handleAndDisplay(SyncError(t))
+        }
+    }
+
+    fun resume() {
+        syncInBackground.set(false)
+        if (triedToSyncBackground.get()) {
+            triedToSyncBackground.set(false)
+            sync()
+        }
+    }
+
+    fun pause() {
+        syncInBackground.set(true)
     }
 }
