@@ -71,7 +71,7 @@ class DisconnectedView {
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_finish_button)
 
         mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(session) }
-        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show() }
+        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, session).show() }
     }
 
     private fun bindAirBeam3(session: Session) {
@@ -81,7 +81,7 @@ class DisconnectedView {
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_airbeam3_finish_button)
 
         mPrimaryButton?.setOnClickListener {
-            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
+            FinishSessionConfirmationDialog(mSupportFragmentManager, session).show()
             // TODO: add when sync will be implemented
         }
         mSecondaryButton?.setOnClickListener { mListener.onSessionStopClicked(session) }
