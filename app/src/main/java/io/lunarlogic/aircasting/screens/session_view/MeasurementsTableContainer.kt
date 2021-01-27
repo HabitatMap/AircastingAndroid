@@ -63,7 +63,7 @@ class MeasurementsTableContainer {
             mMeasurementValues = rootView?.measurement_values
         }
 
-        mHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_400, null)
+        mHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_700, null)
         mSelectedHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_dark_blue, null)
     }
 

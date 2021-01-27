@@ -5,10 +5,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
     <androidx.appcompat.widget.LinearLayoutCompat
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/dialog_background">
 
@@ -18,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/keyline_4"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:tint="@color/aircasting_dark_blue" />
 
         <TextView
@@ -51,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hlu_dialog_min"
-            android:textColorHint="@color/aircasting_grey_400"
+            android:textColorHint="@color/aircasting_grey_700"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8">
@@ -73,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hlu_dialog_low"
-            android:textColorHint="@color/aircasting_grey_400"
+            android:textColorHint="@color/aircasting_grey_700"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8">
@@ -95,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hlu_dialog_medium"
-            android:textColorHint="@color/aircasting_grey_400"
+            android:textColorHint="@color/aircasting_grey_700"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8">
@@ -118,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hlu_dialog_high"
-            android:textColorHint="@color/aircasting_grey_400"
+            android:textColorHint="@color/aircasting_grey_700"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8">
@@ -141,7 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hlu_dialog_max"
-            android:textColorHint="@color/aircasting_grey_400"
+            android:textColorHint="@color/aircasting_grey_700"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8">

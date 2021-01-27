@@ -13,7 +13,7 @@ class MeasurementColor {
         val HIGH_COLOR = R.color.session_color_indicator_high
         val VERY_HIGH_COLOR = R.color.session_color_indicator_very_high
 
-        private val FALLBACK_COLOR = R.color.aircasting_grey_500
+        private val FALLBACK_COLOR = R.color.aircasting_grey_700
         private val LEVEL_COLORS_IDS = arrayOf(LOW_COLOR, MEDIUM_COLOR, HIGH_COLOR, VERY_HIGH_COLOR)
 
         class Level(val from: Int, val to: Int, val color: Int)

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_xs"
-        android:textColor="@color/aircasting_grey_400"
+        android:textColor="@color/aircasting_grey_700"
         android:textAlignment="center" />
 
 </LinearLayout>

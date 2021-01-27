@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_6"
                     android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-                    android:textColor="@color/aircasting_grey_500"
+                    android:textColor="@color/aircasting_grey_700"
                     android:lineHeight="30dp" />
             </androidx.core.widget.NestedScrollView>
 

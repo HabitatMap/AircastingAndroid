@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
@@ -159,7 +160,7 @@ class GraphContainer: OnChartGestureListener {
     private fun midnightPointLine(limit: Float): LimitLine {
         val line = LimitLine(limit, "")
         line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
-        line.lineColor = mContext.resources.getColor(R.color.aircasting_grey_600)
+        line.lineColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_700, null)
         line.lineWidth = 1f
         line.enableDashedLine(20f, 10f, 0f)
         line.textColor = Color.BLACK
