@@ -15,6 +15,7 @@ import io.lunarlogic.aircasting.models.Session
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.atomic.AtomicBoolean
 
 class DownloadMeasurementsCallback(
     private val sessionId: Long,
@@ -24,7 +25,10 @@ class DownloadMeasurementsCallback(
     private val measurementsRepository: MeasurementsRepository,
     private val errorHandler: ErrorHandler,
     private val finallyCallback: (() -> Unit)? = null
+
 ): Callback<SessionWithMeasurementsResponse> {
+    val callCanceled = AtomicBoolean(false)
+
     override fun onResponse(
         call: Call<SessionWithMeasurementsResponse>,
         response: Response<SessionWithMeasurementsResponse>
@@ -35,11 +39,12 @@ class DownloadMeasurementsCallback(
             body?.streams?.let { streams ->
                 DatabaseProvider.runQuery {
                     val streamResponses = streams.values
-
-                    streamResponses.forEach { streamResponse ->
-                        saveStreamData(streamResponse)
+                    if (!callCanceled.get()) {
+                        streamResponses.forEach { streamResponse ->
+                            saveStreamData(streamResponse)
+                        }
+                        updateSessionEndTime(body?.end_time)
                     }
-                    updateSessionEndTime(body?.end_time)
 
                     finallyCallback?.invoke()
                 }
