@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) : AppLifecycleObserver.Listener {
+class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
@@ -71,6 +71,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         fixedSessionDownloadMeasurementsService.stop()
     }
 
+    @Subscribe
+    fun onMessageEvent(event: AppToForegroundEvent) {
+        onAppToForeground()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AppToBackgroundEvent) {
+        onAppToBackground()
+    }
+
     fun onStart() {
         registerToEventBus()
         updateMobileSessions()
@@ -81,14 +91,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         unregisterFromEventBus()
     }
 
-    override fun onAppToForeground() {
+    fun onAppToForeground() {
         println("MARYSIA: Fixed session download resume")
         fixedSessionDownloadMeasurementsService.resume()
+        sessionsSyncService.onAppToForeground()
     }
 
-    override fun onAppToBackground() {
+    fun onAppToBackground() {
         println("MARYSIA: Fixed session download pause")
         fixedSessionDownloadMeasurementsService.pause()
+        sessionsSyncService.onAppToBackground()
     }
 
     private fun registerToEventBus() {

@@ -3,27 +3,20 @@ package io.lunarlogic.aircasting.models.observers
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import org.greenrobot.eventbus.EventBus
+import io.lunarlogic.aircasting.events.AppToBackgroundEvent
+import io.lunarlogic.aircasting.events.AppToForegroundEvent
 
 class AppLifecycleObserver : LifecycleObserver {
-    interface Listener {
-        fun onAppToForeground()
-        fun onAppToBackground()
-    }
-
-    private var mListener: Listener? = null
-
-    fun registerListener(listener: Listener) {
-        mListener = listener
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onMoveToForeground() {
-        mListener?.onAppToForeground()
+        EventBus.getDefault().post(AppToForegroundEvent())
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onMoveToBackground() {
-        mListener?.onAppToBackground()
+        EventBus.getDefault().post(AppToBackgroundEvent())
     }
 }
 

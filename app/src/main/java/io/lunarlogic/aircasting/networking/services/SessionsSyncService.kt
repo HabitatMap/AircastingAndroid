@@ -5,7 +5,6 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.exceptions.SyncCanceledError
 import io.lunarlogic.aircasting.exceptions.SyncError
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
@@ -18,7 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SessionsSyncService :  AppLifecycleObserver.Listener {
+class SessionsSyncService {
     private val apiService: ApiService
     private val errorHandler: ErrorHandler
     private val settings: Settings
@@ -31,6 +30,7 @@ class SessionsSyncService :  AppLifecycleObserver.Listener {
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
     private var syncInBackground = AtomicBoolean(false)
+    private var triedToSyncBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
 
 
@@ -41,6 +41,8 @@ class SessionsSyncService :  AppLifecycleObserver.Listener {
 
         this.uploadService = MobileSessionUploadService(apiService, errorHandler)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
+
+
     }
 
     companion object {
@@ -61,6 +63,10 @@ class SessionsSyncService :  AppLifecycleObserver.Listener {
     }
 
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
+        println("MARYSIA: wants to sync but checking if in background ${syncInBackground.get()}")
+        if (syncInBackground.get()) {
+            triedToSyncBackground.set(true)
+        }
         if (syncStarted.get() || syncInBackground.get()) {
             return
         }
@@ -157,11 +163,16 @@ class SessionsSyncService :  AppLifecycleObserver.Listener {
         }
     }
 
-    override fun onAppToForeground() {
+    fun onAppToForeground() {
         syncInBackground.set(false)
+        if(triedToSyncBackground.get()) {
+            triedToSyncBackground.set(false)
+            sync()
+        }
     }
 
-    override fun onAppToBackground() {
+    fun onAppToBackground() {
         syncInBackground.set(true)
+
     }
 }

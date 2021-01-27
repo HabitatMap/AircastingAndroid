@@ -36,9 +36,6 @@ class InternalAPIError():
 class SyncError(t: Throwable? = null):
     BaseException(Exception(t), "Session sync failed, check your network connection.")
 
-class SyncCanceledError(t: Throwable? = null):
-    BaseException(Exception(t), "Session sync has been canceled.")
-
 class SessionExportFailedError(t: Throwable? = null):
         BaseException(Exception(t), "Something wrong happened during exporting session data.")
 
