@@ -53,8 +53,8 @@ class ActiveSessionActionsBottomSheet(
     private fun setupStopButton(view: View?) {
         val stopButton = view?.stop_session_button
         stopButton?.setOnClickListener { //todo: showing FinishSEssionConfirmationDialog here <?>
-//            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, mSessionPresenter!!.session!!).show() //mSessionPresenter.session
-            mListener.stopSessionPressed()
+            FinishSessionConfirmationDialog(mSupportFragmentManager, mSessionPresenter!!.session!!).show() //mSessionPresenter.session
+//            mListener.stopSessionPressed()
         }
     }
 }
