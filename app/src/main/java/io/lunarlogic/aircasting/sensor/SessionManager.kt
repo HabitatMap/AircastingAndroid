@@ -92,13 +92,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     fun onAppToForeground() {
-        println("MARYSIA: Fixed session download resume")
         fixedSessionDownloadMeasurementsService.resume()
         sessionsSyncService.onAppToForeground()
     }
 
     fun onAppToBackground() {
-        println("MARYSIA: Fixed session download pause")
         fixedSessionDownloadMeasurementsService.pause()
         sessionsSyncService.onAppToBackground()
     }

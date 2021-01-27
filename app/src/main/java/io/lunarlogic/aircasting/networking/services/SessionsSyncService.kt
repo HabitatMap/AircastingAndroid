@@ -41,8 +41,6 @@ class SessionsSyncService {
 
         this.uploadService = MobileSessionUploadService(apiService, errorHandler)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
-
-
     }
 
     companion object {
@@ -63,7 +61,6 @@ class SessionsSyncService {
     }
 
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
-        println("MARYSIA: wants to sync but checking if in background ${syncInBackground.get()}")
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
