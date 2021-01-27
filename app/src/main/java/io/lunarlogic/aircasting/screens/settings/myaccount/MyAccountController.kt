@@ -32,7 +32,7 @@ class MyAccountController(
         mSettings.logout()
         SessionsSyncService.destroy()
 
-        // to make sure downloading sessions stopped before we star deleting them
+        // to make sure downloading sessions stopped before we start deleting them
         Thread.sleep(1000)
         runBlocking {
             val query = GlobalScope.async(Dispatchers.IO) {
