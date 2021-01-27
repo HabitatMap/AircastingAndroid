@@ -69,6 +69,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     @Subscribe
     fun onMessageEvent(event: LogoutEvent) {
         fixedSessionDownloadMeasurementsService.stop()
+        SessionsSyncService.destroy()
     }
 
     @Subscribe
@@ -93,12 +94,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
-        sessionsSyncService.onAppToForeground()
+        sessionsSyncService.resume()
     }
 
     fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
-        sessionsSyncService.onAppToBackground()
+        sessionsSyncService.pause()
     }
 
     private fun registerToEventBus() {

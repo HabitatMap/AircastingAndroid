@@ -26,12 +26,15 @@ class MyAccountController(
     }
 
     override fun onSignOutClicked() {
-        val event = LogoutEvent()
-        EventBus.getDefault().post(event)
+        EventBus.getDefault().post(LogoutEvent())
 
         mSettings.logout()
-        SessionsSyncService.destroy()
+        clearDatabase()
 
+        LoginActivity.startAfterSignOut(mContext)
+    }
+
+    private fun clearDatabase() {
         // to make sure downloading sessions stopped before we start deleting them
         Thread.sleep(1000)
         runBlocking {
@@ -40,7 +43,5 @@ class MyAccountController(
             }
             query.await()
         }
-
-        LoginActivity.startAfterSignOut(mContext)
     }
 }

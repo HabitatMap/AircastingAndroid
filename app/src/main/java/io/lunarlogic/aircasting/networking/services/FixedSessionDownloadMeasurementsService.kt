@@ -64,7 +64,7 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         fun cancel() {
             interrupt()
             call?.cancel()
-            callback?.callCanceled?.set(true)
+            callback?.cancel()
         }
 
         private fun downloadMeasurements() {

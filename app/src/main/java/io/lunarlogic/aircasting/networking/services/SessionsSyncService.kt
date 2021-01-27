@@ -55,12 +55,18 @@ class SessionsSyncService {
         }
 
         fun destroy() {
-            mSingleton?.mCall?.cancel()
+            mSingleton?.destroy()
             mSingleton = null
         }
     }
 
+    fun destroy() {
+        mCall?.cancel()
+    }
+
     fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
+        // This will happen if we regain connectivity when app is in background.
+        // When in foreground again, it should sync
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
@@ -160,16 +166,15 @@ class SessionsSyncService {
         }
     }
 
-    fun onAppToForeground() {
+    fun resume() {
         syncInBackground.set(false)
-        if(triedToSyncBackground.get()) {
+        if (triedToSyncBackground.get()) {
             triedToSyncBackground.set(false)
             sync()
         }
     }
 
-    fun onAppToBackground() {
+    fun pause() {
         syncInBackground.set(true)
-
     }
 }

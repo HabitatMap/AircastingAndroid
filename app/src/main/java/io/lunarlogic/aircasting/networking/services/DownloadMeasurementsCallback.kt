@@ -29,6 +29,10 @@ class DownloadMeasurementsCallback(
 ): Callback<SessionWithMeasurementsResponse> {
     val callCanceled = AtomicBoolean(false)
 
+    fun cancel() {
+        callCanceled.set(true)
+    }
+
     override fun onResponse(
         call: Call<SessionWithMeasurementsResponse>,
         response: Response<SessionWithMeasurementsResponse>
