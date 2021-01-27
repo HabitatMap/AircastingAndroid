@@ -13,7 +13,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.disconnected_view_finish_session_dialog.view.*
 
-class DisconnectedViewFinishDialog(
+class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
     private val mListener: MobileActiveSessionViewMvc.DisconnectedViewListener,
     private val mSession: Session
