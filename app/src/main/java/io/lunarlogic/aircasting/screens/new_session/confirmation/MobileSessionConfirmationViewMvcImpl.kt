@@ -16,8 +16,8 @@ class MobileSessionConfirmationViewMvcImpl(
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?,
     session: Session,
-    private val areMapsDisabled: Boolean
-) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session) {
+    areMapsDisabled: Boolean
+) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session, areMapsDisabled) {
     override fun layoutId(): Int {
         return R.layout.fragment_mobile_session_confirmation
     }

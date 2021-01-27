@@ -10,8 +10,9 @@ class FixedSessionConfirmationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?,
-    session: Session
-) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session) {
+    session: Session,
+    areMapsDisabled: Boolean
+) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session, areMapsDisabled) {
     override fun layoutId(): Int {
         return R.layout.fragment_fixed_session_confirmation
     }

@@ -25,6 +25,7 @@ import io.lunarlogic.aircasting.models.Session
 abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
     OnMapReadyCallback {
     protected var session: Session? = null
+    protected val areMapsDisabled: Boolean
 
     private val DEFAULT_ZOOM = 16f
 
@@ -35,10 +36,12 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         inflater: LayoutInflater,
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?,
-        session: Session
+        session: Session,
+        areMapsDisabled: Boolean
     ): super() {
         this.rootView = inflater.inflate(layoutId(), parent, false)
         this.session = session
+        this.areMapsDisabled = areMapsDisabled
 
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.models.Session
 
-class ConfirmationViewFactory() {
+class ConfirmationViewFactory {
     companion object {
         fun get(
             inflater: LayoutInflater,
@@ -18,7 +18,7 @@ class ConfirmationViewFactory() {
                 Session.Type.MOBILE -> MobileSessionConfirmationViewMvcImpl(
                     inflater, container, supportFragmentManager, session, areMapsDisabled)
                 Session.Type.FIXED -> FixedSessionConfirmationViewMvcImpl(
-                    inflater, container, supportFragmentManager, session)
+                    inflater, container, supportFragmentManager, session, areMapsDisabled)
             }
         }
     }
