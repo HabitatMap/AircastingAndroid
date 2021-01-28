@@ -43,14 +43,6 @@ class FinishSessionConfirmationDialog(
 
     private fun finishSessionConfirmed(){
         mListener.onStopSessionClicked(mSession)
-//        val event = StopRecordingEvent(mSession.uuid)
-//        EventBus.getDefault().post(event)
-//
-//        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
-//            Session.Type.MOBILE,
-//            Session.Status.FINISHED
-//        )
-//        NavigationController.goToDashboard(tabId)
     }
 
     private fun buildDescription(): SpannableStringBuilder {
