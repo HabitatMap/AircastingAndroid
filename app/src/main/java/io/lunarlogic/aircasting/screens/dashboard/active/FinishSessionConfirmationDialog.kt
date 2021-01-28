@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus
 
 class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-//    private val mListener: MobileActiveSessionViewMvc.DisconnectedViewListener,
+    private val mListener: FinishSessionListener,
     private val mSession: Session
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
@@ -42,15 +42,15 @@ class FinishSessionConfirmationDialog(
     }
 
     private fun finishSessionConfirmed(){
-//        mListener.onSessionStopClicked(mSession)
-        val event = StopRecordingEvent(mSession.uuid)
-        EventBus.getDefault().post(event)
-
-        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
-            Session.Type.MOBILE,
-            Session.Status.FINISHED
-        )
-        NavigationController.goToDashboard(tabId)
+        mListener.onStopSessionClicked(mSession)
+//        val event = StopRecordingEvent(mSession.uuid)
+//        EventBus.getDefault().post(event)
+//
+//        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+//            Session.Type.MOBILE,
+//            Session.Status.FINISHED
+//        )
+//        NavigationController.goToDashboard(tabId)
     }
 
     private fun buildDescription(): SpannableStringBuilder {
