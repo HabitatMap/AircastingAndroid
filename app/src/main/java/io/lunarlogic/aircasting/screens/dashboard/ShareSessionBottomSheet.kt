@@ -79,7 +79,7 @@ class ShareSessionBottomSheet(
     }
 
     fun shareFilePressed(){
-        val emailInput = emailInput?.text.toString().trim()
+        val emailInput = emailInput?.text.toString().trim() //TODO: validation if email is correct and if not empty
         mListener.onShareFilePressed(session, emailInput)
         dismiss()
     }

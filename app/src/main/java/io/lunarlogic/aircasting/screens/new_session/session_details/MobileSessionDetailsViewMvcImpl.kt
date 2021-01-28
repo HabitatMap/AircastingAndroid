@@ -30,7 +30,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getTextInputEditTextValue(R.id.session_name_input)
+        val sessionName = getTextInputEditTextValue(R.id.session_name_input) //TODO: validating if input is not empty
         val sessionTags = getSessionTags()
 
         val errorMessage = validate(sessionName)

@@ -197,7 +197,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getTextInputEditTextValue(R.id.session_name_input)
+        val sessionName = getTextInputEditTextValue(R.id.session_name_input)   //todo: validating if input is not empty!!!
         val sessionTags = getSessionTags()
         val wifiName = selectedNetworkItem?.network?.name ?: ""
         val wifiPassword = selectedNetworkPassword ?: ""

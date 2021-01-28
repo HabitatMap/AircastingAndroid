@@ -84,7 +84,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     }
 
     private fun onEditSessionPressed() {
-        val name = view?.session_name_input?.text.toString().trim()
+        val name = view?.session_name_input?.text.toString().trim() //TODO: validation if new name is not empty
         val tags = view?.tags_input?.text.toString().trim()
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
         dismiss()
