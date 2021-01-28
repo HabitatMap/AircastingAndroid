@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
@@ -15,7 +14,8 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
     MobileActiveSessionViewMvc,
     MobileActiveSessionViewMvc.DisconnectedViewListener,
-    ActiveSessionActionsBottomSheet.Listener
+    ActiveSessionActionsBottomSheet.Listener,
+    FinishSessionListener
 {
 
     private val mDisconnectedView: DisconnectedView
@@ -76,9 +76,9 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
         dismissBottomSheet()
     }
 
-    override fun stopSessionPressed() {
+    fun stopSessionPressed() {
         for (listener in listeners) {
-            listener.onSessionStopClicked(mSessionPresenter!!.session!!)
+            listener.onStopSessionClicked(mSessionPresenter!!.session!!)
         }
         dismissBottomSheet()
     }
@@ -89,7 +89,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
         }
     }
 
-    override fun onSessionStopClicked(session: Session) {
+    override fun onStopSessionClicked(session: Session) {
         stopSessionPressed()
     }
 }

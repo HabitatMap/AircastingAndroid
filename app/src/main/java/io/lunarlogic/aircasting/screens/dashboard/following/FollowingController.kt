@@ -37,7 +37,7 @@ class FollowingController(
         startNewSession(Session.Type.FIXED)
     }
 
-    override fun onStopSessionClicked(sessionUUID: String) {
+    override fun onStopSessionClicked(session: Session) {
         // do nothing
     }
 

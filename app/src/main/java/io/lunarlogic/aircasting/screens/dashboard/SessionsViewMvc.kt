@@ -3,16 +3,17 @@ package io.lunarlogic.aircasting.screens.dashboard
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 
 
 interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
 
-    interface Listener {
+    interface Listener: FinishSessionListener {
         fun onRecordNewSessionClicked()
         fun onSwipeToRefreshTriggered()
         fun onDisconnectSessionClicked(session: Session)
         fun onReconnectSessionClicked(session: Session)
-        fun onStopSessionClicked(sessionUUID: String)
+//        fun onStopSessionClicked(sessionUUID: String)
         fun onEditSessionClicked(session: Session)
         fun onShareSessionClicked(session: Session)
         fun onDeleteSessionClicked(sessionUUID: String)
