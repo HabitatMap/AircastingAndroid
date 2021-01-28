@@ -242,7 +242,6 @@ class AirBeam3Configurator(
                 val value = data.value
                 value?.let {
                     val valueString = String(value)
-                    println("ANIA $valueString")
 
                     try {
                         val partialCountString = valueString.split(":").lastOrNull()?.trim()

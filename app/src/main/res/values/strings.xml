@@ -190,7 +190,8 @@
     <string name="hlu_dialog_save_button">Save changes</string>
     <string name="hlu_dialog_reset_button">Reset to default</string>
 
-    <string name="errors_location_services_required">Without location services you will not be able to record mobile and fixed outdoor sessions.</string>
+    <string name="errors_location_services_required">Without location services you will not be able to record bluetooth sessions unless you disable mapping in the settings and pair the device outside the app.</string>
+    <string name="errors_location_services_required_to_sync">Without location services you can\'t proceed with sync unless you disable mapping in the settings and pair the device outside the app.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>

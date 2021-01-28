@@ -9,6 +9,7 @@ import android.widget.Toast
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +36,15 @@ class AirBeamSyncService(
         this.clearSDCard = clearSDCard
 
         // disconnect?
-        registerBluetoothDeviceFoundReceiver()
-        mBluetoothManager.startDiscovery()
-        failAfterTimeout()
+        val deviceItem = getDeviceItemFromPairedDevices()
+
+        if (deviceItem != null) {
+            reconnect(deviceItem)
+        } else {
+            registerBluetoothDeviceFoundReceiver()
+            mBluetoothManager.startDiscovery()
+            failAfterTimeout()
+        }
     }
 
     private fun failAfterTimeout() {
@@ -113,5 +120,9 @@ class AirBeamSyncService(
 
     private fun showInfo(info: String) {
         EventBus.getDefault().post(AirBeam3Configurator.SyncEvent(info))
+    }
+
+    private fun getDeviceItemFromPairedDevices(): DeviceItem? {
+        return mBluetoothManager.pairedDeviceItems().find { deviceItem -> deviceItem.isSyncable() }
     }
 }

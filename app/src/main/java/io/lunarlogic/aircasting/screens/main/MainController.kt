@@ -3,7 +3,9 @@ package io.lunarlogic.aircasting.screens.main
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
+import io.lunarlogic.aircasting.events.LocationPermissionsResultEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiService
 
@@ -20,7 +22,7 @@ class MainController(
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
-    private var `mSessionManager`: SessionManager? = null
+    private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
 
@@ -65,6 +67,17 @@ class MainController(
         }, {
             mViewMvc.hideLoader()
         })
+    }
+
+    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
+        when (requestCode) {
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
+                EventBus.getDefault().post(LocationPermissionsResultEvent())
+            }
+            else -> {
+                // Ignore all other requests.
+            }
+        }
     }
 
     private fun registerConnectivityManager() {

@@ -68,4 +68,10 @@ class MainActivity: AppCompatActivity() {
         controller?.onDestroy()
         LocationHelper.stop()
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        controller?.onRequestPermissionsResult(requestCode, grantResults)
+    }
 }
