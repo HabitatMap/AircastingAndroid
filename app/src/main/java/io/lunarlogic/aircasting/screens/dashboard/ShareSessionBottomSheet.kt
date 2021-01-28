@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 
@@ -79,7 +80,11 @@ class ShareSessionBottomSheet(
     }
 
     fun shareFilePressed(){
-        val emailInput = emailInput?.text.toString().trim() //TODO: validation if email is correct and if not empty
+        val emailInput = emailInput?.text.toString().trim()
+        if (ValidationHelper.isValidEmail(emailInput)){
+            //todo: showError()
+            return
+        }
         mListener.onShareFilePressed(session, emailInput)
         dismiss()
     }

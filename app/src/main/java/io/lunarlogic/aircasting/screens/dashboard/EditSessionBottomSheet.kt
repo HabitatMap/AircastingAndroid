@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
+import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
@@ -84,7 +85,11 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     }
 
     private fun onEditSessionPressed() {
-        val name = view?.session_name_input?.text.toString().trim() //TODO: validation if new name is not empty
+        val name = view?.session_name_input?.text.toString().trim()
+        if (!ValidationHelper.isValidEmail(name)) {
+            // showError() from some interface todo:
+            return
+        }
         val tags = view?.tags_input?.text.toString().trim()
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
         dismiss()

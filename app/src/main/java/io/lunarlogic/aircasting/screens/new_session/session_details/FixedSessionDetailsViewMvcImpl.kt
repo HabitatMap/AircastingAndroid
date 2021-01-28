@@ -14,6 +14,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
@@ -197,7 +198,11 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getTextInputEditTextValue(R.id.session_name_input)   //todo: validating if input is not empty!!!
+        val sessionName = getTextInputEditTextValue(R.id.session_name_input)
+        if (ValidationHelper.isValidName(sessionName)){
+            // showError() todo
+            return
+        }
         val sessionTags = getSessionTags()
         val wifiName = selectedNetworkItem?.network?.name ?: ""
         val wifiPassword = selectedNetworkPassword ?: ""

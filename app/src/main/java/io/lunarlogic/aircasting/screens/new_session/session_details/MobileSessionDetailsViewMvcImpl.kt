@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
@@ -31,6 +32,10 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
 
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getTextInputEditTextValue(R.id.session_name_input) //TODO: validating if input is not empty
+        if (ValidationHelper.isValidName(sessionName)) {
+            // todo: showError()
+            return
+        }
         val sessionTags = getSessionTags()
 
         val errorMessage = validate(sessionName)
