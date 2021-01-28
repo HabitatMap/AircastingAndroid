@@ -14,8 +14,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
     MobileActiveSessionViewMvc,
     MobileActiveSessionViewMvc.DisconnectedViewListener,
-    ActiveSessionActionsBottomSheet.Listener,
-    FinishSessionListener
+    ActiveSessionActionsBottomSheet.Listener
 {
 
     private val mDisconnectedView: DisconnectedView
