@@ -91,7 +91,7 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
     private fun onEditSessionPressed() {
         val name = view?.session_name_input?.text.toString().trim()
         if (name.isEmpty()) {
-            showError()  //todo: from some interface??
+            showError()
             return
         }
         val tags = view?.tags_input?.text.toString().trim()
