@@ -7,10 +7,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import java.util.*
 
@@ -43,7 +40,6 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
         private var call: Call<SessionWithMeasurementsResponse>? = null
-        private var callback: DownloadMeasurementsCallback? = null
 
 
         override fun run() {
@@ -64,7 +60,6 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         fun cancel() {
             interrupt()
             call?.cancel()
-            callback?.cancel()
         }
 
         private fun downloadMeasurements() {
@@ -86,18 +81,17 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         }
 
         private fun downloadMeasurements(sessionId: Long, session: Session) {
-            callback =  DownloadMeasurementsCallback(
-                sessionId, session, sessionsRepository, measurementStreamsRepository,
-                measurementsRepository, errorHandler, null
-            )
             GlobalScope.launch(Dispatchers.Main) {
                 val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
+
                 val lastMeasurementSyncTimeString =
                     DateConverter.toDateString(lastMeasurementSyncTime)
                 call =
                     apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
 
-                call?.enqueue(callback)
+                call?.enqueue(DownloadMeasurementsCallback(
+                    sessionId, session, sessionsRepository, measurementStreamsRepository,
+                    measurementsRepository, errorHandler))
             }
         }
     }
