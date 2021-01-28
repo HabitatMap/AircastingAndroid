@@ -40,9 +40,9 @@ class MobileActiveViewMvcImpl(
         }
     }
 
-    override fun onSessionStopClicked(session: Session) {
+    override fun onStopSessionClicked(session: Session) {
         for (listener in listeners) {
-            listener.onStopSessionClicked(session.uuid)
+            listener.onStopSessionClicked(session)
         }
     }
 

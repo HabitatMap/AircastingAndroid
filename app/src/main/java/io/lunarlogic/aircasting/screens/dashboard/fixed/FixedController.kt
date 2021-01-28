@@ -54,7 +54,7 @@ class FixedController(
         EventBus.getDefault().post(event)
     }
 
-    override fun onStopSessionClicked(sessionUUID: String) {
+    override fun onStopSessionClicked(session: Session) {
         // do nothing
     }
 }
