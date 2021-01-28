@@ -71,21 +71,24 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
 
     override fun disconnectSessionPressed() {
         for (listener in listeners) {
-            listener.onSessionDisconnectClicked(mSessionPresenter!!.session!!)
+            val session = mSessionPresenter?.session ?: return
+            listener.onSessionDisconnectClicked(session)
         }
         dismissBottomSheet()
     }
 
     fun stopSessionPressed() {
         for (listener in listeners) {
-            listener.onStopSessionClicked(mSessionPresenter!!.session!!)
+            val session = mSessionPresenter?.session ?: return
+            listener.onStopSessionClicked(session)
         }
         dismissBottomSheet()
     }
 
     override fun onSessionReconnectClicked(session: Session) {
         for (listener in listeners) {
-            listener.onSessionReconnectClicked(mSessionPresenter!!.session!!)
+            val session = mSessionPresenter?.session ?: return
+            listener.onSessionReconnectClicked(session)
         }
     }
 
