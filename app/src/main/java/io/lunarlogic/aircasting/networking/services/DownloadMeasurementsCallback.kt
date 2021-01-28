@@ -4,6 +4,8 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
+import io.lunarlogic.aircasting.events.LogoutEvent
 import io.lunarlogic.aircasting.exceptions.DownloadMeasurementsError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -12,6 +14,8 @@ import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResp
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,8 +33,8 @@ class DownloadMeasurementsCallback(
 ): Callback<SessionWithMeasurementsResponse> {
     val callCanceled = AtomicBoolean(false)
 
-    fun cancel() {
-        callCanceled.set(true)
+    init {
+        registerToEventBus()
     }
 
     override fun onResponse(
@@ -80,5 +84,16 @@ class DownloadMeasurementsCallback(
     private fun updateSessionEndTime(endTimeString: String?) {
         if(endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
         sessionsRepository.update(session)
+    }
+
+    private fun registerToEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: LogoutEvent) {
+        callCanceled.set(true)
     }
 }
