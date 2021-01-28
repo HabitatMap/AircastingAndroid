@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -39,6 +40,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var networksRefreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener? = null
     private var selectedNetworkItem: RecyclerViewNetworkItem? = null
     private var selectedNetworkPassword: String? = null
+    private var sessionNameInputLayout: TextInputLayout? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -57,6 +59,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
             indoor = (checkedId == R.id.indoor_button && isChecked)
         }
 
+        sessionNameInputLayout = rootView?.findViewById(R.id.session_name)
         networksHeaderView = rootView?.findViewById(R.id.networks_list_header)
         refreshNetworksListButton = rootView?.findViewById(R.id.refresh_network_list_button)
         refreshNetworksListButton?.setOnClickListener {
@@ -199,10 +202,6 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getTextInputEditTextValue(R.id.session_name_input)
-        if (ValidationHelper.isValidName(sessionName)){
-            // showError() todo
-            return
-        }
         val sessionTags = getSessionTags()
         val wifiName = selectedNetworkItem?.network?.name ?: ""
         val wifiPassword = selectedNetworkPassword ?: ""
@@ -250,6 +249,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
     private fun validate(sessionName: String, wifiName: String, wifiPassword: String): String? {
         if (sessionName.isEmpty()) {
+            sessionNameInputLayout?.error = " "
             return getString(R.string.session_name_required)
         }
 

@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.new_session.session_details
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
+import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
@@ -14,6 +15,8 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     private var sessionUUID: String
     private var deviceItem: DeviceItem
 
+    private var sessionNameInputLayout: TextInputLayout? = null
+
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -24,6 +27,8 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         this.sessionUUID = sessionUUID
         this.deviceItem = deviceItem
 
+        sessionNameInputLayout = rootView?.findViewById<TextInputLayout>(R.id.session_name)
+
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
             onSessionDetailsContinueClicked()
@@ -31,11 +36,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     }
 
     private fun onSessionDetailsContinueClicked() {
-        val sessionName = getTextInputEditTextValue(R.id.session_name_input) //TODO: validating if input is not empty
-        if (ValidationHelper.isValidName(sessionName)) {
-            // todo: showError()
-            return
-        }
+        val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
 
         val errorMessage = validate(sessionName)
@@ -66,6 +67,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
 
     private fun validate(sessionName: String): String? {
         if (sessionName.isEmpty()) {
+            sessionNameInputLayout?.error = " "
             return getString(R.string.session_name_required)
         }
 

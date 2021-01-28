@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.models.MeasurementStream
@@ -32,6 +33,7 @@ class ShareSessionBottomSheet(
     private val TAG = "ShareSessionBottomSheet"
 
     val fieldValues = hashMapOf<Int, CurrentSessionStreams>()
+    var emailInputLayout: TextInputLayout? = null
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
@@ -43,6 +45,7 @@ class ShareSessionBottomSheet(
     ): View? {
         val view = inflater.inflate(R.layout.share_session_bottom_sheet, container, false)
 
+        emailInputLayout = view?.findViewById(R.id.email_text_input_layout)
         emailInput = view?.findViewById(R.id.email_input)
         radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
 
@@ -81,12 +84,16 @@ class ShareSessionBottomSheet(
 
     fun shareFilePressed(){
         val emailInput = emailInput?.text.toString().trim()
-        if (ValidationHelper.isValidEmail(emailInput)){
-            //todo: showError()
+        if (!ValidationHelper.isValidEmail(emailInput)){
+            showError()
             return
         }
         mListener.onShareFilePressed(session, emailInput)
         dismiss()
+    }
+
+    private fun showError() {
+        emailInputLayout?.error = " "
     }
 
     fun shareLinkPressed(){
