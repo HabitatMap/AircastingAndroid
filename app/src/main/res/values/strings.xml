@@ -261,5 +261,4 @@
     <string name="unknown_error">Unknown error</string>
     <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
     <string name="finish_recording">Finish recording</string>
-
 </resources>

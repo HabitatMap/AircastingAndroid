@@ -16,8 +16,8 @@ class ActiveSessionActionsBottomSheet(
     private val mListener: Listener,
     private val mSessionPresenter: SessionPresenter?,
     private val mSupportFragmentManager: FragmentManager
-): BottomSheet(mListener) {
-    interface Listener: BottomSheet.Listener, FinishSessionListener {
+) : BottomSheet(mListener) {
+    interface Listener : BottomSheet.Listener, FinishSessionListener {
         fun disconnectSessionPressed()
     }
 

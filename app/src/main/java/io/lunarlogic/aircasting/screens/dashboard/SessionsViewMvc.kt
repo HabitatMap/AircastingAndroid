@@ -8,7 +8,7 @@ import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 
 interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
 
-    interface Listener: FinishSessionListener {
+    interface Listener : FinishSessionListener {
         fun onRecordNewSessionClicked()
         fun onSwipeToRefreshTriggered()
         fun onDisconnectSessionClicked(session: Session)

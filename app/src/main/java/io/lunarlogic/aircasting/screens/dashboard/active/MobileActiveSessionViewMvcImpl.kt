@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionActionsBottomShee
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 
-class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
+class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
     MobileActiveSessionViewMvc,
     MobileActiveSessionViewMvc.DisconnectedViewListener,
     ActiveSessionActionsBottomSheet.Listener
@@ -69,24 +69,24 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
     }
 
     override fun disconnectSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            val session = mSessionPresenter?.session ?: return
             listener.onSessionDisconnectClicked(session)
         }
         dismissBottomSheet()
     }
 
     fun stopSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            val session = mSessionPresenter?.session ?: return
             listener.onStopSessionClicked(session)
         }
         dismissBottomSheet()
     }
 
     override fun onSessionReconnectClicked(session: Session) {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            val session = mSessionPresenter?.session ?: return
             listener.onSessionReconnectClicked(session)
         }
     }
