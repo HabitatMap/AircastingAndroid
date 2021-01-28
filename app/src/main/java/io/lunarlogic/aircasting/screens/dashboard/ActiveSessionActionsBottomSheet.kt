@@ -19,7 +19,6 @@ class ActiveSessionActionsBottomSheet(
 ): BottomSheet(mListener) {
     interface Listener: BottomSheet.Listener, FinishSessionListener {
         fun disconnectSessionPressed()
-//        fun stopSessionPressed()
     }
 
     override fun layoutId(): Int {
@@ -53,9 +52,8 @@ class ActiveSessionActionsBottomSheet(
 
     private fun setupStopButton(view: View?) {
         val stopButton = view?.stop_session_button
-        stopButton?.setOnClickListener { //todo: showing FinishSEssionConfirmationDialog here <?>
-            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, mSessionPresenter!!.session!!).show() //mSessionPresenter.session
-//            mListener.stopSessionPressed()
+        stopButton?.setOnClickListener {
+            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, mSessionPresenter!!.session!!).show()
         }
     }
 }

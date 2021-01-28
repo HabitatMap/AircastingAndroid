@@ -26,7 +26,7 @@ class MobileDormantController(
     fragmentManager: FragmentManager,
     private val mContext: Context?
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
-    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, FinishSessionListener {
+    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
