@@ -214,7 +214,7 @@
         <item name="android:textAlignment">center</item>
         <item name="lineHeight">32dp</item>
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
-        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textColor">@color/aircasting_grey_300</item>
         <item name="android:textSize">@dimen/text_size_s</item>
     </style>
 
@@ -222,7 +222,7 @@
         <item name="android:textAlignment">center</item>
         <item name="lineHeight">32dp</item>
         <item name="android:fontFamily">@font/muli_medium</item>
-        <item name="android:textColor">@color/aircasting_grey_400</item>
+        <item name="android:textColor">@color/aircasting_grey_300</item>
         <item name="android:button">@drawable/checkbox_selector</item>
         <item name="android:textSize">@dimen/text_size_m</item>
         <item name="materialThemeOverlay">@style/ThemeOverlay.Aircasting.Checkbox</item>

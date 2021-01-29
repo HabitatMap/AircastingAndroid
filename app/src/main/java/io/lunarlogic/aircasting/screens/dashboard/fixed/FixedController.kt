@@ -16,7 +16,6 @@ import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
-import io.lunarlogic.aircasting.screens.dashboard.DeleteSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.*
 import org.greenrobot.eventbus.EventBus
