@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -18,7 +19,8 @@ import io.lunarlogic.aircasting.models.Session
 
 class ShareSessionBottomSheet(
     private val mListener: ShareSessionBottomSheet.Listener,
-    val session: Session
+    val session: Session,
+    private val mContext: Context?
 ): BottomSheetDialogFragment() {
     interface Listener{
         fun onShareLinkPressed(session: Session, sensor: String)
@@ -94,6 +96,7 @@ class ShareSessionBottomSheet(
 
     private fun showError() {
         emailInputLayout?.error = " "
+        Toast.makeText(mContext, getString(R.string.provided_email_is_not_correct), Toast.LENGTH_LONG).show()
     }
 
     fun shareLinkPressed(){

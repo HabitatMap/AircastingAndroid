@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputLayout
@@ -17,7 +19,10 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
-class EditSessionBottomSheet(private val mListener: Listener, private var mSession: Session): BottomSheetDialogFragment() {
+class EditSessionBottomSheet(private val mListener: Listener,
+                             private var mSession: Session,
+                             private val mContext: Context?
+) : BottomSheetDialogFragment() {
     interface Listener{
         fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
     }
@@ -102,5 +107,6 @@ class EditSessionBottomSheet(private val mListener: Listener, private var mSessi
 
     private fun showError() {
         sessionNameInputLayout?.error = " "
+        Toast.makeText(mContext, getString(R.string.session_name_required), Toast.LENGTH_LONG).show()
     }
 }
