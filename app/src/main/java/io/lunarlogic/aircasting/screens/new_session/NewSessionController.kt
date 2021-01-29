@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -65,7 +66,7 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().safeRegister(this);
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()

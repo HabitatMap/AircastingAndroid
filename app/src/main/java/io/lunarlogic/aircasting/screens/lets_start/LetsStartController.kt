@@ -7,6 +7,7 @@ import android.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.events.LocationPermissionsResultEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
@@ -28,7 +29,7 @@ class LetsStartController(
 
     fun onCreate() {
         mViewMvc.registerListener(this)
-        EventBus.getDefault().register(this)
+        EventBus.getDefault().safeRegister(this)
     }
 
     fun onDestroy() {

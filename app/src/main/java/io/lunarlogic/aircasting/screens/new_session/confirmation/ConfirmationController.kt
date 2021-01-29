@@ -4,6 +4,7 @@ import android.content.Context
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.lib.KeyboardHelper
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Session
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -14,7 +15,7 @@ class ConfirmationController(
     private val mSettings: Settings
 ): ConfirmationViewMvc.Listener {
     fun registerToEventBus() {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().safeRegister(this);
     }
 
     fun registerListener(listener: ConfirmationViewMvc.Listener) {

@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.events.LogoutEvent
 import io.lunarlogic.aircasting.exceptions.DownloadMeasurementsError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
 import io.lunarlogic.aircasting.models.Measurement
@@ -34,7 +35,7 @@ class DownloadMeasurementsCallback(
     val callCanceled = AtomicBoolean(false)
 
     init {
-        registerToEventBus()
+        EventBus.getDefault().safeRegister(this)
     }
 
     override fun onResponse(
@@ -84,12 +85,6 @@ class DownloadMeasurementsCallback(
     private fun updateSessionEndTime(endTimeString: String?) {
         if(endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
         sessionsRepository.update(session)
-    }
-
-    private fun registerToEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
     }
 
     @Subscribe

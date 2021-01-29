@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
@@ -103,7 +104,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun registerToEventBus() {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().safeRegister(this);
     }
 
     private fun unregisterFromEventBus() {
