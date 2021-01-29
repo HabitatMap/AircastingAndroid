@@ -20,9 +20,10 @@ class MeasurementStreamParams {
                 it
             )
         }
+        this.deleted = stream.deleted
     }
 
-    val deleted = false // TODO: handle
+    val deleted: Boolean
     val sensor_package_name: String
     val sensor_name: String?
     val measurement_type: String?
