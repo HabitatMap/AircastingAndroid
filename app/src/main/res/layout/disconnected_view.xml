@@ -57,7 +57,7 @@
             android:tint="@color/aircasting_white"
             android:elevation="10dp"
             android:layout_marginEnd="@dimen/keyline_4"
-            android:layout_marginBottom="@dimen/keyline_2"
+            android:layout_marginTop="@dimen/keyline_2"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@id/disconnected_view_bluetooth_device_reconnect_button"
             app:layout_constraintBottom_toBottomOf="@id/disconnected_view_bluetooth_device_reconnect_button"
