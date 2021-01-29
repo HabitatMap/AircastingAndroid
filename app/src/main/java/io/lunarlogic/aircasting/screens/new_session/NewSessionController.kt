@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -28,7 +29,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
-import io.lunarlogic.aircasting.sensor.AirbeamService
+import io.lunarlogic.aircasting.sensor.AirBeamService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +66,7 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().safeRegister(this);
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
@@ -220,11 +221,11 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        AirbeamService.startService(mContextActivity, deviceItem)
+        val sessionUUID = Session.generateUUID()
+        AirBeamService.startService(mContextActivity, deviceItem, sessionUUID)
     }
 
-    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem) {
-        val sessionUUID = Session.generateUUID()
+    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
@@ -288,7 +289,11 @@ class NewSessionController(
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
         val deviceItem = event.deviceItem
-        wizardNavigator.goToAirBeamConnected(deviceItem, this)
+        val sessionUUID = event.sessionUUID
+
+        sessionUUID ?: return // it should not happen in the new session wizard flow, but checking just for sure...
+
+        wizardNavigator.goToAirBeamConnected(deviceItem, sessionUUID, this)
     }
 
     @Subscribe

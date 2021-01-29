@@ -48,6 +48,14 @@ open class AirBeam2Connector(
         // nothing is needed here
     }
 
+    override fun sync() {
+        // AirBeam2 can't do sync
+    }
+
+    override fun clearSDCard() {
+        // AirBeam2 don't have SD card
+    }
+
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice

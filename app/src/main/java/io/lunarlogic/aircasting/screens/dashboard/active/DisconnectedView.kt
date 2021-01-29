@@ -87,18 +87,10 @@ class DisconnectedView {
         AnimatedLoader(mReconnectingLoader).start()
         mReconnectingLoader?.visibility = View.VISIBLE
         mPrimaryButton?.isEnabled = false
-
-        // we need to revert default translation set in
-        // Widget.Aircasting.Button for disabled button state
-        mPrimaryButton?.translationZ = -mContext.resources.getDimension(R.dimen.button_shadow_translation)
     }
 
     private fun hideReconnectingLoader() {
         mReconnectingLoader?.visibility = View.GONE
         mPrimaryButton?.isEnabled = true
-
-        // we need to set default translation from Widget.Aircasting.Button
-        // back again after reverting in showReconnectingLoader()
-        mPrimaryButton?.translationZ = mContext.resources.getDimension(R.dimen.button_shadow_translation)
     }
 }

@@ -5,7 +5,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam2Connector
-import io.lunarlogic.aircasting.sensor.airbeam2.AirBeam3Connector
+import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Connector
 
 open class AirBeamConnectorFactory(
     private val mContext: Context,

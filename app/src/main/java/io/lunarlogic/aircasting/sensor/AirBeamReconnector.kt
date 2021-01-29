@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.events.SensorDisconnectedEvent
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
@@ -35,7 +36,7 @@ class AirBeamReconnector(
     }
 
     fun reconnect(session: Session, callback: () -> Unit) {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().safeRegister(this)
 
         // disconnecting first to make sure the connector thread is stopped correctly etc
         sendDisconnectedEvent(session)
@@ -95,7 +96,7 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceItem: DeviceItem) {
-        AirbeamService.startService(mContext, deviceItem)
+        AirBeamService.startService(mContext, deviceItem, mSession?.uuid)
     }
 
     fun onDiscoveryFailed() {

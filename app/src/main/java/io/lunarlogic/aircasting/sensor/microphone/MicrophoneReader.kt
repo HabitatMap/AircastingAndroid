@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.exceptions.AudioReaderError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import kotlinx.android.parcel.Parcelize
 import org.greenrobot.eventbus.EventBus
@@ -49,7 +50,8 @@ class MicrophoneReader(
     private var calibrationHelper = CalibrationHelper(mSettings)
 
     fun start() {
-        registerToEventBus()
+        EventBus.getDefault().safeRegister(this)
+
         // The AudioReader sleeps as much as it records
         val block = SAMPLE_RATE / 2
 
@@ -57,7 +59,7 @@ class MicrophoneReader(
     }
 
     fun stop() {
-        unregisterFromEventBus()
+        EventBus.getDefault().unregister(this)
         mAudioReader.stopReader()
     }
 
@@ -82,15 +84,5 @@ class MicrophoneReader(
     override fun onReadError(error: Int) {
         val message = mErrorHandler.obtainMessage(ResultCodes.AUDIO_READER_ERROR, AudioReaderError(error))
         message.sendToTarget()
-    }
-
-    protected fun registerToEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    protected fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
     }
 }

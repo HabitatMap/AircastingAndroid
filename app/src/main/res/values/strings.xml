@@ -79,6 +79,12 @@
     <string name="fixed_session_start_desc">for measuring in one place</string>
     <string name="mobile_session_start_title">Mobile session</string>
     <string name="mobile_session_start_desc">for moving around</string>
+    <string name="or">or</string>
+    <string name="sync_title">Sync data from AirBeam3</string>
+    <string name="sync_description">if you recorded with AirBeam3</string>
+    <string name="clear_card_title">Clear SD card</string>
+    <string name="clear_card_description">This is temporary button for the testing purposes</string>
+
     <!-- more info modal -->
     <string name="more_info_title">Session types</string>
     <string name="more_info_text_part1">If you plan on moving around with the AirBeam2 while recording air quality measurements, configure the AirBeam2 to record a</string>
@@ -184,7 +190,8 @@
     <string name="hlu_dialog_save_button">Save changes</string>
     <string name="hlu_dialog_reset_button">Reset to default</string>
 
-    <string name="errors_location_services_required">Without location services you will not be able to record mobile and fixed outdoor sessions.</string>
+    <string name="errors_location_services_required">Without location services you will not be able to record bluetooth sessions unless you disable mapping in the settings and pair the device outside the app.</string>
+    <string name="errors_location_services_required_to_sync">Without location services you can\'t proceed with sync unless you disable mapping in the settings and pair the device outside the app.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>
@@ -226,6 +233,7 @@
     <string name="service_notification_title">AirCasting is recording a session</string>
     <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
     <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
+    <string name="ab_sync_service_notification_message">AirBeam is syncing data and Location Services are active</string>
 
     <!-- Share session -->
     <string name="share_file">Share file</string>

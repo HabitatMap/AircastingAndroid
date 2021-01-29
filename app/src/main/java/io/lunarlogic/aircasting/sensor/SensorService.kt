@@ -10,6 +10,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -82,9 +83,7 @@ abstract class SensorService : Service() {
     }
 
     protected fun registerToEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBus.getDefault().safeRegister(this)
     }
 
     protected fun unregisterFromEventBus() {

@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor
 
 import android.bluetooth.BluetoothAdapter
 import io.lunarlogic.aircasting.events.*
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class AirBeamConnector {
     interface Listener {
-        fun onConnectionSuccessful(deviceItem: DeviceItem)
+        fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?)
         fun onConnectionFailed(deviceId: String)
         fun onDisconnect(deviceId: String)
     }
@@ -22,14 +23,16 @@ abstract class AirBeamConnector {
     protected val cancelStarted = AtomicBoolean(false)
 
     private var mDeviceItem: DeviceItem? = null
+    protected var mSessionUUID: String? = null
 
     abstract protected fun start(deviceItem: DeviceItem)
     abstract protected fun stop()
     abstract protected fun sendAuth(sessionUUID: String)
     abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
-    fun connect(deviceItem: DeviceItem) {
+    fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mDeviceItem = deviceItem
+        mSessionUUID = sessionUUID
 
         // Cancel discovery because it otherwise slows down the connection.
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -43,6 +46,8 @@ abstract class AirBeamConnector {
     }
 
     abstract fun reconnectMobileSession()
+    abstract fun sync()
+    abstract fun clearSDCard()
 
     private fun disconnect() {
         unregisterFromEventBus()
@@ -60,7 +65,7 @@ abstract class AirBeamConnector {
     }
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        mListener?.onConnectionSuccessful(deviceItem)
+        mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
     fun onConnectionFailed(deviceId: String) {
@@ -96,13 +101,13 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: StopRecordingEvent) {
-        disconnect()
+        if (mSessionUUID == event.sessionUUID || mSessionUUID == null) {
+            disconnect()
+        }
     }
 
     protected fun registerToEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBus.getDefault().safeRegister(this)
     }
 
     protected fun unregisterFromEventBus() {

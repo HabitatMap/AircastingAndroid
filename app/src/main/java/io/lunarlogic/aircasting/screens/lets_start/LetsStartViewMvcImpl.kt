@@ -1,14 +1,14 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import kotlinx.android.synthetic.main.fragment_lets_start.view.*
 
 class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     LetsStartViewMvc, MoreInfoBottomSheet.Listener {
@@ -18,24 +18,42 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager
+        supportFragmentManager: FragmentManager,
+        isSDCardSyncEnabled: Boolean
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
         mSupportFragmentManager = supportFragmentManager
 
-        val fixedSessionCard = rootView?.findViewById<CardView>(R.id.fixed_session_start_card)
+        val fixedSessionCard = rootView?.fixed_session_start_card
         fixedSessionCard?.setOnClickListener {
             onFixedSessionSelected()
         }
 
-        val mobileSessionCard = rootView?.findViewById<CardView>(R.id.mobile_session_start_card)
+        val mobileSessionCard = rootView?.mobile_session_start_card
         mobileSessionCard?.setOnClickListener {
             onMobileSessionSelected()
         }
 
-        val moreInfoButton = rootView?.findViewById<Button>(R.id.new_session_more_info)
+        val moreInfoButton = rootView?.new_session_more_info
         moreInfoButton?.setOnClickListener {
             onMoreInfoClicked()
+        }
+
+        if (isSDCardSyncEnabled) {
+            val orLabel = rootView?.or
+            orLabel?.visibility = View.VISIBLE
+
+            val syncCard = rootView?.sync_card
+            syncCard?.visibility = View.VISIBLE
+            syncCard?.setOnClickListener {
+                onSyncSelected()
+            }
+
+            val clearCard = rootView?.clear_card
+            clearCard?.visibility = View.VISIBLE
+            clearCard?.setOnClickListener {
+                onClearSDCardSelected()
+            }
         }
     }
 
@@ -57,6 +75,18 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     private fun onMobileSessionSelected() {
         for (listener in listeners) {
             listener.onMobileSessionSelected()
+        }
+    }
+
+    private fun onSyncSelected() {
+        for (listener in listeners) {
+            listener.onSyncSelected()
+        }
+    }
+
+    private fun onClearSDCardSelected() {
+        for (listener in listeners) {
+            listener.onClearSDCardSelected()
         }
     }
 
