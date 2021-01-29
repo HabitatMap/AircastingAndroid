@@ -7,8 +7,6 @@ import android.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.events.LocationPermissionsResultEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
@@ -24,9 +22,7 @@ class LetsStartController(
     private val mViewMvc: LetsStartViewMvc,
     private val mContext: Context?,
     private val mPermissionsManager: PermissionsManager,
-    private val mAirBeamSyncService: AirBeamSyncService,
-    private val mErrorHandler: ErrorHandler,
-    private val mSettings: Settings
+    private val mErrorHandler: ErrorHandler
 ): LetsStartViewMvc.Listener {
     private var syncProgressDialog: AlertDialog? = null // TOOD: remove it after implementing proper sync
 
@@ -77,7 +73,9 @@ class LetsStartController(
     }
 
     private fun performSync() {
-        mAirBeamSyncService.run()
+        mContext ?: return
+
+        AirBeamSyncService.startService(mContext)
         syncProgressDialog = AlertDialog.Builder(mRootActivity)
             .setCancelable(false)
             .setPositiveButton("Ok", null)
@@ -103,7 +101,9 @@ class LetsStartController(
     }
 
     override fun onClearSDCardSelected() {
-        mAirBeamSyncService.run(true)
+        mContext ?: return
+
+        AirBeamSyncService.startService(mContext, true)
         syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage("Clear SD card started").show()
     }
 

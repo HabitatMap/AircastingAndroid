@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 
-class AirbeamService: SensorService(),
+class AirBeamService: SensorService(),
     AirBeamConnector.Listener {
 
     @Inject
@@ -29,7 +29,7 @@ class AirbeamService: SensorService(),
         val SESSION_UUID_KEY = "inputExtraSessionUUID"
 
         fun startService(context: Context, deviceItem: DeviceItem, sessionUUID: String? = null) {
-            val startIntent = Intent(context, AirbeamService::class.java)
+            val startIntent = Intent(context, AirBeamService::class.java)
 
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
             startIntent.putExtra(SESSION_UUID_KEY, sessionUUID)
@@ -51,7 +51,7 @@ class AirbeamService: SensorService(),
 
         val deviceItem = intent.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
         val sessionUUID: String? = intent.getStringExtra(SESSION_UUID_KEY)
-        
+
         val airBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         airBeamConnector?.registerListener(this)

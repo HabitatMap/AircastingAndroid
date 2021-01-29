@@ -15,7 +15,8 @@ import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFra
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
-import io.lunarlogic.aircasting.sensor.AirbeamService
+import io.lunarlogic.aircasting.sensor.AirBeamSyncService
+import io.lunarlogic.aircasting.sensor.AirBeamService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import javax.inject.Singleton
 
@@ -48,5 +49,6 @@ interface AppComponent {
     fun inject(activity: MyAccountActivity)
 
     fun inject(activity: MicrophoneService)
-    fun inject(activity: AirbeamService)
+    fun inject(activity: AirBeamService)
+    fun inject(activity: AirBeamSyncService)
 }

@@ -233,6 +233,7 @@
     <string name="service_notification_title">AirCasting is recording a session</string>
     <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
     <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
+    <string name="ab_sync_service_notification_message">AirBeam is syncing data and Location Services are active</string>
 
     <!-- Share session -->
     <string name="share_file">Share file</string>

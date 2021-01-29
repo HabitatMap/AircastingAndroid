@@ -28,7 +28,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
-import io.lunarlogic.aircasting.sensor.AirbeamService
+import io.lunarlogic.aircasting.sensor.AirBeamService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import kotlinx.coroutines.Dispatchers
@@ -221,7 +221,7 @@ class NewSessionController(
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
         val sessionUUID = Session.generateUUID()
-        AirbeamService.startService(mContextActivity, deviceItem, sessionUUID)
+        AirBeamService.startService(mContextActivity, deviceItem, sessionUUID)
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {

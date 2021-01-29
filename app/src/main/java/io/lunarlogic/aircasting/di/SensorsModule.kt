@@ -38,16 +38,6 @@ open class SensorsModule {
 
     @Provides
     @Singleton
-    open fun providesAirBeamSyncService(
-        application: AircastingApplication,
-        airBeamConnectorFactory: AirBeamConnectorFactory,
-        errorHandler: ErrorHandler,
-        sessionsRepository: SessionsRepository,
-        bluetoothManager: BluetoothManager
-    ): AirBeamSyncService = AirBeamSyncService(application, airBeamConnectorFactory, errorHandler, bluetoothManager)
-
-    @Provides
-    @Singleton
     fun prodivesSessionBuilder(): SessionBuilder = SessionBuilder()
 
     @Provides

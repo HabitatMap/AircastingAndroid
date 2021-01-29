@@ -10,7 +10,6 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.isSdCardSyncEnabled
 import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import javax.inject.Inject
 
 class LetsStartFragment : Fragment() {
@@ -18,9 +17,6 @@ class LetsStartFragment : Fragment() {
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var airBeamSyncService: AirBeamSyncService
 
     @Inject
     lateinit var errorHandler: ErrorHandler
@@ -38,7 +34,7 @@ class LetsStartFragment : Fragment() {
 
         val isSDCardSyncEnabled = context?.isSdCardSyncEnabled() == true
         val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager, isSDCardSyncEnabled)
-        controller = LetsStartController(activity, view, context, permissionsManager, airBeamSyncService, errorHandler, settings)
+        controller = LetsStartController(activity, view, context, permissionsManager, errorHandler)
         controller?.onCreate()
 
         return view.rootView

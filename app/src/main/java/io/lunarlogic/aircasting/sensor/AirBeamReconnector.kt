@@ -35,7 +35,7 @@ class AirBeamReconnector(
     }
 
     fun reconnect(session: Session, callback: () -> Unit) {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this)
 
         // disconnecting first to make sure the connector thread is stopped correctly etc
         sendDisconnectedEvent(session)
@@ -95,7 +95,7 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceItem: DeviceItem) {
-        AirbeamService.startService(mContext, deviceItem, mSession?.uuid)
+        AirBeamService.startService(mContext, deviceItem, mSession?.uuid)
     }
 
     fun onDiscoveryFailed() {
