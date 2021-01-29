@@ -12,19 +12,22 @@ import android.widget.LinearLayout
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener {
         fun onDeleteStreamsPressed(session: Session)
     }
     private var mStreamsOptionsContainer: LinearLayout? = null
-    private var checkBoxMap: HashMap<CheckBox, Option> = HashMap()
+    private var checkBoxMap: HashMap<CheckBox, DeleteStreamOption> = HashMap()
 
-    class Option(
-        val sessionUUID: String,
-        val allStreamsBoxSelected: Boolean = false,
-        val streamName: String? = null
+    class DeleteStreamOption(
+        val allStreamsBoxSelected: Boolean,
+        val stream: MeasurementStream? = null
     )
 
     override fun onCreateView(
@@ -58,16 +61,20 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         return view
     }
 
-    fun getSelectedValues(): ArrayList<Option> {
-        return selectedValues()
+    fun getSelectedValues(): List<MeasurementStream> {
+        val streamsSelectedForDeletion: MutableList<MeasurementStream> = ArrayList()
+        selectedStreams().forEach { option ->
+            option.stream?.let { streamsSelectedForDeletion.add(it) }
+        }
+        return Collections.unmodifiableList(streamsSelectedForDeletion)
     }
 
     fun allStreamsBoxSelected(): Boolean {
-        return selectedValues().any { it.allStreamsBoxSelected }
+        return selectedStreams().any { it.allStreamsBoxSelected }
     }
 
-    private fun selectedValues(): ArrayList<Option> {
-        val values = ArrayList<Option>()
+    private fun selectedStreams(): ArrayList<DeleteStreamOption> {
+        val values = ArrayList<DeleteStreamOption>()
         if (checkBoxMap.isEmpty()) {
             return values
         }
@@ -83,15 +90,16 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         val wholeSessionCheckboxTitle = resources.getString(R.string.delete_all_data_from_session)
         val checkbox = CheckBox(context)
         val wholeSessionCheckboxView = createCheckboxView(checkbox, wholeSessionCheckboxTitle)
-        checkBoxMap[checkbox] = Option(session.uuid, true)
+        checkBoxMap[checkbox] = DeleteStreamOption(true)
         mStreamsOptionsContainer?.addView(wholeSessionCheckboxView)
 
         val sessionStreams = session.streams
+        session
         sessionStreams.forEach { stream ->
             val singleStreamCheckboxTitle = stream.detailedType
             val streamCheckbox = CheckBox(context)
             val streamCheckboxView = createCheckboxView(streamCheckbox, singleStreamCheckboxTitle)
-            checkBoxMap[streamCheckbox] = Option(session.uuid, false, stream.sensorName)
+            checkBoxMap[streamCheckbox] = DeleteStreamOption(false, stream)
             mStreamsOptionsContainer?.addView(streamCheckboxView)
         }
     }
@@ -106,3 +114,4 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         return checkbox
     }
 }
+
