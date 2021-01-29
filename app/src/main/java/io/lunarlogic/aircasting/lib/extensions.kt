@@ -5,7 +5,7 @@ import org.greenrobot.eventbus.EventBus
 
 fun Context.isSdCardSyncEnabled(): Boolean {
     val metaData = applicationInfo.metaData
-    return metaData.getBoolean("sd_card_sync_enabled")
+    return metaData?.getBoolean("sd_card_sync_enabled") == true
 }
 
 fun EventBus.safeRegister(subscriber: Any) {
