@@ -5,7 +5,9 @@
     style="@style/Widget.Aircasting.Cards"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_margin="@dimen/keyline_4">
+    android:layout_marginStart="@dimen/keyline_4"
+    android:layout_marginEnd="@dimen/keyline_4"
+    android:layout_marginTop="@dimen/keyline_2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/session_card_layout"
