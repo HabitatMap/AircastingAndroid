@@ -297,4 +297,11 @@ class Session(
         formatter.timeZone = TimeZone.getDefault()
         return formatter
     }
+
+    fun removeStream(stream: MeasurementStream) {
+        val mutableStreams  = streams.toMutableList()
+        mutableStreams.remove(stream)
+        mStreams = Collections.unmodifiableList(mutableStreams)
+    }
+
 }
