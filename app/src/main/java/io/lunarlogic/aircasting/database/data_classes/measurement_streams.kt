@@ -29,7 +29,8 @@ data class MeasurementStreamDBObject(
     @ColumnInfo(name = "threshold_low") val thresholdLow: Int,
     @ColumnInfo(name = "threshold_medium") val thresholdMedium: Int,
     @ColumnInfo(name = "threshold_high") val thresholdHigh: Int,
-    @ColumnInfo(name = "threshold_very_high") val thresholdVeryHigh: Int
+    @ColumnInfo(name = "threshold_very_high") val thresholdVeryHigh: Int,
+    @ColumnInfo(name = "deleted") val deleted: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -63,4 +64,10 @@ interface MeasurementStreamDao {
 
     @Query("DELETE FROM measurement_streams")
     fun deleteAll()
+
+    @Query("UPDATE measurement_streams SET deleted=1 WHERE session_id=:sessionId AND sensor_name=:sensorName")
+    fun markForRemoval(sessionId: Long, sensorName: String)
+
+    @Query("DELETE FROM measurement_streams WHERE deleted=1")
+    fun deleteMarkedForRemoval()
 }
