@@ -26,10 +26,14 @@ class AirbeamService: SensorService(),
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
+        val SESSION_UUID_KEY = "inputExtraSessionUUID"
 
-        fun startService(context: Context, deviceItem: DeviceItem) {
+        fun startService(context: Context, deviceItem: DeviceItem, sessionUUID: String? = null) {
             val startIntent = Intent(context, AirbeamService::class.java)
+
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
+            startIntent.putExtra(SESSION_UUID_KEY, sessionUUID)
+
             ContextCompat.startForegroundService(context, startIntent)
         }
     }
@@ -43,12 +47,16 @@ class AirbeamService: SensorService(),
     }
 
     override fun startSensor(intent: Intent?) {
-        val deviceItem = intent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
+        intent ?: return
+
+        val deviceItem = intent.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
+        val sessionUUID: String? = intent.getStringExtra(SESSION_UUID_KEY)
+        
         val airBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         airBeamConnector?.registerListener(this)
         try {
-            airBeamConnector?.connect(deviceItem)
+            airBeamConnector?.connect(deviceItem, sessionUUID)
         } catch (e: BLENotSupported) {
             errorHandler.handleAndDisplay(e)
             onConnectionFailed()
@@ -63,8 +71,8 @@ class AirbeamService: SensorService(),
         return getString(R.string.ab_service_notification_message)
     }
 
-    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        val event = AirBeamConnectionSuccessfulEvent(deviceItem)
+    override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
+        val event = AirBeamConnectionSuccessfulEvent(deviceItem, sessionUUID)
         EventBus.getDefault().post(event)
     }
 

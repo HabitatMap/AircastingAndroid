@@ -220,11 +220,11 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        AirbeamService.startService(mContextActivity, deviceItem)
+        val sessionUUID = Session.generateUUID()
+        AirbeamService.startService(mContextActivity, deviceItem, sessionUUID)
     }
 
-    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem) {
-        val sessionUUID = Session.generateUUID()
+    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
@@ -288,7 +288,11 @@ class NewSessionController(
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
         val deviceItem = event.deviceItem
-        wizardNavigator.goToAirBeamConnected(deviceItem, this)
+        val sessionUUID = event.sessionUUID
+
+        sessionUUID ?: return // it should not happen in the new session wizard flow, but checking just for sure...
+
+        wizardNavigator.goToAirBeamConnected(deviceItem, sessionUUID, this)
     }
 
     @Subscribe

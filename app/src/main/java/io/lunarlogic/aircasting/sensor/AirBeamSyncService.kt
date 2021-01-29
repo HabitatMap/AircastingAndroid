@@ -94,7 +94,7 @@ class AirBeamSyncService(
         }
     }
 
-    override fun onConnectionSuccessful(deviceItem: DeviceItem) {
+    override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         showInfo("Connection to ${deviceItem.displayName()} successful.")
 
         if (clearSDCard) {
