@@ -14,5 +14,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
-        android:paddingTop="@dimen/keyline_8" />
+        android:paddingTop="@dimen/keyline_4" />
 </com.google.android.material.appbar.AppBarLayout>
