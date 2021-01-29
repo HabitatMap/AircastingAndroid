@@ -11,5 +11,6 @@ open class SessionStreamResponse(
     val threshold_low: Int,
     val threshold_medium: Int,
     val threshold_high: Int,
-    val threshold_very_high: Int
+    val threshold_very_high: Int,
+    val deleted: Boolean
 )

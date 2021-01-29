@@ -30,7 +30,7 @@ data class MeasurementStreamDBObject(
     @ColumnInfo(name = "threshold_medium") val thresholdMedium: Int,
     @ColumnInfo(name = "threshold_high") val thresholdHigh: Int,
     @ColumnInfo(name = "threshold_very_high") val thresholdVeryHigh: Int,
-    @ColumnInfo(name = "deleted") val deleted: Boolean = false
+    @ColumnInfo(name = "deleted") var deleted: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -47,7 +47,8 @@ data class MeasurementStreamDBObject(
         measurementStream.thresholdLow,
         measurementStream.thresholdMedium,
         measurementStream.thresholdHigh,
-        measurementStream.thresholdVeryHigh
+        measurementStream.thresholdVeryHigh,
+        measurementStream.deleted
     )
 }
 

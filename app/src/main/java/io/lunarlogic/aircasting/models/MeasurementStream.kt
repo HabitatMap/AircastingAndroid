@@ -21,7 +21,7 @@ class MeasurementStream(
     val thresholdMedium: Int,
     val thresholdHigh: Int,
     val thresholdVeryHigh: Int,
-    var deleted: Boolean = false
+    var deleted: Boolean
 ) {
     constructor(measurementEvent: NewMeasurementEvent): this(
         measurementEvent.packageName,
@@ -34,7 +34,8 @@ class MeasurementStream(
         measurementEvent.thresholdLow,
         measurementEvent.thresholdMedium,
         measurementEvent.thresholdHigh,
-        measurementEvent.thresholdVeryHigh
+        measurementEvent.thresholdVeryHigh,
+        false
     )
 
     constructor(streamDbObject: MeasurementStreamDBObject): this(
@@ -70,7 +71,8 @@ class MeasurementStream(
         sessionStreamResponse.threshold_low,
         sessionStreamResponse.threshold_medium,
         sessionStreamResponse.threshold_high,
-        sessionStreamResponse.threshold_very_high
+        sessionStreamResponse.threshold_very_high,
+        sessionStreamResponse.deleted
     )
 
     constructor(
