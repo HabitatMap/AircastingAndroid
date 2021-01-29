@@ -56,7 +56,7 @@ class LetsStartController(
     override fun onSyncSelected() {
         val rootActivity = mRootActivity ?: return
 
-        if (mPermissionsManager.locationPermissionsGranted(rootActivity) || mSettings.areMapsDisabled()) {
+        if (mPermissionsManager.locationPermissionsGranted(rootActivity)) {
             performSync()
         } else {
             mPermissionsManager.requestLocationPermissions(rootActivity)

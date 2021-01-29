@@ -43,14 +43,14 @@ class AirBeam3Configurator(
         UUID.fromString("0000ffe6-0000-1000-8000-00805f9b34fb")     // PM10
     )
     // has notifications about measurements count in particular csv file on SD card
-    private val SYNC_COUNTER_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
+    private val SYNC_META_DATA_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
     // has notifications for reading measurements stored in csv files on SD card
-    private val SYNC_CHARACTERISTIC_UUID = UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
+    private val SYNC_DATA_CHARACTERISTIC_UUID = UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
 
     private var measurementsCharacteristics: List<BluetoothGattCharacteristic>? = null
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
-    private var syncCharacteristic: BluetoothGattCharacteristic? = null
-    private var syncCounterCharacteristic: BluetoothGattCharacteristic? = null
+    private var syncDataCharacteristic: BluetoothGattCharacteristic? = null
+    private var syncMetaDataCharacteristic: BluetoothGattCharacteristic? = null
     private val SYNC_FINISH = "SD_SYNC_FINISH"
     private val SYNC_TAG = "SYNC"
     private val CLEAR_FINISH = "SD_DELETE_FINISH"
@@ -200,10 +200,10 @@ class AirBeam3Configurator(
             measurementsCharacteristics?.isEmpty() ?: return false
 
             configurationCharacteristic = service.getCharacteristic(CONFIGURATION_CHARACTERISTIC_UUID)
-            syncCharacteristic = service.getCharacteristic(SYNC_CHARACTERISTIC_UUID)
-            syncCounterCharacteristic = service.getCharacteristic(SYNC_COUNTER_CHARACTERISTIC_UUID)
+            syncDataCharacteristic = service.getCharacteristic(SYNC_DATA_CHARACTERISTIC_UUID)
+            syncMetaDataCharacteristic = service.getCharacteristic(SYNC_META_DATA_CHARACTERISTIC_UUID)
 
-            val characteristics = measurementsCharacteristics!!.union(arrayListOf(syncCharacteristic, syncCounterCharacteristic))
+            val characteristics = measurementsCharacteristics!!.union(arrayListOf(syncDataCharacteristic, syncMetaDataCharacteristic))
             if (characteristics.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
                 return false
             }
@@ -220,13 +220,13 @@ class AirBeam3Configurator(
         }
 
         private fun enableSyncNotifications(queue: RequestQueue) {
-            val syncCharacteristic = syncCharacteristic ?: return
-            val syncCounterCharacteristic = syncCounterCharacteristic ?: return
+            val syncDataCharacteristic = syncDataCharacteristic ?: return
+            val syncMetaDataCharacteristic = syncMetaDataCharacteristic ?: return
 
-            setupSyncCounterCallback()
-            setupSyncCallback()
+            setupSyncMetaDataCallback()
+            setupSyncDataCallback()
 
-            arrayListOf(syncCounterCharacteristic, syncCharacteristic).forEach { characteristic ->
+            arrayListOf(syncMetaDataCharacteristic, syncDataCharacteristic).forEach { characteristic ->
                 queue.add(
                     enableNotifications(characteristic)
                         .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
@@ -234,10 +234,10 @@ class AirBeam3Configurator(
             }
         }
 
-        private fun setupSyncCounterCallback() {
+        private fun setupSyncMetaDataCallback() {
             count = 0
 
-            val callback = setNotificationCallback(syncCounterCharacteristic)
+            val callback = setNotificationCallback(syncMetaDataCharacteristic)
             callback.with { _, data ->
                 val value = data.value
                 value?.let {
@@ -271,11 +271,11 @@ class AirBeam3Configurator(
             }
         }
 
-        private fun setupSyncCallback() {
+        private fun setupSyncDataCallback() {
             counter = 0
             openSyncFile()
 
-            val callback = setNotificationCallback(syncCharacteristic)
+            val callback = setNotificationCallback(syncDataCharacteristic)
             callback.with { _, data ->
                 val value = data.value
 
@@ -317,8 +317,8 @@ class AirBeam3Configurator(
         override fun onDeviceDisconnected() {
             measurementsCharacteristics = null
             configurationCharacteristic = null
-            syncCharacteristic = null
-            syncCounterCharacteristic = null
+            syncDataCharacteristic = null
+            syncMetaDataCharacteristic = null
         }
     }
 
@@ -339,8 +339,8 @@ class AirBeam3Configurator(
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync
-    private fun writeToSyncFile(line: String) {
-        syncFileWriter?.write(line)
+    private fun writeToSyncFile(lines: String) {
+        syncFileWriter?.write(lines)
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync
