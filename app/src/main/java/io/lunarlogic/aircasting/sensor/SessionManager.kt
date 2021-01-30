@@ -208,10 +208,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
         markForRemoval(session, streamsToDelete) {
-            sessionUpdateService.update(session) {
-                DatabaseProvider.runQuery {
-                    measurementStreamsRepository.deleteMarkedForRemoval()
-                    sessionsSyncService.sync()
+            val reloadedSession = sessionsRespository.loadSessionAndMeasurementsByUUID(session.uuid)
+            if (reloadedSession != null) {
+                sessionUpdateService.update(reloadedSession) {
+                    DatabaseProvider.runQuery {
+                        measurementStreamsRepository.deleteMarkedForRemoval()
+                        sessionsSyncService.sync()
+                    }
                 }
             }
         }
