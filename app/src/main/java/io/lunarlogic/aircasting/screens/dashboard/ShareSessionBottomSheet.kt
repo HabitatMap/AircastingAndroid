@@ -121,8 +121,4 @@ class ShareSessionBottomSheet(
             radioGroup?.addView(radioButton)
             fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
     }
-
-    private fun disabledMappingSetupView(){
-
-    }
 }
