@@ -12,7 +12,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
+import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import javax.inject.Inject
@@ -155,7 +155,7 @@ class AirBeamSyncService: SensorService(),
     }
 
     private fun showInfo(info: String) {
-        EventBus.getDefault().post(AirBeam3Configurator.SyncEvent(info))
+        EventBus.getDefault().post(DownloadFromSDCardService.SyncEvent(info))
     }
 
     private fun getDeviceItemFromPairedDevices(): DeviceItem? {

@@ -13,7 +13,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
+import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -84,13 +84,13 @@ class LetsStartController(
 
     // TODO: remove this method after implementing proper sync
     @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncEvent) {
+    fun onMessageEvent(event: DownloadFromSDCardService.SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
     }
 
     // TODO: remove this method after implementing proper sync
     @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncFinishedEvent) {
+    fun onMessageEvent(event: DownloadFromSDCardService.SyncFinishedEvent) {
         syncProgressDialog?.cancel()
         syncProgressDialog = AlertDialog.Builder(mRootActivity)
             .setCancelable(false)

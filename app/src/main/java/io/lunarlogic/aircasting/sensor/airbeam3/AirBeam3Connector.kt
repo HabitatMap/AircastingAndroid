@@ -56,7 +56,7 @@ open class AirBeam3Connector(
     }
 
     override fun sync() {
-        airBeam3Configurator.sync()
+        airBeam3Configurator.downloadFromSDCard()
     }
 
     override fun clearSDCard() {

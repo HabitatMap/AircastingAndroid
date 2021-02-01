@@ -3,28 +3,22 @@ package io.lunarlogic.aircasting.sensor.airbeam3
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import android.util.Log
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
-import io.lunarlogic.aircasting.sensor.SyncFileChecker
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
-import org.greenrobot.eventbus.EventBus
-import java.io.File
-import java.io.FileWriter
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class AirBeam3Configurator(
-    context: Context,
+    private val mContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings
-): BleManager(context) {
+): BleManager(mContext) {
     companion object {
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
         val MAX_MTU = 517
@@ -43,32 +37,19 @@ class AirBeam3Configurator(
         UUID.fromString("0000ffe6-0000-1000-8000-00805f9b34fb")     // PM10
     )
     // has notifications about measurements count in particular csv file on SD card
-    private val SYNC_META_DATA_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
+    private val DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
     // has notifications for reading measurements stored in csv files on SD card
-    private val SYNC_DATA_CHARACTERISTIC_UUID = UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
+    private val DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
 
     private var measurementsCharacteristics: List<BluetoothGattCharacteristic>? = null
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
-    private var syncDataCharacteristic: BluetoothGattCharacteristic? = null
-    private var syncMetaDataCharacteristic: BluetoothGattCharacteristic? = null
-    private val SYNC_FINISH = "SD_SYNC_FINISH"
-    private val SYNC_TAG = "SYNC"
-    private val CLEAR_FINISH = "SD_DELETE_FINISH"
 
-    private var syncFileWriter: FileWriter? = null
-    private var count = 0
-    private var counter = 0
-
-    private var step = 0 // TODO: remove it after implementing proper sync
-    private var bleCount = 0 // TODO: remove it after implementing proper sync
-    private var wifiCount = 0 // TODO: remove it after implementing proper sync
-    private var cellularCount = 0 // TODO: remove it after implementing proper sync
-    private var syncStartedAt: Long? = null // TODO: remove it after implementing proper sync
-    class SyncEvent(val message: String) // TODO: remove it after implementing proper sync
-    class SyncFinishedEvent(val message: String) // TODO: remove it after implementing proper sync
+    private var downloadFromSDCardCharacteristic: BluetoothGattCharacteristic? = null
+    private var downloadMetaDataFromSDCardCharacteristic: BluetoothGattCharacteristic? = null
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
+    val downloadFromSDCardService = DownloadFromSDCardService(mContext)
 
     fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
@@ -108,15 +89,15 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    fun sync() {
-        syncStartedAt = System.currentTimeMillis()
+    fun downloadFromSDCard() {
+        downloadFromSDCardService.init()
 
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
             .add(requestMtu(MAX_MTU))
             .add(sleep(500))
-            .add(syncModeRequest())
+            .add(downloadFromSDCardModeRequest())
             .enqueue()
     }
 
@@ -200,10 +181,10 @@ class AirBeam3Configurator(
             measurementsCharacteristics?.isEmpty() ?: return false
 
             configurationCharacteristic = service.getCharacteristic(CONFIGURATION_CHARACTERISTIC_UUID)
-            syncDataCharacteristic = service.getCharacteristic(SYNC_DATA_CHARACTERISTIC_UUID)
-            syncMetaDataCharacteristic = service.getCharacteristic(SYNC_META_DATA_CHARACTERISTIC_UUID)
+            downloadFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID)
+            downloadMetaDataFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID)
 
-            val characteristics = measurementsCharacteristics!!.union(arrayListOf(syncDataCharacteristic, syncMetaDataCharacteristic))
+            val characteristics = measurementsCharacteristics!!.union(arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic))
             if (characteristics.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
                 return false
             }
@@ -219,14 +200,21 @@ class AirBeam3Configurator(
             enableNotifications()
         }
 
-        private fun enableSyncNotifications(queue: RequestQueue) {
-            val syncDataCharacteristic = syncDataCharacteristic ?: return
-            val syncMetaDataCharacteristic = syncMetaDataCharacteristic ?: return
+        private fun enableDownloadFromSDCardNotifications(queue: RequestQueue) {
+            val downloadFromSDCardCharacteristic = downloadFromSDCardCharacteristic ?: return
+            val downloadMetaDataFromSDCardCharacteristic = downloadMetaDataFromSDCardCharacteristic ?: return
 
-            setupSyncMetaDataCallback()
-            setupSyncDataCallback()
+            var metaDatacallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
+            metaDatacallback.with { _, data ->
+                downloadFromSDCardService.onMetaDataDownloaded(data.value)
+            }
 
-            arrayListOf(syncMetaDataCharacteristic, syncDataCharacteristic).forEach { characteristic ->
+            val measurementsCallback = setNotificationCallback(downloadFromSDCardCharacteristic)
+            measurementsCallback.with { _, data ->
+                downloadFromSDCardService.onMeasurementsDownloaded(data.value)
+            }
+
+            arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic).forEach { characteristic ->
                 queue.add(
                     enableNotifications(characteristic)
                         .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
@@ -234,67 +222,10 @@ class AirBeam3Configurator(
             }
         }
 
-        private fun setupSyncMetaDataCallback() {
-            count = 0
-
-            val callback = setNotificationCallback(syncMetaDataCharacteristic)
-            callback.with { _, data ->
-                val value = data.value
-                value?.let {
-                    val valueString = String(value)
-
-                    try {
-                        val partialCountString = valueString.split(":").lastOrNull()?.trim()
-                        val partialCount = partialCountString?.toInt()
-
-                        partialCount?.let {
-                            step += 1
-                            when(step) {
-                                1 -> bleCount = partialCount
-                                2 -> wifiCount = partialCount
-                                3 -> cellularCount = partialCount
-                            }
-                            count += partialCount
-                        }
-                    } catch (e: NumberFormatException) {
-                        // ignore - this is e.g. SD_SYNC_FINISH
-                    }
-
-                    if (valueString == SYNC_FINISH) {
-                        Log.d(SYNC_TAG, "Sync finished")
-                        closeSyncFile()
-                        checkOutputFileAndShowFinishMessage()
-                    } else if (valueString == CLEAR_FINISH) {
-                        showMessage("SD card successfully cleared.")
-                    }
-                }
-            }
-        }
-
-        private fun setupSyncDataCallback() {
-            counter = 0
-            openSyncFile()
-
-            val callback = setNotificationCallback(syncDataCharacteristic)
-            callback.with { _, data ->
-                val value = data.value
-
-                value?.let {
-                    val lines = String(value)
-                    writeToSyncFile(lines)
-
-                    val linesCount = lines.lines().filter { line -> !line.isEmpty() }.size
-                    counter += linesCount
-
-                    showMessage("Syncing $counter/$count")
-                }
-            }
-        }
-
         private fun enableNotifications() {
             val queue = beginAtomicRequestQueue()
 
-            enableSyncNotifications(queue)
+            enableDownloadFromSDCardNotifications(queue)
 
             measurementsCharacteristics?.forEach { characteristic ->
                 val callback = setNotificationCallback(characteristic)
@@ -317,71 +248,9 @@ class AirBeam3Configurator(
         override fun onDeviceDisconnected() {
             measurementsCharacteristics = null
             configurationCharacteristic = null
-            syncDataCharacteristic = null
-            syncMetaDataCharacteristic = null
+            downloadFromSDCardCharacteristic = null
+            downloadMetaDataFromSDCardCharacteristic = null
         }
-    }
-
-    private fun showFinishMessage(message: String) {
-        EventBus.getDefault().post(SyncFinishedEvent(message))
-    }
-
-    private fun showMessage(message: String) {
-        EventBus.getDefault().post(SyncEvent(message))
-    }
-
-    // TODO: this is temporary thing - remove this after implementing real sync
-    private fun openSyncFile() {
-        val dir = context.getExternalFilesDir("sync")
-
-        val file = File(dir, "sync.txt")
-        syncFileWriter = FileWriter(file)
-    }
-
-    // TODO: this is temporary thing - remove this after implementing real sync
-    private fun writeToSyncFile(lines: String) {
-        syncFileWriter?.write(lines)
-    }
-
-    // TODO: this is temporary thing - remove this after implementing real sync
-    private fun closeSyncFile() {
-        syncFileWriter?.flush()
-        syncFileWriter?.close()
-    }
-
-    // TODO: this is temporary thing - remove this after implementing real sync
-    private fun checkOutputFileAndShowFinishMessage() {
-        val endedAt = System.currentTimeMillis()
-        showMessage("Checking sync file...")
-
-        val syncMessage = "Synced $counter/$count."
-        var timeMessage = ""
-        syncStartedAt?.let { startedAt ->
-            val interval = endedAt - startedAt
-            timeMessage = "In ${formatSyncDuration(interval)}."
-        }
-
-        val syncFileMessage = if (SyncFileChecker(context).run(bleCount, wifiCount, cellularCount)) {
-            "Sync file is correct!"
-        } else {
-            "Something is wrong with the sync file :/"
-        }
-
-        showFinishMessage(
-            "Syncing from SD card successfully finished.\n" +
-                    "$syncMessage\n" +
-                    "$timeMessage\n" +
-                    syncFileMessage
-        )
-    }
-
-    private fun formatSyncDuration(duration: Long): String {
-        return String.format("%02d:%02d:%02d",
-            TimeUnit.MILLISECONDS.toHours(duration),
-            TimeUnit.MILLISECONDS.toMinutes(duration) -
-                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
-            TimeUnit.MILLISECONDS.toSeconds(duration) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {
@@ -419,9 +288,9 @@ class AirBeam3Configurator(
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("cellular mode", status)) }
     }
 
-    private fun syncModeRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.syncConfigurationMessage)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("sync mode", status)) }
+    private fun downloadFromSDCardModeRequest(): WriteRequest {
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.downloadFromSDCardConfigurationMessage)
+            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("download from SD card mode", status)) }
     }
 
     private fun clearSDCardModeRequest(): WriteRequest {
