@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
@@ -8,6 +9,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
+import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
@@ -129,8 +131,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getMobileActiveSessionIdByDeviceId(deviceId)
             sessionId?.let {
-                val measurementStreamId = measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
-                measurementsRepository.insert(measurementStreamId, sessionId, measurement)
+                try {
+                    val measurementStreamId =
+                        measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
+                    measurementsRepository.insert(measurementStreamId, sessionId, measurement)
+                } catch( e: SQLiteConstraintException) {
+                    errorHandler.handle(DBInsertException(e))
+                }
             }
         }
     }
