@@ -14,9 +14,8 @@ import java.util.*
 
 class FixedSessionDownloadMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     private val sessionsRepository = SessionsRepository()
-    private val measurementStreamsRepository = MeasurementStreamsRepository()
-    private val measurementsRepository = MeasurementsRepository()
     private val thread = DownloadThread()
+    private val downloadMeasurementsService = DownloadMeasurementsService(apiService, errorHandler)
 
     fun start() {
         thread.start()
@@ -70,28 +69,10 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
             }
         }
 
-        private suspend fun lastMeasurementTime(sessionId: Long, session: Session): Date {
-            var lastMeasurementTime: Date? = null
-            val query = GlobalScope.async(Dispatchers.IO) {
-                lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
-            }
-            query.await()
-
-            return LastMeasurementSyncCalculator.calculate(session.endTime, lastMeasurementTime)
-        }
-
         private fun downloadMeasurements(sessionId: Long, session: Session) {
-            GlobalScope.launch(Dispatchers.Main) {
-                val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
-
-                val lastMeasurementSyncTimeString =
-                    DateConverter.toDateString(lastMeasurementSyncTime)
+            GlobalScope.launch(Dispatchers.IO) {
                 call =
-                    apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
-
-                call?.enqueue(DownloadMeasurementsCallback(
-                    sessionId, session, sessionsRepository, measurementStreamsRepository,
-                    measurementsRepository, errorHandler))
+                    downloadMeasurementsService.enqueueDownloadingMeasurements(sessionId, session)
             }
         }
     }

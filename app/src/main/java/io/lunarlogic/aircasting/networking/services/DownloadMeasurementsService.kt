@@ -24,12 +24,12 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         DatabaseProvider.runQuery {
             val dbSession = sessionsRepository.getSessionByUUID(session.uuid)
             dbSession?.let {
-                downloadMeasurements(dbSession.id, session, finallyCallback)
+                enqueueDownloadingMeasurements(dbSession.id, session, finallyCallback)
             }
         }
     }
 
-    private fun downloadMeasurements(sessionId: Long, session: Session, finallyCallback: (() -> Unit)?): Call<SessionWithMeasurementsResponse> {
+    fun enqueueDownloadingMeasurements(sessionId: Long, session: Session, finallyCallback: (() -> Unit)? = null): Call<SessionWithMeasurementsResponse> {
         val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
 
         val lastMeasurementSyncTimeString =
