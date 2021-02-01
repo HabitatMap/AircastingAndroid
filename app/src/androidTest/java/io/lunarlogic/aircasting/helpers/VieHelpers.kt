@@ -50,6 +50,8 @@ fun stopSession(retryCount: Int = 0) {
         onView(withId(R.id.session_actions_button)).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.stop_session_button)).perform(click())
+        Thread.sleep(500)
+        onView(withId(R.id.finish_recording_button)).perform(click())
     } catch(e: NoMatchingViewException) {
         stopSession(retryCount + 1)
     }

@@ -9,13 +9,9 @@ import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseDialog
-import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
-import kotlinx.android.synthetic.main.disconnected_view_finish_session_dialog.view.*
-import org.greenrobot.eventbus.EventBus
+import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 
 class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
@@ -25,7 +21,7 @@ class FinishSessionConfirmationDialog(
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
-        mView = inflater.inflate(R.layout.disconnected_view_finish_session_dialog, null)
+        mView = inflater.inflate(R.layout.finish_session_confirmation_dialog, null)
 
         mView.informations_text_view.text = buildDescription()
         mView.header.text = buildHeader()
