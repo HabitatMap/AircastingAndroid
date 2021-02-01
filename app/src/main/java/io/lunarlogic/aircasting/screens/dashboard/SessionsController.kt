@@ -111,7 +111,7 @@ abstract class SessionsController(
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
-        if (session.isIncomplete()) {
+        if (session.isIncomplete() || session.isFixed()) {
             mViewMvc.showLoaderFor(session)
             val finallyCallback = { reloadSession(session) }
             mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
