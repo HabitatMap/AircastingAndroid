@@ -5,7 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
+import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
@@ -53,10 +55,27 @@ class MobileDormantController(
     }
 
     override fun onDeleteStreamsPressed(session: Session) {
+        val streamsToDelete = deleteSessionDialog?.getSelectedValues()
+        val allStreamsBoxSelected: Boolean = deleteSessionDialog?.allStreamsBoxSelected()!!
+        if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
+            deleteSession(session.uuid)
+        } else  {
+            deleteStreams(session, streamsToDelete)
+        }
     }
 
     private fun deleteSession(sessionUUID: String) {
         val event = DeleteSessionEvent(sessionUUID)
         EventBus.getDefault().post(event)
+    }
+
+    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
+        val event = DeleteStreamsEvent(session, streamsToDelete)
+        EventBus.getDefault().post(event)
+        deleteSessionDialog?.dismiss()
+    }
+
+    private fun deleteAllStreamsSelected(allStreamsBoxSelected: Boolean, selectedOptionsCount: Int?, sessionStreamsCount: Int?): Boolean {
+        return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
     }
 }
