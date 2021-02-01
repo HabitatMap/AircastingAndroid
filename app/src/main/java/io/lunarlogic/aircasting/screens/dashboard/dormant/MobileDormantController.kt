@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
@@ -47,7 +48,7 @@ class MobileDormantController(
         EventBus.getDefault().post(event)
     }
 
-    override fun onStopSessionClicked(sessionUUID: String) {
+    override fun onStopSessionClicked(session: Session) {
         // do nothing
     }
 }

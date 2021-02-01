@@ -46,8 +46,8 @@ class MobileActiveController(
         startNewSession(Session.Type.MOBILE)
     }
 
-    override fun onStopSessionClicked(sessionUUID: String) {
-        val event = StopRecordingEvent(sessionUUID)
+    override fun onStopSessionClicked(session: Session) {
+        val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
 
         val tabId = DashboardPagerAdapter.tabIndexForSessionType(

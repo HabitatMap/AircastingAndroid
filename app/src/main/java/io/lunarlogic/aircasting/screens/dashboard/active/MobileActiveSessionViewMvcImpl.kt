@@ -11,20 +11,22 @@ import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionActionsBottomShee
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.SessionViewMvcImpl
 
-class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
+class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
     MobileActiveSessionViewMvc,
     MobileActiveSessionViewMvc.DisconnectedViewListener,
     ActiveSessionActionsBottomSheet.Listener
 {
 
     private val mDisconnectedView: DisconnectedView
+    private val mSupportFragmentManager: FragmentManager
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup,
         supportFragmentManager: FragmentManager
     ): super(inflater, parent, supportFragmentManager) {
-        mDisconnectedView = DisconnectedView(context, this.rootView, this)
+        mDisconnectedView = DisconnectedView(context, this.rootView, supportFragmentManager, this)
+        mSupportFragmentManager = supportFragmentManager
     }
 
     override fun showMeasurementsTableValues(): Boolean {
@@ -42,7 +44,7 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
     override fun showExpandedMeasurementsTableValues() = true
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
-        return ActiveSessionActionsBottomSheet(this, sessionPresenter)
+        return ActiveSessionActionsBottomSheet(this, sessionPresenter, mSupportFragmentManager)
     }
 
     override fun bindExpanded(sessionPresenter: SessionPresenter) {
@@ -67,26 +69,29 @@ class MobileActiveSessionViewMvcImpl: SessionViewMvcImpl<MobileActiveSessionView
     }
 
     override fun disconnectSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            listener.onSessionDisconnectClicked(mSessionPresenter!!.session!!)
+            listener.onSessionDisconnectClicked(session)
         }
         dismissBottomSheet()
     }
 
-    override fun stopSessionPressed() {
+    fun stopSessionPressed() {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            listener.onSessionStopClicked(mSessionPresenter!!.session!!)
+            listener.onStopSessionClicked(session)
         }
         dismissBottomSheet()
     }
 
     override fun onSessionReconnectClicked(session: Session) {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            listener.onSessionReconnectClicked(mSessionPresenter!!.session!!)
+            listener.onSessionReconnectClicked(session)
         }
     }
 
-    override fun onSessionStopClicked(session: Session) {
+    override fun onStopSessionClicked(session: Session) {
         stopSessionPressed()
     }
 }
