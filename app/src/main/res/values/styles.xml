@@ -449,8 +449,8 @@
         <item name="tabTextAppearance">@style/Widget.Aircasting.TabLayout.TextAppearance</item>
         <item name="tabSelectedTextColor">?attr/colorPrimary</item>
         <item name="android:elevation">@dimen/default_elevation</item>
-        <item name="tabPaddingStart">@dimen/keyline_6</item>
-        <item name="tabPaddingEnd">@dimen/keyline_6</item>
+        <item name="tabPaddingStart">@dimen/keyline_4</item>
+        <item name="tabPaddingEnd">@dimen/keyline_4</item>
     </style>
 
     <style name="Widget.Aircasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline6">

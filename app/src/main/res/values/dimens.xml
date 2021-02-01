@@ -21,6 +21,7 @@
     <dimen name="button_shadow_translation">6dp</dimen>
     <dimen name="button_shadow_y_translation">-6dp</dimen>
     <dimen name="cardview_default_elevation">4dp</dimen>
+    <dimen name="navigation_tabs_left_margin">9dp</dimen>
 
     <dimen name="text_size_xxl">32sp</dimen>
     <dimen name="text_size_xl">24sp</dimen>
