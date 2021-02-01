@@ -11,11 +11,14 @@ import android.widget.*
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import kotlinx.coroutines.selects.select
 
 class ShareSessionBottomSheet(
     private val mListener: ShareSessionBottomSheet.Listener,
+    private val mSettings: Settings,
     val session: Session
 ): BottomSheetDialogFragment() {
     interface Listener{
@@ -31,8 +34,8 @@ class ShareSessionBottomSheet(
     private val TAG = "ShareSessionBottomSheet"
 
     val fieldValues = hashMapOf<Int, CurrentSessionStreams>()
-    var emailInput: EditText? = null
-    var radioGroup: RadioGroup? = null
+    private var emailInput: EditText? = null
+    private var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
 
     override fun onCreateView(
@@ -44,17 +47,8 @@ class ShareSessionBottomSheet(
 
         emailInput = view?.findViewById(R.id.email_input)
         radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
-
-        setRadioButtonsForChosenSession()
-
-        radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-            chosenSensor = fieldValues[checkedId]?.sensorName.toString()
-        }
-
+        val selectStreamTextView = view?.findViewById<TextView>(R.id.select_stream_text_view)
         val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
-        shareLinkButton?.setOnClickListener {
-            shareLinkPressed()
-        }
 
         val shareFileButton = view?.findViewById<Button>(R.id.share_file_button)
         shareFileButton?.setOnClickListener {
@@ -69,6 +63,22 @@ class ShareSessionBottomSheet(
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         closeButton?.setOnClickListener {
             dismiss()
+        }
+
+        if (mSettings.areMapsDisabled()) {
+            radioGroup?.visibility = View.GONE
+            shareLinkButton?.visibility = View.GONE
+            selectStreamTextView?.visibility = View.GONE
+        } else {
+            setRadioButtonsForChosenSession()
+
+            radioGroup?.setOnCheckedChangeListener { group, checkedId ->
+                chosenSensor = fieldValues[checkedId]?.sensorName.toString()
+            }
+
+            shareLinkButton?.setOnClickListener {
+                shareLinkPressed()
+            }
         }
 
         return view
@@ -110,5 +120,9 @@ class ShareSessionBottomSheet(
             radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_StreamValue2)
             radioGroup?.addView(radioButton)
             fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
+    }
+
+    private fun disabledMappingSetupView(){
+
     }
 }

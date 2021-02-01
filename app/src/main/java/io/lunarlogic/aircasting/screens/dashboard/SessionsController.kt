@@ -26,7 +26,7 @@ abstract class SessionsController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
     private val context: Context?
@@ -164,7 +164,7 @@ abstract class SessionsController(
     }
 
     private fun startShareSessionBottomSheet(session: Session){
-        shareDialog = ShareSessionBottomSheet(this, session)
+        shareDialog = ShareSessionBottomSheet(this, mSettings, session)
         shareDialog?.show(fragmentManager)
     }
 
