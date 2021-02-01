@@ -50,3 +50,6 @@ class ChooseAirBeamLocationSelectingPlaceError(t: Throwable? = null):
 
 class AirBeamResponseParsingError(line: String, t: Throwable? = null):
     BaseException(Exception(t), "Error while parsing line: '$line'.")
+
+class DBInsertException(t: Throwable? = null):
+    BaseException(Exception(t), "Trying to insert or update session data after the DB has been cleaned.")

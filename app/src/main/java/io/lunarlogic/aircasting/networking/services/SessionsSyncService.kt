@@ -1,9 +1,11 @@
 package io.lunarlogic.aircasting.networking.services
 
+import android.database.sqlite.SQLiteConstraintException
 import com.google.gson.Gson
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SyncError
 import io.lunarlogic.aircasting.lib.Settings
@@ -140,12 +142,16 @@ class SessionsSyncService {
             val onDownloadSuccess = { session: Session ->
                 DatabaseProvider.runQuery {
                     if (mCall?.isCanceled != true) {
-                        val sessionId = sessionRepository.updateOrCreate(session)
-                        sessionId?.let {
-                            measurementStreamsRepository.insert(
-                                sessionId,
-                                session.streams
-                            )
+                        try {
+                            val sessionId = sessionRepository.updateOrCreate(session)
+                            sessionId?.let {
+                                measurementStreamsRepository.insert(
+                                    sessionId,
+                                    session.streams
+                                )
+                            }
+                        } catch (e: SQLiteConstraintException) {
+                            errorHandler.handle(DBInsertException(e))
                         }
                     }
                 }

@@ -1,11 +1,13 @@
 package io.lunarlogic.aircasting.networking.services
 
+import android.database.sqlite.SQLiteConstraintException
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.events.LogoutEvent
+import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.DownloadMeasurementsError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -49,10 +51,14 @@ class DownloadMeasurementsCallback(
                 DatabaseProvider.runQuery {
                     val streamResponses = streams.values
                     if (!callCanceled.get()) {
-                        streamResponses.forEach { streamResponse ->
-                            saveStreamData(streamResponse)
+                        try {
+                            streamResponses.forEach { streamResponse ->
+                                saveStreamData(streamResponse)
+                            }
+                            updateSessionEndTime(body?.end_time)
+                        } catch( e: SQLiteConstraintException) {
+                            errorHandler.handle(DBInsertException(e))
                         }
-                        updateSessionEndTime(body?.end_time)
                     }
 
                     finallyCallback?.invoke()
