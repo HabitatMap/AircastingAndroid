@@ -118,7 +118,7 @@ class ShareSessionBottomSheet(
 
     private fun setRadioButtonsForChosenSession(){
         fieldValues.clear()
-        val currentSessionStreams = session.streams
+        val currentSessionStreams = session.activeStreams
         currentSessionStreams.forEach { stream ->
             setRadioButtonProperties(stream)
         }

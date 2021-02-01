@@ -98,7 +98,7 @@ class MeasurementsTableContainer {
         mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
 
         val session = mSessionPresenter?.session
-        if (session != null && session.streams.count() > 0) {
+        if (session != null && session.activeStreams.count() > 0) {
             resetMeasurementsView()
             bindMeasurements()
             stretchTableLayout()
@@ -122,7 +122,7 @@ class MeasurementsTableContainer {
 
     private fun stretchTableLayout() {
         val session = mSessionPresenter?.session
-        if (session != null && session.streams.size > 1) {
+        if (session != null && session.activeStreams.size > 1) {
             mMeasurementsTable?.isStretchAllColumns = true
         }
     }

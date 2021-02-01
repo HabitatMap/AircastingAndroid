@@ -157,6 +157,7 @@ class Session(
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
     val followed get() = followedAt != null
+    val activeStreams get() = mStreams.filter { stream -> !stream.deleted }
 
     val displayedType get() = when(type) {
         Type.MOBILE -> "mobile"
