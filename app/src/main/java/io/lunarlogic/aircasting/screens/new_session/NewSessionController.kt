@@ -56,6 +56,7 @@ class NewSessionController(
     AirBeamConnectedViewMvc.Listener,
     SessionDetailsViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
+    TurnOffLocationServicesViewMvc.Listener,
     ChooseLocationViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
@@ -68,7 +69,7 @@ class NewSessionController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) { // todo: specific case here?
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
@@ -85,7 +86,7 @@ class NewSessionController(
             startNewSessionWizard()
         } else {
             if (areMapsDisabled()) {
-                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled()) // todo: change text on TurnOnLocationServices
+                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled())
             } else {
                 wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled())
             }
@@ -106,6 +107,11 @@ class NewSessionController(
 
     override fun onTurnOnLocationServicesOkClicked() {
         LocationHelper.checkLocationServicesSettings(mContextActivity)
+    }
+
+    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String, deviceItem: DeviceItem) {
+        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
 
     private fun requestBluetoothEnable() {
@@ -231,8 +237,12 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+        if (areMapsDisabled()) {
+            wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
+        } else {
+            EventBus.getDefault().post(SendSessionAuth(sessionUUID))
+            wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+        }
     }
 
     override fun validationFailed(errorMessage: String) {
@@ -277,7 +287,7 @@ class NewSessionController(
     }
 
     override fun onContinueClicked(session: Session) {
-        wizardNavigator.goToConfirmation(session, this)
+            wizardNavigator.goToConfirmation(session, this)
     }
 
     override fun onStartRecordingClicked(session: Session) {
