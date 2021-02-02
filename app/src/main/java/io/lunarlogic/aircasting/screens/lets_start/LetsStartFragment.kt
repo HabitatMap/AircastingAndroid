@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.lib.isSdCardSyncEnabled
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import javax.inject.Inject
 
@@ -32,8 +31,7 @@ class LetsStartFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val isSDCardSyncEnabled = context?.isSdCardSyncEnabled() == true
-        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager, isSDCardSyncEnabled)
+        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
         controller = LetsStartController(activity, view, context, permissionsManager, errorHandler)
         controller?.onCreate()
 

@@ -34,23 +34,13 @@ android {
     }
     buildTypes {
         debug {
-            manifestPlaceholders = [crashlyticsCollectionEnabled:"false", sdCardSyncEnabled:"false"]
+            manifestPlaceholders = [crashlyticsCollectionEnabled:"false"]
         }
 
         release {
-            manifestPlaceholders = [crashlyticsCollectionEnabled:"true", sdCardSyncEnabled:"false"]
+            manifestPlaceholders = [crashlyticsCollectionEnabled:"true"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
-        experimentalDebug {
-            initWith debug
-            manifestPlaceholders = [crashlyticsCollectionEnabled:"false", sdCardSyncEnabled:"true"]
-        }
-
-        experimentalRelease {
-            initWith release
-            manifestPlaceholders = [crashlyticsCollectionEnabled:"true", sdCardSyncEnabled:"true"]
         }
     }
 

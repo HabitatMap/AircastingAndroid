@@ -40,9 +40,15 @@ class MobileActiveViewMvcImpl(
         }
     }
 
-    override fun onStopSessionClicked(session: Session) {
+    override fun onFinishSessionConfirmed(session: Session) {
         for (listener in listeners) {
-            listener.onStopSessionClicked(session)
+            listener.onFinishSessionConfirmed(session)
+        }
+    }
+
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+        for (listener in listeners) {
+            listener.onFinishAndSyncSessionConfirmed(session)
         }
     }
 

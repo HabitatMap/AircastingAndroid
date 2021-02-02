@@ -81,8 +81,7 @@ class DisconnectedView {
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_airbeam3_finish_button)
 
         mPrimaryButton?.setOnClickListener {
-            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
-            // TODO: add when sync will be implemented
+            FinishAndSyncSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
         }
         mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show() }
     }

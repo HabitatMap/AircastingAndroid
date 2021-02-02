@@ -190,8 +190,8 @@
     <string name="hlu_dialog_save_button">Save changes</string>
     <string name="hlu_dialog_reset_button">Reset to default</string>
 
-    <string name="errors_location_services_required">Without location services you will not be able to record bluetooth sessions unless you disable mapping in the settings and pair the device outside the app.</string>
-    <string name="errors_location_services_required_to_sync">Without location services you can\'t proceed with sync unless you disable mapping in the settings and pair the device outside the app.</string>
+    <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
+    <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
     <string name="errors_audio_required">Audio permissions are required to continue</string>
@@ -212,12 +212,22 @@
     <string name="hlu_thresholds_error">All values needs to be present and fit the range (min &lt; low &lt; medium &lt; high &lt; max).</string>
 
     <!-- Finish session dialog -->
-    <string name="the_session_will_be_moved_to_mobile_dormant_tab_and_you_won_t_be_able_too_ad_new_measurements_to_it">The session will be moved to Mobile Dormant tab and you won\'t be able too ad new measurements to it</string>
+    <string name="dialog_finish_recording_header_part1">Finish recording</string>
+    <string name="dialog_finish_recording_header_part3">\?</string>
     <string name="dialog_finish_recording_text_part1">The session will be moved to</string>
     <string name="dialog_finish_recording_text_part2">Mobile Dormant</string>
     <string name="dialog_finish_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
-    <string name="dialog_finish_recording_header_part1">Finish recording \n</string>
-    <string name="dialog_finish_recording_header_part3">\?</string>
+    <string name="finish_recording">Finish recording</string>
+
+
+    <!-- Finish and sync session dialog -->
+    <string name="dialog_finish_and_sync_recording_header_part1">Finish recording</string>
+    <string name="dialog_finish_and_sync_recording_header_part3">and sync from SD card?</string>
+    <string name="dialog_finish_and_sync_recording_text_part1">The session will be moved to</string>
+    <string name="dialog_finish_and_sync_recording_text_part2">Mobile Dormant</string>
+    <string name="dialog_finish_and_sync_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
+    <string name="dialog_finish_and_sync_recording_text_part4">SD card will be cleared afterwards.</string>
+    <string name="finish_recording_and_sync">Finish recording &amp; sync</string>
 
     <!-- Chart -->
     <string name="fixed_session_units_label">1 hr avg</string>
@@ -260,6 +270,5 @@
     <string name="reset_email_sent">An email with further instructions has been sent</string>
     <string name="unknown_error">Unknown error</string>
     <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
-    <string name="finish_recording">Finish recording</string>
     <string name="provided_email_is_not_correct">Provided email is not correct</string>
 </resources>

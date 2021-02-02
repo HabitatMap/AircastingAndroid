@@ -59,13 +59,13 @@ class AirBeam3Configurator(
     private var count = 0
     private var counter = 0
 
-    private var step = 0 // TOOD: remove it after implementing proper sync
-    private var bleCount = 0 // TOOD: remove it after implementing proper sync
-    private var wifiCount = 0 // TOOD: remove it after implementing proper sync
-    private var cellularCount = 0 // TOOD: remove it after implementing proper sync
-    private var syncStartedAt: Long? = null // TOOD: remove it after implementing proper sync
-    class SyncEvent(val message: String) // TOOD: remove it after implementing proper sync
-    class SyncFinishedEvent(val message: String) // TOOD: remove it after implementing proper sync
+    private var step = 0 // TODO: remove it after implementing proper sync
+    private var bleCount = 0 // TODO: remove it after implementing proper sync
+    private var wifiCount = 0 // TODO: remove it after implementing proper sync
+    private var cellularCount = 0 // TODO: remove it after implementing proper sync
+    private var syncStartedAt: Long? = null // TODO: remove it after implementing proper sync
+    class SyncEvent(val message: String) // TODO: remove it after implementing proper sync
+    class SyncFinishedEvent(val message: String) // TODO: remove it after implementing proper sync
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)

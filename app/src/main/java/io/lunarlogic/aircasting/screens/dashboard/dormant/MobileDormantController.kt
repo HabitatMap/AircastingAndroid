@@ -48,7 +48,11 @@ class MobileDormantController(
         EventBus.getDefault().post(event)
     }
 
-    override fun onStopSessionClicked(session: Session) {
+    override fun onFinishSessionConfirmed(session: Session) {
+        // do nothing
+    }
+
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
     }
 }

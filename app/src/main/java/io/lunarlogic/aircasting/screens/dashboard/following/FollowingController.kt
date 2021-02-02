@@ -45,10 +45,6 @@ class FollowingController(
         startNewSession(Session.Type.FIXED)
     }
 
-    override fun onStopSessionClicked(session: Session) {
-        // do nothing
-    }
-
     override fun onEditSessionClicked(session: Session) {
         // do nothing
     }
@@ -62,6 +58,14 @@ class FollowingController(
     }
 
     override fun onExpandSessionCard(session: Session) {
+        // do nothing
+    }
+
+    override fun onFinishSessionConfirmed(session: Session) {
+        // do nothing
+    }
+
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
     }
 }

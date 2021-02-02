@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-        android:text="@string/finish_recording"
         android:textAlignment="center"
         android:textSize="@dimen/text_size_m"
         app:lineHeight="@dimen/keyline_6"
@@ -25,7 +24,6 @@
         android:id="@+id/informations_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/the_session_will_be_moved_to_mobile_dormant_tab_and_you_won_t_be_able_too_ad_new_measurements_to_it"
         android:textSize="@dimen/text_size_m"
         android:lineHeight="@dimen/keyline_6"
         android:textAlignment="center"
@@ -33,14 +31,14 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginBottom="@dimen/keyline_6"/>
+
     <Button
         android:id="@+id/finish_recording_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:text="@string/finish_recording" />
+        android:layout_marginEnd="@dimen/keyline_8" />
 
     <Button
         android:id="@+id/cancel_button"
