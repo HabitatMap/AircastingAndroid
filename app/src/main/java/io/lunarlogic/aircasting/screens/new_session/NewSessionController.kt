@@ -68,7 +68,7 @@ class NewSessionController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) { // todo: specific case here?
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
@@ -80,10 +80,10 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn() || areMapsDisabled()) {
+        if (areLocationServicesOn() || areMapsDisabled()) { // todo: specific case here?
             startNewSessionWizard()
         } else {
-            wizardNavigator.goToTurnOnLocationServices(this)
+            wizardNavigator.goToTurnOnLocationServices(this) // todo: change text on TurnOnLocationServices
         }
     }
 
