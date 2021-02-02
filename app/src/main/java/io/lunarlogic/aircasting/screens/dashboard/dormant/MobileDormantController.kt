@@ -55,7 +55,7 @@ class MobileDormantController(
     }
 
     override fun onDeleteStreamsPressed(session: Session) {
-        val streamsToDelete = deleteSessionDialog?.getSelectedValues()
+        val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
         val allStreamsBoxSelected: Boolean = deleteSessionDialog?.allStreamsBoxSelected()!!
         if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
             deleteSession(session.uuid)

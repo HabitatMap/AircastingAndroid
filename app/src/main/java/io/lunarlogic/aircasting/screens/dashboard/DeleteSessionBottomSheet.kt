@@ -61,19 +61,19 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         return view
     }
 
-    fun getSelectedValues(): List<MeasurementStream> {
+    fun getStreamsToDelete(): List<MeasurementStream> {
         val streamsSelectedForDeletion: MutableList<MeasurementStream> = ArrayList()
-        selectedStreams().forEach { option ->
+        selectedOptions().forEach { option ->
             option.stream?.let { streamsSelectedForDeletion.add(it) }
         }
         return Collections.unmodifiableList(streamsSelectedForDeletion)
     }
 
     fun allStreamsBoxSelected(): Boolean {
-        return selectedStreams().any { it.allStreamsBoxSelected }
+        return selectedOptions().any { it.allStreamsBoxSelected }
     }
 
-    private fun selectedStreams(): ArrayList<DeleteStreamOption> {
+    private fun selectedOptions(): ArrayList<DeleteStreamOption> {
         val values = ArrayList<DeleteStreamOption>()
         if (checkBoxMap.isEmpty()) {
             return values
