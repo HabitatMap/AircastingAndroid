@@ -102,6 +102,12 @@
         <item name="android:textSize">@dimen/text_button_text_size</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Login.ForgotPasswordTextButton" parent="">
+    <item name="android:fontFamily">@font/muli_bold</item>
+    <item name="android:textColor">?attr/colorPrimary</item>
+    <item name="android:textSize">@dimen/button_text_size</item>
+    </style>
+
     <style name="TextAppearance.Aircasting.Login.TextButton" parent="">
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
