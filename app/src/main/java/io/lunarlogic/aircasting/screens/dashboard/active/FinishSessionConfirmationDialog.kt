@@ -13,10 +13,10 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 
-class FinishSessionConfirmationDialog(
+open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-    private val mListener: FinishSessionListener,
-    private val mSession: Session
+    protected val mListener: FinishSessionListener,
+    protected val mSession: Session
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
@@ -26,6 +26,7 @@ class FinishSessionConfirmationDialog(
         mView.informations_text_view.text = buildDescription()
         mView.header.text = buildHeader()
 
+        mView.finish_recording_button.text = finishButtonText()
         mView.finish_recording_button.setOnClickListener {
             finishSessionConfirmed()
         }
@@ -37,33 +38,35 @@ class FinishSessionConfirmationDialog(
         return mView
     }
 
-    private fun finishSessionConfirmed(){
-        mListener.onStopSessionClicked(mSession)
+    protected open fun buildHeader(): SpannableStringBuilder {
+        return SpannableStringBuilder()
+            .append(getString(R.string.dialog_finish_recording_header_part1))
+            .append(" ")
+            .color(blueColor(), { bold { append(mSession.name) } })
+            .append(getString(R.string.dialog_finish_recording_header_part3))
     }
 
-    private fun buildDescription(): SpannableStringBuilder {
-        val blueColor = context?.let {
-            ResourcesCompat.getColor(it.resources, R.color.aircasting_blue_400, null)
-        } ?: Color.GRAY
-
+    protected open fun buildDescription(): SpannableStringBuilder {
         return SpannableStringBuilder()
             .append(getString(R.string.dialog_finish_recording_text_part1))
             .append(" ")
-            .color(blueColor, { bold { append(getString(R.string.dialog_finish_recording_text_part2)) } })
+            .color(blueColor(), { bold { append(getString(R.string.dialog_finish_recording_text_part2)) } })
             .append(" ")
             .append(getString(R.string.dialog_finish_recording_text_part3))
     }
 
-    private fun buildHeader(): SpannableStringBuilder {
-        val blueColor = context?.let{
+    protected open fun finishButtonText(): String? {
+        return context?.getString(R.string.finish_recording)
+    }
+
+    protected open fun finishSessionConfirmed() {
+        mListener.onFinishSessionConfirmed(mSession)
+        dismiss()
+    }
+
+    protected fun blueColor(): Int {
+        return context?.let{
             ResourcesCompat.getColor(it.resources, R.color.aircasting_blue_400, null)
         } ?: Color.GRAY
-
-        return SpannableStringBuilder()
-            .append(getString(R.string.dialog_finish_recording_header_part1))
-            .append(" ")
-            .color(blueColor, { bold { append(mSession.name) } })
-            .append(" ")
-            .append(getString(R.string.dialog_finish_recording_header_part3))
     }
 }

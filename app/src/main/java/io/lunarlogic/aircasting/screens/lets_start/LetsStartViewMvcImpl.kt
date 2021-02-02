@@ -18,8 +18,7 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager,
-        isSDCardSyncEnabled: Boolean
+        supportFragmentManager: FragmentManager
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
         mSupportFragmentManager = supportFragmentManager
@@ -39,21 +38,19 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
             onMoreInfoClicked()
         }
 
-        if (isSDCardSyncEnabled) {
-            val orLabel = rootView?.or
-            orLabel?.visibility = View.VISIBLE
+        val orLabel = rootView?.or
+        orLabel?.visibility = View.VISIBLE
 
-            val syncCard = rootView?.sync_card
-            syncCard?.visibility = View.VISIBLE
-            syncCard?.setOnClickListener {
-                onSyncSelected()
-            }
+        val syncCard = rootView?.sync_card
+        syncCard?.visibility = View.VISIBLE
+        syncCard?.setOnClickListener {
+            onSyncSelected()
+        }
 
-            val clearCard = rootView?.clear_card
-            clearCard?.visibility = View.VISIBLE
-            clearCard?.setOnClickListener {
-                onClearSDCardSelected()
-            }
+        val clearCard = rootView?.clear_card
+        clearCard?.visibility = View.VISIBLE
+        clearCard?.setOnClickListener {
+            onClearSDCardSelected()
         }
     }
 

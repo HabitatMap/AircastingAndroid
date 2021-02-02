@@ -50,7 +50,7 @@ class MobileActiveFragment : Fragment() {
             settings,
             apiServiceFactory,
             airbeamReconnector,
-            context
+            requireContext()
         )
 
         if (sessionsRequested) {

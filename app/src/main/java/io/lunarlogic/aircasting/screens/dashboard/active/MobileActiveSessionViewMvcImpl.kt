@@ -76,14 +76,6 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
         dismissBottomSheet()
     }
 
-    fun stopSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
-        for (listener in listeners) {
-            listener.onStopSessionClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
     override fun onSessionReconnectClicked(session: Session) {
         val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
@@ -91,7 +83,21 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
         }
     }
 
-    override fun onStopSessionClicked(session: Session) {
-        stopSessionPressed()
+    override fun onFinishSessionConfirmed(session: Session) {
+        val session = mSessionPresenter?.session ?: return
+
+        for (listener in listeners) {
+            listener.onFinishSessionConfirmed(session)
+        }
+
+        dismissBottomSheet()
+    }
+
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+        val session = mSessionPresenter?.session ?: return
+
+        for (listener in listeners) {
+            listener.onFinishAndSyncSessionConfirmed(session)
+        }
     }
 }
