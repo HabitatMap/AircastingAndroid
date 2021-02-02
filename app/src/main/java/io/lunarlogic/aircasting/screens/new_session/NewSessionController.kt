@@ -80,10 +80,15 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn() || areMapsDisabled()) { // todo: specific case here?
+        // if location services on
+        if (areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
-            wizardNavigator.goToTurnOnLocationServices(this) // todo: change text on TurnOnLocationServices
+            if (areMapsDisabled()) {
+                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled()) // todo: change text on TurnOnLocationServices
+            } else {
+                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled())
+            }
         }
     }
 
