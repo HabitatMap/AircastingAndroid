@@ -162,16 +162,17 @@
         <item name="android:textSize">@dimen/text_size_s</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.TextView.Desciprtion" parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.TextView.Description" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_300</item>
         <item name="android:textSize">@dimen/text_size_m</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.TextView.Desciprtion2" parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.TextView.Description2" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
-        <item name="android:textSize">@dimen/text_size_s</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="lineHeight">32dp</item>
     </style>
 
     <style name="TextAppearance.Aircasting.TextInput.Hint" parent="@style/TextAppearance.AppCompat">
@@ -407,6 +408,7 @@
         <item name="android:backgroundTint">@color/aircasting_white</item>
         <item name="cardElevation">10dp</item>
         <item name="cardCornerRadius">20dp</item>
+        <item name="enforceMaterialTheme">false</item>
     </style>
 
     <!-- App Bar -->
