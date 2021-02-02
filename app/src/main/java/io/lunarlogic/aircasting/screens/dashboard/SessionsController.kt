@@ -159,12 +159,12 @@ abstract class SessionsController(
     }
 
     private fun startEditSessionBottomSheet(session: Session) {
-        editDialog = EditSessionBottomSheet(this, session)
+        editDialog = EditSessionBottomSheet(this, session, context)
         editDialog?.show(fragmentManager)
     }
 
     private fun startShareSessionBottomSheet(session: Session){
-        shareDialog = ShareSessionBottomSheet(this, session)
+        shareDialog = ShareSessionBottomSheet(this, session, context)
         shareDialog?.show(fragmentManager)
     }
 

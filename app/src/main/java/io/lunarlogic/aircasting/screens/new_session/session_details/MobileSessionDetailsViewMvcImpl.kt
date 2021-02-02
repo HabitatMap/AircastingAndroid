@@ -3,7 +3,9 @@ package io.lunarlogic.aircasting.screens.new_session.session_details
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
+import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
@@ -12,6 +14,8 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     private var sessionUUID: String
     private var deviceItem: DeviceItem
+
+    private var sessionNameInputLayout: TextInputLayout? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -22,6 +26,8 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         this.rootView = inflater.inflate(R.layout.fragment_mobile_session_details, parent, false)
         this.sessionUUID = sessionUUID
         this.deviceItem = deviceItem
+
+        sessionNameInputLayout = rootView?.findViewById<TextInputLayout>(R.id.session_name)
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
@@ -61,6 +67,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
 
     private fun validate(sessionName: String): String? {
         if (sessionName.isEmpty()) {
+            sessionNameInputLayout?.error = " "
             return getString(R.string.session_name_required)
         }
 

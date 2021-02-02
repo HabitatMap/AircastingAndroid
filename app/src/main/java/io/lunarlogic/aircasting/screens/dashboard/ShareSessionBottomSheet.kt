@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -10,13 +11,16 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 
 class ShareSessionBottomSheet(
     private val mListener: ShareSessionBottomSheet.Listener,
-    val session: Session
+    val session: Session,
+    private val mContext: Context?
 ): BottomSheetDialogFragment() {
     interface Listener{
         fun onShareLinkPressed(session: Session, sensor: String)
@@ -31,6 +35,7 @@ class ShareSessionBottomSheet(
     private val TAG = "ShareSessionBottomSheet"
 
     val fieldValues = hashMapOf<Int, CurrentSessionStreams>()
+    var emailInputLayout: TextInputLayout? = null
     var emailInput: EditText? = null
     var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
@@ -42,6 +47,7 @@ class ShareSessionBottomSheet(
     ): View? {
         val view = inflater.inflate(R.layout.share_session_bottom_sheet, container, false)
 
+        emailInputLayout = view?.findViewById(R.id.email_text_input_layout)
         emailInput = view?.findViewById(R.id.email_input)
         radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
 
@@ -80,8 +86,17 @@ class ShareSessionBottomSheet(
 
     fun shareFilePressed(){
         val emailInput = emailInput?.text.toString().trim()
+        if (!ValidationHelper.isValidEmail(emailInput)){
+            showError()
+            return
+        }
         mListener.onShareFilePressed(session, emailInput)
         dismiss()
+    }
+
+    private fun showError() {
+        emailInputLayout?.error = " "
+        Toast.makeText(mContext, getString(R.string.provided_email_is_not_correct), Toast.LENGTH_LONG).show()
     }
 
     fun shareLinkPressed(){

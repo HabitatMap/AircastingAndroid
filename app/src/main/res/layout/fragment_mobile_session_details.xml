@@ -31,6 +31,7 @@
             android:hint="@string/session_details_session_name_hint"
             app:hintEnabled="false"
             style="@style/Widget.Aircasting.TextInputLayout"
+            app:errorEnabled="true"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
