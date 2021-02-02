@@ -1,18 +1,14 @@
 package io.lunarlogic.aircasting.networking.services
 
-import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
-import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
 import kotlinx.coroutines.*
 import retrofit2.Call
-import java.util.*
 
 
-class FixedSessionDownloadMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     private val sessionsRepository = SessionsRepository()
     private val thread = DownloadThread()
     private val downloadMeasurementsService = DownloadMeasurementsService(apiService, errorHandler)
@@ -72,7 +68,7 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
         private fun downloadMeasurements(sessionId: Long, session: Session) {
             GlobalScope.launch(Dispatchers.IO) {
                 call =
-                    downloadMeasurementsService.enqueueDownloadingMeasurements(sessionId, session)
+                    downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(sessionId, session)
             }
         }
     }

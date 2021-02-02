@@ -15,7 +15,6 @@ import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.models.observers.AppLifecycleObserver
 import io.lunarlogic.aircasting.networking.services.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -27,7 +26,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
-    private val fixedSessionDownloadMeasurementsService = FixedSessionDownloadMeasurementsService(apiService, errorHandler)
+    private val fixedSessionDownloadMeasurementsService = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()

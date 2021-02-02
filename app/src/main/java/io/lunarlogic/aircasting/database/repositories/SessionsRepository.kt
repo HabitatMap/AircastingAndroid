@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.database.repositories
 
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
@@ -26,8 +27,8 @@ class SessionsRepository {
         }
     }
 
-    fun getSessionByUUID(uuid: String): SessionDBObject? {
-        return mDatabase.sessions().loadSessionByUUID(uuid)
+    fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
+        return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
     }
 
     fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
