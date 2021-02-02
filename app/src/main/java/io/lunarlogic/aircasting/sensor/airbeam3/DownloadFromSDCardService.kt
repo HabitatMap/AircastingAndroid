@@ -2,19 +2,42 @@ package io.lunarlogic.aircasting.sensor.airbeam3
 
 import android.content.Context
 import android.util.Log
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.sensor.SyncFileChecker
 import org.greenrobot.eventbus.EventBus
+import retrofit2.http.HEAD
 import java.io.File
 import java.io.FileWriter
 import java.util.concurrent.TimeUnit
 
 class DownloadFromSDCardService(
-    private val mContext: Context
+    private val mContext: Context,
+    private val mMeasurementsFromSDCardCreator: MeasurementsFromSDCardCreator
 ) {
     private val DOWNLOAD_FINISHED = "SD_SYNC_FINISH"
     private val DOWNLOAD_TAG = "SYNC"
     private val CLEAR_FINISHED = "SD_DELETE_FINISH"
 
+    enum class Header(val value: String) {
+        INDEX("index"),
+        UUID("uuid"),
+        DATE("date"),
+        TIME("time"),
+        LATITUDE("latitude"),
+        LONGITUDE("longitude"),
+        F("temperature-f"),
+        C("temperature-c"),
+        K("temperature-k"),
+        HUMIDITY("humidity"),
+        PM1("pm1"),
+        PM2("pm2.5"),
+        PM10("pm10")
+    }
+
+    private val HEADERS = arrayOf<Header>(
+        Header.INDEX, Header.UUID, Header.DATE, Header.TIME, Header.LATITUDE, Header.LONGITUDE,
+        Header.F, Header.C, Header.K, Header.HUMIDITY, Header.PM1, Header.PM2, Header.PM10
+    )
     private var fileWriter: FileWriter? = null
     private var count = 0
     private var counter = 0
@@ -26,7 +49,6 @@ class DownloadFromSDCardService(
     private var downloadStartedAt: Long? = null // TOOD: remove it after implementing proper sync
     class SyncEvent(val message: String) // TOOD: remove it after implementing proper sync
     class SyncFinishedEvent(val message: String) // TOOD: remove it after implementing proper sync
-
 
     fun init() {
         count = 0
@@ -59,6 +81,7 @@ class DownloadFromSDCardService(
             Log.d(DOWNLOAD_TAG, "Sync finished")
             closeSyncFile()
             checkOutputFileAndShowFinishMessage()
+            mMeasurementsFromSDCardCreator.run()
         } else if (valueString == CLEAR_FINISHED) {
             showMessage("SD card successfully cleared.")
         }
@@ -91,6 +114,7 @@ class DownloadFromSDCardService(
 
         val file = File(dir, "sync.txt")
         fileWriter = FileWriter(file)
+        fileWriter?.write(HEADERS.map { it.value }.joinToString(", ") + "\n")
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync

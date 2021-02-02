@@ -53,3 +53,6 @@ class AirBeamResponseParsingError(line: String, t: Throwable? = null):
 
 class DBInsertException(t: Throwable? = null):
     BaseException(Exception(t), "Trying to insert or update session data after the DB has been cleaned.")
+
+class MeasurementsFromSDCardParsingError(cause: Exception):
+    BaseException(cause, "There was a problem while parsing measurements from SD card.")
