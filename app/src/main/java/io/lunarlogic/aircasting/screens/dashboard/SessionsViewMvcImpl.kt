@@ -38,6 +38,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
         mRecyclerSessions?.setLayoutManager(LinearLayoutManager(rootView!!.context))
+
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
 
