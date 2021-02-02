@@ -145,6 +145,12 @@
     <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
     <string name="airbeam_connected_continue_button">Continue</string>
 
+    <!-- Turn off location services -->
+    <string name="turn_off">Turn off</string>
+    <string name="turn_off_location_description_text">You should turn off locations services if the \'Disable mappings\' settings is supposed to work</string>
+    <string name="turn_off_location_services">Turn off location services</string>
+    <string name="turn_off_location_services_image_desc">Turn off location services</string>
+
     <!-- New session step 8 - Session details -->
     <string name="fixed_session_details_header">New session details</string>
     <string name="mobile_session_details_header">New session details</string>

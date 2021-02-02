@@ -81,7 +81,6 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        // if location services on
         if (areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
@@ -276,6 +275,7 @@ class NewSessionController(
             currentLocation,
             settings
         )
+
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
 
@@ -287,7 +287,7 @@ class NewSessionController(
     }
 
     override fun onContinueClicked(session: Session) {
-            wizardNavigator.goToConfirmation(session, this)
+        wizardNavigator.goToConfirmation(session, this)
     }
 
     override fun onStartRecordingClicked(session: Session) {
