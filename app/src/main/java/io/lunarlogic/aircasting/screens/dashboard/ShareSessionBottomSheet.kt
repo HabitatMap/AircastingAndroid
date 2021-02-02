@@ -14,7 +14,6 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
-import kotlinx.coroutines.selects.select
 
 class ShareSessionBottomSheet(
     private val mListener: ShareSessionBottomSheet.Listener,
