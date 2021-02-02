@@ -19,14 +19,14 @@
             android:contentDescription="@string/turn_on_location_services_image_desc"
             android:layout_marginTop="@dimen/keyline_10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent" />
+
         <TextView
             android:id="@+id/turn_off_location_services_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-            android:text="@string/turn_on_location_services_header"
+            android:text="Turn off location services"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
-            android:text="@string/turn_on_location_services_description"
+            android:text="You should turn off locations services if the 'Disable mappings' settings is supposed to work"
             android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
@@ -48,14 +48,14 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <Button
-            android:id="@+id/turn_on_location_services_ok_button"
+            android:id="@+id/turn_off_location_services_ok_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
-            android:text="@string/turn_on_location_services_ok_button"
+            android:text="Turn off"
             app:layout_constraintTop_toBottomOf="@id/turn_off_location_services_description"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
