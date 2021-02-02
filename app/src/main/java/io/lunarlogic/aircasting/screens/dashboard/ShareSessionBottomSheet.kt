@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,12 +131,14 @@ class ShareSessionBottomSheet(
         val radioButtonPaddingLeft = context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
         val radioButtonPaddingBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
         val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val drawable = context?.getDrawable(R.drawable.aircasting_radio_button)
 
         radioButton.id = View.generateViewId()
         radioButton.text = stream.detailedType
         radioButton.layoutParams = layoutParams
         radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_Body1)
-        radioButton.buttonDrawable = context?.getDrawable(R.drawable.aircasting_radio_button)
+        radioButton.gravity = Gravity.TOP
+        radioButton.buttonDrawable = drawable
         radioButton.setBackgroundColor(Color.TRANSPARENT)
         radioButton.setPadding( radioButtonPaddingLeft, 0, 0, radioButtonPaddingBottom)
         radioGroup?.addView(radioButton)
