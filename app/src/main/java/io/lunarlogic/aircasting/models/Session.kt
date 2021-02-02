@@ -232,8 +232,8 @@ class Session(
         return status == Status.DISCONNECTED
     }
 
-    fun isIncomplete(): Boolean {
-        return streams.isEmpty() || measurementsCount() == 0
+    fun hasMeasurements(): Boolean {
+        return measurementsCount() > 0
     }
 
     fun hasChangedFrom(session: Session?): Boolean {

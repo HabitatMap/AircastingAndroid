@@ -1,22 +1,17 @@
 package io.lunarlogic.aircasting.networking.services
 
-import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
-import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
 import kotlinx.coroutines.*
 import retrofit2.Call
-import java.util.*
 
 
-class FixedSessionDownloadMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     private val sessionsRepository = SessionsRepository()
-    private val measurementStreamsRepository = MeasurementStreamsRepository()
-    private val measurementsRepository = MeasurementsRepository()
     private val thread = DownloadThread()
+    private val downloadMeasurementsService = DownloadMeasurementsService(apiService, errorHandler)
 
     fun start() {
         thread.start()
@@ -70,28 +65,10 @@ class FixedSessionDownloadMeasurementsService(private val apiService: ApiService
             }
         }
 
-        private suspend fun lastMeasurementTime(sessionId: Long, session: Session): Date {
-            var lastMeasurementTime: Date? = null
-            val query = GlobalScope.async(Dispatchers.IO) {
-                lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
-            }
-            query.await()
-
-            return LastMeasurementSyncCalculator.calculate(session.endTime, lastMeasurementTime)
-        }
-
         private fun downloadMeasurements(sessionId: Long, session: Session) {
-            GlobalScope.launch(Dispatchers.Main) {
-                val lastMeasurementSyncTime = lastMeasurementTime(sessionId, session)
-
-                val lastMeasurementSyncTimeString =
-                    DateConverter.toDateString(lastMeasurementSyncTime)
+            GlobalScope.launch(Dispatchers.IO) {
                 call =
-                    apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
-
-                call?.enqueue(DownloadMeasurementsCallback(
-                    sessionId, session, sessionsRepository, measurementStreamsRepository,
-                    measurementsRepository, errorHandler))
+                    downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(sessionId, session)
             }
         }
     }
