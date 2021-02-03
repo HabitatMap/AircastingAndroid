@@ -239,7 +239,7 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-        if (areMapsDisabled() && areLocationServicesOn()) {
+        if (areMapsDisabled() && areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
             wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
         } else {
             goToSessionDetails(sessionUUID, deviceItem)
