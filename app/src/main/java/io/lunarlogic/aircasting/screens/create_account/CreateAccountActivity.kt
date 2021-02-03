@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
@@ -23,10 +24,11 @@ class CreateAccountActivity: AppCompatActivity() {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
-        fun start(context: Context?) {
-            context?.let{
+        fun start(contextActivity: AppCompatActivity?) {
+            contextActivity?.let{
                 val intent = Intent(it, CreateAccountActivity::class.java)
                 it.startActivity(intent)
+                it.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
             }
         }
     }
