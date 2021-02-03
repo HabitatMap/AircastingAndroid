@@ -2,10 +2,10 @@ package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import kotlinx.android.synthetic.main.fragment_turn_off_location_services.view.*
 
 class TurnOffLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOffLocationServicesViewMvc.Listener>, TurnOffLocationServicesViewMvc {
     var deviceItem: DeviceItem
@@ -22,12 +22,12 @@ class TurnOffLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOffLocationS
         this.deviceItem = deviceItem
         this.sessionUUID = sessionUUID
 
-        val okButton = rootView?.findViewById<Button>(R.id.turn_off_location_services_ok_button)
+        val okButton = rootView?.turn_off_location_services_ok_button
         okButton?.setOnClickListener {
             onOkClicked()
         }
 
-        val skipButton = rootView?.findViewById<Button>(R.id.turn_off_location_services_skip_button)
+        val skipButton = rootView?.turn_off_location_services_skip_button
         skipButton?.setOnClickListener {
             onSkipClicked()
         }

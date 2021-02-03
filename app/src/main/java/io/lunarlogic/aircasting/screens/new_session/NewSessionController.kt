@@ -8,7 +8,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
@@ -107,15 +107,13 @@ class NewSessionController(
 
     override fun onTurnOffLocationServicesOkClicked(sessionUUID: String, deviceItem: DeviceItem) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        startActivityForResult(mContextActivity, intent, ResultCodes.AIRCASTING_REQUEST_LOCATION_DISABLE, null)
+        startActivity(mContextActivity, intent, null)
 
-        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+        goToSessionDetails(sessionUUID, deviceItem)
     }
 
     override fun onSkipClicked(sessionUUID: String, deviceItem: DeviceItem) {
-        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+        goToSessionDetails(sessionUUID, deviceItem)
     }
 
     private fun requestBluetoothEnable() {
@@ -244,8 +242,7 @@ class NewSessionController(
         if (areMapsDisabled() && areLocationServicesOn()) {
             wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
         } else {
-            EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-            wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+            goToSessionDetails(sessionUUID, deviceItem)
         }
     }
 
@@ -304,6 +301,11 @@ class NewSessionController(
 
     fun areMapsDisabled(): Boolean {
         return settings.areMapsDisabled()
+    }
+
+    fun goToSessionDetails(sessionUUID: String, deviceItem: DeviceItem){
+        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
 
     @Subscribe

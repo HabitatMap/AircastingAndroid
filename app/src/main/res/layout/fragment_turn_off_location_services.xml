@@ -9,7 +9,7 @@
         android:id="@+id/container"
         android:background="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/turn_location_services_image"
@@ -19,7 +19,9 @@
             android:contentDescription="@string/turn_off_location_services_image_desc"
             android:layout_marginTop="@dimen/keyline_10"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/turn_off_location_services_header"/>
 
         <TextView
             android:id="@+id/turn_off_location_services_header"
@@ -32,7 +34,8 @@
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@+id/turn_location_services_image"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/turn_off_location_services_description"/>
 
         <TextView
             android:id="@+id/turn_off_location_services_description"
@@ -45,26 +48,26 @@
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/turn_off_location_services_header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/turn_off_location_services_ok_button"/>
 
         <Button
             android:id="@+id/turn_off_location_services_ok_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@string/turn_off"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            android:layout_marginTop="@dimen/keyline_8"
-            android:text="@string/turn_off"
             app:layout_constraintTop_toBottomOf="@id/turn_off_location_services_description"
+            app:layout_constraintBottom_toTopOf="@id/turn_off_location_services_skip_button"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent" />
 
         <Button
             android:id="@+id/turn_off_location_services_skip_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Skip turning off location services"
+            android:text="@string/skip"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
