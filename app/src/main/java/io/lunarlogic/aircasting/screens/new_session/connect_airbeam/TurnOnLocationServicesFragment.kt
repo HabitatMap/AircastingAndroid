@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.models.Session
 
 class TurnOnLocationServicesFragment(
-    private val mAreMapsDisabled: Boolean
+    private val mAreMapsDisabled: Boolean,
+    private val sessionType: Session.Type
 ) : Fragment() {
     private var controller: TurnOnLocationServicesController? = null
     var listener: TurnOnLocationServicesViewMvc.Listener? = null
@@ -21,7 +23,8 @@ class TurnOnLocationServicesFragment(
             TurnOnLocationServicesViewMvcImpl(
                 layoutInflater,
                 null,
-                mAreMapsDisabled
+                mAreMapsDisabled,
+                sessionType
             )
         controller =
             TurnOnLocationServicesController(

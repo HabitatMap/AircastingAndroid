@@ -85,11 +85,7 @@ class NewSessionController(
         if (areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
-            if (areMapsDisabled()) {
-                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled()) // todo: this has to be changed, a bit of non-sense repetition
-            } else {
-                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled())
-            }
+            wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)
         }
     }
 
@@ -110,8 +106,8 @@ class NewSessionController(
     }
 
     override fun onTurnOffLocationServicesOkClicked(sessionUUID: String, deviceItem: DeviceItem) {
-        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS) // opening settings window to turn off location
-        startActivityForResult(mContextActivity, intent, 7, null)
+        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivityForResult(mContextActivity, intent, ResultCodes.AIRCASTING_REQUEST_LOCATION_DISABLE, null)
 
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)

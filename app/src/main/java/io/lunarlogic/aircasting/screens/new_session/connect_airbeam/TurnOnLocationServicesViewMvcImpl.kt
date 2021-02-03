@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 class TurnOnLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOnLocationServicesViewMvc.Listener>, TurnOnLocationServicesViewMvc {
@@ -12,18 +13,18 @@ class TurnOnLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOnLocationSer
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        areMapsDisabled: Boolean): super() {
+        areMapsDisabled: Boolean,
+        sessionType: Session.Type): super() {
         this.rootView = inflater.inflate(R.layout.fragment_turn_on_location_services, parent, false)
         val button = rootView?.findViewById<Button>(R.id.turn_on_location_services_ok_button)
-        val turnOnLocationTextView = rootView?.findViewById<TextView>(R.id.turn_off_location_services_description)
+        val turnOnLocationTextView = rootView?.findViewById<TextView>(R.id.turn_on_location_services_description)
 
         button?.setOnClickListener {
             onOkClicked()
         }
-        // todo: why this didnt work out ??? (case -> no permissions yet)
-        if (areMapsDisabled) {
-            turnOnLocationTextView?.text = "Location services must be turned on to enable Bluetooth scanning. " +
-                    "You'll be prompted to turn off location services after you've selected the Bluetooth device you'll be recording with."
+
+        if (areMapsDisabled && sessionType == Session.Type.MOBILE) {
+            turnOnLocationTextView?.text = context.getString(R.string.locations_services_must_be_turned_on)
         }
     }
 
