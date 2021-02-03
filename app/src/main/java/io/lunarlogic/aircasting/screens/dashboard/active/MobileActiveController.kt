@@ -20,6 +20,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
+import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -121,13 +122,13 @@ class MobileActiveController(
 
     // TODO: remove this method after implementing proper sync
     @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncEvent) {
+    fun onMessageEvent(event: DownloadFromSDCardService.SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
     }
 
     // TODO: remove this method after implementing proper sync
     @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncFinishedEvent) {
+    fun onMessageEvent(event: DownloadFromSDCardService.SyncFinishedEvent) {
         syncProgressDialog?.cancel()
         syncProgressDialog = AlertDialog.Builder(mContext)
             .setCancelable(false)
