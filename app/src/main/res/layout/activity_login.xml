@@ -76,7 +76,7 @@
             app:errorEnabled="true"
             app:passwordToggleEnabled="true"
             style="@style/Widget.Aircasting.TextInputLayout"
-            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginTop="@dimen/keyline_5"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@id/username"
@@ -97,27 +97,29 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/forgot_password_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
-            android:text="@string/forgot_your_password"
-            style="@style/Widget.Aircasting.TextButton"
-            android:textAppearance="@style/TextAppearance.Aircasting.Login.ForgotPasswordTextButton"
-            app:layout_constraintTop_toBottomOf="@id/password"
-            app:layout_constraintBottom_toTopOf="@id/login_button"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <Button
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_10"
+            android:layout_marginTop="@dimen/keyline_4"
             android:text="@string/login_button"
-            app:layout_constraintTop_toBottomOf="@id/forgot_password_button"
+            app:layout_constraintTop_toBottomOf="@id/password"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
+            android:id="@+id/forgot_password_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_4"
+            android:text="@string/forgot_your_password"
+            style="@style/Widget.Aircasting.TextButton"
+            android:textAppearance="@style/TextAppearance.Aircasting.Login.ForgotPasswordTextButton"
+            app:layout_constraintTop_toBottomOf="@id/login_button"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
@@ -128,9 +130,9 @@
             android:text="@string/create_account_prompt"
             android:textAppearance="?attr/textAppearanceHeadline4"
             android:paddingBottom="@dimen/keyline_6"
-            android:paddingTop="@dimen/keyline_6"
+            android:paddingTop="@dimen/keyline_8"
             android:paddingLeft="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/login_button"
+            app:layout_constraintTop_toBottomOf="@id/forgot_password_button"
             app:layout_constraintStart_toStartOf="parent" />
         <Button
             android:id="@+id/create_account_button"
@@ -139,12 +141,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_account_text_button"
-            android:paddingBottom="@dimen/keyline_6"
-            android:paddingTop="@dimen/keyline_6"
             app:rippleColor="@null"
-            app:layout_constraintTop_toBottomOf="@id/login_button"
-            app:layout_constraintBottom_toBottomOf="@id/create_account_prompt"
-            app:layout_constraintStart_toEndOf="@id/create_account_prompt" />
+            app:layout_constraintStart_toEndOf="@id/create_account_prompt"
+            app:layout_constraintBaseline_toBaselineOf="@id/create_account_prompt"/>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
