@@ -271,4 +271,5 @@
     <string name="unknown_error">Unknown error</string>
     <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
     <string name="provided_email_is_not_correct">Provided email is not correct</string>
+    <string name="email_csv_file_without_share_link">Email a CSV file with your session data</string>
 </resources>
