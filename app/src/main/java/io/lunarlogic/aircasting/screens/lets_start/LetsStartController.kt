@@ -64,9 +64,7 @@ class LetsStartController(
 
     @Subscribe
     fun onMessageEvent(event: LocationPermissionsResultEvent) {
-        val rootActivity = mRootActivity ?: return
-
-        if (mPermissionsManager.locationPermissionsGranted(rootActivity)) {
+        if (mPermissionsManager.permissionsGranted(event.grantResults)) {
             performSync()
         } else {
             mErrorHandler.showError(R.string.errors_location_services_required_to_sync)

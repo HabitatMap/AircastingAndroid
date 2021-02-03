@@ -72,7 +72,7 @@ class MainController(
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
-                EventBus.getDefault().post(LocationPermissionsResultEvent())
+                EventBus.getDefault().post(LocationPermissionsResultEvent(grantResults))
             }
             else -> {
                 // Ignore all other requests.

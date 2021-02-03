@@ -1,3 +1,3 @@
 package io.lunarlogic.aircasting.events
 
-class LocationPermissionsResultEvent
+class LocationPermissionsResultEvent(val grantResults: IntArray)
