@@ -343,7 +343,7 @@
         <item name="android:textColor">@color/aircasting_blue_400</item>
         <item name="android:textSize">@dimen/text_size_xs</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:padding">@dimen/keyline_2</item>
+        <item name="android:padding">@dimen/padding_2</item>
         <item name="android:textAllCaps">false</item>
         <item name="fontFamily">@font/muli_semi_bold</item>
         <item name="android:fontFamily">@font/muli_semi_bold</item>
@@ -354,7 +354,7 @@
         <item name="android:translationX">0dp</item>
         <item name="android:translationY">0dp</item>
         <item name="android:translationZ">0dp</item>
-        <item name="android:padding">@dimen/keyline_2</item>
+        <item name="android:padding">@dimen/padding_2</item>
         <item name="android:textColor">@color/aircasting_blue_400</item>
         <item name="android:textSize">@dimen/text_size_xs</item>
         <item name="android:textAlignment">center</item>
