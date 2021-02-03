@@ -22,16 +22,26 @@ class TurnOffLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOffLocationS
         this.deviceItem = deviceItem
         this.sessionUUID = sessionUUID
 
-        val button = rootView?.findViewById<Button>(R.id.turn_off_location_services_ok_button)
-
-        button?.setOnClickListener {
+        val okButton = rootView?.findViewById<Button>(R.id.turn_off_location_services_ok_button)
+        okButton?.setOnClickListener {
             onOkClicked()
+        }
+
+        val skipButton = rootView?.findViewById<Button>(R.id.turn_off_location_services_skip_button)
+        skipButton?.setOnClickListener {
+            onSkipClicked()
         }
     }
 
     private fun onOkClicked() {
         for (listener in listeners) {
             listener.onTurnOffLocationServicesOkClicked(sessionUUID, deviceItem)
+        }
+    }
+
+    private fun onSkipClicked() {
+        for (listener in listeners) {
+            listener.onSkipClicked(sessionUUID, deviceItem)
         }
     }
 }

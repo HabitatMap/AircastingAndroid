@@ -20,7 +20,7 @@ class TurnOnLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOnLocationSer
         button?.setOnClickListener {
             onOkClicked()
         }
-
+        // todo: why this didnt work out ??? (case -> no permissions yet)
         if (areMapsDisabled) {
             turnOnLocationTextView?.text = "Location services must be turned on to enable Bluetooth scanning. " +
                     "You'll be prompted to turn off location services after you've selected the Bluetooth device you'll be recording with."

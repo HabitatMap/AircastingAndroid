@@ -8,6 +8,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
@@ -85,7 +86,7 @@ class NewSessionController(
             startNewSessionWizard()
         } else {
             if (areMapsDisabled()) {
-                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled())
+                wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled()) // todo: this has to be changed, a bit of non-sense repetition
             } else {
                 wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled())
             }
@@ -109,6 +110,14 @@ class NewSessionController(
     }
 
     override fun onTurnOffLocationServicesOkClicked(sessionUUID: String, deviceItem: DeviceItem) {
+        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS) // opening settings window to turn off location
+        startActivityForResult(mContextActivity, intent, 7, null)
+
+        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+    }
+
+    override fun onSkipClicked(sessionUUID: String, deviceItem: DeviceItem) {
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
@@ -236,7 +245,7 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-        if (areMapsDisabled()) {
+        if (areMapsDisabled() && areLocationServicesOn()) {
             wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
         } else {
             EventBus.getDefault().post(SendSessionAuth(sessionUUID))

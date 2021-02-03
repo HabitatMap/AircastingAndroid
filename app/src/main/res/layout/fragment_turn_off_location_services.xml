@@ -54,12 +54,28 @@
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_8"
-            android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/turn_off"
             app:layout_constraintTop_toBottomOf="@id/turn_off_location_services_description"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <Button
+            android:id="@+id/turn_off_location_services_skip_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Skip turning off location services"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_10"
+            android:fontFamily="@font/moderat_trial_bold"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/aircasting_blue_400"
+            style="@style/Widget.Aircasting.TextButton"
+            app:layout_constraintTop_toBottomOf="@id/turn_off_location_services_ok_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
