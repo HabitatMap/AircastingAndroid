@@ -1,10 +1,13 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.graphics.Rect
 import android.view.LayoutInflater
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
@@ -43,6 +46,11 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mMapButton: Button
     private var mGraphButton: Button
     private var mLoader: ImageView?
+
+    private var mFollowTouchableArea: LinearLayout
+    private var mUnfollowTouchableArea: LinearLayout
+    private var mMapTouchableArea: LinearLayout
+    private var mGraphTouchableArea: LinearLayout
 
     protected var mSessionPresenter: SessionPresenter? = null
 
@@ -91,25 +99,34 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             onCollapseSessionCardClicked()
             collapseSessionCard()
         }
+
         mFollowButton = findViewById(R.id.follow_button)
+        mFollowTouchableArea = findViewById(R.id.follow_container)
         mFollowButton.setOnClickListener {
             onFollowButtonClicked()
         }
+        expandViewHitArea(mFollowTouchableArea, mFollowButton)
 
         mUnfollowButton = findViewById(R.id.unfollow_button)
+        mUnfollowTouchableArea = findViewById(R.id.unfollow_container)
         mUnfollowButton.setOnClickListener {
             onUnfollowButtonClicked()
         }
+        expandViewHitArea(mUnfollowTouchableArea, mUnfollowButton)
 
         mMapButton = findViewById(R.id.map_button)
+        mMapTouchableArea = findViewById(R.id.map_container)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
         }
+        expandViewHitArea(mMapTouchableArea, mMapButton)
 
         mGraphButton = findViewById(R.id.graph_button)
+        mGraphTouchableArea = findViewById(R.id.graph_container)
         mGraphButton.setOnClickListener {
             onGraphButtonClicked()
         }
+        expandViewHitArea(mGraphTouchableArea, mGraphButton)
 
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
@@ -311,5 +328,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
+    }
+
+    private fun expandViewHitArea(parent : View, child : View) {
+        parent.post {
+            val parentRect = Rect()
+            val childRect = Rect()
+            parent.getHitRect(parentRect)
+            child.getHitRect(childRect)
+
+            childRect.left = parentRect.width()
+            childRect.top = parentRect.width()
+            childRect.right = parentRect.width()
+            childRect.bottom = parentRect.height()
+
+            parent.touchDelegate = TouchDelegate(childRect, child)
+        }
     }
 }
