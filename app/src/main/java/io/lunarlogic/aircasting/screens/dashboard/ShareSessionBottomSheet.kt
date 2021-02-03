@@ -21,8 +21,7 @@ import io.lunarlogic.aircasting.models.Session
 class ShareSessionBottomSheet(
     private val mListener: ShareSessionBottomSheet.Listener,
     val session: Session,
-    private val mContext: Context?,
-    private val mSettings: Settings
+    private val mContext: Context?
 ): BottomSheetDialogFragment() {
     interface Listener{
         fun onShareLinkPressed(session: Session, sensor: String)
@@ -71,7 +70,7 @@ class ShareSessionBottomSheet(
             dismiss()
         }
 
-        if (mSettings.areMapsDisabled()) {
+        if (session.locationless) {
             radioGroup?.visibility = View.GONE
             shareLinkButton?.visibility = View.GONE
             selectStreamTextView?.visibility = View.GONE
