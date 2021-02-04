@@ -162,7 +162,7 @@ abstract class SessionsController(
     }
 
     private fun startShareSessionBottomSheet(session: Session){
-        shareDialog = ShareSessionBottomSheet(this, session, context, mSettings)
+        shareDialog = ShareSessionBottomSheet(this, session, context)
         shareDialog?.show(fragmentManager)
     }
 
