@@ -15,6 +15,7 @@
         style="@style/Widget.Aircasting.SettingsButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
         android:text="@string/settings_my_account"
         app:layout_constraintEnd_toEndOf="parent"
@@ -166,7 +167,6 @@
                 android:text="@string/settings_backend_settings"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separator2"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
