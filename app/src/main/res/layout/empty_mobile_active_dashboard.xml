@@ -29,4 +29,54 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/record_mobile_session" />
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/did_you_know_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_8">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/did_you_know_box_color">
+
+            <ImageView
+                android:id="@+id/did_you_know_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <TextView
+                android:id="@+id/did_you_know_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Did you know?"
+                android:textStyle="bold"
+                android:textAlignment="viewStart"
+                android:fontFamily="@font/muli_semi_bold"
+                android:textSize="@dimen/text_size_s"
+                app:layout_constraintStart_toEndOf="@id/did_you_know_image"
+                app:layout_constraintBottom_toTopOf="@id/did_you_know_description"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                android:id="@+id/did_you_know_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="AirBeam2 is weather resistant. To heep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session."
+                android:textAlignment="viewStart"
+                android:fontFamily="@font/muli_regular"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintStart_toEndOf="@id/did_you_know_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/did_you_know_header"
+                app:layout_constraintBottom_toBottomOf="@id/did_you_know_description"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
