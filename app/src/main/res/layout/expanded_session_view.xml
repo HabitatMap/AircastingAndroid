@@ -41,80 +41,52 @@
             app:layout_constraintTop_toBottomOf="@id/chart_end_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/follow_container"
-        app:layout_constraintTop_toBottomOf="@id/chart_container"
-        app:layout_constraintStart_toStartOf="parent"
+    <Button
+        style="@style/Widget.Aircasting.ExpandedCardButtons"
+        android:id="@+id/follow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            style="@style/Widget.Aircasting.ExpandedCardButtons"
-            android:id="@+id/follow_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/follow_button"
-            android:minHeight="@dimen/height_0"
-            android:layout_marginTop="@dimen/margin_top_5"
-            android:backgroundTint="@color/aircasting_blue_400"
-            android:textColor="@color/aircasting_white" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/unfollow_container"
+        android:text="@string/follow_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/aircasting_blue_400"
+        android:textColor="@color/aircasting_white"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        style="@style/Widget.Aircasting.ExpandedCardButtonUnfollow"
+        android:id="@+id/unfollow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:orientation="horizontal">
-        <Button
-            style="@style/Widget.Aircasting.ExpandedCardButtonUnfollow"
-            android:id="@+id/unfollow_button"
-            android:text="@string/unfollow_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/height_0"
-            android:layout_marginTop="@dimen/margin_top_5"
-            android:visibility="gone">
-        </Button>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/map_container"
+        android:text="@string/unfollow_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
-        app:layout_constraintEnd_toStartOf="@id/graph_container"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        style="@style/Widget.Aircasting.ExpandedCardButtons"
+        android:id="@+id/map_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            style="@style/Widget.Aircasting.ExpandedCardButtons"
-            android:id="@+id/map_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/map_button"
-            android:minHeight="@dimen/height_0"
-            android:layout_marginTop="@dimen/margin_top_5"
-            android:layout_marginEnd="@dimen/keyline_2" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/graph_container"
+        android:text="@string/map_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/keyline_2"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/graph_button" />
+
+    <Button
+        style="@style/Widget.Aircasting.ExpandedCardButtons"
+        android:id="@+id/graph_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="@string/graph_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/chart_container"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            style="@style/Widget.Aircasting.ExpandedCardButtons"
-            android:id="@+id/graph_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/height_0"
-            android:layout_marginTop="@dimen/margin_top_5"
-            android:text="@string/graph_button" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

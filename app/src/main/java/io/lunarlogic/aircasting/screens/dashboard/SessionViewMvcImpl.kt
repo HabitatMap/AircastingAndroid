@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
@@ -46,11 +45,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mMapButton: Button
     private var mGraphButton: Button
     private var mLoader: ImageView?
-
-    private var mFollowTouchableArea: LinearLayout
-    private var mUnfollowTouchableArea: LinearLayout
-    private var mMapTouchableArea: LinearLayout
-    private var mGraphTouchableArea: LinearLayout
 
     protected var mSessionPresenter: SessionPresenter? = null
 
@@ -101,32 +95,28 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
 
         mFollowButton = findViewById(R.id.follow_button)
-        mFollowTouchableArea = findViewById(R.id.follow_container)
         mFollowButton.setOnClickListener {
             onFollowButtonClicked()
         }
-        expandViewHitArea(mFollowTouchableArea, mFollowButton)
+        expandViewHitArea(mExpandedSessionView, mFollowButton)
 
         mUnfollowButton = findViewById(R.id.unfollow_button)
-        mUnfollowTouchableArea = findViewById(R.id.unfollow_container)
         mUnfollowButton.setOnClickListener {
             onUnfollowButtonClicked()
         }
-        expandViewHitArea(mUnfollowTouchableArea, mUnfollowButton)
+        expandViewHitArea(mExpandedSessionView, mUnfollowButton)
 
         mMapButton = findViewById(R.id.map_button)
-        mMapTouchableArea = findViewById(R.id.map_container)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
         }
-        expandViewHitArea(mMapTouchableArea, mMapButton)
+        expandViewHitArea(mExpandedSessionView, mMapButton)
 
         mGraphButton = findViewById(R.id.graph_button)
-        mGraphTouchableArea = findViewById(R.id.graph_container)
         mGraphButton.setOnClickListener {
             onGraphButtonClicked()
         }
-        expandViewHitArea(mGraphTouchableArea, mGraphButton)
+        expandViewHitArea(mExpandedSessionView, mGraphButton)
 
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
@@ -330,19 +320,18 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mSessionPresenter?.expanded = false
     }
 
-    private fun expandViewHitArea(parent : View, child : View) {
-        parent.post {
-            val parentRect = Rect()
-            val childRect = Rect()
-            parent.getHitRect(parentRect)
-            child.getHitRect(childRect)
+    private fun expandViewHitArea(container : View, child : View) {
+        val padding = 4
+        container.post {
+            val rect = Rect()
+            child.getHitRect(rect)
 
-            childRect.left = parentRect.width()
-            childRect.top = parentRect.width()
-            childRect.right = parentRect.width()
-            childRect.bottom = parentRect.height()
+            rect.left -= padding
+            rect.top -= padding
+            rect.right += padding
+            rect.bottom += padding
 
-            parent.touchDelegate = TouchDelegate(childRect, child)
+            container.touchDelegate = TouchDelegate(rect, child)
         }
     }
 }
