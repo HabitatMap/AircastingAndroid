@@ -16,7 +16,7 @@
             android:textAppearance="?attr/textAppearanceHeadline1"
             android:text="@string/login_header"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="@dimen/action_bar_size"
+            android:layout_marginTop="@dimen/create_account_sign_in_padding_top"
             android:paddingLeft="@dimen/keyline_10"
             android:paddingBottom="@dimen/keyline_6"
             android:paddingTop="@dimen/keyline_1"
