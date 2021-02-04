@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -42,7 +43,8 @@ class FollowingController(
             return
         }
 
-        startNewSession(Session.Type.FIXED)
+        NavigationController.goToLetsStart()
+//        startNewSession(Session.Type.FIXED) todo: remove this
     }
 
     override fun onEditSessionClicked(session: Session) {
