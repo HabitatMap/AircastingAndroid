@@ -31,7 +31,11 @@ class DownloadFromSDCardService(
         HUMIDITY(9),
         PM1(10),
         PM2(11),
-        PM10(12)
+        PM10(12);
+
+        companion object {
+            fun fromInt(value: Int) = values().first { it.value == value }
+        }
     }
 
     private var fileWriter: FileWriter? = null

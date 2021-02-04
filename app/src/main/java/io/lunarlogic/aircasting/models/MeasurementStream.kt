@@ -6,7 +6,9 @@ import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBOb
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
 import io.lunarlogic.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
+import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
+import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService.Header
 import java.util.*
 
 class MeasurementStream(
@@ -88,11 +90,6 @@ class MeasurementStream(
     private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
-
-    companion object {
-        private val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
-    }
-
     init {
         detailedType = buildDetailedType()
     }
@@ -118,6 +115,32 @@ class MeasurementStream(
         }
     }
 
+    companion object {
+        private val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
+
+        // TODO: use real things
+        val F = MeasurementStream(
+            "sensorPackageName",
+            "sensorName",
+            "measurementType",
+            "measurementShortType",
+            "unitName",
+            "unitSymbol",
+            1,
+            2,
+            3,
+            4,
+            5
+        )
+
+        fun fromHeader(streamHeader: DownloadFromSDCardService.Header): MeasurementStream {
+            // TODO:
+            return when (streamHeader) {
+                Header.F -> F
+                else -> F
+            }
+        }
+    }
 
     private fun buildDetailedType(): String? {
         when (sensorPackageName) {
