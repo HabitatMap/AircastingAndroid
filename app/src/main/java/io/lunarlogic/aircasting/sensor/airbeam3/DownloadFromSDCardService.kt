@@ -18,26 +18,22 @@ class DownloadFromSDCardService(
     private val DOWNLOAD_TAG = "SYNC"
     private val CLEAR_FINISHED = "SD_DELETE_FINISH"
 
-    enum class Header(val value: String) {
-        INDEX("index"),
-        UUID("uuid"),
-        DATE("date"),
-        TIME("time"),
-        LATITUDE("latitude"),
-        LONGITUDE("longitude"),
-        F("temperature-f"),
-        C("temperature-c"),
-        K("temperature-k"),
-        HUMIDITY("humidity"),
-        PM1("pm1"),
-        PM2("pm2.5"),
-        PM10("pm10")
+    enum class Header(val value: Int) {
+        INDEX(0),
+        UUID(1),
+        DATE(2),
+        TIME(3),
+        LATITUDE(4),
+        LONGITUDE(5),
+        F(6),
+        C(7),
+        K(8),
+        HUMIDITY(9),
+        PM1(10),
+        PM2(11),
+        PM10(12)
     }
 
-    private val HEADERS = arrayOf<Header>(
-        Header.INDEX, Header.UUID, Header.DATE, Header.TIME, Header.LATITUDE, Header.LONGITUDE,
-        Header.F, Header.C, Header.K, Header.HUMIDITY, Header.PM1, Header.PM2, Header.PM10
-    )
     private var fileWriter: FileWriter? = null
     private var count = 0
     private var counter = 0
@@ -90,10 +86,11 @@ class DownloadFromSDCardService(
     fun onMeasurementsDownloaded(data: ByteArray?) {
         data ?: return
 
-        val lines = String(data)
-        writeToSyncFile(lines)
+        val lines = String(data).lines().filter { line -> !line.isBlank() }
+        val linesString = lines.map { "$it\n" }.joinToString("")
+        writeToSyncFile(linesString)
 
-        val linesCount = lines.lines().filter { line -> !line.isEmpty() }.size
+        val linesCount = lines.size
         counter += linesCount
 
         showMessage("Syncing $counter/$count")
@@ -114,7 +111,6 @@ class DownloadFromSDCardService(
 
         val file = File(dir, "sync.txt")
         fileWriter = FileWriter(file)
-        fileWriter?.write(HEADERS.map { it.value }.joinToString(", ") + "\n")
     }
 
     // TODO: this is temporary thing - remove this after implementing real sync

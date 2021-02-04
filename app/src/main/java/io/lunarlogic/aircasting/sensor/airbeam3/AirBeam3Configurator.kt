@@ -3,6 +3,9 @@ package io.lunarlogic.aircasting.sensor.airbeam3
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -51,7 +54,7 @@ class AirBeam3Configurator(
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
 
     // TODO: fix this dependencies
-    val measurementsFromSDCardCreator = MeasurementsFromSDCardCreator(mContext, mErrorHandler)
+    val measurementsFromSDCardCreator = MeasurementsFromSDCardCreator(mContext, mErrorHandler, SessionsRepository(), MeasurementStreamsRepository(), MeasurementsRepository())
     val downloadFromSDCardService = DownloadFromSDCardService(mContext, measurementsFromSDCardCreator)
 
     fun sendAuth(uuid: String) {
