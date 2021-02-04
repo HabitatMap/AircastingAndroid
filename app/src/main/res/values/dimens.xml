@@ -49,4 +49,6 @@
 
     <dimen name="map_height">300dp</dimen>
     <dimen name="hlu_slider_thumb_radius">10dp</dimen>
+
+    <dimen name="create_account_checkbox_label_padding_top">5dp</dimen>
 </resources>

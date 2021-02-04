@@ -127,6 +127,7 @@
             android:id="@+id/send_emails_input"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:paddingTop="@dimen/create_account_checkbox_label_padding_top"
             android:text="@string/send_emails"
             android:checked="true"
             android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
