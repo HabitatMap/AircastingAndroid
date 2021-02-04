@@ -8,6 +8,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
@@ -56,6 +57,7 @@ class NewSessionController(
     AirBeamConnectedViewMvc.Listener,
     SessionDetailsViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
+    TurnOffLocationServicesViewMvc.Listener,
     ChooseLocationViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
@@ -80,10 +82,10 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn() || areMapsDisabled()) {
+        if (areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
-            wizardNavigator.goToTurnOnLocationServices(this)
+            wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)
         }
     }
 
@@ -101,6 +103,17 @@ class NewSessionController(
 
     override fun onTurnOnLocationServicesOkClicked() {
         LocationHelper.checkLocationServicesSettings(mContextActivity)
+    }
+
+    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String, deviceItem: DeviceItem) {
+        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(mContextActivity, intent, null)
+
+        goToSessionDetails(sessionUUID, deviceItem)
+    }
+
+    override fun onSkipClicked(sessionUUID: String, deviceItem: DeviceItem) {
+        goToSessionDetails(sessionUUID, deviceItem)
     }
 
     private fun requestBluetoothEnable() {
@@ -226,8 +239,11 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
+        if (areMapsDisabled() && areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
+            wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
+        } else {
+            goToSessionDetails(sessionUUID, deviceItem)
+        }
     }
 
     override fun validationFailed(errorMessage: String) {
@@ -261,6 +277,7 @@ class NewSessionController(
             currentLocation,
             settings
         )
+
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
 
@@ -284,6 +301,11 @@ class NewSessionController(
 
     fun areMapsDisabled(): Boolean {
         return settings.areMapsDisabled()
+    }
+
+    fun goToSessionDetails(sessionUUID: String, deviceItem: DeviceItem){
+        EventBus.getDefault().post(SendSessionAuth(sessionUUID))
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
 
     @Subscribe

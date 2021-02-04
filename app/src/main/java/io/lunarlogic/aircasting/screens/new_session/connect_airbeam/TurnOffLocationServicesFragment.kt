@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
-class TurnOnLocationServicesFragment(
-    private val mAreMapsDisabled: Boolean,
-    private val sessionType: Session.Type
-) : Fragment() {
-    private var controller: TurnOnLocationServicesController? = null
-    var listener: TurnOnLocationServicesViewMvc.Listener? = null
+class TurnOffLocationServicesFragment: Fragment() {
+    private var controller: TurnOffLocationServicesController? = null
+    var listener: TurnOffLocationServicesViewMvc.Listener? = null
+    lateinit var deviceItem: DeviceItem
+    lateinit var sessionUUID: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,15 +19,15 @@ class TurnOnLocationServicesFragment(
         savedInstanceState: Bundle?
     ): View? {
         val view =
-            TurnOnLocationServicesViewMvcImpl(
+            TurnOffLocationServicesViewMvcImpl(
                 layoutInflater,
                 null,
-                mAreMapsDisabled,
-                sessionType
+                deviceItem,
+                sessionUUID
             )
         controller =
-            TurnOnLocationServicesController(
-                context,
+            TurnOffLocationServicesController(
+                requireContext(),
                 view
             )
 

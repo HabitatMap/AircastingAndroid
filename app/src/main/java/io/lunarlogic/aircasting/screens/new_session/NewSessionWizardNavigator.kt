@@ -51,10 +51,23 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToTurnOnLocationServices(listener: TurnOnLocationServicesViewMvc.Listener) {
+    fun goToTurnOnLocationServices(
+        listener: TurnOnLocationServicesViewMvc.Listener,
+        areMapsDisabled: Boolean,
+        sessionType: Session.Type
+    ) {
         incrementStepProgress()
-        val fragment = TurnOnLocationServicesFragment()
+        val fragment = TurnOnLocationServicesFragment(areMapsDisabled, sessionType)
         fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun goToTurnOffLocationServices(deviceItem: DeviceItem, sessionUUID: String, listener: TurnOffLocationServicesViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = TurnOffLocationServicesFragment()
+        fragment.listener = listener
+        fragment.deviceItem = deviceItem
+        fragment.sessionUUID = sessionUUID
         goToFragment(fragment)
     }
 
