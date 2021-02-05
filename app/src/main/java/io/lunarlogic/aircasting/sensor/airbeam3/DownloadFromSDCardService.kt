@@ -28,7 +28,7 @@ class DownloadFromSDCardService(
         F(6),
         C(7),
         K(8),
-        HUMIDITY(9),
+        RH(9),
         PM1(10),
         PM2(11),
         PM10(12);

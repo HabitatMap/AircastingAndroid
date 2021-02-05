@@ -29,7 +29,7 @@ class MeasurementsFromSDCardCreator(
 ) {
 
     class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
-        val SUPPORTED_STREAMS = arrayOf(Header.F, Header.HUMIDITY, Header.PM1, Header.PM2, Header.PM10)
+        val SUPPORTED_STREAMS = arrayOf(Header.F, Header.RH, Header.PM1, Header.PM2, Header.PM10)
 
         companion object {
             fun uuidFrom(line: List<String>): String? {
@@ -51,6 +51,95 @@ class MeasurementsFromSDCardCreator(
 
                 val measurement = CSVMeasurement(value, latitude, longitude, time)
                 streams[streamHeader.value]?.add(measurement)
+            }
+        }
+    }
+
+    class CSVMeasurementStream(
+        val sensorName: String,
+        val measurementType: String,
+        val measurementShortType: String,
+        val unitName: String,
+        val unitSymbol: String,
+        val thresholdVeryLow: Int,
+        val thresholdLow: Int,
+        val thresholdMedium: Int,
+        val thresholdHigh: Int,
+        val thresholdVeryHigh: Int
+    ) {
+
+        companion object {
+            private const val DEVICE_NAME = "AirBeam3"
+            private const val PM_MEASUREMENT_TYPE = "Particulate Matter"
+            private const val PM_MEASUREMENT_SHORT_TYPE = "PM"
+            private const val PM_UNIT_NAME = "micrograms per cubic meter"
+            private const val PM_UNIT_SYMBOL = "µg/m³"
+
+            private val SUPPORTED_STREAMS = hashMapOf(
+                Header.F to CSVMeasurementStream(
+                    "$DEVICE_NAME-F",
+                    "Temperature",
+                    "F",
+                    "degrees Fahrenheit",
+                    "F",
+                    15,
+                    45,
+                    75,
+                    100,
+                    135
+                ),
+                Header.RH to CSVMeasurementStream(
+                    "$DEVICE_NAME-RH",
+                    "Humidity",
+                    "RH",
+                    "percent",
+                    "%",
+                    0,
+                    25,
+                    50,
+                    75,
+                    100
+                ),
+                Header.PM1 to CSVMeasurementStream(
+                    "$DEVICE_NAME-PM1",
+                    PM_MEASUREMENT_TYPE,
+                    PM_MEASUREMENT_SHORT_TYPE,
+                    PM_UNIT_NAME,
+                    PM_UNIT_SYMBOL,
+                    0,
+                    12,
+                    35,
+                    55,
+                    150
+                ),
+                Header.PM2 to CSVMeasurementStream(
+                    "$DEVICE_NAME-PM2.5",
+                    PM_MEASUREMENT_TYPE,
+                    PM_MEASUREMENT_SHORT_TYPE,
+                    PM_UNIT_NAME,
+                    PM_UNIT_SYMBOL,
+                    0,
+                    12,
+                    35,
+                    55,
+                    150
+                ),
+                Header.PM10 to CSVMeasurementStream(
+                    "$DEVICE_NAME-PM10",
+                    PM_MEASUREMENT_TYPE,
+                    PM_MEASUREMENT_SHORT_TYPE,
+                    PM_UNIT_NAME,
+                    PM_UNIT_SYMBOL,
+                    0,
+                    20,
+                    50,
+                    100,
+                    200
+                )
+            )
+
+            fun fromHeader(streamHeader: Header): CSVMeasurementStream? {
+                return SUPPORTED_STREAMS[streamHeader]
             }
         }
     }
@@ -102,7 +191,6 @@ class MeasurementsFromSDCardCreator(
     private fun processSession(csvSession: CSVSession) {
         println("ANIA " + csvSession.uuid)
 
-        // TODO: arrange it in a better way
         DatabaseProvider.runQuery {
             val dbSessionWithMeasurements = mSessionsRepository.getSessionWithMeasurementsByUUID(csvSession.uuid)
             val dbSession = dbSessionWithMeasurements?.session
@@ -131,21 +219,39 @@ class MeasurementsFromSDCardCreator(
 
             if (session.isDisconnected()) { // TODO: add fixed flow?
                 csvSession.streams.forEach { (headerKey, csvMeasurements) ->
-                    val streamHeader = Header.fromInt(headerKey)
-                    val measurementStream = MeasurementStream.fromHeader(streamHeader)
-                    val measurementStreamId = mMeasurementStreamsRepository.getIdOrInsert(
-                        sessionId,
-                        measurementStream
-                    )
-
-                    // TODO: discard the one we already have
-                    val measurements = csvMeasurements.map { csvMeasurement ->
-                        Measurement(csvMeasurement.value, csvMeasurement.time, csvMeasurement.latitude, csvMeasurement.longitude)
-                    }
-
-                    mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
+                    processMeasurements(sessionId, headerKey, csvMeasurements)
                 }
             }
         }
+    }
+
+    private fun processMeasurements(sessionId: Long, headerKey: Int, csvMeasurements: List<CSVMeasurement>) {
+        val streamHeader = Header.fromInt(headerKey)
+        val csvMeasurementStream = CSVMeasurementStream.fromHeader(streamHeader) ?: return
+
+        val measurementStream = MeasurementStream(
+            "sensorPackageName", // TODO: use real one
+            csvMeasurementStream.sensorName,
+            csvMeasurementStream.measurementType,
+            csvMeasurementStream.measurementShortType,
+            csvMeasurementStream.unitName,
+            csvMeasurementStream.unitSymbol,
+            csvMeasurementStream.thresholdVeryLow,
+            csvMeasurementStream.thresholdLow,
+            csvMeasurementStream.thresholdMedium,
+            csvMeasurementStream.thresholdHigh,
+            csvMeasurementStream.thresholdVeryHigh
+        )
+        val measurementStreamId = mMeasurementStreamsRepository.getIdOrInsert(
+            sessionId,
+            measurementStream
+        )
+
+        // TODO: discard the one we already have
+        val measurements = csvMeasurements.map { csvMeasurement ->
+            Measurement(csvMeasurement.value, csvMeasurement.time, csvMeasurement.latitude, csvMeasurement.longitude)
+        }
+
+        mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 }
