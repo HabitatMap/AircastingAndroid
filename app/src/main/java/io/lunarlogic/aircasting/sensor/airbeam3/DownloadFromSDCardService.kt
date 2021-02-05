@@ -18,6 +18,8 @@ class DownloadFromSDCardService(
     private val DOWNLOAD_TAG = "SYNC"
     private val CLEAR_FINISHED = "SD_DELETE_FINISH"
 
+    private var mDeviceId: String? = null
+
     enum class Header(val value: Int) {
         INDEX(0),
         UUID(1),
@@ -50,7 +52,8 @@ class DownloadFromSDCardService(
     class SyncEvent(val message: String) // TOOD: remove it after implementing proper sync
     class SyncFinishedEvent(val message: String) // TOOD: remove it after implementing proper sync
 
-    fun init() {
+    fun init(deviceId: String) {
+        mDeviceId = deviceId
         count = 0
         downloadStartedAt = System.currentTimeMillis()
         openSyncFile()
@@ -81,7 +84,7 @@ class DownloadFromSDCardService(
             Log.d(DOWNLOAD_TAG, "Sync finished")
             closeSyncFile()
             checkOutputFileAndShowFinishMessage()
-            mMeasurementsFromSDCardCreator.run()
+            mMeasurementsFromSDCardCreator.run(mDeviceId!!) // TODO: handle in a better way
         } else if (valueString == CLEAR_FINISHED) {
             showMessage("SD card successfully cleared.")
         }

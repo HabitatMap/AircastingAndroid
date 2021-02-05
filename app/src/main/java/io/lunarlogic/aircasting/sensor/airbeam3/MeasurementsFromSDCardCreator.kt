@@ -30,6 +30,8 @@ class MeasurementsFromSDCardCreator(
 
     class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
         companion object {
+            val DEFAULT_NAME = "Imported from SD card"
+
             fun uuidFrom(line: List<String>): String? {
                 return line[Header.UUID.value]
             }
@@ -72,7 +74,6 @@ class MeasurementsFromSDCardCreator(
         val thresholdHigh: Int,
         val thresholdVeryHigh: Int
     ) {
-
         companion object {
             private const val DEVICE_NAME = "AirBeam3"
             private const val PM_MEASUREMENT_TYPE = "Particulate Matter"
@@ -147,24 +148,28 @@ class MeasurementsFromSDCardCreator(
                 return SUPPORTED_STREAMS[streamHeader]
             }
         }
+
+        fun sensorPackageName(deviceId: String): String {
+            return "${DEVICE_NAME}:${deviceId}"
+        }
     }
 
     class CSVMeasurement(val value: Double, val latitude: Double?, val longitude: Double?, val time: Date)
 
-    fun run() {
+    fun run(deviceId: String) {
         // TODO: change naming and extract it somewhere
         val dir = mContext.getExternalFilesDir("sync")
         val file = File(dir, "sync.txt")
         val reader = CSVReader(FileReader(file))
 
         try {
-            processFile(reader)
+            processFile(deviceId, reader)
         } catch (e: IOException) {
             mErrorHandler.handle(MeasurementsFromSDCardParsingError(e))
         }
     }
 
-    private fun processFile(reader: CSVReader) {
+    private fun processFile(deviceId: String, reader: CSVReader) {
         var previousSessionUUID: String? = null
         var currentSession: CSVSession? = null
 
@@ -173,7 +178,7 @@ class MeasurementsFromSDCardCreator(
 
             if (line == null) {
                 if (currentSession != null) {
-                    processSession(currentSession)
+                    processSession(deviceId, currentSession)
                 }
                 break
             }
@@ -182,7 +187,7 @@ class MeasurementsFromSDCardCreator(
 
             if (currentSessionUUID != previousSessionUUID) {
                 if (currentSession != null) {
-                    processSession(currentSession)
+                    processSession(deviceId, currentSession)
                 }
 
                 currentSession = CSVSession(currentSessionUUID!!)
@@ -193,7 +198,7 @@ class MeasurementsFromSDCardCreator(
         } while(line != null)
     }
 
-    private fun processSession(csvSession: CSVSession) {
+    private fun processSession(deviceId: String, csvSession: CSVSession) {
         println("ANIA " + csvSession.uuid)
 
         DatabaseProvider.runQuery {
@@ -203,14 +208,13 @@ class MeasurementsFromSDCardCreator(
             val sessionId: Long
 
             if (dbSession == null) {
-                // TODO: use proper device name
-                // TODO: use proper session type
+                // TODO: use proper session type while implementing fixed flow
                 session = Session(
                     csvSession.uuid,
-                    "deviceName",
+                    deviceId,
                     DeviceItem.Type.AIRBEAM3,
                     Session.Type.MOBILE,
-                    "imported from SD card",
+                    CSVSession.DEFAULT_NAME,
                     ArrayList(),
                     Session.Status.DISCONNECTED,
                     csvSession.startTime()!! // TODO: handle in better way
@@ -223,18 +227,18 @@ class MeasurementsFromSDCardCreator(
 
             if (session.isDisconnected()) { // TODO: add fixed flow?
                 csvSession.streams.forEach { (headerKey, csvMeasurements) ->
-                    processMeasurements(sessionId, headerKey, csvMeasurements)
+                    processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
                 }
             }
         }
     }
 
-    private fun processMeasurements(sessionId: Long, headerKey: Int, csvMeasurements: List<CSVMeasurement>) {
+    private fun processMeasurements(deviceId: String, sessionId: Long, headerKey: Int, csvMeasurements: List<CSVMeasurement>) {
         val streamHeader = Header.fromInt(headerKey)
         val csvMeasurementStream = CSVMeasurementStream.fromHeader(streamHeader) ?: return
 
         val measurementStream = MeasurementStream(
-            "sensorPackageName", // TODO: use real one
+            csvMeasurementStream.sensorPackageName(deviceId),
             csvMeasurementStream.sensorName,
             csvMeasurementStream.measurementType,
             csvMeasurementStream.measurementShortType,

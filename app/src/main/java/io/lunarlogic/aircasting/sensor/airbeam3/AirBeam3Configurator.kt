@@ -95,8 +95,8 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    fun downloadFromSDCard() {
-        downloadFromSDCardService.init()
+    fun downloadFromSDCard(deviceId: String) {
+        downloadFromSDCardService.init(deviceId)
 
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
