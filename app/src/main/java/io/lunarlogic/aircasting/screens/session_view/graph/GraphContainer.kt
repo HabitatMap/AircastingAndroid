@@ -28,7 +28,6 @@ import java.util.*
 
 
 class GraphContainer: OnChartGestureListener {
-    private val LAST_24H_FIXED_MEASUREMENTS_NUMBER = 24 * 60
     private val mContext: Context
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
