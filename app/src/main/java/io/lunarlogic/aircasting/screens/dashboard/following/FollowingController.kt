@@ -44,7 +44,6 @@ class FollowingController(
         }
 
         NavigationController.goToLetsStart()
-//        startNewSession(Session.Type.FIXED) todo: remove this
     }
 
     override fun onEditSessionClicked(session: Session) {

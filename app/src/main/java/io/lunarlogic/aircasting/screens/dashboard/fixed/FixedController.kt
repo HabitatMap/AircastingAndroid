@@ -48,7 +48,6 @@ class FixedController(
         }
 
         NavigationController.goToLetsStart()
-//        startNewSession(Session.Type.FIXED) //todo: remove this
     }
 
     override fun onDeleteSessionClicked(sessionUUID: String) {
