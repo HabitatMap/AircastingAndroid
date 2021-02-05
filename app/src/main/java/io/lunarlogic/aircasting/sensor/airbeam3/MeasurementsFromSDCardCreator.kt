@@ -29,12 +29,16 @@ class MeasurementsFromSDCardCreator(
 ) {
 
     class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
-        val SUPPORTED_STREAMS = arrayOf(Header.F, Header.RH, Header.PM1, Header.PM2, Header.PM10)
-
         companion object {
             fun uuidFrom(line: List<String>): String? {
                 return line[Header.UUID.value]
             }
+        }
+
+        fun startTime(): Date? {
+            // all streams are saved at the same time, so it does not matter which we take
+            val stream = streams.values.firstOrNull()
+            return stream?.firstOrNull()?.time
         }
 
         fun addMeasurements(line: List<String>) {
@@ -42,7 +46,8 @@ class MeasurementsFromSDCardCreator(
             val longitude = line[Header.LONGITUDE.value].toDouble() // TODO: handle parse issues
             val time = Date("${line[Header.DATE.value]} ${line[Header.TIME.value]}") // TODO: replace with parsing
 
-            SUPPORTED_STREAMS.forEach { streamHeader ->
+            val supportedStreamHeaders = CSVMeasurementStream.SUPPORTED_STREAMS.keys
+            supportedStreamHeaders.forEach { streamHeader ->
                 val value = line[streamHeader.value].toDouble() // TODO: handle parse issues
 
                 if (!streams.containsKey(streamHeader.value)) {
@@ -75,7 +80,7 @@ class MeasurementsFromSDCardCreator(
             private const val PM_UNIT_NAME = "micrograms per cubic meter"
             private const val PM_UNIT_SYMBOL = "µg/m³"
 
-            private val SUPPORTED_STREAMS = hashMapOf(
+            val SUPPORTED_STREAMS = hashMapOf(
                 Header.F to CSVMeasurementStream(
                     "$DEVICE_NAME-F",
                     "Temperature",
@@ -200,7 +205,6 @@ class MeasurementsFromSDCardCreator(
             if (dbSession == null) {
                 // TODO: use proper device name
                 // TODO: use proper session type
-                // TODO: use proper start date - from first measurement
                 session = Session(
                     csvSession.uuid,
                     "deviceName",
@@ -209,7 +213,7 @@ class MeasurementsFromSDCardCreator(
                     "imported from SD card",
                     ArrayList(),
                     Session.Status.DISCONNECTED,
-                    Date()
+                    csvSession.startTime()!! // TODO: handle in better way
                 )
                 sessionId = mSessionsRepository.insert(session)
             } else {
