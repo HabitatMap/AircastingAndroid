@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -217,7 +216,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
-    override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {} //todo: add some update methods here??
+    override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
     override fun onChartLongPressed(me: MotionEvent?) {}
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartSingleTapped(me: MotionEvent?) {}
