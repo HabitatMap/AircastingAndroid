@@ -72,7 +72,7 @@ class AirBeam3Configurator(
         wifiSSID: String?,
         wifiPassword: String?
     ){
-        val location = session.location ?: return
+        val location = session.sharableLocation() ?: return
         val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
 
         if (session.isFixed()) {

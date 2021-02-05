@@ -38,9 +38,21 @@ class MeasurementsFromSDCardCreator(
         }
 
         fun startTime(): Date? {
+            return firstMeasurement()?.time
+        }
+
+        fun latitude(): Double? {
+            return firstMeasurement()?.latitude
+        }
+
+        fun longitude(): Double? {
+            return firstMeasurement()?.longitude
+        }
+
+        private fun firstMeasurement(): CSVMeasurement? {
             // all streams are saved at the same time, so it does not matter which we take
             val stream = streams.values.firstOrNull()
-            return stream?.firstOrNull()?.time
+            return stream?.firstOrNull()
         }
 
         fun addMeasurements(line: Array<String>) {
@@ -219,6 +231,18 @@ class MeasurementsFromSDCardCreator(
                     Session.Status.DISCONNECTED,
                     csvSession.startTime()!! // TODO: handle in better way
                 )
+
+                val latitude = csvSession.latitude()
+                val longitude = csvSession.longitude()
+                if (latitude != null && longitude != null) {
+                    val location = Session.Location(latitude, longitude)
+                    session.location = location
+                    
+                    if (location == Session.Location.INDOOR_FAKE_LOCATION) {
+                        session.locationless = true
+                    }
+                }
+
                 sessionId = mSessionsRepository.insert(session)
             } else {
                 session = Session(dbSessionWithMeasurements)

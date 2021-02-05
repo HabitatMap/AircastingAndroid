@@ -134,6 +134,12 @@ class Session(
                 return Location(location.latitude, location.longitude)
             }
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (other == null || other !is Location) return false
+
+            return latitude == other.latitude && longitude == other.longitude
+        }
     }
 
     private val DATE_FORMAT = "MM/dd/yy"
@@ -150,7 +156,7 @@ class Session(
 
     private var mIndoor: Boolean? = null
     private var mStreamingMethod: StreamingMethod? = null
-    var location: Location? = null
+    var location: Location? = null // TODO: make it private?
 
     val status get() = mStatus
     val streams get() = mStreams
@@ -292,6 +298,14 @@ class Session(
 
     fun measurementsCount(): Int {
         return streams.map { stream -> stream.measurements.size }.sum()
+    }
+
+    fun sharableLocation(): Location? {
+        return if (locationless) {
+            Location.INDOOR_FAKE_LOCATION
+        } else {
+            location
+        }
     }
 
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {
