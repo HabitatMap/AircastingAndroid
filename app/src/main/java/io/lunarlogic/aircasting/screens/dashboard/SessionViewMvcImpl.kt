@@ -1,6 +1,8 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.graphics.Rect
 import android.view.LayoutInflater
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -91,25 +93,30 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             onCollapseSessionCardClicked()
             collapseSessionCard()
         }
+
         mFollowButton = findViewById(R.id.follow_button)
         mFollowButton.setOnClickListener {
             onFollowButtonClicked()
         }
+        expandViewHitArea(mExpandedSessionView, mFollowButton)
 
         mUnfollowButton = findViewById(R.id.unfollow_button)
         mUnfollowButton.setOnClickListener {
             onUnfollowButtonClicked()
         }
+        expandViewHitArea(mExpandedSessionView, mUnfollowButton)
 
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
         }
+        expandViewHitArea(mExpandedSessionView, mMapButton)
 
         mGraphButton = findViewById(R.id.graph_button)
         mGraphButton.setOnClickListener {
             onGraphButtonClicked()
         }
+        expandViewHitArea(mExpandedSessionView, mGraphButton)
 
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
@@ -311,5 +318,20 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
+    }
+
+    private fun expandViewHitArea(container : View, child : View) {
+        val padding = 4
+        container.post {
+            val rect = Rect()
+            child.getHitRect(rect)
+
+            rect.left -= padding
+            rect.top -= padding
+            rect.right += padding
+            rect.bottom += padding
+
+            container.touchDelegate = TouchDelegate(rect, child)
+        }
     }
 }

@@ -47,6 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/follow_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
         android:backgroundTint="@color/aircasting_blue_400"
         android:textColor="@color/aircasting_white"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
@@ -58,6 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/unfollow_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintStart_toStartOf="parent" />
@@ -68,6 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/map_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/keyline_2"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintEnd_toStartOf="@id/graph_button" />
@@ -78,6 +84,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/graph_button"
+        android:minHeight="0dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintTop_toBottomOf="@id/chart_container"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
