@@ -52,4 +52,7 @@
 
     <dimen name="create_account_checkbox_label_padding_top">5dp</dimen>
     <dimen name="create_account_sign_in_padding_top">80dp</dimen>
+
+    <dimen name="connecting_loader_margin_end">6dp</dimen>
+    <dimen name="connecting_loader_margin_bottom">1dp</dimen>
 </resources>
