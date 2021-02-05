@@ -221,9 +221,15 @@ class GraphContainer: OnChartGestureListener {
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartSingleTapped(me: MotionEvent?) {}
     override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
-    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
+    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
+        updateGraphOnGesture()
+    }
 
     override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+        updateGraphOnGesture()
+    }
+
+    private fun updateGraphOnGesture() {
         updateLabelsBasedOnVisibleTimeSpan()
         updateVisibleTimeSpan()
     }
