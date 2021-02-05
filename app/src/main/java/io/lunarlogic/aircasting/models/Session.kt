@@ -246,7 +246,7 @@ class Session(
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {
-        return streams.sortedBy { it.detailedType }
+        return streams.sortedWith(compareBy({ it.sensorNameOrder() }, { it.detailedType }))
     }
 
     fun durationString(): String {

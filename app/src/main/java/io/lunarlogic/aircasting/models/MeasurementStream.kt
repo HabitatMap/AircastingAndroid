@@ -84,9 +84,36 @@ class MeasurementStream(
     private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
+
+    companion object {
+        private val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
+    }
+
     init {
         detailedType = buildDetailedType()
     }
+
+    enum class AirBeamSensorName(val detailedType: String) {
+        F("F"),
+        PM("PM"),
+        PM1("PM1"),
+        PM2_5("PM2.5"),
+        PM10("PM10"),
+        RH("RH");
+
+        companion object {
+            fun fromString(detailedType: String?) = values().firstOrNull { it.detailedType == detailedType }
+        }
+    }
+
+    fun sensorNameOrder(): Int? {
+        return if (sensorName.contains(AIRBEAM_SENSOR_NAME_REGEX, true)) {
+            AirBeamSensorName.fromString(detailedType)?.ordinal
+        } else {
+            0
+        }
+    }
+
 
     private fun buildDetailedType(): String? {
         when (sensorPackageName) {
