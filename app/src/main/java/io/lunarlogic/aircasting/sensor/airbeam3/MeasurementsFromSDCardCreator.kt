@@ -32,7 +32,7 @@ class MeasurementsFromSDCardCreator(
         companion object {
             val DEFAULT_NAME = "Imported from SD card"
 
-            fun uuidFrom(line: List<String>): String? {
+            fun uuidFrom(line: Array<String>): String? {
                 return line[Header.UUID.value]
             }
         }
@@ -43,7 +43,7 @@ class MeasurementsFromSDCardCreator(
             return stream?.firstOrNull()?.time
         }
 
-        fun addMeasurements(line: List<String>) {
+        fun addMeasurements(line: Array<String>) {
             val latitude = line[Header.LATITUDE.value].toDouble() // TODO: handle parse issues
             val longitude = line[Header.LONGITUDE.value].toDouble() // TODO: handle parse issues
             val time = Date("${line[Header.DATE.value]} ${line[Header.TIME.value]}") // TODO: replace with parsing
@@ -174,7 +174,7 @@ class MeasurementsFromSDCardCreator(
         var currentSession: CSVSession? = null
 
         do {
-            val line = reader.readNext()?.toList() // TODO: remove?
+            val line = reader.readNext()
 
             if (line == null) {
                 if (currentSession != null) {
