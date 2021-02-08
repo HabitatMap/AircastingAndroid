@@ -130,7 +130,7 @@ class MeasurementsFromSDCardCreator(
                     55,
                     150
                 ),
-                Header.PM2 to CSVMeasurementStream(
+                Header.PM2_5 to CSVMeasurementStream(
                     "$DEVICE_NAME-PM2.5",
                     PM_MEASUREMENT_TYPE,
                     PM_MEASUREMENT_SHORT_TYPE,
@@ -214,6 +214,7 @@ class MeasurementsFromSDCardCreator(
         println("ANIA " + csvSession.uuid)
 
         DatabaseProvider.runQuery {
+            // TODO: change to loading only session and last measurement separately
             val dbSessionWithMeasurements = mSessionsRepository.getSessionWithMeasurementsByUUID(csvSession.uuid)
             val dbSession = dbSessionWithMeasurements?.session
             val session: Session
@@ -237,7 +238,7 @@ class MeasurementsFromSDCardCreator(
                 if (latitude != null && longitude != null) {
                     val location = Session.Location(latitude, longitude)
                     session.location = location
-                    
+
                     if (location == Session.Location.INDOOR_FAKE_LOCATION) {
                         session.locationless = true
                     }

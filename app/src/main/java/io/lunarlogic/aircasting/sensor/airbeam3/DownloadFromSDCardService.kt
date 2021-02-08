@@ -32,7 +32,7 @@ class DownloadFromSDCardService(
         K(8),
         RH(9),
         PM1(10),
-        PM2(11),
+        PM2_5(11),
         PM10(12);
 
         companion object {
