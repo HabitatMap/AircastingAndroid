@@ -11,6 +11,9 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
+import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
@@ -54,7 +57,10 @@ class AirBeam3Configurator(
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
 
     // TODO: fix this dependencies
-    val measurementsFromSDCardCreator = MeasurementsFromSDCardCreator(mContext, mErrorHandler, SessionsRepository(), MeasurementStreamsRepository(), MeasurementsRepository())
+    val apiServiceFactory = ApiServiceFactory(mSettings)
+    private val mApiService =  apiServiceFactory.get(mSettings.getAuthToken()!!)
+    val syncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
+    val measurementsFromSDCardCreator = MeasurementsFromSDCardCreator(mContext, mErrorHandler, SessionsRepository(), MeasurementStreamsRepository(), MeasurementsRepository(), syncService)
     val downloadFromSDCardService = DownloadFromSDCardService(mContext, measurementsFromSDCardCreator)
 
     fun sendAuth(uuid: String) {

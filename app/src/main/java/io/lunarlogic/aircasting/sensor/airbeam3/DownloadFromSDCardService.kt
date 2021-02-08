@@ -85,6 +85,7 @@ class DownloadFromSDCardService(
             closeSyncFile()
             checkOutputFileAndShowFinishMessage()
             mMeasurementsFromSDCardCreator.run(mDeviceId!!) // TODO: handle in a better way
+
         } else if (valueString == CLEAR_FINISHED) {
             showMessage("SD card successfully cleared.")
         }

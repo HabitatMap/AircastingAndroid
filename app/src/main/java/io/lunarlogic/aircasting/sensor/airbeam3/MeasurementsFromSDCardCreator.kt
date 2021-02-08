@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.exceptions.MeasurementsFromSDCardParsingError
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.io.File
 import java.io.FileReader
@@ -25,7 +26,8 @@ class MeasurementsFromSDCardCreator(
     private val mErrorHandler: ErrorHandler,
     private val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
-    private val mMeasurementsRepository: MeasurementsRepository
+    private val mMeasurementsRepository: MeasurementsRepository,
+    private val mSyncService: SessionsSyncService
 ) {
 
     class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
@@ -250,13 +252,13 @@ class MeasurementsFromSDCardCreator(
 
             if (session.isDisconnected()) { // TODO: add fixed flow?
                 csvSession.streams.forEach { (headerKey, csvMeasurements) ->
-                    processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
+                    processMeasurements(deviceId, sessionId, session, headerKey, csvMeasurements)
                 }
             }
         }
     }
 
-    private fun processMeasurements(deviceId: String, sessionId: Long, headerKey: Int, csvMeasurements: List<CSVMeasurement>) {
+    private fun processMeasurements(deviceId: String, sessionId: Long, session: Session, headerKey: Int, csvMeasurements: List<CSVMeasurement>) {
         val streamHeader = Header.fromInt(headerKey)
         val csvMeasurementStream = CSVMeasurementStream.fromHeader(streamHeader) ?: return
 
@@ -286,5 +288,11 @@ class MeasurementsFromSDCardCreator(
         }
 
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
+
+        // TODO: temp - arrange it in a better way..
+        session.stopRecording()
+        mSessionsRepository.update(session)
+
+        mSyncService.sync()
     }
 }
