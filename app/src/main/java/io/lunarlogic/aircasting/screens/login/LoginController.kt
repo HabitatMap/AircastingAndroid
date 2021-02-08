@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.new_session
 
 import android.content.Context
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -14,16 +15,16 @@ import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
 
 class  LoginController(
-    private val mContext: Context,
+    private val mContextActivity: AppCompatActivity,
     private val mViewMvc: LoginViewMvc,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val fragmentManager: FragmentManager
 ) : LoginViewMvc.Listener,
     LoginViewMvc.ForgotPasswordDialogListener {
-    private val mErrorHandler = ErrorHandler(mContext)
+    private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
-    private val mForgotPasswordService = ForgotPasswordService(mContext, mErrorHandler, mApiServiceFactory)
+    private val mForgotPasswordService = ForgotPasswordService(mContextActivity, mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -35,12 +36,12 @@ class  LoginController(
 
     override fun onLoginClicked(username: String, password: String) {
         val successCallback = {
-            MainActivity.start(mContext)
+            MainActivity.start(mContextActivity)
         }
-        val message = mContext.getString(R.string.invalid_credentials_message)
+        val message = mContextActivity.getString(R.string.invalid_credentials_message)
         val errorCallback = {
             mViewMvc.showError()
-            val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
+            val toast = Toast.makeText(mContextActivity, message, Toast.LENGTH_LONG)
             toast.show()
         }
         mLoginService.performLogin(username, password, successCallback, errorCallback)
@@ -51,7 +52,7 @@ class  LoginController(
     }
 
     override fun onCreateAccountClicked() {
-        CreateAccountActivity.start(mContext)
+        CreateAccountActivity.start(mContextActivity)
     }
 
     private fun startForgotPasswordDialog() {

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
@@ -19,10 +20,13 @@ class LoginActivity: AppCompatActivity() {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
-        fun start(context: Context?) {
-            context?.let {
+        fun start(contextActivity: AppCompatActivity?, animation: Boolean = false) {
+            contextActivity?.let {
                 val intent = Intent(it, LoginActivity::class.java)
                 it.startActivity(intent)
+                if (animation) {
+                    it.overridePendingTransition(R.anim.slide_back_in, R.anim.slide_back_out)
+                }
             }
         }
 

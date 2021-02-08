@@ -21,6 +21,7 @@
     <dimen name="button_shadow_translation">6dp</dimen>
     <dimen name="button_shadow_y_translation">-6dp</dimen>
     <dimen name="cardview_default_elevation">4dp</dimen>
+    <dimen name="navigation_tabs_left_margin">9dp</dimen>
 
     <dimen name="text_size_xxl">32sp</dimen>
     <dimen name="text_size_xl">24sp</dimen>
@@ -48,4 +49,10 @@
 
     <dimen name="map_height">300dp</dimen>
     <dimen name="hlu_slider_thumb_radius">10dp</dimen>
+
+    <dimen name="create_account_checkbox_label_padding_top">5dp</dimen>
+    <dimen name="create_account_sign_in_padding_top">80dp</dimen>
+
+    <dimen name="connecting_loader_margin_end">6dp</dimen>
+    <dimen name="connecting_loader_margin_bottom">1dp</dimen>
 </resources>

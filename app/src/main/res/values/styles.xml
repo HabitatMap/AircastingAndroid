@@ -102,6 +102,12 @@
         <item name="android:textSize">@dimen/text_button_text_size</item>
     </style>
 
+    <style name="TextAppearance.Aircasting.Login.ForgotPasswordTextButton" parent="">
+    <item name="android:fontFamily">@font/muli_bold</item>
+    <item name="android:textColor">?attr/colorPrimary</item>
+    <item name="android:textSize">@dimen/button_text_size</item>
+    </style>
+
     <style name="TextAppearance.Aircasting.Login.TextButton" parent="">
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
@@ -162,16 +168,17 @@
         <item name="android:textSize">@dimen/text_size_s</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.TextView.Desciprtion" parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.TextView.Description" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_300</item>
         <item name="android:textSize">@dimen/text_size_m</item>
     </style>
 
-    <style name="TextAppearance.Aircasting.TextView.Desciprtion2" parent="@style/TextAppearance.AppCompat">
+    <style name="TextAppearance.Aircasting.TextView.Description2" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
-        <item name="android:textSize">@dimen/text_size_s</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="lineHeight">32dp</item>
     </style>
 
     <style name="TextAppearance.Aircasting.TextInput.Hint" parent="@style/TextAppearance.AppCompat">
@@ -249,6 +256,8 @@
     <style name="Widget.Aircasting.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:minHeight">@dimen/button_min_height</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
+        <item name="android:paddingTop">@dimen/keyline_4</item>
+        <item name="android:paddingBottom">@dimen/keyline_4</item>
         <item name="shapeAppearance">@style/Widget.Aircasting.ButtonShapeAppearance</item>
     </style>
 
@@ -405,6 +414,7 @@
         <item name="android:backgroundTint">@color/aircasting_white</item>
         <item name="cardElevation">10dp</item>
         <item name="cardCornerRadius">20dp</item>
+        <item name="enforceMaterialTheme">false</item>
     </style>
 
     <!-- App Bar -->
@@ -447,8 +457,8 @@
         <item name="tabTextAppearance">@style/Widget.Aircasting.TabLayout.TextAppearance</item>
         <item name="tabSelectedTextColor">?attr/colorPrimary</item>
         <item name="android:elevation">@dimen/default_elevation</item>
-        <item name="tabPaddingStart">@dimen/keyline_6</item>
-        <item name="tabPaddingEnd">@dimen/keyline_6</item>
+        <item name="tabPaddingStart">@dimen/keyline_4</item>
+        <item name="tabPaddingEnd">@dimen/keyline_4</item>
     </style>
 
     <style name="Widget.Aircasting.TabLayout.TextAppearance" parent="TextAppearance.Aircasting.Headline6">

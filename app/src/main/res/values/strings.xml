@@ -272,8 +272,8 @@
     <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
 
     <!-- Microphone settings -->
-    <string name="microphone_maximum">Microphone maximum</string>
-    <string name="microphone_settings_description">Maximum sound level processed by your phone\'s microphone. For most phones it\'s between 80 and 100</string>
+    <string name="microphone_settings_title">Phone Microphone Calibration</string>
+    <string name="microphone_settings_description">Adjust via trial &amp; error until the measurements in the app match your reference sound level meter. For most phones it\'s between 80 and 100.</string>
     <string name="microphone_settings">Microphone settings</string>
     <string name="reset_email_sent">An email with further instructions has been sent</string>
     <string name="unknown_error">Unknown error</string>

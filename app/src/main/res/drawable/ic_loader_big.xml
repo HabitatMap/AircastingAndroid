@@ -11,7 +11,7 @@
           android:pivotX="37"
           android:pivotY="37">
         <path
-            android:pathData="M36.5,36.5m-33.5,0a33.5,33.5 0,1 1,67 0a33.5,33.5 0,1 1,-67 0"
+            android:pathData="M37,37m-33.5,0a33.5,33.5 0,1 1,67 0a33.5,33.5 0,1 1,-67 0"
             android:strokeWidth="1"
             android:fillColor="#00B2EF"
             android:fillType="evenOdd"

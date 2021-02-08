@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -126,15 +127,21 @@ class ShareSessionBottomSheet(
     }
 
     private fun setRadioButtonProperties(stream: MeasurementStream){
-            val radioButton = RadioButton(context)
-            radioButton.id = View.generateViewId()
-            radioButton.text = stream.detailedType
-            val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            radioButton.layoutParams = layoutParams
-            radioButton.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.aircasting_blue_400))
-            radioButton.setTextColor(resources.getColor(R.color.aircasting_grey_700))
-            radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_StreamValue2)
-            radioGroup?.addView(radioButton)
-            fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
+        val radioButton = RadioButton(context)
+        val radioButtonPaddingLeft = context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
+        val radioButtonPaddingBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
+        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val drawable = context?.getDrawable(R.drawable.aircasting_radio_button)
+
+        radioButton.id = View.generateViewId()
+        radioButton.text = stream.detailedType
+        radioButton.layoutParams = layoutParams
+        radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_Body1)
+        radioButton.gravity = Gravity.TOP
+        radioButton.buttonDrawable = drawable
+        radioButton.setBackgroundColor(Color.TRANSPARENT)
+        radioButton.setPadding( radioButtonPaddingLeft, 0, 0, radioButtonPaddingBottom)
+        radioGroup?.addView(radioButton)
+        fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
     }
 }

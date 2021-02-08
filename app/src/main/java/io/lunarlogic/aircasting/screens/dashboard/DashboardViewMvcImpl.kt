@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 
@@ -18,9 +19,21 @@ class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
         mPager = rootView?.findViewById(R.id.pager)
         mPager?.offscreenPageLimit = DashboardPagerAdapter.TABS_COUNT
         fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
+        setTabsMargins()
     }
 
     override fun goToTab(tabId: Int) {
         mPager?.currentItem = tabId
+    }
+
+    private fun setTabsMargins() {
+        val tabs: TabLayout? = rootView?.findViewById(R.id.tabs)
+        val firstTab = tabs?.getChildAt(0)
+        val firstTabParams = firstTab?.layoutParams as ViewGroup.MarginLayoutParams
+        val leftMargin = context.resources.getDimension(R.dimen.navigation_tabs_left_margin).toInt()
+        val rightMargin = context.resources.getDimension(R.dimen.keyline_4).toInt()
+
+        firstTabParams.setMargins(leftMargin, 0, rightMargin, 0)
+        firstTab.requestLayout()
     }
 }

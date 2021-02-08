@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.create_account
 
 import android.content.Context
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
@@ -11,12 +12,12 @@ import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 
 class CreateAccountController(
-    private val mContext: Context,
+    private val mContextActivity: AppCompatActivity,
     private val mViewMvc: CreateAccountViewMvcImpl,
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory
 ) : CreateAccountViewMvc.Listener {
-    private val mErrorHandler = ErrorHandler(mContext)
+    private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
@@ -29,18 +30,18 @@ class CreateAccountController(
 
     override fun onCreateAccountClicked(username: String, password: String, email: String, send_emails: Boolean) {
         val successCallback = {
-            MainActivity.start(mContext)
+            MainActivity.start(mContextActivity)
         }
-        val message =  mContext.getString(R.string.create_account_errors_message)
+        val message =  mContextActivity.getString(R.string.create_account_errors_message)
         val errorCallback = { errorResponse: CreateAccountErrorResponse ->
             mViewMvc.showErrors(errorResponse)
-            val toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG)
+            val toast = Toast.makeText(mContextActivity, message, Toast.LENGTH_LONG)
             toast.show()
         }
         mCreateAccountService.performCreateAccount(username, password, email, send_emails, successCallback, errorCallback)
     }
 
     override fun onLoginClicked() {
-        LoginActivity.start(mContext)
+        LoginActivity.start(mContextActivity, true)
     }
 }
