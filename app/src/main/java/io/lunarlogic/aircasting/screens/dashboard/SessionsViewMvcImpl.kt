@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     private var mEmptyView: View? = null
     private val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+    var mDidYouKnowBox: ConstraintLayout? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -38,6 +40,8 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
         mRecyclerSessions?.setLayoutManager(LinearLayoutManager(rootView!!.context))
+
+        mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
@@ -70,12 +74,16 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
             mAdapter.bindSessions(sessions, sensorThresholds)
             mRecyclerSessions?.visibility = View.VISIBLE
             mEmptyView?.visibility = View.INVISIBLE
+            mDidYouKnowBox?.visibility = View.GONE
         }
     }
 
     override fun showEmptyView() {
         mEmptyView?.visibility = View.VISIBLE
         mRecyclerSessions?.visibility = View.INVISIBLE
+        if (layoutId() == R.id.empty_mobile_active_dashboard) {
+            mDidYouKnowBox?.visibility = View.VISIBLE
+        }
     }
 
     override fun showLoaderFor(session: Session) {
