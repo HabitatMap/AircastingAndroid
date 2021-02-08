@@ -214,9 +214,7 @@ class MeasurementsFromSDCardCreator(
         println("ANIA " + csvSession.uuid)
 
         DatabaseProvider.runQuery {
-            // TODO: change to loading only session and last measurement separately
-            val dbSessionWithMeasurements = mSessionsRepository.getSessionWithMeasurementsByUUID(csvSession.uuid)
-            val dbSession = dbSessionWithMeasurements?.session
+            val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
             val session: Session
             val sessionId: Long
 
@@ -246,7 +244,7 @@ class MeasurementsFromSDCardCreator(
 
                 sessionId = mSessionsRepository.insert(session)
             } else {
-                session = Session(dbSessionWithMeasurements)
+                session = Session(dbSession)
                 sessionId = dbSession.id
             }
 
@@ -280,8 +278,10 @@ class MeasurementsFromSDCardCreator(
             measurementStream
         )
 
-        // TODO: discard the one we already have
-        val measurements = csvMeasurements.map { csvMeasurement ->
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
+        val measurements = csvMeasurements
+            .filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
+            .map { csvMeasurement ->
             Measurement(csvMeasurement.value, csvMeasurement.time, csvMeasurement.latitude, csvMeasurement.longitude)
         }
 
