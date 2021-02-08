@@ -193,7 +193,7 @@ class MeasurementsTableContainer {
     }
 
     private fun bindMeasurement(stream: MeasurementStream) {
-        val measurementValue = getMeasurementValue(stream) ?: return
+        val measurementValue = getMeasurementValue(stream) ?: return //todo: tutaj sie binduje... jak pokazac loader jesli measurementValue == null??
 
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         mLastMeasurementColors[stream.sensorName] = color
