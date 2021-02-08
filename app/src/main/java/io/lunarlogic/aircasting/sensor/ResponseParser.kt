@@ -11,6 +11,7 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
      * Value;Sensor package name;Sensor name;Type of measurement;Short type of measurement;Unit name;Unit symbol/abbreviation;T1;T2;T3;T4;T5
      */
     internal enum class Fields {
+        SESSION_UUID,
         MEASUREMENT_VALUE,
 
         SENSOR_PACKAGE_NAME,
@@ -36,6 +37,7 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
             return null
         }
 
+        val sessionUUID = parts[Fields.SESSION_UUID.ordinal]
         val packageName = parts[Fields.SENSOR_PACKAGE_NAME.ordinal]
         val sensorName = parts[Fields.SENSOR_NAME.ordinal]
         val measurementType = parts[Fields.MEASUREMENT_TYPE.ordinal]
@@ -63,6 +65,7 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
         }
 
         return NewMeasurementEvent(
+            sessionUUID,
             packageName,
             sensorName,
             measurementType,

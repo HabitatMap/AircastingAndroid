@@ -82,4 +82,8 @@ class SessionsViewModel(): ViewModel() {
     fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
+
+    fun findSessionByUUID(sessionUUID: String): Session {
+        return Session(mDatabase.sessions().loadSessionAndMeasurementsByUUID(sessionUUID)!!)
+    }
 }

@@ -183,7 +183,8 @@ abstract class SessionsController(
 
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
-        Thread.sleep(1500)
-        mViewMvc.hideLoaderFor() //todo: HideLoaderFor
+        Thread.sleep(5000)
+        val session = mSessionsViewModel.findSessionByUUID(event.sessionUUID) //todo: this session UUID is "" now
+        mViewMvc.hideLoaderFor(session) //todo: find session by uuid
     }
 }

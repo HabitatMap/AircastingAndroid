@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.sensor.ResponseParser
 import kotlinx.android.parcel.Parcelize
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -32,6 +33,7 @@ class MicrophoneReader(
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings
 ): AudioReader.Listener() {
+    private val SESSION_UUID = ""
     private val SAMPLE_RATE = 44100
     private val SYMBOL = "dB"
     private val UNIT = "decibels"
@@ -73,7 +75,7 @@ class MicrophoneReader(
         if (power != null) {
             val calibrated = calibrationHelper.calibrate(power)
             val event = NewMeasurementEvent(
-                SENSOR_PACKAGE_NAME, SENSOR_NAME, MEASUREMENT_TYPE, SHORT_TYPE, UNIT, SYMBOL,
+                SESSION_UUID, SENSOR_PACKAGE_NAME, SENSOR_NAME, MEASUREMENT_TYPE, SHORT_TYPE, UNIT, SYMBOL,
                 VERY_LOW, LOW, MID, HIGH, VERY_HIGH, calibrated
             )
 

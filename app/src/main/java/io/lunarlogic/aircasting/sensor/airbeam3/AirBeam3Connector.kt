@@ -18,7 +18,7 @@ open class AirBeam3Connector(
 ): AirBeamConnector(), ConnectionObserver {
     private var airBeam3Configurator = AirBeam3Configurator(mContext, mErrorHandler, mSettinngs)
 
-    override fun start(deviceItem: DeviceItem) {
+    override fun start(deviceItem: DeviceItem, sessionUUID: String?) {
         if (bleNotSupported()) {
             throw BLENotSupported()
         }
@@ -30,7 +30,7 @@ open class AirBeam3Connector(
         airBeam3Configurator.connect(bluetoothDevice)
             .timeout(100000)
             .retry(3, 100)
-            .done { _ -> onConnectionSuccessful(deviceItem) }
+            .done { _ -> onConnectionSuccessful(deviceItem, sessionUUID) }
             .enqueue()
     }
 
