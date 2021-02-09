@@ -7,8 +7,8 @@ class DateConverter {
     companion object {
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
-        fun fromString(dateString: String): Date? {
-            val parser = SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.getDefault())
+        fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
+            val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
             parser.timeZone = TimeZone.getDefault()
             return parser.parse(dateString)
         }

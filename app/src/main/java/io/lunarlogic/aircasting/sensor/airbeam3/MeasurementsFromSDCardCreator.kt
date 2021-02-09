@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.MeasurementsFromSDCardParsingError
+import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
@@ -29,10 +30,10 @@ class MeasurementsFromSDCardCreator(
     private val mMeasurementsRepository: MeasurementsRepository,
     private val mSyncService: SessionsSyncService
 ) {
-
     class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
         companion object {
-            val DEFAULT_NAME = "Imported from SD card"
+            const val DEFAULT_NAME = "Imported from SD card"
+            const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
 
             fun uuidFrom(line: Array<String>): String? {
                 return line[Header.UUID.value]
@@ -60,7 +61,10 @@ class MeasurementsFromSDCardCreator(
         fun addMeasurements(line: Array<String>) {
             val latitude = line[Header.LATITUDE.value].toDouble() // TODO: handle parse issues
             val longitude = line[Header.LONGITUDE.value].toDouble() // TODO: handle parse issues
-            val time = Date("${line[Header.DATE.value]} ${line[Header.TIME.value]}") // TODO: replace with parsing
+            val dateString = "${line[Header.DATE.value]} ${line[Header.TIME.value]}"
+            val time = DateConverter.fromString(dateString, DATE_FORMAT)
+
+            time ?: return
 
             val supportedStreamHeaders = CSVMeasurementStream.SUPPORTED_STREAMS.keys
             supportedStreamHeaders.forEach { streamHeader ->
