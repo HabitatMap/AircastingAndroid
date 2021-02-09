@@ -183,10 +183,9 @@ abstract class SessionsController(
         context?.startActivity(chooser)
     }
 
-
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
-        Thread.sleep(5000)
+        Thread.sleep(5000) //todo: this will be removed after code review and test
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 mViewMvc.hideLoaderFor(event.deviceId!!)

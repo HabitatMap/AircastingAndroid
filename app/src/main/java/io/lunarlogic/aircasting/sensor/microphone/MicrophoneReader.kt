@@ -8,7 +8,6 @@ import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.sensor.ResponseParser
 import kotlinx.android.parcel.Parcelize
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -70,7 +69,6 @@ class MicrophoneReader(
     }
 
     override fun onReadComplete(buffer: ShortArray) {
-        //todo: i need session uuid as var here i guess
         val power = signalPower.calculatePowerDb(buffer)
         if (power != null) {
             val calibrated = calibrationHelper.calibrate(power)
