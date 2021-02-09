@@ -163,6 +163,11 @@ abstract class SessionsController(
     }
 
     override fun onDeleteSessionClicked(session: Session){
+        if (!ConnectivityManager.isConnected(context)) {
+            Toast.makeText(context, context?.getString(R.string.errors_network_required_delete_streams), Toast.LENGTH_LONG).show()
+            return
+        }
+
         startDeleteSessionBottomSheet(session)
     }
 

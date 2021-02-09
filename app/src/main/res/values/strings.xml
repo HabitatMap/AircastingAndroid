@@ -212,6 +212,7 @@
     <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
     <string name="errors_network_forgot_password">You need to have internet connection to reset your password</string>
     <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
+    <string name="errors_network_required_delete_streams">You need to have internet connection to delete session</string>
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_last_min_measurements_description">Last minute measurement:</string>
