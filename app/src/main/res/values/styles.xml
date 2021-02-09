@@ -138,28 +138,28 @@
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/text_size_xl</item>
-        <item name="lineHeight">42dp</item>
+        <item name="lineHeight">@dimen/line_height_xxl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.NewSessionSteps.Body1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:textSize">@dimen/text_size_m</item>
-        <item name="lineHeight">32dp</item>
+        <item name="lineHeight">@dimen/line_height_xl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.NewSessionDetails.Headline1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_extra_bold</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/text_size_xl</item>
-        <item name="lineHeight">42dp</item>
+        <item name="lineHeight">@dimen/line_height_xxl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.NewSessionDetails.Headline2" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_extra_bold</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/text_size_xl</item>
-        <item name="lineHeight">32dp</item>
+        <item name="lineHeight">@dimen/line_height_xl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.NewSessionDetails.Headline3" parent="@style/TextAppearance.AppCompat">
@@ -178,7 +178,7 @@
         <item name="android:fontFamily">@font/moderat_trial_regular</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:textSize">@dimen/text_size_m</item>
-        <item name="lineHeight">32dp</item>
+        <item name="lineHeight">@dimen/line_height_xl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.TextInput.Hint" parent="@style/TextAppearance.AppCompat">
@@ -202,12 +202,12 @@
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:textSize">@dimen/text_size_m</item>
         <item name="android:textAlignment">center</item>
-        <item name="lineHeight">24dp</item>
+        <item name="lineHeight">@dimen/line_height_l</item>
     </style>
 
     <style name="TextAppearance.Aircasting.Dialog.Description" parent="@style/TextAppearance.Aircasting.Body1">
         <item name="android:textAlignment">center</item>
-        <item name="lineHeight">32dp</item>
+        <item name="lineHeight">@dimen/line_height_xl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.MapStatisticsLabel" parent="@style/TextAppearance.Aircasting.Body1">

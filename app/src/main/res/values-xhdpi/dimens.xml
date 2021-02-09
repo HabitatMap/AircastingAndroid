@@ -8,4 +8,8 @@
     <dimen name="text_size_xs">13sp</dimen>
     <dimen name="text_size_xxs">11sp</dimen>
     <dimen name="button_text_size">15sp</dimen>
+
+    <dimen name="line_height_xxl">40dp</dimen>
+    <dimen name="line_height_xl">30dp</dimen>
+    <dimen name="line_height_l">22dp</dimen>
 </resources>
