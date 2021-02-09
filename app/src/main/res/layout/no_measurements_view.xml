@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_1"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_xxs"
             android:textColor="@color/aircasting_dark_blue"/>
     </LinearLayout>
 
