@@ -74,16 +74,8 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
     }
 
     private fun selectedOptions(): ArrayList<DeleteStreamOption> {
-        val values = ArrayList<DeleteStreamOption>()
-        if (checkBoxMap.isEmpty()) {
-            return values
-        }
-        for ((key, value) in checkBoxMap) {
-            if (key.isChecked) {
-                values.add(value)
-            }
-        }
-        return values
+        val selectedOptions = checkBoxMap.filter { (key, _) -> (key.isChecked) }
+        return ArrayList(selectedOptions.values)
     }
 
     private fun generateStreamsOptions() {
