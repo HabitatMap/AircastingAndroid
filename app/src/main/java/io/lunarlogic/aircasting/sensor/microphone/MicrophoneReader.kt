@@ -33,7 +33,6 @@ class MicrophoneReader(
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings
 ): AudioReader.Listener() {
-    private val SESSION_UUID = ""
     private val SAMPLE_RATE = 44100
     private val SYMBOL = "dB"
     private val UNIT = "decibels"
@@ -71,11 +70,12 @@ class MicrophoneReader(
     }
 
     override fun onReadComplete(buffer: ShortArray) {
+        //todo: i need session uuid as var here i guess
         val power = signalPower.calculatePowerDb(buffer)
         if (power != null) {
             val calibrated = calibrationHelper.calibrate(power)
             val event = NewMeasurementEvent(
-                SESSION_UUID, SENSOR_PACKAGE_NAME, SENSOR_NAME, MEASUREMENT_TYPE, SHORT_TYPE, UNIT, SYMBOL,
+                SENSOR_PACKAGE_NAME, SENSOR_NAME, MEASUREMENT_TYPE, SHORT_TYPE, UNIT, SYMBOL,
                 VERY_LOW, LOW, MID, HIGH, VERY_HIGH, calibrated
             )
 

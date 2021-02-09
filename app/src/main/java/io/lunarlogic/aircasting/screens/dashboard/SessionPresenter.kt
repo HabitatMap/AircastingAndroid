@@ -35,6 +35,10 @@ class SessionPresenter() {
         if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.chartData = ChartData(session)
         }
+
+        if (session.tab == SessionsTab.MOBILE_ACTIVE) {
+            this.loading = true
+        }
     }
 
     constructor(sessionUUID: String, initialSensorName: String?): this() {

@@ -28,6 +28,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
     fun showEmptyView()
     fun showLoaderFor(session: Session)
     fun hideLoaderFor(session: Session)
+    fun hideLoaderFor(deviceId: String)
     fun reloadSession(session: Session)
     fun showReconnectingLoaderFor(session: Session)
     fun hideReconnectingLoaderFor(session: Session)

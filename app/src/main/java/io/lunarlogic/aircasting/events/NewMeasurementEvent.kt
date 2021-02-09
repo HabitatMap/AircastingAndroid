@@ -4,7 +4,6 @@ import java.util.*
 
 
 class NewMeasurementEvent(
-    val sessionUUID: String,
     val packageName: String,
     val sensorName: String,
     val measurementType: String,

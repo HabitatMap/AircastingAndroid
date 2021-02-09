@@ -21,6 +21,7 @@ import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.*
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -55,11 +56,13 @@ abstract class SessionsController(
     open fun onResume() {
         registerSessionsObserver()
         mViewMvc.registerListener(this)
+
     }
 
     open fun onPause() {
         unregisterSessionsObserver()
         mViewMvc.unregisterListener(this)
+        EventBus.getDefault().unregister(this)
     }
 
     protected fun startNewSession(sessionType: Session.Type) {
@@ -184,7 +187,10 @@ abstract class SessionsController(
     @Subscribe
     fun onMessageEvent(event: NewMeasurementEvent) {
         Thread.sleep(5000)
-        val session = mSessionsViewModel.findSessionByUUID(event.sessionUUID) //todo: this session UUID is "" now
-        mViewMvc.hideLoaderFor(session) //todo: find session by uuid
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                mViewMvc.hideLoaderFor(event.deviceId!!)
+            }
+        }
     }
 }

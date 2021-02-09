@@ -146,7 +146,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         bindLoader(sessionPresenter)
-        showLoader()
+//        sessionPresenter.show //todo: this is my showing
         bindSelectedStream(sessionPresenter)
         bindExpanded(sessionPresenter)
         bindSessionDetails()

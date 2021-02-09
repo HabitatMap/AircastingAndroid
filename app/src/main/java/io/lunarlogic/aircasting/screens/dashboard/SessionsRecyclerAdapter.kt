@@ -62,6 +62,13 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         notifyDataSetChanged()
     }
 
+    fun hideLoaderFor(deviceId: String) {
+        val sessionPresenter = mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.session?.deviceId == deviceId }
+        sessionPresenter?.loading = false
+
+        notifyDataSetChanged()
+    }
+
     fun hideLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = false
