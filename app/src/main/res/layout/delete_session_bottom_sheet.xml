@@ -81,7 +81,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/delete_streams"
-                    style="@style/Widget.Aircasting.BottomSheetAcceptButton"
                     app:layout_constraintTop_toBottomOf="@id/streams_options_container"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"
