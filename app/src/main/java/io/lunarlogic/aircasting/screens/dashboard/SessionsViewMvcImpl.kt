@@ -42,6 +42,9 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         mRecyclerSessions?.setLayoutManager(LinearLayoutManager(rootView!!.context))
 
         mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
+        mDidYouKnowBox?.setOnClickListener {
+            onDidYouKnowBoxClicked()
+        }
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
@@ -156,6 +159,12 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
             listener.onGraphButtonClicked(session, measurementStream?.sensorName)
+        }
+    }
+
+    fun onDidYouKnowBoxClicked() {
+        for (listener in listeners) {
+            listener.onDidYouKnowBoxClicked()
         }
     }
 }
