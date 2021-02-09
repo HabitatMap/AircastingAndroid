@@ -250,6 +250,8 @@
     <string name="settings_backend_port">Port</string>
     <string name="map_enable_description">Turns off GPS tracking &amp; session syncing. Use \'Share file\' to retrieve your measurements via email.</string>
     <string name="disable_mapping">Disable mapping</string>
+    <string name="application_version">Application version:</string>
+    <string name="version">version</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
@@ -285,5 +287,4 @@
     <!-- Did you know box -->
     <string name="did_you_know">Did you know?</string>
     <string name="did_you_know_box_tip_1">AirBeam2 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
-
 </resources>

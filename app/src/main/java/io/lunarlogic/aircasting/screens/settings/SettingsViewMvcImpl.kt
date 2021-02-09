@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.settings
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
+import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
@@ -41,6 +42,9 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         backendSettingsButton?.setOnClickListener {
             onBackendSettingsClicked()
         }
+
+        val versionValueTextView = rootView?.app_version_value_text_view
+        versionValueTextView?.text = BuildConfig.VERSION_NAME
     }
 
     private fun onMicrophoneSettingsClicked() {
