@@ -282,4 +282,7 @@
     <string name="provided_email_is_not_correct">Provided email is not correct</string>
     <string name="email_csv_file_without_share_link">Email a CSV file with your session data</string>
 
+    <!-- Did you know box -->
+    <string name="did_you_know">Did you know?</string>
+    <string name="did_you_know_box_tip_1">AirBeam2 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
 </resources>

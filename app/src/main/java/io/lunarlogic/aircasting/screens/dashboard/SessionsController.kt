@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
 import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
@@ -175,5 +176,9 @@ abstract class SessionsController(
         }
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
+    }
+
+    override fun onDidYouKnowBoxClicked() {
+        NavigationController.goToLetsStart()
     }
 }
