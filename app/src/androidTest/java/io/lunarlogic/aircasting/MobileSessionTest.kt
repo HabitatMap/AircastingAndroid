@@ -104,14 +104,13 @@ class MobileSessionTest {
         onView(withId(R.id.mobile_session_start_card)).perform(click())
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
-        onView(withId(R.id.turn_on_airbeam_ready_button)).perform(scrollTo(), click())
+        onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
         onView(withText(containsString(airBeamAddress))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
-        onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
-        onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
+        onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile bluetooth session"))
