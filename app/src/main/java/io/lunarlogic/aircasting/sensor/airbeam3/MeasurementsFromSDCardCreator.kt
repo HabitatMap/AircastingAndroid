@@ -213,8 +213,6 @@ class MeasurementsFromSDCardCreator(
     }
 
     private fun processSession(deviceId: String, csvSession: CSVSession) {
-        println("ANIA " + csvSession.uuid)
-
         DatabaseProvider.runQuery {
             val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
             val session: Session
@@ -254,6 +252,12 @@ class MeasurementsFromSDCardCreator(
                 csvSession.streams.forEach { (headerKey, csvMeasurements) ->
                     processMeasurements(deviceId, sessionId, session, headerKey, csvMeasurements)
                 }
+
+                // TODO: temp - arrange it in a better way..
+                session.stopRecording()
+                mSessionsRepository.update(session)
+
+                mSyncService.sync()
             }
         }
     }
@@ -280,19 +284,17 @@ class MeasurementsFromSDCardCreator(
             measurementStream
         )
 
-        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
-        val measurements = csvMeasurements
-            .filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
-            .map { csvMeasurement ->
-            Measurement(csvMeasurement.value, csvMeasurement.time, csvMeasurement.latitude, csvMeasurement.longitude)
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId, measurementStreamId)
+
+        val filteredCSVMeasurements = if (lastMeasurementTime != null) {
+            csvMeasurements.filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
+        } else {
+            csvMeasurements
         }
 
+        val measurements = filteredCSVMeasurements.map { csvMeasurement ->
+            Measurement(csvMeasurement.value, csvMeasurement.time, csvMeasurement.latitude, csvMeasurement.longitude)
+        }
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
-
-        // TODO: temp - arrange it in a better way..
-        session.stopRecording()
-        mSessionsRepository.update(session)
-
-        mSyncService.sync()
     }
 }
