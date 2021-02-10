@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
@@ -22,8 +23,10 @@ import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MobileActiveController(
     mRootActivity: FragmentActivity?,
@@ -131,5 +134,10 @@ class MobileActiveController(
             .setPositiveButton("Ok", null)
             .setMessage(event.message)
             .show()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: NewMeasurementEvent) {
+        mViewMvc.hideLoaderFor(event.deviceId!!)
     }
 }
