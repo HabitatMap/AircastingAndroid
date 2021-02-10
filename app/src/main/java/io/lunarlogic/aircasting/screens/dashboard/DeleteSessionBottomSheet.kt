@@ -24,10 +24,10 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
     }
     private var mStreamsOptionsContainer: LinearLayout? = null
     private var checkBoxMap: HashMap<CheckBox, DeleteStreamOption> = HashMap()
+    private lateinit var allStreamsCheckbox: CheckBox
 
     class DeleteStreamOption(
-        val allStreamsBoxSelected: Boolean,
-        val stream: MeasurementStream? = null
+        val stream: MeasurementStream
     )
 
     override fun onCreateView(
@@ -55,22 +55,15 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
         generateStreamsOptions()
 
-        checkBoxMap.forEach { (checkbox, option) ->
-            checkbox.setOnCheckedChangeListener { _, _ -> }
-        }
         return view
     }
 
     fun getStreamsToDelete(): List<MeasurementStream> {
-        val streamsSelectedForDeletion: MutableList<MeasurementStream> = ArrayList()
-        selectedOptions().forEach { option ->
-            option.stream?.let { streamsSelectedForDeletion.add(it) }
-        }
-        return Collections.unmodifiableList(streamsSelectedForDeletion)
+        return selectedOptions().map { option -> option.stream }
     }
 
     fun allStreamsBoxSelected(): Boolean {
-        return selectedOptions().any { it.allStreamsBoxSelected }
+        return allStreamsCheckbox.isChecked
     }
 
     private fun selectedOptions(): ArrayList<DeleteStreamOption> {
@@ -80,9 +73,8 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
     private fun generateStreamsOptions() {
         val wholeSessionCheckboxTitle = resources.getString(R.string.delete_all_data_from_session)
-        val checkbox = CheckBox(context)
-        val wholeSessionCheckboxView = createCheckboxView(checkbox, wholeSessionCheckboxTitle)
-        checkBoxMap[checkbox] = DeleteStreamOption(true)
+        allStreamsCheckbox = CheckBox(context)
+        val wholeSessionCheckboxView = createCheckboxView(allStreamsCheckbox, wholeSessionCheckboxTitle)
         mStreamsOptionsContainer?.addView(wholeSessionCheckboxView)
 
         val sessionStreams = session.activeStreams
@@ -90,7 +82,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
             val singleStreamCheckboxTitle = stream.detailedType
             val streamCheckbox = CheckBox(context)
             val streamCheckboxView = createCheckboxView(streamCheckbox, singleStreamCheckboxTitle)
-            checkBoxMap[streamCheckbox] = DeleteStreamOption(false, stream)
+            checkBoxMap[streamCheckbox] = DeleteStreamOption(stream)
             mStreamsOptionsContainer?.addView(streamCheckboxView)
         }
     }
