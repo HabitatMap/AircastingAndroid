@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="125dp"
-        android:layout_marginLeft="@dimen/keyline_12"
-        android:layout_marginRight="@dimen/keyline_12"
+        android:layout_marginLeft="@dimen/keyline_16"
+        android:layout_marginRight="@dimen/keyline_16"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="125dp"
-        android:layout_marginLeft="@dimen/keyline_12"
-        android:layout_marginRight="@dimen/keyline_12"
+        android:layout_marginLeft="@dimen/keyline_16"
+        android:layout_marginRight="@dimen/keyline_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/did_you_know_box"/>
 

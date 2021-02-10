@@ -5,11 +5,12 @@
         android:id="@+id/session_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginStart="@dimen/keyline_17"
         android:layout_marginEnd="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/keyline_8"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@color/aircasting_grey_300"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        app:layout_constraintTop_toTopOf="@id/app_bar_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />
 
@@ -17,13 +18,13 @@
         android:id="@+id/session_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
+        android:layout_marginStart="@dimen/keyline_17"
         android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_4"
+        android:layout_marginTop="@dimen/keyline_3"
         android:textAppearance="?attr/textAppearanceHeadline2"
         android:textColor="@color/aircasting_dark_blue"
         android:fontFamily="@font/moderat_trial_medium"
         app:layout_constraintTop_toBottomOf="@+id/session_date"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/session_date"
         app:layout_constraintEnd_toStartOf="parent" />
 </merge>
