@@ -11,6 +11,7 @@ import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
@@ -31,6 +32,8 @@ class MapContainer: OnMapReadyCallback {
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
+    private val mLoader: ImageView?
+    private val mMapFragment: SupportMapFragment?
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -52,13 +55,18 @@ class MapContainer: OnMapReadyCallback {
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
 
-        val mapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+        mMapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+        mMapFragment?.getMapAsync(this)
+        mMapFragment?.view?.visibility = View.GONE
 
         mLocateButton = rootView?.locate_button
         mLocateButton?.setOnClickListener {
             locate()
         }
+        mLocateButton?.visibility = View.GONE
+
+        mLoader = rootView?.loader
+        showLoader()
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -87,6 +95,8 @@ class MapContainer: OnMapReadyCallback {
 
         drawSession()
         animateCameraToSession()
+        hideLoader()
+        showMap()
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
@@ -245,6 +255,20 @@ class MapContainer: OnMapReadyCallback {
             .jointType(JointType.ROUND)
             .endCap(RoundCap())
             .startCap(RoundCap())
+    }
+
+    private fun showLoader() {
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoader() {
+        mLoader?.visibility = View.GONE
+    }
+
+    private fun showMap() {
+        mMapFragment?.view?.visibility = View.VISIBLE
+        mLocateButton?.visibility = View.VISIBLE
     }
 }
 
