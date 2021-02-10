@@ -6,13 +6,27 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/keyline_4">
 
+    <ImageView
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="110dp"
+        android:src="@drawable/ic_loader"
+        android:tint="@color/aircasting_blue_400"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <include android:id="@+id/app_bar_layout"
         layout="@layout/app_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include layout="@layout/session_details" />
 
-    <include layout="@layout/measurements_table" />
+    <include  android:id="@+id/measurements_view"
+        layout="@layout/measurements_table" />
 
     <include android:id="@+id/statistics_view"
         layout="@layout/session_details_statistics_view" />

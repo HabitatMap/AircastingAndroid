@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
@@ -19,6 +20,7 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.session_details.view.*
 import kotlinx.android.synthetic.main.measurements_table.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
+import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -36,6 +38,8 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
+    private val mLoader: ImageView?
+//    private val mMeasurementsTable: View?
 
     constructor(
         inflater: LayoutInflater,
@@ -65,6 +69,10 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
             onMoreButtonPressed()
         }
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
+
+        mSessionMeasurementsDescription?.visibility = View.GONE
+        mLoader = this.rootView?.loader
+        showLoader()
     }
 
     abstract fun layoutId(): Int
@@ -90,6 +98,9 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
         bindStatisticsContainer()
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+
+        mSessionMeasurementsDescription?.visibility = View.VISIBLE
+        hideLoader()
     }
 
     private fun showSlider() {
@@ -145,5 +156,14 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
             val measurementStream = mSessionPresenter?.selectedStream
             HLUDialog(sensorThreshold, measurementStream, mFragmentManager, this).show()
         }
+    }
+
+    fun showLoader() {
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+    }
+
+    fun hideLoader() {
+        mLoader?.visibility = View.GONE
     }
 }

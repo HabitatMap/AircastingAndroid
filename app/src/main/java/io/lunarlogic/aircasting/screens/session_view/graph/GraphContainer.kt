@@ -37,7 +37,7 @@ class GraphContainer: OnChartGestureListener {
     private val mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
-    private val mLoader: ImageView?
+//    private val mLoader: ImageView?
 
     private val mGraphDataGenerator = GraphDataGenerator()
 
@@ -56,7 +56,7 @@ class GraphContainer: OnChartGestureListener {
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
-        mLoader = rootView?.loader
+//        mLoader = rootView?.loader
 
         showLoader()
         hideGraph()
@@ -268,12 +268,12 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun showLoader() {
-        AnimatedLoader(mLoader).start()
-        mLoader?.visibility = View.VISIBLE
+//        AnimatedLoader(mLoader).start()
+//        mLoader?.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
-        mLoader?.visibility = View.GONE
+//        mLoader?.visibility = View.GONE
     }
 
     private fun showGraph() {
