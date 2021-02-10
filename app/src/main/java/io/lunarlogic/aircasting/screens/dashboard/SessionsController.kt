@@ -56,7 +56,6 @@ abstract class SessionsController(
     open fun onResume() {
         registerSessionsObserver()
         mViewMvc.registerListener(this)
-
     }
 
     open fun onPause() {
