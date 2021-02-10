@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MobileActiveController(
     mRootActivity: FragmentActivity?,
@@ -135,12 +136,8 @@ class MobileActiveController(
             .show()
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                mViewMvc.hideLoaderFor(event.deviceId!!)
-            }
-        }
+        mViewMvc.hideLoaderFor(event.deviceId!!)
     }
 }
