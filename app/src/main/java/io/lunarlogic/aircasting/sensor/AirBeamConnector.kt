@@ -46,7 +46,7 @@ abstract class AirBeamConnector {
     }
 
     abstract fun reconnectMobileSession()
-    abstract fun sync()
+    abstract fun triggerSDCardDownload()
     abstract fun clearSDCard()
 
     private fun disconnect() {

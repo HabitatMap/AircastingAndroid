@@ -55,8 +55,13 @@ open class AirBeam3Connector(
         airBeam3Configurator.reconnectMobileSession()
     }
 
-    override fun sync() {
-        airBeam3Configurator.downloadFromSDCard(mDeviceItem!!.id) // TODO: handle it better
+    override fun triggerSDCardDownload() {
+        val deviceItem = mDeviceItem
+        if (deviceItem == null) {
+            mErrorHandler.handle(MissingDeviceAfterConnectionError())
+        } else {
+            airBeam3Configurator.triggerSDCardDownload(deviceItem.id)
+        }
     }
 
     override fun clearSDCard() {

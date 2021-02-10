@@ -92,7 +92,7 @@ class AirBeamSyncService: SensorService(),
         if (clearSDCard) {
             mAirBeamConnector?.clearSDCard()
         } else {
-            mAirBeamConnector?.sync()
+            mAirBeamConnector?.triggerSDCardDownload()
         }
     }
 
