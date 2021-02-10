@@ -5,11 +5,12 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardClearService
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardSyncService
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
@@ -23,7 +24,10 @@ class AirBeamSyncService: SensorService(),
     lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
 
     @Inject
-    lateinit var bluetoothManager: BluetoothManager
+    lateinit var sdCardSyncService: SDCardSyncService
+
+    @Inject
+    lateinit var sdCardClearService: SDCardClearService
 
     @Inject
     lateinit var errorHandler: ErrorHandler
@@ -89,10 +93,13 @@ class AirBeamSyncService: SensorService(),
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         showInfo("Connection to ${deviceItem.name} successful.")
 
+        val airBeamConnector = mAirBeamConnector ?: return
+
+        // TODO: move it so separate foregraound service?
         if (clearSDCard) {
-            mAirBeamConnector?.clearSDCard()
+            sdCardClearService.run(airBeamConnector)
         } else {
-            mAirBeamConnector?.triggerSDCardDownload()
+            sdCardSyncService.run(airBeamConnector, deviceItem)
         }
     }
 
@@ -111,6 +118,6 @@ class AirBeamSyncService: SensorService(),
     }
 
     private fun showInfo(info: String) {
-        EventBus.getDefault().post(DownloadFromSDCardService.SyncEvent(info))
+        EventBus.getDefault().post(SyncEvent(info))
     }
 }

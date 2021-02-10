@@ -1,9 +1,9 @@
-package io.lunarlogic.aircasting.sensor.airbeam3
+package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import android.content.Context
 import com.opencsv.CSVReader
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory.Header
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService.Header
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
@@ -13,23 +13,22 @@ import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import java.io.File
 import java.io.FileReader
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class MeasurementsFromSDCardCreator(
+class SDCardMeasurementsCreator(
     private val mContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
-    private val mMeasurementsRepository: MeasurementsRepository,
-    private val mSyncService: SessionsSyncService
+    private val mMeasurementsRepository: MeasurementsRepository
 ) {
+    private val mCSVFileFactory = SDCardCSVFileFactory(mContext)
+
     class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
         companion object {
             const val DEFAULT_NAME = "Imported from SD card"
@@ -62,7 +61,9 @@ class MeasurementsFromSDCardCreator(
             val latitude = line[Header.LATITUDE.value].toDouble() // TODO: handle parse issues
             val longitude = line[Header.LONGITUDE.value].toDouble() // TODO: handle parse issues
             val dateString = "${line[Header.DATE.value]} ${line[Header.TIME.value]}"
-            val time = DateConverter.fromString(dateString, DATE_FORMAT)
+            val time = DateConverter.fromString(dateString,
+                DATE_FORMAT
+            )
 
             time ?: return
 
@@ -74,7 +75,13 @@ class MeasurementsFromSDCardCreator(
                     streams[streamHeader.value] = ArrayList()
                 }
 
-                val measurement = CSVMeasurement(value, latitude, longitude, time)
+                val measurement =
+                    CSVMeasurement(
+                        value,
+                        latitude,
+                        longitude,
+                        time
+                    )
                 streams[streamHeader.value]?.add(measurement)
             }
         }
@@ -168,16 +175,14 @@ class MeasurementsFromSDCardCreator(
         }
 
         fun sensorPackageName(deviceId: String): String {
-            return "${DEVICE_NAME}:${deviceId}"
+            return "$DEVICE_NAME:${deviceId}"
         }
     }
 
     class CSVMeasurement(val value: Double, val latitude: Double?, val longitude: Double?, val time: Date)
 
     fun run(deviceId: String) {
-        // TODO: change naming and extract it somewhere
-        val dir = mContext.getExternalFilesDir("sync")
-        val file = File(dir, "sync.txt")
+        val file = mCSVFileFactory.get()
         val reader = CSVReader(FileReader(file))
 
         try {
@@ -201,14 +206,20 @@ class MeasurementsFromSDCardCreator(
                 break
             }
 
-            val currentSessionUUID = CSVSession.uuidFrom(line)
+            val currentSessionUUID =
+                CSVSession.uuidFrom(
+                    line
+                )
 
             if (currentSessionUUID != previousSessionUUID) {
                 if (currentSession != null) {
                     processSession(deviceId, currentSession)
                 }
 
-                currentSession = CSVSession(currentSessionUUID!!)
+                currentSession =
+                    CSVSession(
+                        currentSessionUUID!!
+                    )
                 previousSessionUUID = currentSessionUUID
             }
 
@@ -260,15 +271,15 @@ class MeasurementsFromSDCardCreator(
                 // TODO: temp - arrange it in a better way..
                 session.stopRecording()
                 mSessionsRepository.update(session)
-
-                mSyncService.sync()
             }
         }
     }
 
     private fun processMeasurements(deviceId: String, sessionId: Long, session: Session, headerKey: Int, csvMeasurements: List<CSVMeasurement>) {
         val streamHeader = Header.fromInt(headerKey)
-        val csvMeasurementStream = CSVMeasurementStream.fromHeader(streamHeader) ?: return
+        val csvMeasurementStream = CSVMeasurementStream.fromHeader(
+            streamHeader
+        ) ?: return
 
         val measurementStream = MeasurementStream(
             csvMeasurementStream.sensorPackageName(deviceId),

@@ -3,18 +3,13 @@ package io.lunarlogic.aircasting.sensor.airbeam3
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
-import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
-import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
-import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
@@ -55,13 +50,8 @@ class AirBeam3Configurator(
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
-
-    // TODO: fix this dependencies
-    val apiServiceFactory = ApiServiceFactory(mSettings)
-    private val mApiService =  apiServiceFactory.get(mSettings.getAuthToken()!!)
-    val syncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    val measurementsFromSDCardCreator = MeasurementsFromSDCardCreator(mContext, mErrorHandler, SessionsRepository(), MeasurementStreamsRepository(), MeasurementsRepository(), syncService)
-    val downloadFromSDCardService = DownloadFromSDCardService(mContext, measurementsFromSDCardCreator)
+    val sdCardReader =
+        SDCardReader()
 
     fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
@@ -102,8 +92,6 @@ class AirBeam3Configurator(
     }
 
     fun triggerSDCardDownload(deviceId: String) {
-        downloadFromSDCardService.init(deviceId)
-
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -218,12 +206,12 @@ class AirBeam3Configurator(
 
             var metaDatacallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
             metaDatacallback.with { _, data ->
-                downloadFromSDCardService.onMetaDataDownloaded(data.value)
+                sdCardReader.onMetaDataDownloaded(data.value)
             }
 
             val measurementsCallback = setNotificationCallback(downloadFromSDCardCharacteristic)
             measurementsCallback.with { _, data ->
-                downloadFromSDCardService.onMeasurementsDownloaded(data.value)
+                sdCardReader.onMeasurementsDownloaded(data.value)
             }
 
             arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic).forEach { characteristic ->

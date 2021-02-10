@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 import android.app.AlertDialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -19,8 +18,8 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
-import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncFinishedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -122,13 +121,13 @@ class MobileActiveController(
 
     // TODO: remove this method after implementing proper sync
     @Subscribe
-    fun onMessageEvent(event: DownloadFromSDCardService.SyncEvent) {
+    fun onMessageEvent(event: SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
     }
 
     // TODO: remove this method after implementing proper sync
     @Subscribe
-    fun onMessageEvent(event: DownloadFromSDCardService.SyncFinishedEvent) {
+    fun onMessageEvent(event: SyncFinishedEvent) {
         syncProgressDialog?.cancel()
         syncProgressDialog = AlertDialog.Builder(mContext)
             .setCancelable(false)
