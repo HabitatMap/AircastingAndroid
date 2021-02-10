@@ -1,10 +1,8 @@
 package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TableLayout
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Measurement

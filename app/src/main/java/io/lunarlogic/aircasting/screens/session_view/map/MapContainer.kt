@@ -32,7 +32,6 @@ class MapContainer: OnMapReadyCallback {
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
-//    private val mLoader: ImageView?
     private val mMapFragment: SupportMapFragment?
 
     private var mSessionPresenter: SessionPresenter? = null
@@ -64,9 +63,6 @@ class MapContainer: OnMapReadyCallback {
             locate()
         }
         mLocateButton?.visibility = View.GONE
-
-//        mLoader = rootView?.loader
-//        showLoader()
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -95,7 +91,6 @@ class MapContainer: OnMapReadyCallback {
 
         drawSession()
         animateCameraToSession()
-//        hideLoader()
         showMap()
     }
 
@@ -255,15 +250,6 @@ class MapContainer: OnMapReadyCallback {
             .jointType(JointType.ROUND)
             .endCap(RoundCap())
             .startCap(RoundCap())
-    }
-
-    private fun showLoader() {
-//        AnimatedLoader(mLoader).start()
-//        mLoader?.visibility = View.VISIBLE
-    }
-
-    private fun hideLoader() {
-//        mLoader?.visibility = View.GONE
     }
 
     private fun showMap() {
