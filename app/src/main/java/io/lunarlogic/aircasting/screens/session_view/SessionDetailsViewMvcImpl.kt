@@ -27,7 +27,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
-    private val mSessionTagsTextView: TextView?
     protected val mSessionMeasurementsDescription: TextView?
 
     protected var mSessionPresenter: SessionPresenter? = null
@@ -48,7 +47,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
-        mSessionTagsTextView = this.rootView?.session_info
         mSessionMeasurementsDescription = this.rootView?.session_measurements_description
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
@@ -105,7 +103,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
-        mSessionTagsTextView?.text = session.infoString()
         bindSessionMeasurementsDescription()
     }
 
