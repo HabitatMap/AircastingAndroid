@@ -1,10 +1,7 @@
 package io.lunarlogic.aircasting.sensor
 
-import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
@@ -14,12 +11,13 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam3.DownloadFromSDCardService
 import org.greenrobot.eventbus.EventBus
-import java.util.*
 import javax.inject.Inject
-import kotlin.concurrent.timerTask
 
 class AirBeamSyncService: SensorService(),
     AirBeamConnector.Listener {
+
+    @Inject
+    lateinit var airBeamDiscoveryService: AirBeamDiscoveryService
 
     @Inject
     lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
@@ -32,22 +30,8 @@ class AirBeamSyncService: SensorService(),
 
     private var mDeviceItem: DeviceItem? = null
     private var mAirBeamConnector: AirBeamConnector? = null
-    private val DISCOVERY_TIMEOUT = 5000L
 
     private var clearSDCard = false
-
-    private val mReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when(intent.action) {
-                BluetoothDevice.ACTION_FOUND -> {
-                    val device: BluetoothDevice? =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-
-                    device?.let { onBluetoothDeviceFound(DeviceItem(device)) }
-                }
-            }
-        }
-    }
 
     companion object {
         val CLEAR_SD_CARD_KEY = "inputExtraClearSDCard"
@@ -74,43 +58,15 @@ class AirBeamSyncService: SensorService(),
 
         this.clearSDCard = intent.getBooleanExtra(CLEAR_SD_CARD_KEY, false)
 
-        val deviceItem = getDeviceItemFromPairedDevices()
-
-        if (deviceItem != null) {
-            connect(deviceItem)
-        } else {
-            registerBluetoothDeviceFoundReceiver()
-            bluetoothManager.startDiscovery()
-            failAfterTimeout()
-        }
-    }
-
-    private fun failAfterTimeout() {
-        Timer().schedule(timerTask {
-            if (mDeviceItem == null) {
-                onDiscoveryFailed()
-            }
-        }, DISCOVERY_TIMEOUT)
-    }
-
-    private fun registerBluetoothDeviceFoundReceiver() {
-        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        applicationContext.registerReceiver(mReceiver, filter)
-    }
-
-    private fun unRegisterBluetoothDeviceFoundReceiver() {
-        applicationContext.unregisterReceiver(mReceiver)
-    }
-
-    private fun onBluetoothDeviceFound(deviceItem: DeviceItem) {
-        if (deviceItem.isSyncable()) {
-            mDeviceItem = deviceItem
-            unRegisterBluetoothDeviceFoundReceiver()
-            connect(deviceItem)
-        }
+        airBeamDiscoveryService.find(
+            deviceSelector = { deviceItem -> deviceItem.isSyncable() },
+            onDiscoverySuccessful = { deviceItem -> connect(deviceItem) },
+            onDiscoveryFailed = { onDiscoveryFailed() }
+        )
     }
 
     private fun connect(deviceItem: DeviceItem) {
+        mDeviceItem = deviceItem
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         mAirBeamConnector?.registerListener(this)
@@ -149,16 +105,12 @@ class AirBeamSyncService: SensorService(),
         stopSelf()
     }
 
-    fun onDiscoveryFailed() {
+    private fun onDiscoveryFailed() {
         // TODO: temporary thing
         showInfo("Discovery failed.")
     }
 
     private fun showInfo(info: String) {
         EventBus.getDefault().post(DownloadFromSDCardService.SyncEvent(info))
-    }
-
-    private fun getDeviceItemFromPairedDevices(): DeviceItem? {
-        return bluetoothManager.pairedDeviceItems().find { deviceItem -> deviceItem.isSyncable() }
     }
 }
