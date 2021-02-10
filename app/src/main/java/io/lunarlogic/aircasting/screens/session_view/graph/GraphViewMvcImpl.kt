@@ -22,6 +22,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
         graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample)
+
     }
 
     abstract fun defaultZoomSpan(): Int?

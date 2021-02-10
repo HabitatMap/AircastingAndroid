@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.components.LimitLine
@@ -14,6 +15,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
@@ -35,6 +37,7 @@ class GraphContainer: OnChartGestureListener {
     private val mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
+    private val mLoader: ImageView?
 
     private val mGraphDataGenerator = GraphDataGenerator()
 
@@ -53,7 +56,10 @@ class GraphContainer: OnChartGestureListener {
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
+        mLoader = rootView?.loader
 
+        showLoader()
+        hideGraph()
         setupGraph()
     }
 
@@ -70,6 +76,8 @@ class GraphContainer: OnChartGestureListener {
         mMeasurementsSample = mGetMeasurementsSample.invoke()
 
         drawSession()
+        showGraph()
+        hideLoader()
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
@@ -257,5 +265,26 @@ class GraphContainer: OnChartGestureListener {
         val to = mGraph.highestVisibleX
         val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
         mOnTimeSpanChanged.invoke(timeSpan)
+    }
+
+    private fun showLoader() {
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoader() {
+        mLoader?.visibility = View.GONE
+    }
+
+    private fun showGraph() {
+        mGraph?.visibility = View.VISIBLE
+        mFromLabel?.visibility = View.VISIBLE
+        mToLabel?.visibility = View.VISIBLE
+    }
+
+    private fun hideGraph() {
+        mGraph?.visibility = View.GONE
+        mFromLabel?.visibility = View.GONE
+        mToLabel?.visibility = View.GONE
     }
 }
