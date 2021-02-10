@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TableLayout
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -13,10 +14,12 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 import java.util.*
+import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
 abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     private val graphContainer: GraphContainer
+    private val mLoader: ImageView?
 
     constructor(
         inflater: LayoutInflater,
@@ -24,7 +27,8 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
         graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample)
-
+        mLoader = rootView?.loader_graph
+        showLoader(mLoader)
     }
 
     abstract fun defaultZoomSpan(): Int?
@@ -50,6 +54,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         graphContainer.bindSession(mSessionPresenter)
+        hideLoader(mLoader)
     }
 
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {

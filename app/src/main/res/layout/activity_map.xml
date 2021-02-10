@@ -17,7 +17,7 @@
     <include android:id="@+id/statistics_view" layout="@layout/session_details_statistics_view" />
 
     <ImageView
-        android:id="@+id/loader"
+        android:id="@+id/loader_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="110dp"

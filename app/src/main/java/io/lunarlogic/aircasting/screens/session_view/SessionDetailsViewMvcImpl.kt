@@ -20,7 +20,6 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.session_details.view.*
 import kotlinx.android.synthetic.main.measurements_table.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
-import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -38,8 +37,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
     private val mHLUSlider: HLUSlider
-    private val mLoader: ImageView?
-//    private val mMeasurementsTable: View?
 
     constructor(
         inflater: LayoutInflater,
@@ -71,8 +68,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
 
         mSessionMeasurementsDescription?.visibility = View.GONE
-        mLoader = this.rootView?.loader
-        showLoader()
     }
 
     abstract fun layoutId(): Int
@@ -100,7 +95,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
 
         mSessionMeasurementsDescription?.visibility = View.VISIBLE
-        hideLoader()
     }
 
     private fun showSlider() {
@@ -158,12 +152,12 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         }
     }
 
-    fun showLoader() {
-        AnimatedLoader(mLoader).start()
-        mLoader?.visibility = View.VISIBLE
+    fun showLoader(loader: ImageView?) {
+        AnimatedLoader(loader).start()
+        loader?.visibility = View.VISIBLE
     }
 
-    fun hideLoader() {
-        mLoader?.visibility = View.GONE
+    fun hideLoader(loader: ImageView?) {
+        loader?.visibility = View.GONE
     }
 }

@@ -2,7 +2,9 @@ package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.location.Location
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -11,10 +13,13 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
+import kotlinx.android.synthetic.main.activity_map.view.*
 
 
 abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     private val mMapContainer: MapContainer
+    private val mLoader: ImageView?
+
 
     constructor(
         inflater: LayoutInflater,
@@ -22,6 +27,8 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
+        mLoader = rootView?.loader_map
+        showLoader(mLoader)
     }
 
     override fun layoutId(): Int {
@@ -46,6 +53,7 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         mMapContainer.bindSession(mSessionPresenter)
+        hideLoader(mLoader)
     }
 
     override fun centerMap(location: Location) {

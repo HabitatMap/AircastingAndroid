@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/keyline_4">
 
     <ImageView
-        android:id="@+id/loader"
+        android:id="@+id/loader_graph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="110dp"
