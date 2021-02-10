@@ -31,7 +31,7 @@ class LetsStartFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
+        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager, settings)
         controller = LetsStartController(activity, view, context, permissionsManager, errorHandler)
         controller?.onCreate()
 
