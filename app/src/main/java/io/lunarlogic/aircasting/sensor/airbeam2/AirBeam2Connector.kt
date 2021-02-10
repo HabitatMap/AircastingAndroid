@@ -27,8 +27,8 @@ open class AirBeam2Connector(
     private var mThread: ConnectThread? = null
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
-    override fun start(deviceItem: DeviceItem, sessionUUID: String?) {
-        mThread = ConnectThread(deviceItem, sessionUUID)
+    override fun start(deviceItem: DeviceItem) {
+        mThread = ConnectThread(deviceItem)
         mThread?.start()
     }
 
@@ -56,7 +56,7 @@ open class AirBeam2Connector(
         // AirBeam2 don't have SD card
     }
 
-    private inner class ConnectThread(private val deviceItem: DeviceItem, private val sessionUUID: String?) : Thread() {
+    private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
             device?.createRfcommSocketToServiceRecord(SPP_SERIAL)
@@ -75,7 +75,7 @@ open class AirBeam2Connector(
 
                     mOutputStream = socket.outputStream
 
-                    onConnectionSuccessful(deviceItem, sessionUUID)
+                    onConnectionSuccessful(deviceItem)
                     connectionEstablished.set(true)
                     mAirBeam2Reader.run(socket.inputStream)
                 }

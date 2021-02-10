@@ -25,7 +25,7 @@ abstract class AirBeamConnector {
     private var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
 
-    abstract protected fun start(deviceItem: DeviceItem, sessionUUID: String?)
+    abstract protected fun start(deviceItem: DeviceItem)
     abstract protected fun stop()
     abstract protected fun sendAuth(sessionUUID: String)
     abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
@@ -41,7 +41,7 @@ abstract class AirBeamConnector {
         if (!connectionStarted.get()) {
             connectionStarted.set(true)
             registerToEventBus()
-            start(deviceItem, mSessionUUID)
+            start(deviceItem)
         }
     }
 
@@ -64,8 +64,8 @@ abstract class AirBeamConnector {
         mListener = listener
     }
 
-    fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
-        mListener?.onConnectionSuccessful(deviceItem, sessionUUID)
+    fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
     fun onConnectionFailed(deviceId: String) {
