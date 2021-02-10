@@ -41,23 +41,18 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         }
 
         val orLabel = rootView?.or
-
-
         val syncCard = rootView?.sync_card
-//        syncCard?.visibility = View.VISIBLE
-        syncCard?.setOnClickListener {
-            onSyncSelected()
-        }
-
         val clearCard = rootView?.clear_card
-//        clearCard?.visibility = View.VISIBLE
-        clearCard?.setOnClickListener {
-            onClearSDCardSelected()
-        }
 
         if (mSettings.wasAirbeam3Connected()) {
             syncCard?.visibility = View.VISIBLE
+            syncCard?.setOnClickListener {
+                onSyncSelected()
+            }
             clearCard?.visibility = View.VISIBLE
+            clearCard?.setOnClickListener {
+                onClearSDCardSelected()
+            }
             orLabel?.visibility = View.VISIBLE
         } else {
             syncCard?.visibility = View.GONE
