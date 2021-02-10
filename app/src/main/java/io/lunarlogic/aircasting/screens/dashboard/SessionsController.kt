@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.DeleteSessionEvent
+import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
@@ -15,6 +17,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
@@ -169,6 +172,32 @@ abstract class SessionsController(
         }
 
         startDeleteSessionBottomSheet(session)
+    }
+
+    override fun onDeleteStreamsPressed(session: Session) {
+        val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
+        val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
+        if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
+            deleteSession(session.uuid)
+        } else  {
+            deleteStreams(session, streamsToDelete)
+        }
+    }
+
+    private fun deleteSession(sessionUUID: String) {
+        val event = DeleteSessionEvent(sessionUUID)
+        EventBus.getDefault().post(event)
+        deleteSessionDialog?.dismiss()
+    }
+
+    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
+        val event = DeleteStreamsEvent(session, streamsToDelete)
+        EventBus.getDefault().post(event)
+        deleteSessionDialog?.dismiss()
+    }
+
+    private fun deleteAllStreamsSelected(allStreamsBoxSelected: Boolean, selectedOptionsCount: Int?, sessionStreamsCount: Int?): Boolean {
+        return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
     }
 
     private fun startEditSessionBottomSheet(session: Session) {

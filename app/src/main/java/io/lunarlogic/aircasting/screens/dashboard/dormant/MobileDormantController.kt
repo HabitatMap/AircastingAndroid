@@ -54,30 +54,4 @@ class MobileDormantController(
         // do nothing
     }
 
-    override fun onDeleteStreamsPressed(session: Session) {
-        val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
-        val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
-        if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
-            deleteSession(session.uuid)
-        } else  {
-            deleteStreams(session, streamsToDelete)
-        }
-    }
-
-    private fun deleteSession(sessionUUID: String) {
-        val event = DeleteSessionEvent(sessionUUID)
-        EventBus.getDefault().post(event)
-        deleteSessionDialog?.dismiss()
-    }
-
-    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
-        val event = DeleteStreamsEvent(session, streamsToDelete)
-        EventBus.getDefault().post(event)
-        deleteSessionDialog?.dismiss()
-    }
-
-    private fun deleteAllStreamsSelected(allStreamsBoxSelected: Boolean, selectedOptionsCount: Int?, sessionStreamsCount: Int?): Boolean {
-        return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
-    }
-
 }
