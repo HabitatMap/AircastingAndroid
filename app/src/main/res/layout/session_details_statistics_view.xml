@@ -14,7 +14,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/keyline_3">
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="@dimen/keyline_2"
+        android:paddingBottom="@dimen/keyline_2">
 
         <TextView
             android:id="@+id/avg_label"
