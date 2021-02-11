@@ -94,7 +94,7 @@ class ClearSDCardController(
             var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
                 existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
-            }
+            }/''
             query.await()
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
