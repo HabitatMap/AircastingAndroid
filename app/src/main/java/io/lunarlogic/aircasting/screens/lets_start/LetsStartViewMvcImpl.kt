@@ -3,10 +3,9 @@ package io.lunarlogic.aircasting.screens.lets_start
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_lets_start.view.*
 
@@ -18,7 +17,8 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager
+        supportFragmentManager: FragmentManager,
+        mSettings: Settings
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
         mSupportFragmentManager = supportFragmentManager
@@ -39,18 +39,23 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         }
 
         val orLabel = rootView?.or
-        orLabel?.visibility = View.VISIBLE
-
         val syncCard = rootView?.sync_card
-        syncCard?.visibility = View.VISIBLE
-        syncCard?.setOnClickListener {
-            onSyncSelected()
-        }
-
         val clearCard = rootView?.clear_card
-        clearCard?.visibility = View.VISIBLE
-        clearCard?.setOnClickListener {
-            onClearSDCardSelected()
+
+        if (mSettings.airbeam3Connected()) {
+            syncCard?.visibility = View.VISIBLE
+            syncCard?.setOnClickListener {
+                onSyncSelected()
+            }
+            clearCard?.visibility = View.VISIBLE
+            clearCard?.setOnClickListener {
+                onClearSDCardSelected()
+            }
+            orLabel?.visibility = View.VISIBLE
+        } else {
+            syncCard?.visibility = View.GONE
+            clearCard?.visibility = View.GONE
+            orLabel?.visibility = View.GONE
         }
     }
 

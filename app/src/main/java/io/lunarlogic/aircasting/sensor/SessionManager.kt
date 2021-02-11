@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class SessionManager(private val mContext: Context, private val apiService: ApiService, settings: Settings) {
+class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
@@ -151,6 +151,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
         session.startRecording()
+        if (session.isAirBeam3()) {
+            settings.setAirbeam3Connected()
+        }
+
         if (session.isFixed()) {
             session.follow()
             fixedSessionUploadService.upload(session)

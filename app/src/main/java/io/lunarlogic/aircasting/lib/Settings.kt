@@ -14,12 +14,14 @@ open class Settings(mApplication: Application) {
     protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
+    protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
 
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
+    private val DEFAULT_AIRBEAM3_CONNECTED = false
 
     private val sharedPreferences: SharedPreferences
 
@@ -47,6 +49,10 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
     }
 
+    fun airbeam3Connected(): Boolean {
+        return getBooleanFromSettings(AIRBEAM3_CONNECTED_KEY, DEFAULT_AIRBEAM3_CONNECTED)
+    }
+
     open fun getBackendUrl(): String? {
         return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL)
     }
@@ -63,6 +69,10 @@ open class Settings(mApplication: Application) {
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
+    }
+
+    fun setAirbeam3Connected() {
+        saveToSettings(AIRBEAM3_CONNECTED_KEY, true)
     }
 
     fun microphoneSettingsChanged(calibration: Int){
