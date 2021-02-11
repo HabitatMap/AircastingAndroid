@@ -14,17 +14,30 @@
 
         <ImageView
             android:id="@+id/connected_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:src="@drawable/connected"
+            android:src="@drawable/airbeam"
             android:contentDescription="@string/airbeam_connected_image_desc"
             android:layout_marginTop="@dimen/keyline_10"
             app:layout_constraintTop_toBottomOf="@id/guidelineTop"
             app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
 
-        <androidx.constraintlayout.widget.Guideline
+        <ImageView
+            android:id="@+id/connected_tick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/connecting_loader_margin_end"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/connected"
+            app:layout_constraintBottom_toBottomOf="@+id/connected_image"
+            app:layout_constraintEnd_toEndOf="@+id/connected_image"
+            />
+
+
+    <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/guidelineMiddle"

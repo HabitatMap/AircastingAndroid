@@ -16,7 +16,8 @@
             android:id="@+id/connecting_image"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:src="@drawable/connected"
+            android:padding="0dp"
+            android:src="@drawable/airbeam"
             android:contentDescription="@string/connecting_image_desc"
             android:layout_marginTop="@dimen/keyline_10"
             app:layout_constraintTop_toBottomOf="@id/guidelineTop"
@@ -24,12 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/guidelineImage"
-        app:layout_constraintGuide_percent="0.37"
-        android:orientation="horizontal"/>
+
         <ImageView
             android:id="@+id/loader"
             android:layout_width="wrap_content"
