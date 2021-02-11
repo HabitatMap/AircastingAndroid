@@ -26,4 +26,16 @@ class MeasurementStreamsRepository {
             mDatabase.measurementStreams().insert(streamDBObject)
         }
     }
+
+    fun markForRemoval(sessionId: Long?, streamsToDelete: List<MeasurementStream>?) {
+        streamsToDelete?.forEach { stream ->
+            if (sessionId != null) {
+                mDatabase.measurementStreams().markForRemoval(sessionId, stream.sensorName)
+            }
+        }
+    }
+
+    fun deleteMarkedForRemoval() {
+        mDatabase.measurementStreams().deleteMarkedForRemoval()
+    }
 }

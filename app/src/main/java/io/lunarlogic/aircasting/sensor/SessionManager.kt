@@ -32,6 +32,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
+    private var mCallback: (() -> Unit)? = null
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
@@ -82,6 +83,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     @Subscribe
     fun onMessageEvent(event: AppToBackgroundEvent) {
         onAppToBackground()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: DeleteStreamsEvent) {
+        deleteStreams(event.session, event.streamsToDelete)
     }
 
     fun onStart() {
@@ -196,6 +202,37 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.markForRemoval(listOf(sessionUUID))
+            sessionsSyncService.sync()
+        }
+    }
+
+    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
+        markForRemoval(session, streamsToDelete) {
+            updateSession(session)
+        }
+    }
+
+    private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?, callback: () -> Unit) {
+        mCallback = callback
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
+            measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
+            mCallback?.invoke()
+        }
+    }
+
+    private fun updateSession(session: Session) {
+        val reloadedSession = sessionsRespository.loadSessionAndMeasurementsByUUID(session.uuid)
+        if (reloadedSession != null) {
+            sessionUpdateService.update(reloadedSession) {
+                deleteMarkedForRemoval()
+            }
+        }
+    }
+
+    private fun deleteMarkedForRemoval() {
+        DatabaseProvider.runQuery {
+            measurementStreamsRepository.deleteMarkedForRemoval()
             sessionsSyncService.sync()
         }
     }

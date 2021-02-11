@@ -12,6 +12,7 @@ class SessionStreamWithMeasurementsResponse(
     threshold_medium: Int,
     threshold_high: Int,
     threshold_very_high: Int,
+    deleted: Boolean,
     val measurements: List<MeasurementResponse>
 ): SessionStreamResponse(
     sensor_name,
@@ -24,5 +25,6 @@ class SessionStreamWithMeasurementsResponse(
     threshold_low,
     threshold_medium,
     threshold_high,
-    threshold_very_high
+    threshold_very_high,
+    deleted
 )

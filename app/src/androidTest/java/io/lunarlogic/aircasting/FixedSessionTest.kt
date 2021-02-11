@@ -251,7 +251,8 @@ class FixedSessionTest {
             45,
             75,
             100,
-            135
+            135,
+            false
         )
         val measurements = listOf(Measurement(70.0, Date()))
 

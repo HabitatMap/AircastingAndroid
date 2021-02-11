@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.DeleteSessionEvent
+import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
@@ -15,6 +17,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
 import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
@@ -31,7 +34,7 @@ abstract class SessionsController(
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
     private val context: Context?
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -42,6 +45,7 @@ abstract class SessionsController(
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
+    protected var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -161,6 +165,41 @@ abstract class SessionsController(
         startShareSessionBottomSheet(session)
     }
 
+    override fun onDeleteSessionClicked(session: Session) {
+        if (!ConnectivityManager.isConnected(context)) {
+            Toast.makeText(context, context?.getString(R.string.errors_network_required_delete_streams), Toast.LENGTH_LONG).show()
+            return
+        }
+
+        startDeleteSessionBottomSheet(session)
+    }
+
+    override fun onDeleteStreamsPressed(session: Session) {
+        val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
+        val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
+        if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
+            deleteSession(session.uuid)
+        } else  {
+            deleteStreams(session, streamsToDelete)
+        }
+    }
+
+    private fun deleteSession(sessionUUID: String) {
+        val event = DeleteSessionEvent(sessionUUID)
+        EventBus.getDefault().post(event)
+        deleteSessionDialog?.dismiss()
+    }
+
+    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
+        val event = DeleteStreamsEvent(session, streamsToDelete)
+        EventBus.getDefault().post(event)
+        deleteSessionDialog?.dismiss()
+    }
+
+    private fun deleteAllStreamsSelected(allStreamsBoxSelected: Boolean, selectedOptionsCount: Int?, sessionStreamsCount: Int?): Boolean {
+        return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
+    }
+
     private fun startEditSessionBottomSheet(session: Session) {
         editDialog = EditSessionBottomSheet(this, session, context)
         editDialog?.show(fragmentManager)
@@ -169,6 +208,11 @@ abstract class SessionsController(
     private fun startShareSessionBottomSheet(session: Session){
         shareDialog = ShareSessionBottomSheet(this, session, context)
         shareDialog?.show(fragmentManager)
+    }
+
+    private fun startDeleteSessionBottomSheet(session: Session) {
+        deleteSessionDialog = DeleteSessionBottomSheet(this, session)
+        deleteSessionDialog?.show(fragmentManager, "Session delete")
     }
 
     private fun openShareIntentChooser(session: Session, chosenSensor: String){

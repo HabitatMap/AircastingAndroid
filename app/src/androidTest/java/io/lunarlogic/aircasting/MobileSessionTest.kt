@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -240,9 +241,15 @@ class MobileSessionTest {
         // delete session test
         onView(withId(R.id.session_actions_button)).perform(click())
         onView(withId(R.id.delete_session_button)).perform(click())
+
+        onView(withText(R.string.delete_all_data_from_session))
+            .check(matches(isNotChecked()))
+            .perform(click())
+            .check(matches(isChecked()))
+
+        onView(withId(R.id.delete_streams_button)).perform(click())
         Thread.sleep(2000)
         // check if session deleted
         onView(withText("Ania's mobile mic session")).check(matches(not(isDisplayed())))
-
     }
 }

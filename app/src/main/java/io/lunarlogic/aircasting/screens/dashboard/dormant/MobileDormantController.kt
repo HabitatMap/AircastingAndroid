@@ -5,13 +5,16 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
+import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.screens.dashboard.DeleteSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 import org.greenrobot.eventbus.EventBus
@@ -42,12 +45,7 @@ class MobileDormantController(
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.MOBILE)
     }
-
-    override fun onDeleteSessionClicked(sessionUUID: String) {
-        val event = DeleteSessionEvent(sessionUUID)
-        EventBus.getDefault().post(event)
-    }
-
+    
     override fun onFinishSessionConfirmed(session: Session) {
         // do nothing
     }
@@ -55,4 +53,5 @@ class MobileDormantController(
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
     }
+
 }
