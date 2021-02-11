@@ -38,6 +38,10 @@ class SettingsController(
         mSettings.toggleMapSettingsEnabled()
     }
 
+    override fun onClearSDCardClicked() {
+        TODO("Not yet implemented") // going to location services screen
+    }
+
     override fun onMicrophoneSettingsClicked() {
         startMicrophoneSettingsDialog()
     }

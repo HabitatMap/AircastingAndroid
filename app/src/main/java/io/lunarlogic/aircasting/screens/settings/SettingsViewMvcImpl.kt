@@ -38,9 +38,15 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         mapEnabledSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleMapsEnabled()
         }
+
         val backendSettingsButton = rootView?.findViewById<Button>(R.id.backend_settings_button)
         backendSettingsButton?.setOnClickListener {
             onBackendSettingsClicked()
+        }
+
+        val clearSDCardButton = rootView?.findViewById<Button>(R.id.clear_sd_card_button)
+        clearSDCardButton?.setOnClickListener {
+            onClearSDCardClicked()
         }
 
         val versionValueTextView = rootView?.app_version_value_text_view
@@ -68,6 +74,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     private fun onToggleMapsEnabled(){
         for(listener in listeners){
             listener.onToggleMapsEnabled()
+        }
+    }
+
+    private fun onClearSDCardClicked() {
+        for(listener in listeners){
+            listener.onClearSDCardClicked()
         }
     }
 
