@@ -35,10 +35,10 @@
             android:id="@+id/chart_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@id/chart_start_time"
             android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
-            android:layout_marginTop="@dimen/keyline_2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chart_end_time" />
+            app:layout_constraintEnd_toStartOf="@id/chart_end_time"
+            app:layout_constraintStart_toEndOf="@id/chart_start_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
