@@ -146,7 +146,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
         session.startRecording()
         if (session.isAirBeam3()) {
-            settings.airbeam3WasConnected()
+            settings.setAirbeam3Connected()
         }
 
         if (session.isFixed()) {

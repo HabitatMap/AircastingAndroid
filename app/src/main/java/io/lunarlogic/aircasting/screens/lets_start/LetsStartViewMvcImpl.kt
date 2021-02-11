@@ -3,8 +3,6 @@ package io.lunarlogic.aircasting.screens.lets_start
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
@@ -44,7 +42,7 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         val syncCard = rootView?.sync_card
         val clearCard = rootView?.clear_card
 
-        if (mSettings.wasAirbeam3Connected()) {
+        if (mSettings.airbeam3Connected()) {
             syncCard?.visibility = View.VISIBLE
             syncCard?.setOnClickListener {
                 onSyncSelected()
