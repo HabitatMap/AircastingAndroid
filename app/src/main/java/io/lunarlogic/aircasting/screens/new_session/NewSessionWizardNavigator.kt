@@ -43,7 +43,7 @@ class NewSessionWizardNavigator(
 
     fun goToTurnOnBluetooth(listener: TurnOnBluetoothViewMvc.Listener) {
         incrementStepProgress()
-        val fragment = TurnOnBluetoothFragment()
+        val fragment = TurnOnBluetoothFragment() //todo: check if this fun works fine
         fragment.listener = listener
         goToFragment(fragment)
     }
