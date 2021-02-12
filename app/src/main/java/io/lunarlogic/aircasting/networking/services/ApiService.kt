@@ -1,21 +1,22 @@
 package io.lunarlogic.aircasting.networking.services
 
-import io.lunarlogic.aircasting.BuildConfig
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Response
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import android.util.Base64
+import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.*
 import io.lunarlogic.aircasting.networking.responses.*
-import okhttp3.HttpUrl
-import retrofit2.http.*
+import okhttp3.*
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Converter
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
+import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
 interface ApiService {
@@ -35,7 +36,7 @@ interface ApiService {
     fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
 
     @GET("/api/realtime/sync_measurements.json")
-    fun downloadMeasurements(@Query("uuid") uuid: String, @Query("last_measurement_sync") last_measurement_sync: String): Call<SessionWithMeasurementsResponse>
+    fun downloadFixedMeasurements(@Query("uuid") uuid: String, @Query("last_measurement_sync") last_measurement_sync: String): Call<SessionWithMeasurementsResponse>
 
     @GET("/api/user.json")
     fun login(): Call<UserResponse>
@@ -51,6 +52,9 @@ interface ApiService {
 
     @POST("/users/password.json")
     fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
+
+    @POST("/api/realtime/measurements")
+    fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Call<Unit>
 }
 
 open class ApiServiceFactory(private val mSettings: Settings) {
