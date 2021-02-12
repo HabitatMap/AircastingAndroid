@@ -4,6 +4,7 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
@@ -34,6 +35,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
+    private val mMoreInvisibleButton: Button?
     private val mHLUSlider: HLUSlider
 
     constructor(
@@ -47,7 +49,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
-        mSessionMeasurementsDescription = this.rootView?.session_measurements_description
+        mSessionMeasurementsDescription = this.findViewById(R.id.session_measurements_description)
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -59,7 +61,11 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
         mMoreButton = this.rootView?.more_button
+        mMoreInvisibleButton = this.rootView?.more_invisible_button
         mMoreButton?.setOnClickListener {
+            onMoreButtonPressed()
+        }
+        mMoreInvisibleButton?.setOnClickListener {
             onMoreButtonPressed()
         }
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
@@ -91,7 +97,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     private fun showSlider() {
-        mMoreButton?.visibility = View.VISIBLE
+        mMoreButton?.visibility = context.resources.getInteger(R.integer.visible_in_larger_screens)
         mHLUSlider.show()
     }
 
