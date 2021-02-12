@@ -15,7 +15,7 @@
             style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/header4_text_size"
+            android:textSize="@dimen/text_size_m"
             android:text="@string/fixed_session_choose_location_header"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"

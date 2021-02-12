@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size_xxl">27sp</dimen>
+    <dimen name="text_size_xl">19sp</dimen>
+    <dimen name="text_size_l">15sp</dimen>
+    <dimen name="text_size_m">13sp</dimen>
+    <dimen name="text_size_s">11sp</dimen>
+    <dimen name="text_size_xs">9sp</dimen>
+    <dimen name="text_size_xxs">7sp</dimen>
+    <dimen name="button_text_size">11sp</dimen>
+
+    <dimen name="line_height_xxl">28dp</dimen>
+    <dimen name="line_height_xl">20dp</dimen>
+    <dimen name="line_height_l">12dp</dimen>
+</resources>

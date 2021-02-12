@@ -2,19 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="header1_text_size">32sp</dimen>
-    <dimen name="header2_text_size">24sp</dimen>
     <dimen name="header3_text_size">22sp</dimen>
-    <dimen name="header4_text_size">18sp</dimen>
-    <dimen name="header5_text_size">16sp</dimen>
-    <dimen name="header6_text_size">16sp</dimen>
-    <dimen name="cards_headline1_text_size">16sp</dimen>
-    <dimen name="cards_body1_text_size">14sp</dimen>
     <dimen name="button_text_size">16sp</dimen>
-    <dimen name="text_button_text_size">14sp</dimen>
-    <dimen name="body1_text_size">16sp</dimen>
-    <dimen name="body2_text_size">14sp</dimen>
-    <dimen name="action_bar_title_text_size">24sp</dimen>
     <dimen name="default_text_size">16sp</dimen>
     <dimen name="default_elevation">10dp</dimen>
     <dimen name="button_min_height">56dp</dimen>
@@ -30,6 +19,10 @@
     <dimen name="text_size_s">16sp</dimen>
     <dimen name="text_size_xs">14sp</dimen>
     <dimen name="text_size_xxs">12sp</dimen>
+
+    <dimen name="line_height_xxl">42dp</dimen>
+    <dimen name="line_height_xl">32dp</dimen>
+    <dimen name="line_height_l">24dp</dimen>
 
     <dimen name="action_bar_size">100dp</dimen>
     <dimen name="app_bar_padding">20dp</dimen>
@@ -53,6 +46,6 @@
     <dimen name="create_account_checkbox_label_padding_top">5dp</dimen>
     <dimen name="create_account_sign_in_padding_top">80dp</dimen>
 
-    <dimen name="connecting_loader_margin_end">6dp</dimen>
+    <dimen name="connecting_image_margin">6dp</dimen>
     <dimen name="connecting_loader_margin_bottom">1dp</dimen>
 </resources>
