@@ -2,33 +2,38 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     style="@style/Widget.Aircasting.Cards"
     android:layout_marginTop="@dimen/keyline_6"
     android:layout_marginStart="@dimen/keyline_4"
+
     app:layout_constraintTop_toBottomOf="@id/measurements_table"
     app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="@id/guidelineStatistics"
     android:visibility="gone">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="0dp"
-        android:paddingStart="0dp"
         android:paddingTop="@dimen/keyline_2"
-        android:paddingBottom="@dimen/keyline_2">
+        android:paddingBottom="@dimen/keyline_2"
+
+>
 
         <TextView
             android:id="@+id/avg_label"
             android:text="@string/avg_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_9"
+
             style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/now_label"
-            android:layout_marginEnd="@dimen/keyline_8"/>
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            />
 
         <TextView
             android:id="@+id/now_label"
@@ -38,20 +43,22 @@
             style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/avg_label"
-            app:layout_constraintEnd_toEndOf="@id/peak_label"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8" />
+            app:layout_constraintEnd_toStartOf="@id/peak_label"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+     />
 
         <TextView
             android:id="@+id/peak_label"
             android:text="@string/peak_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/keyline_8"
             style="@style/TextAppearance.Aircasting.MapStatisticsLabel"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/now_label"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="@dimen/keyline_8"/>
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+          />
 
 
         <ImageView
@@ -72,8 +79,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.MapStatisticsValue"
-            android:padding="@dimen/keyline_2"
+            android:padding="@dimen/keyline_1"
             android:paddingStart="@dimen/keyline_8"
+            android:paddingEnd="@dimen/keyline_3"
             app:layout_constraintTop_toBottomOf="@id/avg_label"
             app:layout_constraintStart_toStartOf="@id/avg_label"
             app:layout_constraintEnd_toEndOf="@id/avg_label"/>
@@ -96,8 +104,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.MapStatisticsValue"
-            android:padding="@dimen/keyline_2"
+            android:padding="@dimen/keyline_1"
             android:paddingStart="@dimen/keyline_8"
+            android:paddingEnd="@dimen/keyline_3"
             android:textSize="@dimen/text_size_l"
             app:layout_constraintTop_toBottomOf="@id/now_label"
             app:layout_constraintStart_toStartOf="@+id/now_label"
@@ -121,8 +130,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.MapStatisticsValue"
-            android:padding="@dimen/keyline_2"
+            android:padding="@dimen/keyline_1"
             android:paddingStart="@dimen/keyline_8"
+            android:paddingEnd="@dimen/keyline_3"
             app:layout_constraintTop_toBottomOf="@id/peak_label"
             app:layout_constraintStart_toStartOf="@id/peak_label"
             app:layout_constraintEnd_toEndOf="@id/peak_label"/>

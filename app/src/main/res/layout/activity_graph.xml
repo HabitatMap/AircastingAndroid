@@ -17,6 +17,13 @@
     <include android:id="@+id/statistics_view"
         layout="@layout/session_details_statistics_view" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guidelineStatistics"
+        app:layout_constraintGuide_percent="0.7"
+        android:orientation="vertical"/>
+
     <include layout="@layout/graph" />
 
     <include android:id="@+id/hlu" layout="@layout/hlu_slider"
