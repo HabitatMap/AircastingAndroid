@@ -29,13 +29,12 @@
             android:id="@+id/connected_tick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/connecting_loader_margin_end"
-            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="@dimen/connecting_image_margin"
+            android:layout_marginBottom="@dimen/connecting_image_margin"
             android:src="@drawable/connected"
             app:layout_constraintBottom_toBottomOf="@+id/connected_image"
             app:layout_constraintEnd_toEndOf="@+id/connected_image"
             />
-
 
     <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
