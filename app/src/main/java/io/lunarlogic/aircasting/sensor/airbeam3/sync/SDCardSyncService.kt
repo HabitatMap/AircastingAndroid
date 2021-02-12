@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.sensor.airbeam3.sync
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
-import io.lunarlogic.aircasting.sensor.SDCardCSVFileChecker
 import org.greenrobot.eventbus.EventBus
 import java.util.concurrent.TimeUnit
 

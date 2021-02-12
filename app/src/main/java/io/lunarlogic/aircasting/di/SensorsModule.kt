@@ -12,13 +12,9 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.sensor.*
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardClearService
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardDownloadService
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardMeasurementsCreator
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardSyncService
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.*
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
-import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import javax.inject.Singleton
 
 @Module
@@ -33,7 +29,10 @@ open class SensorsModule {
     @Singleton
     fun providesSDCardCSVFileChecker(
         application: AircastingApplication
-    ): SDCardCSVFileChecker = SDCardCSVFileChecker(application)
+    ): SDCardCSVFileChecker =
+        SDCardCSVFileChecker(
+            application
+        )
 
     @Provides
     @Singleton

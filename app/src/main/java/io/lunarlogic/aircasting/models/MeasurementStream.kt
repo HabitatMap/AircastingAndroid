@@ -21,7 +21,9 @@ class MeasurementStream(
     val thresholdMedium: Int,
     val thresholdHigh: Int,
     val thresholdVeryHigh: Int,
-    var deleted: Boolean = false
+    var deleted: Boolean = false,
+    private var mMeasurements: List<Measurement> = listOf()
+
 ) {
     constructor(measurementEvent: NewMeasurementEvent): this(
         measurementEvent.packageName,
@@ -84,8 +86,6 @@ class MeasurementStream(
     }
 
     val detailedType: String?
-
-    private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
 
     init {

@@ -1,7 +1,6 @@
-package io.lunarlogic.aircasting.sensor
+package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import android.content.Context
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.Step
 import java.io.FileReader
 

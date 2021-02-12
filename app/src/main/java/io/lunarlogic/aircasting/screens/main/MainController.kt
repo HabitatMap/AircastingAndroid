@@ -7,13 +7,13 @@ import io.lunarlogic.aircasting.events.LocationPermissionsResultEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiService
+import io.lunarlogic.aircasting.networking.services.*
 
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.ConnectivityManager
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.sensor.SessionManager
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVIterator
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardUploadFixedMeasurementsService
 import org.greenrobot.eventbus.EventBus
 
 class MainController(
@@ -32,6 +32,14 @@ class MainController(
         } else {
             setupDashboard()
         }
+
+
+        val apiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
+        val uploadService = UploadFixedMeasurementsService(apiService, mErrorHandler)
+        val sdCardCSVFileFactory = SDCardCSVFileFactory(rootActivity)
+        val sdCardCSVIterator = SDCardCSVIterator(mErrorHandler)
+        val service = SDCardUploadFixedMeasurementsService(sdCardCSVFileFactory, sdCardCSVIterator, uploadService)
+        service.run()
 
         mSessionManager?.onStart()
     }
