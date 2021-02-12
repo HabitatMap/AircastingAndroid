@@ -21,7 +21,7 @@ class MeasurementStream(
     val thresholdMedium: Int,
     val thresholdHigh: Int,
     val thresholdVeryHigh: Int,
-    var deleted: Boolean
+    var deleted: Boolean = false
 ) {
     constructor(measurementEvent: NewMeasurementEvent): this(
         measurementEvent.packageName,
