@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.settings
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import io.lunarlogic.aircasting.BuildConfig
@@ -45,9 +46,13 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         }
 
         val clearSDCardButton = rootView?.findViewById<Button>(R.id.clear_sd_card_button)
-        clearSDCardButton?.setOnClickListener {
-            onClearSDCardClicked()
+        if (mSettings.airbeam3Connected()) {
+            clearSDCardButton?.visibility = View.VISIBLE
+            clearSDCardButton?.setOnClickListener {
+                onClearSDCardClicked()
+            }
         }
+
 
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME

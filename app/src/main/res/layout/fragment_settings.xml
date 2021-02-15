@@ -187,6 +187,7 @@
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                 android:text="Clear SD card"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separator3"
                 app:layout_constraintStart_toStartOf="parent"
