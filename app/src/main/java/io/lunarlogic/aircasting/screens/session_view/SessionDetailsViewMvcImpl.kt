@@ -97,7 +97,11 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     private fun showSlider() {
-        mMoreButton?.visibility = context.resources.getInteger(R.integer.visible_in_larger_screens)
+        if (context.resources.getInteger(R.integer.visible_in_larger_screens) != 0) {
+            mMoreButton?.visibility = View.GONE
+        } else {
+            mMoreButton?.visibility = View.VISIBLE
+        }
         mHLUSlider.show()
     }
 

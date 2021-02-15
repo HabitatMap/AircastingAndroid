@@ -137,7 +137,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/labels"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="invisible"
+        android:background="@color/transparent"
         android:clickable="true"
         android:enabled="true"/>
 
