@@ -1,12 +1,18 @@
 package io.lunarlogic.aircasting.networking.params
 
-import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.CSVMeasurement
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.CSVMeasurementStream
 
 
 class UploadFixedMeasurementsParams {
-    constructor(sessionUUID: String, stream: MeasurementStream) {
+    constructor(
+        sessionUUID: String,
+        deviceId: String,
+        stream: CSVMeasurementStream,
+        csvMeasurements: List<CSVMeasurement>
+    ) {
         this.session_uuid = sessionUUID
-        this.sensor_package_name = stream.sensorPackageName
+        this.sensor_package_name = stream.sensorPackageName(deviceId)
         this.sensor_name = stream.sensorName
         this.measurement_type = stream.measurementType
         this.measurement_short_type = stream.measurementShortType
@@ -17,7 +23,7 @@ class UploadFixedMeasurementsParams {
         this.threshold_medium = stream.thresholdMedium
         this.threshold_low = stream.thresholdLow
         this.threshold_very_low = stream.thresholdVeryLow
-        this.measurements = stream.measurements.map {
+        this.measurements = csvMeasurements.map {
             MeasurementParams(
                 it
             )
