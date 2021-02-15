@@ -12,11 +12,8 @@ class SDCardUploadFixedMeasurementsService(
 ) {
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
-    private var processedChunksCount = 0
 
     fun run() {
-        processedChunksCount = 0
-
         DatabaseProvider.runQuery {
             val file = mSDCardCSVFileFactory.getFixed()
             val deviceId = "246f28c47698" // TODO: move it to the file name
@@ -30,44 +27,65 @@ class SDCardUploadFixedMeasurementsService(
     private fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession ?: return
 
+        val measurementChunks = chunkSession(csvSession)
+        uploadSession(deviceId, csvSession.uuid, measurementChunks)
+    }
+
+    private fun chunkSession(csvSession: CSVSession): Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>> {
+        val measurementChunks = mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
+
         csvSession.streams.forEach { (streamHeaderValue, csvMeasurements) ->
             val streamHeader = SDCardCSVFileFactory.Header.fromInt(streamHeaderValue)
             val csvMeasurementStream = CSVMeasurementStream.fromHeader(
                 streamHeader
             )
 
-            uploadStream(deviceId, csvSession, csvMeasurementStream, csvMeasurements)
+            if (csvMeasurementStream != null) {
+                val csvMeasurementsChunk = chunkStream(csvMeasurements)
+                measurementChunks[csvMeasurementStream] = csvMeasurementsChunk
+            }
         }
-    }
 
-    private fun uploadStream(
-        deviceId: String,
-        csvSession: CSVSession,
-        csvMeasurementStream: CSVMeasurementStream?,
-        csvMeasurements: List<CSVMeasurement>
-    ) {
-        csvMeasurementStream ?: return
-
-        csvMeasurements.chunked(MEASUREMENTS_CHUNK_SIZE).forEach { csvMeasurementsChunk ->
-            processMeasurementsChunk(deviceId, csvSession, csvMeasurementStream, csvMeasurementsChunk)
-        }
+        return measurementChunks
     }
 
     @SuppressLint("LongLogTag")
-    private fun processMeasurementsChunk(
+    private fun uploadSession(deviceId: String, sessionUUID: String, allChunks: Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>) {
+        while (true) {
+            val allStreamsChunks = allChunks.filter { (_, chunks) -> chunks.size > 0 }
+            if (allStreamsChunks.isEmpty()) {
+                Log.d(TAG, "Upload finished")
+                break
+            }
+
+            Log.d(TAG, "Remaining chunks: ${allStreamsChunks.map { (stream, chunks) -> "${stream.sensorName}: ${chunks.size}" }}.")
+
+            allStreamsChunks.forEach { (csvMeasurementStream, csvMeasurementsChunks) ->
+                val csvMeasurementsChunk = csvMeasurementsChunks.removeAt(0)
+
+                uploadMeasurementsChunk(deviceId, sessionUUID, csvMeasurementStream, csvMeasurementsChunk)
+            }
+        }
+    }
+
+    private fun chunkStream(csvMeasurements: List<CSVMeasurement>): ArrayList<List<CSVMeasurement>> {
+        return ArrayList(csvMeasurements.chunked(MEASUREMENTS_CHUNK_SIZE).map { csvMeasurementsChunk ->
+            csvMeasurementsChunk
+        })
+    }
+
+    @SuppressLint("LongLogTag")
+    private fun uploadMeasurementsChunk(
         deviceId: String,
-        csvSession: CSVSession,
+        sessionUUID: String,
         csvMeasurementStream: CSVMeasurementStream,
         csvMeasurementsChunk: List<CSVMeasurement>
     ) {
         if (csvMeasurementsChunk.isEmpty()) return
 
-        processedChunksCount += csvMeasurementsChunk.size
-
-        Log.d(TAG, "Already processed chunk count: ${processedChunksCount}.")
         Log.d(TAG, "Now processing ${csvMeasurementStream.sensorName}...")
         mUploadFixedMeasurementsService.upload(
-            csvSession.uuid,
+            sessionUUID,
             deviceId,
             csvMeasurementStream,
             csvMeasurementsChunk,
