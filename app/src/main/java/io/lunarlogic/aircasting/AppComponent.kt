@@ -14,7 +14,10 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
+import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedFragment
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
+import io.lunarlogic.aircasting.screens.settings.clearSDCard.ClearSDCardActivity
+import io.lunarlogic.aircasting.screens.settings.clearingSDCard.ClearingSDCardFragment
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import io.lunarlogic.aircasting.sensor.AirBeamRecordSessionService
@@ -51,6 +54,9 @@ interface AppComponent {
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)
+    fun inject(activity: ClearSDCardActivity)
+    fun inject(fragment: ClearingSDCardFragment)
+    fun inject(fragment: SDCardClearedFragment)
 
     fun inject(activity: MicrophoneService)
     fun inject(activity: AirBeamRecordSessionService)

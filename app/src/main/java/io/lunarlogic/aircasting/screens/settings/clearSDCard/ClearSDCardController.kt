@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.settings.clearSDCard
 
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
+import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.safeRegister
@@ -20,13 +23,16 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBea
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class ClearSDCardController(
     private val mContextActivity: AppCompatActivity,
@@ -34,23 +40,47 @@ class ClearSDCardController(
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val mFragmentManager: FragmentManager
-): ClearSDCardViewMvc.Listener,
-    SelectDeviceViewMvc.Listener,
+): SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
-    AirBeamConnectedViewMvc.Listener,
-    TurnOnLocationServicesViewMvc.Listener {
+    TurnOnLocationServicesViewMvc.Listener,
+    SDCardClearedViewMvc.Listener {
     private val wizardNavigator = ClearSDCardWizardNavigator(mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this);
-        goToFirstStep() //todo: in NewSessionController before it there are some conditionals but do i need them here ???
+        EventBus.getDefault().safeRegister(this)
+
+        if (permissionsManager.locationPermissionsGranted(mContextActivity)) { //todo: should areMapsDisabled be involved here?
+            goToFirstStep()
+        } else {
+            permissionsManager.requestLocationPermissions(mContextActivity)
+        }
     }
 
     fun onStop() {
         EventBus.getDefault().unregister(this)
+    }
+
+    private fun goToFirstStep() {
+        if (areLocationServicesOn()) {
+            if (bluetoothManager.isBluetoothEnabled()) {
+                wizardNavigator.goToSelectDevice(bluetoothManager, this)
+            } else {
+                wizardNavigator.goToTurnOnBluetooth(this)
+            }
+        } else {
+            wizardNavigator.goToTurnOnLocationServices(this) //todo: think of what i need here in constr
+        }
+    }
+
+    fun onBackPressed() {
+        wizardNavigator.onBackPressed()
+    }
+
+    override fun onTurnOnLocationServicesOkClicked() {
+        LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
     private fun requestBluetoothEnable() {
@@ -62,17 +92,9 @@ class ClearSDCardController(
     }
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
-        wizardNavigator.goToConnectingAirBeam()
-        val sessionUUID = Session.generateUUID()
-        AirBeamService.startService(mContextActivity, deviceItem, sessionUUID)
-    }
-
-    private fun goToFirstStep() {
-        if (areLocationServicesOn()) {
-//            startNewSessionWizard() //todo: this one to be changed
-        } else {
-//            wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType) //todo: think of what i need here in constr
-        }
+        wizardNavigator.goToClearingSDCard()
+        Thread.sleep(3000) // todo: to be removed
+        // todo: clearing SD card service
     }
 
     private fun areLocationServicesOn(): Boolean {
@@ -81,12 +103,8 @@ class ClearSDCardController(
         return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
-    fun onBackPressed() {
-        wizardNavigator.onBackPressed()
-    }
-
-    override fun onTurnOnLocationServicesOkClicked() {
-        LocationHelper.checkLocationServicesSettings(mContextActivity)
+    override fun onTurnOnAirBeamReadyClicked() {
+        wizardNavigator.goToSelectDevice(bluetoothManager, this) //todo: is this the screen with list of devices??
     }
 
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
@@ -94,31 +112,69 @@ class ClearSDCardController(
             var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
                 existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
-            }/''
+            }
             query.await()
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {
                 connectToAirBeam(selectedDeviceItem)
             }
+            EventBus.getDefault().post(AirBeamConnectionSuccessfulEvent(DeviceItem(),"0")) //todo: to be changed on SDClearSuccessfullEvent, to be removed
         }
-    }
-
-    override fun onTurnOnAirBeamReadyClicked() {
-        wizardNavigator.goToSelectDevice() //todo: is this the screen with list of devices??
     }
 
     override fun onTurnOnBluetoothOkClicked() {
         requestBluetoothEnable()
     }
 
-    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-//        TODO("Not yet implemented")
-        wizardNavigator.goToClearingSDCard()
+    override fun onSDCardClearedConfirmationClicked() {
+        mContextActivity.finish()
     }
 
-    fun onConfirmationClicked() {
-        // todo: navigate to settings screen- do i need some new interface for this??
+    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
+        when (requestCode) {
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
+                if (permissionsManager.permissionsGranted(grantResults)) {
+                    goToFirstStep()
+                } else {
+                    errorHandler.showError(R.string.errors_location_services_required)
+                }
+            }
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
+
+    fun onActivityResult(requestCode: Int, resultCode: Int) {
+        when (requestCode) {
+            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    if (bluetoothManager.isBluetoothEnabled()) {
+                        wizardNavigator.goToSelectDevice(bluetoothManager, this)
+                    } else {
+                        wizardNavigator.goToTurnOnBluetooth(this)
+                    }
+                } else {
+                    errorHandler.showError(R.string.errors_location_services_required)
+                }
+            }
+            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    wizardNavigator.goToTurnOnAirbeam(this)
+                } else {
+                    errorHandler.showError(R.string.errors_bluetooth_required)
+                }
+            }
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) { //todo: SD card cleared event
+        wizardNavigator.goToSDCardCleared(this)
     }
 
 }

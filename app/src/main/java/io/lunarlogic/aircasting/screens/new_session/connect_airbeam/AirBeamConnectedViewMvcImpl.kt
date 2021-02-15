@@ -20,7 +20,7 @@ class AirBeamConnectedViewMvcImpl : BaseObservableViewMvc<AirBeamConnectedViewMv
         this.rootView = inflater.inflate(R.layout.fragment_airbeam_connected, parent, false)
         this.deviceItem = deviceItem
         this.sessionUUID = sessionUUID
-        val button = rootView?.findViewById<Button>(R.id.airbeam_connected_continue_button)
+        val button = rootView?.findViewById<Button>(R.id.sd_card_cleared_continue_button)
         button?.setOnClickListener {
             onAirBeamConnectedContinueClicked()
         }

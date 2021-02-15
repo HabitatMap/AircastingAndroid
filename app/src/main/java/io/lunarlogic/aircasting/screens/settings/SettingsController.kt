@@ -1,11 +1,14 @@
 package io.lunarlogic.aircasting.screens.settings
 
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.screens.settings.clearSDCard.ClearSDCardActivity
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 
 class SettingsController(
+    private val mRootActivity: FragmentActivity?,
     private val mContext: Context?,
     private val mViewMvc: SettingsViewMvc,
     private val mSettings: Settings,
@@ -39,7 +42,7 @@ class SettingsController(
     }
 
     override fun onClearSDCardClicked() {
-        TODO("Not yet implemented") // going to location services screen
+        ClearSDCardActivity.start(mRootActivity)
     }
 
     override fun onMicrophoneSettingsClicked() {

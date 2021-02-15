@@ -7,8 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
+import io.lunarlogic.aircasting.screens.settings.clearSDCard.ClearSDCardWizardNavigator
 
-class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) : Fragment(), BaseWizardNavigator.BackPressedListener {
+class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) : Fragment(), BaseWizardNavigator.BackPressedListener, ClearSDCardWizardNavigator.BackPressedListener {
     private var controller: ConnectingAirBeamController? = null
 
     override fun onCreateView(

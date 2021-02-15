@@ -5,9 +5,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedFragment
+import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedViewMvc
+import io.lunarlogic.aircasting.screens.settings.clearingSDCard.ClearingSDCardFragment
+import org.greenrobot.eventbus.EventBus
 
 class ClearSDCardWizardNavigator(
     private val mViewMvc: ClearSDCardViewMvc,
@@ -19,7 +25,7 @@ class ClearSDCardWizardNavigator(
 
     private val STEP_PROGRESS = 10
     private var currentProgressStep = 0
-    private var backPressedListener: ClearSDCardWizardNavigator.BackPressedListener? = null
+    private var backPressedListener: BackPressedListener? = null
 
     fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
         incrementStepProgress()
@@ -33,7 +39,7 @@ class ClearSDCardWizardNavigator(
         listener: TurnOnLocationServicesViewMvc.Listener
     ) { //todo: think- do we want to disable them later on <?>- especially if disabled mapping
         incrementStepProgress()
-        val fragment = TurnOnLocationServicesFragment(areMapsDisabled, sessionType) //todo: problem with the constructor
+        val fragment = TurnOnLocationServicesFragment() //todo: problem with the constructor
         fragment.listener = listener
         goToFragment(fragment)
     }
@@ -43,36 +49,33 @@ class ClearSDCardWizardNavigator(
     ) {
         val fragment = TurnOnBluetoothFragment()
         fragment.listener = listener
-        goToFragment(fragment)    }
+        goToFragment(fragment)
+    }
 
     fun goToTurnOnAirbeam(
         listener: TurnOnAirBeamViewMvc.Listener
     ) {
-        incrementStepProgress()
         incrementStepProgress() // todo: check if works fine
         val fragment = TurnOnAirBeamFragment()
         fragment.listener = listener
         goToFragment(fragment)
     }
 
-    fun goToConnectingAirBeam() {
+    fun goToClearingSDCard() {
         incrementStepProgress()
-        val fragment = ConnectingAirBeamFragment()
-        registerBackPressed(fragment) //todo: this is not fine for some reason
+        val fragment = ClearingSDCardFragment()
+        registerBackPressed(fragment)
         goToFragment(fragment)
     }
 
-    fun goToClearingSDCard() { //todo: add ClearingSDCardFragment <?>
+    fun goToSDCardCleared(listener: SDCardClearedViewMvc.Listener) {
         incrementStepProgress()
-        TODO("Not yet implemented")
+        val fragment = SDCardClearedFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
     }
 
-    fun goToSDCardCleared() { //todo: add SDCardClearedFragment <?>
-        incrementStepProgress()
-        TODO("Not yet implemented")
-    }
-
-    private fun registerBackPressed(listener: ClearSDCardWizardNavigator.BackPressedListener) {
+    private fun registerBackPressed(listener: BackPressedListener) {
         backPressedListener = listener
     }
 
@@ -92,8 +95,8 @@ class ClearSDCardWizardNavigator(
     }
 
     private fun updateProgressBarView() {
-        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-        progressBar?.progress = currentProgressStep * STEP_PROGRESS
+//        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+//        progressBar?.progress = currentProgressStep * STEP_PROGRESS
     }
 
     private fun goToFragment(fragment: Fragment) {

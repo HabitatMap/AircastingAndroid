@@ -1,8 +1,7 @@
 package io.lunarlogic.aircasting.screens.settings.clearSDCard
 
-interface ClearSDCardViewMvc {
-    interface Listener {
+import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
+import io.lunarlogic.aircasting.screens.common.ViewMvc
 
-    }
-
+interface ClearSDCardViewMvc: ViewMvc {
 }

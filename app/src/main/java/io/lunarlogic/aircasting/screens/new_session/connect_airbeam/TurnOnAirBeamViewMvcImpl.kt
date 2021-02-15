@@ -10,7 +10,7 @@ import io.lunarlogic.aircasting.models.Session
 class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.Listener>, TurnOnAirBeamViewMvc {
 
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?, sessionType: Session.Type): super() {
+        inflater: LayoutInflater, parent: ViewGroup?, sessionType: Session.Type = Session.Type.MOBILE): super() { //todo: default value added temporary
         val layoutId = getLayoutId(sessionType)
         this.rootView = inflater.inflate(layoutId, parent, false)
         val button = rootView?.findViewById<Button>(R.id.turn_on_airbeam_ready_button)

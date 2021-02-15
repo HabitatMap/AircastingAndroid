@@ -6,8 +6,11 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 
 class ClearSdCardViewMvcImpl: BaseViewMvc, ClearSDCardViewMvc {
+
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
-        this.rootView = inflater.inflate(R.layout.activity_new_session, parent, false) //to be changed on clear sd card layout
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): super() {
+        this.rootView = inflater.inflate(R.layout.activity_clear_sd_card, parent, false)
     }
 }
