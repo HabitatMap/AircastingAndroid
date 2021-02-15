@@ -71,7 +71,7 @@ class ClearSDCardController(
                 wizardNavigator.goToTurnOnBluetooth(this)
             }
         } else {
-            wizardNavigator.goToTurnOnLocationServices(this) //todo: think of what i need here in constr
+            wizardNavigator.goToTurnOnLocationServices(this)
         }
     }
 
@@ -93,7 +93,6 @@ class ClearSDCardController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToClearingSDCard()
-        Thread.sleep(3000) // todo: to be removed
         // todo: clearing SD card service
     }
 
@@ -104,7 +103,7 @@ class ClearSDCardController(
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
-        wizardNavigator.goToSelectDevice(bluetoothManager, this) //todo: is this the screen with list of devices??
+        wizardNavigator.goToSelectDevice(bluetoothManager, this)
     }
 
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
@@ -119,7 +118,7 @@ class ClearSDCardController(
             } else {
                 connectToAirBeam(selectedDeviceItem)
             }
-            EventBus.getDefault().post(AirBeamConnectionSuccessfulEvent(DeviceItem(),"0")) //todo: to be changed on SDClearSuccessfullEvent, to be removed
+            EventBus.getDefault().post(AirBeamConnectionSuccessfulEvent(DeviceItem(),"0")) //todo: to be changed on SDClearSuccessfullEvent, to be removed <?>
         }
     }
 
@@ -173,7 +172,7 @@ class ClearSDCardController(
     }
 
     @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) { //todo: SD card cleared event
+    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) { //todo: to be changed on SD card cleared event
         wizardNavigator.goToSDCardCleared(this)
     }
 

@@ -37,9 +37,9 @@ class ClearSDCardWizardNavigator(
 
     fun goToTurnOnLocationServices(
         listener: TurnOnLocationServicesViewMvc.Listener
-    ) { //todo: think- do we want to disable them later on <?>- especially if disabled mapping
+    ) {
         incrementStepProgress()
-        val fragment = TurnOnLocationServicesFragment() //todo: problem with the constructor
+        val fragment = TurnOnLocationServicesFragment()
         fragment.listener = listener
         goToFragment(fragment)
     }
@@ -55,7 +55,7 @@ class ClearSDCardWizardNavigator(
     fun goToTurnOnAirbeam(
         listener: TurnOnAirBeamViewMvc.Listener
     ) {
-        incrementStepProgress() // todo: check if works fine
+        incrementStepProgress()
         val fragment = TurnOnAirBeamFragment()
         fragment.listener = listener
         goToFragment(fragment)
@@ -95,8 +95,8 @@ class ClearSDCardWizardNavigator(
     }
 
     private fun updateProgressBarView() {
-//        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-//        progressBar?.progress = currentProgressStep * STEP_PROGRESS
+        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar?.progress = currentProgressStep * STEP_PROGRESS
     }
 
     private fun goToFragment(fragment: Fragment) {
