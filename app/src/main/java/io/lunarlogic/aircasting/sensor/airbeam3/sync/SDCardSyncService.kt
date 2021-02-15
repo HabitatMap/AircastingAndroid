@@ -31,6 +31,9 @@ class SDCardSyncService(
                 mSessionsSyncService?.sync()
                 // TODO: move it really to the finish
                 showFinishMessage(isSyncFileCorrect)
+
+                // TODO: should we check something before clearing?
+                airBeamConnector.clearSDCard()
             }
         )
 
