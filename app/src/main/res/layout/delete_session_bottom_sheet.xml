@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_4"
+                    android:layout_marginTop="@dimen/keyline_8"
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@+id/select_streams_subtitle"
                     app:layout_constraintBottom_toTopOf="@+id/delete_streams_button">

@@ -1,6 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +9,14 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener {
@@ -55,6 +55,11 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
         generateStreamsOptions()
 
+        setFocusedListener(allStreamsCheckbox)
+        checkBoxMap.forEach { (checkbox, _) ->
+            setFocusedListener(checkbox)
+        }
+
         return view
     }
 
@@ -64,6 +69,21 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
     fun allStreamsBoxSelected(): Boolean {
         return allStreamsCheckbox.isChecked
+    }
+
+    private fun setFocusedListener(checkbox: CheckBox) {
+        checkbox.setOnCheckedChangeListener { checkboxView, _ ->
+            if (checkboxView.isChecked) {
+                val backgroundColor = ContextCompat.getColor(this.requireContext(), R.color.aircasting_grey_100)
+                val textColor = ResourcesCompat.getColor(this.requireContext().resources, R.color.quantum_black_100, null)
+                checkboxView.setBackgroundColor(backgroundColor)
+                checkboxView.setTextColor(textColor)
+            } else {
+                val textColor = ResourcesCompat.getColor(this.requireContext().resources, R.color.aircasting_grey_300, null)
+                checkboxView.setBackgroundColor(Color.TRANSPARENT)
+                checkboxView.setTextColor(textColor)
+            }
+        }
     }
 
     private fun selectedOptions(): ArrayList<DeleteStreamOption> {
@@ -90,10 +110,22 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
     private fun createCheckboxView(checkbox: CheckBox, displayedValue: String?): View {
         checkbox.id = View.generateViewId()
         checkbox.text = displayedValue
-        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val buttonPaddingLeft = context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
+        val radioButtonPaddingTopBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
+
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val drawable = context?.getDrawable(R.drawable.checkbox_selector)
+        layoutParams.leftMargin = 10
+        layoutParams.bottomMargin = 10
+
+        checkbox.setPadding(buttonPaddingLeft, radioButtonPaddingTopBottom, 0, radioButtonPaddingTopBottom)
+
         checkbox.layoutParams = layoutParams
-        checkbox.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.aircasting_blue_400))
+        checkbox.buttonDrawable = drawable
+        checkbox.setBackgroundColor(Color.TRANSPARENT)
+
         TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
+
         return checkbox
     }
 }
