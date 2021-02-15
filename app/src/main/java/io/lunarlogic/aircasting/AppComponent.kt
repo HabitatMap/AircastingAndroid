@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
+import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
 import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
 import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
@@ -35,6 +36,7 @@ import javax.inject.Singleton
 )
 interface AppComponent {
     fun inject(app: AircastingApplication)
+    fun inject(activity: OnboardingActivity)
     fun inject(activity: LoginActivity)
     fun inject(activity: CreateAccountActivity)
     fun inject(activity: MainActivity)
