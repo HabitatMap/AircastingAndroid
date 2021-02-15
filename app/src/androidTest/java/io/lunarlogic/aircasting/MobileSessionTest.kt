@@ -94,7 +94,6 @@ class MobileSessionTest {
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        val airBeamAddress = FakeDeviceItem.ADDRESS
         stubPairedDevice(bluetoothManager)
 
         testRule.launchActivity(null)
@@ -106,7 +105,7 @@ class MobileSessionTest {
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
-        onView(withText(containsString(airBeamAddress))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)

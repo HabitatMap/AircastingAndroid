@@ -8,7 +8,7 @@ import org.mockito.Mockito
 class FakeDeviceItem {
     companion object {
         val ID = "0018961070D6"
-        val NAME = "AirBeam2"
+        val NAME = "AirBeam2:0018961070D6"
         val ADDRESS = "00:18:96:10:70:D6"
         val TYPE = DeviceItem.Type.AIRBEAM2
     }

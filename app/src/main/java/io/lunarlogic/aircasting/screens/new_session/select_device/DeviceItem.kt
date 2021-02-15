@@ -38,14 +38,6 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : P
 
     val bluetoothDevice get() = mBluetoothDevice
 
-    fun displayName(): String {
-        if (isAirBeam()) {
-            return name.split(":", "-").first()
-        }
-
-        return name
-    }
-
     fun isAirBeam(): Boolean {
         return arrayOf(Type.AIRBEAM1, Type.AIRBEAM2, Type.AIRBEAM3).contains(type)
     }

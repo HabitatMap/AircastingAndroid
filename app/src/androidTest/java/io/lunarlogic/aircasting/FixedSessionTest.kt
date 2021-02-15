@@ -107,7 +107,6 @@ class FixedSessionTest {
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        val airBeamAddress = FakeDeviceItem.ADDRESS
         stubPairedDevice(bluetoothManager)
 
         testRule.launchActivity(null)
@@ -119,7 +118,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(airBeamAddress))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -170,7 +169,6 @@ class FixedSessionTest {
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        val airBeamAddress = FakeDeviceItem.ADDRESS
         stubPairedDevice(bluetoothManager)
 
         testRule.launchActivity(null)
@@ -182,7 +180,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(airBeamAddress))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
