@@ -54,7 +54,7 @@ class SDCardUploadFixedMeasurementsService(
         while (true) {
             val allStreamsChunks = allChunks.filter { (_, chunks) -> chunks.size > 0 }
             if (allStreamsChunks.isEmpty()) {
-                Log.d(TAG, "Upload finished")
+                Log.d(TAG, "Upload of all chunks queued.")
                 break
             }
 
@@ -89,7 +89,7 @@ class SDCardUploadFixedMeasurementsService(
             deviceId,
             csvMeasurementStream,
             csvMeasurementsChunk,
-            { println("ANIA SUCCESS!") },
-            { println("ANIA ERROR :(") })
+            { Log.d(TAG, "Successfully finished chunk upload for ${csvMeasurementStream.sensorName}.") },
+            { Log.d(TAG, "Error while uploading chunk for ${csvMeasurementStream.sensorName}.") })
     }
 }
