@@ -71,7 +71,7 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <Button
-            android:id="@+id/sd_card_cleared_continue_button"
+            android:id="@+id/airbeam_connected_continue_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
