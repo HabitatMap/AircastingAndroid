@@ -15,7 +15,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
-import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 
 
@@ -59,6 +58,7 @@ interface ApiService {
 
 open class ApiServiceFactory(private val mSettings: Settings) {
     private val READ_TIMEOUT_SECONDS: Long = 60
+    private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
     fun get(interceptors: List<Interceptor>): ApiService {
         val logging = HttpLoggingInterceptor()
@@ -73,6 +73,7 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         interceptors.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
         val httpClient = httpClientBuilder
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
 
 
