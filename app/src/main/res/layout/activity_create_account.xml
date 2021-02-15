@@ -8,6 +8,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_margin="0dp"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/curved_progress_bar"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/header"/>
+
         <TextView
             android:id="@+id/header"
             android:layout_width="match_parent"
@@ -89,8 +103,7 @@
                 android:hint="@string/username_hint"
                 android:inputType="textNoSuggestions"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+                android:textColor="@color/aircasting_grey_700" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

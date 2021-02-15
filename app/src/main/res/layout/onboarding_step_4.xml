@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_margin="0dp"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/curved_progress_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- This image is blank ?? -->
+    <ImageView
+        android:id="@+id/onboarding_step_4_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/onboarding_step_4_header"/>
+
+    <TextView
+        android:id="@+id/onboarding_step_4_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your privacy"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/onboarding_step_4_description"/>
+
+    <TextView
+        android:id="@+id/onboarding_step_4_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/accept_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Accept"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/learn_more_button" />
+
+    <Button
+        android:id="@+id/learn_more_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Learn more"
+        app:layout_constraintTop_toBottomOf="@id/accept_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
