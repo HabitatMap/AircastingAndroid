@@ -25,8 +25,7 @@ class MainController(
     private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
-        //todo: add onboarding here, how should i make this if flow to be proper
-        if (mSettings.shouldOnboardingAppear()) {
+        if (mSettings.shouldOnboardingAppear()) {  //todo: this 'if' flow is not working correctly now
             showOnboardingScreen()
         } else if (mSettings.getAuthToken() == null) {
             showLoginScreen()
