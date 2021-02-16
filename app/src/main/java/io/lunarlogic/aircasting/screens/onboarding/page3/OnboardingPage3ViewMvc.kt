@@ -1,8 +1,10 @@
 package io.lunarlogic.aircasting.screens.onboarding.page3
 
-interface OnboardingPage3ViewMvc {
+import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
+
+interface OnboardingPage3ViewMvc: ObservableViewMvc<OnboardingPage3ViewMvc.Listener> {
     interface Listener {
-        fun onContinueClicked()
-        fun onLearnMoreClicked()
+        fun onContinuePage3Clicked()
+        fun onLearnMorePage3Clicked()
     }
 }

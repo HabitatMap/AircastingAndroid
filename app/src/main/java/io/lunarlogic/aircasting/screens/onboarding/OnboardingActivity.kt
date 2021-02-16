@@ -29,16 +29,11 @@ class OnboardingActivity: AppCompatActivity() {
             .appComponent.inject(this)
 
         val view = OnboardingViewMvcImpl(layoutInflater, null)
-        controller = OnboardingController(view)
+        controller = OnboardingController(this, view, supportFragmentManager, settings)
+
+        controller?.onCreate()
 
         setContentView(view.rootView)
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
 }

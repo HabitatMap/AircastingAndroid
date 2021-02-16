@@ -1,7 +1,10 @@
 package io.lunarlogic.aircasting.screens.onboarding.page2
 
-interface OnboardingPage2ViewMvc {
+import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
+
+
+interface OnboardingPage2ViewMvc: ObservableViewMvc<OnboardingPage2ViewMvc.Listener> {
     interface Listener {
-        fun onContinueClicked()
+        fun onContinuePage2Clicked()
     }
 }

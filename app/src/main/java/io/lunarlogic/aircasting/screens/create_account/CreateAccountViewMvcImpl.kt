@@ -1,17 +1,20 @@
 package io.lunarlogic.aircasting.screens.create_account
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ProgressBar
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.responses.CreateAccountErrorResponse
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.Listener>, CreateAccountViewMvc {
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+        inflater: LayoutInflater, parent: ViewGroup?, settings: Settings): super() {
         this.rootView = inflater.inflate(R.layout.activity_create_account, parent, false)
 
         val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
@@ -22,6 +25,11 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
         val loginButton = rootView?.findViewById<Button>(R.id.sign_in_button)
         loginButton?.setOnClickListener {
             onLoginClicked()
+        }
+
+        if (settings.shouldOnboardingAppear()) {
+            val progressBar = rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+            progressBar?.visibility = View.VISIBLE
         }
     }
 

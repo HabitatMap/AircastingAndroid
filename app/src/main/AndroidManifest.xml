@@ -81,6 +81,7 @@
         <activity android:label=""
             android:name=".screens.settings.myaccount.MyAccountActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".screens.onboarding.OnboardingActivity" />
 
 
         <meta-data
