@@ -16,11 +16,10 @@ class OnboardingController(
     mViewMvc: OnboardingViewMvc,
     private val mFragmentManager: FragmentManager,
     private val mSettings: Settings
-): OnboardingViewMvc.Listener,
-    OnboardingPage1ViewMvc.Listener,
+): OnboardingPage1ViewMvc.Listener,
     OnboardingPage2ViewMvc.Listener,
     OnboardingPage3ViewMvc.Listener,
-    OnboardingPage4ViewMvc.Listener{  //todo: should i add all screen listeners here???
+    OnboardingPage4ViewMvc.Listener{
     private val wizardNavigator = OnboardingWizardNavigator(mViewMvc, mFragmentManager)
 
     fun onBackPressed() {
@@ -49,8 +48,8 @@ class OnboardingController(
     }
 
     override fun onAcceptClicked() {
-        CreateAccountActivity.start(mContextActivity) //todo: progress bar (normally gone)
-        mSettings.onboardingAccepted()  // changing flag in settings (user has seen the onboarding part)
+        CreateAccountActivity.start(mContextActivity) //todo: progress bar (normally gone), maybe i should go for it from level of wizard navigator?
+        mSettings.onboardingAccepted()
 //        mContextActivity.finish()
     }
 

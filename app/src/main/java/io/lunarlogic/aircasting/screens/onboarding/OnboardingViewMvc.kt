@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.onboarding
 
-interface OnboardingViewMvc {
-    interface Listener {
+import io.lunarlogic.aircasting.screens.common.ViewMvc
 
-    }
+interface OnboardingViewMvc: ViewMvc {
 }

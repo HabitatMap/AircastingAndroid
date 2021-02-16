@@ -72,8 +72,8 @@ class OnboardingWizardNavigator(
     }
 
     private fun updateProgressBarView() {
-//        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-//        progressBar?.progress = currentProgressStep * STEP_PROGRESS
+        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar?.progress = currentProgressStep * STEP_PROGRESS
     }
 
     private fun goToFragment(fragment: Fragment) {
