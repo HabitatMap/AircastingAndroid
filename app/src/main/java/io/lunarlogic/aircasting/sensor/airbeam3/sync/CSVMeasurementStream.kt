@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
+import io.lunarlogic.aircasting.models.MeasurementStream
+
 class CSVMeasurementStream(
     val sensorName: String,
     val measurementType: String,
@@ -89,5 +91,21 @@ class CSVMeasurementStream(
 
     fun sensorPackageName(deviceId: String): String {
         return "$DEVICE_NAME:${deviceId}"
+    }
+
+    fun toMeasurementStream(deviceId: String): MeasurementStream {
+        return MeasurementStream(
+            sensorPackageName(deviceId),
+            sensorName,
+            measurementType,
+            measurementShortType,
+            unitName,
+            unitSymbol,
+            thresholdVeryLow,
+            thresholdLow,
+            thresholdMedium,
+            thresholdHigh,
+            thresholdVeryHigh
+        )
     }
 }

@@ -36,15 +36,33 @@ open class SensorsModule {
 
     @Provides
     @Singleton
+    fun providesSDCardCSVFileFactory(
+        application: AircastingApplication
+    ): SDCardCSVFileFactory =
+        SDCardCSVFileFactory(
+            application
+        )
+
+    @Provides
+    @Singleton
+    fun providesSDCardCSVIterator(
+        errorHandler: ErrorHandler
+    ): SDCardCSVIterator =
+        SDCardCSVIterator(
+            errorHandler
+        )
+
+    @Provides
+    @Singleton
     fun providesSDCardMeasurementsCreator(
-        application: AircastingApplication,
-        errorHandler: ErrorHandler,
+        csvFileFactory: SDCardCSVFileFactory,
+        csvIterator: SDCardCSVIterator,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepository
-    ): SDCardMeasurementsCreator = SDCardMeasurementsCreator(
-        application,
-        errorHandler,
+    ): SDCardMobileSessionsProcessor = SDCardMobileSessionsProcessor(
+        csvFileFactory,
+        csvIterator,
         sessionsRepository,
         measurementStreamsRepository,
         measurementsRepository
@@ -55,13 +73,15 @@ open class SensorsModule {
     fun providesSDCardSyncService(
         sdCardDownloadService: SDCardDownloadService,
         sdCardCSVFileChecker: SDCardCSVFileChecker,
-        sdCardMeasurementsCreator: SDCardMeasurementsCreator,
-        sessionsSyncService: SessionsSyncService?
+        sdCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+        sessionsSyncService: SessionsSyncService?,
+        errorHandler: ErrorHandler
     ): SDCardSyncService = SDCardSyncService(
         sdCardDownloadService,
         sdCardCSVFileChecker,
-        sdCardMeasurementsCreator,
-        sessionsSyncService
+        sdCardMobileSessionsProcessor,
+        sessionsSyncService,
+        errorHandler
     )
 
     @Provides

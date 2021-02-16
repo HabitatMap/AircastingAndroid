@@ -5,7 +5,7 @@ import java.io.File
 
 class SDCardCSVFileFactory(private val mContext: Context) {
     private val DIR_NAME = "sync"
-    private val FILE_NAME = "sync.csv"
+    private val MOBILE_FILE_NAME = "mobile.csv"
     private val FIXED_FILE_NAME = "fixed.csv"
 
     enum class Header(val value: Int) {
@@ -28,13 +28,16 @@ class SDCardCSVFileFactory(private val mContext: Context) {
         }
     }
 
-    fun get(): File {
-        val dir = mContext.getExternalFilesDir(DIR_NAME)
-        return File(dir, FILE_NAME)
+    fun getMobileFile(): File {
+        return getFile(MOBILE_FILE_NAME)
     }
 
-    fun getFixed(): File {
+    fun getFixedFile(): File {
+        return getFile(FIXED_FILE_NAME)
+    }
+
+    private fun getFile(fileName: String): File {
         val dir = mContext.getExternalFilesDir(DIR_NAME)
-        return File(dir, FIXED_FILE_NAME)
+        return File(dir, fileName)
     }
 }

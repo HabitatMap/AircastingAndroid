@@ -67,7 +67,8 @@ class SDCardDownloadService(mContext: Context) {
     }
 
     private fun openSyncFile() {
-        val file = mCSVFileFactory.get()
+        // TODO: save mobile and fixed to separate files, with device id in the name
+        val file = mCSVFileFactory.getMobileFile()
         fileWriter = FileWriter(file)
     }
 

@@ -19,11 +19,9 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncFinishedEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -123,17 +121,6 @@ class MobileActiveController(
     @Subscribe
     fun onMessageEvent(event: SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
-    }
-
-    // TODO: remove this method after implementing proper sync
-    @Subscribe
-    fun onMessageEvent(event: SyncFinishedEvent) {
-        syncProgressDialog?.cancel()
-        syncProgressDialog = AlertDialog.Builder(mContext)
-            .setCancelable(false)
-            .setPositiveButton("Ok", null)
-            .setMessage(event.message)
-            .show()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

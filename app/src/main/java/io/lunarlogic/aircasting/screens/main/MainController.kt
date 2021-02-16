@@ -59,11 +59,10 @@ class MainController(
     private fun sync(apiService: ApiService) {
         val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings)
 
-        mMobileSessionsSyncService.sync({
-            mViewMvc.showLoader()
-        }, {
-            mViewMvc.hideLoader()
-        })
+        mMobileSessionsSyncService.sync(
+            onStartCallback = { mViewMvc.showLoader() },
+            finallyCallback = { mViewMvc.hideLoader() }
+        )
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

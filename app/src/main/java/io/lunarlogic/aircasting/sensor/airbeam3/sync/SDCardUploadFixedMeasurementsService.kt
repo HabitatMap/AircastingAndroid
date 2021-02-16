@@ -15,7 +15,7 @@ class SDCardUploadFixedMeasurementsService(
 
     fun run() {
         DatabaseProvider.runQuery {
-            val file = mSDCardCSVFileFactory.getFixed()
+            val file = mSDCardCSVFileFactory.getFixedFile()
             val deviceId = "246f28c47698" // TODO: move it to the file name
 
             mSDCardCSVIterator.run(file).forEach { csvSession ->

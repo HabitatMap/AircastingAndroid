@@ -14,7 +14,8 @@ class SDCardCSVFileChecker(mContext: Context) {
 
     // TODO: return false only if > 20% is wrong
     fun run(steps: List<Step>): Boolean {
-        val file = mCSVFileFactory.get()
+        // TODO: check mobile and fixed
+        val file = mCSVFileFactory.getMobileFile()
         val reader = FileReader(file)
         val lines = reader.readLines()
         var stepIndex = -1

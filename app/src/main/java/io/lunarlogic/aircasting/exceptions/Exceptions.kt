@@ -56,5 +56,18 @@ class DBInsertException(t: Throwable? = null):
 
 class MissingDeviceAfterConnectionError: BaseException()
 
-class MeasurementsFromSDCardParsingError(cause: Exception):
+// SD card sync
+
+class SDCardMissingSessionsSyncServiceError(): BaseException()
+
+class SDCardSessionsInitialSyncError(cause: Exception? = null):
+    BaseException(cause, "There was a problem while refreshing sessions list.")
+
+class SDCardMeasurementsParsingError(cause: Exception):
     BaseException(cause, "There was a problem while parsing measurements from SD card.")
+
+class SDCardDownloadedFileCorrupted():
+    BaseException(null, "Download from SD card was corrupted.")
+
+class SDCardSessionsFinalSyncError(cause: Exception? = null):
+    BaseException(cause, "There was a problem while sending mobile sessions to the backend.")

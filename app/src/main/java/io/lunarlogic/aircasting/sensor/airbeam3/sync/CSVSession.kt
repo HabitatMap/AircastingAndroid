@@ -1,6 +1,8 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import io.lunarlogic.aircasting.lib.DateConverter
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -60,5 +62,33 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
                 )
             streams[streamHeader.value]?.add(measurement)
         }
+    }
+
+    fun toSession(deviceId: String): Session? {
+        val startTime = startTime() ?: return null
+
+        val session = Session(
+            uuid,
+            deviceId,
+            DeviceItem.Type.AIRBEAM3,
+            Session.Type.MOBILE,
+            DEFAULT_NAME,
+            ArrayList(),
+            Session.Status.DISCONNECTED,
+            startTime
+        )
+
+        val latitude = latitude()
+        val longitude = longitude()
+        if (latitude != null && longitude != null) {
+            val location = Session.Location(latitude, longitude)
+            session.location = location
+
+            if (location == Session.Location.INDOOR_FAKE_LOCATION) {
+                session.locationless = true
+            }
+        }
+
+        return session
     }
 }

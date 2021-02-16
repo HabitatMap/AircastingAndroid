@@ -13,7 +13,6 @@ import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.models.observers.AppLifecycleObserver
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -66,7 +65,12 @@ class SessionsSyncService {
         mCall?.cancel()
     }
 
-    fun sync(showLoaderCallback: (() -> Unit)? = null, hideLoaderCallback: (() -> Unit)? = null) {
+    fun sync(
+        onStartCallback: (() -> Unit)? = null,
+        onSuccessCallback: (() -> Unit)? = null,
+        onErrorCallack: (() -> Unit)? = null,
+        finallyCallback: (() -> Unit)? = null
+    ) {
         // This will happen if we regain connectivity when app is in background.
         // When in foreground again, it should sync
         if (syncInBackground.get()) {
@@ -77,7 +81,7 @@ class SessionsSyncService {
         }
 
         syncStarted.set(true)
-        showLoaderCallback?.invoke()
+        onStartCallback?.invoke()
 
         DatabaseProvider.runQuery {
             val sessions = sessionRepository.finishedSessions()
@@ -91,7 +95,7 @@ class SessionsSyncService {
                     response: Response<SyncResponse>
                 ) {
                     syncStarted.set(false)
-                    hideLoaderCallback?.invoke()
+                    finallyCallback?.invoke()
 
                     if (response.isSuccessful) {
                         val body = response.body()
@@ -101,16 +105,20 @@ class SessionsSyncService {
                                 delete(body.deleted)
                                 upload(body.upload)
                                 download(body.download)
+
+                                onSuccessCallback?.invoke()
                             }
                         }
                     } else {
+                        onErrorCallack?.invoke()
                         handleSyncError(call)
                     }
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
-                    hideLoaderCallback?.invoke()
+                    onErrorCallack?.invoke()
+                    finallyCallback?.invoke()
                     handleSyncError(call, t)
                 }
             })

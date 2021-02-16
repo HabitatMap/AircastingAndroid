@@ -14,7 +14,6 @@ import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncFinishedEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -88,18 +87,7 @@ class LetsStartController(
     fun onMessageEvent(event: SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
     }
-
-    // TODO: remove this method after implementing proper sync
-    @Subscribe
-    fun onMessageEvent(event: SyncFinishedEvent) {
-        syncProgressDialog?.cancel()
-        syncProgressDialog = AlertDialog.Builder(mRootActivity)
-            .setCancelable(false)
-            .setPositiveButton("Ok", null)
-            .setMessage(event.message)
-            .show()
-    }
-
+    
     override fun onClearSDCardSelected() {
         mContext ?: return
 

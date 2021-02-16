@@ -1,82 +1,86 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
+import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
-import java.util.concurrent.TimeUnit
 
 class SDCardSyncService(
     private val mSDCardDownloadService: SDCardDownloadService,
     private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
-    private val mSDCardMeasurementsCreator: SDCardMeasurementsCreator,
-    private val mSessionsSyncService: SessionsSyncService?
+    private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+    private val mSessionsSyncService: SessionsSyncService?,
+    private val mErrorHandler: ErrorHandler
 ) {
-    private var mSyncStartedAt: Long? = null // TODO: remove it after implementing proper sync UI
-
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
-        mSyncStartedAt = System.currentTimeMillis()
+        val sessionsSyncService = mSessionsSyncService
 
-        // TODO: SessionSyncService.sync here or before mSDCardMeasurementsCreator.run
+        if (sessionsSyncService == null) {
+            val cause = SDCardMissingSessionsSyncServiceError()
+            mErrorHandler.handleAndDisplay(SDCardSessionsInitialSyncError(cause))
+            return
+        }
+
+        sessionsSyncService.sync(
+            onSuccessCallback = { performSDCardDownload(airBeamConnector, deviceItem)},
+            onErrorCallack = { mErrorHandler.handleAndDisplay(SDCardSessionsInitialSyncError()) }
+        )
+    }
+
+    private fun performSDCardDownload(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         airBeamConnector.triggerSDCardDownload()
 
         mSDCardDownloadService.run(
             onLinesDownloaded = { step, linesCount ->
-                // TODO: display step type
+                // TODO: display step type?
                 showMessage("Syncing $linesCount/${step.measurementsCount}")
             },
-            onDownloadFinished = { steps ->
-                val isSyncFileCorrect = mSDCardCSVFileChecker.run(steps)
-                mSDCardMeasurementsCreator.run(deviceItem.id)
-                mSessionsSyncService?.sync()
-                // TODO: move it really to the finish
-                showFinishMessage(isSyncFileCorrect)
-
-                // TODO: should we check something before clearing?
-                airBeamConnector.clearSDCard()
-            }
+            onDownloadFinished = { steps -> checkDownloadedFile(airBeamConnector, deviceItem, steps) }
         )
-
     }
 
-    // TODO: temp thing
-    private fun showFinishMessage(isSyncFileCorrect: Boolean) {
-        val endedAt = System.currentTimeMillis()
-        showMessage("Checking downloaded file...")
-
-        // TODO:
-        val downloadedMessage = "Downloaded"// "Downloaded $counter/$count."
-        var timeMessage = ""
-        mSyncStartedAt?.let { startedAt ->
-            val interval = endedAt - startedAt
-            timeMessage = "In ${formatDownloadTimeDuration(interval)}."
-        }
-
-        val downloadedFileMessage = if (isSyncFileCorrect) {
-            "Sync file is correct!"
+    private fun checkDownloadedFile(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem, steps: List<SDCardReader.Step>) {
+        if (mSDCardCSVFileChecker.run(steps)) {
+            processMeasurements(airBeamConnector, deviceItem)
         } else {
-            "Something is wrong with downloaded file :/"
+            mErrorHandler.handleAndDisplay(SDCardDownloadedFileCorrupted())
+        }
+    }
+
+    private fun processMeasurements(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+        mSDCardMobileSessionsProcessor.run(deviceItem.id,
+            onFinishCallback = {
+                sendMeasurementsToBackend(airBeamConnector)
+            }
+        )
+    }
+
+    private fun sendMeasurementsToBackend(airBeamConnector: AirBeamConnector) {
+        val sessionsSyncService = mSessionsSyncService
+
+        if (sessionsSyncService == null) {
+            val cause = SDCardMissingSessionsSyncServiceError()
+            mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError(cause))
+            return
         }
 
-        val message = "Downloading from SD card finished.\n" +
-            "$downloadedMessage\n" +
-            "$timeMessage\n" +
-            downloadedFileMessage
+        sessionsSyncService.sync(
+            onSuccessCallback = {
+                clearSDCard(airBeamConnector)
+            },
+            onErrorCallack = {
+                mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
+            }
+        )
+    }
 
-        EventBus.getDefault().post(SyncFinishedEvent(message))
+    private fun clearSDCard(airBeamConnector: AirBeamConnector) {
+        // TODO: should we check something before clearing?
+        airBeamConnector.clearSDCard()
     }
 
     private fun showMessage(message: String) {
         EventBus.getDefault().post(SyncEvent(message))
-    }
-
-    // TODO: temp thing
-    private fun formatDownloadTimeDuration(duration: Long): String {
-        return String.format("%02d:%02d:%02d",
-            TimeUnit.MILLISECONDS.toHours(duration),
-            TimeUnit.MILLISECONDS.toMinutes(duration) -
-                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
-            TimeUnit.MILLISECONDS.toSeconds(duration) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 }

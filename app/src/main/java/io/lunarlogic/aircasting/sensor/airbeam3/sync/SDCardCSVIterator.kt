@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import com.opencsv.CSVReader
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.exceptions.MeasurementsFromSDCardParsingError
+import io.lunarlogic.aircasting.exceptions.SDCardMeasurementsParsingError
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -46,7 +46,7 @@ class SDCardCSVIterator(
                 currentSession?.addMeasurements(line)
             } while(line != null)
         } catch (e: IOException) {
-            mErrorHandler.handle(MeasurementsFromSDCardParsingError(e))
+            mErrorHandler.handle(SDCardMeasurementsParsingError(e))
         }
     }
 }
