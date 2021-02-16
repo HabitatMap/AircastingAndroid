@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,6 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
@@ -55,11 +52,6 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
         generateStreamsOptions()
 
-        setFocusedListener(allStreamsCheckbox)
-        checkBoxMap.forEach { (checkbox, _) ->
-            setFocusedListener(checkbox)
-        }
-
         return view
     }
 
@@ -69,21 +61,6 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
     fun allStreamsBoxSelected(): Boolean {
         return allStreamsCheckbox.isChecked
-    }
-
-    private fun setFocusedListener(checkbox: CheckBox) {
-        checkbox.setOnCheckedChangeListener { checkboxView, _ ->
-            if (checkboxView.isChecked) {
-                val backgroundColor = ContextCompat.getColor(this.requireContext(), R.color.aircasting_grey_100)
-                val textColor = ResourcesCompat.getColor(this.requireContext().resources, R.color.quantum_black_100, null)
-                checkboxView.setBackgroundColor(backgroundColor)
-                checkboxView.setTextColor(textColor)
-            } else {
-                val textColor = ResourcesCompat.getColor(this.requireContext().resources, R.color.aircasting_grey_300, null)
-                checkboxView.setBackgroundColor(Color.TRANSPARENT)
-                checkboxView.setTextColor(textColor)
-            }
-        }
     }
 
     private fun selectedOptions(): ArrayList<DeleteStreamOption> {
@@ -115,6 +92,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val drawable = context?.getDrawable(R.drawable.checkbox_selector)
+
         layoutParams.leftMargin = 10
         layoutParams.bottomMargin = 10
 
@@ -122,7 +100,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
         checkbox.layoutParams = layoutParams
         checkbox.buttonDrawable = drawable
-        checkbox.setBackgroundColor(Color.TRANSPARENT)
+        checkbox.background = context?.getDrawable(R.drawable.checkbox_background_selector)
 
         TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
 
