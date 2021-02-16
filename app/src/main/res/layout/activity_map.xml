@@ -16,6 +16,20 @@
 
     <include android:id="@+id/statistics_view" layout="@layout/session_details_statistics_view" />
 
+    <ImageView
+        android:id="@+id/loader_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="110dp"
+        android:src="@drawable/ic_loader"
+        android:tint="@color/aircasting_blue_400"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginEnd="@dimen/keyline_4"
+        app:layout_constraintTop_toBottomOf="@id/measurements_table"
+        app:layout_constraintBottom_toTopOf="@id/hlu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.libraries.maps.SupportMapFragment"
