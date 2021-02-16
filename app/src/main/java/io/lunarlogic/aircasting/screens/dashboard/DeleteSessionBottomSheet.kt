@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
@@ -72,7 +73,10 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         val wholeSessionCheckboxTitle = resources.getString(R.string.delete_all_data_from_session)
         allStreamsCheckbox = CheckBox(context)
         val wholeSessionCheckboxView = createCheckboxView(allStreamsCheckbox, wholeSessionCheckboxTitle)
+        val separatingLineView = createSeparatingLineView()
+      
         mStreamsOptionsContainer?.addView(wholeSessionCheckboxView)
+        mStreamsOptionsContainer?.addView(separatingLineView)
 
         val sessionStreams = session.activeStreams
         sessionStreams.forEach { stream ->
@@ -105,6 +109,18 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
 
         return checkbox
+    }
+
+    private fun createSeparatingLineView(): View {
+        val view = View(context)
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 6)
+        layoutParams.bottomMargin = 32
+        layoutParams.topMargin = 8
+        layoutParams.leftMargin = 8
+        view.setBackgroundColor(ResourcesCompat.getColor(view.context.resources, R.color.aircasting_grey_50, null))
+        view.layoutParams = layoutParams
+
+        return view
     }
 }
 
