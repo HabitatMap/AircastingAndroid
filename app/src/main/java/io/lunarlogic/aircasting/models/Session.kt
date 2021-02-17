@@ -240,6 +240,7 @@ class Session(
     fun hasChangedFrom(session: Session?): Boolean {
         return session?.name != name ||
                 session.tags != tags ||
+                session.followed != followed ||
                 session.streams.size != streams.size ||
                 session.measurementsCount() != measurementsCount() ||
                 session.status != status ||
