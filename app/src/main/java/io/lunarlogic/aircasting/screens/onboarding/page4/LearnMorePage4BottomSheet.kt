@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import kotlinx.android.synthetic.main.learn_more_onboarding_page4.view.*
 
 class LearnMorePage4BottomSheet(
 
@@ -25,7 +26,7 @@ class LearnMorePage4BottomSheet(
         val view = inflater.inflate(R.layout.learn_more_onboarding_page4, container, false)
 
         val textView = view?.findViewById<TextView>(R.id.learn_more_onboarding_page4_description_part1)
-        textView?.text = getString(R.string.onboarding_bottomsheet_page4_description1) + getString(R.string.onboarding_bottomsheet_page4_description2)
+        view.learn_more_onboarding_page4_description_part1.text = buildDescription()
 
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         closeButton?.setOnClickListener {
@@ -37,6 +38,10 @@ class LearnMorePage4BottomSheet(
 
     fun show(manager: FragmentManager) {
         show(manager, TAG)
+    }
+
+    fun buildDescription(): String {
+        return getString(R.string.onboarding_bottomsheet_page4_description1) + "\n\n" + getString(R.string.onboarding_bottomsheet_page4_description2)
     }
 
 }
