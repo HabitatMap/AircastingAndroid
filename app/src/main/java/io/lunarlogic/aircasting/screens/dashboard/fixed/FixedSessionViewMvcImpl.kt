@@ -52,6 +52,12 @@ class FixedSessionViewMvcImpl(
         }
     }
 
+    override fun bindMapButton(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.session?.indoor == true ) {
+            mMapButton.visibility = View.GONE
+        }
+    }
+
     override fun editSessionPressed() {
         val session = mSessionPresenter?.session ?: return
 
