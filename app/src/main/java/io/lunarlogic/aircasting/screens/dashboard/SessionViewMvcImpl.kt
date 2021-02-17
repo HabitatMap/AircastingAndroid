@@ -12,11 +12,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
+import io.lunarlogic.aircasting.lib.TouchDelegateComposite
+import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
-import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
-import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -98,25 +99,21 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mFollowButton.setOnClickListener {
             onFollowButtonClicked()
         }
-        expandViewHitArea(mExpandedSessionView, mFollowButton)
 
         mUnfollowButton = findViewById(R.id.unfollow_button)
         mUnfollowButton.setOnClickListener {
             onUnfollowButtonClicked()
         }
-        expandViewHitArea(mExpandedSessionView, mUnfollowButton)
 
         mMapButton = findViewById(R.id.map_button)
         mMapButton.setOnClickListener {
             onMapButtonClicked()
         }
-        expandViewHitArea(mExpandedSessionView, mMapButton)
 
         mGraphButton = findViewById(R.id.graph_button)
         mGraphButton.setOnClickListener {
             onGraphButtonClicked()
         }
-        expandViewHitArea(mExpandedSessionView, mGraphButton)
 
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
@@ -220,6 +217,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             mChartView?.visibility = View.VISIBLE
         }
         bindExpandedMeasurementsDesctription()
+
+        mSessionCardLayout.setPadding(mSessionCardLayout.paddingLeft, mSessionCardLayout.paddingTop, mSessionCardLayout.paddingRight, 0)
+
+        expandButtonsHitAreas(listOf(mGraphButton, mMapButton, mUnfollowButton, mFollowButton), mExpandedSessionView)
     }
 
     protected open fun collapseSessionCard() {
@@ -228,6 +229,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
+
+        mSessionCardLayout.setPadding(mSessionCardLayout.paddingLeft, mSessionCardLayout.paddingTop, mSessionCardLayout.paddingRight, mSessionCardLayout.paddingRight)
     }
 
     protected fun setExpandCollapseButton() {
@@ -307,6 +310,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun onExpandSessionCardClicked() {
+
         mSessionPresenter?.expanded = true
 
         mSessionPresenter?.session?.let {
@@ -314,24 +318,34 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
                 (listener as? SessionCardListener)?.onExpandSessionCard(it)
             }
         }
+
     }
 
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
     }
 
-    private fun expandViewHitArea(container : View, child : View) {
-        val padding = 4
-        container.post {
-            val rect = Rect()
-            child.getHitRect(rect)
+    private fun getExpandedTouchDelegate(child: View) : TouchDelegate {
+        val paddingX = 10
+        val paddingY = 40
+        var rect = Rect()
+        child.getHitRect(rect)
+        rect.left -= paddingX
+        rect.top -= paddingY
+        rect.right += paddingX
+        rect.bottom += paddingY
 
-            rect.left -= padding
-            rect.top -= padding
-            rect.right += padding
-            rect.bottom += padding
+       return TouchDelegate(rect, child)
+    }
+    private fun expandButtonsHitAreas(buttons : List<View>, parentView : View) {
+        var touchDelegateComposite = TouchDelegateComposite(parentView)
 
-            container.touchDelegate = TouchDelegate(rect, child)
+        buttons.forEach { button ->
+            touchDelegateComposite.addDelegate(getExpandedTouchDelegate(button))
+        }
+
+        parentView.post {
+            parentView.touchDelegate = touchDelegateComposite
         }
     }
 }
