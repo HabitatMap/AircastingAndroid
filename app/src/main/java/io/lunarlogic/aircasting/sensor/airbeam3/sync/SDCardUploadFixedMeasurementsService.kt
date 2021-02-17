@@ -8,19 +8,22 @@ import io.lunarlogic.aircasting.networking.services.UploadFixedMeasurementsServi
 class SDCardUploadFixedMeasurementsService(
     private val mSDCardCSVFileFactory: SDCardCSVFileFactory,
     private val mSDCardCSVIterator: SDCardCSVIterator,
-    private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService
+    private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?
 ) {
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
 
-    fun run() {
+    fun run(deviceId: String, onSuccessCallback: () -> Unit) {
         DatabaseProvider.runQuery {
             val file = mSDCardCSVFileFactory.getFixedFile()
-            val deviceId = "246f28c47698" // TODO: move it to the file name
 
             mSDCardCSVIterator.run(file).forEach { csvSession ->
                 processSession(deviceId, csvSession)
             }
+
+            // TODO: move it after all requests successfully finishes
+            // TODO: also add onErrorCallback
+            onSuccessCallback.invoke()
         }
     }
 
@@ -84,7 +87,7 @@ class SDCardUploadFixedMeasurementsService(
         if (csvMeasurementsChunk.isEmpty()) return
 
         Log.d(TAG, "Now processing ${csvMeasurementStream.sensorName}...")
-        mUploadFixedMeasurementsService.upload(
+        mUploadFixedMeasurementsService?.upload(
             sessionUUID,
             deviceId,
             csvMeasurementStream,

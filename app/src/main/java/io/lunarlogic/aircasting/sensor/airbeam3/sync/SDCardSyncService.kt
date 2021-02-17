@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
+import android.util.Log
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
@@ -11,8 +12,12 @@ class SDCardSyncService(
     private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
     private val mSessionsSyncService: SessionsSyncService?,
+    private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
     private val mErrorHandler: ErrorHandler
 ) {
+    private val TAG = "SDCardSyncService"
+
+    // TODO: move deviceId to the file name?
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         val sessionsSyncService = mSessionsSyncService
 
@@ -22,6 +27,7 @@ class SDCardSyncService(
             return
         }
 
+        Log.d(TAG, "Initial sync to refresh session list")
         sessionsSyncService.sync(
             onSuccessCallback = { performSDCardDownload(airBeamConnector, deviceItem)},
             onErrorCallack = { mErrorHandler.handleAndDisplay(SDCardSessionsInitialSyncError()) }
@@ -29,6 +35,8 @@ class SDCardSyncService(
     }
 
     private fun performSDCardDownload(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+        Log.d(TAG, "Downloading measurements from SD card")
+
         airBeamConnector.triggerSDCardDownload()
 
         mSDCardDownloadService.run(
@@ -41,22 +49,27 @@ class SDCardSyncService(
     }
 
     private fun checkDownloadedFile(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem, steps: List<SDCardReader.Step>) {
-        if (mSDCardCSVFileChecker.run(steps)) {
-            processMeasurements(airBeamConnector, deviceItem)
+        Log.d(TAG, "Downloading checking downloaded files")
+
+        // TODO: remove this after fixing SDCardCSVFileChecker
+        if (true || mSDCardCSVFileChecker.run(steps)) {
+            processMobileMeasurements(airBeamConnector, deviceItem)
         } else {
             mErrorHandler.handleAndDisplay(SDCardDownloadedFileCorrupted())
         }
     }
 
-    private fun processMeasurements(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+    private fun processMobileMeasurements(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+        Log.d(TAG, "Processing mobile sessions")
+
         mSDCardMobileSessionsProcessor.run(deviceItem.id,
             onFinishCallback = {
-                sendMeasurementsToBackend(airBeamConnector)
+                sendMobileMeasurementsToBackend(airBeamConnector, deviceItem)
             }
         )
     }
 
-    private fun sendMeasurementsToBackend(airBeamConnector: AirBeamConnector) {
+    private fun sendMobileMeasurementsToBackend(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         val sessionsSyncService = mSessionsSyncService
 
         if (sessionsSyncService == null) {
@@ -65,9 +78,10 @@ class SDCardSyncService(
             return
         }
 
+        Log.d(TAG, "Sending mobile sessions to backend")
         sessionsSyncService.sync(
             onSuccessCallback = {
-                clearSDCard(airBeamConnector)
+                sendFixedMeasurementsToBackend(airBeamConnector, deviceItem)
             },
             onErrorCallack = {
                 mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
@@ -75,8 +89,24 @@ class SDCardSyncService(
         )
     }
 
+    private fun sendFixedMeasurementsToBackend(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+        val uploadFixedMeasurementsService = mSDCardUploadFixedMeasurementsService
+
+        if (uploadFixedMeasurementsService == null) {
+            val cause = SDCardMissingSDCardUploadFixedMeasurementsServiceError()
+            mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError(cause))
+            return
+        }
+
+        Log.d(TAG, "Sending fixed measurements to backend")
+        uploadFixedMeasurementsService.run(deviceItem.id,
+            onSuccessCallback = { clearSDCard(airBeamConnector) }
+        )
+    }
+
     private fun clearSDCard(airBeamConnector: AirBeamConnector) {
         // TODO: should we check something before clearing?
+        Log.d(TAG, "Clearing SD card")
         airBeamConnector.clearSDCard()
     }
 

@@ -33,16 +33,4 @@ class AppModule(private val app: AircastingApplication) {
     @Provides
     @Singleton
     fun providesMeasurementsRepository(): MeasurementsRepository = MeasurementsRepository()
-
-    @Provides
-    fun providesSessionsSyncService(
-        apiServiceFactory: ApiServiceFactory,
-        settings: Settings,
-        errorHandler: ErrorHandler
-    ): SessionsSyncService? {
-        val authToken = settings.getAuthToken() ?: return null
-
-        val apiService = apiServiceFactory.get(authToken)
-        return SessionsSyncService.get(apiService, errorHandler, settings)
-    }
 }

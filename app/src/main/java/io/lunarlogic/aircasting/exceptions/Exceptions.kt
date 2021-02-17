@@ -58,6 +58,8 @@ class MissingDeviceAfterConnectionError: BaseException()
 
 // SD card sync
 
+class SDCardMissingSDCardUploadFixedMeasurementsServiceError(): BaseException()
+
 class SDCardMissingSessionsSyncServiceError(): BaseException()
 
 class SDCardSessionsInitialSyncError(cause: Exception? = null):

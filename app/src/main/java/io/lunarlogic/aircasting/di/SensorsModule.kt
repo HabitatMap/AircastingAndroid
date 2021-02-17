@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
+import io.lunarlogic.aircasting.networking.services.UploadFixedMeasurementsService
 import io.lunarlogic.aircasting.sensor.*
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.*
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
@@ -54,6 +55,19 @@ open class SensorsModule {
 
     @Provides
     @Singleton
+    fun providesSDCardUploadFixedMeasurementsService(
+        sdCardCSVFileFactory: SDCardCSVFileFactory,
+        sdCardCSVIterator: SDCardCSVIterator,
+        uploadFixedMeasurementsService: UploadFixedMeasurementsService?
+    ): SDCardUploadFixedMeasurementsService =
+        SDCardUploadFixedMeasurementsService(
+            sdCardCSVFileFactory,
+            sdCardCSVIterator,
+            uploadFixedMeasurementsService
+        )
+
+    @Provides
+    @Singleton
     fun providesSDCardMeasurementsCreator(
         csvFileFactory: SDCardCSVFileFactory,
         csvIterator: SDCardCSVIterator,
@@ -75,12 +89,14 @@ open class SensorsModule {
         sdCardCSVFileChecker: SDCardCSVFileChecker,
         sdCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
         sessionsSyncService: SessionsSyncService?,
+        sdCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
         errorHandler: ErrorHandler
     ): SDCardSyncService = SDCardSyncService(
         sdCardDownloadService,
         sdCardCSVFileChecker,
         sdCardMobileSessionsProcessor,
         sessionsSyncService,
+        sdCardUploadFixedMeasurementsService,
         errorHandler
     )
 

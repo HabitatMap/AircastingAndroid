@@ -82,7 +82,7 @@ class LetsStartController(
             .show()
     }
 
-    // TODO: remove this method after implementing proper sync
+    // TODO: remove this method after implementing proper sync UI
     @Subscribe
     fun onMessageEvent(event: SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
