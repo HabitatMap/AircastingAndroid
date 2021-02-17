@@ -36,6 +36,14 @@ class SDCardCSVFileFactory(private val mContext: Context) {
         return getFile(FIXED_FILE_NAME)
     }
 
+    fun getFile(stepType: SDCardReader.StepType): File {
+        return when(stepType) {
+            SDCardReader.StepType.MOBILE -> getMobileFile()
+            SDCardReader.StepType.FIXED_WIFI -> getFixedFile()
+            SDCardReader.StepType.FIXED_CELLULAR -> getFixedFile()
+        }
+    }
+
     private fun getFile(fileName: String): File {
         val dir = mContext.getExternalFilesDir(DIR_NAME)
         return File(dir, fileName)

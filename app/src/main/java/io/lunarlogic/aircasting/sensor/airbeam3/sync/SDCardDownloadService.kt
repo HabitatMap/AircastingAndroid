@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.sensor.airbeam3.sync
 import android.content.Context
 import android.util.Log
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.Step
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.StepType
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadFinished
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadStepStartedEvent
@@ -34,8 +35,15 @@ class SDCardDownloadService(mContext: Context) {
         mOnDownloadFinished = onDownloadFinished
 
         steps = ArrayList()
+    }
 
-        openSyncFile()
+    @Subscribe
+    fun onEvent(event: SDCardReadStepStartedEvent) {
+        counter = 0
+        val step = event.step
+        steps.add(step)
+
+        openSyncFile(step)
     }
 
     @Subscribe
@@ -52,13 +60,6 @@ class SDCardDownloadService(mContext: Context) {
     }
 
     @Subscribe
-    fun onEvent(event: SDCardReadStepStartedEvent) {
-        counter = 0
-        val step = event.step
-        steps.add(step)
-    }
-
-    @Subscribe
     fun onEvent(event: SDCardReadFinished) {
         Log.d(DOWNLOAD_TAG, "Sync finished")
         closeSyncFile()
@@ -66,9 +67,25 @@ class SDCardDownloadService(mContext: Context) {
         mOnDownloadFinished?.invoke(steps)
     }
 
-    private fun openSyncFile() {
-        // TODO: save mobile and fixed to separate files, with device id in the name
-        val file = mCSVFileFactory.getMobileFile()
+    private fun openSyncFile(step: Step) {
+        val stepType = step.type
+        when(stepType) {
+            StepType.MOBILE -> {
+                openSyncFile(stepType)
+            }
+            StepType.FIXED_WIFI -> {
+                closeSyncFile()
+                openSyncFile(stepType)
+            }
+            StepType.FIXED_CELLULAR -> {
+                // do nothing
+                // should just append to the previous file
+            }
+        }
+    }
+
+    private fun openSyncFile(stepType: StepType) {
+        val file = mCSVFileFactory.getFile(stepType)
         fileWriter = FileWriter(file)
     }
 
