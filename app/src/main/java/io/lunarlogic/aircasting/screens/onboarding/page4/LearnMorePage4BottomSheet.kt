@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
@@ -22,6 +23,9 @@ class LearnMorePage4BottomSheet(
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.learn_more_onboarding_page4, container, false)
+
+        val textView = view?.findViewById<TextView>(R.id.learn_more_onboarding_page4_description_part1)
+        textView?.text = getString(R.string.onboarding_bottomsheet_page4_description1) + getString(R.string.onboarding_bottomsheet_page4_description2)
 
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         closeButton?.setOnClickListener {

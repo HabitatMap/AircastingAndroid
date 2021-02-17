@@ -32,7 +32,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun getAuthToken(): String? {
-        return getStringFromSettings(AUTH_TOKEN_KEY, " ") //todo: this default is weird (i added it because of this strange behaviour when logging out and running app from android studio
+        return getStringFromSettings(AUTH_TOKEN_KEY)
     }
 
     fun getEmail(): String? {

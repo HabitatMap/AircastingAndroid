@@ -307,9 +307,9 @@
     <string name="learn_more_button_onboarding">Learn more</string>
     <string name="onboarding_bottomsheet_page3_header">How AirBeam works?</string>
     <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
-    <string name="onboarding_bottomsheet_page3_description2">In fixed more, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
+    <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
     <string name="onboarding_page4_header">Your privacy</string>
-    <string name="onboarding_page4_description">Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing</string>
+    <string name="onboarding_page4_description">Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing.</string>
     <string name="accept_button_onboarding">Accept</string>
     <string name="onboarding_bottomsheet_page4_header">Our privacy policy</string>
     <string name="onboarding_bottomsheet_page4_description1">HabitatMap is an environmental technology non-profit building open-source, free, and low-cost environmental monitoring and data visualization solutions, like the AirBeam and the AirCasting platform. Our tools empower organizations and citizen scientists to measure pollution and advocate for equitable solutions to environmental health issues. We focus on low-income communities and communities of color living with disproportionate environmental burdens.</string>

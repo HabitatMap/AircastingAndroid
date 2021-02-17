@@ -4,17 +4,12 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_margin="0dp"
-        android:indeterminate="false"
-        android:progressDrawable="@drawable/curved_progress_bar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guidelineTop"
+        app:layout_constraintGuide_percent="0.1"
+        android:orientation="horizontal"/>
 
     <ImageView
         android:id="@+id/onboarding_step_2_image"
@@ -22,10 +17,17 @@
         android:layout_height="wrap_content"
         android:src="@drawable/phone_in_hand"
         android:layout_marginTop="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/progress_bar"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_2_header"/>
+        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/onboarding_step_2_header"
@@ -33,10 +35,12 @@
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page2_header"
         android:textAlignment="viewStart"
+        android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:textSize="@dimen/text_size_xxl"
         style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_2_image"
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/onboarding_step_2_description"/>
@@ -62,6 +66,7 @@
         android:text="@string/continue_button_onboarding"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:fontFamily="@font/muli_bold"
         app:layout_constraintTop_toBottomOf="@id/onboarding_step_2_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

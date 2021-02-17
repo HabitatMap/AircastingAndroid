@@ -36,4 +36,9 @@ class OnboardingActivity: AppCompatActivity() {
         setContentView(view.rootView)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        controller?.onBackPressed()
+    }
+
 }

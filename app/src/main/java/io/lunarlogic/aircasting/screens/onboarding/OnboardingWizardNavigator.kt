@@ -19,10 +19,13 @@ class OnboardingWizardNavigator(
     private val mViewMvc: OnboardingViewMvc,
     private val mFragmentManager: FragmentManager
 ) {
+    interface BackPressedListener {
+        fun onBackPressed()
+    }
 
-    private val STEP_PROGRESS = 10
+    private val STEP_PROGRESS = 15
     private var currentProgressStep = 0
-    private var backPressedListener: NewSessionWizardNavigator.BackPressedListener? = null
+    private var backPressedListener: BackPressedListener? = null
 
     fun goToPage1(listener: OnboardingPage1ViewMvc.Listener) {
         incrementStepProgress()
@@ -52,7 +55,7 @@ class OnboardingWizardNavigator(
         goToFragment(fragment)
     }
 
-    private fun registerBackPressed(listener: NewSessionWizardNavigator.BackPressedListener) {
+    private fun registerBackPressed(listener: OnboardingWizardNavigator.BackPressedListener) {
         backPressedListener = listener
     }
 

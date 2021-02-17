@@ -4,40 +4,31 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_margin="0dp"
-        android:indeterminate="false"
-        android:progressDrawable="@drawable/curved_progress_bar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <ImageView
-        android:id="@+id/onboarding_step_4_image"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/airbeam_in_hand"
-        android:layout_marginTop="@dimen/keyline_8"
-        android:alpha="0"
-        app:layout_constraintTop_toBottomOf="@id/progress_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_4_header"/>
+        android:id="@+id/guidelineTop"
+        app:layout_constraintGuide_percent="0.15"
+        android:orientation="horizontal"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/onboarding_step_4_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page4_header"
-        android:textAlignment="center"
+        android:textAlignment="viewStart"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_image"
+        android:textSize="@dimen/text_size_xxl"
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/onboarding_step_4_description"/>
@@ -47,9 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page4_description"
-        android:textAlignment="center"
+        android:textAlignment="viewStart"
         android:textAppearance="?attr/textAppearanceHeadline4"
-        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginTop="@dimen/keyline_4"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_header"
@@ -63,6 +54,8 @@
         android:text="@string/accept_button_onboarding"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:fontFamily="@font/muli_bold"
         app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,6 +70,7 @@
         android:layout_marginEnd="@dimen/keyline_8"
         style="@style/Widget.Aircasting.TextButton"
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        android:fontFamily="@font/muli_bold"
         app:layout_constraintTop_toBottomOf="@id/accept_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
