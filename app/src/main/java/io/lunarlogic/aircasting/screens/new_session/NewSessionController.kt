@@ -8,6 +8,8 @@ import android.content.Intent
 import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -321,6 +323,20 @@ class NewSessionController(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        mContextActivity.onBackPressed()
+//        mContextActivity.onBackPressed()
+        wizardNavigator.goToSelectDevice(bluetoothManager, this) //todo: progress bar is incrementing anyways (shouldnt)
+        val CHANNEL_ID = "0"
+        var builder = NotificationCompat.Builder(mContextActivity, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_disconnect_icon)
+            .setContentTitle("My notification")
+            .setContentText("Much longer text that cannot fit one line...")
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText("Much longer text that cannot fit one line..."))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(mContextActivity)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(notificationId, builder.build()) //todo: where to set notification id???
+        }
     }
 }
