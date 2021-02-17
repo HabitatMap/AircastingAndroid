@@ -11,9 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import kotlinx.android.synthetic.main.learn_more_onboarding_page4.view.*
 
-class LearnMorePage4BottomSheet(
-
-): BottomSheetDialogFragment() {
+class LearnMorePage4BottomSheet: BottomSheetDialogFragment() {
 
     private val TAG = "LearnMorePage4BottomSheet"
 

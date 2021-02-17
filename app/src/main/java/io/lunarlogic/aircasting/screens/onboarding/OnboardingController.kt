@@ -19,7 +19,7 @@ class OnboardingController(
 ): OnboardingPage1ViewMvc.Listener,
     OnboardingPage2ViewMvc.Listener,
     OnboardingPage3ViewMvc.Listener,
-    OnboardingPage4ViewMvc.Listener{
+    OnboardingPage4ViewMvc.Listener {
     private val wizardNavigator = OnboardingWizardNavigator(mViewMvc, mFragmentManager)
 
     fun onBackPressed() {
@@ -48,9 +48,7 @@ class OnboardingController(
     }
 
     override fun onAcceptClicked() {
-        CreateAccountActivity.start(mContextActivity) //todo: progress bar (normally gone), maybe i should go for it from level of wizard navigator?
-//        mSettings.onboardingAccepted() //todo: this should be uncommencted before finishing task
-//        mContextActivity.finish()
+        CreateAccountActivity.start(mContextActivity) //todo: maybe i should do it from wizard navigator <?>
     }
 
     override fun onLearnMorePage4Clicked() {

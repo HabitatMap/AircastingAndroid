@@ -15,9 +15,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 
-class LearnMorePage3BottomSheet(
-
-): BottomSheetDialogFragment() {
+class LearnMorePage3BottomSheet: BottomSheetDialogFragment() {
 
     private val TAG = "LearnMorePage3BottomSheet"
 
@@ -52,11 +50,11 @@ class LearnMorePage3BottomSheet(
         } ?: Color.GRAY
 
         return SpannableStringBuilder()
-            .append("In")
+            .append(getString(R.string.onboarding_page3_description1_part1))
             .append(" ")
-            .color(greenColor, { bold { append("mobile") } })
+            .color(greenColor, { bold { append(getString(R.string.onboarding_page3_description1_part2)) } })
             .append(" ")
-            .append("mode, the AirBeam captures personal exposures.")
+            .append(getString(R.string.onboarding_page3_description1_part3))
     }
 
     fun buildDescriptionFixed(): SpannableStringBuilder {
@@ -65,11 +63,11 @@ class LearnMorePage3BottomSheet(
         } ?: Color.GRAY
 
         return SpannableStringBuilder()
-            .append("In")
+            .append(getString(R.string.onboarding_page3_description2_part1))
             .append(" ")
-            .color(greenColor, { bold { append("fixed") } })
+            .color(greenColor, { bold { append(getString(R.string.onboarding_page3_description2_part2)) } })
             .append(" ")
-            .append("mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.")
+            .append(getString(R.string.onboarding_page3_description2_part3))
     }
 
 }

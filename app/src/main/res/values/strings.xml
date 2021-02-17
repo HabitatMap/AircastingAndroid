@@ -314,7 +314,11 @@
     <string name="onboarding_bottomsheet_page4_header">Our privacy policy</string>
     <string name="onboarding_bottomsheet_page4_description1">HabitatMap is an environmental technology non-profit building open-source, free, and low-cost environmental monitoring and data visualization solutions, like the AirBeam and the AirCasting platform. Our tools empower organizations and citizen scientists to measure pollution and advocate for equitable solutions to environmental health issues. We focus on low-income communities and communities of color living with disproportionate environmental burdens.</string>
     <string name="onboarding_bottomsheet_page4_description2">HabitatMap will never collect any personally identifiable information about you through the AirCasting app or website unless you have provided it to us voluntarily, nor will we use any information gleaned from your Android device to market to you or pass your information to any third party. Both the AirCasting Android app and the AirCasting and HabitatMap websites are compliant with the EU General Data Protection Regulation.</string>
-
-
+    <string name="onboarding_page3_description1_part1">In</string>
+    <string name="onboarding_page3_description1_part2">mobile</string>
+    <string name="onboarding_page3_description1_part3">mode, the AirBeam captures personal exposures.</string>
+    <string name="onboarding_page3_description2_part1">In</string>
+    <string name="onboarding_page3_description2_part2">fixed</string>
+    <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
 
 </resources>

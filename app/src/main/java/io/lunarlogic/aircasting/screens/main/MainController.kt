@@ -25,7 +25,7 @@ class MainController(
     private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
-        if (mSettings.shouldOnboardingAppear() && mSettings.getAuthToken() == null) {  //todo: this 'if' flow is not working correctly now////// <- sessionsController throws NullpointerException if i add it
+        if (mSettings.shouldOnboardingAppear() && mSettings.getAuthToken() == null) {  // todo: is this correct for sure <?>
             showOnboardingScreen()
         } else if (mSettings.getAuthToken() == null) {
             showLoginScreen()
