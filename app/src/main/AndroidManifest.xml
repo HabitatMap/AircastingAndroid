@@ -66,7 +66,7 @@
         <activity
             android:name=".screens.create_account.CreateAccountActivity"
             android:screenOrientation="portrait"
-            android:noHistory="true"
+            android:noHistory="false"
             android:excludeFromRecents="true">
         </activity>
         <activity android:label=""
