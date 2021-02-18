@@ -247,7 +247,8 @@ class MobileSessionTest {
             .perform(click())
             .check(matches(isChecked()))
 
-        onView(withId(R.id.delete_streams_button)).perform(scrollTo(), click())
+        onView(isRoot()).perform(swipeUp())
+        onView(withId(R.id.delete_streams_button)).perform(click())
         Thread.sleep(2000)
         // check if session deleted
         onView(withText("Ania's mobile mic session")).check(matches(not(isDisplayed())))
