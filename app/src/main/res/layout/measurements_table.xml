@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:id="@+id/session_measurements_description"
-        android:text="@string/session_measurements_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_10"
-        android:layout_marginEnd="@dimen/keyline_10"
-        android:layout_marginTop="@dimen/keyline_6"
-        android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintTop_toBottomOf="@+id/session_info"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <include layout="@layout/measurements_description" />
 
     <TableLayout
         android:id="@+id/measurements_table"

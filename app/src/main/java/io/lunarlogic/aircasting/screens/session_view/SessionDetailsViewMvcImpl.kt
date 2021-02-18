@@ -4,6 +4,7 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
@@ -28,7 +29,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     private val mSessionDateTextView: TextView?
     private val mSessionNameTextView: TextView?
-    private val mSessionTagsTextView: TextView?
     protected val mSessionMeasurementsDescription: TextView?
 
     protected var mSessionPresenter: SessionPresenter? = null
@@ -36,6 +36,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     private val mMeasurementsTableContainer: MeasurementsTableContainer
     protected var mStatisticsContainer: StatisticsContainer?
     private val mMoreButton: ImageView?
+    private val mMoreInvisibleButton: Button?
     private val mHLUSlider: HLUSlider
 
     constructor(
@@ -49,8 +50,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mSessionDateTextView = this.rootView?.session_date
         mSessionNameTextView = this.rootView?.session_name
-        mSessionTagsTextView = this.rootView?.session_info
-        mSessionMeasurementsDescription = this.rootView?.session_measurements_description
+        mSessionMeasurementsDescription = this.findViewById(R.id.session_measurements_description)
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -62,7 +62,11 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mStatisticsContainer = StatisticsContainer(this.rootView, context)
         mMoreButton = this.rootView?.more_button
+        mMoreInvisibleButton = this.rootView?.more_invisible_button
         mMoreButton?.setOnClickListener {
+            onMoreButtonPressed()
+        }
+        mMoreInvisibleButton?.setOnClickListener {
             onMoreButtonPressed()
         }
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
@@ -98,7 +102,19 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     private fun showSlider() {
-        mMoreButton?.visibility = View.VISIBLE
+        val visibilityIndex = context.resources.getInteger(R.integer.visible_in_larger_screens)
+        /**
+        * 0 means visible, see VISIBILITY_FLAGS in View class:
+        * private static final int[] VISIBILITY_FLAGS = {VISIBLE, INVISIBLE, GONE};
+        * we keep them in integers.xml as indexes (0, 1, 2) instead of values (0, 4, 8)
+        * because this is how they are used in XML
+        */
+
+        if (visibilityIndex != 0) {
+            mMoreButton?.visibility = View.GONE
+        } else {
+            mMoreButton?.visibility = View.VISIBLE
+        }
         mHLUSlider.show()
     }
 
@@ -110,7 +126,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
         mSessionDateTextView?.text = session.durationString()
         mSessionNameTextView?.text = session.name
-        mSessionTagsTextView?.text = session.infoString()
         bindSessionMeasurementsDescription()
     }
 

@@ -15,8 +15,15 @@
     <include layout="@layout/measurements_table" />
 
     <include android:id="@+id/statistics_view" layout="@layout/session_details_statistics_view" />
-
-    <ImageView
+   
+    <androidx.constraintlayout.widget.Guideline
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/guidelineStatistics"
+          app:layout_constraintGuide_percent="0.7"
+          android:orientation="vertical"/>
+  
+      <ImageView
         android:id="@+id/loader_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,6 +37,7 @@
         app:layout_constraintBottom_toTopOf="@id/hlu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.libraries.maps.SupportMapFragment"

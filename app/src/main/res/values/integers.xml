@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="view_visible">0</integer> <!--  VISIBLE -->
+    <integer name="view_invisible">1</integer> <!-- INVISIBLE -->
+    <integer name="view_gone">2</integer> <!-- GONE -->
+
+    <!-- session details -->
+    <integer name="visible_in_larger_screens">@integer/view_gone</integer>
+</resources>

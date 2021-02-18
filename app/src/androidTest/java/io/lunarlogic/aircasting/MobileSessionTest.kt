@@ -172,7 +172,7 @@ class MobileSessionTest {
         openMap()
         Thread.sleep(3000)
 
-        onView(withId(R.id.more_button)).perform(click())
+        onView(withId(R.id.more_invisible_button)).perform(click())
         onView(isRoot()).perform(swipeUp())
         onView(withId(R.id.reset_button)).perform(click())
     }
