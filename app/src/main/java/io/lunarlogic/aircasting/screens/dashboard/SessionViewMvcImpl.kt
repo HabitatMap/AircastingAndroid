@@ -218,7 +218,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         }
         bindExpandedMeasurementsDesctription()
 
-        mSessionCardLayout.setPadding(mSessionCardLayout.paddingLeft, mSessionCardLayout.paddingTop, mSessionCardLayout.paddingRight, 0)
+        adjustSessionCardPadding()
 
         expandButtonsHitAreas(listOf(mGraphButton, mMapButton, mUnfollowButton, mFollowButton), mExpandedSessionView)
     }
@@ -230,7 +230,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
 
-        mSessionCardLayout.setPadding(mSessionCardLayout.paddingLeft, mSessionCardLayout.paddingTop, mSessionCardLayout.paddingRight, mSessionCardLayout.paddingRight)
+        adjustSessionCardPadding()
     }
 
     protected fun setExpandCollapseButton() {
@@ -346,6 +346,30 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
         parentView.post {
             parentView.touchDelegate = touchDelegateComposite
+        }
+    }
+
+    /**
+     * In order to really increase extended card buttons' touch area
+     * we need to make expanded_session_view container bigger
+     * by increasing bottom padding. We need to remove session card padding
+     * when the card is expanded and add it back when it is collapsed
+     */
+    private fun adjustSessionCardPadding() {
+        if (mSessionPresenter?.expanded == true) {
+            mSessionCardLayout.setPadding(
+                mSessionCardLayout.paddingLeft,
+                mSessionCardLayout.paddingTop,
+                mSessionCardLayout.paddingRight,
+                0
+            )
+        } else {
+            mSessionCardLayout.setPadding(
+                mSessionCardLayout.paddingLeft,
+                mSessionCardLayout.paddingTop,
+                mSessionCardLayout.paddingRight,
+                mSessionCardLayout.paddingRight
+            )
         }
     }
 }
