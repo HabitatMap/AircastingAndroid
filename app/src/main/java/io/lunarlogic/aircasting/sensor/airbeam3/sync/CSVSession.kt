@@ -1,8 +1,10 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import io.lunarlogic.aircasting.lib.DateConverter
+import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory.Header
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -13,7 +15,7 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
 
         fun uuidFrom(line: Array<String>): String? {
-            return line[SDCardCSVFileFactory.Header.UUID.value]
+            return line[Header.UUID.value]
         }
     }
 
@@ -36,32 +38,41 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
     }
 
     fun addMeasurements(line: Array<String>) {
-        val latitude = line[SDCardCSVFileFactory.Header.LATITUDE.value].toDouble() // TODO: handle parse issues
-        val longitude = line[SDCardCSVFileFactory.Header.LONGITUDE.value].toDouble() // TODO: handle parse issues
-        val dateString = "${line[SDCardCSVFileFactory.Header.DATE.value]} ${line[SDCardCSVFileFactory.Header.TIME.value]}"
+        val latitude = getValueFor(line, Header.LATITUDE)
+        val longitude = getValueFor(line, Header.LONGITUDE)
+        val dateString = "${line[Header.DATE.value]} ${line[SDCardCSVFileFactory.Header.TIME.value]}"
         val time = DateConverter.fromString(dateString,
             DATE_FORMAT
         )
 
-        time ?: return
-
         val supportedStreamHeaders = CSVMeasurementStream.SUPPORTED_STREAMS.keys
         supportedStreamHeaders.forEach { streamHeader ->
-            val value = line[streamHeader.value].toDouble() // TODO: handle parse issues
-
             if (!streams.containsKey(streamHeader.value)) {
                 streams[streamHeader.value] = ArrayList()
             }
 
-            val measurement =
-                CSVMeasurement(
-                    value,
-                    latitude,
-                    longitude,
-                    time
-                )
-            streams[streamHeader.value]?.add(measurement)
+            val measurement = buildMeasurement(latitude, longitude, time, line, streamHeader)
+            measurement?.let { streams[streamHeader.value]?.add(measurement) }
         }
+    }
+
+    private fun buildMeasurement(
+        latitude: Double?,
+        longitude: Double?,
+        time: Date?,
+        line: Array<String>,
+        streamHeader: Header
+    ): CSVMeasurement? {
+        time ?: return null
+
+        val value = getValueFor(line, streamHeader) ?: return null
+
+        return CSVMeasurement(
+                value,
+                latitude,
+                longitude,
+                time
+            )
     }
 
     fun toSession(deviceId: String): Session? {
@@ -90,5 +101,13 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
         }
 
         return session
+    }
+
+    private fun getValueFor(line: Array<String>, header: Header): Double? {
+        try {
+            return line[header.value].toDouble()
+        } catch(e: NumberFormatException) {
+            return null
+        }
     }
 }

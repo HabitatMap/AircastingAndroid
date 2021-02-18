@@ -14,7 +14,7 @@ class SDCardMobileSessionsProcessor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mMeasurementsRepository: MeasurementsRepository
 ) {
-    // TODO: move deviceId to the file name
+    // TODO: move deviceId to the file name?
     fun run(deviceId: String, onFinishCallback: () -> Unit) {
         val file = mCSVFileFactory.getMobileFile()
 

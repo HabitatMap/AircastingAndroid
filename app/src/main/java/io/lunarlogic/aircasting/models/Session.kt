@@ -156,7 +156,7 @@ class Session(
 
     private var mIndoor: Boolean? = null
     private var mStreamingMethod: StreamingMethod? = null
-    var location: Location? = null // TODO: make it private?
+    var location: Location? = null
 
     val status get() = mStatus
     val streams get() = mStreams

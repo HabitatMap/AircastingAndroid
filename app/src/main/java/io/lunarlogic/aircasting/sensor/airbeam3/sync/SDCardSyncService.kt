@@ -41,7 +41,6 @@ class SDCardSyncService(
 
         mSDCardDownloadService.run(
             onLinesDownloaded = { step, linesCount ->
-                // TODO: display step type?
                 showMessage("Syncing $linesCount/${step.measurementsCount}")
             },
             onDownloadFinished = { steps -> checkDownloadedFile(airBeamConnector, deviceItem, steps) }
@@ -100,12 +99,11 @@ class SDCardSyncService(
 
         Log.d(TAG, "Sending fixed measurements to backend")
         uploadFixedMeasurementsService.run(deviceItem.id,
-            onSuccessCallback = { clearSDCard(airBeamConnector) }
+            onFinishCallback = { clearSDCard(airBeamConnector) }
         )
     }
 
     private fun clearSDCard(airBeamConnector: AirBeamConnector) {
-        // TODO: should we check something before clearing?
         Log.d(TAG, "Clearing SD card")
         airBeamConnector.clearSDCard()
     }

@@ -13,7 +13,7 @@ class SDCardUploadFixedMeasurementsService(
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
 
-    fun run(deviceId: String, onSuccessCallback: () -> Unit) {
+    fun run(deviceId: String, onFinishCallback: () -> Unit) {
         DatabaseProvider.runQuery {
             val file = mSDCardCSVFileFactory.getFixedFile()
 
@@ -21,9 +21,7 @@ class SDCardUploadFixedMeasurementsService(
                 processSession(deviceId, csvSession)
             }
 
-            // TODO: move it after all requests successfully finishes
-            // TODO: also add onErrorCallback
-            onSuccessCallback.invoke()
+            onFinishCallback.invoke()
         }
     }
 
