@@ -41,12 +41,6 @@ class FollowingSessionViewMvcImpl:
         mFollowButton.visibility = View.GONE
     }
 
-    override fun bindMapButton(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.session?.indoor == true ) {
-            mMapButton.visibility = View.GONE
-        }
-    }
-
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
         return null;
     }

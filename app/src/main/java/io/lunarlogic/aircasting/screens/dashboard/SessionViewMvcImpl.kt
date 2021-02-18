@@ -211,7 +211,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun bindMapButton(sessionPresenter: SessionPresenter) {
-        // do nothing
+        if (sessionPresenter.session?.indoor == true ) {
+            mMapButton.visibility = View.GONE
+        }
     }
 
     protected open fun expandSessionCard() {
