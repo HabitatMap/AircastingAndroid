@@ -25,7 +25,7 @@ class LetsStartController(
     private val mPermissionsManager: PermissionsManager,
     private val mErrorHandler: ErrorHandler
 ): LetsStartViewMvc.Listener {
-    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync
+    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync UI
 
     fun onCreate() {
         mViewMvc.registerListener(this)

@@ -1,79 +1,78 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
-import android.content.Context
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.Step
+import java.io.File
 import java.io.FileReader
 
-class SDCardCSVFileChecker(mContext: Context) {
+class SDCardCSVFileChecker(
+    private val mCSVFileFactory: SDCardCSVFileFactory
+) {
     private val EXPECTED_FIELDS_COUNT = 13
+    private val ACCEPTANCE_THRESHOLD = 0.8
 
-    private var mSteps: List<Step> = listOf()
-    private var mCounts = ArrayList<HashMap<String, Int>>()
+    class Stats(val allCount: Int, val corruptedCount: Int)
 
-    private val mCSVFileFactory = SDCardCSVFileFactory(mContext)
-
-    // TODO: return false only if > 20% is wrong
     fun run(steps: List<Step>): Boolean {
-        // TODO: check mobile and fixed
+        if (!checkMobile(steps)) return false
+
+        return checkFixed(steps)
+    }
+
+    private fun checkMobile(steps: List<Step>): Boolean {
+        val mobileStep = getStep(steps, SDCardReader.StepType.MOBILE) ?: return false
+        val expectedCount = mobileStep.measurementsCount
+
         val file = mCSVFileFactory.getMobileFile()
+        return check(file, expectedCount)
+    }
+
+    private fun checkFixed(steps: List<Step>): Boolean {
+        val wifiStep = getStep(steps, SDCardReader.StepType.FIXED_WIFI) ?: return false
+        val cellularStep = getStep(steps, SDCardReader.StepType.FIXED_CELLULAR) ?: return false
+        val expectedCount = wifiStep.measurementsCount + cellularStep.measurementsCount
+
+        val file = mCSVFileFactory.getFixedFile()
+        return check(file, expectedCount)
+    }
+
+    private fun check(file: File, expectedCount: Int): Boolean {
+        val stats = calculateStats(file)
+        return validateAcceptedCorruption(stats, expectedCount)
+    }
+
+    private fun calculateStats(file: File): Stats {
         val reader = FileReader(file)
-        val lines = reader.readLines()
-        var stepIndex = -1
+        var allCount = 0
+        var corruptedCount = 0
 
-        mSteps = steps
-        mCounts = ArrayList(steps.map { hashMapOf<String, Int>() })
-
-        lines.forEachIndexed { i, line ->
-            val splittedLine = line.split(",")
-
-            if (!line.isBlank() && splittedLine.count() != EXPECTED_FIELDS_COUNT) {
-                return false
+        reader.forEachLine { line ->
+            if (lineIsCorrupted(line)) {
+                corruptedCount += 1
             }
 
-            val index = splittedLine.firstOrNull() ?: return false
-            // TODO: think of a better way?
-            if (index == "1") {
-                stepIndex += 1
-            }
-
-            updateCounts(stepIndex, index)
+            allCount += 1
         }
 
-        if (!checkCounts()) {
-            return false
-        }
-
-        return true
+        return Stats(allCount, corruptedCount)
     }
 
-    private fun updateCounts(stepIndex: Int, index: String) {
-        var count = 0
-
-        if (mCounts[stepIndex].containsKey(index)) {
-            count = mCounts[stepIndex][index] ?: 0
-        }
-
-        count += 1
-        mCounts[stepIndex][index] = count
+    private fun lineIsCorrupted(line: String): Boolean {
+        val fields = line.split(",")
+        return !line.isBlank() && fields.count() != EXPECTED_FIELDS_COUNT
     }
 
+    private fun validateAcceptedCorruption(stats: Stats, expectedCount: Int): Boolean {
+        if (expectedCount == 0) return true
 
-    private fun checkCounts(): Boolean {
-        return mSteps.filterIndexed { stepIndex, step -> !checkPartialCounts(stepIndex, step) }.isEmpty()
+        val countThreshold = expectedCount * ACCEPTANCE_THRESHOLD
+        val corruptionThreshold = expectedCount * (1 - ACCEPTANCE_THRESHOLD)
+
+        // checks if downloaded file has at least 80% of expected lines
+        // and if there is at most 20% of corrupted lines
+        return stats.allCount >= countThreshold && stats.corruptedCount < corruptionThreshold
     }
 
-    private fun checkPartialCounts(stepIndex: Int, step: Step): Boolean {
-        for (i in (1..step.measurementsCount)) {
-            val index = i.toString()
-            if (!mCounts[stepIndex].containsKey(index)) {
-                return false
-            }
-            val count = mCounts[stepIndex][index]
-            if (count != 1) {
-                return false
-            }
-        }
-
-        return true
+    private fun getStep(steps: List<Step>, stepType: SDCardReader.StepType): Step? {
+        return steps.find { step -> step.type == stepType }
     }
 }

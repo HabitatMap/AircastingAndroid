@@ -48,10 +48,9 @@ class SDCardSyncService(
     }
 
     private fun checkDownloadedFile(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem, steps: List<SDCardReader.Step>) {
-        Log.d(TAG, "Downloading checking downloaded files")
+        Log.d(TAG, "Checking downloaded files")
 
-        // TODO: remove this after fixing SDCardCSVFileChecker
-        if (true || mSDCardCSVFileChecker.run(steps)) {
+        if (mSDCardCSVFileChecker.run(steps)) {
             processMobileMeasurements(airBeamConnector, deviceItem)
         } else {
             mErrorHandler.handleAndDisplay(SDCardDownloadedFileCorrupted())

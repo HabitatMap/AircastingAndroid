@@ -29,10 +29,10 @@ open class SensorsModule {
     @Provides
     @Singleton
     fun providesSDCardCSVFileChecker(
-        application: AircastingApplication
+        sdCardCSVFileFactory: SDCardCSVFileFactory
     ): SDCardCSVFileChecker =
         SDCardCSVFileChecker(
-            application
+            sdCardCSVFileFactory
         )
 
     @Provides

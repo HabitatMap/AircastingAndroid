@@ -39,7 +39,7 @@ class MobileActiveController(
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync
+    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync UI
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())

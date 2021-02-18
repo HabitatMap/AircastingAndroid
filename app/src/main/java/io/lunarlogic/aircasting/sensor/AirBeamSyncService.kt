@@ -104,7 +104,7 @@ class AirBeamSyncService: SensorService(),
     }
 
     override fun onConnectionFailed(deviceId: String) {
-        // TODO: temporary thing
+        // TODO: remove it after implementing proper sync UI
         showInfo("Connection to ${mDeviceItem?.name} failed.")
     }
 
@@ -113,7 +113,7 @@ class AirBeamSyncService: SensorService(),
     }
 
     private fun onDiscoveryFailed() {
-        // TODO: temporary thing
+        // TODO: remove it after implementing proper sync UI
         showInfo("Discovery failed.")
     }
 
