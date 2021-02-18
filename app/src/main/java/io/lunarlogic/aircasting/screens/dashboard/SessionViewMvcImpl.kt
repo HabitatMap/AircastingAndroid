@@ -43,7 +43,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
-    private var mMapButton: Button
+    protected var mMapButton: Button
     private var mGraphButton: Button
     private var mLoader: ImageView?
 
@@ -150,6 +150,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         bindMeasurementsTable()
         bindChartData()
         bindFollowButtons(sessionPresenter)
+        bindMapButton(sessionPresenter)
     }
 
     private fun bindLoader(sessionPresenter: SessionPresenter) {
@@ -204,6 +205,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected open fun bindFollowButtons(sessionPresenter: SessionPresenter) {
         mFollowButton.visibility = View.GONE
         mUnfollowButton.visibility = View.GONE
+    }
+
+    protected open fun bindMapButton(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.session?.indoor == true ) {
+            mMapButton.visibility = View.GONE
+        }
     }
 
     protected open fun expandSessionCard() {
