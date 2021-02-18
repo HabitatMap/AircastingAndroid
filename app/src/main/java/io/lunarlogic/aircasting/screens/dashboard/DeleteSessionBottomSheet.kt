@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +8,13 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
     interface Listener {
@@ -75,7 +73,10 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         val wholeSessionCheckboxTitle = resources.getString(R.string.delete_all_data_from_session)
         allStreamsCheckbox = CheckBox(context)
         val wholeSessionCheckboxView = createCheckboxView(allStreamsCheckbox, wholeSessionCheckboxTitle)
+        val separatingLineView = createSeparatingLineView()
+      
         mStreamsOptionsContainer?.addView(wholeSessionCheckboxView)
+        mStreamsOptionsContainer?.addView(separatingLineView)
 
         val sessionStreams = session.activeStreams
         sessionStreams.forEach { stream ->
@@ -90,11 +91,36 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
     private fun createCheckboxView(checkbox: CheckBox, displayedValue: String?): View {
         checkbox.id = View.generateViewId()
         checkbox.text = displayedValue
-        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        val buttonPaddingLeft = context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
+        val radioButtonPaddingTopBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
+
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val drawable = context?.getDrawable(R.drawable.checkbox_selector)
+
+        layoutParams.leftMargin = 10
+        layoutParams.bottomMargin = 10
+
+        checkbox.setPadding(buttonPaddingLeft, radioButtonPaddingTopBottom, 0, radioButtonPaddingTopBottom)
+
         checkbox.layoutParams = layoutParams
-        checkbox.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.aircasting_blue_400))
+        checkbox.buttonDrawable = drawable
+        checkbox.background = context?.getDrawable(R.drawable.checkbox_background_selector)
+
         TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
+
         return checkbox
+    }
+
+    private fun createSeparatingLineView(): View {
+        val view = View(context)
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 6)
+        layoutParams.bottomMargin = 32
+        layoutParams.topMargin = 8
+        layoutParams.leftMargin = 8
+        view.setBackgroundColor(ResourcesCompat.getColor(view.context.resources, R.color.aircasting_grey_50, null))
+        view.layoutParams = layoutParams
+
+        return view
     }
 }
 
