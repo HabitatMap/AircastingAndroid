@@ -30,15 +30,21 @@ class NewSessionWizardNavigator(
         incrementStepProgress()
         val fragment = SelectDeviceTypeFragment()
         fragment.listener = listener
+        unregisterBackPressedListener()
         goToFragment(fragment)
         updateProgressBarView()
     }
 
-    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
-        incrementStepProgress()
+    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener, forward: Boolean = true) {
+        if (forward) {
+            incrementStepProgress()
+        } else {
+            decrementStepProgress()
+        }
         val fragment = SelectDeviceFragment()
         fragment.bluetoothManager = bluetoothManager
         fragment.listener = listener
+        unregisterBackPressedListener()
         goToFragment(fragment)
     }
 
@@ -75,12 +81,13 @@ class NewSessionWizardNavigator(
         val fragment = TurnOnAirBeamFragment()
         fragment.listener = listener
         fragment.sessionType = sessionType
+        unregisterBackPressedListener()
         goToFragment(fragment)
     }
 
     fun goToConnectingAirBeam() {
         incrementStepProgress()
-        val fragment = ConnectingAirBeamFragment()
+        val fragment = ConnectingAirBeamFragment(mFragmentManager)
         registerBackPressed(fragment)
         goToFragment(fragment)
     }
@@ -91,6 +98,7 @@ class NewSessionWizardNavigator(
         fragment.deviceItem = deviceItem
         fragment.sessionUUID = sessionUUID
         fragment.listener = listener
+        unregisterBackPressedListener()
         goToFragment(fragment)
     }
 
@@ -120,5 +128,4 @@ class NewSessionWizardNavigator(
         fragment.session = session
         goToFragment(fragment)
     }
-
 }

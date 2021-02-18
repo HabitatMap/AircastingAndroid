@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
-import io.lunarlogic.aircasting.screens.new_session.NewSessionWizardNavigator
 
-class ConnectingAirBeamFragment() : Fragment(), BaseWizardNavigator.BackPressedListener {
+class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) : Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: ConnectingAirBeamController? = null
 
     override fun onCreateView(
@@ -29,5 +29,6 @@ class ConnectingAirBeamFragment() : Fragment(), BaseWizardNavigator.BackPressedL
 
     override fun onBackPressed() {
         controller?.onBackPressed()
+        mFragmentManager.popBackStack() //todo: this probably shouldnt be here, parentFragmentManager before
     }
 }

@@ -22,6 +22,10 @@ open class BaseWizardNavigator(
         backPressedListener = listener
     }
 
+    protected fun unregisterBackPressedListener() {
+        backPressedListener = null
+    }
+
     fun onBackPressed() {
         decrementStepProgress()
         backPressedListener?.onBackPressed()

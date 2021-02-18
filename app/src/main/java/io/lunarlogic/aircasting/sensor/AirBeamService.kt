@@ -55,6 +55,8 @@ abstract class AirBeamService: SensorService(),
     }
 
     private fun onConnectionFailed() {
+        createNotificationChannel()
+        createFailNotification()
         val event = AirBeamConnectionFailedEvent()
         EventBus.getDefault().post(event)
     }
