@@ -105,6 +105,7 @@ class SDCardSyncService(
     private fun clearSDCard(airBeamConnector: AirBeamConnector) {
         Log.d(TAG, "Clearing SD card")
         airBeamConnector.clearSDCard()
+        mSDCardDownloadService.deleteFiles()
     }
 
     private fun showMessage(message: String) {

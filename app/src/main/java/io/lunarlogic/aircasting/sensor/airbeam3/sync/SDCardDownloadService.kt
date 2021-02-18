@@ -37,6 +37,13 @@ class SDCardDownloadService(mContext: Context) {
         steps = ArrayList()
     }
 
+    fun deleteFiles() {
+        val files = listOf(mCSVFileFactory.getMobileFile(), mCSVFileFactory.getFixedFile())
+        files.forEach { file ->
+            if (file.exists()) file.delete()
+        }
+    }
+
     @Subscribe
     fun onEvent(event: SDCardReadStepStartedEvent) {
         counter = 0
