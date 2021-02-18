@@ -69,7 +69,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             } else {
                 viewHolder.itemView.radio.setImageResource(R.drawable.ic_radio)
             }
-            viewHolder.itemView.label.text = "${deviceItem.displayName()} ${deviceItem.address}"
+            viewHolder.itemView.label.text = "${deviceItem.name}"
         }
     }
 

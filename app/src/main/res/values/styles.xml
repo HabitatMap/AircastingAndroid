@@ -309,6 +309,7 @@
     </style>
 
     <style name="Widget.Aircasting.ToggleButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:backgroundTint">@color/mtrl_btn_text_btn_bg_color_selector</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.ToggleButton</item>
         <item name="android:translationX">0dp</item>
         <item name="android:translationY">0dp</item>

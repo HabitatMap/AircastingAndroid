@@ -54,6 +54,7 @@ class GraphContainer: OnChartGestureListener {
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
 
+        hideGraph()
         setupGraph()
     }
 
@@ -70,6 +71,7 @@ class GraphContainer: OnChartGestureListener {
         mMeasurementsSample = mGetMeasurementsSample.invoke()
 
         drawSession()
+        showGraph()
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
@@ -257,5 +259,17 @@ class GraphContainer: OnChartGestureListener {
         val to = mGraph.highestVisibleX
         val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
         mOnTimeSpanChanged.invoke(timeSpan)
+    }
+
+    private fun showGraph() {
+        mGraph?.visibility = View.VISIBLE
+        mFromLabel?.visibility = View.VISIBLE
+        mToLabel?.visibility = View.VISIBLE
+    }
+
+    private fun hideGraph() {
+        mGraph?.visibility = View.GONE
+        mFromLabel?.visibility = View.GONE
+        mToLabel?.visibility = View.GONE
     }
 }

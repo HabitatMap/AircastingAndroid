@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart
         android:id="@+id/graph"
         android:layout_width="match_parent"

@@ -131,7 +131,7 @@ class AirBeamSyncService: SensorService(),
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
-        showInfo("Connection to ${deviceItem.displayName()} successful.")
+        showInfo("Connection to ${deviceItem.name} successful.")
 
         if (clearSDCard) {
             mAirBeamConnector?.clearSDCard()
@@ -142,7 +142,7 @@ class AirBeamSyncService: SensorService(),
 
     override fun onConnectionFailed(deviceId: String) {
         // TODO: temporary thing
-        showInfo("Connection to ${mDeviceItem?.displayName()} failed.")
+        showInfo("Connection to ${mDeviceItem?.name} failed.")
     }
 
     override fun onDisconnect(deviceId: String) {
