@@ -97,7 +97,15 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     private fun showSlider() {
-        if (context.resources.getInteger(R.integer.visible_in_larger_screens) != 0) {
+        val visibilityIndex = context.resources.getInteger(R.integer.visible_in_larger_screens)
+        /**
+        * 0 means visible, see VISIBILITY_FLAGS in View class:
+        * private static final int[] VISIBILITY_FLAGS = {VISIBLE, INVISIBLE, GONE};
+        * we keep them in integers.xml as indexes (0, 1, 2) instead of values (0, 4, 8)
+        * because this is how they are used in XML
+        */
+
+        if (visibilityIndex != 0) {
             mMoreButton?.visibility = View.GONE
         } else {
             mMoreButton?.visibility = View.VISIBLE

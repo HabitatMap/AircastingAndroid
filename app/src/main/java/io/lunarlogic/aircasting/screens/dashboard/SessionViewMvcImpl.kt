@@ -310,7 +310,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun onExpandSessionCardClicked() {
-
         mSessionPresenter?.expanded = true
 
         mSessionPresenter?.session?.let {
@@ -318,7 +317,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
                 (listener as? SessionCardListener)?.onExpandSessionCard(it)
             }
         }
-
     }
 
     private fun onCollapseSessionCardClicked() {
@@ -337,6 +335,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
        return TouchDelegate(rect, child)
     }
+
     private fun expandButtonsHitAreas(buttons : List<View>, parentView : View) {
         var touchDelegateComposite = TouchDelegateComposite(parentView)
 
