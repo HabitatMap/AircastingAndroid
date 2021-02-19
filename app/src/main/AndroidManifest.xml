@@ -34,12 +34,17 @@
         </service>
 
         <service
-            android:name=".sensor.AirBeamService"
+            android:name=".sensor.AirBeamRecordSessionService"
             android:stopWithTask="true">
         </service>
 
         <service
             android:name=".sensor.AirBeamSyncService"
+            android:stopWithTask="true">
+        </service>
+
+        <service
+            android:name=".sensor.AirBeamClearCardService"
             android:stopWithTask="true">
         </service>
 

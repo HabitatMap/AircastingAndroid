@@ -1,10 +1,5 @@
 package io.lunarlogic.aircasting.sensor
 
-import android.content.Context
-import android.content.Intent
-import android.os.Parcelable
-import androidx.core.content.ContextCompat
-import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
@@ -15,8 +10,10 @@ import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 
-class AirBeamService: SensorService(),
+abstract class AirBeamService: SensorService(),
     AirBeamConnector.Listener {
+
+    protected var mAirBeamConnector: AirBeamConnector? = null
 
     @Inject
     lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
@@ -24,39 +21,12 @@ class AirBeamService: SensorService(),
     @Inject
     lateinit var errorHandler: ErrorHandler
 
-    companion object {
-        val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
-        val SESSION_UUID_KEY = "inputExtraSessionUUID"
+    protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
+        mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
-        fun startService(context: Context, deviceItem: DeviceItem, sessionUUID: String? = null) {
-            val startIntent = Intent(context, AirBeamService::class.java)
-
-            startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
-            startIntent.putExtra(SESSION_UUID_KEY, sessionUUID)
-
-            ContextCompat.startForegroundService(context, startIntent)
-        }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val app = application as AircastingApplication
-        val appComponent = app.appComponent
-        appComponent.inject(this)
-
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun startSensor(intent: Intent?) {
-        intent ?: return
-
-        val deviceItem = intent.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
-        val sessionUUID: String? = intent.getStringExtra(SESSION_UUID_KEY)
-
-        val airBeamConnector = airbeamConnectorFactory.get(deviceItem)
-
-        airBeamConnector?.registerListener(this)
+        mAirBeamConnector?.registerListener(this)
         try {
-            airBeamConnector?.connect(deviceItem, sessionUUID)
+            mAirBeamConnector?.connect(deviceItem, sessionUUID)
         } catch (e: BLENotSupported) {
             errorHandler.handleAndDisplay(e)
             onConnectionFailed()

@@ -4,22 +4,26 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.exceptions.BLENotSupported
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardSyncService
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardClearService
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
-class AirBeamSyncService: AirBeamService() {
+class AirBeamClearCardService: AirBeamService() {
+
     @Inject
     lateinit var airBeamDiscoveryService: AirBeamDiscoveryService
 
     @Inject
-    lateinit var sdCardSyncService: SDCardSyncService
+    lateinit var sdCardClearService: SDCardClearService
 
     companion object {
         fun startService(context: Context) {
-            val startIntent = Intent(context, AirBeamSyncService::class.java)
+            val startIntent = Intent(context, AirBeamClearCardService::class.java)
             ContextCompat.startForegroundService(context, startIntent)
         }
     }
@@ -46,7 +50,7 @@ class AirBeamSyncService: AirBeamService() {
         showInfo("Connection to ${deviceItem.name} successful.")
 
         val airBeamConnector = mAirBeamConnector ?: return
-        sdCardSyncService.run(airBeamConnector, deviceItem)
+        sdCardClearService.run(airBeamConnector)
     }
 
     private fun onDiscoveryFailed() {

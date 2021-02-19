@@ -1,10 +1,14 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import android.util.Log
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 class SDCardSyncService(
@@ -118,6 +122,10 @@ class SDCardSyncService(
         Log.d(TAG, "Clearing SD card")
         airBeamConnector.clearSDCard()
         mSDCardDownloadService.deleteFiles()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            showMessage("Sync finished.")
+        }
     }
 
     private fun showMessage(message: String) {

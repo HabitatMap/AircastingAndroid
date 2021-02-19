@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import org.greenrobot.eventbus.EventBus
@@ -91,7 +92,7 @@ class LetsStartController(
     override fun onClearSDCardSelected() {
         mContext ?: return
 
-        AirBeamSyncService.startService(mContext, true)
+        AirBeamClearCardService.startService(mContext)
         syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage("Clear SD card started").show()
     }
 

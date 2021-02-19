@@ -43,7 +43,7 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceItem: DeviceItem) {
-        AirBeamService.startService(mContext, deviceItem, mSession?.uuid)
+        AirBeamRecordSessionService.startService(mContext, deviceItem, mSession?.uuid)
     }
 
     private fun onDiscoveryFailed() {
