@@ -21,7 +21,9 @@ class MeasurementStream(
     val thresholdMedium: Int,
     val thresholdHigh: Int,
     val thresholdVeryHigh: Int,
-    var deleted: Boolean
+    var deleted: Boolean = false,
+    private var mMeasurements: List<Measurement> = listOf()
+
 ) {
     constructor(measurementEvent: NewMeasurementEvent): this(
         measurementEvent.packageName,
@@ -84,19 +86,16 @@ class MeasurementStream(
     }
 
     val detailedType: String?
-
-    private var mMeasurements = listOf<Measurement>()
     val measurements get() = mMeasurements
-
-
-    companion object {
-        private val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
-    }
 
     init {
         detailedType = buildDetailedType()
     }
 
+    companion object {
+        private val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
+    }
+    
     enum class AirBeamSensorName(val detailedType: String) {
         F("F"),
         PM("PM"),
@@ -117,7 +116,6 @@ class MeasurementStream(
             0
         }
     }
-
 
     private fun buildDetailedType(): String? {
         when (sensorPackageName) {

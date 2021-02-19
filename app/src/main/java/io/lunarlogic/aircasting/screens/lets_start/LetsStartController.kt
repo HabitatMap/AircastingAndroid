@@ -12,8 +12,9 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -25,7 +26,7 @@ class LetsStartController(
     private val mPermissionsManager: PermissionsManager,
     private val mErrorHandler: ErrorHandler
 ): LetsStartViewMvc.Listener {
-    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync
+    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync UI
 
     fun onCreate() {
         mViewMvc.registerListener(this)
@@ -82,27 +83,16 @@ class LetsStartController(
             .show()
     }
 
-    // TODO: remove this method after implementing proper sync
+    // TODO: remove this method after implementing proper sync UI
     @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncEvent) {
+    fun onMessageEvent(event: SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
     }
-
-    // TODO: remove this method after implementing proper sync
-    @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncFinishedEvent) {
-        syncProgressDialog?.cancel()
-        syncProgressDialog = AlertDialog.Builder(mRootActivity)
-            .setCancelable(false)
-            .setPositiveButton("Ok", null)
-            .setMessage(event.message)
-            .show()
-    }
-
+    
     override fun onClearSDCardSelected() {
         mContext ?: return
 
-        AirBeamSyncService.startService(mContext, true)
+        AirBeamClearCardService.startService(mContext)
         syncProgressDialog = AlertDialog.Builder(mRootActivity).setMessage("Clear SD card started").show()
     }
 

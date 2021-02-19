@@ -42,7 +42,10 @@ interface MeasurementDao {
     fun insertAll(measurements: List<MeasurementDBObject>): List<Long>
 
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT 1")
-    fun lastForSession(sessionId: Long): MeasurementDBObject
+    fun lastForSession(sessionId: Long): MeasurementDBObject?
+
+    @Query("SELECT * FROM measurements WHERE session_id=:sessionId AND measurement_stream_id=:measurementStreamId ORDER BY time DESC LIMIT 1")
+    fun lastForStream(sessionId: Long, measurementStreamId: Long): MeasurementDBObject?
 
     @Query("DELETE FROM measurements")
     fun deleteAll()

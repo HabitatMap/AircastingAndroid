@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 import android.app.AlertDialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -19,11 +18,10 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
-import io.lunarlogic.aircasting.sensor.airbeam3.AirBeam3Configurator
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -41,7 +39,7 @@ class MobileActiveController(
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync
+    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync UI
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
@@ -119,21 +117,10 @@ class MobileActiveController(
             .show()
     }
 
-    // TODO: remove this method after implementing proper sync
+    // TODO: remove this method after implementing proper sync UI
     @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncEvent) {
+    fun onMessageEvent(event: SyncEvent) {
         syncProgressDialog?.setMessage(event.message)
-    }
-
-    // TODO: remove this method after implementing proper sync
-    @Subscribe
-    fun onMessageEvent(event: AirBeam3Configurator.SyncFinishedEvent) {
-        syncProgressDialog?.cancel()
-        syncProgressDialog = AlertDialog.Builder(mContext)
-            .setCancelable(false)
-            .setPositiveButton("Ok", null)
-            .setMessage(event.message)
-            .show()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

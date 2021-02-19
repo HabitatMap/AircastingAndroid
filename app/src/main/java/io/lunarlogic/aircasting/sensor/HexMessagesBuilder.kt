@@ -27,7 +27,7 @@ class HexMessagesBuilder {
 
     val bluetoothConfigurationMessage get() = BLUETOOTH_CONFIGURATION_MESSAGE
     val cellularConfigurationMessage get() = CELLULAR_CONFIGURATION_MESSAGE
-    val syncConfigurationMessage get() = SYNC_CONFIGURATION_MESSAGE
+    val downloadFromSDCardConfigurationMessage get() = SYNC_CONFIGURATION_MESSAGE
     val clearSDCardConfigurationMessage get() = CLEAR_SD_CARD_CONFIGURATION_MESSAGE
 
     fun uuidMessage(uuid: String): ByteArray {

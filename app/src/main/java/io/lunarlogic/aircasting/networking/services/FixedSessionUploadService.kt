@@ -3,7 +3,7 @@ package io.lunarlogic.aircasting.networking.services
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
-import io.lunarlogic.aircasting.networking.GzippedSession
+import io.lunarlogic.aircasting.networking.GzippedParams
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SessionParams
 import io.lunarlogic.aircasting.models.Session
@@ -19,7 +19,7 @@ class FixedSessionUploadService(private val apiService: ApiService, private val 
         val sessionParams = SessionParams(session)
 
         val sessionBody = CreateSessionBody(
-            GzippedSession.get(sessionParams)
+            GzippedParams.get(sessionParams, SessionParams::class.java)
         )
         val call = apiService.createFixedSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {

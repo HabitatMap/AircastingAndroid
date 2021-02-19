@@ -22,7 +22,7 @@ abstract class AirBeamConnector {
     protected val connectionStarted = AtomicBoolean(false)
     protected val cancelStarted = AtomicBoolean(false)
 
-    private var mDeviceItem: DeviceItem? = null
+    protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
 
     abstract protected fun start(deviceItem: DeviceItem)
@@ -46,7 +46,7 @@ abstract class AirBeamConnector {
     }
 
     abstract fun reconnectMobileSession()
-    abstract fun sync()
+    abstract fun triggerSDCardDownload()
     abstract fun clearSDCard()
 
     private fun disconnect() {
@@ -65,6 +65,7 @@ abstract class AirBeamConnector {
     }
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        mDeviceItem = deviceItem
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 

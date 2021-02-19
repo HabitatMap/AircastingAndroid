@@ -48,7 +48,7 @@ open class AirBeam2Connector(
         // nothing is needed here
     }
 
-    override fun sync() {
+    override fun triggerSDCardDownload() {
         // AirBeam2 can't do sync
     }
 

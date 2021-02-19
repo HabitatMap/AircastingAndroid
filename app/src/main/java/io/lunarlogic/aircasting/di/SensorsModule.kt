@@ -4,20 +4,106 @@ import dagger.Module
 import dagger.Provides
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.SessionBuilder
-import io.lunarlogic.aircasting.sensor.AirBeamReconnector
-import io.lunarlogic.aircasting.sensor.AirBeamSyncService
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
+import io.lunarlogic.aircasting.networking.services.UploadFixedMeasurementsService
+import io.lunarlogic.aircasting.sensor.*
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.*
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader
-import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import javax.inject.Singleton
 
 @Module
 open class SensorsModule {
+    @Provides
+    @Singleton
+    fun providesSDCardDownloadService(
+        application: AircastingApplication
+    ): SDCardDownloadService = SDCardDownloadService(application)
+
+    @Provides
+    @Singleton
+    fun providesSDCardCSVFileChecker(
+        sdCardCSVFileFactory: SDCardCSVFileFactory
+    ): SDCardCSVFileChecker =
+        SDCardCSVFileChecker(
+            sdCardCSVFileFactory
+        )
+
+    @Provides
+    @Singleton
+    fun providesSDCardCSVFileFactory(
+        application: AircastingApplication
+    ): SDCardCSVFileFactory =
+        SDCardCSVFileFactory(
+            application
+        )
+
+    @Provides
+    @Singleton
+    fun providesSDCardCSVIterator(
+        errorHandler: ErrorHandler
+    ): SDCardCSVIterator =
+        SDCardCSVIterator(
+            errorHandler
+        )
+
+    @Provides
+    @Singleton
+    fun providesSDCardUploadFixedMeasurementsService(
+        sdCardCSVFileFactory: SDCardCSVFileFactory,
+        sdCardCSVIterator: SDCardCSVIterator,
+        uploadFixedMeasurementsService: UploadFixedMeasurementsService?
+    ): SDCardUploadFixedMeasurementsService =
+        SDCardUploadFixedMeasurementsService(
+            sdCardCSVFileFactory,
+            sdCardCSVIterator,
+            uploadFixedMeasurementsService
+        )
+
+    @Provides
+    @Singleton
+    fun providesSDCardMeasurementsCreator(
+        csvFileFactory: SDCardCSVFileFactory,
+        csvIterator: SDCardCSVIterator,
+        sessionsRepository: SessionsRepository,
+        measurementStreamsRepository: MeasurementStreamsRepository,
+        measurementsRepository: MeasurementsRepository
+    ): SDCardMobileSessionsProcessor = SDCardMobileSessionsProcessor(
+        csvFileFactory,
+        csvIterator,
+        sessionsRepository,
+        measurementStreamsRepository,
+        measurementsRepository
+    )
+
+    @Provides
+    @Singleton
+    fun providesSDCardSyncService(
+        sdCardDownloadService: SDCardDownloadService,
+        sdCardCSVFileChecker: SDCardCSVFileChecker,
+        sdCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+        sessionsSyncService: SessionsSyncService?,
+        sdCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
+        errorHandler: ErrorHandler
+    ): SDCardSyncService = SDCardSyncService(
+        sdCardDownloadService,
+        sdCardCSVFileChecker,
+        sdCardMobileSessionsProcessor,
+        sessionsSyncService,
+        sdCardUploadFixedMeasurementsService,
+        errorHandler
+    )
+
+    @Provides
+    @Singleton
+    fun providesSDCardClearService(): SDCardClearService = SDCardClearService()
+
     @Provides
     @Singleton
     open fun providesAirBeamConnectorFactory(
@@ -30,15 +116,20 @@ open class SensorsModule {
     @Singleton
     open fun providesAirBeamReconnector(
         application: AircastingApplication,
-        airBeamConnectorFactory: AirBeamConnectorFactory,
-        errorHandler: ErrorHandler,
         sessionsRepository: SessionsRepository,
-        bluetoothManager: BluetoothManager
-    ): AirBeamReconnector = AirBeamReconnector(application, sessionsRepository, bluetoothManager)
+        airBeamDiscoveryService: AirBeamDiscoveryService
+    ): AirBeamReconnector = AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService)
 
     @Provides
     @Singleton
-    fun prodivesSessionBuilder(): SessionBuilder = SessionBuilder()
+    open fun providesAirBeamDiscoveryService(
+        application: AircastingApplication,
+        bluetoothManager: BluetoothManager
+    ): AirBeamDiscoveryService = AirBeamDiscoveryService(application, bluetoothManager)
+
+    @Provides
+    @Singleton
+    fun providesSessionBuilder(): SessionBuilder = SessionBuilder()
 
     @Provides
     @Singleton
@@ -48,8 +139,4 @@ open class SensorsModule {
     @Provides
     @Singleton
     open fun providesAudioReader(): AudioReader = AudioReader()
-
-    @Provides
-    @Singleton
-    open fun providesSessionRepository(): SessionsRepository = SessionsRepository()
 }

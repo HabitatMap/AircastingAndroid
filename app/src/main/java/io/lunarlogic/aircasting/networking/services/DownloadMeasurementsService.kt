@@ -61,7 +61,7 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         val lastMeasurementSyncTimeString = lastMeasurementTimeString(sessionId, session)
 
         val call =
-            apiService.downloadMeasurements(session.uuid, lastMeasurementSyncTimeString)
+            apiService.downloadFixedMeasurements(session.uuid, lastMeasurementSyncTimeString)
 
         call.enqueue(DownloadMeasurementsCallback(
             sessionId, session, sessionsRepository, measurementStreamsRepository,

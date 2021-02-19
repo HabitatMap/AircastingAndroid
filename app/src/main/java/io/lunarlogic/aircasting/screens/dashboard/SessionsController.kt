@@ -69,11 +69,10 @@ abstract class SessionsController(
     }
 
     override fun onSwipeToRefreshTriggered() {
-        mMobileSessionsSyncService.sync({
-            mViewMvc.showLoader()
-        }, {
-            mViewMvc.hideLoader()
-        })
+        mMobileSessionsSyncService.sync(
+            onStartCallback = { mViewMvc.showLoader() },
+            finallyCallback = { mViewMvc.hideLoader() }
+        )
     }
 
     override fun onFollowButtonClicked(session: Session) {

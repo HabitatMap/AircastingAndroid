@@ -41,7 +41,7 @@ class SessionBuilder {
 
     private fun calculateLocation(type: Session.Type, indoor: Boolean?, currentLocation: Session.Location?): Session.Location? {
         if (type == Session.Type.FIXED && indoor == true) {
-            return Session.Location.INDOOR_FAKE_LOCATION
+            return Session.Location.FAKE_LOCATION
         }
 
         // mobile or outdoor

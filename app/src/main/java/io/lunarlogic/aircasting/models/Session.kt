@@ -121,7 +121,7 @@ class Session(
     class Location(val latitude: Double, val longitude: Double) {
         companion object {
             // for indoor fixed sessions
-            val INDOOR_FAKE_LOCATION = Location(200.0, 200.0)
+            val FAKE_LOCATION = Location(200.0, 200.0)
 
             // if for some reason current location is not available
             val DEFAULT_LOCATION = Location(40.7128, -74.0060)
@@ -133,6 +133,12 @@ class Session(
 
                 return Location(location.latitude, location.longitude)
             }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other == null || other !is Location) return false
+
+            return latitude == other.latitude && longitude == other.longitude
         }
     }
 
@@ -292,6 +298,14 @@ class Session(
 
     fun measurementsCount(): Int {
         return streams.map { stream -> stream.measurements.size }.sum()
+    }
+
+    fun sharableLocation(): Location? {
+        return if (locationless) {
+            Location.FAKE_LOCATION
+        } else {
+            location
+        }
     }
 
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {

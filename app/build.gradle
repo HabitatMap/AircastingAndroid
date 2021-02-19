@@ -93,12 +93,13 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
 
     // for http requests
-    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
-    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:2.8.1"
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:2.9.0"
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.8.0"
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.opencsv:opencsv:4.6'
 
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'

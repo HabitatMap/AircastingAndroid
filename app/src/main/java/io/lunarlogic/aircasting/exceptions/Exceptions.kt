@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.exceptions
 
 import java.lang.Exception
 
-abstract class BaseException(private val mCause: Exception?, private val mMessageToDisplay: String? = null): Exception(mCause) {
+abstract class BaseException(private val mCause: Exception? = null, private val mMessageToDisplay: String? = null): Exception(mCause) {
     val messageToDisplay: String? get() = mMessageToDisplay
 }
 
@@ -53,3 +53,23 @@ class AirBeamResponseParsingError(line: String, t: Throwable? = null):
 
 class DBInsertException(t: Throwable? = null):
     BaseException(Exception(t), "Trying to insert or update session data after the DB has been cleaned.")
+
+class MissingDeviceAfterConnectionError: BaseException()
+
+// SD card sync
+
+class SDCardMissingSDCardUploadFixedMeasurementsServiceError(): BaseException()
+
+class SDCardMissingSessionsSyncServiceError(): BaseException()
+
+class SDCardSessionsInitialSyncError(cause: Exception? = null):
+    BaseException(cause, "There was a problem while refreshing sessions list.")
+
+class SDCardMeasurementsParsingError(cause: Exception):
+    BaseException(cause, "There was a problem while parsing measurements from SD card.")
+
+class SDCardDownloadedFileCorrupted():
+    BaseException(null, "Download from SD card was corrupted.")
+
+class SDCardSessionsFinalSyncError(cause: Exception? = null):
+    BaseException(cause, "There was a problem while sending mobile sessions to the backend.")

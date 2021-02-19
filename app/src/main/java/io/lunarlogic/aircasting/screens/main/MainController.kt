@@ -7,11 +7,8 @@ import io.lunarlogic.aircasting.events.LocationPermissionsResultEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiService
+import io.lunarlogic.aircasting.networking.services.*
 
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.ConnectivityManager
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import io.lunarlogic.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
@@ -62,11 +59,10 @@ class MainController(
     private fun sync(apiService: ApiService) {
         val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings)
 
-        mMobileSessionsSyncService.sync({
-            mViewMvc.showLoader()
-        }, {
-            mViewMvc.hideLoader()
-        })
+        mMobileSessionsSyncService.sync(
+            onStartCallback = { mViewMvc.showLoader() },
+            finallyCallback = { mViewMvc.hideLoader() }
+        )
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
