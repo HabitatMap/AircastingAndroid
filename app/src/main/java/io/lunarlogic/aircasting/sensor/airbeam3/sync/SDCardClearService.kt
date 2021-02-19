@@ -19,7 +19,6 @@ class SDCardClearService() {
     @Subscribe
     fun onEvent(event: SDCardClearFinished) {
         Log.d(CLEAR_CARD_TAG, "Clear SD card finished")
-        // TODO: remove sync.csv file here too
         showFinishMessage()
     }
 

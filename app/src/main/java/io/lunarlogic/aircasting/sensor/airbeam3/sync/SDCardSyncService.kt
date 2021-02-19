@@ -17,7 +17,19 @@ class SDCardSyncService(
 ) {
     private val TAG = "SDCardSyncService"
 
-    // TODO: move deviceId to the file name?
+    /*
+
+        High level sync flow:
+
+        1. Refresh sessions list using SessionsSyncService so already deleted on the backend got deleted and so on
+        2. Download measurements from AirBeam3 SD card to files/sync/mobile.csv and files/sync/fixed.csv
+        3. Check downloaded files (checks if downloaded file has at least 80% of expected lines and if there is at most 20% of corrupted lines)
+        4. Save mobile measurements for disconnected sessions in the Android local db. Create sessions named "Imported from SD card" for every UUID that doesn't match with existing session.
+        5. Send mobile measurements to the backend using SessionsSyncService.
+        6. Send fixed measurements to the backend - in this case backend knows more than Android app, so we are sending all of them and backend decides what to do with them.
+
+     */
+
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         val sessionsSyncService = mSessionsSyncService
 
@@ -43,21 +55,21 @@ class SDCardSyncService(
             onLinesDownloaded = { step, linesCount ->
                 showMessage("Syncing $linesCount/${step.measurementsCount}")
             },
-            onDownloadFinished = { steps -> checkDownloadedFile(airBeamConnector, deviceItem, steps) }
+            onDownloadFinished = { steps -> checkDownloadedFiles(airBeamConnector, deviceItem, steps) }
         )
     }
 
-    private fun checkDownloadedFile(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem, steps: List<SDCardReader.Step>) {
+    private fun checkDownloadedFiles(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem, steps: List<SDCardReader.Step>) {
         Log.d(TAG, "Checking downloaded files")
 
         if (mSDCardCSVFileChecker.run(steps)) {
-            processMobileMeasurements(airBeamConnector, deviceItem)
+            saveMobileMeasurementsLocally(airBeamConnector, deviceItem)
         } else {
             mErrorHandler.handleAndDisplay(SDCardDownloadedFileCorrupted())
         }
     }
 
-    private fun processMobileMeasurements(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+    private fun saveMobileMeasurementsLocally(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Processing mobile sessions")
 
         mSDCardMobileSessionsProcessor.run(deviceItem.id,

@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import io.lunarlogic.aircasting.lib.DateConverter
-import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory.Header
@@ -95,7 +94,7 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
             val location = Session.Location(latitude, longitude)
             session.location = location
 
-            if (location == Session.Location.INDOOR_FAKE_LOCATION) {
+            if (location == Session.Location.FAKE_LOCATION) {
                 session.locationless = true
             }
         }

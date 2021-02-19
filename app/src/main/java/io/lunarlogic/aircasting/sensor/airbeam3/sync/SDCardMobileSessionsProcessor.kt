@@ -14,7 +14,6 @@ class SDCardMobileSessionsProcessor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mMeasurementsRepository: MeasurementsRepository
 ) {
-    // TODO: move deviceId to the file name?
     fun run(deviceId: String, onFinishCallback: () -> Unit) {
         val file = mCSVFileFactory.getMobileFile()
 
@@ -63,6 +62,7 @@ class SDCardMobileSessionsProcessor(
             measurementStream
         )
 
+        // filtering measurements to save only the once we don't already have
         val filteredCSVMeasurements = filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
         val measurements = filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)

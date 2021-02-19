@@ -121,7 +121,7 @@ class Session(
     class Location(val latitude: Double, val longitude: Double) {
         companion object {
             // for indoor fixed sessions
-            val INDOOR_FAKE_LOCATION = Location(200.0, 200.0)
+            val FAKE_LOCATION = Location(200.0, 200.0)
 
             // if for some reason current location is not available
             val DEFAULT_LOCATION = Location(40.7128, -74.0060)
@@ -302,7 +302,7 @@ class Session(
 
     fun sharableLocation(): Location? {
         return if (locationless) {
-            Location.INDOOR_FAKE_LOCATION
+            Location.FAKE_LOCATION
         } else {
             location
         }

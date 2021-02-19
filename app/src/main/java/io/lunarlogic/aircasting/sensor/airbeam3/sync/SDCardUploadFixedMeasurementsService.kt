@@ -32,6 +32,7 @@ class SDCardUploadFixedMeasurementsService(
         uploadSession(deviceId, csvSession.uuid, measurementChunks)
     }
 
+    // chunking here is kind of complicated, but it's needed this way, otherwise streams got dupplicated in a backend
     private fun chunkSession(csvSession: CSVSession): Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>> {
         val measurementChunks = mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
 
