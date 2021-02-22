@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.onboarding.page2
+package io.lunarlogic.aircasting.screens.onboarding.how_is_the_air
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class OnboardingPage2Fragment: Fragment() {
-    private var controller: OnboardingPage2Controller? = null
-    lateinit var listener: OnboardingPage2ViewMvc.Listener
+class OnboardingHowsTheAirFragment: Fragment() {
+    private var controller: OnboardingHowsTheAirController? = null
+    lateinit var listener: OnboardingHowsTheAirViewMvc.Listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = OnboardingPage2ViewMvcImpl(layoutInflater, null)
-        controller = OnboardingPage2Controller(view)
+        val view = OnboardingHowsTheAirViewMvcImpl(layoutInflater, null)
+        controller = OnboardingHowsTheAirController(view)
 
         return view.rootView
     }

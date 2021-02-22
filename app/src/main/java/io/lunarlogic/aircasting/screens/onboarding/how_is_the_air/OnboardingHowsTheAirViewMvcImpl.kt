@@ -1,14 +1,12 @@
-package io.lunarlogic.aircasting.screens.onboarding.page2
+package io.lunarlogic.aircasting.screens.onboarding.how_is_the_air
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.onboarding.page2.OnboardingPage2ViewMvc
 
-class OnboardingPage2ViewMvcImpl: BaseObservableViewMvc<OnboardingPage2ViewMvc.Listener>, OnboardingPage2ViewMvc {
+class OnboardingHowsTheAirViewMvcImpl: BaseObservableViewMvc<OnboardingHowsTheAirViewMvc.Listener>, OnboardingHowsTheAirViewMvc {
 
     constructor(
         inflater: LayoutInflater,

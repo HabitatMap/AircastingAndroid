@@ -15,7 +15,7 @@
     <ImageView
         android:id="@+id/onboarding_step_3_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/airbeam_in_hand"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"
         app:layout_constraintStart_toStartOf="parent"

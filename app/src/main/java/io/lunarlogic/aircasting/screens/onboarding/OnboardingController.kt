@@ -4,22 +4,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
-import io.lunarlogic.aircasting.screens.onboarding.page1.OnboardingPage1ViewMvc
-import io.lunarlogic.aircasting.screens.onboarding.page2.OnboardingPage2ViewMvc
-import io.lunarlogic.aircasting.screens.onboarding.page3.LearnMorePage3BottomSheet
-import io.lunarlogic.aircasting.screens.onboarding.page3.OnboardingPage3ViewMvc
-import io.lunarlogic.aircasting.screens.onboarding.page4.LearnMorePage4BottomSheet
-import io.lunarlogic.aircasting.screens.onboarding.page4.OnboardingPage4ViewMvc
+import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedViewMvc
+import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvc
+import io.lunarlogic.aircasting.screens.onboarding.measure_and_map.LearnMoreMeasureAndMapBottomSheet
+import io.lunarlogic.aircasting.screens.onboarding.measure_and_map.OnboardingMeasureAndMapViewMvc
+import io.lunarlogic.aircasting.screens.onboarding.your_privacy.LearnMoreYourPrivacyBottomSheet
+import io.lunarlogic.aircasting.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvc
 
 class OnboardingController(
     private val mContextActivity: AppCompatActivity,
     mViewMvc: OnboardingViewMvc,
     private val mFragmentManager: FragmentManager,
     private val mSettings: Settings
-): OnboardingPage1ViewMvc.Listener,
-    OnboardingPage2ViewMvc.Listener,
-    OnboardingPage3ViewMvc.Listener,
-    OnboardingPage4ViewMvc.Listener {
+): OnboardingGetStartedViewMvc.Listener,
+    OnboardingHowsTheAirViewMvc.Listener,
+    OnboardingMeasureAndMapViewMvc.Listener,
+    OnboardingYourPrivacyViewMvc.Listener {
     private val wizardNavigator = OnboardingWizardNavigator(mViewMvc, mFragmentManager)
 
     fun onBackPressed() {
@@ -27,23 +27,23 @@ class OnboardingController(
     }
 
     fun onCreate() {
-        wizardNavigator.goToPage1(this)
+        wizardNavigator.goToStep1(this)
     }
 
     override fun onGetStartedClicked() {
-        wizardNavigator.goToPage2(this)
+        wizardNavigator.goToStep2(this)
     }
 
     override fun onContinuePage2Clicked() {
-        wizardNavigator.goToPage3(this)
+        wizardNavigator.goToStep3(this)
     }
 
     override fun onContinuePage3Clicked() {
-        wizardNavigator.goToPage4(this)
+        wizardNavigator.goToStep4(this)
     }
 
     override fun onLearnMorePage3Clicked() {
-        val bottomsheet = LearnMorePage3BottomSheet()
+        val bottomsheet = LearnMoreMeasureAndMapBottomSheet()
         bottomsheet.show(mFragmentManager)
     }
 
@@ -52,7 +52,7 @@ class OnboardingController(
     }
 
     override fun onLearnMorePage4Clicked() {
-        val bottomsheet = LearnMorePage4BottomSheet()
+        val bottomsheet = LearnMoreYourPrivacyBottomSheet()
         bottomsheet.show(mFragmentManager)
     }
 

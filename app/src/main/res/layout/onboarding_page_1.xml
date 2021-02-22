@@ -4,15 +4,29 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guidelineTop"
+        app:layout_constraintGuide_percent="0.1"
+        android:orientation="horizontal"/>
+
     <ImageView
         android:id="@+id/onboarding_step_1_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/airbeam_with_tablet"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_1_header"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/onboarding_step_1_header"
@@ -24,7 +38,7 @@
         android:layout_marginEnd="@dimen/keyline_8"
         android:textSize="@dimen/text_size_xxl"
         style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_1_image"
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/onboarding_step_1_description"/>

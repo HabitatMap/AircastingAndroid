@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.onboarding.page4
+package io.lunarlogic.aircasting.screens.onboarding.your_privacy
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import kotlinx.android.synthetic.main.learn_more_onboarding_page4.view.*
 
-class LearnMorePage4BottomSheet: BottomSheetDialogFragment() {
+class LearnMoreYourPrivacyBottomSheet: BottomSheetDialogFragment() {
 
     private val TAG = "LearnMorePage4BottomSheet"
 

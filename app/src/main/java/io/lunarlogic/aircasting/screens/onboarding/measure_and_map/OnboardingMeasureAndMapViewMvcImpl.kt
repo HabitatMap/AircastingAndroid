@@ -1,14 +1,12 @@
-package io.lunarlogic.aircasting.screens.onboarding.page3
+package io.lunarlogic.aircasting.screens.onboarding.measure_and_map
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import io.lunarlogic.aircasting.screens.onboarding.page3.OnboardingPage3ViewMvc
 
-class OnboardingPage3ViewMvcImpl: BaseObservableViewMvc<OnboardingPage3ViewMvc.Listener>, OnboardingPage3ViewMvc {
+class OnboardingMeasureAndMapViewMvcImpl: BaseObservableViewMvc<OnboardingMeasureAndMapViewMvc.Listener>, OnboardingMeasureAndMapViewMvc {
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?

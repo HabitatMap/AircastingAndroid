@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.onboarding.page3
+package io.lunarlogic.aircasting.screens.onboarding.your_privacy
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class OnboardingPage3Fragment: Fragment() {
-    private var controller: OnboardingPage3Controller? = null
-    lateinit var listener: OnboardingPage3ViewMvc.Listener
+class OnboardingYourPrivacyFragment: Fragment() {
+    private var controller: OnboardingYourPrivacyController? = null
+    lateinit var listener: OnboardingYourPrivacyViewMvc.Listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = OnboardingPage3ViewMvcImpl(layoutInflater, null)
-        controller = OnboardingPage3Controller(view)
+        val view = OnboardingYourPrivacyViewMvcImpl(layoutInflater, null)
+        controller = OnboardingYourPrivacyController(view)
 
         return view.rootView
     }

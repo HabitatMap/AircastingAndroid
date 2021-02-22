@@ -1,13 +1,12 @@
-package io.lunarlogic.aircasting.screens.onboarding.page1
+package io.lunarlogic.aircasting.screens.onboarding.get_started
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
-class OnboardingPage1ViewMvcImpl: BaseObservableViewMvc<OnboardingPage1ViewMvc.Listener>, OnboardingPage1ViewMvc {
+class OnboardingGetStartedViewMvcImpl: BaseObservableViewMvc<OnboardingGetStartedViewMvc.Listener>, OnboardingGetStartedViewMvc {
 
     constructor(
         inflater: LayoutInflater,

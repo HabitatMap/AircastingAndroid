@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.onboarding.page4
+package io.lunarlogic.aircasting.screens.onboarding.get_started
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class OnboardingPage4Fragment: Fragment() {
-    private var controller: OnboardingPage4Controller? = null
-    lateinit var listener: OnboardingPage4ViewMvc.Listener
+class OnboardingGetStartedFragment: Fragment() {
+    private var controller: OnboardingGetStartedController? = null
+    lateinit var listener: OnboardingGetStartedViewMvc.Listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = OnboardingPage4ViewMvcImpl(layoutInflater, null)
-        controller = OnboardingPage4Controller(view)
+        val view = OnboardingGetStartedViewMvcImpl(layoutInflater, null)
+        controller = OnboardingGetStartedController(view)
 
         return view.rootView
     }

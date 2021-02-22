@@ -14,7 +14,7 @@
     <ImageView
         android:id="@+id/onboarding_step_2_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/phone_in_hand"
         android:layout_marginTop="@dimen/keyline_8"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"

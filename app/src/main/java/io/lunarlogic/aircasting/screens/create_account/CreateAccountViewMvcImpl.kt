@@ -27,7 +27,7 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
             onLoginClicked()
         }
 
-        if (settings.shouldOnboardingAppear()) {
+        if (settings.onboardingDisplayed()) {
             val progressBar = rootView?.findViewById<ProgressBar>(R.id.progress_bar)
             progressBar?.visibility = View.VISIBLE
             progressBar?.progress = 75   // todo: hardcoded for now <?>

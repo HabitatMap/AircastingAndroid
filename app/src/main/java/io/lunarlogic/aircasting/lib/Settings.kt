@@ -15,7 +15,7 @@ open class Settings(mApplication: Application) {
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
     protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
-    protected val ONBOARDING_SHOULD_APPEAR_KEY = "onboarding_should_appear"
+    protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
 
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
@@ -23,7 +23,7 @@ open class Settings(mApplication: Application) {
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
     private val DEFAULT_AIRBEAM3_CONNECTED = false
-    private val DEFAULT_ONBOARDING_SHOULD_APPEAR = true
+    private val DEFAULT_ONBOARDING_DISPLAYED = false
 
     private val sharedPreferences: SharedPreferences
 
@@ -55,8 +55,8 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(AIRBEAM3_CONNECTED_KEY, DEFAULT_AIRBEAM3_CONNECTED)
     }
 
-    fun shouldOnboardingAppear(): Boolean {
-        return getBooleanFromSettings(ONBOARDING_SHOULD_APPEAR_KEY, DEFAULT_ONBOARDING_SHOULD_APPEAR)
+    fun onboardingDisplayed(): Boolean {
+        return getBooleanFromSettings(ONBOARDING_DISPLAYED_KEY, DEFAULT_ONBOARDING_DISPLAYED)
     }
 
     open fun getBackendUrl(): String? {
@@ -82,7 +82,7 @@ open class Settings(mApplication: Application) {
     }
 
     fun onboardingAccepted() {
-        saveToSettings(ONBOARDING_SHOULD_APPEAR_KEY, false)
+        saveToSettings(ONBOARDING_DISPLAYED_KEY, false)
     }
 
     fun microphoneSettingsChanged(calibration: Int){

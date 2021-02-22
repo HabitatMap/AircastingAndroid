@@ -1,13 +1,12 @@
-package io.lunarlogic.aircasting.screens.onboarding.page4
+package io.lunarlogic.aircasting.screens.onboarding.your_privacy
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
-class OnboardingPage4ViewMvcImpl: BaseObservableViewMvc<OnboardingPage4ViewMvc.Listener>, OnboardingPage4ViewMvc {
+class OnboardingYourPrivacyViewMvcImpl: BaseObservableViewMvc<OnboardingYourPrivacyViewMvc.Listener>, OnboardingYourPrivacyViewMvc {
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?

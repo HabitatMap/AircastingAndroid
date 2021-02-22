@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.onboarding.page3
+package io.lunarlogic.aircasting.screens.onboarding.measure_and_map
 
 import android.graphics.Color
 import android.os.Bundle
@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 
-class LearnMorePage3BottomSheet: BottomSheetDialogFragment() {
+class LearnMoreMeasureAndMapBottomSheet: BottomSheetDialogFragment() {
 
     private val TAG = "LearnMorePage3BottomSheet"
 
