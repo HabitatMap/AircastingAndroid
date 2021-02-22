@@ -13,9 +13,9 @@ open class BaseWizardNavigator(
         fun onBackPressed()
     }
 
-    protected val STEP_PROGRESS = 15
-    protected var currentProgressStep = 0
-    protected var backPressedListener: BackPressedListener? = null
+    open val STEP_PROGRESS = 15
+    open var currentProgressStep = 0
+    open var backPressedListener: BackPressedListener? = null
 
     protected fun registerBackPressed(listener: BackPressedListener) {
         backPressedListener = listener

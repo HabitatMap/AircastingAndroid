@@ -14,19 +14,16 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 import io.lunarlogic.aircasting.screens.new_session.select_device.*
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager
-) {
-    private val STEP_PROGRESS = 10
-    private var currentProgressStep = 0
-    private var backPressedListener: BackPressedListener? = null
-
-    interface BackPressedListener {
-        fun onBackPressed()
-    }
+): BaseWizardNavigator(mViewMvc, mFragmentManager) {
+    override val STEP_PROGRESS = 10
+    override var currentProgressStep = 0
+    override var backPressedListener: BackPressedListener? = null
 
     fun goToSelectDeviceType(listener: SelectDeviceTypeViewMvc.Listener) {
         incrementStepProgress()
@@ -123,39 +120,4 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    private fun registerBackPressed(listener: BackPressedListener) {
-        backPressedListener = listener
-    }
-
-    fun onBackPressed() {
-        decrementStepProgress()
-        backPressedListener?.onBackPressed()
-    }
-
-    private fun incrementStepProgress() {
-        currentProgressStep += 1
-        updateProgressBarView()
-    }
-
-    private fun decrementStepProgress() {
-        currentProgressStep -= 1
-        updateProgressBarView()
-    }
-
-    private fun updateProgressBarView() {
-        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-        progressBar?.progress = currentProgressStep * STEP_PROGRESS
-    }
-
-    private fun goToFragment(fragment: Fragment) {
-        val fragmentTransaction = mFragmentManager.beginTransaction()
-        val container = R.id.new_session_fragment_container
-
-        fragmentTransaction.replace(container, fragment)
-        if (currentProgressStep > 1) {
-            fragmentTransaction.addToBackStack(null)
-        }
-
-        fragmentTransaction.commit()
-    }
 }
