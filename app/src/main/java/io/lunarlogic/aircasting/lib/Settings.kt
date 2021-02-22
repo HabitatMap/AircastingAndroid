@@ -23,7 +23,7 @@ open class Settings(mApplication: Application) {
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
     private val DEFAULT_AIRBEAM3_CONNECTED = false
-    private val DEFAULT_ONBOARDING_DISPLAYED = false
+    protected open val DEFAULT_ONBOARDING_DISPLAYED = false
 
     private val sharedPreferences: SharedPreferences
 
@@ -55,7 +55,7 @@ open class Settings(mApplication: Application) {
         return getBooleanFromSettings(AIRBEAM3_CONNECTED_KEY, DEFAULT_AIRBEAM3_CONNECTED)
     }
 
-    fun onboardingDisplayed(): Boolean {
+    open fun onboardingDisplayed(): Boolean {
         return getBooleanFromSettings(ONBOARDING_DISPLAYED_KEY, DEFAULT_ONBOARDING_DISPLAYED)
     }
 
@@ -81,8 +81,8 @@ open class Settings(mApplication: Application) {
         saveToSettings(AIRBEAM3_CONNECTED_KEY, true)
     }
 
-    fun onboardingAccepted() {
-        saveToSettings(ONBOARDING_DISPLAYED_KEY, false)
+    open fun onboardingAccepted() {
+        saveToSettings(ONBOARDING_DISPLAYED_KEY, true)
     }
 
     fun microphoneSettingsChanged(calibration: Int){
