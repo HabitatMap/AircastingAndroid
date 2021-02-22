@@ -16,28 +16,29 @@ class OnboardingWizardNavigator(
     private val mFragmentManager: FragmentManager
 ): BaseWizardNavigator(mViewMvc, mFragmentManager) {
 
-    fun goToStep1(listener: OnboardingGetStartedViewMvc.Listener) {
+    fun goToGetStarted(listener: OnboardingGetStartedViewMvc.Listener) {
         incrementStepProgress()
         val fragment = OnboardingGetStartedFragment()
         fragment.listener = listener
         goToFragment(fragment)
     }
 
-    fun goToStep2(listener: OnboardingHowsTheAirViewMvc.Listener) {
+    fun goToHowIsTheAir(listener: OnboardingHowsTheAirViewMvc.Listener) {
         incrementStepProgress()
         val fragment = OnboardingHowsTheAirFragment()
         fragment.listener = listener
         goToFragment(fragment)
     }
 
-    fun goToStep3(listener: OnboardingMeasureAndMapViewMvc.Listener) {
+    fun goToMeasureandMap(listener: OnboardingMeasureAndMapViewMvc.Listener) {
         incrementStepProgress()
         val fragment = OnboardingMeasureAndMapFragment()
         fragment.listener = listener
+        mViewMvc.changeProgressBarColorToGreen()
         goToFragment(fragment)
     }
 
-    fun goToStep4(listener: OnboardingYourPrivacyViewMvc.Listener) {
+    fun goToYourPrivacy(listener: OnboardingYourPrivacyViewMvc.Listener) {
         incrementStepProgress()
         val fragment = OnboardingYourPrivacyFragment()
         fragment.listener = listener

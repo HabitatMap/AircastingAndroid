@@ -6,5 +6,11 @@
         android:height="200dp"
         android:gravity="end|bottom"
         android:right="@dimen/keyline_8"
-        android:bottom="@dimen/keyline_8" />
+        android:bottom="@dimen/keyline_8">
+        <clip>
+            <shape>
+                <solid android:color="@color/aircasting_blue_400" />
+            </shape>
+        </clip>
+    </item>
 </layer-list>

@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.create_account
 
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,8 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
             progressBarFrame?.visibility = View.VISIBLE
 //            settings.onboardingAccepted() //todo: this should be uncommented before finishing the task
         }
+
+//        rootView?.background?.setColorFilter(context.resources.getColor(R.color.aircasting_blue_400), PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun onCreateAccountClicked() {

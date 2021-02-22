@@ -7,13 +7,14 @@ import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedViewMvc
 import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvc
 import io.lunarlogic.aircasting.screens.onboarding.measure_and_map.LearnMoreMeasureAndMapBottomSheet
+import io.lunarlogic.aircasting.screens.onboarding.measure_and_map.OnboardingMeasureAndMapFragment
 import io.lunarlogic.aircasting.screens.onboarding.measure_and_map.OnboardingMeasureAndMapViewMvc
 import io.lunarlogic.aircasting.screens.onboarding.your_privacy.LearnMoreYourPrivacyBottomSheet
 import io.lunarlogic.aircasting.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvc
 
 class OnboardingController(
     private val mContextActivity: AppCompatActivity,
-    mViewMvc: OnboardingViewMvc,
+    private val mViewMvc: OnboardingViewMvc,
     private val mFragmentManager: FragmentManager,
     private val mSettings: Settings
 ): OnboardingGetStartedViewMvc.Listener,
@@ -24,22 +25,30 @@ class OnboardingController(
 
     fun onBackPressed() {
         wizardNavigator.onBackPressed()
+
+        if (mContextActivity.supportFragmentManager.fragments.last() is OnboardingMeasureAndMapFragment) {
+            mViewMvc.changeProgressBarColorToGreen()
+        } else {
+            mViewMvc.changeProgressBarColorToBlue()
+        }
     }
 
     fun onCreate() {
-        wizardNavigator.goToStep1(this)
+        wizardNavigator.goToGetStarted(this)
     }
 
     override fun onGetStartedClicked() {
-        wizardNavigator.goToStep2(this)
+        wizardNavigator.goToHowIsTheAir(this)
     }
 
     override fun onContinueHowsTheAirClicked() {
-        wizardNavigator.goToStep3(this)
+        wizardNavigator.goToMeasureandMap(this)
+        mViewMvc.changeProgressBarColorToGreen()
     }
 
     override fun onContinueMeasureAndMapClicked() {
-        wizardNavigator.goToStep4(this)
+        wizardNavigator.goToYourPrivacy(this)
+        mViewMvc.changeProgressBarColorToBlue()
     }
 
     override fun onLearnMoreMeasureAndMapClicked() {
