@@ -1,9 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session
 
-import android.widget.ProgressBar
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment

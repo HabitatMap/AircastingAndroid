@@ -84,7 +84,7 @@ abstract class SensorService : Service() {
             this,
             0, notificationIntent, 0
         )
-        val mNotificationManagerCompat = NotificationManagerCompat.from(applicationContext) //todo: this code should be polished
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("AirBeam connection failed")
             .setContentText("Bluetooth connection failed. Please toggle the power on your device and try again.")
@@ -93,6 +93,7 @@ abstract class SensorService : Service() {
             .setContentIntent(pendingIntent)
             .build()
 
+        val mNotificationManagerCompat = NotificationManagerCompat.from(applicationContext) //todo: this code should be polished <?>
         mNotificationManagerCompat.notify(2, notification)
 
         startForeground(2, notification)
