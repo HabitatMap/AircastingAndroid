@@ -11,7 +11,7 @@ class OnboardingYourPrivacyViewMvcImpl: BaseObservableViewMvc<OnboardingYourPriv
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): super() {
-        this.rootView = inflater.inflate(R.layout.onboarding_page_4, parent, false)
+        this.rootView = inflater.inflate(R.layout.onboarding_your_privacy, parent, false)
 
         val acceptButton = rootView?.findViewById<Button>(R.id.accept_button)
         acceptButton?.setOnClickListener {
@@ -22,6 +22,7 @@ class OnboardingYourPrivacyViewMvcImpl: BaseObservableViewMvc<OnboardingYourPriv
         learnMoreButton?.setOnClickListener {
             onLearnMoreClicked()
         }
+
     }
 
     private fun onAcceptClicked() {
@@ -32,7 +33,7 @@ class OnboardingYourPrivacyViewMvcImpl: BaseObservableViewMvc<OnboardingYourPriv
 
     private fun onLearnMoreClicked() {
         for (listener in listeners) {
-            listener.onLearnMorePage4Clicked()
+            listener.onLearnMoreYourPrivacyClicked()
         }
     }
 }

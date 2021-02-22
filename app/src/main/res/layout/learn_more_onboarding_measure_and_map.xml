@@ -31,11 +31,11 @@
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_page3_header"
+                    app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_measure_and_map_header"
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
-                    android:id="@+id/learn_more_onboarding_page3_header"
+                    android:id="@+id/learn_more_onboarding_measure_and_map_header"
                     style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
-                    android:id="@+id/learn_more_onboarding_page3_description_mobile"
+                    android:id="@+id/learn_more_onboarding_measure_and_map_description_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/onboarding_bottomsheet_page3_description1"
@@ -64,11 +64,11 @@
                     android:textSize="@dimen/text_size_m"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/learn_more_onboarding_page3_header"
-                    app:layout_constraintBottom_toTopOf="@id/learn_more_onboarding_page3_description_fixed" />
+                    app:layout_constraintTop_toBottomOf="@id/learn_more_onboarding_measure_and_map_header"
+                    app:layout_constraintBottom_toTopOf="@id/learn_more_onboarding_measure_and_map_description_fixed" />
 
                 <TextView
-                    android:id="@+id/learn_more_onboarding_page3_description_fixed"
+                    android:id="@+id/learn_more_onboarding_measure_and_map_description_fixed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/onboarding_bottomsheet_page3_description2"
@@ -81,7 +81,7 @@
                     android:textSize="@dimen/text_size_m"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/learn_more_onboarding_page3_description_mobile"
+                    app:layout_constraintTop_toBottomOf="@id/learn_more_onboarding_measure_and_map_description_mobile"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

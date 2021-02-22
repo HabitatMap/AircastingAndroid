@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
-import kotlinx.android.synthetic.main.learn_more_onboarding_page4.view.*
+import kotlinx.android.synthetic.main.learn_more_onboarding_your_privacy.view.*
 
 class LearnMoreYourPrivacyBottomSheet: BottomSheetDialogFragment() {
 
@@ -21,10 +21,10 @@ class LearnMoreYourPrivacyBottomSheet: BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.learn_more_onboarding_page4, container, false)
+        val view = inflater.inflate(R.layout.learn_more_onboarding_your_privacy, container, false)
 
-        val textView = view?.findViewById<TextView>(R.id.learn_more_onboarding_page4_description_part1)
-        view.learn_more_onboarding_page4_description_part1.text = buildDescription()
+        val textView = view?.findViewById<TextView>(R.id.learn_more_onboarding_your_privacy_description)
+        view.learn_more_onboarding_your_privacy_description.text = buildDescription()
 
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         closeButton?.setOnClickListener {

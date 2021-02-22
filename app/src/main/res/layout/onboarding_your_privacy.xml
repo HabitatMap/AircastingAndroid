@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.15"
+        app:layout_constraintGuide_percent="0.05"
         android:orientation="horizontal"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -19,7 +19,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/onboarding_step_4_header"
+        android:id="@+id/onboarding_your_privacy_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page4_header"
@@ -31,10 +31,10 @@
         app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_4_description"/>
+        app:layout_constraintBottom_toTopOf="@id/onboarding_your_privacy_description"/>
 
     <TextView
-        android:id="@+id/onboarding_step_4_description"
+        android:id="@+id/onboarding_your_privacy_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page4_description"
@@ -43,7 +43,7 @@
         android:layout_marginTop="@dimen/keyline_4"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_header"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_your_privacy_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -56,7 +56,7 @@
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginTop="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_4_description"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_your_privacy_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/learn_more_button" />

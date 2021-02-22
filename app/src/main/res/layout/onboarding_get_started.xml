@@ -8,13 +8,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.1"
+        app:layout_constraintGuide_percent="0.05"
         android:orientation="horizontal"/>
 
     <ImageView
-        android:id="@+id/onboarding_step_1_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/onboarding_get_started_image"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/airbeam_with_tablet"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"
         app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
@@ -29,7 +29,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/onboarding_step_1_header"
+        android:id="@+id/onboarding_get_started_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page1_header"
@@ -41,10 +41,10 @@
         app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_1_description"/>
+        app:layout_constraintBottom_toTopOf="@id/onboarding_get_started_description"/>
 
     <TextView
-        android:id="@+id/onboarding_step_1_description"
+        android:id="@+id/onboarding_get_started_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page1_description"
@@ -52,7 +52,7 @@
         android:textAppearance="?attr/textAppearanceHeadline4"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_1_header"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_get_started_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/get_started_button"/>
@@ -67,7 +67,7 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_1_description"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_get_started_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

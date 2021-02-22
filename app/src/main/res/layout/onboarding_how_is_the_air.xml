@@ -8,19 +8,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.1"
+        app:layout_constraintGuide_percent="0.05"
         android:orientation="horizontal"/>
 
     <ImageView
-        android:id="@+id/onboarding_step_2_image"
-        android:layout_width="match_parent"
+        android:id="@+id/onboarding_how_is_the_air_image"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:src="@drawable/phone_in_hand"
         android:layout_marginTop="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/phone_in_hand"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineMiddle"
@@ -30,7 +30,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/onboarding_step_2_header"
+        android:id="@+id/onboarding_how_is_the_air_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page2_header"
@@ -43,10 +43,10 @@
         app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_2_description"/>
+        app:layout_constraintBottom_toTopOf="@id/onboarding_how_is_the_air_description"/>
 
     <TextView
-        android:id="@+id/onboarding_step_2_description"
+        android:id="@+id/onboarding_how_is_the_air_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page2_description"
@@ -55,7 +55,7 @@
         android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_2_header"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_how_is_the_air_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -67,7 +67,7 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_2_description"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_how_is_the_air_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

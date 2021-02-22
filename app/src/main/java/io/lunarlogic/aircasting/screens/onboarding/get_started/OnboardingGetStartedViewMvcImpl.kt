@@ -12,7 +12,7 @@ class OnboardingGetStartedViewMvcImpl: BaseObservableViewMvc<OnboardingGetStarte
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): super() {
-        this.rootView = inflater.inflate(R.layout.onboarding_page_1, parent, false)
+        this.rootView = inflater.inflate(R.layout.onboarding_get_started, parent, false)
 
         val getStartedButton = rootView?.findViewById<Button>(R.id.get_started_button)
         getStartedButton?.setOnClickListener {

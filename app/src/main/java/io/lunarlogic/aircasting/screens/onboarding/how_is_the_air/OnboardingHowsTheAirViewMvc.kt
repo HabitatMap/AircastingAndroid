@@ -5,6 +5,6 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 
 interface OnboardingHowsTheAirViewMvc: ObservableViewMvc<OnboardingHowsTheAirViewMvc.Listener> {
     interface Listener {
-        fun onContinuePage2Clicked()
+        fun onContinueHowsTheAirClicked()
     }
 }

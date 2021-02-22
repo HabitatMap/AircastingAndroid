@@ -24,12 +24,12 @@ class LearnMoreMeasureAndMapBottomSheet: BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.learn_more_onboarding_page3, container, false)
+        val view = inflater.inflate(R.layout.learn_more_onboarding_measure_and_map, container, false)
 
-        val descriptionViewMobile = view?.findViewById<TextView>(R.id.learn_more_onboarding_page3_description_mobile)
+        val descriptionViewMobile = view?.findViewById<TextView>(R.id.learn_more_onboarding_measure_and_map_description_mobile)
         descriptionViewMobile?.text = buildDescriptionMobile()
 
-        val descriptionViewFixed = view?.findViewById<TextView>(R.id.learn_more_onboarding_page3_description_fixed)
+        val descriptionViewFixed = view?.findViewById<TextView>(R.id.learn_more_onboarding_measure_and_map_description_fixed)
         descriptionViewFixed?.text = buildDescriptionFixed()
 
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)

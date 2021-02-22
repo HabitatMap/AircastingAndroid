@@ -18,6 +18,7 @@
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:background="@drawable/progress_bar_background"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +31,8 @@
             android:layout_margin="0dp"
             android:indeterminate="false"
             android:progressDrawable="@drawable/curved_progress_bar"
-            android:visibility="gone"
+                android:progress="75"
+                android:max="100"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -28,11 +28,11 @@
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_page4_header"
+                    app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_your_privacy_header"
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
-                    android:id="@+id/learn_more_onboarding_page4_header"
+                    android:id="@+id/learn_more_onboarding_your_privacy_header"
                     style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -57,13 +57,13 @@
                     android:scrollbars="vertical"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@+id/learn_more_onboarding_page4_header"
+                    app:layout_constraintTop_toBottomOf="@+id/learn_more_onboarding_your_privacy_header"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
-                    android:id="@+id/learn_more_onboarding_page4_description_part1"
+                    android:id="@+id/learn_more_onboarding_your_privacy_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/onboarding_bottomsheet_page4_description1"

@@ -9,12 +9,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.15"
+        app:layout_constraintGuide_percent="0.05"
         android:orientation="horizontal"/>
 
     <ImageView
-        android:id="@+id/onboarding_step_3_image"
-        android:layout_width="match_parent"
+        android:id="@+id/onboarding_measure_and_map_image"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@drawable/airbeam_in_hand"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"
@@ -30,7 +30,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/onboarding_step_3_header"
+        android:id="@+id/onboarding_measure_and_map_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page3_header"
@@ -40,13 +40,13 @@
         android:textColor="@color/aircasting_green"
         android:textSize="@dimen/text_size_xxl"
         style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_3_image"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_step_3_description"/>
+        app:layout_constraintBottom_toTopOf="@id/onboarding_measure_and_map_description"/>
 
     <TextView
-        android:id="@+id/onboarding_step_3_description"
+        android:id="@+id/onboarding_measure_and_map_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page3_description"
@@ -56,7 +56,7 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginBottom="@dimen/keyline_6"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_3_header"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -70,7 +70,7 @@
         android:layout_marginEnd="@dimen/keyline_8"
         android:backgroundTint="@color/aircasting_green"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_step_3_description"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/learn_more_button" />

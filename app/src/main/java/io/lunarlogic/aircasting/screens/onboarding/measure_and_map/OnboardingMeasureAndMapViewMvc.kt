@@ -4,7 +4,7 @@ import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 
 interface OnboardingMeasureAndMapViewMvc: ObservableViewMvc<OnboardingMeasureAndMapViewMvc.Listener> {
     interface Listener {
-        fun onContinuePage3Clicked()
-        fun onLearnMorePage3Clicked()
+        fun onContinueMeasureAndMapClicked()
+        fun onLearnMoreMeasureAndMapClicked()
     }
 }

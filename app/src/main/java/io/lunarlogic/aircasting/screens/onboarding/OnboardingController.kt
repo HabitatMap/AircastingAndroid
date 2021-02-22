@@ -34,15 +34,15 @@ class OnboardingController(
         wizardNavigator.goToStep2(this)
     }
 
-    override fun onContinuePage2Clicked() {
+    override fun onContinueHowsTheAirClicked() {
         wizardNavigator.goToStep3(this)
     }
 
-    override fun onContinuePage3Clicked() {
+    override fun onContinueMeasureAndMapClicked() {
         wizardNavigator.goToStep4(this)
     }
 
-    override fun onLearnMorePage3Clicked() {
+    override fun onLearnMoreMeasureAndMapClicked() {
         val bottomsheet = LearnMoreMeasureAndMapBottomSheet()
         bottomsheet.show(mFragmentManager)
     }
@@ -51,7 +51,7 @@ class OnboardingController(
         CreateAccountActivity.start(mContextActivity) //todo: maybe i should do it from wizard navigator <?>
     }
 
-    override fun onLearnMorePage4Clicked() {
+    override fun onLearnMoreYourPrivacyClicked() {
         val bottomsheet = LearnMoreYourPrivacyBottomSheet()
         bottomsheet.show(mFragmentManager)
     }

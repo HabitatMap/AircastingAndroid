@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
@@ -27,10 +28,9 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
             onLoginClicked()
         }
 
-        if (settings.onboardingDisplayed()) {
-            val progressBar = rootView?.findViewById<ProgressBar>(R.id.progress_bar)
-            progressBar?.visibility = View.VISIBLE
-            progressBar?.progress = 75   // todo: hardcoded for now <?>
+        if (!settings.onboardingDisplayed()) {
+            val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
+            progressBarFrame?.visibility = View.VISIBLE
 //            settings.onboardingAccepted() //todo: this should be uncommented before finishing the task
         }
     }

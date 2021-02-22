@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
+import kotlinx.android.synthetic.main.activity_onboarding.view.*
 
 
 class OnboardingViewMvcImpl: BaseViewMvc, OnboardingViewMvc {

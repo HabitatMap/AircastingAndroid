@@ -24,6 +24,10 @@
         <item name="switchStyle">@style/Widget.Aircasting.Switch</item>
     </style>
 
+    <style name="Theme.Aircasting.MeasureAndMap" parent="Theme.Aircasting">
+        <item name="colorPrimary">@color/aircasting_green</item>
+    </style>
+
     <!-- Typography -->
 
     <style name="TextAppearance.Aircasting.Headline1" parent="@style/TextAppearance.AppCompat">

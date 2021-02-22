@@ -12,17 +12,18 @@ class OnboardingHowsTheAirViewMvcImpl: BaseObservableViewMvc<OnboardingHowsTheAi
         inflater: LayoutInflater,
         parent: ViewGroup?
     ): super() {
-        this.rootView = inflater.inflate(R.layout.onboarding_page_2, parent, false)
+        this.rootView = inflater.inflate(R.layout.onboarding_how_is_the_air, parent, false)
 
-        val continuButton = rootView?.findViewById<Button>(R.id.continue_button)
-        continuButton?.setOnClickListener {
+        val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
+        continueButton?.setOnClickListener {
             onContinueButtonClicked()
         }
+
     }
 
     private fun onContinueButtonClicked() {
         for (listener in listeners) {
-            listener.onContinuePage2Clicked()
+            listener.onContinueHowsTheAirClicked()
         }
     }
 }
