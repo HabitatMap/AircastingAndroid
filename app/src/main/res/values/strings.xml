@@ -296,7 +296,7 @@
     <string name="did_you_know_box_tip_1">AirBeam2 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_page1_header">Aircasting</string>
+    <string name="onboarding_page1_header">AirCasting</string>
     <string name="onboarding_page1_description">record and map measurements from health and environmental monitoring devices</string>
     <string name="get_started">Get started</string>
     <string name="onboarding_page2_header">How\'s the air near you?</string>
