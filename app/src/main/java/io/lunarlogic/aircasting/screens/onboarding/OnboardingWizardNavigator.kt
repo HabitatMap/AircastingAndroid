@@ -13,8 +13,9 @@ import io.lunarlogic.aircasting.screens.onboarding.your_privacy.OnboardingYourPr
 
 class OnboardingWizardNavigator(
     private val mViewMvc: OnboardingViewMvc,
-    private val mFragmentManager: FragmentManager
-): BaseWizardNavigator(mViewMvc, mFragmentManager) {
+    private val mFragmentManager: FragmentManager,
+    container: Int
+): BaseWizardNavigator(mViewMvc, mFragmentManager, container) {
 
     fun goToGetStarted(listener: OnboardingGetStartedViewMvc.Listener) {
         incrementStepProgress()

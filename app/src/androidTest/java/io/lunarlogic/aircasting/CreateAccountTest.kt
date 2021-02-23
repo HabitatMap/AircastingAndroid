@@ -113,6 +113,7 @@ class CreateAccountTest {
 
     @Test
     fun testCreateAccountErrors() {
+        settings.onboardingAccepted()
 
         val createAccountErrorResponse = MockResponse()
             .setResponseCode(422)

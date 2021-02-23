@@ -7,7 +7,8 @@ import io.lunarlogic.aircasting.R
 
 open class BaseWizardNavigator(
     private val mViewMvc: ViewMvc,
-    private val mFragmentManager: FragmentManager
+    private val mFragmentManager: FragmentManager,
+    private val container: Int
 ) {
     interface BackPressedListener {
         fun onBackPressed()
@@ -43,7 +44,6 @@ open class BaseWizardNavigator(
 
     protected fun goToFragment(fragment: Fragment) {
         val fragmentTransaction = mFragmentManager.beginTransaction()
-        val container = R.id.onboarding_fragment_container
 
         fragmentTransaction.replace(container, fragment)
         if (currentProgressStep > 1) {

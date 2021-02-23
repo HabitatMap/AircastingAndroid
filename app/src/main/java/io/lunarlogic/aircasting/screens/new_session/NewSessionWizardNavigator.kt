@@ -19,8 +19,9 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.*
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,
-    private val mFragmentManager: FragmentManager
-): BaseWizardNavigator(mViewMvc, mFragmentManager) {
+    private val mFragmentManager: FragmentManager,
+    container: Int
+): BaseWizardNavigator(mViewMvc, mFragmentManager, container) {
     override val STEP_PROGRESS = 10
     override var currentProgressStep = 0
     override var backPressedListener: BackPressedListener? = null
