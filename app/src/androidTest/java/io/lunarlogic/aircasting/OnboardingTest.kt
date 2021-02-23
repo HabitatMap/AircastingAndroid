@@ -59,6 +59,7 @@ class OnboardingTest {
 
     @Test
     fun onboardingTest() {
+        settings.onboardingNotDisplayed()
         testRule.launchActivity(null)
 
         onView(withId(R.id.get_started_button)).perform(click())

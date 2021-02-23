@@ -85,6 +85,10 @@ open class Settings(mApplication: Application) {
         saveToSettings(ONBOARDING_DISPLAYED_KEY, true)
     }
 
+    open fun onboardingNotDisplayed() {
+        saveToSettings(ONBOARDING_DISPLAYED_KEY, false)
+    }
+
     fun microphoneSettingsChanged(calibration: Int){
         saveToSettings(CALIBRATION_KEY, calibration)
     }
