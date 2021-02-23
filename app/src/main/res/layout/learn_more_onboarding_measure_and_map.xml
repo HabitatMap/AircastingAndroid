@@ -74,7 +74,7 @@
                     android:layout_marginTop="@dimen/keyline_6"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    android:layout_marginBottom="@dimen/keyline_12"
+                    android:layout_marginBottom="@dimen/keyline_10"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/learn_more_onboarding_measure_and_map_description_mobile"
