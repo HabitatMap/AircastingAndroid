@@ -27,6 +27,7 @@ class Session(
     var followedAt: Date? = null,
     var contribute: Boolean = true,
     var locationless: Boolean = false,
+    var is_indoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null
 ) {
@@ -44,7 +45,8 @@ class Session(
         sessionDBObject.deleted,
         sessionDBObject.followedAt,
         sessionDBObject.contribute,
-        sessionDBObject.locationless
+        sessionDBObject.locationless,
+        sessionDBObject.is_indoor
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
@@ -198,6 +200,7 @@ class Session(
             this.followedAt,
             this.contribute,
             this.locationless,
+            this.is_indoor,
             this.streams
         )
     }
