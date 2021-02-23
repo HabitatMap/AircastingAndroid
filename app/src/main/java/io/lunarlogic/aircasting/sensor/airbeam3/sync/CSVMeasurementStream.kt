@@ -18,7 +18,7 @@ class CSVMeasurementStream(
         private const val DEVICE_NAME = "AirBeam3"
         private const val PM_MEASUREMENT_TYPE = "Particulate Matter"
         private const val PM_MEASUREMENT_SHORT_TYPE = "PM"
-        private const val PM_UNIT_NAME = "micrograms per cubic meter"
+        private const val PM_UNIT_NAME = "microgram per cubic meter"
         private const val PM_UNIT_SYMBOL = "µg/m³"
 
         val SUPPORTED_STREAMS = hashMapOf(
@@ -26,12 +26,12 @@ class CSVMeasurementStream(
                 "$DEVICE_NAME-F",
                 "Temperature",
                 "F",
-                "degrees Fahrenheit",
+                "fahrenheit",
                 "F",
                 15,
                 45,
                 75,
-                100,
+                105,
                 135
             ),
             SDCardCSVFileFactory.Header.RH to CSVMeasurementStream(
@@ -90,7 +90,7 @@ class CSVMeasurementStream(
     }
 
     fun sensorPackageName(deviceId: String): String {
-        return "$DEVICE_NAME:${deviceId}"
+        return "$DEVICE_NAME-${deviceId}"
     }
 
     fun toMeasurementStream(deviceId: String): MeasurementStream {
