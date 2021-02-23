@@ -29,6 +29,5 @@ class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) :
 
     override fun onBackPressed() {
         controller?.onBackPressed()
-//        mFragmentManager.popBackStack() //todo: this probably shouldnt be here, parentFragmentManager before
     }
 }

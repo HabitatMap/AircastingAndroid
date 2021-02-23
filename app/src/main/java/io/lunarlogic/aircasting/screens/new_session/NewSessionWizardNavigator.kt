@@ -32,12 +32,8 @@ class NewSessionWizardNavigator(
         updateProgressBarView()
     }
 
-    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener, forward: Boolean = true) {
-        if (forward) {
-            incrementStepProgress()
-        } else {
-            decrementStepProgress()
-        }
+    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
+        incrementStepProgress()
         val fragment = SelectDeviceFragment()
         fragment.bluetoothManager = bluetoothManager
         fragment.listener = listener
