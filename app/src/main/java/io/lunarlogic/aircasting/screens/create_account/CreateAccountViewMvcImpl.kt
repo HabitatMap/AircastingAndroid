@@ -29,13 +29,14 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
             onLoginClicked()
         }
 
+        val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
         if (!settings.onboardingDisplayed()) {
-            val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
             progressBarFrame?.visibility = View.VISIBLE
 //            settings.onboardingAccepted() //todo: this should be uncommented before finishing the task
+        } else {
+            progressBarFrame?.visibility = View.GONE
         }
 
-//        rootView?.background?.setColorFilter(context.resources.getColor(R.color.aircasting_blue_400), PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun onCreateAccountClicked() {

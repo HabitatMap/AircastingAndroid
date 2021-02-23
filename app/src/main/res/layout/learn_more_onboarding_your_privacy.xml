@@ -66,9 +66,8 @@
                     android:id="@+id/learn_more_onboarding_your_privacy_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
                     android:text="@string/onboarding_bottomsheet_page4_description1"
-                    android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-                    android:textColor="@color/aircasting_grey_700"
                     android:textSize="@dimen/text_size_m"
                     android:layout_marginTop="@dimen/keyline_6" />
 

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
@@ -29,6 +30,13 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
 
         if (!settings.onboardingDisplayed()) {
             rootView?.progress_bar_frame?.visibility = View.VISIBLE
+        }
+
+        val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
+        if (!settings.onboardingDisplayed()) {
+            progressBarFrame?.visibility = View.VISIBLE
+        } else {
+            progressBarFrame?.visibility = View.GONE
         }
     }
 
