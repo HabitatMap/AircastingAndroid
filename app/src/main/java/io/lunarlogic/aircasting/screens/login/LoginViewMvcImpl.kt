@@ -1,16 +1,19 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.activity_login.view.*
 
 class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+        inflater: LayoutInflater, parent: ViewGroup?, settings: Settings): super() {
         this.rootView = inflater.inflate(R.layout.activity_login, parent, false)
 
         rootView?.login_button?.setOnClickListener {
@@ -23,6 +26,17 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
 
         rootView?.forgot_password_button?.setOnClickListener {
             onForgotPasswordClicked()
+        }
+
+        if (!settings.onboardingDisplayed()) {
+            rootView?.progress_bar_frame?.visibility = View.VISIBLE
+        }
+
+        val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
+        if (!settings.onboardingDisplayed()) {
+            progressBarFrame?.visibility = View.VISIBLE
+        } else {
+            progressBarFrame?.visibility = View.GONE
         }
     }
 

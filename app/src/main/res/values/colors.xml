@@ -6,6 +6,7 @@
     <color name="aircasting_pink">#D81B60</color>
     <color name="aircasting_red">#E65F5E</color>
     <color name="aircasting_white">#FFFFFF</color>
+    <color name="aircasting_green">#33C4B2</color>
     <color name="aircasting_blue_50">#26E0F0FF</color>
     <color name="aircasting_grey_0">#FAFAFA</color>
     <color name="aircasting_grey_50">#55F1F4F4</color>
@@ -23,5 +24,7 @@
     <color name="mtrl_textinput_default_box_stroke_color">@color/aircasting_grey_100</color>
 
     <color name="graph_overlay">#40FFFFFF</color>
+    <color name="aircasting_blue_400_transparent">#40B2EF</color>
     <color name="did_you_know_box_color">#F2F8FF</color>
+    <color name="onboarding_lets_start_background">#fcfcfc</color>
 </resources>

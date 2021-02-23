@@ -294,4 +294,31 @@
     <!-- Did you know box -->
     <string name="did_you_know">Did you know?</string>
     <string name="did_you_know_box_tip_1">AirBeam2 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_page1_header">AirCasting</string>
+    <string name="onboarding_page1_description">record and map measurements from health and environmental monitoring devices</string>
+    <string name="get_started">Get started</string>
+    <string name="onboarding_page2_header">How\'s the air near you?</string>
+    <string name="onboarding_page2_description">Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.</string>
+    <string name="continue_button_onboarding">Continue</string>
+    <string name="onboarding_page3_header">Measure and map your exposure to air pollution</string>
+    <string name="onboarding_page3_description">Connect AirBeam to measure air quality humidity and temperature</string>
+    <string name="learn_more_button_onboarding">Learn more</string>
+    <string name="onboarding_bottomsheet_page3_header">How AirBeam works?</string>
+    <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
+    <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
+    <string name="onboarding_page4_header">Your privacy</string>
+    <string name="onboarding_page4_description">Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing.</string>
+    <string name="accept_button_onboarding">Accept</string>
+    <string name="onboarding_bottomsheet_page4_header">Our privacy policy</string>
+    <string name="onboarding_bottomsheet_page4_description1">HabitatMap is an environmental technology non-profit building open-source, free, and low-cost environmental monitoring and data visualization solutions, like the AirBeam and the AirCasting platform. Our tools empower organizations and citizen scientists to measure pollution and advocate for equitable solutions to environmental health issues. We focus on low-income communities and communities of color living with disproportionate environmental burdens.</string>
+    <string name="onboarding_bottomsheet_page4_description2">HabitatMap will never collect any personally identifiable information about you through the AirCasting app or website unless you have provided it to us voluntarily, nor will we use any information gleaned from your Android device to market to you or pass your information to any third party. Both the AirCasting Android app and the AirCasting and HabitatMap websites are compliant with the EU General Data Protection Regulation.</string>
+    <string name="onboarding_page3_description1_part1">In</string>
+    <string name="onboarding_page3_description1_part2">mobile</string>
+    <string name="onboarding_page3_description1_part3">mode, the AirBeam captures personal exposures.</string>
+    <string name="onboarding_page3_description2_part1">In</string>
+    <string name="onboarding_page3_description2_part2">fixed</string>
+    <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
+
 </resources>

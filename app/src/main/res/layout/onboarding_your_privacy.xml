@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guidelineTop"
+        app:layout_constraintGuide_percent="0.05"
+        android:orientation="horizontal"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/onboarding_your_privacy_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/onboarding_page4_header"
+        android:textAlignment="viewStart"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
+        android:textSize="@dimen/text_size_xxl"
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/onboarding_your_privacy_description"/>
+
+    <TextView
+        android:id="@+id/onboarding_your_privacy_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
+        android:text="@string/onboarding_page4_description"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_your_privacy_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/accept_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/accept_button_onboarding"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:fontFamily="@font/muli_bold"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_your_privacy_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/learn_more_button" />
+
+    <Button
+        android:id="@+id/learn_more_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/learn_more_button_onboarding"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_8"
+        style="@style/Widget.Aircasting.TextButton"
+        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        android:fontFamily="@font/muli_bold"
+        app:layout_constraintTop_toBottomOf="@id/accept_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

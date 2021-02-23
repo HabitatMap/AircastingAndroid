@@ -3,10 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@drawable/dashboard_background">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/progress_bar_frame"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:background="@drawable/progress_bar_background"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_margin="0dp"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/curved_progress_bar"
+                android:progress="75"
+                android:max="100"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/header"/>
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/header"
@@ -89,8 +121,7 @@
                 android:hint="@string/username_hint"
                 android:inputType="textNoSuggestions"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+                android:textColor="@color/aircasting_grey_700" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

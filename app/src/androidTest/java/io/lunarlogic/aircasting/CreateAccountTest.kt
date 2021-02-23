@@ -66,6 +66,8 @@ class CreateAccountTest {
 
     @Test
     fun testCreateAccount() {
+        settings.onboardingAccepted()
+
         val createAccountResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(
@@ -111,6 +113,8 @@ class CreateAccountTest {
 
     @Test
     fun testCreateAccountErrors() {
+        settings.onboardingAccepted()
+
         val createAccountErrorResponse = MockResponse()
             .setResponseCode(422)
             .setBody(

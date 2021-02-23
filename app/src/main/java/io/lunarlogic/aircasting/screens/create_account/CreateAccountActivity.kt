@@ -39,7 +39,7 @@ class CreateAccountActivity: AppCompatActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = CreateAccountViewMvcImpl(layoutInflater, null)
+        val view = CreateAccountViewMvcImpl(layoutInflater, null, settings)
         controller = CreateAccountController(this, view, settings, apiServiceFactory)
 
         setContentView(view.rootView)

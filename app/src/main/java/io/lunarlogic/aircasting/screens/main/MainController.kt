@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.*
 
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
+import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
 import io.lunarlogic.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
 
@@ -24,7 +25,9 @@ class MainController(
     private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
-        if (mSettings.getAuthToken() == null) {
+        if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {  // todo: is this correct for sure <?>
+            showOnboardingScreen()
+        } else if (mSettings.getAuthToken() == null) {
             showLoginScreen()
         } else {
             setupDashboard()
@@ -41,6 +44,11 @@ class MainController(
 
     private fun showLoginScreen() {
         LoginActivity.start(rootActivity)
+        rootActivity.finish()
+    }
+
+    private fun showOnboardingScreen() {
+        OnboardingActivity.start(rootActivity)
         rootActivity.finish()
     }
 

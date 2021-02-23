@@ -45,7 +45,7 @@ class LoginActivity: AppCompatActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LoginViewMvcImpl(layoutInflater, null)
+        val view = LoginViewMvcImpl(layoutInflater, null, settings)
         controller = LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
 
         setContentView(view.rootView)

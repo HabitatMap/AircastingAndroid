@@ -48,6 +48,8 @@
             android:stopWithTask="true">
         </service>
 
+        <activity android:name=".screens.onboarding.OnboardingActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".screens.main.MainActivity"
             android:screenOrientation="portrait">
@@ -66,7 +68,7 @@
         <activity
             android:name=".screens.create_account.CreateAccountActivity"
             android:screenOrientation="portrait"
-            android:noHistory="true"
+            android:noHistory="false"
             android:excludeFromRecents="true">
         </activity>
         <activity android:label=""
@@ -81,7 +83,6 @@
         <activity android:label=""
             android:name=".screens.settings.myaccount.MyAccountActivity"
             android:screenOrientation="portrait"/>
-
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
