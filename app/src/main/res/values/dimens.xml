@@ -39,6 +39,7 @@
     <dimen name="keyline_10">40dp</dimen>
     <dimen name="keyline_16">64dp</dimen>
     <dimen name="keyline_17">68dp</dimen>
+    <dimen name="keyline_20">80dp</dimen>
 
     <dimen name="card_corner_radius">0dp</dimen>
 
