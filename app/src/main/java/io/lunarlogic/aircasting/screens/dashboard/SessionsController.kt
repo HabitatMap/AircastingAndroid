@@ -1,7 +1,11 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -177,9 +181,33 @@ abstract class SessionsController(
         val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
         val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
         if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
-            deleteSession(session.uuid)
+            showConfirmationDialog { deleteSession(session.uuid) }
         } else  {
-            deleteStreams(session, streamsToDelete)
+            showConfirmationDialog { deleteStreams(session, streamsToDelete) }
+        }
+    }
+
+    private fun showConfirmationDialog(function: () -> (Unit)) {
+        val builder = AlertDialog.Builder(this.context)
+        val inflater = this.mRootActivity?.layoutInflater!!
+        val dialogView: View = inflater.inflate(R.layout.confirmation_dialog, null)
+        builder.setView(dialogView)
+
+        val okButton: Button = dialogView.findViewById(R.id.ok_button) as Button
+        val cancelButton: Button = dialogView.findViewById(R.id.cancel_button) as Button
+        val header: TextView = dialogView.findViewById(R.id.confirmation_dialog_header)
+        header.text = this.context?.getString(R.string.are_you_sure)
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+
+        okButton.setOnClickListener {
+            function()
+            dialog.dismiss()
+        }
+
+        cancelButton.setOnClickListener {
+            // Do nothing but close the dialog
+            dialog.cancel()
         }
     }
 
