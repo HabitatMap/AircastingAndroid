@@ -6,6 +6,5 @@
         android:height="200dp"
         android:gravity="end|bottom"
         android:right="@dimen/keyline_8"
-        android:bottom="@dimen/keyline_8">
-    </item>
+        android:bottom="@dimen/keyline_8" />
 </layer-list>
