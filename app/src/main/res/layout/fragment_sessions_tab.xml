@@ -46,7 +46,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/did_you_know_box_color"
-        android:visibility="gone"
         android:focusable="true"
         android:clickable="true"
         app:layout_constraintTop_toBottomOf="@id/empty_mobile_active_dashboard"

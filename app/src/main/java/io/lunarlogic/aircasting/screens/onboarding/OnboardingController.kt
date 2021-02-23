@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
+import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedFragment
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedViewMvc
 import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvc
 import io.lunarlogic.aircasting.screens.onboarding.measure_and_map.LearnMoreMeasureAndMapBottomSheet
@@ -28,6 +29,8 @@ class OnboardingController(
 
         if (mContextActivity.supportFragmentManager.fragments.last() is OnboardingMeasureAndMapFragment) {
             mViewMvc.changeProgressBarColorToGreen()
+        } else if (mContextActivity.supportFragmentManager.fragments.last() is OnboardingGetStartedFragment) {
+            mViewMvc.hideProgressBar()
         } else {
             mViewMvc.changeProgressBarColorToBlue()
         }
@@ -35,10 +38,12 @@ class OnboardingController(
 
     fun onCreate() {
         wizardNavigator.goToGetStarted(this)
+        mViewMvc.hideProgressBar()
     }
 
     override fun onGetStartedClicked() {
         wizardNavigator.goToHowIsTheAir(this)
+        mViewMvc.showProgressBar()
     }
 
     override fun onContinueHowsTheAirClicked() {

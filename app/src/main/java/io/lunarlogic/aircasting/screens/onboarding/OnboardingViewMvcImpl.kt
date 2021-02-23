@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.onboarding
 
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import io.lunarlogic.aircasting.R
@@ -25,5 +26,13 @@ class OnboardingViewMvcImpl: BaseViewMvc, OnboardingViewMvc {
 
     override fun changeProgressBarColorToBlue() {
         this.rootView?.progress_bar?.progressDrawable?.setColorFilter(context.resources.getColor(R.color.aircasting_blue_400), PorterDuff.Mode.SRC_IN)
+    }
+
+    override fun hideProgressBar() {
+        this.rootView?.progress_bar_frame?.visibility = View.GONE
+    }
+
+    override fun showProgressBar() {
+        this.rootView?.progress_bar_frame?.visibility = View.VISIBLE
     }
 }
