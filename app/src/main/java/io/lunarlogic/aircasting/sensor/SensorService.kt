@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.safeRegister
@@ -67,7 +66,7 @@ abstract class SensorService : Service() {
     abstract fun onStopService()
     abstract fun notificationMessage() : String
 
-    protected fun createNotificationChannel() {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID, "Foreground Service Channel",
@@ -76,27 +75,6 @@ abstract class SensorService : Service() {
             val manager = getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(serviceChannel)
         }
-    }
-
-    protected fun createFailNotification() {
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0, notificationIntent, 0
-        )
-
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("AirBeam connection failed")
-            .setContentText("Bluetooth connection failed. Please toggle the power on your device and try again.")
-            .setColor(resources.getColor(R.color.aircasting_red))
-            .setSmallIcon(R.drawable.aircasting)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        val mNotificationManagerCompat = NotificationManagerCompat.from(applicationContext) //todo: this code should be polished <?>
-        mNotificationManagerCompat.notify(2, notification)
-
-        startForeground(2, notification)
     }
 
     @Subscribe
