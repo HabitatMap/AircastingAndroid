@@ -56,7 +56,7 @@ data class SessionDBObject(
                 session.contribute,
                 session.locationless,
                 session.urlLocation,
-                session.is_indoor
+                session.indoor
             )
 }
 

@@ -13,5 +13,4 @@ class SessionWithMeasurementsResponse(
 
     // TODO: add contribute field after adding this functionallity
     // TODO: add notes field after adding this functionallity
-    // TODO: adding latitude, longitude and is_indoor might be needed when adding resume streaming functionallity
 )
