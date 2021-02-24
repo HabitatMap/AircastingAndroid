@@ -33,6 +33,7 @@ class OnboardingViewMvcImpl: BaseViewMvc, OnboardingViewMvc {
     }
 
     override fun showProgressBar() {
+
         this.rootView?.progress_bar_frame?.visibility = View.VISIBLE
     }
 }
