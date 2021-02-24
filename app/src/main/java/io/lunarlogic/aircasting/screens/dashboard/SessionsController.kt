@@ -181,31 +181,13 @@ abstract class SessionsController(
         val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
         val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
         if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
-            showConfirmationDialog { deleteSession(session.uuid) }
+            ConfirmationDeleteSessionDialog(this.fragmentManager) {
+                deleteSession(session.uuid) }
+                .show()
         } else  {
-            showConfirmationDialog { deleteStreams(session, streamsToDelete) }
-        }
-    }
-
-    private fun showConfirmationDialog(function: () -> (Unit)) {
-        val builder = AlertDialog.Builder(this.context)
-        val inflater = this.mRootActivity?.layoutInflater!!
-        val dialogView: View = inflater.inflate(R.layout.confirmation_dialog, null)
-        builder.setView(dialogView)
-
-        val okButton: Button = dialogView.findViewById(R.id.ok_button) as Button
-        val cancelButton: Button = dialogView.findViewById(R.id.cancel_button) as Button
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
-
-        okButton.setOnClickListener {
-            function()
-            dialog.dismiss()
-        }
-
-        cancelButton.setOnClickListener {
-            // Do nothing but close the dialog
-            dialog.cancel()
+            ConfirmationDeleteSessionDialog(this.fragmentManager) {
+                deleteStreams(session, streamsToDelete) }
+                .show()
         }
     }
 
