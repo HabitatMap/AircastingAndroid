@@ -11,7 +11,7 @@ class SessionBuilder {
         name: String,
         tags: ArrayList<String>,
         status: Session.Status,
-        indoor: Boolean?,
+        indoor: Boolean,
         streamingMethod: Session.StreamingMethod?,
         currentLocation: Session.Location?,
         settings: Settings

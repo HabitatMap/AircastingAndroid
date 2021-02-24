@@ -30,7 +30,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "followed_at") val followedAt: Date? = null,
     @ColumnInfo(name = "contribute") val contribute: Boolean = false,
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
-    @ColumnInfo(name = "url_location") val urlLocation: String? = null
+    @ColumnInfo(name = "url_location") val urlLocation: String? = null,
+    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false
 
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -54,7 +55,8 @@ data class SessionDBObject(
                 session.followedAt,
                 session.contribute,
                 session.locationless,
-                session.urlLocation
+                session.urlLocation,
+                session.indoor
             )
 }
 

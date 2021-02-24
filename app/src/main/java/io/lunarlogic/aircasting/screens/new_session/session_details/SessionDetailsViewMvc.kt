@@ -13,7 +13,7 @@ interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listene
             sessionType: Session.Type,
             sessionName: String,
             sessionTags: ArrayList<String>,
-            indoor: Boolean? = null,
+            indoor: Boolean = false,
             streamingMethod: Session.StreamingMethod? = null,
             wifiName: String? = null,
             wifiPassword: String? = null

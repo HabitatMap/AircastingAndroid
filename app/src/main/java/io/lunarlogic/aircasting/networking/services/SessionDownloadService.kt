@@ -63,6 +63,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             null,
             sessionResponse.contribute,
             false,
+            sessionResponse.is_indoor,
             streams,
             sessionResponse.location
         )

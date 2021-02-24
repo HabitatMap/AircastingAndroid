@@ -27,6 +27,7 @@ class Session(
     var followedAt: Date? = null,
     var contribute: Boolean = true,
     var locationless: Boolean = false,
+    private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null
 ) {
@@ -44,7 +45,8 @@ class Session(
         sessionDBObject.deleted,
         sessionDBObject.followedAt,
         sessionDBObject.contribute,
-        sessionDBObject.locationless
+        sessionDBObject.locationless,
+        sessionDBObject.is_indoor
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
@@ -60,7 +62,7 @@ class Session(
         mName: String,
         mTags: ArrayList<String>,
         mStatus: Status,
-        indoor: Boolean?,
+        indoor: Boolean,
         streamingMethod: StreamingMethod?,
         location: Location?,
         contribute: Boolean,
@@ -154,7 +156,6 @@ class Session(
 
     val startTime get() = mStartTime
 
-    private var mIndoor: Boolean? = null
     private var mStreamingMethod: StreamingMethod? = null
     var location: Location? = null
 
@@ -198,6 +199,7 @@ class Session(
             this.followedAt,
             this.contribute,
             this.locationless,
+            this.indoor,
             this.streams
         )
     }

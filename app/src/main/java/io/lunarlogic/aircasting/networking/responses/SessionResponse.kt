@@ -13,7 +13,8 @@ class SessionResponse(
     val contribute: Boolean,
     val version: Int,
     val streams: HashMap<String, SessionStreamResponse>,
-    val location: String
+    val location: String,
+    val is_indoor: Boolean
 
     // TODO: add notes field after adding this functionallity
     // TODO: adding latitude, longitude and is_indoor might be needed when adding resume streaming functionallity

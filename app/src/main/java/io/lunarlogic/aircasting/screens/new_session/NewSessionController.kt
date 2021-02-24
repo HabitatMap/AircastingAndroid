@@ -258,7 +258,7 @@ class NewSessionController(
         sessionType: Session.Type,
         sessionName: String,
         sessionTags: ArrayList<String>,
-        indoor: Boolean?,
+        indoor: Boolean,
         streamingMethod: Session.StreamingMethod?,
         wifiSSID: String?,
         wifiPassword: String?
