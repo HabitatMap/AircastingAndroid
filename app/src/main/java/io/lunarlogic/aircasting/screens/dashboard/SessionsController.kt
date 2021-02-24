@@ -195,8 +195,6 @@ abstract class SessionsController(
 
         val okButton: Button = dialogView.findViewById(R.id.ok_button) as Button
         val cancelButton: Button = dialogView.findViewById(R.id.cancel_button) as Button
-        val header: TextView = dialogView.findViewById(R.id.confirmation_dialog_header)
-        header.text = this.context?.getString(R.string.are_you_sure)
         val dialog: AlertDialog = builder.create()
         dialog.show()
 
