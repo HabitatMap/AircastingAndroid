@@ -327,6 +327,5 @@ class NewSessionController(
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-//        wizardNavigator.goToSelectDevice(bluetoothManager, this, false)
     }
 }

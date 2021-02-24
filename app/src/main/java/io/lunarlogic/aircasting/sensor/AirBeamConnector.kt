@@ -18,9 +18,11 @@ abstract class AirBeamConnector {
     }
 
     private var mListener: Listener? = null
+    private val CONNECTION_TIMEOUT = 10000L
 
     protected val connectionStarted = AtomicBoolean(false)
     protected val cancelStarted = AtomicBoolean(false)
+    protected val connectionEstablished = AtomicBoolean(false)
 
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
@@ -39,6 +41,7 @@ abstract class AirBeamConnector {
         bluetoothAdapter?.cancelDiscovery()
 
         if (!connectionStarted.get()) {
+            failAfterTimeout()
             connectionStarted.set(true)
             registerToEventBus()
             start(deviceItem)
@@ -48,6 +51,14 @@ abstract class AirBeamConnector {
     abstract fun reconnectMobileSession()
     abstract fun triggerSDCardDownload()
     abstract fun clearSDCard()
+
+    private fun failAfterTimeout() {
+        Timer().schedule(timerTask {
+            if (connectionEstablished.get() == false) {
+                onConnectionFailed()
+            }
+        }, CONNECTION_TIMEOUT)
+    }
 
     private fun disconnect() {
         unregisterFromEventBus()
@@ -66,6 +77,7 @@ abstract class AirBeamConnector {
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
         mDeviceItem = deviceItem
+        connectionEstablished.set(true)
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
