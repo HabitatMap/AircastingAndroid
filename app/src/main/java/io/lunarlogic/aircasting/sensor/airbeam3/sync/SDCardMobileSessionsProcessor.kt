@@ -46,7 +46,7 @@ class SDCardMobileSessionsProcessor(
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
             }
 
-            finishSession(session)
+            finishSession(sessionId, session)
         }
     }
 
@@ -74,8 +74,9 @@ class SDCardMobileSessionsProcessor(
         return csvMeasurements.filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
     }
 
-    private fun finishSession(session: Session) {
-        session.stopRecording()
+    private fun finishSession(sessionId: Long, session: Session) {
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
+        session.stopRecording(lastMeasurementTime)
         mSessionsRepository.update(session)
     }
 }
