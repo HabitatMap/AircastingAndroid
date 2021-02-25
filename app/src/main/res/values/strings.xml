@@ -204,6 +204,7 @@
     <string name="hlu_dialog_save_button">Save changes</string>
     <string name="hlu_dialog_reset_button">Reset to default</string>
 
+    <!-- Errors -->
     <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
     <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
@@ -213,6 +214,8 @@
     <string name="errors_network_forgot_password">You need to have internet connection to reset your password</string>
     <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
     <string name="errors_network_required_delete_streams">You need to have internet connection to delete session</string>
+    <string name="errors_airbeam_connection_failed">AirBeam connection failed. Please try again.</string>
+
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
     <string name="session_last_min_measurements_description">Last minute measurement:</string>

@@ -15,8 +15,8 @@ class AudioReaderError(errorCode: Int):
 class UnknownError(cause: Exception):
     BaseException(cause, "Something went wrong, please contact our support")
 
-class AirBeam2ConnectionOpenFailed(cause: Exception):
-    BaseException(cause, "AirBeam connection failed. Please try again.")
+class AirBeamConnectionOpenFailed(cause: Exception):
+    BaseException(cause)
 
 class AirBeam2ConfiguringFailed(cause: Exception):
     BaseException(cause)

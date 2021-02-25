@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -88,6 +89,7 @@ class MobileActiveController(
         airBeamReconnector.reconnect(session) {
             GlobalScope.launch(Dispatchers.Main) {
                 mViewMvc.hideReconnectingLoaderFor(session)
+                mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
             }
         }
     }
@@ -125,6 +127,8 @@ class MobileActiveController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        mViewMvc.hideLoaderFor(event.deviceId!!)
+        val deviceId = event.deviceId ?: return
+        
+        mViewMvc.hideLoaderFor(deviceId)
     }
 }
