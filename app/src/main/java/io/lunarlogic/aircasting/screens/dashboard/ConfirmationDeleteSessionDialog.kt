@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.session_actions.view.cancel_button
 
 class ConfirmationDeleteSessionDialog(
     private val mFragmentManager: FragmentManager,
-    val function: () -> (Unit)
+    val okCallback: () -> (Unit)
 ): BaseDialog(mFragmentManager) {
     private lateinit var mView: View
     override fun setupView(inflater: LayoutInflater): View {
@@ -24,7 +24,7 @@ class ConfirmationDeleteSessionDialog(
         return mView
     }
     private fun okButtonClicked() {
-        function()
+        okCallback()
         dismiss()
     }
 }
