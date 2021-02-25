@@ -208,8 +208,8 @@ class Session(
         mStatus = Status.RECORDING
     }
 
-    fun stopRecording() {
-        endTime = Date()
+    fun stopRecording(date: Date? = null) {
+        endTime = date ?: Date()
         mStatus = Status.FINISHED
     }
 
