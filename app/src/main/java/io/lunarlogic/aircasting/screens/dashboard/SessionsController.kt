@@ -1,7 +1,11 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -177,9 +181,13 @@ abstract class SessionsController(
         val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
         val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
         if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
-            deleteSession(session.uuid)
+            ConfirmationDeleteSessionDialog(this.fragmentManager) {
+                deleteSession(session.uuid) }
+                .show()
         } else  {
-            deleteStreams(session, streamsToDelete)
+            ConfirmationDeleteSessionDialog(this.fragmentManager) {
+                deleteStreams(session, streamsToDelete) }
+                .show()
         }
     }
 
