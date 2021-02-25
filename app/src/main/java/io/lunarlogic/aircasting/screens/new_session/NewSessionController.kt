@@ -1,13 +1,18 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
+import android.app.Activity.NOTIFICATION_SERVICE
 import android.app.Activity.RESULT_OK
+import android.app.NotificationManager
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -40,6 +45,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 class NewSessionController(
@@ -319,8 +325,9 @@ class NewSessionController(
         wizardNavigator.goToAirBeamConnected(deviceItem, sessionUUID, this)
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        mContextActivity.onBackPressed()
+        onBackPressed()
+        errorHandler.showError(R.string.errors_airbeam_connection_failed)
     }
 }

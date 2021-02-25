@@ -1,9 +1,6 @@
 package io.lunarlogic.aircasting.screens.new_session
 
-import android.widget.ProgressBar
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment
@@ -30,6 +27,7 @@ class NewSessionWizardNavigator(
         incrementStepProgress()
         val fragment = SelectDeviceTypeFragment()
         fragment.listener = listener
+        unregisterBackPressedListener()
         goToFragment(fragment)
         updateProgressBarView()
     }
@@ -39,6 +37,7 @@ class NewSessionWizardNavigator(
         val fragment = SelectDeviceFragment()
         fragment.bluetoothManager = bluetoothManager
         fragment.listener = listener
+        unregisterBackPressedListener()
         goToFragment(fragment)
     }
 
@@ -75,12 +74,13 @@ class NewSessionWizardNavigator(
         val fragment = TurnOnAirBeamFragment()
         fragment.listener = listener
         fragment.sessionType = sessionType
+        unregisterBackPressedListener()
         goToFragment(fragment)
     }
 
     fun goToConnectingAirBeam() {
         incrementStepProgress()
-        val fragment = ConnectingAirBeamFragment()
+        val fragment = ConnectingAirBeamFragment(mFragmentManager)
         registerBackPressed(fragment)
         goToFragment(fragment)
     }
@@ -91,6 +91,7 @@ class NewSessionWizardNavigator(
         fragment.deviceItem = deviceItem
         fragment.sessionUUID = sessionUUID
         fragment.listener = listener
+        unregisterBackPressedListener()
         goToFragment(fragment)
     }
 
@@ -120,5 +121,4 @@ class NewSessionWizardNavigator(
         fragment.session = session
         goToFragment(fragment)
     }
-
 }
