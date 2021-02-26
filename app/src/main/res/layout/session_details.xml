@@ -24,6 +24,8 @@
         android:textAppearance="?attr/textAppearanceHeadline2"
         android:textColor="@color/aircasting_dark_blue"
         android:fontFamily="@font/moderat_trial_medium"
+        android:ellipsize="end"
+        android:singleLine="true"
         app:layout_constraintTop_toBottomOf="@+id/session_date"
         app:layout_constraintStart_toStartOf="@id/session_date"
         app:layout_constraintEnd_toStartOf="parent" />
