@@ -13,7 +13,8 @@
         android:id="@+id/session_card_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/keyline_4">
+        android:paddingStart="@dimen/keyline_4"
+        android:paddingEnd="@dimen/keyline_4">
 
         <TextView
             android:id="@+id/session_date"
@@ -21,6 +22,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="@color/aircasting_grey_300"
+            android:paddingTop="@dimen/keyline_4"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/session_actions_button" />
