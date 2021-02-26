@@ -81,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/get_started"
-        style="@style/Widget.Aircasting.TextButton"
+        style="@style/Widget.Aircasting.OutlinedTextButton"
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"

@@ -312,6 +312,13 @@
         <item name="android:translationZ">0dp</item>
     </style>
 
+    <style name="Widget.Aircasting.OutlinedTextButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextButton</item>
+        <item name="android:padding">@dimen/keyline_3</item>
+        <item name="shapeAppearance">@style/Widget.Aircasting.ButtonShapeAppearance</item>
+    </style>
+
     <style name="Widget.Aircasting.ToggleButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:backgroundTint">@color/mtrl_btn_text_btn_bg_color_selector</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.ToggleButton</item>
