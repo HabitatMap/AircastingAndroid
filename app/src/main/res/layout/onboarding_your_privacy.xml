@@ -42,6 +42,7 @@
         android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6"
         app:layout_constraintTop_toBottomOf="@id/onboarding_your_privacy_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -307,11 +307,11 @@
     <string name="onboarding_page2_description">Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.</string>
     <string name="continue_button_onboarding">Continue</string>
     <string name="onboarding_page3_header">Measure and map your exposure to air pollution</string>
-    <string name="onboarding_page3_description">Connect AirBeam to measure air quality humidity and temperature</string>
+    <string name="onboarding_page3_description">Connect AirBeam to measure air quality, humidity, and temperature.</string>
     <string name="learn_more_button_onboarding">Learn more</string>
     <string name="onboarding_bottomsheet_page3_header">How AirBeam works?</string>
     <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
-    <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
+    <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
     <string name="onboarding_page4_header">Your privacy</string>
     <string name="onboarding_page4_description">Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing.</string>
     <string name="accept_button_onboarding">Accept</string>
@@ -323,6 +323,6 @@
     <string name="onboarding_page3_description1_part3">mode, the AirBeam captures personal exposures.</string>
     <string name="onboarding_page3_description2_part1">In</string>
     <string name="onboarding_page3_description2_part2">fixed</string>
-    <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard or neighborhoog 24/7.</string>
+    <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
 
 </resources>

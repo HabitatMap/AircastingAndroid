@@ -43,7 +43,8 @@ class OnboardingController(
     }
 
     override fun onGetStartedClicked() {
-        wizardNavigator.goToHowIsTheAir(this)
+//        wizardNavigator.goToHowIsTheAir(this) TODO: this is commented for now as this feature is not part of MVP, later on 'goToMeasureAndMap' will be removed from this function
+        wizardNavigator.goToMeasureandMap(this)
         mViewMvc.showProgressBar()
     }
 
@@ -63,7 +64,7 @@ class OnboardingController(
     }
 
     override fun onAcceptClicked() {
-        CreateAccountActivity.start(mContextActivity) //todo: maybe i should do it from wizard navigator <?>
+        CreateAccountActivity.start(mContextActivity)
     }
 
     override fun onLearnMoreYourPrivacyClicked() {
