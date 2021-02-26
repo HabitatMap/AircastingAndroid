@@ -1,18 +1,13 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import android.app.Activity
-import android.app.Activity.NOTIFICATION_SERVICE
 import android.app.Activity.RESULT_OK
-import android.app.NotificationManager
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
@@ -35,8 +30,8 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
+import io.lunarlogic.aircasting.screens.common.AircastingAlertDialog
 import io.lunarlogic.aircasting.sensor.AirBeamRecordSessionService
-import io.lunarlogic.aircasting.sensor.AirBeamService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import kotlinx.coroutines.Dispatchers
@@ -328,6 +323,7 @@ class NewSessionController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-        errorHandler.showError(R.string.errors_airbeam_connection_failed)
+        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
+        dialog.show()
     }
 }

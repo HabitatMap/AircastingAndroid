@@ -325,4 +325,7 @@
     <string name="onboarding_page3_description2_part2">fixed</string>
     <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
 
+    <string name="bluetooth_failed_connection_alert_header">Bluetooth connection failed</string>
+    <string name="bluetooth_failed_connection_alert_description">"Bluetooth connection failed. \n Please toggle the power on your device and try again."</string>
+
 </resources>

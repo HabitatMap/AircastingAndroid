@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.sensor
 
 import android.bluetooth.BluetoothAdapter
-import android.widget.Toast
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Session
@@ -26,7 +25,7 @@ abstract class AirBeamConnector {
     protected val connectionStarted = AtomicBoolean(false)
     protected val cancelStarted = AtomicBoolean(false)
     protected val connectionEstablished = AtomicBoolean(false)
-    protected val connectionFailed = AtomicBoolean(false)
+    protected val connectionTimedOut = AtomicBoolean(false)
 
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
@@ -39,6 +38,8 @@ abstract class AirBeamConnector {
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mDeviceItem = deviceItem
         mSessionUUID = sessionUUID
+
+        connectionTimedOut.set(false)
 
         // Cancel discovery because it otherwise slows down the connection.
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -56,12 +57,16 @@ abstract class AirBeamConnector {
     abstract fun triggerSDCardDownload()
     abstract fun clearSDCard()
 
+    private var mTimerTask: TimerTask? = null
+
     private fun failAfterTimeout(deviceItem: DeviceItem) {
-        Timer().schedule(timerTask {
-            if (connectionEstablished.get() == false && connectionFailed.get() == false) {
-                onConnectionFailed(deviceItem.id)
+        mTimerTask = timerTask {
+            if (connectionEstablished.get() == false) {
+                connectionTimedOut.set(true)
+                mListener?.onConnectionFailed(deviceItem.id)
             }
-        }, CONNECTION_TIMEOUT)
+        }
+        Timer().schedule(mTimerTask, CONNECTION_TIMEOUT)
     }
 
     private fun disconnect() {
@@ -86,8 +91,10 @@ abstract class AirBeamConnector {
     }
 
     fun onConnectionFailed(deviceId: String) {
-        connectionFailed.set(true)
-        mListener?.onConnectionFailed(deviceId)
+        mTimerTask?.cancel()
+        if (connectionTimedOut.get() == false) {
+            mListener?.onConnectionFailed(deviceId)
+        }
     }
 
     fun onDisconnected(deviceId: String) {
