@@ -52,19 +52,12 @@ class OnboardingTest {
         setupDagger()
     }
 
-    @After
-    fun cleanup() {
-
-    }
-
     @Test
     fun onboardingTest() {
         settings.onboardingNotDisplayed()
         testRule.launchActivity(null)
 
         onView(withId(R.id.get_started_button)).perform(click())
-
-        onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.continue_button)).perform(click())
 

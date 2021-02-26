@@ -118,7 +118,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(FakeDeviceItem.NAME))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.toUpperCase()))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -180,7 +180,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(FakeDeviceItem.NAME))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.toUpperCase()))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
