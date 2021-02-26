@@ -86,7 +86,7 @@ class GraphContainer: OnChartGestureListener {
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-        setLabels()
+//        setLabels() todo: this line sets bad labels on graph, without it is ok
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
