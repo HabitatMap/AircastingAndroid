@@ -12,8 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-        android:text="Bluetooth connection failed"
+        android:text="Alert header"
         android:textSize="@dimen/text_size_m"
+        android:textAlignment="center"
         app:lineHeight="@dimen/keyline_6"
         android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
@@ -21,11 +22,13 @@
         android:layout_marginBottom="@dimen/keyline_6" />
 
     <TextView
+        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bluetooth connection failed. Please toggle the power on your device and try again."
+        android:text="Alert desc"
         style="@style/TextAppearance.Aircasting.Cards.Body1"
         android:textSize="@dimen/text_size_s"
+        android:textAlignment="center"
         android:lineHeight="@dimen/keyline_4"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8" />
@@ -38,6 +41,6 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginBottom="@dimen/keyline_6"
-        android:text="@string/ok" />
+        android:text="Continue" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
