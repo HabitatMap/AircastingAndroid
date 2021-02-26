@@ -323,9 +323,7 @@ class NewSessionController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-        mContextActivity.runOnUiThread(kotlinx.coroutines.Runnable { //todo: sprawdzic czy zadziala bez runOnUiThread
-            val dialog = AircastingAlertDialog(mFragmentManager, "Bluetooth connection failed", "Bluetooth connection failed. \\n Please toggle the power on your device and try again.")
-            dialog.show()
-        })
+        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
+        dialog.show()
     }
 }
