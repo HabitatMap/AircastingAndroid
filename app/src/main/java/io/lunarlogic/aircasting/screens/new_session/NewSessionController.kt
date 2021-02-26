@@ -328,6 +328,10 @@ class NewSessionController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-        errorHandler.showError(R.string.errors_airbeam_connection_failed)
+        mContextActivity.runOnUiThread(kotlinx.coroutines.Runnable {
+            val dialog = BluetoothConnectionFailedDialog(mFragmentManager)
+            dialog.show()
+        })
+//        errorHandler.showError(R.string.errors_airbeam_connection_failed)
     }
 }
