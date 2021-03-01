@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.clearSDCard
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.AppBar
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.myaccount
+package io.lunarlogic.aircasting.screens.settings.my_account
 
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 
