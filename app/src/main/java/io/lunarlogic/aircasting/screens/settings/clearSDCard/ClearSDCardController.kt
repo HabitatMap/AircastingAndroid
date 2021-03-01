@@ -52,7 +52,7 @@ class ClearSDCardController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity)) { //todo: should areMapsDisabled be involved here?
+        if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)

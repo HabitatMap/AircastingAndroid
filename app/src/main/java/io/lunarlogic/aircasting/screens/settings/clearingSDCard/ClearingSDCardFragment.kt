@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
-import io.lunarlogic.aircasting.screens.settings.clearSDCard.ClearSDCardWizardNavigator
+import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
-class ClearingSDCardFragment: Fragment(), ClearSDCardWizardNavigator.BackPressedListener {
+class ClearingSDCardFragment: Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: ClearingSDCardController? = null
 
     override fun onCreateView(

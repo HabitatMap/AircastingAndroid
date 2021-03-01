@@ -63,7 +63,7 @@ class NewSessionController(
     ChooseLocationViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
-    private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager, R.id.new_session_fragment_container)
+    private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
     private var wifiSSID: String? = null

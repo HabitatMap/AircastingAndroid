@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.new_session
 
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment
@@ -16,9 +17,8 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.*
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,
-    private val mFragmentManager: FragmentManager,
-    container: Int
-): BaseWizardNavigator(mViewMvc, mFragmentManager, container) {
+    private val mFragmentManager: FragmentManager
+): BaseWizardNavigator(mViewMvc, mFragmentManager, R.id.new_session_fragment_container) {
     override val STEP_PROGRESS = 10
     override var currentProgressStep = 0
     override var backPressedListener: BackPressedListener? = null
