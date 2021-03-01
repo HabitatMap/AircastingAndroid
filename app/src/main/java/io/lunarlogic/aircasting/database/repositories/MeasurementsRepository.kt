@@ -51,7 +51,9 @@ class MeasurementsRepository {
     }
 
     fun deleteMeasurements(measurementsIds: List<Long>) {
-        measurementsIds.forEach { measurementId -> mDatabase.measurements().delete(measurementId) }
+        mDatabase.runInTransaction {
+            mDatabase.measurements().deleteInTransaction(measurementsIds)
+        }
     }
 
 }
