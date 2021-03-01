@@ -25,6 +25,7 @@ class SessionsSyncService {
 
     private val uploadService: MobileSessionUploadService
     private val downloadService: SessionDownloadService
+    private val removeOldMeasurementsService: RemoveOldMeasurementsService
 
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
@@ -42,6 +43,7 @@ class SessionsSyncService {
 
         this.uploadService = MobileSessionUploadService(apiService, errorHandler)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
+        this.removeOldMeasurementsService = RemoveOldMeasurementsService()
     }
 
     companion object {
@@ -105,6 +107,7 @@ class SessionsSyncService {
                                 delete(body.deleted)
                                 upload(body.upload)
                                 download(body.download)
+                                removeOldMeasurements()
 
                                 onSuccessCallback?.invoke()
                             }
@@ -123,6 +126,11 @@ class SessionsSyncService {
                 }
             })
         }
+    }
+
+    private fun removeOldMeasurements() {
+        val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
+        removeOldMeasurementsService.removeMeasurementsFromSessions(fixedSessionsIds)
     }
 
     private fun deleteMarkedForRemoval() {

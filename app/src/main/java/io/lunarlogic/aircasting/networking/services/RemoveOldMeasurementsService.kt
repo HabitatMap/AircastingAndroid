@@ -21,7 +21,7 @@ class RemoveOldMeasurementsService() {
 
     private fun findMeasurementsForDeletion(fixedSessionsMeasurements: List<MeasurementDBObject>): List<Long> {
         val measurementsIdsForDeletion: MutableList<Long> = mutableListOf()
-        fixedSessionsMeasurements.map { measurement ->
+        fixedSessionsMeasurements.forEach { measurement ->
             // `measurement.time.time` looks weird, but it's just getTime() current syntax
             // it returns the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this Date object.
             // Source: https://developer.android.com/reference/kotlin/java/util/Date
