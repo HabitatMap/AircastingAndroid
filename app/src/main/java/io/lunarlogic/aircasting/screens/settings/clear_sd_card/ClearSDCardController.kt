@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
@@ -13,9 +14,11 @@ import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
@@ -29,24 +32,26 @@ import org.greenrobot.eventbus.Subscribe
 class ClearSDCardController(
     private val mContextActivity: AppCompatActivity,
     mViewMvc: ClearSDCardViewMvc,
-    private val permissionsManager: PermissionsManager,
-    private val bluetoothManager: BluetoothManager,
-    private val mFragmentManager: FragmentManager
+    private val mPermissionsManager: PermissionsManager,
+    private val mBluetoothManager: BluetoothManager,
+    private val mFragmentManager: FragmentManager,
+    private val mSettings: Settings
 ): SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
-    SDCardClearedViewMvc.Listener {
-    private val wizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mViewMvc, mFragmentManager)
-    private val errorHandler = ErrorHandler(mContextActivity)
+    SDCardClearedViewMvc.Listener,
+    TurnOffLocationServicesViewMvc.Listener {
+    private val mWizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mViewMvc, mFragmentManager)
+    private val mErrorHandler = ErrorHandler(mContextActivity)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity)) {
+        if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
         } else {
-            permissionsManager.requestLocationPermissions(mContextActivity)
+            mPermissionsManager.requestLocationPermissions(mContextActivity)
         }
     }
 
@@ -56,18 +61,18 @@ class ClearSDCardController(
 
     private fun goToFirstStep() {
         if (areLocationServicesOn()) {
-            if (bluetoothManager.isBluetoothEnabled()) {
-                wizardNavigator.goToRestartAirBeam(this)
+            if (mBluetoothManager.isBluetoothEnabled()) {
+                mWizardNavigator.goToRestartAirBeam(this)
             } else {
-                wizardNavigator.goToTurnOnBluetooth(this)
+                mWizardNavigator.goToTurnOnBluetooth(this)
             }
         } else {
-            wizardNavigator.goToTurnOnLocationServices(this)
+            mWizardNavigator.goToTurnOnLocationServices(this)
         }
     }
 
     fun onBackPressed() {
-        wizardNavigator.onBackPressed()
+        mWizardNavigator.onBackPressed()
     }
 
     override fun onTurnOnLocationServicesOkClicked() {
@@ -89,10 +94,10 @@ class ClearSDCardController(
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
-                if (permissionsManager.permissionsGranted(grantResults)) {
+                if (mPermissionsManager.permissionsGranted(grantResults)) {
                     goToFirstStep()
                 } else {
-                    errorHandler.showError(R.string.errors_location_services_required)
+                    mErrorHandler.showError(R.string.errors_location_services_required)
                 }
             }
             else -> {
@@ -105,20 +110,20 @@ class ClearSDCardController(
         when (requestCode) {
             ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if (bluetoothManager.isBluetoothEnabled()) {
-                        wizardNavigator.goToSelectDevice(bluetoothManager, this)
+                    if (mBluetoothManager.isBluetoothEnabled()) {
+                        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
                     } else {
-                        wizardNavigator.goToTurnOnBluetooth(this)
+                        mWizardNavigator.goToTurnOnBluetooth(this)
                     }
                 } else {
-                    errorHandler.showError(R.string.errors_location_services_required)
+                    mErrorHandler.showError(R.string.errors_location_services_required)
                 }
             }
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    wizardNavigator.goToRestartAirBeam(this)
+                    mWizardNavigator.goToRestartAirBeam(this)
                 } else {
-                    errorHandler.showError(R.string.errors_bluetooth_required)
+                    mErrorHandler.showError(R.string.errors_bluetooth_required)
                 }
             }
             else -> {
@@ -128,7 +133,7 @@ class ClearSDCardController(
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
-        wizardNavigator.goToSelectDevice(bluetoothManager, this)
+        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
     }
 
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
@@ -137,21 +142,34 @@ class ClearSDCardController(
 
     private fun clearSDCard(deviceItem: DeviceItem) {
         AirBeamClearCardService.startService(mContextActivity, deviceItem)
-        wizardNavigator.goToClearingSDCard()
+        mWizardNavigator.goToClearingSDCard()
     }
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         // TODO: remove following and handle error
-        wizardNavigator.goToSDCardCleared(this)
+        mWizardNavigator.goToSDCardCleared(this)
     }
 
     @Subscribe
     fun onMessageEvent(event: SDCardClearFinished) {
-        wizardNavigator.goToSDCardCleared(this)
+        mWizardNavigator.goToSDCardCleared(this)
     }
 
     override fun onSDCardClearedConfirmationClicked() {
+        if (mSettings.areMapsDisabled()) {
+            mWizardNavigator.goToTurnOffLocationServices(this)
+        }
+    }
+
+    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
+        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        ContextCompat.startActivity(mContextActivity, intent, null)
+
+        mContextActivity.finish()
+    }
+
+    override fun onSkipClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
         mContextActivity.finish()
     }
 

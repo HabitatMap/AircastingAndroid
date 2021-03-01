@@ -5,10 +5,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothFragment
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesFragment
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
@@ -71,6 +69,13 @@ class ClearSDCardWizardNavigator(
     fun goToSDCardCleared(listener: SDCardClearedViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SDCardClearedFragment()
+        fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun goToTurnOffLocationServices(listener: TurnOffLocationServicesViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = TurnOffLocationServicesFragment()
         fragment.listener = listener
         goToFragment(fragment)
     }

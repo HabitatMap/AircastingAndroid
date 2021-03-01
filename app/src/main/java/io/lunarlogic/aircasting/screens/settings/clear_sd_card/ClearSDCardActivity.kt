@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.AppBar
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import javax.inject.Inject
 
@@ -18,6 +19,9 @@ class ClearSDCardActivity : AppCompatActivity() {
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
+
+    @Inject
+    lateinit var settings: Settings
 
     companion object{
         fun start(rootActivity: FragmentActivity?) {
@@ -41,7 +45,8 @@ class ClearSDCardActivity : AppCompatActivity() {
             view,
             permissionsManager,
             bluetoothManager,
-            supportFragmentManager
+            supportFragmentManager,
+            settings
         )
 
         controller?.onCreate()

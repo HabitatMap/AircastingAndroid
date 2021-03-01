@@ -10,8 +10,8 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 class TurnOffLocationServicesFragment: Fragment() {
     private var controller: TurnOffLocationServicesController? = null
     var listener: TurnOffLocationServicesViewMvc.Listener? = null
-    lateinit var deviceItem: DeviceItem
-    lateinit var sessionUUID: String
+    var deviceItem: DeviceItem? = null
+    var sessionUUID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

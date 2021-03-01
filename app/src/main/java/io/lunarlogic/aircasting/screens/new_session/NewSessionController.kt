@@ -107,14 +107,14 @@ class NewSessionController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String, deviceItem: DeviceItem) {
+    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(mContextActivity, intent, null)
 
         goToSessionDetails(sessionUUID, deviceItem)
     }
 
-    override fun onSkipClicked(sessionUUID: String, deviceItem: DeviceItem) {
+    override fun onSkipClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
         goToSessionDetails(sessionUUID, deviceItem)
     }
 
@@ -305,7 +305,10 @@ class NewSessionController(
         return settings.areMapsDisabled()
     }
 
-    fun goToSessionDetails(sessionUUID: String, deviceItem: DeviceItem){
+    fun goToSessionDetails(sessionUUID: String?, deviceItem: DeviceItem?) {
+        sessionUUID ?: return
+        deviceItem ?: return
+
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
