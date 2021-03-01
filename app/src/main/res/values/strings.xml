@@ -264,6 +264,14 @@
     <string name="application_version">Application version:</string>
     <string name="version">version</string>
 
+    <!-- Clearing SD Card -->
+    <string name="sd_card_clearing_header">Clearing SD card</string>
+    <string name="sd_card_clearing_description">This should take less than 10 seconds.</string>
+    <string name="sd_card_cleared_header">SD card cleared</string>
+    <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
+    <string name="sd_card_cleared_continue_button">Continue</string>
+
+
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
