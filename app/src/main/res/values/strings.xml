@@ -267,6 +267,7 @@
     <!-- Clearing SD Card -->
     <string name="restart_airbeam_header">Restart your AirBeam</string>
     <string name="restart_airbeam_description">Turn your AirBeam off and then back on.</string>
+    <string name="sd_card_clear_select_device_header">Select the device you\'d like to clear</string>
     <string name="sd_card_clearing_header">Clearing SD card</string>
     <string name="sd_card_clearing_description">This should take less than 10 seconds.</string>
     <string name="sd_card_cleared_header">SD card cleared</string>

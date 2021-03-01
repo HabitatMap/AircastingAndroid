@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.screens.settings.clear_sd_card
 
+import android.content.Context
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
@@ -17,17 +18,14 @@ import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.R
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
 
 class ClearSDCardWizardNavigator(
-    private val mViewMvc: ClearSDCardViewMvc,
-    private val mFragmentManager: FragmentManager
-): BaseWizardNavigator(mViewMvc, mFragmentManager, R.id.clear_sd_card_fragment_container) {
-    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
-        incrementStepProgress()
-        val fragment = SelectDeviceFragment()
-        fragment.bluetoothManager = bluetoothManager
-        fragment.listener = listener
-        goToFragment(fragment)
-    }
-
+    private val mContext: Context,
+    viewMvc: ClearSDCardViewMvc,
+    fragmentManager: FragmentManager
+): BaseWizardNavigator(
+    viewMvc,
+    fragmentManager,
+    R.id.clear_sd_card_fragment_container
+) {
     fun goToTurnOnLocationServices(
         listener: TurnOnLocationServicesViewMvc.Listener
     ) {
@@ -45,12 +43,21 @@ class ClearSDCardWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToRestartAirbeam(
+    fun goToRestartAirBeam(
         listener: RestartAirBeamViewMvc.Listener
     ) {
         incrementStepProgress()
         val fragment = RestartAirBeamFragment()
         fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun goToSelectDevice(bluetoothManager: BluetoothManager, listener: SelectDeviceViewMvc.Listener) {
+        incrementStepProgress()
+        val fragment = SelectDeviceFragment()
+        fragment.bluetoothManager = bluetoothManager
+        fragment.listener = listener
+        fragment.headerDescription = mContext.getString(R.string.sd_card_clear_select_device_header)
         goToFragment(fragment)
     }
 

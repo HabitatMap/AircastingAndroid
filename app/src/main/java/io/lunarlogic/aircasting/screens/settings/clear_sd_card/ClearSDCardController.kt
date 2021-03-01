@@ -40,7 +40,7 @@ class ClearSDCardController(
     TurnOnBluetoothViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
     SDCardClearedViewMvc.Listener {
-    private val wizardNavigator = ClearSDCardWizardNavigator(mViewMvc, mFragmentManager)
+    private val wizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
     private val sessionsRepository = SessionsRepository()
 
@@ -61,7 +61,7 @@ class ClearSDCardController(
     private fun goToFirstStep() {
         if (areLocationServicesOn()) {
             if (bluetoothManager.isBluetoothEnabled()) {
-                wizardNavigator.goToRestartAirbeam(this)
+                wizardNavigator.goToRestartAirBeam(this)
             } else {
                 wizardNavigator.goToTurnOnBluetooth(this)
             }
@@ -155,7 +155,7 @@ class ClearSDCardController(
             }
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    wizardNavigator.goToRestartAirbeam(this)
+                    wizardNavigator.goToRestartAirBeam(this)
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)
                 }
