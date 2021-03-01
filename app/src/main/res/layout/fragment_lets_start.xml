@@ -221,51 +221,5 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/clear_card"
-            style="@style/Widget.Aircasting.Cards"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            app:cardElevation="1dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/sync_card"
-            app:layout_constraintEnd_toEndOf="@id/mobile_session_start_card"
-            app:layout_constraintTop_toBottomOf="@+id/or"
-            >
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:maxHeight="200dp"
-                android:paddingBottom="@dimen/keyline_8"
-                android:paddingStart="@dimen/keyline_4" >
-                <TextView
-                    android:id="@+id/clear_card_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/clear_card_title"
-                    android:textAppearance="?attr/textAppearanceHeadline1"
-                    android:layout_marginTop="@dimen/keyline_8"
-                    android:layout_marginEnd="@dimen/keyline_4"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
-                <TextView
-                    android:id="@+id/clear_card_desc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/clear_card_description"
-                    android:textAppearance="?attr/textAppearanceBody1"
-                    android:layout_marginTop="@dimen/keyline_2"
-                    android:layout_marginEnd="@dimen/keyline_4"
-                    app:layout_constraintTop_toBottomOf="@+id/clear_card_title"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

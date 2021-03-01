@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
-import io.lunarlogic.aircasting.database.repositories.SessionsRepository
-import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
+import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
+import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.safeRegister
@@ -22,10 +22,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -42,7 +39,6 @@ class ClearSDCardController(
     SDCardClearedViewMvc.Listener {
     private val wizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mViewMvc, mFragmentManager)
     private val errorHandler = ErrorHandler(mContextActivity)
-    private val sessionsRepository = SessionsRepository()
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -78,51 +74,16 @@ class ClearSDCardController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
+    override fun onTurnOnBluetoothOkClicked() {
+        requestBluetoothEnable()
+    }
+
     private fun requestBluetoothEnable() {
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
         // I know it's deprecated, but location services requires onActivityResult
         // so I wanted to be consistent
         mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
-    }
-
-    private fun connectToAirBeam(deviceItem: DeviceItem) {
-        wizardNavigator.goToClearingSDCard()
-        // todo: clearing SD card service
-    }
-
-    private fun areLocationServicesOn(): Boolean {
-        val manager =
-            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    }
-
-    override fun onTurnOnAirBeamReadyClicked() {
-        wizardNavigator.goToSelectDevice(bluetoothManager, this)
-    }
-
-    override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
-        GlobalScope.launch(Dispatchers.Main) {
-            var existing = false
-            val query = GlobalScope.async(Dispatchers.IO) {
-                existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
-            }
-            query.await()
-            if (existing) {
-                errorHandler.showError(R.string.active_session_already_exists)
-            } else {
-                connectToAirBeam(selectedDeviceItem)
-            }
-            EventBus.getDefault().post(AirBeamConnectionSuccessfulEvent(DeviceItem(),"0")) //todo: to be changed on SDClearSuccessfullEvent, to be removed <?>
-        }
-    }
-
-    override fun onTurnOnBluetoothOkClicked() {
-        requestBluetoothEnable()
-    }
-
-    override fun onSDCardClearedConfirmationClicked() {
-        mContextActivity.finish()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
@@ -166,9 +127,37 @@ class ClearSDCardController(
         }
     }
 
+    override fun onTurnOnAirBeamReadyClicked() {
+        wizardNavigator.goToSelectDevice(bluetoothManager, this)
+    }
+
+    override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
+        clearSDCard(selectedDeviceItem)
+    }
+
+    private fun clearSDCard(deviceItem: DeviceItem) {
+        AirBeamClearCardService.startService(mContextActivity, deviceItem)
+        wizardNavigator.goToClearingSDCard()
+    }
+
     @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) { //todo: to be changed on SD card cleared event
+    fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
+        // TODO: remove following and handle error
         wizardNavigator.goToSDCardCleared(this)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: SDCardClearFinished) {
+        wizardNavigator.goToSDCardCleared(this)
+    }
+
+    override fun onSDCardClearedConfirmationClicked() {
+        mContextActivity.finish()
+    }
+
+    private fun areLocationServicesOn(): Boolean {
+        val manager =
+            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
 }
