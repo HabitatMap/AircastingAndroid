@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.SDCardCleared
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared
 
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 

@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
-import io.lunarlogic.aircasting.screens.settings.my_account.MyAccountActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
 
 class SettingsController(
     private val mRootActivity: FragmentActivity?,

@@ -81,7 +81,7 @@
             android:name="io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name=".screens.settings.my_account.MyAccountActivity"
+            android:name="io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
             android:name=".screens.settings.clear_sd_card.ClearSDCardActivity"

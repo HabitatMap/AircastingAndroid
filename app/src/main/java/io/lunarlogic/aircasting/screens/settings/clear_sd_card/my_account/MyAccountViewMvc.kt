@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.my_account
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account
 
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 

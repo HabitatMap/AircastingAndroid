@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.restart_airbeam
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam
 
 import android.content.Context
 

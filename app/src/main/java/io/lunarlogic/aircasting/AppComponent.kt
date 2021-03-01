@@ -14,11 +14,11 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
-import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedFragment
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
-import io.lunarlogic.aircasting.screens.settings.clearing_sd_card.ClearingSDCardFragment
-import io.lunarlogic.aircasting.screens.settings.my_account.MyAccountActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardFragment
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
 import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import io.lunarlogic.aircasting.sensor.AirBeamRecordSessionService
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
