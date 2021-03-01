@@ -86,7 +86,7 @@ class GraphContainer: OnChartGestureListener {
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-//        setLabels() todo: this line sets bad labels on graph, without it is ok
+        setLabels()
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -121,6 +121,7 @@ class GraphContainer: OnChartGestureListener {
         val centerY = (last.y - first.y) / 2
 
         mGraph.zoom(zoom, 1f, centerX, centerY)
+        mGraph.moveViewToX(last.x - Math.min(zoomSpan, span))
 
         val from = Math.max(last.x - zoomSpan, first.x)
         val to = last.x

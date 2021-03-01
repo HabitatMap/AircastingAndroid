@@ -16,6 +16,6 @@ class GraphViewMobileActiveMvcImpl(
     }
 
     override fun defaultZoomSpan(): Int? {
-        return 30 * 60 * 1000 // 30 minutes
+        return 2 * 60 * 1000 // 30 minutes, changed to 2 minutes
     }
 }
