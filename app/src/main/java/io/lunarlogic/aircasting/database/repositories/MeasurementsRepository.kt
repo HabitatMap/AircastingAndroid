@@ -50,4 +50,8 @@ class MeasurementsRepository {
         return mDatabase.measurements().getBySessionsIds(sessionsIds)
     }
 
+    fun deleteMeasurements(measurementsIds: List<Long>) {
+        measurementsIds.forEach { measurementId -> mDatabase.measurements().delete(measurementId) }
+    }
+
 }
