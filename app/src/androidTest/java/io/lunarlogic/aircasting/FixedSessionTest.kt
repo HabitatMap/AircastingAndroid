@@ -186,12 +186,9 @@ class FixedSessionTest {
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
-<<<<<<< HEAD
-        onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
-=======
+
         onView(withId(R.id.airbeam_connected_header)).perform(scrollTo())
         onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
->>>>>>> tests corrected
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's fixed indoor session"))
