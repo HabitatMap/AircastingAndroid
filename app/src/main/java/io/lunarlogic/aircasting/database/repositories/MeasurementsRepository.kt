@@ -45,4 +45,9 @@ class MeasurementsRepository {
         val measurement = mDatabase.measurements().lastForStream(sessionId, measurementStreamId)
         return measurement?.time
     }
+
+    fun getMeasurementsBySessionsIds(sessionsIds: List<Long>): List<MeasurementDBObject> {
+        return mDatabase.measurements().getBySessionsIds(sessionsIds)
+    }
+
 }
