@@ -27,7 +27,7 @@ class ClearSDCardWizardNavigator(
         listener: TurnOnLocationServicesViewMvc.Listener
     ) {
         incrementStepProgress()
-        val fragment = TurnOnLocationServicesFragment()
+        val fragment = TurnOnLocationServicesFragment(useDetailedExplanation = true)
         fragment.listener = listener
         goToFragment(fragment)
     }

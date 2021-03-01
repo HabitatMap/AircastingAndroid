@@ -106,7 +106,7 @@
     <string name="turn_on_location_services_header">Turn on location services</string>
     <string name="turn_on_location_services_description">To map your measurements, turn on location services.</string>
     <string name="turn_on_location_services_ok_button">Turn on</string>
-    <string name="locations_services_must_be_turned_on">Location services must be turned on to enable Bluetooth scanning.\n You\'ll be prompted to turn off location services after you\'ve selected the Bluetooth device you\'ll be recording with.</string>
+    <string name="locations_services_must_be_turned_on">Location services must be turned on to enable Bluetooth scanning.\nYou\'ll be prompted to turn off location services after you\'ve selected the Bluetooth device you\'ll be recording with.</string>
 
     <!-- New session Step 2 -->
     <string name="turn_on_bluetooth_image_desc">Turn on Bluetooth</string>

@@ -10,7 +10,7 @@ import io.lunarlogic.aircasting.models.Session
 class TurnOnAirBeamFragment() : Fragment() {
     private var controller: TurnOnAirBeamController? = null
     var listener: TurnOnAirBeamViewMvc.Listener? = null
-    var sessionType: Session.Type = Session.Type.MOBILE //todo: default value added temporary <?>
+    lateinit var sessionType: Session.Type
 
     override fun onCreateView(
         inflater: LayoutInflater,
