@@ -1,15 +1,20 @@
-package io.lunarlogic.aircasting.screens.settings.clearSDCard
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card
 
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothFragment
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesFragment
+import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedFragment
 import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedViewMvc
-import io.lunarlogic.aircasting.screens.settings.clearingSDCard.ClearingSDCardFragment
+import io.lunarlogic.aircasting.screens.settings.clearing_sd_card.ClearingSDCardFragment
+import io.lunarlogic.aircasting.screens.settings.restart_airbeam.RestartAirBeamFragment
+import io.lunarlogic.aircasting.screens.settings.restart_airbeam.RestartAirBeamViewMvc
 
 class ClearSDCardWizardNavigator(
     private val mViewMvc: ClearSDCardViewMvc,
@@ -40,11 +45,11 @@ class ClearSDCardWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToTurnOnAirbeam(
-        listener: TurnOnAirBeamViewMvc.Listener
+    fun goToRestartAirbeam(
+        listener: RestartAirBeamViewMvc.Listener
     ) {
         incrementStepProgress()
-        val fragment = TurnOnAirBeamFragment()
+        val fragment = RestartAirBeamFragment()
         fragment.listener = listener
         goToFragment(fragment)
     }

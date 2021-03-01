@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.clearSDCard
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -11,22 +11,17 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
-import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
-import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.AirBeamConnectedViewMvc
-import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.settings.SDCardCleared.SDCardClearedViewMvc
-import io.lunarlogic.aircasting.sensor.AirBeamService
+import io.lunarlogic.aircasting.screens.settings.restart_airbeam.RestartAirBeamViewMvc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -41,7 +36,7 @@ class ClearSDCardController(
     private val bluetoothManager: BluetoothManager,
     private val mFragmentManager: FragmentManager
 ): SelectDeviceViewMvc.Listener,
-    TurnOnAirBeamViewMvc.Listener,
+    RestartAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
     SDCardClearedViewMvc.Listener {
@@ -66,7 +61,7 @@ class ClearSDCardController(
     private fun goToFirstStep() {
         if (areLocationServicesOn()) {
             if (bluetoothManager.isBluetoothEnabled()) {
-                wizardNavigator.goToSelectDevice(bluetoothManager, this)
+                wizardNavigator.goToRestartAirbeam(this)
             } else {
                 wizardNavigator.goToTurnOnBluetooth(this)
             }
@@ -160,7 +155,7 @@ class ClearSDCardController(
             }
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    wizardNavigator.goToTurnOnAirbeam(this)
+                    wizardNavigator.goToRestartAirbeam(this)
                 } else {
                     errorHandler.showError(R.string.errors_bluetooth_required)
                 }
