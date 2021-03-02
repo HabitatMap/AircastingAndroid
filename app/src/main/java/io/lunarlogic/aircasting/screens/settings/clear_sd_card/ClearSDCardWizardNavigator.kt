@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceFragment
@@ -16,6 +17,7 @@ import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.R
 
 class ClearSDCardWizardNavigator(
     private val mContext: Context,
+    private val mSettings: Settings,
     viewMvc: ClearSDCardViewMvc,
     fragmentManager: FragmentManager
 ): BaseWizardNavigator(
@@ -27,7 +29,10 @@ class ClearSDCardWizardNavigator(
         listener: TurnOnLocationServicesViewMvc.Listener
     ) {
         incrementStepProgress()
-        val fragment = TurnOnLocationServicesFragment(useDetailedExplanation = true)
+        val fragment = TurnOnLocationServicesFragment(
+            useDetailedExplanation = true,
+            areMapsDisabled = mSettings.areMapsDisabled()
+        )
         fragment.listener = listener
         goToFragment(fragment)
     }

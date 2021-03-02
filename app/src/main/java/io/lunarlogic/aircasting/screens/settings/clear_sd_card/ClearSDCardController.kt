@@ -43,7 +43,7 @@ class ClearSDCardController(
     TurnOnLocationServicesViewMvc.Listener,
     SDCardClearedViewMvc.Listener,
     TurnOffLocationServicesViewMvc.Listener {
-    private val mWizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mViewMvc, mFragmentManager)
+    private val mWizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
     private val mErrorHandler = ErrorHandler(mContextActivity)
 
     fun onCreate() {

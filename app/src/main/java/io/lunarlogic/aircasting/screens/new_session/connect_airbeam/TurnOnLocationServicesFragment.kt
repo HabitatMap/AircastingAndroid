@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class TurnOnLocationServicesFragment(
-    private val useDetailedExplanation: Boolean
+    private val useDetailedExplanation: Boolean,
+    private val areMapsDisabled: Boolean
 ): Fragment() {
     private var controller: TurnOnLocationServicesController? = null
     var listener: TurnOnLocationServicesViewMvc.Listener? = null
@@ -21,7 +22,8 @@ class TurnOnLocationServicesFragment(
             TurnOnLocationServicesViewMvcImpl(
                 layoutInflater,
                 null,
-                useDetailedExplanation
+                useDetailedExplanation,
+                areMapsDisabled
             )
         controller =
             TurnOnLocationServicesController(

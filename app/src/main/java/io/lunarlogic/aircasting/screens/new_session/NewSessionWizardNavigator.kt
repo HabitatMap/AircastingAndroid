@@ -55,7 +55,7 @@ class NewSessionWizardNavigator(
     ) {
         incrementStepProgress()
         val useDetailedExplanation = (areMapsDisabled && sessionType == Session.Type.MOBILE)
-        val fragment = TurnOnLocationServicesFragment(useDetailedExplanation)
+        val fragment = TurnOnLocationServicesFragment(useDetailedExplanation, areMapsDisabled)
         fragment.listener = listener
         goToFragment(fragment)
     }
