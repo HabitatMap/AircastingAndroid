@@ -109,7 +109,7 @@ class MobileSessionTest {
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
         onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
-        onView(withId(R.id.airbeam_connected_continue_button)).perform(scrollTo(), click())
+        onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
         // replaceText is needed here to go around autocorrect...
         onView(withId(R.id.session_name_input)).perform(replaceText("Ania's mobile bluetooth session"))
