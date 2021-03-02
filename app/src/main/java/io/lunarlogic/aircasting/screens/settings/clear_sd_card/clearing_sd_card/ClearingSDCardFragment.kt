@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
-class ClearingSDCardFragment: Fragment(), BaseWizardNavigator.BackPressedListener {
+class ClearingSDCardFragment(
+    private val mFragmentManager: FragmentManager
+): Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: ClearingSDCardController? = null
 
     override fun onCreateView(
@@ -20,7 +23,7 @@ class ClearingSDCardFragment: Fragment(), BaseWizardNavigator.BackPressedListene
             .appComponent.inject(this)
 
         val view = ClearingSDCardViewMvcImpl(layoutInflater, null)
-        controller = ClearingSDCardController()
+        controller = ClearingSDCardController(mFragmentManager)
 
         return view.rootView
     }

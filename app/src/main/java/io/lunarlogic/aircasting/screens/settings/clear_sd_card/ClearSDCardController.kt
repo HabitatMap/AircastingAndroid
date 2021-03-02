@@ -19,6 +19,7 @@ import io.lunarlogic.aircasting.lib.areLocationServicesOn
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.common.AircastingAlertDialog
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
@@ -149,7 +150,10 @@ class ClearSDCardController(
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         // TODO: remove following and handle error
-        mWizardNavigator.goToSDCardCleared(this)
+//        mWizardNavigator.goToSDCardCleared(this)
+        onBackPressed()
+        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
+        dialog.show()
     }
 
     @Subscribe
@@ -160,6 +164,8 @@ class ClearSDCardController(
     override fun onSDCardClearedConfirmationClicked() {
         if (mSettings.areMapsDisabled()) {
             mWizardNavigator.goToTurnOffLocationServices(this)
+        } else {
+            mContextActivity.finish()
         }
     }
 

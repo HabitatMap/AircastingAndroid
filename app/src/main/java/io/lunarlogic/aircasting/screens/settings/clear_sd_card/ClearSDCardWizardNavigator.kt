@@ -19,7 +19,7 @@ class ClearSDCardWizardNavigator(
     private val mContext: Context,
     private val mSettings: Settings,
     viewMvc: ClearSDCardViewMvc,
-    fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager
 ): BaseWizardNavigator(
     viewMvc,
     fragmentManager,
@@ -67,7 +67,7 @@ class ClearSDCardWizardNavigator(
 
     fun goToClearingSDCard() {
         incrementStepProgress()
-        val fragment = ClearingSDCardFragment()
+        val fragment = ClearingSDCardFragment(fragmentManager)
         registerBackPressed(fragment)
         goToFragment(fragment)
     }
