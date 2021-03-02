@@ -52,7 +52,12 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        SyncActivity.start(mRootActivity)
+        if (ConnectivityManager.isConnected(mContext)){
+            SyncActivity.start(mRootActivity)
+        } else {
+            Toast.makeText(mContext, "To sync your AirBeam, connect your Android to the Internet.", Toast.LENGTH_LONG).show()
+        }
+
 //        val rootActivity = mRootActivity ?: return
 //
 //        if (mPermissionsManager.locationPermissionsGranted(rootActivity)) {

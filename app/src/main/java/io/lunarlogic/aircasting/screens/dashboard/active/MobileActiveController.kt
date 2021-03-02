@@ -17,6 +17,7 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
+import io.lunarlogic.aircasting.screens.sync.SyncActivity
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
@@ -28,7 +29,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class MobileActiveController(
-    mRootActivity: FragmentActivity?,
+    private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
@@ -110,13 +111,14 @@ class MobileActiveController(
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        AirBeamSyncService.startService(mContext)
-
-        syncProgressDialog = AlertDialog.Builder(mContext)
-            .setCancelable(false)
-            .setPositiveButton("Ok", null)
-            .setMessage("Sync started")
-            .show()
+        SyncActivity.start(mRootActivity)
+//        AirBeamSyncService.startService(mContext)
+//
+//        syncProgressDialog = AlertDialog.Builder(mContext)
+//            .setCancelable(false)
+//            .setPositiveButton("Ok", null)
+//            .setMessage("Sync started")
+//            .show()
     }
 
     // TODO: remove this method after implementing proper sync UI
