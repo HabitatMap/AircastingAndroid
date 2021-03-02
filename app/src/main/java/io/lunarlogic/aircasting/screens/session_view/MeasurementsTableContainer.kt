@@ -121,8 +121,8 @@ class MeasurementsTableContainer {
     }
 
     private fun stretchTableLayout() {
-        val session = mSessionPresenter?.session
-        if (mSessionPresenter?.expanded == true && session?.activeStreams?.size !!> 1) {
+        val session = mSessionPresenter?.session ?: return
+        if (mSessionPresenter?.expanded == true && session.activeStreams.size > 1) {
             mMeasurementsTable?.isStretchAllColumns = true
         }
     }
