@@ -129,8 +129,7 @@ class SessionsSyncService {
     }
 
     private fun removeOldMeasurements() {
-        val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
-        removeOldMeasurementsService.removeMeasurementsFromSessions(fixedSessionsIds)
+        removeOldMeasurementsService.removeMeasurementsFromSessions()
     }
 
     private fun deleteMarkedForRemoval() {
