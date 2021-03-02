@@ -15,6 +15,7 @@ import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.areLocationServicesOn
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
@@ -60,7 +61,7 @@ class ClearSDCardController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn()) {
+        if (mContextActivity.areLocationServicesOn()) {
             if (mBluetoothManager.isBluetoothEnabled()) {
                 mWizardNavigator.goToRestartAirBeam(this)
             } else {
@@ -171,11 +172,5 @@ class ClearSDCardController(
 
     override fun onSkipClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
         mContextActivity.finish()
-    }
-
-    private fun areLocationServicesOn(): Boolean {
-        val manager =
-            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 }

@@ -18,6 +18,7 @@ import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.lib.areLocationServicesOn
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
@@ -84,7 +85,7 @@ class NewSessionController(
     }
 
     private fun goToFirstStep() {
-        if (areLocationServicesOn()) {
+        if (mContextActivity.areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
             wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)
@@ -147,12 +148,6 @@ class NewSessionController(
         } else {
             permissionsManager.requestAudioPermissions(mContextActivity)
         }
-    }
-
-    private fun areLocationServicesOn(): Boolean {
-        val manager =
-            mContextActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     private fun onFixedSessionSelected() {
@@ -241,7 +236,7 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-        if (areMapsDisabled() && areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
+        if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
             wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
         } else {
             goToSessionDetails(sessionUUID, deviceItem)
