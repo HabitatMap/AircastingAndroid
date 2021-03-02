@@ -8,14 +8,14 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import kotlinx.android.synthetic.main.fragment_turn_off_location_services.view.*
 
 class TurnOffLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOffLocationServicesViewMvc.Listener>, TurnOffLocationServicesViewMvc {
-    var deviceItem: DeviceItem
-    var sessionUUID: String
+    var deviceItem: DeviceItem?
+    var sessionUUID: String?
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        deviceItem: DeviceItem,
-        sessionUUID: String
+        deviceItem: DeviceItem?,
+        sessionUUID: String?
     ): super(){
         this.rootView = inflater.inflate(R.layout.fragment_turn_off_location_services, parent, false)
 

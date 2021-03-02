@@ -1,17 +1,16 @@
-package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.models.Session
 
-class TurnOffLocationServicesFragment: Fragment() {
-    private var controller: TurnOffLocationServicesController? = null
-    var listener: TurnOffLocationServicesViewMvc.Listener? = null
-    var deviceItem: DeviceItem? = null
-    var sessionUUID: String? = null
+class RestartAirBeamFragment() : Fragment() {
+    private var controller: RestartAirBeamController? = null
+    var listener: RestartAirBeamViewMvc.Listener? = null
+    lateinit var sessionType: Session.Type
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,15 +18,13 @@ class TurnOffLocationServicesFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view =
-            TurnOffLocationServicesViewMvcImpl(
+            RestartAirBeamViewMvcImpl(
                 layoutInflater,
-                null,
-                deviceItem,
-                sessionUUID
+                null
             )
         controller =
-            TurnOffLocationServicesController(
-                requireContext(),
+            RestartAirBeamController(
+                context,
                 view
             )
 

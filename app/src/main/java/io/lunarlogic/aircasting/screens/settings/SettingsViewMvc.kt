@@ -19,6 +19,7 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
         fun onBackendSettingsClicked()
         fun onToggleCrowdMapEnabled()
         fun onToggleMapsEnabled()
+        fun onClearSDCardClicked()
         fun onMicrophoneSettingsClicked()
     }
 }

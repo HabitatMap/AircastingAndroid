@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.onboarding
 
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedFragment
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedViewMvc
@@ -13,9 +14,9 @@ import io.lunarlogic.aircasting.screens.onboarding.your_privacy.OnboardingYourPr
 
 class OnboardingWizardNavigator(
     private val mViewMvc: OnboardingViewMvc,
-    private val mFragmentManager: FragmentManager,
-    container: Int
-): BaseWizardNavigator(mViewMvc, mFragmentManager, container) {
+    private val mFragmentManager: FragmentManager
+): BaseWizardNavigator(mViewMvc, mFragmentManager, R.id.onboarding_fragment_container) {
+    override val STEP_PROGRESS = 15
 
     fun goToGetStarted(listener: OnboardingGetStartedViewMvc.Listener) {
         incrementStepProgress()

@@ -14,12 +14,14 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
-import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardFragment
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
 import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import io.lunarlogic.aircasting.sensor.AirBeamRecordSessionService
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
-import io.lunarlogic.aircasting.sensor.AirBeamService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
 import javax.inject.Singleton
 
@@ -51,6 +53,9 @@ interface AppComponent {
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)
+    fun inject(activity: ClearSDCardActivity)
+    fun inject(fragment: ClearingSDCardFragment)
+    fun inject(fragment: SDCardClearedFragment)
 
     fun inject(activity: MicrophoneService)
     fun inject(activity: AirBeamRecordSessionService)

@@ -106,7 +106,8 @@
     <string name="turn_on_location_services_header">Turn on location services</string>
     <string name="turn_on_location_services_description">To map your measurements, turn on location services.</string>
     <string name="turn_on_location_services_ok_button">Turn on</string>
-    <string name="locations_services_must_be_turned_on">Location services must be turned on to enable Bluetooth scanning.\n You\'ll be prompted to turn off location services after you\'ve selected the Bluetooth device you\'ll be recording with.</string>
+    <string name="locations_services_must_be_turned_on_part1">Location services must be turned on to enable Bluetooth scanning.</string>
+    <string name="locations_services_must_be_turned_on_part2">You\'ll be prompted to turn off location services after you\'ve selected the Bluetooth device you\'ll be recording with.</string>
 
     <!-- New session Step 2 -->
     <string name="turn_on_bluetooth_image_desc">Turn on Bluetooth</string>
@@ -263,6 +264,16 @@
     <string name="disable_mapping">Disable mapping</string>
     <string name="application_version">Application version:</string>
     <string name="version">version</string>
+
+    <!-- Clearing SD Card -->
+    <string name="restart_airbeam_header">Restart your AirBeam</string>
+    <string name="restart_airbeam_description">Turn your AirBeam off and then back on.</string>
+    <string name="sd_card_clear_select_device_header">Select the device you\'d like to clear</string>
+    <string name="sd_card_clearing_header">Clearing SD card</string>
+    <string name="sd_card_clearing_description">This should take less than 10 seconds.</string>
+    <string name="sd_card_cleared_header">SD card cleared</string>
+    <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
+    <string name="sd_card_cleared_continue_button">Continue</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>

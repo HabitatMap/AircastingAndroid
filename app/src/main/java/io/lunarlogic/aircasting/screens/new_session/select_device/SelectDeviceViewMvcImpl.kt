@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
-import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.fragment_select_device.view.*
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {
@@ -34,11 +34,14 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
 
     constructor(
         inflater: LayoutInflater,
-        parent: ViewGroup?
+        parent: ViewGroup?,
+        headerDescription: String?
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_select_device, parent, false)
 
-        mRecyclerDevices = findViewById(R.id.recycler_devices)
+        this.rootView?.select_device_header?.text = headerDescription
+
+        mRecyclerDevices = this.rootView?.recycler_devices
         mRecyclerDevices?.setLayoutManager(LinearLayoutManager(rootView!!.context))
         mAdapter = GroupAdapter()
         mAdapter.setOnItemClickListener { item, view ->
@@ -46,11 +49,11 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             recyclerViewItem?.let { onDeviceItemSelected(it) }
         }
         mRecyclerDevices?.setAdapter(mAdapter)
-        mRefreshButton = findViewById(R.id.refresh_button)
+        mRefreshButton = this.rootView?.refresh_button
         mRefreshButton?.setOnClickListener {
             onRefreshClicked()
         }
-        mConnectButton = findViewById(R.id.connect_button)
+        mConnectButton = this.rootView?.connect_button
         mConnectButton?.setOnClickListener {
             onConnectClicked()
         }

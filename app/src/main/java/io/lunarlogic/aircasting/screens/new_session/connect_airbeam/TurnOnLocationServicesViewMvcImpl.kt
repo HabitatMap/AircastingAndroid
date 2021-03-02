@@ -1,9 +1,9 @@
 package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_turn_on_location_services.view.*
 
@@ -12,18 +12,25 @@ class TurnOnLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOnLocationSer
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        areMapsDisabled: Boolean,
-        sessionType: Session.Type): super() {
+        useDetailedExplanation: Boolean,
+        areMapsDisabled: Boolean
+    ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_turn_on_location_services, parent, false)
-        val button = rootView?.turn_on_location_services_ok_button
-        val turnOnLocationTextView = rootView?.turn_on_location_services_description
 
+        val button = rootView?.turn_on_location_services_ok_button
         button?.setOnClickListener {
             onOkClicked()
         }
 
-        if (areMapsDisabled && sessionType == Session.Type.MOBILE) {
-            turnOnLocationTextView?.text = context.getString(R.string.locations_services_must_be_turned_on)
+        if (useDetailedExplanation) {
+            val turnOnLocationPart1TextView = rootView?.turn_on_location_services_description_part1
+            turnOnLocationPart1TextView?.text = context.getString(R.string.locations_services_must_be_turned_on_part1)
+        }
+
+        if (areMapsDisabled) {
+            val turnOnLocationPart2TextView = rootView?.turn_on_location_services_description_part2
+            turnOnLocationPart2TextView?.text = context.getString(R.string.locations_services_must_be_turned_on_part2)
+            turnOnLocationPart2TextView?.visibility = View.VISIBLE
         }
     }
 

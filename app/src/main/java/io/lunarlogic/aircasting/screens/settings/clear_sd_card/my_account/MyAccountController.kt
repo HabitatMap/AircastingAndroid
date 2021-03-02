@@ -1,14 +1,12 @@
-package io.lunarlogic.aircasting.screens.settings.myaccount
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account
 
 import android.content.Context
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.LogoutEvent
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
 class MyAccountController(
     private val mContext: Context,

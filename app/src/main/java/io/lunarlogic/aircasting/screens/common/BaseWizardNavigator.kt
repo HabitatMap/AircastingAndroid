@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 
-open class BaseWizardNavigator(
+abstract class BaseWizardNavigator(
     private val mViewMvc: ViewMvc,
     private val mFragmentManager: FragmentManager,
     private val container: Int
@@ -14,9 +14,9 @@ open class BaseWizardNavigator(
         fun onBackPressed()
     }
 
-    open val STEP_PROGRESS = 15
-    open var currentProgressStep = 0
-    open var backPressedListener: BackPressedListener? = null
+    protected abstract val STEP_PROGRESS: Int
+    private var currentProgressStep = 0
+    private var backPressedListener: BackPressedListener? = null
 
     protected fun registerBackPressed(listener: BackPressedListener) {
         backPressedListener = listener

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 
 
@@ -12,6 +13,7 @@ class SelectDeviceFragment() : Fragment() {
     private var controller: SelectDeviceController? = null
     var listener: SelectDeviceViewMvc.Listener? = null
     var bluetoothManager: BluetoothManager? = null
+    var headerDescription: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,7 +23,8 @@ class SelectDeviceFragment() : Fragment() {
         val view =
             SelectDeviceViewMvcImpl(
                 layoutInflater,
-                null
+                null,
+                headerDescription ?: getString(R.string.select_device_header)
             )
 
         if (listener != null) {

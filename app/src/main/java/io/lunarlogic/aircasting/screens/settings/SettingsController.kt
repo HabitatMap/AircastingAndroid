@@ -1,11 +1,14 @@
 package io.lunarlogic.aircasting.screens.settings
 
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
 
 class SettingsController(
+    private val mRootActivity: FragmentActivity?,
     private val mContext: Context?,
     private val mViewMvc: SettingsViewMvc,
     private val mSettings: Settings,
@@ -36,6 +39,10 @@ class SettingsController(
 
     override fun onToggleMapsEnabled() {
         mSettings.toggleMapSettingsEnabled()
+    }
+
+    override fun onClearSDCardClicked() {
+        ClearSDCardActivity.start(mRootActivity)
     }
 
     override fun onMicrophoneSettingsClicked() {

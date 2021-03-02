@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.settings.myaccount
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account
 
 import android.content.Context
 import android.view.LayoutInflater

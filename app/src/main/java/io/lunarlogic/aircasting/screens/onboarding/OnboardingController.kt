@@ -23,7 +23,7 @@ class OnboardingController(
     OnboardingHowsTheAirViewMvc.Listener,
     OnboardingMeasureAndMapViewMvc.Listener,
     OnboardingYourPrivacyViewMvc.Listener {
-    private val wizardNavigator = OnboardingWizardNavigator(mViewMvc, mFragmentManager, R.id.onboarding_fragment_container)
+    private val wizardNavigator = OnboardingWizardNavigator(mViewMvc, mFragmentManager)
 
     fun onBackPressed() {
         wizardNavigator.onBackPressed()

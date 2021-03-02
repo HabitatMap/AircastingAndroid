@@ -1,15 +1,12 @@
-package io.lunarlogic.aircasting.screens.settings.myaccount
+package io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
 import io.lunarlogic.aircasting.AircastingApplication
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
-import kotlinx.android.synthetic.main.app_bar.*
 import javax.inject.Inject
 
 class MyAccountActivity : AppCompatActivity() {

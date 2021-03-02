@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guidelineTop"
+        app:layout_constraintGuide_percent="0.02"
+        android:orientation="horizontal"/>
+
+    <ImageView
+        android:id="@+id/connecting_image"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:padding="0dp"
+        android:src="@drawable/airbeam"
+        android:contentDescription="@string/connecting_image_desc"
+        android:layout_marginTop="@dimen/keyline_10"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/connecting_image_margin"
+        android:layout_marginBottom="@dimen/connecting_image_margin"
+        android:src="@drawable/ic_loader_big"
+        app:layout_constraintBottom_toBottomOf="@+id/connecting_image"
+        app:layout_constraintEnd_toEndOf="@+id/connecting_image"
+        />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/clearing_sd_card_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
+        android:text="@string/sd_card_clearing_header"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineMiddle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/clearing_sd_card_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
+        android:text="@string/sd_card_clearing_description"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_8"
+        app:layout_constraintTop_toBottomOf="@id/clearing_sd_card_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+        app:layout_constraintVertical_bias="0"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

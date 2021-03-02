@@ -16,12 +16,11 @@ import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.di.TestSettingsModule
-import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
-import io.lunarlogic.aircasting.screens.settings.myaccount.MyAccountActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import org.junit.After

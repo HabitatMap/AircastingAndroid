@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.dialog_alert_aircasting.view.*
 
 class AircastingAlertDialog(
