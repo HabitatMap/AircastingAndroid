@@ -113,9 +113,7 @@
             android:layout_marginTop="@dimen/keyline_2"
             app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
 
-            <TableRow android:id="@+id/measurement_headers"
-                android:layout_gravity="start"
-                android:layout_width="wrap_content"/>
+            <TableRow android:id="@+id/measurement_headers"/>
             <TableRow android:id="@+id/measurement_values" />
         </TableLayout>
 
