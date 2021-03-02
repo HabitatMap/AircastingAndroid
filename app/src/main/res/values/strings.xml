@@ -275,6 +275,11 @@
     <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
     <string name="sd_card_cleared_continue_button">Continue</string>
 
+    <!-- Sync -->
+    <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
+    <string name="airbeam_syncing_header">Syncing</string>
+    <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync</string>
+
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>

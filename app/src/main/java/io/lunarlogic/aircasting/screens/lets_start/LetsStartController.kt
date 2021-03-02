@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.sync.SyncActivity
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import org.greenrobot.eventbus.EventBus
@@ -51,15 +52,16 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        val rootActivity = mRootActivity ?: return
-
-        if (mPermissionsManager.locationPermissionsGranted(rootActivity)) {
-            performSync()
-        } else {
-            mPermissionsManager.requestLocationPermissions(rootActivity)
-            // Sync will be run when user allows needed permissions
-            // Check LetsStartController and onRequestPermissionsResult below
-        }
+        SyncActivity.start(mRootActivity)
+//        val rootActivity = mRootActivity ?: return
+//
+//        if (mPermissionsManager.locationPermissionsGranted(rootActivity)) {
+//            performSync()
+//        } else {
+//            mPermissionsManager.requestLocationPermissions(rootActivity)
+//            // Sync will be run when user allows needed permissions
+//            // Check LetsStartController and onRequestPermissionsResult below
+//        }
     }
 
     @Subscribe
