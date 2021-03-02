@@ -80,6 +80,10 @@ class SessionsRepository {
         return mDatabase.sessions().byType(Session.Type.FIXED)
     }
 
+    fun sessionsIdsByType(type: Session.Type): List<Long> {
+        return mDatabase.sessions().loadSessionUuidsByType(type)
+    }
+
     fun delete(uuids: List<String>) {
         if (!uuids.isEmpty()) {
             mDatabase.sessions().delete(uuids)

@@ -45,4 +45,11 @@ class MeasurementsRepository {
         val measurement = mDatabase.measurements().lastForStream(sessionId, measurementStreamId)
         return measurement?.time
     }
+
+    fun deleteMeasurements(sessionIds: List<Long>) {
+        mDatabase.runInTransaction {
+            mDatabase.measurements().deleteInTransaction(sessionIds)
+        }
+    }
+
 }

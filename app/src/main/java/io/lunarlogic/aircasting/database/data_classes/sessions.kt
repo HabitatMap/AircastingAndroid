@@ -170,4 +170,7 @@ interface SessionDao {
 
     @Query("DELETE FROM sessions WHERE uuid in (:uuids)")
     fun delete(uuids: List<String>)
+
+    @Query("SELECT id FROM sessions WHERE type=:type AND deleted=0")
+    fun loadSessionUuidsByType(type: Session.Type): List<Long>
 }
