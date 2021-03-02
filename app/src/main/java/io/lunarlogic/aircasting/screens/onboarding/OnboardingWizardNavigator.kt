@@ -16,6 +16,7 @@ class OnboardingWizardNavigator(
     private val mViewMvc: OnboardingViewMvc,
     private val mFragmentManager: FragmentManager
 ): BaseWizardNavigator(mViewMvc, mFragmentManager, R.id.onboarding_fragment_container) {
+    override val STEP_PROGRESS = 15
 
     fun goToGetStarted(listener: OnboardingGetStartedViewMvc.Listener) {
         incrementStepProgress()

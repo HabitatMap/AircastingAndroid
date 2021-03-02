@@ -20,8 +20,6 @@ class NewSessionWizardNavigator(
     private val mFragmentManager: FragmentManager
 ): BaseWizardNavigator(mViewMvc, mFragmentManager, R.id.new_session_fragment_container) {
     override val STEP_PROGRESS = 10
-    override var currentProgressStep = 0
-    override var backPressedListener: BackPressedListener? = null
 
     fun goToSelectDeviceType(listener: SelectDeviceTypeViewMvc.Listener) {
         incrementStepProgress()
