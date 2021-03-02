@@ -50,14 +50,11 @@ interface MeasurementDao {
     @Query("DELETE FROM measurements")
     fun deleteAll()
 
-    @Query("SELECT * FROM measurements WHERE session_id in (:sessionsIds)")
-    fun getBySessionsIds(sessionsIds: List<Long>): List<MeasurementDBObject>
-
-    @Query("DELETE FROM measurements WHERE id in (:ids)")
-    fun delete(ids: List<Long>)
+    @Query("DELETE FROM measurements WHERE time <= datetime('now', '-1 day') AND session_id in (:sessionIds)")
+    fun delete(sessionIds: List<Long>)
 
     @Transaction
-    fun deleteInTransaction(ids: List<Long>) {
-        delete(ids)
+    fun deleteInTransaction(sessionIds: List<Long>) {
+        delete(sessionIds)
     }
 }
