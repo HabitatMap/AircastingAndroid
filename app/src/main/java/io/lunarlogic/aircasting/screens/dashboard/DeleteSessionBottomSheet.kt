@@ -53,7 +53,24 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
         generateStreamsOptions()
 
+        allStreamsCheckboxListener()
         return view
+    }
+
+    private fun allStreamsCheckboxListener() {
+        allStreamsCheckbox.setOnCheckedChangeListener { checkboxView, _ ->
+            if (checkboxView.isChecked) {
+                setAllCheckboxesState(true)
+            } else {
+                setAllCheckboxesState(false)
+            }
+        }
+    }
+
+    private fun setAllCheckboxesState(state: Boolean) {
+        checkBoxMap.forEach { (checkbox, _) ->
+            checkbox.isChecked = state
+        }
     }
 
     fun getStreamsToDelete(): List<MeasurementStream> {
