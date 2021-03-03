@@ -3,9 +3,7 @@ package io.lunarlogic.aircasting.screens.new_session
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
 import android.content.Intent
-import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
@@ -72,12 +70,26 @@ class NewSessionController(
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
+        setupProgressMax()
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
         }
+    }
+
+    private fun setupProgressMax() {
+        if (!mContextActivity.areLocationServicesOn()) {
+            wizardNavigator.MAX_PROGRESS += 10
+        }
+        if (settings.areMapsDisabled()) {
+            wizardNavigator.MAX_PROGRESS += 10
+        }
+        if (!bluetoothManager.isBluetoothEnabled()) {
+            wizardNavigator.MAX_PROGRESS += 10
+        }
+
     }
 
     fun onStop() {
@@ -129,6 +141,7 @@ class NewSessionController(
 
     override fun onBluetoothDeviceSelected() {
         try {
+            wizardNavigator.MAX_PROGRESS += 30
             if (bluetoothManager.isBluetoothEnabled()) {
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return

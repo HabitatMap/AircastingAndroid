@@ -15,6 +15,7 @@ abstract class BaseWizardNavigator(
     }
 
     protected abstract val STEP_PROGRESS: Int
+    open var MAX_PROGRESS = 40
     private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 
@@ -44,6 +45,7 @@ abstract class BaseWizardNavigator(
     protected fun updateProgressBarView() {
         val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
         progressBar?.progress = currentProgressStep * STEP_PROGRESS
+        progressBar?.max = MAX_PROGRESS
     }
 
     protected fun goToFragment(fragment: Fragment) {
