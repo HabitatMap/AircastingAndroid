@@ -228,7 +228,7 @@
         <item name="android:fontFamily">@font/muli_medium</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:button">@drawable/checkbox_selector</item>
-        <item name="android:textSize">@dimen/text_size_m</item>
+        <item name="android:textSize">@dimen/text_size_s</item>
     </style>
 
     <style name="ThemeOverlay.Aircasting.Checkbox" parent="">
