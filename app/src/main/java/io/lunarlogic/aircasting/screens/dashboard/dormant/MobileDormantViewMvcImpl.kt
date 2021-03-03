@@ -7,8 +7,6 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvcImpl
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
-import io.lunarlogic.aircasting.screens.lets_start.MoreInfoBottomSheet
 
 
 class MobileDormantViewMvcImpl(
@@ -48,7 +46,11 @@ class MobileDormantViewMvcImpl(
     }
 
     override fun layoutId(): Int {
-        return R.id.empty_mobile_active_dashboard
+        return R.id.empty_mobile_dashboard
+    }
+
+    override fun showDidYouKnowBox(): Boolean {
+        return true
     }
 
     override fun recordNewSessionButtonId(): Int {

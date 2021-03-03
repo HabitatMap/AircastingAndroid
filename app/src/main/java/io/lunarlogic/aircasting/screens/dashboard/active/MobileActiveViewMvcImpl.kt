@@ -53,7 +53,11 @@ class MobileActiveViewMvcImpl(
     }
 
     override fun layoutId(): Int {
-        return R.id.empty_mobile_active_dashboard
+        return R.id.empty_mobile_dashboard
+    }
+
+    override fun showDidYouKnowBox(): Boolean {
+        return true
     }
 
     override fun recordNewSessionButtonId(): Int {
