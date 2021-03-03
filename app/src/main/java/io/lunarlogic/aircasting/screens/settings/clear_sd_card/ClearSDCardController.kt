@@ -50,6 +50,16 @@ class ClearSDCardController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
 
+        setupProgressBarMax()
+
+        if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
+            goToFirstStep()
+        } else {
+            mPermissionsManager.requestLocationPermissions(mContextActivity)
+        }
+    }
+
+    private fun setupProgressBarMax() {
         mWizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps by default because we always have bluetooth device here
         if (!mContextActivity.areLocationServicesOn()) {
             mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
@@ -59,12 +69,6 @@ class ClearSDCardController(
         }
         if (!mBluetoothManager.isBluetoothEnabled()) {
             mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
-
-        if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
-            goToFirstStep()
-        } else {
-            mPermissionsManager.requestLocationPermissions(mContextActivity)
         }
     }
 
