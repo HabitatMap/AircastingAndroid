@@ -4,6 +4,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ProgressBarCounter
 
 abstract class BaseWizardNavigator(
     private val mViewMvc: ViewMvc,
@@ -15,7 +16,7 @@ abstract class BaseWizardNavigator(
     }
 
     protected abstract val STEP_PROGRESS: Int
-    open var MAX_PROGRESS = 40
+    val progressBarCounter = ProgressBarCounter(ProgressBarCounter.DEFAULT_INITIAL_STEP_NUMBER_NEW_SESSION_FLOW)
     private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 
@@ -45,7 +46,7 @@ abstract class BaseWizardNavigator(
     protected fun updateProgressBarView() {
         val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
         progressBar?.progress = currentProgressStep * STEP_PROGRESS
-        progressBar?.max = MAX_PROGRESS
+        progressBar?.max = progressBarCounter.currentProgressMax
     }
 
     protected fun goToFragment(fragment: Fragment) {

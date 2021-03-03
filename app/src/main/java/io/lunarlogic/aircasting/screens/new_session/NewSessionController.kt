@@ -14,10 +14,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.lib.areLocationServicesOn
-import io.lunarlogic.aircasting.lib.safeRegister
+import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -81,13 +78,13 @@ class NewSessionController(
 
     private fun setupProgressMax() {
         if (!mContextActivity.areLocationServicesOn()) {
-            wizardNavigator.MAX_PROGRESS += 10
+            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_LOCATION_OFF)
         }
         if (settings.areMapsDisabled()) {
-            wizardNavigator.MAX_PROGRESS += 10
+            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_DISABLED_MAPS)
         }
         if (!bluetoothManager.isBluetoothEnabled()) {
-            wizardNavigator.MAX_PROGRESS += 10
+            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_BLUETOOTH_OFF)
         }
 
     }
@@ -141,7 +138,7 @@ class NewSessionController(
 
     override fun onBluetoothDeviceSelected() {
         try {
-            wizardNavigator.MAX_PROGRESS += 30
+            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_BLUETOOTH_DEVICE)
             if (bluetoothManager.isBluetoothEnabled()) {
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
