@@ -25,6 +25,8 @@
         android:layout_marginTop="@dimen/keyline_4"
         android:scrollbarStyle="insideInset"
         android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
         app:layout_constraintTop_toBottomOf="@+id/select_device_header"
         app:layout_constraintBottom_toTopOf="@+id/refresh_button" />
 

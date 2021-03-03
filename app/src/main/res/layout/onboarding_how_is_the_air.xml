@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page2_header"
         android:textAlignment="viewStart"
-        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/header_1_vertical_margin"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:textSize="@dimen/text_size_xxl"

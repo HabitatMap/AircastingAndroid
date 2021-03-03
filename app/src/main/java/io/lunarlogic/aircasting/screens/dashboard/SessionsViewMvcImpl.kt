@@ -53,6 +53,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     }
 
     abstract fun layoutId(): Int
+    abstract fun showDidYouKnowBox(): Boolean
     abstract fun recordNewSessionButtonId(): Int
 
     abstract fun buildAdapter(
@@ -84,8 +85,10 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     override fun showEmptyView() {
         mEmptyView?.visibility = View.VISIBLE
         mRecyclerSessions?.visibility = View.INVISIBLE
-        if (layoutId() == R.id.empty_mobile_active_dashboard) {
+        if (showDidYouKnowBox()) {
             mDidYouKnowBox?.visibility = View.VISIBLE
+        } else {
+            mDidYouKnowBox?.visibility = View.GONE
         }
     }
 

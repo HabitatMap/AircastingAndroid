@@ -49,6 +49,10 @@ class FixedViewMvcImpl(
         return R.id.empty_dashboard
     }
 
+    override fun showDidYouKnowBox(): Boolean {
+        return false
+    }
+
     override fun recordNewSessionButtonId(): Int {
         return R.id.dashboard_record_new_session_button
     }

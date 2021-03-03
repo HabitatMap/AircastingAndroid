@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
             android:text="@string/turn_off_location_services"
-            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             app:layout_constraintTop_toBottomOf="@+id/guidelineMiddle"
