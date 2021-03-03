@@ -16,7 +16,7 @@ abstract class BaseWizardNavigator(
     }
 
     protected abstract val STEP_PROGRESS: Int
-    val progressBarCounter = ProgressBarCounter(ProgressBarCounter.DEFAULT_INITIAL_STEP_NUMBER_NEW_SESSION_FLOW)
+    val progressBarCounter = ProgressBarCounter(4) // we got 3 basic steps in the flow (progress bar should have 1 more to look better)
     private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 

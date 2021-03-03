@@ -78,13 +78,13 @@ class NewSessionController(
 
     private fun setupProgressMax() {
         if (!mContextActivity.areLocationServicesOn()) {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_LOCATION_OFF)
+            wizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
         }
         if (settings.areMapsDisabled()) {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_DISABLED_MAPS)
+            wizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
         }
         if (!bluetoothManager.isBluetoothEnabled()) {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_BLUETOOTH_OFF)
+            wizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
         }
 
     }
@@ -138,7 +138,7 @@ class NewSessionController(
 
     override fun onBluetoothDeviceSelected() {
         try {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(ProgressBarCounter.ADDITIONAL_STEPS_BLUETOOTH_DEVICE)
+            wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return

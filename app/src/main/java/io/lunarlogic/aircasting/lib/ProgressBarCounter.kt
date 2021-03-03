@@ -15,12 +15,4 @@ class ProgressBarCounter(
         //todo: maybe needed when going back after selecting device type == bluetooth device
         currentProgressMax -= STEP_PROGRESS * stepsNumber
     }
-
-    companion object {
-        val DEFAULT_INITIAL_STEP_NUMBER_NEW_SESSION_FLOW = 4
-        val ADDITIONAL_STEPS_LOCATION_OFF = 1
-        val ADDITIONAL_STEPS_BLUETOOTH_OFF = 1
-        val ADDITIONAL_STEPS_DISABLED_MAPS = 1
-        val ADDITIONAL_STEPS_BLUETOOTH_DEVICE = 4
-    }
 }

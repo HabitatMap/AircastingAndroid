@@ -50,6 +50,17 @@ class ClearSDCardController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
 
+        mWizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps by default because we always have bluetooth device here
+        if (!mContextActivity.areLocationServicesOn()) {
+            mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
+        }
+        if (mSettings.areMapsDisabled()) {
+            mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
+        }
+        if (!mBluetoothManager.isBluetoothEnabled()) {
+            mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
+        }
+
         if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
         } else {
@@ -149,8 +160,6 @@ class ClearSDCardController(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        // TODO: remove following and handle error
-//        mWizardNavigator.goToSDCardCleared(this)
         onBackPressed()
         val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
         dialog.show()
