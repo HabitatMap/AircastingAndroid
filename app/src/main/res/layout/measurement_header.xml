@@ -2,8 +2,7 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:paddingEnd="@dimen/keyline_3">
+    android:clickable="true">
 
     <TextView
         android:id="@+id/measurement_header"
