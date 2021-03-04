@@ -1,15 +1,17 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
+import android.app.Dialog
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
@@ -21,21 +23,34 @@ class MoreInfoBottomSheet(private val mListener: Listener): BottomSheetDialogFra
 
     private val TAG = "MoreInfoBottomSheet"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.more_info_bottom_sheet, container, false)
-        this.isCancelable = false
+    var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bottomSheet = super.onCreateDialog(savedInstanceState)
+
+        val view = View.inflate(getContext(), R.layout.more_info_bottom_sheet, null);
 
         view.close_button.setOnClickListener {
             mListener.closePressed()
         }
 
+        val card = view.more_info_card
+        val params = ConstraintLayout.LayoutParams(card.layoutParams)
+        params.height = ((Resources.getSystem().getDisplayMetrics().heightPixels) * 0.9).toInt()
+        card?.layoutParams = params
+
         view.description.text = buildDescription()
 
-        return view
+        bottomSheet.setContentView(view)
+        bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
+
+        return bottomSheet
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        bottomSheetBehavior!!.setState(BottomSheetBehavior.STATE_EXPANDED)
     }
 
     fun show(manager: FragmentManager) {
