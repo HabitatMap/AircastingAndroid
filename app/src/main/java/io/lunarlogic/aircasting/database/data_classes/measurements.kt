@@ -56,9 +56,6 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements WHERE session_id in (:sessionIds) ORDER BY time DESC LIMIT :limit")
     fun getLastTwentyFourHours(sessionIds: List<Long>, limit: Int): List<MeasurementDBObject?>
 
-    @Query("SELECT * FROM measurements WHERE session_id in (:sessionIds) ORDER BY time DESC")
-    fun getAllMeasurementsBySessionIds(sessionIds: List<Long>): List<MeasurementDBObject?>
-
     @Transaction
     fun deleteInTransaction(sessionIds: List<Long>, lastExpectedMeasurementDate: Date) {
         delete(sessionIds, lastExpectedMeasurementDate )
