@@ -1,29 +1,24 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BottomSheet
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 
 class ShareSessionBottomSheet(
-    private val mListener: ShareSessionBottomSheet.Listener,
+    private val mListener: Listener,
     val session: Session,
     private val mContext: Context?
-): BottomSheetDialogFragment() {
+): BottomSheet() {
     interface Listener{
         fun onShareLinkPressed(session: Session, sensor: String)
         fun onShareFilePressed(session: Session, emailInput: String)
@@ -34,40 +29,36 @@ class ShareSessionBottomSheet(
         val detailedType: String?
     )
 
-    private val TAG = "ShareSessionBottomSheet"
-
     val fieldValues = hashMapOf<Int, CurrentSessionStreams>()
     var emailInputLayout: TextInputLayout? = null
     private var emailInput: EditText? = null
     private var radioGroup: RadioGroup? = null
     lateinit var chosenSensor: String
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.share_session_bottom_sheet, container, false)
+    override fun layoutId(): Int {
+        return R.layout.share_session_bottom_sheet
+    }
 
-        emailInputLayout = view?.findViewById(R.id.email_text_input_layout)
-        emailInput = view?.findViewById(R.id.email_input)
-        radioGroup = view?.findViewById(R.id.stream_choose_radio_group)
+    override fun setup() {
+        emailInputLayout = contentView?.email_text_input_layout
+        emailInput = contentView?.email_input
+        radioGroup = contentView?.stream_choose_radio_group
 
-        val selectStreamTextView = view?.findViewById<TextView>(R.id.select_stream_text_view)
-        val emailCsvTextView = view?.findViewById<TextView>(R.id.email_csv_text_view)
-        val shareLinkButton = view?.findViewById<Button>(R.id.share_link_button)
+        val selectStreamTextView = contentView?.select_stream_text_view
+        val emailCsvTextView = contentView?.email_csv_text_view
+        val shareLinkButton = contentView?.share_link_button
 
-        val shareFileButton = view?.findViewById<Button>(R.id.share_file_button)
+        val shareFileButton = contentView?.share_file_button
         shareFileButton?.setOnClickListener {
             shareFilePressed()
         }
 
-        val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
+        val cancelButton = contentView?.cancel_button
         cancelButton?.setOnClickListener {
             dismiss()
         }
 
-        val closeButton = view?.findViewById<ImageView>(R.id.close_button)
+        val closeButton = contentView?.close_button
         closeButton?.setOnClickListener {
             dismiss()
         }
@@ -88,17 +79,11 @@ class ShareSessionBottomSheet(
                 shareLinkPressed()
             }
         }
-
-        return view
     }
 
-    fun show(manager: FragmentManager){
-        show(manager, TAG)
-    }
-
-    fun shareFilePressed(){
+    private fun shareFilePressed() {
         val emailInput = emailInput?.text.toString().trim()
-        if (!ValidationHelper.isValidEmail(emailInput)){
+        if (!ValidationHelper.isValidEmail(emailInput)) {
             showError()
             return
         }
