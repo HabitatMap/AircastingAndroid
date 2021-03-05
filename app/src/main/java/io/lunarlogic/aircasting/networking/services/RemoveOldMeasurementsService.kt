@@ -8,19 +8,21 @@ import java.util.*
 class RemoveOldMeasurementsService() {
     private val measurementRepository = MeasurementsRepository()
     private val sessionRepository = SessionsRepository()
-    private val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 1440
+    private val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 24 * 60
 
     fun removeMeasurementsFromSessions() {
         val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
-        val lastMeasurements = measurementRepository.getLastMeasurements(fixedSessionsIds, TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT)
-        if (checkIfDeleteMeasurements(lastMeasurements.size)) {
-            val lastExpectedMeasurement = lastMeasurements.last()
-            val lastExpectedMeasurementTime: Date = lastExpectedMeasurement?.time!!
-            measurementRepository.deleteMeasurements(fixedSessionsIds, lastExpectedMeasurementTime)
+        fixedSessionsIds.forEach {fixedSessionId ->
+            val lastMeasurements = measurementRepository.getLastMeasurements(fixedSessionId, TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT)
+            if (shouldDeleteMeasurements(lastMeasurements.size)) {
+                val lastExpectedMeasurement = lastMeasurements.last()
+                val lastExpectedMeasurementTime: Date = lastExpectedMeasurement?.time!!
+                measurementRepository.deleteMeasurementsOlderThen(fixedSessionId, lastExpectedMeasurementTime)
+            }
         }
     }
 
-    private fun checkIfDeleteMeasurements(measurementsCount: Int): Boolean {
+    private fun shouldDeleteMeasurements(measurementsCount: Int): Boolean {
         return measurementsCount == TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT
     }
 }

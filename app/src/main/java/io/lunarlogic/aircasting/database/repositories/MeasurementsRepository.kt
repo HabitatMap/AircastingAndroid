@@ -46,15 +46,15 @@ class MeasurementsRepository {
         return measurement?.time
     }
 
-    fun getLastMeasurements(sessionIds: List<Long>, limit: Int): List<MeasurementDBObject?> {
-        return mDatabase.measurements().getLastTwentyFourHours(sessionIds, limit)
+    fun getLastMeasurements(sessionId: Long, limit: Int): List<MeasurementDBObject?> {
+        return mDatabase.measurements().getLastMeasurements(sessionId, limit)
     }
 
-    fun deleteMeasurements(
-        sessionIds: List<Long>,
+    fun deleteMeasurementsOlderThen(
+        sessionId: Long,
         lastExpectedMeasurementTime: Date
     ) {
-        mDatabase.measurements().deleteInTransaction(sessionIds, lastExpectedMeasurementTime)
+        mDatabase.measurements().deleteInTransaction(sessionId, lastExpectedMeasurementTime)
     }
 
 }
