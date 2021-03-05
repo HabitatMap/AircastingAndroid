@@ -77,16 +77,7 @@ class NewSessionController(
     }
 
     private fun setupProgressMax() {
-        if (!mContextActivity.areLocationServicesOn()) {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
-        if (settings.areMapsDisabled()) {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
-        if (!bluetoothManager.isBluetoothEnabled()) {
-            wizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
-
+        wizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), settings.areMapsDisabled(), !bluetoothManager.isBluetoothEnabled())
     }
 
     fun onStop() {

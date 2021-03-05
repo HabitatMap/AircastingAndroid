@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting.screens.onboarding
 
+import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ProgressBarCounter
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedFragment
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedViewMvc
@@ -45,5 +47,11 @@ class OnboardingWizardNavigator(
         val fragment = OnboardingYourPrivacyFragment()
         fragment.listener = listener
         goToFragment(fragment)
+    }
+
+    fun setupProgressBarMax() {
+        progressBarCounter.currentProgressMax = ProgressBarCounter.DEFAULT_ONBOARDING_STEP_NUMBER * STEP_PROGRESS
+        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar?.max = progressBarCounter.currentProgressMax
     }
 }

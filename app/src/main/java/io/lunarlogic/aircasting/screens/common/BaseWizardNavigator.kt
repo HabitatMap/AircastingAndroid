@@ -16,7 +16,7 @@ abstract class BaseWizardNavigator(
     }
 
     protected abstract val STEP_PROGRESS: Int
-    val progressBarCounter = ProgressBarCounter(4) // we got 3 basic steps in the flow (progress bar should have 1 more to look better)
+    val progressBarCounter = ProgressBarCounter()
     private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 
@@ -47,6 +47,18 @@ abstract class BaseWizardNavigator(
         val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
         progressBar?.progress = currentProgressStep * STEP_PROGRESS
         progressBar?.max = progressBarCounter.currentProgressMax
+    }
+
+    open fun setupProgressBarMax(locationServicesAreOff: Boolean, areMapsDisabled: Boolean, isBluetoothDisabled: Boolean) {
+        if (locationServicesAreOff) {
+            progressBarCounter.increaseMaxProgress() // 1 additional step in flow
+        }
+        if (areMapsDisabled) {
+            progressBarCounter.increaseMaxProgress() // 1 additional step in flow
+        }
+        if (isBluetoothDisabled) {
+            progressBarCounter.increaseMaxProgress() // 1 additional step in flow
+        }
     }
 
     protected fun goToFragment(fragment: Fragment) {
