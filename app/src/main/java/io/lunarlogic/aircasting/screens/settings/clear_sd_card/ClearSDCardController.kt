@@ -60,16 +60,7 @@ class ClearSDCardController(
     }
 
     private fun setupProgressBarMax() {
-        mWizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps by default because we always have bluetooth device here
-        if (!mContextActivity.areLocationServicesOn()) {
-            mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
-        if (mSettings.areMapsDisabled()) {
-            mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
-        if (!mBluetoothManager.isBluetoothEnabled()) {
-            mWizardNavigator.progressBarCounter.increaseMaxProgress(1) // 1 additional step in flow
-        }
+        mWizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), mSettings.areMapsDisabled(), !mBluetoothManager.isBluetoothEnabled())
     }
 
     fun onStop() {

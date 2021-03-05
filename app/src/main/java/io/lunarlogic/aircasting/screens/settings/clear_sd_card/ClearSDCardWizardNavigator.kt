@@ -25,7 +25,7 @@ class ClearSDCardWizardNavigator(
     fragmentManager,
     R.id.clear_sd_card_fragment_container
 ) {
-    override val STEP_PROGRESS = 4
+    override val STEP_PROGRESS = 15
 
     fun goToTurnOnLocationServices(
         listener: TurnOnLocationServicesViewMvc.Listener
@@ -85,4 +85,6 @@ class ClearSDCardWizardNavigator(
         fragment.listener = listener
         goToFragment(fragment)
     }
+
+
 }
