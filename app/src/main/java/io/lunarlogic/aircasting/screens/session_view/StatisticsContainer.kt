@@ -122,7 +122,7 @@ class StatisticsContainer {
         valueView?.text = Measurement.formatValue(value)
 
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
-        valueView?.background = StatisticsValueBackground(color, isNow)
+        valueView?.background = StatisticsValueBackground(color, StatisticsValueBackground.RADIUS_BIG)
         circleIndicator?.setColorFilter(color)
     }
 
