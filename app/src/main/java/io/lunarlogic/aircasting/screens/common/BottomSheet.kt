@@ -50,6 +50,7 @@ abstract class BottomSheet: BottomSheetDialogFragment() {
     }
 
     protected fun expandBottomSheet() {
+        // note that for this to work, you need to add bottomsheet_card id in the xml view
         val card = contentView?.bottomsheet_card ?: return
 
         val params = ConstraintLayout.LayoutParams(card.layoutParams)

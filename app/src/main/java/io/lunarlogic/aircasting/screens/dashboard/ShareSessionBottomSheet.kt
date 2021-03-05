@@ -40,6 +40,8 @@ class ShareSessionBottomSheet(
     }
 
     override fun setup() {
+        expandBottomSheet()
+        
         emailInputLayout = contentView?.email_text_input_layout
         emailInput = contentView?.email_input
         radioGroup = contentView?.stream_choose_radio_group
