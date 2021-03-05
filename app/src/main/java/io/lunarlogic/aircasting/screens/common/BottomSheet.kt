@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.lunarlogic.aircasting.R
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 
 abstract class BottomSheet: BottomSheetDialogFragment() {
@@ -49,9 +50,8 @@ abstract class BottomSheet: BottomSheetDialogFragment() {
         show(manager, TAG)
     }
 
-    protected fun expandBottomSheet() {
-        // note that for this to work, you need to add bottomsheet_card id in the xml view
-        val card = contentView?.bottomsheet_card ?: return
+    protected fun expandBottomSheet(bottomSheetId: Int = R.id.bottomsheet_card) {
+        val card = contentView?.findViewById<View>(bottomSheetId) ?: return
 
         val params = ConstraintLayout.LayoutParams(card.layoutParams)
         val screenHeight = Resources.getSystem().displayMetrics.heightPixels
