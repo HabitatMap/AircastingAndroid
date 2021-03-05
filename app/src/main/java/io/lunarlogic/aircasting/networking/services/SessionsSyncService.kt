@@ -107,7 +107,7 @@ class SessionsSyncService {
                                 delete(body.deleted)
                                 upload(body.upload)
                                 download(body.download)
-//                                removeOldMeasurements()
+                                removeOldMeasurements()
 
                                 onSuccessCallback?.invoke()
                             }
