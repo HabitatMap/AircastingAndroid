@@ -55,8 +55,8 @@ class SessionsRepository {
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions()
-            .loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null
+        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null ||
+                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
     }
 
     fun disconnectMobileBluetoothSessions() {
