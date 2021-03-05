@@ -29,7 +29,6 @@
             android:layout_height="8dp"
             android:layout_margin="0dp"
             android:indeterminate="false"
-            android:max="30"
             android:progressDrawable="@drawable/curved_progress_bar"
             />
 

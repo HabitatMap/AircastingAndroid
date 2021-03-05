@@ -85,6 +85,4 @@ class ClearSDCardWizardNavigator(
         fragment.listener = listener
         goToFragment(fragment)
     }
-
-
 }
