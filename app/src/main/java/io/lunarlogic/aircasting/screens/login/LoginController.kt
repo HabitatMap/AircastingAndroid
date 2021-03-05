@@ -17,7 +17,7 @@ import io.lunarlogic.aircasting.screens.login.LoginService
 class  LoginController(
     private val mContextActivity: AppCompatActivity,
     private val mViewMvc: LoginViewMvc,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val fragmentManager: FragmentManager
 ) : LoginViewMvc.Listener,
@@ -32,6 +32,9 @@ class  LoginController(
 
     fun onStop() {
         mViewMvc.unregisterListener(this)
+        if(!mSettings.onboardingDisplayed()) {
+            mSettings.onboardingAccepted()
+        }
     }
 
     override fun onLoginClicked(username: String, password: String) {

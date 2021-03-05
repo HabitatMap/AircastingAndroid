@@ -32,7 +32,6 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
         if (!settings.onboardingDisplayed()) {
             progressBarFrame?.visibility = View.VISIBLE
-            settings.onboardingAccepted()
         } else {
             progressBarFrame?.visibility = View.GONE
         }
