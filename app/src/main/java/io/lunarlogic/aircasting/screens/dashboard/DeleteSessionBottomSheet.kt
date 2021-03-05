@@ -29,6 +29,8 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
     }
 
     override fun setup() {
+        expandBottomSheet()
+
         val deleteStreamsButton = contentView?.delete_streams_button
         val cancelButton = contentView?.cancel_button
         val closeButton = contentView?.close_button

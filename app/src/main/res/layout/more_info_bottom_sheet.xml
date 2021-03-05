@@ -8,8 +8,8 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomsheet_card"
         style="@style/Widget.Aircasting.BottomSheetCard"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
