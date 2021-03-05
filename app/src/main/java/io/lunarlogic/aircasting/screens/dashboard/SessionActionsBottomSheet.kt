@@ -1,17 +1,13 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BottomSheet
+import kotlinx.android.synthetic.main.session_actions.view.*
 
-class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mListener) {
-    interface Listener: BottomSheet.Listener {
+class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet() {
+    interface Listener {
         fun editSessionPressed()
         fun shareSessionPressed()
         fun deleteSessionPressed()
@@ -23,30 +19,27 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet(mL
         return R.layout.session_actions;
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-
+    override fun setup() {
         mLoader = view?.findViewById(R.id.loader)
 
-        val editButton = view?.findViewById<Button>(R.id.edit_session_button)
+        val editButton = contentView?.edit_session_button
         editButton?.setOnClickListener {
             mListener.editSessionPressed()
         }
 
-        val shareButton = view?.findViewById<Button>(R.id.share_session_button)
+        val shareButton = contentView?.share_session_button
         shareButton?.setOnClickListener {
             mListener.shareSessionPressed()
         }
 
-        val deleteButton = view?.findViewById<Button>(R.id.delete_session_button)
+        val deleteButton = contentView?.delete_session_button
         deleteButton?.setOnClickListener {
             mListener.deleteSessionPressed()
         }
 
-        return view
+        val cancelButton = contentView?.cancel_button
+        cancelButton?.setOnClickListener {
+            dismiss()
+        }
     }
 }
