@@ -28,10 +28,6 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
             onForgotPasswordClicked()
         }
 
-        if (!settings.onboardingDisplayed()) {
-            rootView?.progress_bar_frame?.visibility = View.VISIBLE
-        }
-
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
         if (!settings.onboardingDisplayed()) {
             progressBarFrame?.visibility = View.VISIBLE

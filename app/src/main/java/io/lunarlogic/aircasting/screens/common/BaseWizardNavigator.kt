@@ -4,6 +4,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ProgressBarCounter
 
 abstract class BaseWizardNavigator(
     private val mViewMvc: ViewMvc,
@@ -15,6 +16,7 @@ abstract class BaseWizardNavigator(
     }
 
     protected abstract val STEP_PROGRESS: Int
+    val progressBarCounter = ProgressBarCounter()
     private var currentProgressStep = 0
     private var backPressedListener: BackPressedListener? = null
 
@@ -44,6 +46,19 @@ abstract class BaseWizardNavigator(
     protected fun updateProgressBarView() {
         val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
         progressBar?.progress = currentProgressStep * STEP_PROGRESS
+        progressBar?.max = progressBarCounter.currentProgressMax
+    }
+
+    open fun setupProgressBarMax(locationServicesAreOff: Boolean, areMapsDisabled: Boolean, isBluetoothDisabled: Boolean) {
+        if (locationServicesAreOff) {
+            progressBarCounter.increaseMaxProgress() // 1 additional step in flow
+        }
+        if (areMapsDisabled) {
+            progressBarCounter.increaseMaxProgress() // 1 additional step in flow
+        }
+        if (isBluetoothDisabled) {
+            progressBarCounter.increaseMaxProgress() // 1 additional step in flow
+        }
     }
 
     protected fun goToFragment(fragment: Fragment) {

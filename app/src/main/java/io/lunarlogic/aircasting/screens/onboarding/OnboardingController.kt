@@ -38,6 +38,7 @@ class OnboardingController(
     }
 
     fun onCreate() {
+        wizardNavigator.setupProgressBarMax()
         wizardNavigator.goToGetStarted(this)
         mViewMvc.hideProgressBar()
     }

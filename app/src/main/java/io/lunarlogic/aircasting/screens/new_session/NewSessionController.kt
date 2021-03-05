@@ -3,9 +3,7 @@ package io.lunarlogic.aircasting.screens.new_session
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
 import android.content.Intent
-import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
@@ -16,10 +14,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.BluetoothNotSupportedException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.lib.areLocationServicesOn
-import io.lunarlogic.aircasting.lib.safeRegister
+import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -72,12 +67,17 @@ class NewSessionController(
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
+        setupProgressMax()
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
         } else {
             permissionsManager.requestLocationPermissions(mContextActivity)
         }
+    }
+
+    private fun setupProgressMax() {
+        wizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), settings.areMapsDisabled(), !bluetoothManager.isBluetoothEnabled())
     }
 
     fun onStop() {
@@ -129,6 +129,7 @@ class NewSessionController(
 
     override fun onBluetoothDeviceSelected() {
         try {
+            wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
