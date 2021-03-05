@@ -42,7 +42,7 @@ abstract class BottomSheet: BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
 
-        bottomSheetBehavior!!.setState(BottomSheetBehavior.STATE_EXPANDED)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     fun show(manager: FragmentManager) {
@@ -53,7 +53,8 @@ abstract class BottomSheet: BottomSheetDialogFragment() {
         val card = contentView?.bottomsheet_card ?: return
 
         val params = ConstraintLayout.LayoutParams(card.layoutParams)
-        params.height = ((Resources.getSystem().getDisplayMetrics().heightPixels) * EXPANDED_PERCENT).toInt()
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        params.height = (screenHeight * EXPANDED_PERCENT).toInt()
         card.layoutParams = params
     }
 }

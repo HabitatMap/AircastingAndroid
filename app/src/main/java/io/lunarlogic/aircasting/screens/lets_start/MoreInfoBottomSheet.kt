@@ -16,14 +16,11 @@ class MoreInfoBottomSheet: BottomSheet() {
         return R.layout.more_info_bottom_sheet
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheet = super.onCreateDialog(savedInstanceState)
-
+    override fun setup() {
+        super.setup()
         expandBottomSheet()
 
         contentView?.description?.text = buildDescription()
-
-        return bottomSheet
     }
 
     private fun buildDescription(): SpannableStringBuilder {
