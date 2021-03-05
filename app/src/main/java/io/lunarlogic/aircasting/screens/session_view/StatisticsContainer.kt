@@ -102,7 +102,7 @@ class StatisticsContainer {
         if (mNow == null && stream != null) {
             mNow = getNowValue(stream)
         }
-        bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator)
+        bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator, true)
     }
 
     private fun bindPeakStatistics(stream: MeasurementStream?) {
@@ -118,11 +118,11 @@ class StatisticsContainer {
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
 
-    private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?) {
+    private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?, isNow: Boolean = false) {
         valueView?.text = Measurement.formatValue(value)
 
         val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
-        valueView?.background = StatisticsValueBackground(color)
+        valueView?.background = StatisticsValueBackground(color, isNow)
         circleIndicator?.setColorFilter(color)
     }
 
