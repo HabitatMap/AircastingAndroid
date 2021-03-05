@@ -33,7 +33,7 @@ abstract class BottomSheet: BottomSheetDialogFragment() {
     }
 
     protected open fun setup() {
-        val cancelButton = contentView?.cancel_button
+        val cancelButton = contentView?.close_button
         cancelButton?.setOnClickListener {
             dismiss()
         }
