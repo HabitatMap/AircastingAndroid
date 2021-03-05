@@ -142,7 +142,7 @@
         <item name="android:fontFamily">@font/moderat_trial_bold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/text_size_xl</item>
-        <item name="lineHeight">@dimen/line_height_xxl</item>
+        <item name="lineHeight">@dimen/line_height_xl</item>
     </style>
 
     <style name="TextAppearance.Aircasting.NewSessionSteps.Body1" parent="@style/TextAppearance.AppCompat">
