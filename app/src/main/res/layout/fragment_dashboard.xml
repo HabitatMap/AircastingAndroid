@@ -18,7 +18,7 @@
             app:tabMode="scrollable"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="parent">
-        </com.google.android.material.tabs.TabLayout>
+            app:layout_constraintBottom_toTopOf="parent"
+            android:paddingEnd="@dimen/keyline_4" />
     </androidx.viewpager.widget.ViewPager>
 </androidx.constraintlayout.widget.ConstraintLayout>
