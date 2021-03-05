@@ -1,28 +1,23 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
-import io.lunarlogic.aircasting.lib.ValidationHelper
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
+import io.lunarlogic.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 
-class EditSessionBottomSheet(private val mListener: Listener,
-                             private var mSession: Session,
-                             private val mContext: Context?
-) : BottomSheetDialogFragment() {
+class EditSessionBottomSheet(
+    private val mListener: Listener,
+    private var mSession: Session,
+    private val mContext: Context?
+) : BottomSheet() {
     interface Listener{
         fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
     }
@@ -31,47 +26,39 @@ class EditSessionBottomSheet(private val mListener: Listener,
     private var sessionNameInput: EditText? = null
     private var tagsInput: EditText? = null
     private var mLoader: ImageView? = null
-    private val TAG = "EditSessionBottomSheet"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.edit_session_bottom_sheet, container, false)
 
-        mLoader = view?.findViewById(R.id.edit_loader)
+    override fun layoutId(): Int {
+        return R.layout.edit_session_bottom_sheet
+    }
 
-        sessionNameInputLayout = view?.findViewById(R.id.session_name)
+    override fun setup() {
+        mLoader = contentView?.edit_loader
 
-        sessionNameInput = view?.findViewById<EditText>(R.id.session_name_input)
+        sessionNameInputLayout = contentView?.session_name
+
+        sessionNameInput = contentView?.session_name_input
         sessionNameInput?.setText(mSession.name)
 
-        tagsInput = view?.findViewById<EditText>(R.id.tags_input)
+        tagsInput = contentView?.tags_input
         tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
 
-        val editDataButton = view?.findViewById<Button>(R.id.edit_data_button)
+        val editDataButton = contentView?.edit_data_button
         editDataButton?.setOnClickListener {
             onEditSessionPressed()
         }
 
-        val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
+        val cancelButton = contentView?.cancel_button
         cancelButton?.setOnClickListener {
             dismiss()
         }
 
-        val closeButton = view?.findViewById<ImageView>(R.id.close_button)
+        val closeButton = contentView?.close_button
         closeButton?.setOnClickListener {
             dismiss()
         }
 
         showLoader()
-
-        return view
-    }
-
-    fun show(manager: FragmentManager) {
-        show(manager, TAG)
     }
 
     fun reload(session: Session) {
@@ -94,13 +81,16 @@ class EditSessionBottomSheet(private val mListener: Listener,
     }
 
     private fun onEditSessionPressed() {
-        val name = view?.session_name_input?.text.toString().trim()
+        val name = sessionNameInput?.text.toString().trim()
+
         if (name.isEmpty()) {
             showError()
             return
         }
-        val tags = view?.tags_input?.text.toString().trim()
+
+        val tags = tagsInput?.text.toString().trim()
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
+        
         dismiss()
         mListener.onEditDataPressed(mSession, name, tagList)
     }

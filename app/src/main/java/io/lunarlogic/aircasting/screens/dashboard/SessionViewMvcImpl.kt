@@ -21,7 +21,7 @@ import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
-    SessionViewMvc<ListenerType>, BottomSheet.Listener {
+    SessionViewMvc<ListenerType> {
     protected val mLayoutInflater: LayoutInflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
 
@@ -135,10 +135,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected fun dismissBottomSheet() {
         mBottomSheet?.dismiss()
-    }
-
-    override fun cancelPressed() {
-        dismissBottomSheet()
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {

@@ -1,39 +1,61 @@
 package io.lunarlogic.aircasting.screens.common
 
+import android.app.Dialog
+import android.content.res.Resources
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 
-abstract class BottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
-    interface Listener {
-        fun cancelPressed()
-    }
-
+abstract class BottomSheet: BottomSheetDialogFragment() {
     private val TAG = "BottomSheet"
+    private val EXPANDED_PERCENT = 0.9
+    protected var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    protected var contentView: View? = null
 
     abstract protected fun layoutId(): Int
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(layoutId(), container, false)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bottomSheet = super.onCreateDialog(savedInstanceState)
 
-        val cancelButton = view.findViewById<Button>(R.id.cancel_button)
-        cancelButton.setOnClickListener {
-            mListener.cancelPressed()
+        contentView = View.inflate(context, layoutId(), null)
+        setup()
+
+        val view = contentView ?: return bottomSheet
+
+        bottomSheet.setContentView(view)
+        bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
+
+        return bottomSheet
+    }
+
+    protected open fun setup() {
+        val cancelButton = contentView?.close_button
+        cancelButton?.setOnClickListener {
+            dismiss()
         }
+    }
 
-        return view;
+    override fun onStart() {
+        super.onStart()
+
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     fun show(manager: FragmentManager) {
         show(manager, TAG)
+    }
+
+    protected fun expandBottomSheet(bottomSheetId: Int = R.id.bottomsheet_card) {
+        val card = contentView?.findViewById<View>(bottomSheetId) ?: return
+
+        val params = ConstraintLayout.LayoutParams(card.layoutParams)
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        params.height = (screenHeight * EXPANDED_PERCENT).toInt()
+        card.layoutParams = params
     }
 }

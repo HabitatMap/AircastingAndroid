@@ -1,45 +1,26 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
+import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
-import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 
-class MoreInfoBottomSheet(private val mListener: Listener): BottomSheetDialogFragment() {
-    interface Listener {
-        fun closePressed()
+class MoreInfoBottomSheet: BottomSheet() {
+    override fun layoutId(): Int {
+        return R.layout.more_info_bottom_sheet
     }
 
-    private val TAG = "MoreInfoBottomSheet"
+    override fun setup() {
+        super.setup()
+        expandBottomSheet()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.more_info_bottom_sheet, container, false)
-        this.isCancelable = false
-
-        view.close_button.setOnClickListener {
-            mListener.closePressed()
-        }
-
-        view.description.text = buildDescription()
-
-        return view
-    }
-
-    fun show(manager: FragmentManager) {
-        show(manager, TAG)
+        contentView?.description?.text = buildDescription()
     }
 
     private fun buildDescription(): SpannableStringBuilder {

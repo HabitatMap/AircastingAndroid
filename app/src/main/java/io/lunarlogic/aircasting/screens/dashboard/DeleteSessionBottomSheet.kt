@@ -1,22 +1,18 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BottomSheet
+import kotlinx.android.synthetic.main.delete_session_bottom_sheet.view.*
 
 
-class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheetDialogFragment() {
+class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheet() {
     interface Listener {
         fun onDeleteStreamsPressed(session: Session)
     }
@@ -28,15 +24,16 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         val stream: MeasurementStream
     )
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.delete_session_bottom_sheet, container, false)
-        val deleteStreamsButton = view?.findViewById<Button>(R.id.delete_streams_button)
-        val cancelButton = view?.findViewById<Button>(R.id.cancel_button)
-        val closeButton = view?.findViewById<ImageView>(R.id.close_button)
+    override fun layoutId(): Int {
+        return R.layout.delete_session_bottom_sheet
+    }
+
+    override fun setup() {
+        expandBottomSheet()
+
+        val deleteStreamsButton = contentView?.delete_streams_button
+        val cancelButton = contentView?.cancel_button
+        val closeButton = contentView?.close_button
 
         cancelButton?.setOnClickListener {
             dismiss()
@@ -50,11 +47,10 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
             mListener.onDeleteStreamsPressed(session)
         }
 
-        mStreamsOptionsContainer = view?.findViewById(R.id.streams_options_container)
+        mStreamsOptionsContainer = contentView?.streams_options_container
         generateStreamsOptions()
 
         setAllStreamsCheckboxListener()
-        return view
     }
 
     fun setAllStreamsCheckboxListener() {

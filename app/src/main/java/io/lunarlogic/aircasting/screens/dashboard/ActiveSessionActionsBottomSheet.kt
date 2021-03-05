@@ -1,10 +1,6 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
@@ -16,8 +12,8 @@ class ActiveSessionActionsBottomSheet(
     private val mListener: Listener,
     private val mSessionPresenter: SessionPresenter?,
     private val mSupportFragmentManager: FragmentManager
-) : BottomSheet(mListener) {
-    interface Listener : BottomSheet.Listener, FinishSessionListener {
+) : BottomSheet() {
+    interface Listener: FinishSessionListener {
         fun disconnectSessionPressed()
     }
 
@@ -25,21 +21,14 @@ class ActiveSessionActionsBottomSheet(
         return R.layout.active_session_actions;
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-
-        setupDisconnectedButton(view)
-        setupStopButton(view)
-
-        return view
+    override fun setup() {
+        setupDisconnectedButton()
+        setupStopButton()
+        setupCancelButton()
     }
 
-    private fun setupDisconnectedButton(view: View?) {
-        val disconnectButton = view?.disconnect_session_button
+    private fun setupDisconnectedButton() {
+        val disconnectButton = contentView?.disconnect_session_button
 
         if (mSessionPresenter?.isDisconnectable() == true) {
             disconnectButton?.setOnClickListener {
@@ -50,11 +39,19 @@ class ActiveSessionActionsBottomSheet(
         }
     }
 
-    private fun setupStopButton(view: View?) {
-        val stopButton = view?.stop_session_button
+    private fun setupStopButton() {
+        val stopButton = contentView?.stop_session_button
         val session = mSessionPresenter?.session ?: return
         stopButton?.setOnClickListener {
+            dismiss()
             FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
+        }
+    }
+
+    private fun setupCancelButton() {
+        val cancelButton = contentView?.cancel_button
+        cancelButton?.setOnClickListener {
+            dismiss()
         }
     }
 }

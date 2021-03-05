@@ -7,10 +7,11 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.fragment_lets_start.view.*
 
 class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
-    LetsStartViewMvc, MoreInfoBottomSheet.Listener {
+    LetsStartViewMvc {
     private val mSupportFragmentManager: FragmentManager
     private var mDialog: MoreInfoBottomSheet? = null
 
@@ -54,12 +55,8 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     }
 
     override fun showMoreInfoDialog() {
-        mDialog = MoreInfoBottomSheet(this)
+        mDialog = MoreInfoBottomSheet()
         mDialog?.show(mSupportFragmentManager)
-    }
-
-    override fun closePressed() {
-        mDialog?.dismiss()
     }
 
     private fun onFixedSessionSelected() {
