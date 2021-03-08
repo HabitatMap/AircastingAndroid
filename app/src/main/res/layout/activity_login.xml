@@ -159,6 +159,7 @@
             android:layout_height="wrap_content"
             android:text="@string/create_account_prompt"
             android:textAppearance="?attr/textAppearanceHeadline4"
+            android:textSize="@dimen/text_size_s"
             android:paddingBottom="@dimen/keyline_6"
             android:paddingTop="@dimen/keyline_8"
             android:paddingLeft="@dimen/keyline_8"
@@ -171,6 +172,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_account_text_button"
+            android:textSize="@dimen/text_size_s"
             app:rippleColor="@null"
             app:layout_constraintStart_toEndOf="@id/create_account_prompt"
             app:layout_constraintBaseline_toBaselineOf="@id/create_account_prompt"/>
