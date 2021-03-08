@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AircastingAndroid</string>
+    <string name="app_name">AirCasting</string>
 
     <!-- Sign in -->
     <string name="invalid_credentials_message">Incorrect username or password.</string>
