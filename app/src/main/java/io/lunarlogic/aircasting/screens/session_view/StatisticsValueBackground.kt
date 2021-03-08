@@ -5,7 +5,7 @@ import android.graphics.drawable.GradientDrawable
 class StatisticsValueBackground: GradientDrawable {
     private val ALPHA = 30
 
-    constructor(color: Int, radiusCorner: Float = CORNER_RADIUS): super() {
+    constructor(color: Int, radiusCorner: Float): super() {
         cornerRadius = radiusCorner
         alpha = ALPHA
         setColor(color)
