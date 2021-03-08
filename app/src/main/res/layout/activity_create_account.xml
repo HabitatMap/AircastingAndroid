@@ -189,6 +189,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login_prompt"
             android:textAppearance="?attr/textAppearanceHeadline4"
+            android:textSize="@dimen/text_size_s"
             android:paddingBottom="@dimen/keyline_6"
             android:paddingTop="@dimen/keyline_6"
             android:paddingLeft="@dimen/keyline_8"
