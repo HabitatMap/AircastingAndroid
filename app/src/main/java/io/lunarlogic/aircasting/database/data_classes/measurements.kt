@@ -57,7 +57,7 @@ interface MeasurementDao {
     fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 
     @Transaction
-    fun deleteInTransaction(sessionId: Long, lastExpectedMeasurementDate: Date) {
-        delete(sessionId, lastExpectedMeasurementDate )
+    fun deleteInTransaction(streamId: Long, lastExpectedMeasurementDate: Date) {
+        delete(streamId, lastExpectedMeasurementDate )
     }
 }

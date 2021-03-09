@@ -51,10 +51,10 @@ class MeasurementsRepository {
     }
 
     fun deleteMeasurementsOlderThen(
-        sessionId: Long,
+        streamId: Long,
         lastExpectedMeasurementTime: Date
     ) {
-        mDatabase.measurements().deleteInTransaction(sessionId, lastExpectedMeasurementTime)
+        mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
 }

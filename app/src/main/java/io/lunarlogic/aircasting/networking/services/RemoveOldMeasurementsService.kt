@@ -14,12 +14,14 @@ class RemoveOldMeasurementsService() {
 
     fun removeMeasurementsFromSessions() {
         val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
-        fixedSessionsIds.forEach {fixedSessionId ->
-            val lastMeasurements = measurementRepository.getLastMeasurements(fixedSessionId, TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT)
+        val streamsForFixedSessionsIds = measurementStreamsRepository.getStreamsIdsBySessionIds(fixedSessionsIds)
+
+        streamsForFixedSessionsIds.forEach { streamId ->
+            val lastMeasurements = measurementRepository.getLastMeasurementsForStream(streamId, TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT)
             if (shouldDeleteMeasurements(lastMeasurements.size)) {
                 val lastExpectedMeasurement = lastMeasurements.last()
                 val lastExpectedMeasurementTime: Date = lastExpectedMeasurement?.time!!
-                measurementRepository.deleteMeasurementsOlderThen(fixedSessionId, lastExpectedMeasurementTime)
+                measurementRepository.deleteMeasurementsOlderThen(streamId, lastExpectedMeasurementTime)
             }
         }
     }
