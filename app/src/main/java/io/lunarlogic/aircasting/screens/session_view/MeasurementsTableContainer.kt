@@ -2,12 +2,10 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import android.content.Context
 import android.graphics.Typeface
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import androidx.core.view.get
@@ -36,9 +34,6 @@ class MeasurementsTableContainer {
     private val mMeasurementHeaders: TableRow?
     private var mMeasurementValues: TableRow? = null
 
-    private val mHeaderColor: Int
-    private val mSelectedHeaderColor: Int
-
     private var mSessionPresenter: SessionPresenter? = null
     private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
 
@@ -62,9 +57,6 @@ class MeasurementsTableContainer {
         if (mDisplayValues) {
             mMeasurementValues = rootView?.measurement_values
         }
-
-        mHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_700, null)
-        mSelectedHeaderColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_dark_blue, null)
     }
 
     fun makeSelectable(displayValues: Boolean = true) {
@@ -157,13 +149,12 @@ class MeasurementsTableContainer {
 
     private fun resetSensorSelection() {
         mMeasurementHeaders?.forEach { resetMeasurementHeader(it) }
-        mMeasurementValues?.forEach { it.background = null }
+        mMeasurementValues?.forEach { resetValueViewBorder(it as LinearLayout) }
     }
 
     private fun resetMeasurementHeader(headerView: View) {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
-        headerTextView.setTypeface(null, Typeface.NORMAL)
-        headerTextView.setTextColor(mHeaderColor)
+        headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeader)
     }
 
     private fun markMeasurementHeaderAsSelected(stream: MeasurementStream) {
@@ -176,8 +167,7 @@ class MeasurementsTableContainer {
     }
 
     private fun markMeasurementHeaderAsSelected(headerTextView: TextView) {
-        headerTextView.setTypeface(null, Typeface.BOLD)
-        headerTextView.setTextColor(mSelectedHeaderColor)
+        headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeaderSelected)
     }
 
     private fun markMeasurementValueAsSelected(stream: MeasurementStream) {
@@ -185,9 +175,9 @@ class MeasurementsTableContainer {
         val color = mLastMeasurementColors[stream.sensorName]
 
         try {
-            val valueView = mMeasurementValues?.get(index)
-            if (valueView != null && color != null) {
-                valueView.background = SelectedSensorBorder(color)
+            val valueViewContainer: LinearLayout = mMeasurementValues?.get(index) as LinearLayout
+            if (valueViewContainer != null && color != null) {
+                setValueViewBorder(valueViewContainer, color)
             }
         } catch(e: IndexOutOfBoundsException) {}
     }
@@ -198,20 +188,19 @@ class MeasurementsTableContainer {
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         mLastMeasurementColors[stream.sensorName] = color
 
-        val valueView = renderValueView(measurementValue, color)
-
-        mMeasurementValues?.addView(valueView)
+        val valueViewContainer = renderValueView(measurementValue, color)
+        mMeasurementValues?.addView(valueViewContainer)
         
         if (mSelectable) {
             if (stream == mSessionPresenter?.selectedStream) {
-                valueView.background = SelectedSensorBorder(color)
+                setValueViewBorder(valueViewContainer, color)
             }
 
-            valueView.setOnClickListener {
+            valueViewContainer.setOnClickListener {
                 onMeasurementClicked(stream)
 
                 markMeasurementHeaderAsSelected(stream)
-                valueView.background = SelectedSensorBorder(color)
+                setValueViewBorder(valueViewContainer, color)
             }
         }
     }
@@ -228,7 +217,7 @@ class MeasurementsTableContainer {
         return mSessionPresenter?.isFixed() == false && mSessionPresenter?.isDisconnected() == true
     }
 
-    private fun renderValueView(measurementValue: Double, color: Int): View {
+    private fun renderValueView(measurementValue: Double, color: Int): LinearLayout {
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
 
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
@@ -244,6 +233,21 @@ class MeasurementsTableContainer {
         }
 
         valueView.background = null
-        return valueView
+
+        val containerLayout = LinearLayout(mContext)
+        containerLayout.gravity = Gravity.CENTER
+        containerLayout.addView(valueView)
+
+        return containerLayout
+    }
+
+    private fun setValueViewBorder(valueViewContainer: LinearLayout, color: Int) {
+        val valueView = valueViewContainer.getChildAt(0)
+        valueView.background = SelectedSensorBorder(color)
+    }
+
+    private fun resetValueViewBorder(valueViewContainer: LinearLayout) {
+        val valueView = valueViewContainer.getChildAt(0)
+        valueView.background = null
     }
 }

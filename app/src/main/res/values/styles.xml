@@ -280,6 +280,19 @@
         <item name="android:textSize">@dimen/text_size_xl</item>
         <item name="lineHeight">@dimen/line_height_xxl</item>
     </style>
+
+    <style name="TextAppearance.Aircasting.MeasurementsTableHeaderSelected" parent="@style/TextAppearance.Aircasting.Body2">
+        <item name="android:textColor">@color/aircasting_dark_blue</item>
+        <item name="android:fontFamily">@font/muli_semi_bold</item>
+        <item name="android:textSize">@dimen/text_size_xs</item>
+    </style>
+
+    <style name="TextAppearance.Aircasting.MeasurementsTableHeader" parent="@style/TextAppearance.Aircasting.Body2">
+        <item name="android:textColor">@color/aircasting_grey_700</item>
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="android:textSize">@dimen/text_size_xs</item>
+    </style>
+
     <!-- Styles -->
 
     <!-- Buttons -->
