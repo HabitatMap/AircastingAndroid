@@ -46,8 +46,8 @@ class MeasurementsRepository {
         return measurement?.time
     }
 
-    fun getLastMeasurements(sessionId: Long, limit: Int): List<MeasurementDBObject?> {
-        return mDatabase.measurements().getLastMeasurements(sessionId, limit)
+    fun getLastMeasurementsForStream(streamId: Long, limit: Int): List<MeasurementDBObject?> {
+        return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
     fun deleteMeasurementsOlderThen(

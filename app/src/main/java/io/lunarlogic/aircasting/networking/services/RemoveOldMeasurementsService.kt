@@ -2,12 +2,14 @@ package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.models.Session
 import java.util.*
 
 class RemoveOldMeasurementsService() {
     private val measurementRepository = MeasurementsRepository()
     private val sessionRepository = SessionsRepository()
+    private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 24 * 60
 
     fun removeMeasurementsFromSessions() {
