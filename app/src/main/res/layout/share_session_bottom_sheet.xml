@@ -54,6 +54,8 @@
                 android:layout_height="0dp"
                 android:fillViewport="true"
                 android:scrollbars="vertical"
+                android:scrollbarStyle="insideInset"
+                android:fadeScrollbars="false"
                 app:layout_constraintTop_toBottomOf="@+id/title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
