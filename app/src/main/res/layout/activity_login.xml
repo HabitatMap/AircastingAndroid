@@ -51,7 +51,7 @@
             android:paddingLeft="@dimen/keyline_10"
             android:paddingBottom="@dimen/keyline_6"
             android:paddingTop="@dimen/keyline_1"
-            app:layout_goneMarginBottom="60dp"
+            app:layout_goneMarginTop="@dimen/create_account_sign_in_padding_top_gone"
             app:layout_constraintTop_toBottomOf="@id/progress_bar_frame"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
