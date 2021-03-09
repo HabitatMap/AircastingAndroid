@@ -154,8 +154,7 @@ class MeasurementsTableContainer {
 
     private fun resetMeasurementHeader(headerView: View) {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
-        headerTextView.setTypeface(null, Typeface.NORMAL)
-        headerTextView.setTextColor(mHeaderColor)
+        headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeader)
     }
 
     private fun markMeasurementHeaderAsSelected(stream: MeasurementStream) {
@@ -168,8 +167,7 @@ class MeasurementsTableContainer {
     }
 
     private fun markMeasurementHeaderAsSelected(headerTextView: TextView) {
-        headerTextView.setTypeface(null, Typeface.BOLD)
-        headerTextView.setTextColor(mSelectedHeaderColor)
+        headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeaderSelected)
     }
 
     private fun markMeasurementValueAsSelected(stream: MeasurementStream) {
