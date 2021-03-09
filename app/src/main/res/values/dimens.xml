@@ -48,8 +48,10 @@
     <dimen name="hlu_slider_thumb_radius">10dp</dimen>
 
     <dimen name="create_account_checkbox_label_padding_top">5dp</dimen>
-    <dimen name="create_account_sign_in_padding_top">80dp</dimen>
+    <dimen name="create_account_sign_in_padding_top">30dp</dimen>
+    <dimen name="create_account_sign_in_padding_top_gone">60dp</dimen>
 
     <dimen name="connecting_image_margin">6dp</dimen>
     <dimen name="connecting_loader_margin_bottom">1dp</dimen>
+
 </resources>
