@@ -188,7 +188,7 @@ class MeasurementsTableContainer {
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         mLastMeasurementColors[stream.sensorName] = color
 
-        val valueViewContainer = renderValueView(measurementValue, color)
+        val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)
         
         if (mSelectable) {
@@ -217,7 +217,7 @@ class MeasurementsTableContainer {
         return mSessionPresenter?.isFixed() == false && mSessionPresenter?.isDisconnected() == true
     }
 
-    private fun renderValueView(measurementValue: Double, color: Int): LinearLayout {
+    private fun renderValueView(measurementValue: Double, color: Int, stream: MeasurementStream): LinearLayout {
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
 
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
@@ -233,6 +233,12 @@ class MeasurementsTableContainer {
         }
 
         valueView.background = null
+        valueTextView.setOnClickListener {
+            onMeasurementClicked(stream)
+
+            markMeasurementHeaderAsSelected(stream)
+            markMeasurementValueAsSelected(stream)
+        }
 
         val containerLayout = LinearLayout(mContext)
         containerLayout.gravity = Gravity.CENTER
