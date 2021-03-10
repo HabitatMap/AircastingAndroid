@@ -5,10 +5,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
@@ -35,7 +37,8 @@ class MobileActiveController(
     private val airBeamReconnector: AirBeamReconnector,
     private val mContext: Context
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
-    SessionsViewMvc.Listener {
+    SessionsViewMvc.Listener,
+    AddNoteBottomSheet.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
@@ -83,7 +86,7 @@ class MobileActiveController(
 
     override fun addNoteClicked(session: Session) {
         //todo: dismiss the main BottomSheet <?>
-        AddNoteBottomSheet(session, mContext).show(fragmentManager)
+        AddNoteBottomSheet(this, session, mContext).show(fragmentManager)
     }
 
     override fun onReconnectSessionClicked(session: Session) {
@@ -117,6 +120,11 @@ class MobileActiveController(
         SyncActivity.start(mRootActivity, onFinish = { goToDormantTab() })
     }
 
+    override fun addNotePressed(session: Session, note: Note) {
+        val event = NoteCreatedEvent(note)
+        EventBus.getDefault().post(event)
+    }
+    
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
         val deviceId = event.deviceId ?: return
