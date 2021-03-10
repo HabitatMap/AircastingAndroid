@@ -49,6 +49,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         disconnectSession(event.deviceId)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: NoteCreatedEvent) {
+        addNote(event)
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
@@ -239,5 +244,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             measurementStreamsRepository.deleteMarkedForRemoval()
             sessionsSyncService.sync()
         }
+    }
+
+    private fun addNote(event: NoteCreatedEvent) {
+        // TODO: add reaction to add note pressed by user
+        // todo: do i need to add some call methods? handling this in local database
     }
 }

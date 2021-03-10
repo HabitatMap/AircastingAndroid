@@ -68,6 +68,13 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
         }
     }
 
+    override fun addNotePressed() {
+        val session = mSessionPresenter?.session ?: return
+        for (listener in listeners) {
+            listener.addNoteClicked(session)
+        }
+    }
+
     override fun disconnectSessionPressed() {
         val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {

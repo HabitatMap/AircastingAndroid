@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet
+import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionConfirmationDialog
 import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 import kotlinx.android.synthetic.main.active_session_actions.view.*
@@ -14,6 +15,7 @@ class ActiveSessionActionsBottomSheet(
     private val mSupportFragmentManager: FragmentManager
 ) : BottomSheet() {
     interface Listener: FinishSessionListener {
+        fun addNotePressed()
         fun disconnectSessionPressed()
     }
 
@@ -24,6 +26,7 @@ class ActiveSessionActionsBottomSheet(
     override fun setup() {
         setupDisconnectedButton()
         setupStopButton()
+        setupAddNoteButton()
         setupCancelButton()
     }
 
@@ -45,6 +48,16 @@ class ActiveSessionActionsBottomSheet(
         stopButton?.setOnClickListener {
             dismiss()
             FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
+        }
+    }
+
+    private fun setupAddNoteButton() {
+        val addNoteButton = contentView?.add_note_button
+        val session = mSessionPresenter?.session ?: return
+        addNoteButton?.setOnClickListener {
+            mListener.addNotePressed()
+            //TODO("Not yet implemented")
+            //AddNoteBottomSheet(mListener, session, context).show()
         }
     }
 

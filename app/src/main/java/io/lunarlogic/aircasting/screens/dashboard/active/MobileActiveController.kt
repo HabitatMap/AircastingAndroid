@@ -81,6 +81,11 @@ class MobileActiveController(
         airBeamReconnector.disconnect(session)
     }
 
+    override fun addNoteClicked(session: Session) {
+        //todo: dismiss the main BottomSheet <?>
+        AddNoteBottomSheet(session, mContext).show(fragmentManager)
+    }
+
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc.showReconnectingLoaderFor(session)
         airBeamReconnector.reconnect(session,

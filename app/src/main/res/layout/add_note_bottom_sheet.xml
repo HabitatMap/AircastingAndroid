@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_background">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Aircasting.BottomSheetCard"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/keyline_8">
+
+                <ImageView
+                    android:id="@+id/edit_loader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_loader"
+                    android:tint="@color/aircasting_blue_400"
+                    android:layout_marginTop="@dimen/keyline_8"
+                    android:layout_marginBottom="@dimen/keyline_8"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/title" />
+
+                <ImageView
+                    android:id="@+id/close_button"
+                    android:src="@drawable/ic_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/keyline_4"
+                    android:paddingBottom="@dimen/keyline_4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/title"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+                    android:textSize="@dimen/text_size_xl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Add a note"
+                    android:textColor="@color/aircasting_dark_blue"
+                    app:lineHeight="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_8"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:layout_marginBottom="@dimen/keyline_6"
+                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Your note will be timestamped and displayed on the AirCasting map"
+                    app:layout_constraintTop_toBottomOf="@id/title"
+                    app:layout_constraintBottom_toTopOf="@id/add_picture_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"/>
+
+                <Button
+                    android:id="@+id/add_picture_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to add picture"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    app:layout_constraintTop_toBottomOf="@id/title"
+                    app:layout_constraintBottom_toBottomOf="@id/note_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/note_input_layout"
+                    style="@style/Widget.Aircasting.TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@+id/add_note_button"
+                    app:layout_constraintTop_toBottomOf="@id/add_picture_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:errorEnabled="true"
+                    app:hintEnabled="false"
+                    android:layout_marginTop="@dimen/keyline_6"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/note_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="Note"
+                        android:textColorHint="@color/aircasting_grey_700"
+                        android:inputType="text"
+                        android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                        android:textColor="@color/aircasting_grey_700"
+                        android:backgroundTint="@color/aircasting_grey_100"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/add_note_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add note"
+                    app:layout_constraintTop_toBottomOf="@id/note_input_layout"
+                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"/>
+
+                <Button
+                    android:id="@+id/cancel_button"
+                    style="@style/Widget.Aircasting.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    app:layout_constraintTop_toBottomOf="@id/add_note_button"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:fontFamily="@font/moderat_trial_bold"
+                    android:textSize="@dimen/button_text_size"
+                    android:textColor="@color/aircasting_blue_400"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
