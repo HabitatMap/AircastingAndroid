@@ -27,4 +27,6 @@
     <color name="aircasting_blue_400_transparent">#40B2EF</color>
     <color name="did_you_know_box_color">#F2F8FF</color>
     <color name="onboarding_lets_start_background">#fcfcfc</color>
+
+    <color name="add_picture_grey">#FAFBFB</color>
 </resources>

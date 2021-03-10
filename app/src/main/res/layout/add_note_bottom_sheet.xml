@@ -66,22 +66,29 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Your note will be timestamped and displayed on the AirCasting map"
+                    android:textAppearance="@style/TextAppearance.Aircasting.Body2"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_6"
                     app:layout_constraintTop_toBottomOf="@id/title"
                     app:layout_constraintBottom_toTopOf="@id/add_picture_button"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"/>
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <Button
                     android:id="@+id/add_picture_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Tap to add picture"
+                    android:textColor="@color/aircasting_grey_700"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@id/title"
-                    app:layout_constraintBottom_toBottomOf="@id/note_input_layout"
+                    android:backgroundTint="@color/add_picture_grey"
+                    app:icon="@drawable/ic_add_picture"
+                    android:layout_marginTop="@dimen/keyline_6"
+                    android:layout_marginBottom="@dimen/keyline_6"
+                    app:layout_constraintTop_toBottomOf="@id/description"
+                    app:layout_constraintBottom_toTopOf="@id/note_input_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -103,7 +110,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_input"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="150dp"
                         android:hint="Note"
                         android:textColorHint="@color/aircasting_grey_700"
                         android:inputType="text"
