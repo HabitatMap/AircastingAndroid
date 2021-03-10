@@ -53,11 +53,11 @@ interface MeasurementDao {
     @Query("DELETE FROM measurements WHERE session_id=:sessionId AND time < :lastExpectedMeasurementDate ")
     fun delete(sessionId: Long, lastExpectedMeasurementDate: Date)
 
-    @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT :limit")
-    fun getLastMeasurements(sessionId: Long, limit: Int): List<MeasurementDBObject?>
+    @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId ORDER BY time DESC LIMIT :limit")
+    fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 
     @Transaction
-    fun deleteInTransaction(sessionId: Long, lastExpectedMeasurementDate: Date) {
-        delete(sessionId, lastExpectedMeasurementDate )
+    fun deleteInTransaction(streamId: Long, lastExpectedMeasurementDate: Date) {
+        delete(streamId, lastExpectedMeasurementDate )
     }
 }

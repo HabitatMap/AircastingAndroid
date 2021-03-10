@@ -38,4 +38,8 @@ class MeasurementStreamsRepository {
     fun deleteMarkedForRemoval() {
         mDatabase.measurementStreams().deleteMarkedForRemoval()
     }
+
+    fun getStreamsIdsBySessionIds(sessionsIds: List<Long>): List<Long> {
+        return mDatabase.measurementStreams().getStreamsIdsBySessionIds(sessionsIds)
+    }
 }
