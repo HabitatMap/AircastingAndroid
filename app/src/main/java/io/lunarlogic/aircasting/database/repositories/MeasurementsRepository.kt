@@ -50,7 +50,7 @@ class MeasurementsRepository {
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
-    fun deleteMeasurementsOlderThen(
+    fun deleteMeasurementsOlderThan(
         streamId: Long,
         lastExpectedMeasurementTime: Date
     ) {

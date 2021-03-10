@@ -21,7 +21,7 @@ class RemoveOldMeasurementsService() {
             if (shouldDeleteMeasurements(lastMeasurements.size)) {
                 val lastExpectedMeasurement = lastMeasurements.last()
                 val lastExpectedMeasurementTime: Date = lastExpectedMeasurement?.time!!
-                measurementRepository.deleteMeasurementsOlderThen(streamId, lastExpectedMeasurementTime)
+                measurementRepository.deleteMeasurementsOlderThan(streamId, lastExpectedMeasurementTime)
             }
         }
     }
