@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.networking.responses
 
+import io.lunarlogic.aircasting.models.Note
+
 class SessionWithMeasurementsResponse(
     val type: String,
     val uuid: String,
@@ -9,7 +11,8 @@ class SessionWithMeasurementsResponse(
     val end_time: String,
     val deleted: Boolean,
     val version: Int,
-    val streams: HashMap<String, SessionStreamWithMeasurementsResponse>
+    val streams: HashMap<String, SessionStreamWithMeasurementsResponse>,
+    val notes: List<Note>
 
     // TODO: add contribute field after adding this functionallity
     // TODO: add notes field after adding this functionallity

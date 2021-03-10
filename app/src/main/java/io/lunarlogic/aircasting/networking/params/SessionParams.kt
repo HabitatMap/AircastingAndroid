@@ -26,6 +26,7 @@ class SessionParams {
         this.is_indoor = session.indoor ?: false
         this.latitude = session.location?.latitude
         this.longitude = session.location?.longitude
+        this.notes = session.notes
 
         session.streams.forEach { stream ->
             streams[stream.sensorName] =

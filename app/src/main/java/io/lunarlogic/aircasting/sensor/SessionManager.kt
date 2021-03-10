@@ -248,6 +248,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun addNote(event: NoteCreatedEvent) {
         // TODO: add reaction to add note pressed by user
-        // todo: do i need to add some call methods? handling this in local database
+        // handling this in local database- dodajemy notatke do sesji i aktualizujemy lokalną baze danych
     }
 }
