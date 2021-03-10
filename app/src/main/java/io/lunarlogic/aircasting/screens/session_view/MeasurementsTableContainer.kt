@@ -134,10 +134,7 @@ class MeasurementsTableContainer {
             }
 
             headerView.setOnClickListener {
-                onMeasurementClicked(stream)
-
-                markMeasurementHeaderAsSelected(stream)
-                markMeasurementValueAsSelected(stream)
+                changeSelectedStream(stream)
             }
         }
     }
@@ -234,10 +231,7 @@ class MeasurementsTableContainer {
 
         valueView.background = null
         valueTextView.setOnClickListener {
-            onMeasurementClicked(stream)
-
-            markMeasurementHeaderAsSelected(stream)
-            markMeasurementValueAsSelected(stream)
+            changeSelectedStream(stream)
         }
 
         val containerLayout = LinearLayout(mContext)
@@ -255,5 +249,12 @@ class MeasurementsTableContainer {
     private fun resetValueViewBorder(valueViewContainer: LinearLayout) {
         val valueView = valueViewContainer.getChildAt(0)
         valueView.background = null
+    }
+
+    private fun changeSelectedStream(stream: MeasurementStream) {
+        onMeasurementClicked(stream)
+
+        markMeasurementHeaderAsSelected(stream)
+        markMeasurementValueAsSelected(stream)
     }
 }
