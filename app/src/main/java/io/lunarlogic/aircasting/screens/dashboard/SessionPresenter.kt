@@ -19,6 +19,7 @@ class SessionPresenter() {
     var sessionUUID: String? = null
     var initialSensorName: String? = null
     var visibleTimeSpan: ClosedRange<Date>? = null
+    var shouldHideMap: Boolean = false
 
     constructor(
         session: Session,
@@ -35,6 +36,7 @@ class SessionPresenter() {
         if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.chartData = ChartData(session)
         }
+        this.shouldHideMap = session.indoor
 
         if (session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.loading = true

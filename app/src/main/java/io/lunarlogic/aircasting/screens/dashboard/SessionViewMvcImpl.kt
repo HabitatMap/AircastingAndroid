@@ -204,8 +204,10 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun bindMapButton(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.session?.indoor == true ) {
+        if (sessionPresenter.shouldHideMap) {
             mMapButton.visibility = View.GONE
+        } else {
+            mMapButton.visibility = View.VISIBLE
         }
     }
 
