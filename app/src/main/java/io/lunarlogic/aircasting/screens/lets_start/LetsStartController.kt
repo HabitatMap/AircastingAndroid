@@ -38,11 +38,7 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        if (ConnectivityManager.isConnected(mContext)){
-            SyncActivity.start(mRootActivity)
-        } else {
-            Toast.makeText(mContext, "To sync your AirBeam, connect your Android to the Internet.", Toast.LENGTH_LONG).show()
-        }
+        SyncActivity.start(mRootActivity)
     }
 
     override fun onMoreInfoClicked() {
