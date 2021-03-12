@@ -11,10 +11,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.lib.areLocationServicesOn
-import io.lunarlogic.aircasting.lib.safeRegister
+import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.common.AircastingAlertDialog

@@ -2,7 +2,7 @@ package io.lunarlogic.aircasting.screens.sync
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
@@ -10,7 +10,6 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
 import javax.inject.Inject
 
 class SyncActivity: AppCompatActivity() {
@@ -26,10 +25,19 @@ class SyncActivity: AppCompatActivity() {
     lateinit var bluetoothManager: BluetoothManager
 
     companion object {
-        fun start(rootActivity: FragmentActivity?) {
-            rootActivity?.let {
-                val intent = Intent(it, SyncActivity::class.java)
-                it.startActivity(intent)
+        fun start(rootActivity: FragmentActivity?, onFinish: (() -> Unit)? = null) {
+            rootActivity ?: return
+
+            val intent = Intent(rootActivity, SyncActivity::class.java)
+
+            if (onFinish != null) {
+                val startForResult =
+                    rootActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                        onFinish.invoke()
+                    }
+                startForResult.launch(intent)
+            } else {
+                rootActivity.startActivity(intent)
             }
         }
     }
