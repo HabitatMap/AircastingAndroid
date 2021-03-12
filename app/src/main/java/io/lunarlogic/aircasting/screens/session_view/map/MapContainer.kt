@@ -11,10 +11,7 @@ import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.AnimatedLoader
-import io.lunarlogic.aircasting.lib.BitmapHelper
-import io.lunarlogic.aircasting.lib.MeasurementColor
-import io.lunarlogic.aircasting.lib.SessionBoundingBox
+import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
@@ -109,7 +106,8 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
-        val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
+        val measurements = AveragingService(stream?.measurements?.filter { it.latitude !== null && it.longitude != null }).averagedMeasurements()
+        println("MARYSIA: measurements size is ${measurements?.size}")
         return measurements ?: emptyList()
     }
 
@@ -227,6 +225,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
+        println("MARYSIA: bindSession called from refresh")
         clearMap()
         bindSession(sessionPresenter)
         drawSession()
