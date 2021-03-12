@@ -279,6 +279,8 @@
     <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
     <string name="airbeam_syncing_header">Syncing</string>
     <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync</string>
+    <string name="airbeam_syncing_finished_header">Sync complete</string>
+    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app.\nThe SD card was cleared.</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>

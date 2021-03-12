@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
-import io.lunarlogic.aircasting.events.AirbeamSyncFinishedEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.ResultCodes
@@ -92,12 +91,12 @@ class SyncController(
         mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
     }
 
-    override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
-        syncAirbeam(selectedDeviceItem)
+    override fun onConnectClicked(deviceItem: DeviceItem) {
+        syncAirbeam(deviceItem)
     }
 
-    private fun syncAirbeam(selectedDeviceItem: DeviceItem) {
-        AirBeamSyncService.startService(mContextActivity) //todo: selectedDevice not needed ??
+    private fun syncAirbeam(deviceItem: DeviceItem) {
+        AirBeamSyncService.startService(mContextActivity, deviceItem)
         mWizardNavigator.goToAirbeamSyncing()
     }
 
@@ -167,15 +166,13 @@ class SyncController(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        // TODO: remove following and handle error
-//        mWizardNavigator.goToSDCardCleared(this)
         onBackPressed()
         val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
         dialog.show()
     }
 
     @Subscribe
-    fun onMessageEvent(event: AirbeamSyncFinishedEvent) {
+    fun onMessageEvent(event: SDCardClearFinished) {
         mWizardNavigator.goToAirbeamSynced(this)
     }
 }

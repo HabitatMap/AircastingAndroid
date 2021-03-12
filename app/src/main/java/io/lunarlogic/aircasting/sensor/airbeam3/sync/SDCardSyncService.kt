@@ -57,7 +57,7 @@ class SDCardSyncService(
 
         mSDCardDownloadService.run(
             onLinesDownloaded = { step, linesCount ->
-                showMessage("Syncing $linesCount/${step.measurementsCount}")
+                Log.d(TAG, "Syncing $linesCount/${step.measurementsCount}")
             },
             onDownloadFinished = { steps -> checkDownloadedFiles(airBeamConnector, deviceItem, steps) }
         )
@@ -67,6 +67,7 @@ class SDCardSyncService(
         Log.d(TAG, "Checking downloaded files")
 
         if (mSDCardCSVFileChecker.run(steps)) {
+            clearSDCard(airBeamConnector)
             saveMobileMeasurementsLocally(airBeamConnector, deviceItem)
         } else {
             mErrorHandler.handleAndDisplay(SDCardDownloadedFileCorrupted())
@@ -114,21 +115,17 @@ class SDCardSyncService(
 
         Log.d(TAG, "Sending fixed measurements to backend")
         uploadFixedMeasurementsService.run(deviceItem.id,
-            onFinishCallback = { clearSDCard(airBeamConnector) }
+            onFinishCallback = { finish() }
         )
     }
 
     private fun clearSDCard(airBeamConnector: AirBeamConnector) {
         Log.d(TAG, "Clearing SD card")
         airBeamConnector.clearSDCard()
-        mSDCardDownloadService.deleteFiles()
-
-        GlobalScope.launch(Dispatchers.Main) {
-            showMessage("Sync finished.")
-        }
     }
 
-    private fun showMessage(message: String) {
-        EventBus.getDefault().post(SyncEvent(message))
+    private fun finish() {
+        mSDCardDownloadService.deleteFiles()
+        Log.d(TAG, "Sync finished")
     }
 }
