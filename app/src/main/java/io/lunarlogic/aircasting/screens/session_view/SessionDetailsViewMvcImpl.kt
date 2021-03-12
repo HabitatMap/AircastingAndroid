@@ -21,7 +21,7 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.session_details.view.*
 import kotlinx.android.synthetic.main.measurements_table.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
-
+import java.util.*
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
     private val mFragmentManager: FragmentManager?
@@ -38,6 +38,8 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     private val mMoreButton: ImageView?
     private val mMoreInvisibleButton: Button?
     private val mHLUSlider: HLUSlider
+
+    private var mLastBindSessionTime : Date?
 
     constructor(
         inflater: LayoutInflater,
@@ -72,6 +74,8 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
 
         mSessionMeasurementsDescription?.visibility = View.GONE
+
+        mLastBindSessionTime = null
     }
 
     abstract fun layoutId(): Int
@@ -89,6 +93,12 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun addMeasurement(measurement: Measurement) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
+        mLastBindSessionTime?.let {
+            val msSinceLastBind = Date().time - it.time
+            if (msSinceLastBind < 800) return
+        }
+        mLastBindSessionTime = Date()
+
         mSessionPresenter = sessionPresenter
 
         bindSessionDetails()
