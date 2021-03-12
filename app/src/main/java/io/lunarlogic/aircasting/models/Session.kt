@@ -29,8 +29,7 @@ class Session(
     var locationless: Boolean = false,
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
-    var urlLocation: String? = null,
-    var mNotes: List<Note> = listOf()
+    var urlLocation: String? = null
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,

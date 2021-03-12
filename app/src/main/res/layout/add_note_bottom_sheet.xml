@@ -66,7 +66,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Your note will be timestamped and displayed on the AirCasting map"
-                    android:textAppearance="@style/TextAppearance.Aircasting.Body2"
+                    android:textAppearance="@style/TextAppearance.Aircasting.Body1"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_6"
@@ -75,6 +75,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
+                <!-- Below button should be displayed after adding the functionality-->
                 <Button
                     android:id="@+id/add_picture_button"
                     android:layout_width="0dp"
@@ -83,7 +84,8 @@
                     android:textColor="@color/aircasting_grey_700"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    android:backgroundTint="@color/add_picture_grey"
+                    android:backgroundTint="@color/aircasting_grey_50"
+                    android:visibility="gone"
                     app:icon="@drawable/ic_add_picture"
                     android:layout_marginTop="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6"
@@ -112,6 +114,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:hint="Note"
+                        android:gravity="start"
                         android:textColorHint="@color/aircasting_grey_700"
                         android:inputType="text"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"

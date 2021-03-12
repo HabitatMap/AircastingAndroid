@@ -43,7 +43,7 @@ class SessionParams {
     val end_time: String
     val contribute: Boolean
     val is_indoor: Boolean
-    val notes = listOf<Note>() // TODO: handle after adding notes, LI
+    val notes = listOf<NoteParams>() // TODO: handle after adding notes, LI
     val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
 

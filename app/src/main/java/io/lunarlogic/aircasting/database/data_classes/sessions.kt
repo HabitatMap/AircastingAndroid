@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
@@ -31,7 +32,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "contribute") val contribute: Boolean = false,
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
-    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false
+    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
+    @ColumnInfo(name = "notes") val notes: ArrayList<String> = arrayListOf()
 
 ) {
     @PrimaryKey(autoGenerate = true)

@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
+import io.lunarlogic.aircasting.database.repositories.NoteRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.DBInsertException
@@ -32,6 +33,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
+    private val noteRepository = NoteRepository()
     private var mCallback: (() -> Unit)? = null
 
     @Subscribe
@@ -247,7 +249,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun addNote(event: NoteCreatedEvent) {
-        // TODO: add reaction to add note pressed by user
-        // handling this in local database- dodajemy notatke do sesji i aktualizujemy lokalną baze danych
+        // TODO: add note to session
+//        todo: event.session.addNote(event.note)
+        DatabaseProvider.runQuery {
+            // todo:
+            sessionsRespository.update(event.session)
+            noteRepository.insert(event.note)
+        }
     }
 }
