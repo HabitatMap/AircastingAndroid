@@ -106,7 +106,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
-        val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
+        val measurements = AveragingService(stream?.measurements?.filter { it.latitude !== null && it.longitude != null }).averagedMeasurements()
         return measurements ?: emptyList()
     }
 
@@ -117,6 +117,7 @@ class MapContainer: OnMapReadyCallback {
         var latestPoint: LatLng? = null
         var latestColor: Int? = null
 
+        // TODO: extract this and recalculate points when we add point
         var i = 0
         for (measurement in mMeasurements) {
             latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
@@ -208,6 +209,7 @@ class MapContainer: OnMapReadyCallback {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
+        println("MARYSIA: setPoints and setSpans called on addMeasurement")
         mMeasurementsLine?.setPoints(mMeasurementPoints)
         mMeasurementsLine?.setSpans(mMeasurementSpans)
 
