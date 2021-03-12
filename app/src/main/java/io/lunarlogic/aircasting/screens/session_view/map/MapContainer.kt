@@ -106,8 +106,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
-        val measurements = AveragingService(stream?.measurements?.filter { it.latitude !== null && it.longitude != null }).averagedMeasurements()
-        println("MARYSIA: measurements size is ${measurements?.size}")
+        val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
         return measurements ?: emptyList()
     }
 
