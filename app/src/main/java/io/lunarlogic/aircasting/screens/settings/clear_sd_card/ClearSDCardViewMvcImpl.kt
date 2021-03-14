@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 
-class ClearSdCardViewMvcImpl: BaseViewMvc, ClearSDCardViewMvc {
+class ClearSDCardViewMvcImpl: BaseViewMvc, ClearSDCardViewMvc {
 
     constructor(
         inflater: LayoutInflater,

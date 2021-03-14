@@ -2,9 +2,7 @@ package io.lunarlogic.aircasting.screens.settings.clear_sd_card
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
 import android.content.Intent
-import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -44,7 +42,13 @@ class ClearSDCardController(
     TurnOnLocationServicesViewMvc.Listener,
     SDCardClearedViewMvc.Listener,
     TurnOffLocationServicesViewMvc.Listener {
-    private val mWizardNavigator = ClearSDCardWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
+    private val mWizardNavigator =
+        ClearSDCardWizardNavigator(
+            mContextActivity,
+            mSettings,
+            mViewMvc,
+            mFragmentManager
+        )
     private val mErrorHandler = ErrorHandler(mContextActivity)
 
     fun onCreate() {

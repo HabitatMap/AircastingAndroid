@@ -39,7 +39,7 @@ class ClearSDCardActivity : AppCompatActivity() {
         val appComponent = app.appComponent
         appComponent.inject(this)
 
-        val view = ClearSdCardViewMvcImpl(layoutInflater, null)
+        val view = ClearSDCardViewMvcImpl(layoutInflater, null)
         controller = ClearSDCardController(
             this,
             view,
