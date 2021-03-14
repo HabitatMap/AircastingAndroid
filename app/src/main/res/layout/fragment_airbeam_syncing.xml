@@ -50,7 +50,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        android:text="@string/airbeam_syncing_header"
         android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"

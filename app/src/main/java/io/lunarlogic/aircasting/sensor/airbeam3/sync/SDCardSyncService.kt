@@ -1,14 +1,11 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import android.util.Log
-import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.sdcard.SDCardLinesReadEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 class SDCardSyncService(
@@ -57,7 +54,8 @@ class SDCardSyncService(
 
         mSDCardDownloadService.run(
             onLinesDownloaded = { step, linesCount ->
-                Log.d(TAG, "Syncing $linesCount/${step.measurementsCount}")
+                val event = SDCardLinesReadEvent(step, linesCount)
+                EventBus.getDefault().post(event)
             },
             onDownloadFinished = { steps -> checkDownloadedFiles(airBeamConnector, deviceItem, steps) }
         )

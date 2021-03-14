@@ -23,12 +23,19 @@ class AirbeamSyncingFragment(
             .appComponent.inject(this)
 
         val view = AirbeamSyncingViewMvcImpl(layoutInflater, null)
-        controller = AirbeamSyncingController(mFragmentManager)
+        controller = AirbeamSyncingController(mFragmentManager, view)
+
+        controller?.onCreate()
 
         return view.rootView
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        controller?.onDestroy()
+    }
+
     override fun onBackPressed() {
-        TODO("Not yet implemented")
+        controller?.onBackPressed()
     }
 }

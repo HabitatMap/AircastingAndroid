@@ -88,8 +88,19 @@ class SyncController(
         mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
     }
 
+    override fun onTurnOnAirBeamReadyClicked() {
+        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
+    }
+
     override fun onConnectClicked(deviceItem: DeviceItem) {
         syncAirbeam(deviceItem)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
+        onBackPressed()
+        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
+        dialog.show()
     }
 
     private fun syncAirbeam(deviceItem: DeviceItem) {
@@ -97,8 +108,9 @@ class SyncController(
         mWizardNavigator.goToAirbeamSyncing()
     }
 
-    override fun onTurnOnAirBeamReadyClicked() {
-        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
+    @Subscribe
+    fun onMessageEvent(event: SDCardClearFinished) {
+        mWizardNavigator.goToAirbeamSynced(this)
     }
 
     override fun onAirbeamSyncedContinueClicked() {
@@ -159,17 +171,5 @@ class SyncController(
                 // Ignore all other requests.
             }
         }
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        onBackPressed()
-        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
-        dialog.show()
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: SDCardClearFinished) {
-        mWizardNavigator.goToAirbeamSynced(this)
     }
 }
