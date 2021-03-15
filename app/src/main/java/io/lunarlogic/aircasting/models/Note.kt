@@ -4,7 +4,7 @@ import java.util.*
 
 class Note(
     val sessionId: Long,
-    val date: Date,
+    val date: Long,
     val text: String,
     val latitude: Double?,
     val longitude: Double?,

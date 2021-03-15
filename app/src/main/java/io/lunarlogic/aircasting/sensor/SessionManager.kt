@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
@@ -249,12 +250,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun addNote(event: NoteCreatedEvent) {
-        // TODO: add note to session
-//        todo: event.session.addNote(event.note)
+        // TODO: add note to session or i should keep it in 2 different tables ??
         DatabaseProvider.runQuery {
             // todo:
-            sessionsRespository.update(event.session)
-            noteRepository.insert(0, event.note) //todo: this to be chagned
+            Log.i("SESSION_MAN", "Running query- insert")
+//            sessionsRespository.update(event.session)
+            noteRepository.insert(0, event.note) //todo: this to be chagned (id)
         }
     }
 }
