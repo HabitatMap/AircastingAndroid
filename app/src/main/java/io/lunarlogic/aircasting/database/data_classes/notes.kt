@@ -11,7 +11,7 @@ import java.util.*
             entity = SessionDBObject::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("session_id"),
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.NO_ACTION //todo: for cascade the migration is not working <?>
         )
     ],
     indices = [

@@ -14,6 +14,7 @@ val MIGRATION_24_25 = object: Migration(24, 25) {
                 "`latitude` REAL, " +
                 "`longitude` REAL, " +
                     "FOREIGN KEY (`session_id`) REFERENCES `sessions`(`id`))" )
+        database.execSQL("CREATE  INDEX `index_notes_session_id` ON `notes` (`session_id`)")
     }
 
 }

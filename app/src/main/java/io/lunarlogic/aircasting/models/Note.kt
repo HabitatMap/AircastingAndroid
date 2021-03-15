@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.models
 import java.util.*
 
 class Note(
+    val sessionId: Long,
     val date: Date,
     val text: String,
     val latitude: Double?,
