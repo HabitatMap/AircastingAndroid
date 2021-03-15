@@ -10,6 +10,7 @@ class UpdateSessionResponse(
     val latitude: Double,
     val longitude: Double,
     val deleted: Boolean,
+    val is_indoor: Boolean,
     val contribute: Boolean,
     val version: Int,
     val streams: HashMap<String, SessionStreamResponse>
