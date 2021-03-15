@@ -61,7 +61,7 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         super.onMeasurementStreamChanged(measurementStream)
-        mMapContainer.refresh(mSessionPresenter)
+        mMapContainer.refresh(mSessionPresenter, true)
     }
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {

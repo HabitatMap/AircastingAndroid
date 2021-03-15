@@ -32,7 +32,8 @@ class MapContainer: OnMapReadyCallback {
     private val mMapFragment: SupportMapFragment?
 
     private var mSessionPresenter: SessionPresenter? = null
-    private var mMeasurements: List<Measurement> = emptyList()
+    private var mMeasurements: MutableList<Measurement> = mutableListOf()
+    private var mNewMeasurements: MutableList<Measurement> = mutableListOf()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
@@ -91,9 +92,12 @@ class MapContainer: OnMapReadyCallback {
         showMap()
     }
 
-    fun bindSession(sessionPresenter: SessionPresenter?) {
+    fun bindSession(sessionPresenter: SessionPresenter?, streamChanged: Boolean = false) {
         mSessionPresenter = sessionPresenter
-        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        if (mMeasurements.isEmpty() || streamChanged) {
+            mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream) as MutableList<Measurement>
+            mNewMeasurements = mutableListOf()
+        }
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -117,7 +121,6 @@ class MapContainer: OnMapReadyCallback {
         var latestPoint: LatLng? = null
         var latestColor: Int? = null
 
-        // TODO: extract this and recalculate points when we add point
         var i = 0
         for (measurement in mMeasurements) {
             latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
@@ -190,7 +193,26 @@ class MapContainer: OnMapReadyCallback {
 
     fun addMobileMeasurement(measurement: Measurement) {
         if (mSessionPresenter?.isRecording() == true) {
-            drawMobileMeasurement(measurementColorPoint(measurement))
+
+            mMeasurements.add(measurement)
+            mNewMeasurements.add(measurement)
+
+            // every 5 elements we'll remove last five and replace it with averaged measurement
+            if (mNewMeasurements.size >= 5) {
+                val averagedMeasuementsCount = mNewMeasurements.size
+                val averagedMeasurements = AveragingService(mNewMeasurements).averagedMeasurements()
+
+                averagedMeasurements?.let {
+                    mMeasurements.dropLast(averagedMeasuementsCount)
+                    mMeasurements.addAll(it)
+                    mMeasurementPoints.dropLast(averagedMeasuementsCount)
+                    mMeasurementSpans.dropLast(averagedMeasuementsCount)
+                }
+               mNewMeasurements = mutableListOf()
+            }
+
+            val latestMeasurement = mMeasurements.last()
+            drawMobileMeasurement(measurementColorPoint(latestMeasurement))
         }
     }
 
@@ -209,7 +231,6 @@ class MapContainer: OnMapReadyCallback {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
-        println("MARYSIA: setPoints and setSpans called on addMeasurement")
         mMeasurementsLine?.setPoints(mMeasurementPoints)
         mMeasurementsLine?.setSpans(mMeasurementSpans)
 
@@ -225,10 +246,9 @@ class MapContainer: OnMapReadyCallback {
         return ColorPoint(point, color)
     }
 
-    fun refresh(sessionPresenter: SessionPresenter?) {
-        println("MARYSIA: bindSession called from refresh")
+    fun refresh(sessionPresenter: SessionPresenter?, streamChanged: Boolean = false) {
         clearMap()
-        bindSession(sessionPresenter)
+        bindSession(sessionPresenter, streamChanged)
         drawSession()
     }
 
