@@ -134,10 +134,7 @@ class MeasurementsTableContainer {
             }
 
             headerView.setOnClickListener {
-                onMeasurementClicked(stream)
-
-                markMeasurementHeaderAsSelected(stream)
-                markMeasurementValueAsSelected(stream)
+                changeSelectedStream(stream)
             }
         }
     }
@@ -188,7 +185,7 @@ class MeasurementsTableContainer {
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         mLastMeasurementColors[stream.sensorName] = color
 
-        val valueViewContainer = renderValueView(measurementValue, color)
+        val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)
         
         if (mSelectable) {
@@ -217,7 +214,7 @@ class MeasurementsTableContainer {
         return mSessionPresenter?.isFixed() == false && mSessionPresenter?.isDisconnected() == true
     }
 
-    private fun renderValueView(measurementValue: Double, color: Int): LinearLayout {
+    private fun renderValueView(measurementValue: Double, color: Int, stream: MeasurementStream): LinearLayout {
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
 
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
@@ -233,6 +230,9 @@ class MeasurementsTableContainer {
         }
 
         valueView.background = null
+        valueTextView.setOnClickListener {
+            changeSelectedStream(stream)
+        }
 
         val containerLayout = LinearLayout(mContext)
         containerLayout.gravity = Gravity.CENTER
@@ -249,5 +249,12 @@ class MeasurementsTableContainer {
     private fun resetValueViewBorder(valueViewContainer: LinearLayout) {
         val valueView = valueViewContainer.getChildAt(0)
         valueView.background = null
+    }
+
+    private fun changeSelectedStream(stream: MeasurementStream) {
+        onMeasurementClicked(stream)
+
+        markMeasurementHeaderAsSelected(stream)
+        markMeasurementValueAsSelected(stream)
     }
 }
