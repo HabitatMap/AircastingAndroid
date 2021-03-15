@@ -8,7 +8,7 @@ import java.util.*
     tableName = "notes",
     foreignKeys = [
         ForeignKey(
-            entity = SessionDBObject::class, //todo: these parameters a bit random now, have to check if they are correct
+            entity = SessionDBObject::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("session_id"),
             onDelete = ForeignKey.CASCADE
@@ -20,21 +20,21 @@ import java.util.*
 )
 data class NoteDBObject(
     @ColumnInfo(name = "session_id") val sessionId: Long,
-    @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "date") val date: Date,
+    @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?
 ) {
     @PrimaryKey(autoGenerate = true)
-    var note_id: Long = 0
+    var id: Long = 0
 
-    constructor(note: Note):
+    constructor(sessionId: Long, note: Note):
             this(
-                0,  //todo: this requires a fix, i dont have noteId and sessionId in the Note model
-                note.text,
+                sessionId,  //todo: this requires a fix, i dont have noteId and sessionId in the Note model
                 note.date,
+                note.text,
                 note.latitude,
-                note.longtitude
+                note.longitude
             )
     }
 

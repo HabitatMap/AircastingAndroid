@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.networking.responses
 
+import io.lunarlogic.aircasting.models.Note
+
 class SessionResponse(
     val type: String,
     val uuid: String,
@@ -14,7 +16,8 @@ class SessionResponse(
     val version: Int,
     val streams: HashMap<String, SessionStreamResponse>,
     val location: String,
-    val is_indoor: Boolean
+    val is_indoor: Boolean,
+    val notes: ArrayList<NoteResponse>
 
     // TODO: add notes field after adding this functionallity
     // TODO: adding latitude, longitude and is_indoor might be needed when adding resume streaming functionallity

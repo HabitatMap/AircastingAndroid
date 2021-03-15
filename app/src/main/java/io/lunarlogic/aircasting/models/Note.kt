@@ -6,6 +6,6 @@ class Note(
     val date: Date,
     val text: String,
     val latitude: Double?,
-    val longtitude: Double?,
+    val longitude: Double?,
     val number: Int,
     val photoPath: String)

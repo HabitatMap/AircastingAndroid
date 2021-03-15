@@ -32,8 +32,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "contribute") val contribute: Boolean = false,
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
-    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
-    @ColumnInfo(name = "notes") val notes: ArrayList<String> = arrayListOf()
+    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false
 
 ) {
     @PrimaryKey(autoGenerate = true)

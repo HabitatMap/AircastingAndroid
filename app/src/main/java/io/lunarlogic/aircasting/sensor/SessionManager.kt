@@ -254,7 +254,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         DatabaseProvider.runQuery {
             // todo:
             sessionsRespository.update(event.session)
-            noteRepository.insert(event.note)
+            noteRepository.insert(0, event.note) //todo: this to be chagned
         }
     }
 }
