@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
-import android.app.AlertDialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
@@ -17,9 +16,8 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
+import io.lunarlogic.aircasting.screens.sync.SyncActivity
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
-import io.lunarlogic.aircasting.sensor.AirBeamSyncService
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SyncEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,7 +26,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class MobileActiveController(
-    mRootActivity: FragmentActivity?,
+    private val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
@@ -40,7 +38,6 @@ class MobileActiveController(
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-    private var syncProgressDialog: AlertDialog? = null // TODO: remove it after implementing proper sync UI
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
@@ -102,27 +99,11 @@ class MobileActiveController(
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
 
-        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
-            Session.Type.MOBILE,
-            Session.Status.FINISHED
-        )
-        NavigationController.goToDashboard(tabId)
+        goToDormantTab()
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        AirBeamSyncService.startService(mContext)
-
-        syncProgressDialog = AlertDialog.Builder(mContext)
-            .setCancelable(false)
-            .setPositiveButton("Ok", null)
-            .setMessage("Sync started")
-            .show()
-    }
-
-    // TODO: remove this method after implementing proper sync UI
-    @Subscribe
-    fun onMessageEvent(event: SyncEvent) {
-        syncProgressDialog?.setMessage(event.message)
+        SyncActivity.start(mRootActivity, onFinish = { goToDormantTab() })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -130,5 +111,13 @@ class MobileActiveController(
         val deviceId = event.deviceId ?: return
         
         mViewMvc.hideLoaderFor(deviceId)
+    }
+
+    private fun goToDormantTab() {
+        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
+        )
+        NavigationController.goToDashboard(tabId)
     }
 }

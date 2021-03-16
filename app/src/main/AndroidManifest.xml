@@ -86,6 +86,9 @@
         <activity android:label=""
             android:name=".screens.settings.clear_sd_card.ClearSDCardActivity"
             android:screenOrientation="portrait" />
+        <activity   android:label=""
+            android:name=".screens.sync.SyncActivity"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

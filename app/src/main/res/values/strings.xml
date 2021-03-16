@@ -275,6 +275,22 @@
     <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
     <string name="sd_card_cleared_continue_button">Continue</string>
 
+    <!-- Sync -->
+    <string name="refreshing_sessions_header">Refreshing sessions</string>
+    <string name="refreshing_sessions_description">Sessions needs to be up to date before starting syncing. Make sure you have the internet connection.</string>
+    <string name="refreshed_sessions_header_successful">Success</string>
+    <string name="refreshed_sessions_description_successful">Sessions was refreshed successfully. You can proceed to sync.</string>
+    <string name="refreshed_sessions_header_error">Something went wrong</string>
+    <string name="refreshed_sessions_description_error">There was a problem while refreshing sessions. Please check your internet connection and try again.</string>
+    <string name="refreshed_sessions_retry">Try again</string>
+    <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
+    <string name="airbeam_syncing_header">Syncing</string>
+    <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync</string>
+    <string name="airbeam_syncing_finished_header">Sync complete</string>
+    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app.\nThe SD card was cleared.</string>
+    <string name="sync_error_header">Something went wrong</string>
+    <string name="sync_unknown_error">Unexpected error happen. Please contact support.</string>
+
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
