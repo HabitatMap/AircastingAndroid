@@ -42,10 +42,13 @@ data class NoteDBObject(
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(note: NoteDBObject)  // todo: is this Long needed here?
+    fun insert(note: NoteDBObject): Long  // todo: is this Long needed here?
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
     fun allForSession(sessionId: Long): NoteDBObject?
+
+    @Query("SELECT * FROM notes WHERE session_id=:sessionId")
+    fun loadNoteBySessionId(sessionId: Long): NoteDBObject?
 
 //    @Query()
 //    fun getNoteFromMap(latitude: Double?, longitude: Double?): NoteDBObject?

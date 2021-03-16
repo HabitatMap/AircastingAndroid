@@ -13,6 +13,19 @@ class NoteRepository {
         Log.i("NOTE_REPO", "Inserting note to DB")
         val noteDBObject =
             NoteDBObject(sessionId, note)
+
+        mDatabase.notes().insert(noteDBObject)
+    }
+
+    fun getIdOrInsert(sessionId: Long, note: Note): Long {
+        var noteDBObject = mDatabase.notes().loadNoteBySessionId(sessionId)
+
+        if (noteDBObject != null) return noteDBObject.id
+
+        noteDBObject = NoteDBObject(
+            sessionId,
+            note
+        )
         return mDatabase.notes().insert(noteDBObject)
     }
 

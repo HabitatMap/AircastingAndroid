@@ -255,7 +255,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             // todo:
             Log.i("SESSION_MAN", "Running query- insert")
 //            sessionsRespository.update(event.session)
-            noteRepository.insert(0, event.note) //todo: this to be chagned (id)
+            val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+            sessionId?.let{
+                noteRepository.getIdOrInsert(sessionId, event.note)
+            }
         }
     }
 }
