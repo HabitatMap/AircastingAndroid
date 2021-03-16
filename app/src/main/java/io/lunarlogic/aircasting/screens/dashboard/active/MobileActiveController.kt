@@ -44,6 +44,7 @@ class MobileActiveController(
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
+        //todo: observing MobileActiveSessions with notes <???>
     }
 
     override fun unregisterSessionsObserver() {
@@ -124,7 +125,7 @@ class MobileActiveController(
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
     }
-    
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
         val deviceId = event.deviceId ?: return

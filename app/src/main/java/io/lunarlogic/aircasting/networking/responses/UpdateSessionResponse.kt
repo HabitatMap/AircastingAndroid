@@ -13,5 +13,6 @@ class UpdateSessionResponse(
     val is_indoor: Boolean,
     val contribute: Boolean,
     val version: Int,
-    val streams: HashMap<String, SessionStreamResponse>
+    val streams: HashMap<String, SessionStreamResponse>,
+    val notes: MutableList<NoteResponse>
 )

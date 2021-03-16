@@ -30,7 +30,7 @@ class Session(
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
-    private var mNotes: List<Note> = listOf()
+    private var mNotes: MutableList<Note> = mutableListOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -162,6 +162,10 @@ class Session(
 
     val status get() = mStatus
     val streams get() = mStreams
+
+    var notes get() = mNotes
+        set(value) {mNotes = value}
+
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
     val followed get() = followedAt != null
@@ -315,5 +319,9 @@ class Session(
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
+    }
+
+    fun addNote(note: Note) {
+        mNotes.add(note)
     }
 }

@@ -42,11 +42,10 @@ class AddNoteBottomSheet(
     }
 
     private fun addNote(mSession: Session) {
-        // TODO: here we need to take date, text of note and the rest things to model
-        //todo: where should i send the NoteCreatedEvent <??>
         val noteText = noteInput?.text.toString().trim()
         val date = Date().time
-        val note = Note(0, date, noteText, mSession.location?.latitude, mSession.location?.longitude) // , 0, "photoPath" todo: random data for now
+        //todo: here we need to get sessionID from sessionUUID somehow <?>
+        val note = Note(date, noteText, mSession.location?.latitude, mSession.location?.longitude) // , 0, "photoPath" todo: random data for now
 
         mListener.addNotePressed(mSession, note)
     }

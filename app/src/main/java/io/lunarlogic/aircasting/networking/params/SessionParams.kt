@@ -27,12 +27,16 @@ class SessionParams {
         this.is_indoor = session.indoor ?: false
         this.latitude = session.location?.latitude
         this.longitude = session.location?.longitude
-//        this.notes = session.mNotes
 
         session.streams.forEach { stream ->
             streams[stream.sensorName] =
                 MeasurementStreamParams(stream)
         }
+
+        session.notes.forEachIndexed { index, note ->
+            notes[index] = NoteParams(note)
+        }
+
     }
 
     val uuid: String
@@ -43,7 +47,7 @@ class SessionParams {
     val end_time: String
     val contribute: Boolean
     val is_indoor: Boolean
-    val notes = listOf<NoteParams>() // TODO: handle after adding notes, LI
+    val notes = mutableListOf<NoteParams>() // TODO: handle after adding notes, LI
     val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
 

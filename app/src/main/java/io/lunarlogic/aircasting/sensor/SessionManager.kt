@@ -250,15 +250,17 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun addNote(event: NoteCreatedEvent) {
-        // TODO: add note to session or i should keep it in 2 different tables ??
         DatabaseProvider.runQuery {
-            // todo:
-            Log.i("SESSION_MAN", "Running query- insert")
-//            sessionsRespository.update(event.session)
             val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
             sessionId?.let{
                 noteRepository.getIdOrInsert(sessionId, event.note)
             }
+            val session = sessionsRespository.loadSessionAndMeasurementsByUUID(event.session.uuid)
+            session?.let{
+                session.addNote(event.note)
+            }
+            sessionUpdateService.update(session!!, {}) //todo: once more we got problem with null assertions on
+            // TODO: some update of above session to contain added note <?>
         }
     }
 }

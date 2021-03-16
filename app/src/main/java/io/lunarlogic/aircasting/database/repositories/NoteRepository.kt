@@ -10,7 +10,6 @@ class NoteRepository {
     private val mDatabase = DatabaseProvider.get()
 
     fun insert(sessionId: Long, note: Note) {
-        Log.i("NOTE_REPO", "Inserting note to DB")
         val noteDBObject =
             NoteDBObject(sessionId, note)
 
@@ -18,9 +17,9 @@ class NoteRepository {
     }
 
     fun getIdOrInsert(sessionId: Long, note: Note): Long {
-        var noteDBObject = mDatabase.notes().loadNoteBySessionId(sessionId)
+        var noteDBObject = mDatabase.notes().loadNotesBySessionId(sessionId) //todo: this to be changed later on
 
-        if (noteDBObject != null) return noteDBObject.id
+        if (noteDBObject != null) return noteDBObject.id //todo: this to be changed later on
 
         noteDBObject = NoteDBObject(
             sessionId,
@@ -29,7 +28,4 @@ class NoteRepository {
         return mDatabase.notes().insert(noteDBObject)
     }
 
-    fun updateNote(currentNote: Note, sessionUUID: UUID) {
-
-    }
 }

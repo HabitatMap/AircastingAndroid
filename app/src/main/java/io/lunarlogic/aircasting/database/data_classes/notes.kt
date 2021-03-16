@@ -11,7 +11,7 @@ import java.util.*
             entity = SessionDBObject::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("session_id"),
-            onDelete = ForeignKey.CASCADE //todo: for cascade the migration is not working <?>
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
@@ -42,17 +42,8 @@ data class NoteDBObject(
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(note: NoteDBObject): Long  // todo: is this Long needed here?
+    fun insert(note: NoteDBObject): Long
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
-    fun allForSession(sessionId: Long): NoteDBObject?
-
-    @Query("SELECT * FROM notes WHERE session_id=:sessionId")
-    fun loadNoteBySessionId(sessionId: Long): NoteDBObject?
-
-//    @Query()
-//    fun getNoteFromMap(latitude: Double?, longitude: Double?): NoteDBObject?
-
-//    @Query
-//    fun getNoteFromGraph(): NoteDBObject?
+    fun loadNotesBySessionId(sessionId: Long): NoteDBObject? //todo: to be changed on List later on
 }
