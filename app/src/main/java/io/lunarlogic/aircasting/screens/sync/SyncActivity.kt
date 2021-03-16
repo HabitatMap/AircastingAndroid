@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.networking.services.ApiService
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import javax.inject.Inject
 
@@ -17,6 +20,12 @@ class SyncActivity: AppCompatActivity() {
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     @Inject
     lateinit var settings: Settings
@@ -56,6 +65,8 @@ class SyncActivity: AppCompatActivity() {
             permissionsManager,
             bluetoothManager,
             supportFragmentManager,
+            apiServiceFactory,
+            errorHandler,
             settings
         )
 

@@ -5,6 +5,9 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardWizardNavigator
+import io.lunarlogic.aircasting.screens.sync.refreshed.RefreshedSessionsFragment
+import io.lunarlogic.aircasting.screens.sync.refreshed.RefreshedSessionsViewMvc
+import io.lunarlogic.aircasting.screens.sync.refreshing.RefreshingSessionsFragment
 import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedFragment
 import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import io.lunarlogic.aircasting.screens.sync.syncing.AirbeamSyncingFragment
@@ -23,6 +26,29 @@ class SyncWizardNavigator(
 ) {
     override fun selectDeviceHeader(): String {
         return mContext.getString(R.string.airbeam_sync_select_device_header)
+    }
+
+    fun goToRefreshingSessions() {
+        incrementStepProgress()
+        val fragment = RefreshingSessionsFragment()
+        goToFragment(fragment)
+    }
+
+    fun goToRefreshingSessionsSuccess(listener: RefreshedSessionsViewMvc.Listener) {
+        goToRefreshedSessions(listener, success = true)
+    }
+
+    fun goToRefreshingSessionsError(listener: RefreshedSessionsViewMvc.Listener) {
+        goToRefreshedSessions(listener, success = false)
+    }
+
+    private fun goToRefreshedSessions(listener: RefreshedSessionsViewMvc.Listener, success: Boolean) {
+        incrementStepProgress()
+        val fragment = RefreshedSessionsFragment(mFragmentManager)
+        fragment.success = success
+        fragment.listener = listener
+        registerBackPressed(fragment)
+        goToFragment(fragment)
     }
 
     fun goToAirbeamSyncing() {

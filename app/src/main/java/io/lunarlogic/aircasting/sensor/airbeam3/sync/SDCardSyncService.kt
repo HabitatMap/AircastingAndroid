@@ -22,7 +22,7 @@ class SDCardSyncService(
 
         High level sync flow:
 
-        1. Refresh sessions list using SessionsSyncService so already deleted on the backend got deleted and so on
+        1. Refresh sessions list using SessionsSyncService so already deleted on the backend got deleted and so on (done in SyncController#refreshSessionList)
         2. Download measurements from AirBeam3 SD card to files/sync/mobile.csv and files/sync/fixed.csv
         3. Check downloaded files (checks if downloaded file has at least 80% of expected lines and if there is at most 20% of corrupted lines)
         4. Save mobile measurements for disconnected sessions in the Android local db. Create sessions named "Imported from SD card" for every UUID that doesn't match with existing session.
@@ -32,22 +32,6 @@ class SDCardSyncService(
      */
 
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
-        val sessionsSyncService = mSessionsSyncService
-
-        if (sessionsSyncService == null) {
-            val cause = SDCardMissingSessionsSyncServiceError()
-            mErrorHandler.handleAndDisplay(SDCardSessionsInitialSyncError(cause))
-            return
-        }
-
-        Log.d(TAG, "Initial sync to refresh session list")
-        sessionsSyncService.sync(
-            onSuccessCallback = { performSDCardDownload(airBeamConnector, deviceItem)},
-            onErrorCallack = { mErrorHandler.handleAndDisplay(SDCardSessionsInitialSyncError()) }
-        )
-    }
-
-    private fun performSDCardDownload(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
         airBeamConnector.triggerSDCardDownload()

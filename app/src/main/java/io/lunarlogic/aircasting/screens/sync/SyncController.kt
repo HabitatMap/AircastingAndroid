@@ -13,6 +13,8 @@ import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.location.LocationHelper
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import io.lunarlogic.aircasting.screens.common.AircastingAlertDialog
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
@@ -21,6 +23,7 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocati
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
+import io.lunarlogic.aircasting.screens.sync.refreshed.RefreshedSessionsViewMvc
 import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
@@ -32,21 +35,26 @@ class SyncController(
     private val mPermissionsManager: PermissionsManager,
     private val mBluetoothManager: BluetoothManager,
     private val mFragmentManager: FragmentManager,
+    mApiServiceFactory: ApiServiceFactory,
+    private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings
-): SelectDeviceViewMvc.Listener,
+):  RefreshedSessionsViewMvc.Listener,
+    SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
     AirbeamSyncedViewMvc.Listener,
     TurnOffLocationServicesViewMvc.Listener {
+
+    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mWizardNavigator = SyncWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
-    private val mErrorHandler = ErrorHandler(mContextActivity)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
 
         if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
-            goToFirstStep()
+            goToRefreshingSessions()
         } else {
             mPermissionsManager.requestLocationPermissions(mContextActivity)
         }
@@ -56,7 +64,36 @@ class SyncController(
         EventBus.getDefault().unregister(this)
     }
 
-    private fun goToFirstStep() {
+    fun goToRefreshingSessions() {
+        mWizardNavigator.goToRefreshingSessions()
+        refreshSessionList()
+    }
+
+    private fun refreshSessionList() {
+        mSessionsSyncService?.sync(
+            onSuccessCallback = {
+                mWizardNavigator.goToRefreshingSessionsSuccess(this)
+            },
+            onErrorCallack = {
+                mWizardNavigator.goToRefreshingSessionsError(this)
+            }
+        )
+    }
+
+    override fun refreshedSessionsContinueClicked() {
+        checkLocationServicesSettings()
+    }
+
+    override fun refreshedSessionsRetryClicked() {
+        onBackPressed()
+        refreshSessionList()
+    }
+
+    override fun refreshedSessionsCancelClicked() {
+        mContextActivity.finish()
+    }
+
+    private fun checkLocationServicesSettings() {
         if (mContextActivity.areLocationServicesOn()) {
             if (mBluetoothManager.isBluetoothEnabled()) {
                 mWizardNavigator.goToRestartAirBeam(this)
@@ -136,7 +173,7 @@ class SyncController(
         when (requestCode) {
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
                 if (mPermissionsManager.permissionsGranted(grantResults)) {
-                    goToFirstStep()
+                    goToRefreshingSessions()
                 } else {
                     mErrorHandler.showError(R.string.errors_location_services_required)
                 }
