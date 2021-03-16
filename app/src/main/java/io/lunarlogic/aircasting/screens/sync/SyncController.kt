@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
+import io.lunarlogic.aircasting.events.sdcard.SDCardSyncErrorEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -23,6 +24,7 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocati
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
+import io.lunarlogic.aircasting.screens.sync.error.ErrorViewMvc
 import io.lunarlogic.aircasting.screens.sync.refreshed.RefreshedSessionsViewMvc
 import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamSyncService
@@ -44,7 +46,8 @@ class SyncController(
     TurnOnBluetoothViewMvc.Listener,
     TurnOnLocationServicesViewMvc.Listener,
     AirbeamSyncedViewMvc.Listener,
-    TurnOffLocationServicesViewMvc.Listener {
+    TurnOffLocationServicesViewMvc.Listener,
+    ErrorViewMvc.Listener {
 
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
     private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
@@ -134,6 +137,16 @@ class SyncController(
     }
 
     @Subscribe
+    fun onMessageEvent(event: SDCardSyncErrorEvent) {
+        val exception = event.exception
+        mWizardNavigator.showError(this, exception.messageToDisplay)
+    }
+
+    override fun onErrorViewOkClicked() {
+        mContextActivity.finish()
+    }
+
+    @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
         val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
@@ -145,6 +158,7 @@ class SyncController(
         mWizardNavigator.goToAirbeamSyncing()
     }
 
+    // Sync is finished when data is downloaded from SD card successfully and SD card is cleared
     @Subscribe
     fun onMessageEvent(event: SDCardClearFinished) {
         mWizardNavigator.goToAirbeamSynced(this)

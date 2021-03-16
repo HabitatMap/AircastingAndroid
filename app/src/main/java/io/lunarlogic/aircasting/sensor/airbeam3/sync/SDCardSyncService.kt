@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import android.util.Log
 import io.lunarlogic.aircasting.events.sdcard.SDCardLinesReadEvent
+import io.lunarlogic.aircasting.events.sdcard.SDCardSyncErrorEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
@@ -52,8 +53,13 @@ class SDCardSyncService(
             clearSDCard(airBeamConnector)
             saveMobileMeasurementsLocally(airBeamConnector, deviceItem)
         } else {
-            mErrorHandler.handleAndDisplay(SDCardDownloadedFileCorrupted())
+            // fatal error, we can't proceed with sync
+            handleError(SDCardDownloadedFileCorrupted())
         }
+    }
+
+    private fun handleError(exception: BaseException) {
+        EventBus.getDefault().post(SDCardSyncErrorEvent(exception))
     }
 
     private fun saveMobileMeasurementsLocally(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {

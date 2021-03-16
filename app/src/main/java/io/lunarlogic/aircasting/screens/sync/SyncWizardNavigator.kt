@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardWizardNavigator
+import io.lunarlogic.aircasting.screens.sync.error.ErrorFragment
+import io.lunarlogic.aircasting.screens.sync.error.ErrorViewMvc
 import io.lunarlogic.aircasting.screens.sync.refreshed.RefreshedSessionsFragment
 import io.lunarlogic.aircasting.screens.sync.refreshed.RefreshedSessionsViewMvc
 import io.lunarlogic.aircasting.screens.sync.refreshing.RefreshingSessionsFragment
@@ -62,6 +64,14 @@ class SyncWizardNavigator(
         incrementStepProgress()
         val fragment = AirbeamSyncedFragment()
         fragment.listener = listener
+        goToFragment(fragment)
+    }
+
+    fun showError(listener: ErrorViewMvc.Listener, message: String?) {
+        incrementStepProgress()
+        val fragment = ErrorFragment()
+        fragment.listener = listener
+        fragment.message = message
         goToFragment(fragment)
     }
 }
