@@ -1,8 +1,10 @@
 package io.lunarlogic.aircasting.screens.sync
 
 import android.content.Context
+import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.ProgressBarCounter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardWizardNavigator
 import io.lunarlogic.aircasting.screens.sync.error.ErrorFragment
@@ -17,17 +19,30 @@ import io.lunarlogic.aircasting.screens.sync.syncing.AirbeamSyncingFragment
 class SyncWizardNavigator(
     context: Context,
     settings: Settings,
-    viewMvc: SyncViewMvc,
+    private val mViewMvc: SyncViewMvc,
     fragmentManager: FragmentManager
 ): ClearSDCardWizardNavigator(
     context,
     settings,
-    viewMvc,
+    mViewMvc,
     fragmentManager,
     R.id.airbeam_sync_fragment_container
 ) {
+
     override fun selectDeviceHeader(): String {
         return mContext.getString(R.string.airbeam_sync_select_device_header)
+    }
+
+    override fun setupProgressBarMax(
+        locationServicesAreOff: Boolean,
+        areMapsDisabled: Boolean,
+        isBluetoothDisabled: Boolean
+    ) {
+        progressBarCounter.currentProgressMax = ProgressBarCounter.DEFAULT_SYNC_STEP_NUMBER * STEP_PROGRESS
+        val progressBar = mViewMvc.rootView?.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar?.max = progressBarCounter.currentProgressMax
+
+        super.setupProgressBarMax(locationServicesAreOff, areMapsDisabled, isBluetoothDisabled)
     }
 
     fun goToRefreshingSessions() {

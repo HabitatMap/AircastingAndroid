@@ -56,11 +56,17 @@ class SyncController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
 
+        setupProgressBarMax()
+
         if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToRefreshingSessions()
         } else {
             mPermissionsManager.requestLocationPermissions(mContextActivity)
         }
+    }
+
+    private fun setupProgressBarMax() {
+        mWizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), mSettings.areMapsDisabled(), !mBluetoothManager.isBluetoothEnabled())
     }
 
     fun onStop() {

@@ -27,7 +27,7 @@ open class ClearSDCardWizardNavigator(
     mFragmentManager,
     container
 ) {
-    override val STEP_PROGRESS = 15
+    override val STEP_PROGRESS = 10
 
     open fun selectDeviceHeader(): String {
         return mContext.getString(R.string.sd_card_clear_select_device_header)
@@ -48,6 +48,7 @@ open class ClearSDCardWizardNavigator(
     fun goToTurnOnBluetooth(
         listener: TurnOnBluetoothViewMvc.Listener
     ) {
+        incrementStepProgress()
         val fragment = TurnOnBluetoothFragment()
         fragment.listener = listener
         goToFragment(fragment)
