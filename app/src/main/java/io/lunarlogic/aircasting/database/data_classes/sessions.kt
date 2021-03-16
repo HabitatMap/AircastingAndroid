@@ -73,6 +73,18 @@ class SessionWithStreamsDBObject {
     lateinit var streams: List<MeasurementStreamDBObject>
 }
 
+class SessionWithNotesDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: List<NoteDBObject>
+}
+
 class SessionWithStreamsAndMeasurementsDBObject {
     @Embedded
     lateinit var session: SessionDBObject

@@ -30,7 +30,7 @@ data class NoteDBObject(
 
     constructor(sessionId: Long, note: Note):
             this(
-                sessionId,  //todo: this requires a fix, i dont have noteId and sessionId in the Note model
+                sessionId,
                 note.date,
                 note.text,
                 note.latitude,

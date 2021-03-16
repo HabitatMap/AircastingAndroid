@@ -46,7 +46,7 @@ class AddNoteBottomSheet(
         //todo: where should i send the NoteCreatedEvent <??>
         val noteText = noteInput?.text.toString().trim()
         val date = Date().time
-        val note = Note(0, date, noteText, mSession.location?.latitude, mSession.location?.longitude, 0, "photoPath") // todo: random data for now
+        val note = Note(0, date, noteText, mSession.location?.latitude, mSession.location?.longitude) // , 0, "photoPath" todo: random data for now
 
         mListener.addNotePressed(mSession, note)
     }

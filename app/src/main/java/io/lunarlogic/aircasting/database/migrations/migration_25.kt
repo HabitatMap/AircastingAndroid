@@ -13,7 +13,7 @@ val MIGRATION_24_25 = object: Migration(24, 25) {
                 "`text` TEXT NOT NULL, " +
                 "`latitude` REAL, " +
                 "`longitude` REAL, " +
-                    "FOREIGN KEY (`session_id`) REFERENCES `sessions`(`id`))" )
+                    "FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE" ) // ON UPDATE NO ACTION ON DELETE CASCADE
         database.execSQL("CREATE  INDEX `index_notes_session_id` ON `notes` (`session_id`)")
     }
 
