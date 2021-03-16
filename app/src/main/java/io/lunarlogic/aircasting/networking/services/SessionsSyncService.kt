@@ -71,7 +71,8 @@ class SessionsSyncService {
         onStartCallback: (() -> Unit)? = null,
         onSuccessCallback: (() -> Unit)? = null,
         onErrorCallack: (() -> Unit)? = null,
-        finallyCallback: (() -> Unit)? = null
+        finallyCallback: (() -> Unit)? = null,
+        shouldDisplayErrors: Boolean = true
     ) {
         // This will happen if we regain connectivity when app is in background.
         // When in foreground again, it should sync
@@ -114,7 +115,7 @@ class SessionsSyncService {
                         }
                     } else {
                         onErrorCallack?.invoke()
-                        handleSyncError(call)
+                        handleSyncError(shouldDisplayErrors, call)
                     }
                 }
 
@@ -122,7 +123,7 @@ class SessionsSyncService {
                     syncStarted.set(false)
                     onErrorCallack?.invoke()
                     finallyCallback?.invoke()
-                    handleSyncError(call, t)
+                    handleSyncError(shouldDisplayErrors, call, t)
                 }
             })
         }
@@ -181,9 +182,13 @@ class SessionsSyncService {
         return !session.locationless && session.isMobile()
     }
 
-    private fun handleSyncError(call: Call<SyncResponse>, t: Throwable? = null) {
+    private fun handleSyncError(shouldDisplayErrors: Boolean, call: Call<SyncResponse>, t: Throwable? = null) {
         if (!call.isCanceled && !syncInBackground.get()) {
-            errorHandler.handleAndDisplay(SyncError(t))
+            if (shouldDisplayErrors) {
+                errorHandler.handleAndDisplay(SyncError(t))
+            } else {
+                errorHandler.handle(SyncError(t))
+            }
         }
     }
 

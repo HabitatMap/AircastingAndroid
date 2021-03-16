@@ -85,7 +85,8 @@ class SyncController(
             },
             onErrorCallack = {
                 mWizardNavigator.goToRefreshingSessionsError(this)
-            }
+            },
+            shouldDisplayErrors = false
         )
     }
 
