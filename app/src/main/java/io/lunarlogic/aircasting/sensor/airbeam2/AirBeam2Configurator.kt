@@ -26,6 +26,10 @@ class AirBeam2Configurator(private val mSettings: Settings) {
         }
     }
 
+    fun reconnectMobileSession(outputStream: OutputStream) {
+        configureMobileSession(outputStream)
+    }
+
     private fun configureMobileSession(outputStream: OutputStream) {
         sendMessage(mHexMessagesBuilder.bluetoothConfigurationMessage, outputStream)
     }

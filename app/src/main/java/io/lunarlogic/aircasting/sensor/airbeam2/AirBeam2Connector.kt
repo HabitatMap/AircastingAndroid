@@ -41,7 +41,7 @@ open class AirBeam2Connector(
     }
 
     override fun reconnectMobileSession() {
-        // nothing is needed here
+        mThread?.reconnectMobileSession()
     }
 
     override fun triggerSDCardDownload() {
@@ -110,6 +110,10 @@ open class AirBeam2Connector(
 
         fun sendAuth(sessionUUID: String) {
             mAirBeamConfigurator.sendAuth(sessionUUID, mOutputStream)
+        }
+
+        fun reconnectMobileSession() {
+            mAirBeamConfigurator.reconnectMobileSession(mOutputStream)
         }
     }
 }

@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
-class AirBeamRecordSessionService: AirBeamService() {
+open class AirBeamRecordSessionService: AirBeamService() {
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
