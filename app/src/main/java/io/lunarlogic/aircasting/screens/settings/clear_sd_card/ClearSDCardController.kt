@@ -123,7 +123,7 @@ class ClearSDCardController(
             ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     if (mBluetoothManager.isBluetoothEnabled()) {
-                        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
+                        mWizardNavigator.goToRestartAirBeam(this)
                     } else {
                         mWizardNavigator.goToTurnOnBluetooth(this)
                     }
