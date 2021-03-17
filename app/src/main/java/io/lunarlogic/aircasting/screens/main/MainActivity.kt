@@ -64,6 +64,7 @@ class MainActivity: AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        AppBar.destroy()
         controller?.onDestroy()
         LocationHelper.stop()
     }
