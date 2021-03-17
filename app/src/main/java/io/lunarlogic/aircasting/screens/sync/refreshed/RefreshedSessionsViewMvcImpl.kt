@@ -39,7 +39,7 @@ class RefreshedSessionsViewMvcImpl: BaseObservableViewMvc<RefreshedSessionsViewM
         } else {
             mHeader?.text = context.getString(R.string.refreshed_sessions_header_error)
             mDescription?.text = context.getString(R.string.refreshed_sessions_description_error)
-            mIcon?.setImageDrawable(context.getDrawable(R.drawable.ic_x_red_circle))
+            mIcon?.setImageDrawable(context.getDrawable(R.drawable.error_icon))
 
             mPrimaryButton?.text = context.getString(R.string.refreshed_sessions_retry)
             mPrimaryButton?.setOnClickListener { onRetryClicked() }
