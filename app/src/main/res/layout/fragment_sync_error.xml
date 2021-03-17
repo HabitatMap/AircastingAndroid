@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/connecting_image_margin"
         android:layout_marginBottom="@dimen/connecting_image_margin"
-        android:src="@drawable/ic_x_red_circle"
+        android:src="@drawable/error_icon"
         app:layout_constraintBottom_toBottomOf="@+id/connected_image"
         app:layout_constraintEnd_toEndOf="@+id/connected_image" />
 
