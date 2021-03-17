@@ -49,4 +49,8 @@ class MyAccountActivity : AppCompatActivity() {
         controller?.onStop()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        AppBar.destroy()
+    }
 }

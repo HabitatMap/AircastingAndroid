@@ -19,5 +19,9 @@ class AppBar {
                 rootActivity.onBackPressed()
             }
         }
+
+        fun destroy() {
+            mTopAppBar = null
+        }
     }
 }

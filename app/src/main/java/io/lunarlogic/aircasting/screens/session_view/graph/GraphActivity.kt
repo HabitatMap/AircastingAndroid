@@ -66,6 +66,7 @@ class GraphActivity: AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        AppBar.destroy()
         controller?.onDestroy()
     }
 }

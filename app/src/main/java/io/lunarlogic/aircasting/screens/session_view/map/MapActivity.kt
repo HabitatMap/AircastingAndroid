@@ -89,6 +89,7 @@ class MapActivity: AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        AppBar.destroy()
         controller?.onDestroy()
     }
 }
