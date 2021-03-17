@@ -21,7 +21,8 @@ class SessionParams {
         this.contribute = session.contribute
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
-        this.end_time = DateConverter.toDateString(session.endTime!!)
+        if (session.endTime != null) this.end_time = DateConverter.toDateString(session.endTime!!) else this.end_time = DateConverter.toDateString(session.startTime) //todo: a bit random attempt
+
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor ?: false
@@ -34,7 +35,7 @@ class SessionParams {
         }
 
         session.notes.forEachIndexed { index, note ->
-            notes[index] = NoteParams(note)
+            notes.add(NoteParams(note))
         }
 
     }

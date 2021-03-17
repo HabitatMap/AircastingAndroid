@@ -7,13 +7,15 @@ class Note(
     val date: Long,
     val text: String,
     val latitude: Double?,
-    val longitude: Double?) {  //,todo: add number: val number: Int,val photoPath: String
+    val longitude: Double?,
+    val number: Int) {  //,todo: val photoPath: String
 
     constructor(noteDBObject: NoteDBObject): this(
         noteDBObject.date,
         noteDBObject.text,
         noteDBObject.latitude,
-        noteDBObject.longitude
+        noteDBObject.longitude,
+        noteDBObject.number
     )
 }
 

@@ -259,7 +259,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             session?.let{
                 session.addNote(event.note)
             }
-            sessionUpdateService.update(session!!, {}) //todo: once more we got problem with null assertions on
+//            sessionUpdateService.update(session!!, {}) //todo: once more we got problem with null assertions on
             // TODO: some update of above session to contain added note <?>
         }
     }

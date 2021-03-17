@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.models
 
 import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionWithNotesDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
@@ -89,6 +90,13 @@ class Session(
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
+
+    constructor(sessionWithNotesDBObject: SessionWithNotesDBObject):
+            this(sessionWithNotesDBObject.session) {
+                this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
+                    Note(noteDBObject)
+                }.toMutableList()
+            }
 
     companion object {
         fun generateUUID(): String {

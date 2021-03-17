@@ -28,4 +28,8 @@ class NoteRepository {
         return mDatabase.notes().insert(noteDBObject)
     }
 
+    fun loadNoteForSessionWithId(sessionId: Long): NoteDBObject? {
+        return mDatabase.notes().loadNotesBySessionId(sessionId)
+    }
+
 }

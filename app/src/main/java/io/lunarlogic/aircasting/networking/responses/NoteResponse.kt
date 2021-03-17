@@ -7,5 +7,6 @@ class NoteResponse (
     val date: Long,
     val text: String,
     val latitude: Double?,
-    val longitude: Double? //todo: later 2 more fields <?>
+    val longitude: Double?,
+    val number: Int//todo: later 1 more field <?>
 )

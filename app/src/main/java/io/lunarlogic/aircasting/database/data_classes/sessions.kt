@@ -190,4 +190,7 @@ interface SessionDao {
 
     @Query("SELECT id FROM sessions WHERE type=:type AND deleted=0")
     fun loadSessionUuidsByType(type: Session.Type): List<Long>
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionAndNotesByUUID(uuid: String): SessionWithNotesDBObject?
 }

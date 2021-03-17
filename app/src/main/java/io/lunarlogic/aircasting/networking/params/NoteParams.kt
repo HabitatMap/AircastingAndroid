@@ -8,10 +8,12 @@ class NoteParams {
         this.text = note.text
         this.latitude = note.latitude
         this.longitude = note.longitude
+        this.number = note.number
     }
 
     val date: Long
     val text: String
     val latitude: Double?
     val longitude: Double?
+    val number: Int
 }
