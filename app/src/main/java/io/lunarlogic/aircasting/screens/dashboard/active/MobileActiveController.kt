@@ -83,12 +83,18 @@ class MobileActiveController(
 
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc.showReconnectingLoaderFor(session)
-        airBeamReconnector.reconnect(session) {
-            GlobalScope.launch(Dispatchers.Main) {
-                mViewMvc.hideReconnectingLoaderFor(session)
-                mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
+        airBeamReconnector.reconnect(session,
+            errorCallback = {
+                GlobalScope.launch(Dispatchers.Main) {
+                    mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
+                }
+            },
+            finallyCallback = {
+                GlobalScope.launch(Dispatchers.Main) {
+                    mViewMvc.hideReconnectingLoaderFor(session)
+                }
             }
-        }
+        )
     }
 
     override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
