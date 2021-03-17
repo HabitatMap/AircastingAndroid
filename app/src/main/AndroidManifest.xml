@@ -39,6 +39,11 @@
         </service>
 
         <service
+            android:name=".sensor.AirBeamReconnectSessionService"
+            android:stopWithTask="true">
+        </service>
+
+        <service
             android:name=".sensor.AirBeamSyncService"
             android:stopWithTask="true">
         </service>

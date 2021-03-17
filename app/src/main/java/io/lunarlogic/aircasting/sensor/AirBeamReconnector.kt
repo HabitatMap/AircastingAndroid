@@ -18,7 +18,6 @@ class AirBeamReconnector(
     private val mAirBeamDiscoveryService: AirBeamDiscoveryService
 ) {
     private var mSession: Session? = null
-    private var mAirBeamConnector: AirBeamConnector? = null
     private var mFinallyCallback: (() -> Unit)? = null
 
     fun disconnect(session: Session) {
@@ -43,7 +42,7 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceItem: DeviceItem) {
-        AirBeamRecordSessionService.startService(mContext, deviceItem, mSession?.uuid)
+        AirBeamReconnectSessionService.startService(mContext, deviceItem, mSession?.uuid)
     }
 
     private fun onDiscoveryFailed() {
@@ -65,7 +64,6 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
-        mAirBeamConnector?.reconnectMobileSession()
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
         mFinallyCallback?.invoke()
