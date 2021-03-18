@@ -70,6 +70,7 @@ class MapController(
     override fun onFinishSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
+        rootActivity.finish()
     }
 
     override fun addNotePressed(session: Session, note: Note) {
