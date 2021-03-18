@@ -77,6 +77,15 @@ class MeasurementsTableContainer {
         refresh()
     }
 
+    fun makeCollapsed(displayValues: Boolean = true) {
+        resetMeasurementsView()
+        mSelectable = true
+        mDisplayValues = displayValues
+        if (!displayValues) mMeasurementValues = null
+
+        refresh()
+    }
+
     fun refresh() {
         bindSession(mSessionPresenter, mOnMeasurementStreamChanged)
     }
