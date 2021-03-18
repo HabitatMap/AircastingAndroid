@@ -243,8 +243,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         setExpandCollapseButton()
         mExpandedSessionView.visibility = View.GONE
 
-        mMeasurementsTableContainer.makeStatic(showMeasurementsTableValues())
         bindCollapsedMeasurementsDesctription()
+        mMeasurementsTableContainer.makeCollapsed(showMeasurementsTableValues())
 
         adjustSessionCardPadding()
     }
