@@ -34,7 +34,7 @@ abstract class AirBeamService: SensorService(),
     }
 
     override fun onStopService() {
-        // nothing
+        mAirBeamConnector = null
     }
 
     override fun notificationMessage(): String {
