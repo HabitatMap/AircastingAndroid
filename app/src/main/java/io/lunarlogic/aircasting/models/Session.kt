@@ -31,7 +31,7 @@ class Session(
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
-    private var mNotes: MutableList<Note> = mutableListOf()
+    private var mNotes: List<Note> = mutableListOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -95,7 +95,7 @@ class Session(
             this(sessionWithNotesDBObject.session) {
                 this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
                     Note(noteDBObject)
-                }.toMutableList()
+                }
             }
 
     companion object {
@@ -169,8 +169,8 @@ class Session(
     var location: Location? = null
 
     val status get() = mStatus
-    val streams get() = mStreams
-
+    var streams get() = mStreams
+        set(value) {mStreams = value}
     var notes get() = mNotes
         set(value) {mNotes = value}
 
@@ -327,9 +327,5 @@ class Session(
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
-    }
-
-    fun addNote(note: Note) {
-        mNotes.add(note)
     }
 }

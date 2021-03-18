@@ -21,7 +21,7 @@ class SessionParams {
         this.contribute = session.contribute
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
-        if (session.endTime != null) this.end_time = DateConverter.toDateString(session.endTime!!) else this.end_time = DateConverter.toDateString(session.startTime) //todo: we need to handle null endTime somehow (startTime just for trial)
+        this.end_time = DateConverter.toDateString(session.endTime!!)
 
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
@@ -34,9 +34,7 @@ class SessionParams {
                 MeasurementStreamParams(stream)
         }
 
-        session.notes.forEach { note ->
-            notes.add(NoteParams(note))
-        }
+        session.notes.map { note -> NoteParams(note) }
 
     }
 
@@ -48,7 +46,7 @@ class SessionParams {
     val end_time: String
     val contribute: Boolean
     val is_indoor: Boolean
-    val notes = mutableListOf<NoteParams>() // TODO: handle after adding notes, LI
+    val notes = listOf<NoteParams>()
     val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
 

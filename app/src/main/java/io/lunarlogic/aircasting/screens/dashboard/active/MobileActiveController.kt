@@ -44,7 +44,6 @@ class MobileActiveController(
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
-        //todo: observing MobileActiveSessions with notes <???>
     }
 
     override fun unregisterSessionsObserver() {
@@ -86,7 +85,6 @@ class MobileActiveController(
     }
 
     override fun addNoteClicked(session: Session) {
-        //todo: dismiss the main BottomSheet <?>
         AddNoteBottomSheet(this, session, mContext).show(fragmentManager)
     }
 

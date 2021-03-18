@@ -56,8 +56,6 @@ class ActiveSessionActionsBottomSheet(
         val session = mSessionPresenter?.session ?: return
         addNoteButton?.setOnClickListener {
             mListener.addNotePressed()
-            //TODO("Not yet implemented")
-            //AddNoteBottomSheet(mListener, session, context).show()
         }
     }
 

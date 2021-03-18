@@ -12,7 +12,7 @@ class SessionWithMeasurementsResponse(
     val deleted: Boolean,
     val version: Int,
     val streams: HashMap<String, SessionStreamWithMeasurementsResponse>,
-    val notes: List<NoteResponse> // TODO: add notes field after adding this functionallity
+    val notes: List<NoteResponse>
 
     // TODO: add contribute field after adding this functionallity
 

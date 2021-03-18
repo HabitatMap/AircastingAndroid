@@ -36,10 +36,6 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
-    fun loadSessionWithNotes(uuid: String): LiveData<SessionWithNotesDBObject?> { //todo: should this be list? should this be livedata?
-        return mDatabase.sessions().loadSessionWithNotesByUUID(uuid)
-    }
-
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
         return findOrCreateSensorThresholds(session.streams)
     }

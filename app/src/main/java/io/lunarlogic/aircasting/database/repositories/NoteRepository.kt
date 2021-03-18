@@ -16,18 +16,6 @@ class NoteRepository {
         mDatabase.notes().insert(noteDBObject)
     }
 
-    fun getIdOrInsert(sessionId: Long, note: Note): Long {
-        var noteDBObject = mDatabase.notes().loadNotesBySessionId(sessionId) //todo: this to be changed later on
-
-        if (noteDBObject != null) return noteDBObject.id //todo: this to be changed later on
-
-        noteDBObject = NoteDBObject(
-            sessionId,
-            note
-        )
-        return mDatabase.notes().insert(noteDBObject)
-    }
-
     fun loadNoteForSessionWithId(sessionId: Long): NoteDBObject? {
         return mDatabase.notes().loadNotesBySessionId(sessionId)
     }

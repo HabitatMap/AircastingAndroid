@@ -144,16 +144,10 @@ class SessionsSyncService {
 
     private fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val session = sessionRepository.loadSessionAndMeasurementsByUUID(uuid)
+            val session = sessionRepository.loadSessionForUpload(uuid)
             if (session != null && isUploadable(session)) {
                 val onUploadSuccess = {
-                    // TODO: handle update notes etc
-                    DatabaseProvider.runQuery {
-                        val sessionWithNotes = sessionRepository.loadSessionAndNotesByUUID(session.uuid)
-                        if (sessionWithNotes != null) {
-                            uploadService.upload(sessionWithNotes,  {}) //todo: i guess placing this in onUploadSucces is sooo bad
-                        }
-                    }
+                    // TODO: handle update notes - adding photoPath
                 }
                 uploadService.upload(session, onUploadSuccess)
             }

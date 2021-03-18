@@ -149,7 +149,7 @@ interface SessionDao {
     fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithNotesDBObject?>  //todo: to list later on <?>
+    fun loadSessionWithNotesByUUID(uuid: String): SessionWithNotesDBObject?  //todo: to list later on <?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
