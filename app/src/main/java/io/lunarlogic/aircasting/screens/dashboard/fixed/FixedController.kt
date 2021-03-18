@@ -17,7 +17,7 @@ import io.lunarlogic.aircasting.screens.dashboard.*
 
 class FixedController(
     mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
