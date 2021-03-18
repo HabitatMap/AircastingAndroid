@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.database.data_classes
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
@@ -72,6 +73,18 @@ class SessionWithStreamsDBObject {
     lateinit var streams: List<MeasurementStreamDBObject>
 }
 
+class SessionWithNotesDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: List<NoteDBObject>
+}
+
 class SessionWithStreamsAndMeasurementsDBObject {
     @Embedded
     lateinit var session: SessionDBObject
@@ -84,7 +97,6 @@ class SessionWithStreamsAndMeasurementsDBObject {
     lateinit var streams: List<StreamWithMeasurementsDBObject>
 }
 
-
 class StreamWithMeasurementsDBObject {
     @Embedded
     lateinit var stream: MeasurementStreamDBObject
@@ -95,6 +107,25 @@ class StreamWithMeasurementsDBObject {
         entity = MeasurementDBObject::class
     )
     lateinit var measurements: List<MeasurementDBObject>
+}
+
+class SessionForUploadDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<StreamWithMeasurementsDBObject>
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: List<NoteDBObject>
 }
 
 @Dao
@@ -136,6 +167,12 @@ interface SessionDao {
     fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionWithNotesByUUID(uuid: String): SessionWithNotesDBObject?
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionForUploadByUUID(uuid: String): SessionForUploadDBObject?
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
@@ -173,4 +210,7 @@ interface SessionDao {
 
     @Query("SELECT id FROM sessions WHERE type=:type AND deleted=0")
     fun loadSessionUuidsByType(type: Session.Type): List<Long>
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionAndNotesByUUID(uuid: String): SessionWithNotesDBObject?
 }

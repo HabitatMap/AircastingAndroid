@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.networking.params
 
 import io.lunarlogic.aircasting.lib.DateConverter
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 
@@ -21,6 +22,7 @@ class SessionParams {
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
         this.end_time = DateConverter.toDateString(session.endTime!!)
+
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor ?: false
@@ -31,6 +33,8 @@ class SessionParams {
             streams[stream.sensorName] =
                 MeasurementStreamParams(stream)
         }
+
+        notes = session.notes.map { note -> NoteParams(note) }
     }
 
     val uuid: String
@@ -41,7 +45,7 @@ class SessionParams {
     val end_time: String
     val contribute: Boolean
     val is_indoor: Boolean
-    val notes = listOf<String>() // TODO: handle after adding notes
+    val notes: List<NoteParams>
     val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
 
