@@ -34,8 +34,7 @@ class SessionParams {
                 MeasurementStreamParams(stream)
         }
 
-        session.notes.map { note -> NoteParams(note) }
-
+        notes = session.notes.map { note -> NoteParams(note) }
     }
 
     val uuid: String
@@ -46,7 +45,7 @@ class SessionParams {
     val end_time: String
     val contribute: Boolean
     val is_indoor: Boolean
-    val notes = listOf<NoteParams>()
+    val notes: List<NoteParams>
     val version: Int
     val streams = hashMapOf<String, MeasurementStreamParams>()
 
