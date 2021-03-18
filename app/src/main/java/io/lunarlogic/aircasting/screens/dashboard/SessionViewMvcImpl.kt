@@ -48,6 +48,8 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private var mLoader: ImageView?
 
     protected var mSessionPresenter: SessionPresenter? = null
+    protected var expandCardCallback: (() -> Unit?)? = null
+    protected var onExpandSessionCardClickedCallback: (() -> Unit?)? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -65,6 +67,9 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mNameTextView = findViewById(R.id.session_name)
         mInfoTextView = findViewById(R.id.session_info)
         mMeasurementsDescription = findViewById(R.id.session_measurements_description)
+
+        expandCardCallback = { expandSessionCard() }
+        onExpandSessionCardClickedCallback = { onExpandSessionCardClicked() }
 
         mMeasurementsTableContainer = MeasurementsTableContainer(
             context,
@@ -147,6 +152,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         bindChartData()
         bindFollowButtons(sessionPresenter)
         bindMapButton(sessionPresenter)
+        bindMeasurementsSelectable(mMeasurementsTableContainer, onExpandSessionCardClickedCallback, expandCardCallback)
+    }
+
+    protected open fun bindMeasurementsSelectable(mMeasurementsTableContainer: MeasurementsTableContainer, onExpandSessionCardClickedCallback: (() -> Unit?)?, expandCardCallback: (() -> Unit?)?) {
+        mMeasurementsTableContainer.makeSelectable(showMeasurementsTableValues())
+        mMeasurementsTableContainer.bindExpandCardCallbacks(expandCardCallback, onExpandSessionCardClickedCallback)
     }
 
     private fun bindLoader(sessionPresenter: SessionPresenter) {

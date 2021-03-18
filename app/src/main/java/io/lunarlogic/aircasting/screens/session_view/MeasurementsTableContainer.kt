@@ -36,6 +36,8 @@ class MeasurementsTableContainer {
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
+    private var expandCard: (() -> Unit?)? = null
+    private var onExpandSessionCard: (() -> Unit?)? = null
 
     constructor(
         context: Context,
@@ -106,6 +108,11 @@ class MeasurementsTableContainer {
         }
     }
 
+    fun bindExpandCardCallbacks(expandCardCallback: (() -> Unit?)?, onExpandSessionCardClickedCallback: (() -> Unit?)?) {
+        expandCard = expandCardCallback
+        onExpandSessionCard = onExpandSessionCardClickedCallback
+    }
+
     private fun resetMeasurementsView() {
         mMeasurementsTable?.isStretchAllColumns = false
         mMeasurementHeaders?.removeAllViews()
@@ -164,6 +171,8 @@ class MeasurementsTableContainer {
     }
 
     private fun markMeasurementHeaderAsSelected(stream: MeasurementStream) {
+        onExpandSessionCard?.invoke()
+        expandCard?.invoke()
         val index = mMeasurementStreams.indexOf(stream)
         try {
             val headerView = mMeasurementHeaders?.get(index)
