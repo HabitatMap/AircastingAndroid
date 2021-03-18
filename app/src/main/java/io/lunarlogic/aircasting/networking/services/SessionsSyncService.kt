@@ -5,6 +5,8 @@ import com.google.gson.Gson
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncErrorEvent
+import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
 import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SyncError
@@ -13,6 +15,7 @@ import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import io.lunarlogic.aircasting.models.Session
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,8 +72,6 @@ class SessionsSyncService {
 
     fun sync(
         onStartCallback: (() -> Unit)? = null,
-        onSuccessCallback: (() -> Unit)? = null,
-        onErrorCallack: (() -> Unit)? = null,
         finallyCallback: (() -> Unit)? = null,
         shouldDisplayErrors: Boolean = true
     ) {
@@ -110,18 +111,16 @@ class SessionsSyncService {
                                 download(body.download)
                                 removeOldMeasurements()
 
-                                onSuccessCallback?.invoke()
+                                EventBus.getDefault().post(SessionsSyncSuccessEvent())
                             }
                         }
                     } else {
-                        onErrorCallack?.invoke()
                         handleSyncError(shouldDisplayErrors, call)
                     }
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
-                    onErrorCallack?.invoke()
                     finallyCallback?.invoke()
                     handleSyncError(shouldDisplayErrors, call, t)
                 }
@@ -184,6 +183,8 @@ class SessionsSyncService {
 
     private fun handleSyncError(shouldDisplayErrors: Boolean, call: Call<SyncResponse>, t: Throwable? = null) {
         if (!call.isCanceled && !syncInBackground.get()) {
+            EventBus.getDefault().post(SessionsSyncErrorEvent())
+
             if (shouldDisplayErrors) {
                 errorHandler.handleAndDisplay(SyncError(t))
             } else {

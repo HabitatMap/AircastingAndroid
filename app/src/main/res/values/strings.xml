@@ -277,7 +277,7 @@
 
     <!-- Sync -->
     <string name="refreshing_sessions_header">Updating sessions</string>
-    <string name="refreshing_sessions_description">Sessions must be updated prior to syncing SD card.\nMake sure your device is connected to the Internet.</string>
+    <string name="refreshing_sessions_description">Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet.</string>
     <string name="refreshed_sessions_header_successful">Success</string>
     <string name="refreshed_sessions_description_successful">Sessions were updated successfully.</string>
     <string name="refreshed_sessions_header_error">Something went wrong</string>
