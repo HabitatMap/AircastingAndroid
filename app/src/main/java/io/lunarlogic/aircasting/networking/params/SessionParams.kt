@@ -21,7 +21,7 @@ class SessionParams {
         this.contribute = session.contribute
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
-        if (session.endTime != null) this.end_time = DateConverter.toDateString(session.endTime!!) else this.end_time = DateConverter.toDateString(session.startTime) //todo: a bit random attempt
+        if (session.endTime != null) this.end_time = DateConverter.toDateString(session.endTime!!) else this.end_time = DateConverter.toDateString(session.startTime) //todo: we need to handle null endTime somehow (startTime just for trial)
 
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version

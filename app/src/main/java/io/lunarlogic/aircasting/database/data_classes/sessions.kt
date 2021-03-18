@@ -33,7 +33,6 @@ data class SessionDBObject(
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false
-    // todo: add notes list to this model <?>
 
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -150,7 +149,7 @@ interface SessionDao {
     fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithNotesDBObject?>  //todo: my method for now
+    fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithNotesDBObject?>  //todo: to list later on <?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?

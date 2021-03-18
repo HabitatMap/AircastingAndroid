@@ -8,5 +8,6 @@ class NoteResponse (
     val text: String,
     val latitude: Double?,
     val longitude: Double?,
-    val number: Int//todo: later 1 more field <?>
+    val number: Int
+    // todo: photoPath to be added when handling photos
 )
