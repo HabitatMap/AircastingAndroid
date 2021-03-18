@@ -6,6 +6,7 @@ import io.lunarlogic.aircasting.events.sdcard.SDCardSyncErrorEvent
 import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncErrorEvent
 import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
 import io.lunarlogic.aircasting.exceptions.*
+import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
@@ -41,6 +42,7 @@ class SDCardSyncService(
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
+        EventBus.getDefault().safeRegister(this)
         mAirBeamConnector = airBeamConnector
         mDeviceItem = deviceItem
 
@@ -141,6 +143,7 @@ class SDCardSyncService(
     }
 
     private fun cleanup() {
+        EventBus.getDefault().unregister(this)
         mDeviceItem = null
         mAirBeamConnector = null
     }
