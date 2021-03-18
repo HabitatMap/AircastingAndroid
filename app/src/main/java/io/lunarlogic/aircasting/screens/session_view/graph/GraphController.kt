@@ -12,6 +12,6 @@ class GraphController(
     mViewMvc: SessionDetailsViewMvc,
     sessionUUID: String,
     sensorName: String?
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName) {
+): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName) { //todo: add SessionsViewMvc.Listener here to get addNoteClicked and onFinishSessionConfirmed <?>
     override fun locateRequested() {}
 }
