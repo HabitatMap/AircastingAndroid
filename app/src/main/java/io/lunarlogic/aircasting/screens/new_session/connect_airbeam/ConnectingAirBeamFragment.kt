@@ -10,13 +10,14 @@ import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
 class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) : Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: ConnectingAirBeamController? = null
+    private var view: ConnectingAirBeamViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
+        view =
             ConnectingAirBeamViewMvcImpl(
                 layoutInflater,
                 null
@@ -24,10 +25,22 @@ class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) :
 
         controller = ConnectingAirBeamController(mFragmentManager)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onBackPressed() {
         controller?.onBackPressed()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controller = null
+        view = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controller = null
+        view = null
     }
 }

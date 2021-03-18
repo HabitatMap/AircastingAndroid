@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.AircastingApplication
 class AirbeamSyncedFragment: Fragment() {
     private var controller: AirbeamSyncedController? = null
     lateinit var listener: AirbeamSyncedViewMvc.Listener
+    private var view: AirbeamSyncedViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,10 +20,10 @@ class AirbeamSyncedFragment: Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = AirbeamSyncedViewMvcImpl(layoutInflater, null)
+        view = AirbeamSyncedViewMvcImpl(layoutInflater, null)
         controller = AirbeamSyncedController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -33,5 +34,19 @@ class AirbeamSyncedFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

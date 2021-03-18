@@ -13,6 +13,7 @@ class ClearingSDCardFragment(
     private val mFragmentManager: FragmentManager
 ): Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: ClearingSDCardController? = null
+    private var view: ClearingSDCardViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,14 +23,25 @@ class ClearingSDCardFragment(
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = ClearingSDCardViewMvcImpl(layoutInflater, null)
+        view = ClearingSDCardViewMvcImpl(layoutInflater, null)
         controller = ClearingSDCardController(mFragmentManager)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onBackPressed() {
         controller?.onBackPressed()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller = null
+    }
 }

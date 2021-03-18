@@ -11,6 +11,7 @@ class AirBeamConnectedFragment() : Fragment() {
 
     private var controller: AirBeamConnectedController? = null
     lateinit var listener: AirBeamConnectedViewMvc.Listener
+    private var view: AirBeamConnectedViewMvcImpl? = null
     lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
 
@@ -19,7 +20,7 @@ class AirBeamConnectedFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
+        view =
             AirBeamConnectedViewMvcImpl(
                 layoutInflater,
                 null,
@@ -27,9 +28,9 @@ class AirBeamConnectedFragment() : Fragment() {
                 sessionUUID
             )
         controller =
-            AirBeamConnectedController(requireContext(), view)
+            AirBeamConnectedController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -40,5 +41,19 @@ class AirBeamConnectedFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener.let { controller?.unregisterListener(it) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

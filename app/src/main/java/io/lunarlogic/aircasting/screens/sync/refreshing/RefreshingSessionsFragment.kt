@@ -8,15 +8,28 @@ import androidx.fragment.app.Fragment
 
 class RefreshingSessionsFragment(): Fragment() {
     private var controller: RefreshingSessionsController? = null
+    private var view: RefreshingSessionsViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = RefreshingSessionsViewMvcImpl(layoutInflater, null)
+        view = RefreshingSessionsViewMvcImpl(layoutInflater, null)
         controller = RefreshingSessionsController()
 
-        return view.rootView
+        return view?.rootView
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller = null
     }
 }

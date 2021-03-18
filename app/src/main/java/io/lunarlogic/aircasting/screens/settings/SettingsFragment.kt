@@ -12,6 +12,7 @@ import javax.inject.Inject
 class SettingsFragment : Fragment() {
 
     private var controller : SettingsController? = null
+    private var view: SettingsViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -24,10 +25,10 @@ class SettingsFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = SettingsViewMvcImpl(inflater, container, settings)
+        view = SettingsViewMvcImpl(inflater, container, settings)
         controller = SettingsController(activity, context, view, settings, childFragmentManager)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -38,5 +39,19 @@ class SettingsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }
