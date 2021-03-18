@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus
 
 class FixedController(
     private val mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,

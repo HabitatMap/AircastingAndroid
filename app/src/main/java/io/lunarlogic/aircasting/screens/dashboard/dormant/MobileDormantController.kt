@@ -21,7 +21,7 @@ import org.greenrobot.eventbus.EventBus
 
 class MobileDormantController(
     mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    private val mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,

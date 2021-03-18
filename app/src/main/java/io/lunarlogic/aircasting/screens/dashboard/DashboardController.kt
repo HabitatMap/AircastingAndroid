@@ -2,10 +2,14 @@ package io.lunarlogic.aircasting.screens.dashboard
 
 
 class DashboardController(
-    private val mView: DashboardViewMvc
+    private var mView: DashboardViewMvc?
 ) {
 
     fun onCreate(tabId: Int?) {
-        mView.goToTab(tabId ?: 0)
+        mView?.goToTab(tabId ?: 0)
+    }
+
+    fun onDestroy() {
+        mView = null
     }
 }
