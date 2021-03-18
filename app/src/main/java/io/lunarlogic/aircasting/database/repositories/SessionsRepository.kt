@@ -60,19 +60,14 @@ class SessionsRepository {
     }
 
     fun loadSessionForUpload(uuid: String): Session? {
-        val sessionWithNotesDBObject = mDatabase.sessions().loadSessionWithNotesByUUID(uuid)
-        val sessionWithStreamsAndMeasurementsDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
-        val sessionForUploadDBObject = mDatabase.sessions().loadSessionByUUID(uuid)
-        if (sessionForUploadDBObject != null && sessionWithNotesDBObject != null && sessionWithStreamsAndMeasurementsDBObject != null) {
-            val sessionForUpload = Session(sessionForUploadDBObject)
-            val sessionWithNotes = Session(sessionWithNotesDBObject)
-            val sessionWithStreamsAndMeasurements = Session(sessionWithStreamsAndMeasurementsDBObject)
-            sessionForUpload.notes = sessionWithNotes.notes
-            sessionForUpload.streams = sessionWithStreamsAndMeasurements.streams
-            sessionForUpload.streams.map { stream -> sessionWithStreamsAndMeasurements.streams }
-            return sessionForUpload
+        val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
+
+        if (sessionForUploadDBObject != null) {
+            return Session(sessionForUploadDBObject)
+        } else {
+            return null
         }
-        return null
+
     }
 
     fun update(session: Session) {

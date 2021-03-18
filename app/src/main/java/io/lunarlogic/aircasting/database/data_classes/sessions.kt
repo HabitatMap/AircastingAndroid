@@ -97,7 +97,6 @@ class SessionWithStreamsAndMeasurementsDBObject {
     lateinit var streams: List<StreamWithMeasurementsDBObject>
 }
 
-
 class StreamWithMeasurementsDBObject {
     @Embedded
     lateinit var stream: MeasurementStreamDBObject
@@ -108,6 +107,25 @@ class StreamWithMeasurementsDBObject {
         entity = MeasurementDBObject::class
     )
     lateinit var measurements: List<MeasurementDBObject>
+}
+
+class SessionForUploadDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<StreamWithMeasurementsDBObject>
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: List<NoteDBObject>
 }
 
 @Dao
@@ -149,7 +167,10 @@ interface SessionDao {
     fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionWithNotesByUUID(uuid: String): SessionWithNotesDBObject?  //todo: to list later on <?>
+    fun loadSessionWithNotesByUUID(uuid: String): SessionWithNotesDBObject?
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionForUploadByUUID(uuid: String): SessionForUploadDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?

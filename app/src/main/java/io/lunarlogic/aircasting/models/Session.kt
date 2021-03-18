@@ -1,9 +1,6 @@
 package io.lunarlogic.aircasting.models
 
-import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithNotesDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
@@ -96,6 +93,17 @@ class Session(
                 this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
                     Note(noteDBObject)
                 }
+            }
+
+    constructor(sessionForUploadDBObject: SessionForUploadDBObject):
+            this(sessionForUploadDBObject.session) {
+        this.mNotes = sessionForUploadDBObject.notes.map { noteDBObject ->
+                        Note(noteDBObject)
+                    }
+        this.mStreams = sessionForUploadDBObject.streams.map { streamWithMeasurementsDBObject ->
+            MeasurementStream(streamWithMeasurementsDBObject)
+        }
+
             }
 
     companion object {
