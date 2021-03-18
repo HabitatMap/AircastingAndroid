@@ -7,12 +7,14 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionActionsBottomSheet
 import kotlinx.android.synthetic.main.activity_graph.view.*
 
 class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
     ActiveSessionActionsBottomSheet.Listener {
     private var mSessionActionsButton: ImageView? = null
+    private var mBottomSheet: BottomSheet? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -24,9 +26,18 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
 
         mSessionActionsButton?.setOnClickListener {
             if (supportFragmentManager != null) { // todo: this null check to be changed <??>
-                ActiveSessionActionsBottomSheet(this, mSessionPresenter, supportFragmentManager).show(supportFragmentManager)
+                buildBottomSheet(supportFragmentManager)
             }
         }
+    }
+
+    fun buildBottomSheet(supportFragmentManager: FragmentManager) {
+        mBottomSheet = ActiveSessionActionsBottomSheet(this, mSessionPresenter, supportFragmentManager)
+        mBottomSheet?.show(supportFragmentManager)
+    }
+
+    fun dismissBottomSheet() {
+        mBottomSheet?.dismiss()
     }
 
     override fun bindSessionMeasurementsDescription() {
@@ -42,6 +53,7 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
         for (listener in listeners) {
             listener.addNoteClicked(session)
         }
+        dismissBottomSheet()
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
@@ -50,6 +62,7 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
         for (listener in listeners) {
             listener.onFinishSessionConfirmed(session)
         }
+        dismissBottomSheet()
     }
 
     override fun disconnectSessionPressed() {
