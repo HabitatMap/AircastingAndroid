@@ -20,4 +20,5 @@ open class GraphViewFixedMvcImpl(
     override fun measurementsSample(): List<Measurement> {
         return mSessionPresenter?.selectedStream?.getLastMeasurements(MEASUREMENTS_SAMPLE_SIZE) ?: listOf<Measurement>()
     }
+
 }

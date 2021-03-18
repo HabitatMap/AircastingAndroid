@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.ThreadMode
 abstract class SessionDetailsViewController(
     protected val rootActivity: AppCompatActivity,
     protected val mSessionsViewModel: SessionsViewModel,
-    protected val mViewMvc: SessionDetailsViewMvc,
+    protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     private var sensorName: String?
 ): SessionDetailsViewMvc.Listener {
@@ -27,14 +27,14 @@ abstract class SessionDetailsViewController(
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
 
         mSessionObserver.observe()
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.bindSession(mSessionPresenter)
+            mViewMvc?.bindSession(mSessionPresenter)
         }
     }
 
@@ -44,7 +44,7 @@ abstract class SessionDetailsViewController(
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
-            mViewMvc.addMeasurement(measurement)
+            mViewMvc?.addMeasurement(measurement)
         }
     }
 
@@ -60,6 +60,7 @@ abstract class SessionDetailsViewController(
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this);
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
+        mViewMvc = null
     }
 }

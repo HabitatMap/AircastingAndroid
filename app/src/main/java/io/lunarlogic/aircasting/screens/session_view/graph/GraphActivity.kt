@@ -9,9 +9,11 @@ import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
+import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 
 class GraphActivity: AppCompatActivity() {
     private var controller: GraphController? = null
+    private var view: SessionDetailsViewMvc? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
 
     companion object {
@@ -37,7 +39,7 @@ class GraphActivity: AppCompatActivity() {
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
         val sessionTab: Int = intent.extras?.getInt(SESSION_TAB_KEY) as Int
 
-        val view = GraphViewMvcImplFactory.get(
+        view = GraphViewMvcImplFactory.get(
             layoutInflater,
             null,
             supportFragmentManager,
@@ -47,8 +49,8 @@ class GraphActivity: AppCompatActivity() {
 
         controller?.onCreate()
 
-        setContentView(view.rootView)
-        AppBar.setup(view.rootView, this)
+        setContentView(view?.rootView)
+        AppBar.setup(view?.rootView, this)
     }
 
     override fun onResume() {
@@ -67,6 +69,7 @@ class GraphActivity: AppCompatActivity() {
         super.onDestroy()
 
         AppBar.destroy()
+        view?.onDestroy()
         controller?.onDestroy()
     }
 }
