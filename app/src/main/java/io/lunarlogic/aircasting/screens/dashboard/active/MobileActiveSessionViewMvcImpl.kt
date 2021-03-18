@@ -73,6 +73,7 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
         for (listener in listeners) {
             listener.addNoteClicked(session)
         }
+        dismissBottomSheet()
     }
 
     override fun disconnectSessionPressed() {

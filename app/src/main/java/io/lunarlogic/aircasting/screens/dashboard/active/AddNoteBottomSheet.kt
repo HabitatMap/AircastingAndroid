@@ -39,6 +39,11 @@ class AddNoteBottomSheet(
         cancelButton?.setOnClickListener {
             dismiss()
         }
+
+        val closeButton = contentView?.close_button
+        closeButton?.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun addNote(mSession: Session) {
