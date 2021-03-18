@@ -14,6 +14,7 @@ class ConfirmationFragment() : Fragment() {
     private var controller: ConfirmationController? = null
     lateinit var listener: ConfirmationViewMvc.Listener
     lateinit var session: Session
+    private var view: ConfirmationViewMvc? = null
 
     @Inject
     lateinit var settings: Settings
@@ -26,9 +27,9 @@ class ConfirmationFragment() : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
-        controller = ConfirmationController(context, view, settings)
-        return view.rootView
+        view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
+        controller = ConfirmationController(view, settings)
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -42,5 +43,19 @@ class ConfirmationFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controller?.onDestroy()
+        controller = null
+        view = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controller?.onDestroy()
+        controller = null
+        view = null
     }
 }

@@ -10,8 +10,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class ConfirmationController(
-    private val mContext: Context?,
-    private val mViewMvc: ConfirmationViewMvc,
+    private var mViewMvc: ConfirmationViewMvc?,
     private val mSettings: Settings
 ): ConfirmationViewMvc.Listener {
     fun registerToEventBus() {
@@ -19,15 +18,19 @@ class ConfirmationController(
     }
 
     fun registerListener(listener: ConfirmationViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: ConfirmationViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
     }
 
     fun onStart(context: Context?) {
         KeyboardHelper.hideKeyboard(context)
+    }
+
+    fun onDestroy() {
+        mViewMvc = null
     }
 
     override fun onStartRecordingClicked(session: Session) {
@@ -40,6 +43,6 @@ class ConfirmationController(
 
     @Subscribe
     fun onMessageEvent(event: LocationChanged) {
-        mViewMvc.updateLocation(event.latitude, event.longitude)
+        mViewMvc?.updateLocation(event.latitude, event.longitude)
     }
 }

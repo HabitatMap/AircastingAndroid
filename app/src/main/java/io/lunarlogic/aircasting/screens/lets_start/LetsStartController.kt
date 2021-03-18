@@ -11,17 +11,20 @@ import io.lunarlogic.aircasting.screens.sync.SyncActivity
 
 
 class LetsStartController(
-    private val mRootActivity: FragmentActivity?,
-    private val mViewMvc: LetsStartViewMvc,
-    private val mContext: Context?,
+    private var mRootActivity: FragmentActivity?,
+    private var mViewMvc: LetsStartViewMvc?,
+    private var mContext: Context?,
     private val mErrorHandler: ErrorHandler
 ): LetsStartViewMvc.Listener {
     fun onCreate() {
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
     fun onDestroy() {
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
+        mViewMvc = null
+        mRootActivity = null
+        mContext = null
     }
 
     override fun onFixedSessionSelected() {
@@ -44,6 +47,6 @@ class LetsStartController(
     }
 
     override fun onMoreInfoClicked() {
-        mViewMvc.showMoreInfoDialog()
+        mViewMvc?.showMoreInfoDialog()
     }
 }

@@ -16,7 +16,7 @@ import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 
 class FollowingController(
     mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,

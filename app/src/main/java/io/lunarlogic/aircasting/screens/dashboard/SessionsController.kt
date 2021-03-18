@@ -31,13 +31,13 @@ import org.greenrobot.eventbus.EventBus
 
 
 abstract class SessionsController(
-    protected val mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    protected var mRootActivity: FragmentActivity?,
+    private var mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
-    private val context: Context?
+    private var context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
@@ -55,18 +55,25 @@ abstract class SessionsController(
     protected abstract fun unregisterSessionsObserver()
 
     fun onCreate() {
-        mViewMvc.showLoader()
+        mViewMvc?.showLoader()
     }
 
     open fun onResume() {
-        mViewMvc.showLoader()
+        mViewMvc?.showLoader()
         registerSessionsObserver()
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
     open fun onPause() {
         unregisterSessionsObserver()
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
+    }
+
+    fun onDestroy() {
+        unregisterSessionsObserver()
+        mViewMvc = null
+        mRootActivity = null
+        context = null
     }
 
     protected fun startNewSession(sessionType: Session.Type) {
@@ -75,8 +82,8 @@ abstract class SessionsController(
 
     override fun onSwipeToRefreshTriggered() {
         mMobileSessionsSyncService.sync(
-            onStartCallback = { mViewMvc.showLoader() },
-            finallyCallback = { mViewMvc.hideLoader() }
+            onStartCallback = { mViewMvc?.showLoader() },
+            finallyCallback = { mViewMvc?.hideLoader() }
         )
     }
 
@@ -109,8 +116,8 @@ abstract class SessionsController(
                 val reloadedSession = Session(dbSessionWithMeasurements)
 
                 DatabaseProvider.backToUIThread(scope) {
-                    mViewMvc.reloadSession(reloadedSession)
-                    mViewMvc.hideLoaderFor(session)
+                    mViewMvc?.reloadSession(reloadedSession)
+                    mViewMvc?.hideLoaderFor(session)
                 }
             }
         }
@@ -121,7 +128,7 @@ abstract class SessionsController(
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
-        mViewMvc.showLoaderFor(session)
+        mViewMvc?.showLoaderFor(session)
         val finallyCallback = { reloadSession(session) }
         mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
     }
@@ -234,4 +241,6 @@ abstract class SessionsController(
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
     }
+
+
 }
