@@ -38,8 +38,14 @@ class LetsStartFragment : Fragment() {
         return view.rootView
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controller?.onDestroy()
+        controller = null
+    }
     override fun onDestroy() {
         super.onDestroy()
         controller?.onDestroy()
+        controller = null
     }
 }

@@ -29,7 +29,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    private val mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
@@ -89,7 +89,7 @@ class MobileActiveController(
     }
 
     override fun onReconnectSessionClicked(session: Session) {
-        mViewMvc.showReconnectingLoaderFor(session)
+        mViewMvc?.showReconnectingLoaderFor(session)
         airBeamReconnector.reconnect(session,
             errorCallback = {
                 GlobalScope.launch(Dispatchers.Main) {
@@ -98,7 +98,7 @@ class MobileActiveController(
             },
             finallyCallback = {
                 GlobalScope.launch(Dispatchers.Main) {
-                    mViewMvc.hideReconnectingLoaderFor(session)
+                    mViewMvc?.hideReconnectingLoaderFor(session)
                 }
             }
         )
@@ -128,7 +128,7 @@ class MobileActiveController(
     fun onMessageEvent(event: NewMeasurementEvent) {
         val deviceId = event.deviceId ?: return
         
-        mViewMvc.hideLoaderFor(deviceId)
+        mViewMvc?.hideLoaderFor(deviceId)
     }
 
     private fun goToDormantTab() {
