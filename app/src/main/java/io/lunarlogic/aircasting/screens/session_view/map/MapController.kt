@@ -32,7 +32,7 @@ class MapController(
     fun onMessageEvent(event: LocationChanged) {
         if (mLocateRequested) {
             val location = LocationHelper.lastLocation()
-            location?.let { mViewMvc.centerMap(location) }
+            location?.let { mViewMvc?.centerMap(location) }
             mLocateRequested = false
         }
     }
@@ -50,7 +50,7 @@ class MapController(
         if (location == null) {
             requestLocation()
         } else {
-            mViewMvc.centerMap(location)
+            mViewMvc?.centerMap(location)
         }
     }
 

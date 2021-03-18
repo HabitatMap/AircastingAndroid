@@ -27,12 +27,12 @@ import java.util.concurrent.atomic.AtomicInteger
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
 
-    private val mContext: Context
+    private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
-    private val mMapFragment: SupportMapFragment?
+    private var mMapFragment: SupportMapFragment?
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -108,6 +108,11 @@ class MapContainer: OnMapReadyCallback {
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
     }
 
+    fun destroy() {
+        mMap = null
+        mContext = null
+        mMapFragment = null
+    }
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
         val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
         return measurements ?: emptyList()

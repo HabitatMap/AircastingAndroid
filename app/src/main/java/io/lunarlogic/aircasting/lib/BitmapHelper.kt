@@ -10,7 +10,10 @@ import com.google.android.libraries.maps.model.BitmapDescriptorFactory
 
 class BitmapHelper {
     companion object {
-        fun bitmapFromVector(context: Context, id: Int, color: Int? = null): BitmapDescriptor? {
+        fun bitmapFromVector(context: Context?, id: Int, color: Int? = null): BitmapDescriptor? {
+            if (context == null) {
+                return null
+            }
             val vectorDrawable =
                 ResourcesCompat.getDrawable(context.resources, id, null)!!
             val bitmap = Bitmap.createBitmap(

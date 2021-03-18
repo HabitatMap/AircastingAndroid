@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 class GraphController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
-    mViewMvc: SessionDetailsViewMvc,
+    mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
     val fragmentManager: FragmentManager
