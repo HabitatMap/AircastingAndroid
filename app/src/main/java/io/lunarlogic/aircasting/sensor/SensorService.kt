@@ -62,6 +62,12 @@ abstract class SensorService : Service() {
         stopSelf()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterFromEventBus()
+        onStopService()
+    }
+
     abstract fun startSensor(intent: Intent?)
     abstract fun onStopService()
     abstract fun notificationMessage() : String
