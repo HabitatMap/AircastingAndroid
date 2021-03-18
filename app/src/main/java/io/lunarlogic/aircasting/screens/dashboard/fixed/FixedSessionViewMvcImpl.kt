@@ -33,7 +33,7 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun bindExpandedMeasurementsDesctription() {
-        mMeasurementsDescription?.text = context.getString(R.string.parameters)
+        mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
     }
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
