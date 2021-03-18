@@ -11,6 +11,8 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
 import io.lunarlogic.aircasting.events.sdcard.SDCardSyncErrorEvent
+import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncErrorEvent
+import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.*
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -79,15 +81,17 @@ class SyncController(
     }
 
     private fun refreshSessionList() {
-        mSessionsSyncService?.sync(
-            onSuccessCallback = {
-                mWizardNavigator.goToRefreshingSessionsSuccess(this)
-            },
-            onErrorCallack = {
-                mWizardNavigator.goToRefreshingSessionsError(this)
-            },
-            shouldDisplayErrors = false
-        )
+        mSessionsSyncService.sync(shouldDisplayErrors = false)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: SessionsSyncSuccessEvent) {
+        mWizardNavigator.goToRefreshingSessionsSuccess(this)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: SessionsSyncErrorEvent) {
+        mWizardNavigator.goToRefreshingSessionsError(this)
     }
 
     override fun refreshedSessionsContinueClicked() {

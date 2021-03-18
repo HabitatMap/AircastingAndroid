@@ -3,11 +3,14 @@ package io.lunarlogic.aircasting.sensor.airbeam3.sync
 import android.util.Log
 import io.lunarlogic.aircasting.events.sdcard.SDCardLinesReadEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardSyncErrorEvent
+import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncErrorEvent
+import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class SDCardSyncService(
     private val mSDCardDownloadService: SDCardDownloadService,
@@ -18,6 +21,9 @@ class SDCardSyncService(
     private val mErrorHandler: ErrorHandler
 ) {
     private val TAG = "SDCardSyncService"
+
+    private var mAirBeamConnector: AirBeamConnector? = null
+    private var mDeviceItem: DeviceItem? = null
 
     /*
 
@@ -35,6 +41,9 @@ class SDCardSyncService(
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
+        mAirBeamConnector = airBeamConnector
+        mDeviceItem = deviceItem
+
         airBeamConnector.triggerSDCardDownload()
 
         mSDCardDownloadService.run(
@@ -42,19 +51,22 @@ class SDCardSyncService(
                 val event = SDCardLinesReadEvent(step, linesCount)
                 EventBus.getDefault().post(event)
             },
-            onDownloadFinished = { steps -> checkDownloadedFiles(airBeamConnector, deviceItem, steps) }
+            onDownloadFinished = { steps -> checkDownloadedFiles(steps) }
         )
     }
 
-    private fun checkDownloadedFiles(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem, steps: List<SDCardReader.Step>) {
+    private fun checkDownloadedFiles(steps: List<SDCardReader.Step>) {
+        val airBeamConnector = mAirBeamConnector ?: return
+
         Log.d(TAG, "Checking downloaded files")
 
         if (mSDCardCSVFileChecker.run(steps)) {
             clearSDCard(airBeamConnector)
-            saveMobileMeasurementsLocally(airBeamConnector, deviceItem)
+            saveMobileMeasurementsLocally()
         } else {
             // fatal error, we can't proceed with sync
             handleError(SDCardDownloadedFileCorrupted())
+            cleanup()
         }
     }
 
@@ -62,42 +74,52 @@ class SDCardSyncService(
         EventBus.getDefault().post(SDCardSyncErrorEvent(exception))
     }
 
-    private fun saveMobileMeasurementsLocally(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+    private fun saveMobileMeasurementsLocally() {
+        val deviceItem = mDeviceItem ?: return
+
         Log.d(TAG, "Processing mobile sessions")
 
         mSDCardMobileSessionsProcessor.run(deviceItem.id,
             onFinishCallback = {
-                sendMobileMeasurementsToBackend(airBeamConnector, deviceItem)
+                sendMobileMeasurementsToBackend()
             }
         )
     }
 
-    private fun sendMobileMeasurementsToBackend(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+    private fun sendMobileMeasurementsToBackend() {
         val sessionsSyncService = mSessionsSyncService
 
         if (sessionsSyncService == null) {
             val cause = SDCardMissingSessionsSyncServiceError()
             mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError(cause))
+            cleanup()
             return
         }
 
         Log.d(TAG, "Sending mobile sessions to backend")
-        sessionsSyncService.sync(
-            onSuccessCallback = {
-                sendFixedMeasurementsToBackend(airBeamConnector, deviceItem)
-            },
-            onErrorCallack = {
-                mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
-            }
-        )
+        sessionsSyncService.sync()
     }
 
-    private fun sendFixedMeasurementsToBackend(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+    @Subscribe
+    fun onMessageEvent(event: SessionsSyncSuccessEvent) {
+        sendFixedMeasurementsToBackend()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: SessionsSyncErrorEvent) {
+        mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
+        cleanup()
+    }
+
+    private fun sendFixedMeasurementsToBackend() {
+        val deviceItem = mDeviceItem ?: return
+
         val uploadFixedMeasurementsService = mSDCardUploadFixedMeasurementsService
 
         if (uploadFixedMeasurementsService == null) {
             val cause = SDCardMissingSDCardUploadFixedMeasurementsServiceError()
             mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError(cause))
+            cleanup()
             return
         }
 
@@ -114,6 +136,12 @@ class SDCardSyncService(
 
     private fun finish() {
         mSDCardDownloadService.deleteFiles()
+        cleanup()
         Log.d(TAG, "Sync finished")
+    }
+
+    private fun cleanup() {
+        mDeviceItem = null
+        mAirBeamConnector = null
     }
 }
