@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.ActiveSessionActionsBottomSheet
-import io.lunarlogic.aircasting.screens.dashboard.SessionActionsBottomSheet
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 class MapViewMobileActiveMvcImpl: MapViewMvcImpl,
@@ -35,19 +34,26 @@ class MapViewMobileActiveMvcImpl: MapViewMvcImpl,
     }
 
     override fun addNotePressed() {
-        TODO("Not yet implemented")
+        val session = mSessionPresenter?.session ?: return
+        for (listener in listeners) {
+            listener.addNoteClicked(session)
+        }
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
-        TODO("Not yet implemented")
+        val session = mSessionPresenter?.session ?: return
+
+        for (listener in listeners) {
+            listener.onFinishSessionConfirmed(session)
+        }
     }
 
     override fun disconnectSessionPressed() {
-        TODO("Not yet implemented")
+        // do nothing
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        TODO("Not yet implemented")
+        // do nothing
     }
 }
 

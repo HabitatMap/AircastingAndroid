@@ -38,14 +38,25 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
     }
 
     override fun addNotePressed() {
-        TODO("Not yet implemented")
+        val session = mSessionPresenter?.session ?: return
+        for (listener in listeners) {
+            listener.addNoteClicked(session)
+        }
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
-        TODO("Not yet implemented")
+        val session = mSessionPresenter?.session ?: return
+
+        for (listener in listeners) {
+            listener.onFinishSessionConfirmed(session)
+        }
     }
 
-    override fun disconnectSessionPressed() {}
+    override fun disconnectSessionPressed() {
+        // do nothing
+    }
 
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {}
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+        // do nothing
+    }
 }

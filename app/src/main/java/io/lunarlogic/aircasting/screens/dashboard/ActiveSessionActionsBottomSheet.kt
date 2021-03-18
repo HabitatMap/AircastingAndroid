@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionConfirmati
 import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
 import kotlinx.android.synthetic.main.active_session_actions.view.*
 
-class ActiveSessionActionsBottomSheet(
+open class ActiveSessionActionsBottomSheet(
     private val mListener: Listener,
     private val mSessionPresenter: SessionPresenter?,
     private val mSupportFragmentManager: FragmentManager

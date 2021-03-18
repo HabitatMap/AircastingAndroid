@@ -53,7 +53,7 @@ class MapActivity: AppCompatActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName)
+        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager)
 
         controller?.onCreate()
 
@@ -72,6 +72,18 @@ class MapActivity: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        controller?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        controller?.onPause()
     }
 
     override fun onDestroy() {
