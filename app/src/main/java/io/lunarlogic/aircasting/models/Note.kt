@@ -4,7 +4,7 @@ import io.lunarlogic.aircasting.database.data_classes.NoteDBObject
 import java.util.*
 
 class Note(
-    val date: Long,
+    val date: Date,
     val text: String,
     val latitude: Double?,
     val longitude: Double?,

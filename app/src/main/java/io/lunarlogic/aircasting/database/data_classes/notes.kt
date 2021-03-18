@@ -20,7 +20,7 @@ import java.util.*
 )
 data class NoteDBObject(
     @ColumnInfo(name = "session_id") val sessionId: Long,
-    @ColumnInfo(name = "date") val date: Long,
+    @ColumnInfo(name = "date") val date: Date,
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?,

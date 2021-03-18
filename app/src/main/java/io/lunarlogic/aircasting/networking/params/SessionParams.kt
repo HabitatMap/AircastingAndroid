@@ -34,7 +34,7 @@ class SessionParams {
                 MeasurementStreamParams(stream)
         }
 
-        session.notes.forEachIndexed { index, note ->
+        session.notes.forEach { note ->
             notes.add(NoteParams(note))
         }
 

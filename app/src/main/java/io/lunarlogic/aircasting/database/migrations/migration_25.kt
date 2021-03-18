@@ -9,7 +9,7 @@ val MIGRATION_24_25 = object: Migration(24, 25) {
             "CREATE TABLE `notes` (" +
                 "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 "`session_id` INTEGER NOT NULL, " +
-                "`date` INTEGER NOT NULL, " +
+                "`date` TEXT NOT NULL, " +
                 "`text` TEXT NOT NULL, " +
                 "`latitude` REAL, " +
                 "`longitude` REAL, " +
