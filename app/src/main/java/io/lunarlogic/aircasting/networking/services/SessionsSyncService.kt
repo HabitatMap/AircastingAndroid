@@ -151,7 +151,7 @@ class SessionsSyncService {
                     DatabaseProvider.runQuery {
                         val sessionWithNotes = sessionRepository.loadSessionAndNotesByUUID(session.uuid)
                         if (sessionWithNotes != null) {
-                            uploadService.upload(sessionWithNotes,  {}) //todo: this maybe is not the best
+                            uploadService.upload(sessionWithNotes,  {}) //todo: i guess placing this in onUploadSucces is sooo bad
                         }
                     }
                 }
