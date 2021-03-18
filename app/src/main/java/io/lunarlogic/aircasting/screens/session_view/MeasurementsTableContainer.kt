@@ -64,7 +64,7 @@ class MeasurementsTableContainer {
     fun makeSelectable(displayValues: Boolean = true) {
         mSelectable = true
         mDisplayValues = displayValues
-        mMeasurementValues = mRootView?.measurement_values
+        if (displayValues) mMeasurementValues = mRootView?.measurement_values
 
         refresh()
     }
