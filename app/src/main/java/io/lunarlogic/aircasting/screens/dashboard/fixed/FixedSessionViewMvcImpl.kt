@@ -26,7 +26,7 @@ class FixedSessionViewMvcImpl(
         return false
     }
 
-    override fun showExpandedMeasurementsTableValues() = false
+    override fun showExpandedMeasurementsTableValues() = true
 
     override fun bindCollapsedMeasurementsDesctription() {
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
