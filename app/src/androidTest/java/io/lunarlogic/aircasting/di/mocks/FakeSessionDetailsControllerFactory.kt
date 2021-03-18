@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetai
 
 class FakeSessionDetailsControllerFactory: SessionDetailsControllerFactory() {
     override fun get(mContextActivity: FragmentActivity?,
-                     view: SessionDetailsViewMvc,
+                     view: SessionDetailsViewMvc?,
                      sessionType: Session.Type,
                      fragmentManager: FragmentManager
     ): SessionDetailsController {

@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.Subscribe
 
 class AirbeamSyncingController(
     private val mFragmentManager: FragmentManager,
-    private val mView: AirbeamSyncingViewMvc
+    private var mView: AirbeamSyncingViewMvc?
 ) {
     fun onBackPressed() {
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
@@ -22,11 +22,12 @@ class AirbeamSyncingController(
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this)
+        mView = null
     }
 
     @Subscribe
     fun onMessageEvent(event: SDCardLinesReadEvent) {
         val step = event.step
-        mView.updateProgress(step, event.linesRead)
+        mView?.updateProgress(step, event.linesRead)
     }
 }

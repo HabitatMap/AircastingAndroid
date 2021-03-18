@@ -13,6 +13,7 @@ class AirbeamSyncingFragment(
     private val mFragmentManager: FragmentManager
 ): Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: AirbeamSyncingController? = null
+    private var view: AirbeamSyncingViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,17 +23,26 @@ class AirbeamSyncingFragment(
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = AirbeamSyncingViewMvcImpl(layoutInflater, null)
+        view = AirbeamSyncingViewMvcImpl(layoutInflater, null)
         controller = AirbeamSyncingController(mFragmentManager, view)
 
         controller?.onCreate()
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        view = null
         controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 
     override fun onBackPressed() {

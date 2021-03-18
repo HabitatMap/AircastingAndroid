@@ -10,6 +10,7 @@ import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
 class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): Fragment(), BaseWizardNavigator.BackPressedListener {
     private var controller: RefreshedSessionsController? = null
+    private var view: RefreshedSessionsViewMvcImpl? = null
     lateinit var listener: RefreshedSessionsViewMvc.Listener
 
     var success: Boolean = true
@@ -19,10 +20,10 @@ class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = RefreshedSessionsViewMvcImpl(layoutInflater, null, success)
+        view = RefreshedSessionsViewMvcImpl(layoutInflater, null, success)
         controller = RefreshedSessionsController(mFragmentManager, view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -37,5 +38,19 @@ class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): 
 
     override fun onBackPressed() {
         controller?.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.AircastingApplication
 
 class SDCardClearedFragment: Fragment() {
     private var controller: SDCardClearedController? = null
+    private var view: SDCardClearedViewMvcImpl? = null
     lateinit var listener: SDCardClearedViewMvc.Listener
 
     override fun onCreateView(
@@ -19,10 +20,10 @@ class SDCardClearedFragment: Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = SDCardClearedViewMvcImpl(layoutInflater, null)
+        view = SDCardClearedViewMvcImpl(layoutInflater, null)
         controller = SDCardClearedController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -33,5 +34,19 @@ class SDCardClearedFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

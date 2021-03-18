@@ -9,16 +9,17 @@ import androidx.fragment.app.Fragment
 class SelectDeviceTypeFragment() : Fragment() {
     private var controller: SelectDeviceTypeController? = null
     var listener: SelectDeviceTypeViewMvc.Listener? = null
+    private var view: SelectDeviceTypeViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = SelectDeviceTypeViewMvcImpl(inflater, container)
-        controller = SelectDeviceTypeController(context, view)
+        view = SelectDeviceTypeViewMvcImpl(inflater, container)
+        controller = SelectDeviceTypeController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -30,5 +31,19 @@ class SelectDeviceTypeFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener?.let { controller?.unregisterListener(it) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 class SessionDetailsFragment() : Fragment() {
     private var controller: SessionDetailsController? = null
+    private var view: SessionDetailsViewMvc? = null
     lateinit var listener: SessionDetailsViewMvc.Listener
     lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
@@ -28,11 +29,11 @@ class SessionDetailsFragment() : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, sessionType)
+        view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, sessionType)
         controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
         controller?.onCreate()
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -43,5 +44,19 @@ class SessionDetailsFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener.let { controller?.unregisterListener(it) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

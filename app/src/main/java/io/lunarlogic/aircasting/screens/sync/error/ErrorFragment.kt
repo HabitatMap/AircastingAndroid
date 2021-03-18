@@ -10,16 +10,17 @@ class ErrorFragment: Fragment() {
     private var controller: ErrorController? = null
     lateinit var listener: ErrorViewMvc.Listener
     var message: String? = null
+    private var view: ErrorViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ErrorViewMvcImpl(layoutInflater, null, message)
+        view = ErrorViewMvcImpl(layoutInflater, null, message)
         controller = ErrorController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -30,5 +31,19 @@ class ErrorFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controller?.onDestroy()
+        controller = null
+        view = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controller?.onDestroy()
+        controller = null
+        view = null
     }
 }
