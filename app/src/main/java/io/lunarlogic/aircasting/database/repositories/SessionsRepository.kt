@@ -49,16 +49,6 @@ class SessionsRepository {
         }
     }
 
-    fun loadSessionAndNotesByUUID(uuid: String): Session? {
-        val sessionDBObject = mDatabase.sessions().loadSessionAndNotesByUUID(uuid)
-
-        if (sessionDBObject != null) {
-            return Session(sessionDBObject)
-        } else {
-            return null
-        }
-    }
-
     fun loadSessionForUpload(uuid: String): Session? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
 

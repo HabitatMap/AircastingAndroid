@@ -25,13 +25,13 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
         mSessionActionsButton?.visibility = View.VISIBLE
 
         mSessionActionsButton?.setOnClickListener {
-            if (supportFragmentManager != null) { // todo: this null check to be changed <??>
-                buildBottomSheet(supportFragmentManager)
-            }
+            showBottomSheet(supportFragmentManager)
         }
     }
 
-    fun buildBottomSheet(supportFragmentManager: FragmentManager) {
+    fun showBottomSheet(supportFragmentManager: FragmentManager?) {
+        supportFragmentManager ?: return
+
         mBottomSheet = ActiveSessionActionsBottomSheet(this, mSessionPresenter, supportFragmentManager)
         mBottomSheet?.show(supportFragmentManager)
     }

@@ -90,21 +90,20 @@ class Session(
 
     constructor(sessionWithNotesDBObject: SessionWithNotesDBObject):
             this(sessionWithNotesDBObject.session) {
-                this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
-                    Note(noteDBObject)
-                }
-            }
+        this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
+            Note(noteDBObject)
+        }
+    }
 
     constructor(sessionForUploadDBObject: SessionForUploadDBObject):
             this(sessionForUploadDBObject.session) {
         this.mNotes = sessionForUploadDBObject.notes.map { noteDBObject ->
-                        Note(noteDBObject)
-                    }
+            Note(noteDBObject)
+        }
         this.mStreams = sessionForUploadDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
-
-            }
+    }
 
     companion object {
         fun generateUUID(): String {
@@ -177,10 +176,8 @@ class Session(
     var location: Location? = null
 
     val status get() = mStatus
-    var streams get() = mStreams
-        set(value) {mStreams = value}
-    var notes get() = mNotes
-        set(value) {mNotes = value}
+    val streams get() = mStreams
+    val notes get() = mNotes
 
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
