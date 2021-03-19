@@ -89,7 +89,7 @@ class MapContainer: OnMapReadyCallback {
 
         mMap?.isBuildingsEnabled = false
 
-        drawSession()
+//        drawSession()
         animateCameraToSession()
         showMap()
     }
@@ -105,7 +105,7 @@ class MapContainer: OnMapReadyCallback {
         if (status.get() == Status.MAP_LOADED.value) {
             setup()
         }
-        if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
+        status.set(Status.SESSION_LOADED.value)
     }
 
     fun destroy() {
@@ -213,6 +213,7 @@ class MapContainer: OnMapReadyCallback {
         mMeasurementSpans.add(StyleSpan(colorPoint.color))
 
         if (mMeasurementsLine == null) {
+            mMeasurementsLineOptions.addAll(mMeasurementPoints).addAllSpans(mMeasurementSpans)
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
