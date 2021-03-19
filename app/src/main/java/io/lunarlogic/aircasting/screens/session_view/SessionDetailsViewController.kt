@@ -23,10 +23,13 @@ abstract class SessionDetailsViewController(
     private var sensorName: String?
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
+    private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
+
+        mSessionObserver.observe()
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
@@ -38,7 +41,6 @@ abstract class SessionDetailsViewController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
 //        if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
-            mViewMvc?.bindSession(mSessionPresenter)
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
