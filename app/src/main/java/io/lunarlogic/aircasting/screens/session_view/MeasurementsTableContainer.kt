@@ -69,16 +69,6 @@ class MeasurementsTableContainer {
         refresh()
     }
 
-    fun makeStatic(displayValues: Boolean = true) {
-        resetMeasurementsView()
-
-        mSelectable = false
-        mDisplayValues = displayValues
-        if (!displayValues) mMeasurementValues = null
-
-        refresh()
-    }
-
     fun makeCollapsed(displayValues: Boolean = true) {
         resetMeasurementsView()
         mSelectable = true
