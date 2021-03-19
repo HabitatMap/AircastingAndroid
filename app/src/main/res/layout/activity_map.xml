@@ -10,7 +10,22 @@
         layout="@layout/app_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include layout="@layout/session_details" />
+    <ImageView
+        android:id="@+id/session_actions_button"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_more_horizontal"
+        android:tint="@color/aircasting_grey_700"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/session_details"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <include android:id="@+id/session_details"
+        layout="@layout/session_details" />
 
     <include layout="@layout/measurements_table" />
 

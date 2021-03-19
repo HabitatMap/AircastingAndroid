@@ -32,6 +32,12 @@ class MobileActiveViewMvcImpl(
         }
     }
 
+    override fun addNoteClicked(session: Session) {
+        for (listener in listeners) {
+            listener.addNoteClicked(session)
+        }
+    }
+
     override fun onSessionReconnectClicked(session: Session) {
         for (listener in listeners) {
             session.deviceId?.let { deviceId ->

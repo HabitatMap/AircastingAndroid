@@ -2,11 +2,13 @@ package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
+import io.lunarlogic.aircasting.database.repositories.NoteRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.DBInsertException
@@ -32,6 +34,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
+    private val noteRepository = NoteRepository()
     private var mCallback: (() -> Unit)? = null
 
     @Subscribe
@@ -47,6 +50,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     @Subscribe
     fun onMessageEvent(event: SensorDisconnectedEvent) {
         disconnectSession(event.deviceId)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: NoteCreatedEvent) {
+        addNote(event)
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
@@ -238,6 +246,15 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         DatabaseProvider.runQuery {
             measurementStreamsRepository.deleteMarkedForRemoval()
             sessionsSyncService.sync()
+        }
+    }
+
+    private fun addNote(event: NoteCreatedEvent) {
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+            sessionId?.let{
+                noteRepository.insert(sessionId, event.note)
+            }
         }
     }
 }

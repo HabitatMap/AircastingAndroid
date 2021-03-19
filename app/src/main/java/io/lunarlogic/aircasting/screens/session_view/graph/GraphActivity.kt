@@ -43,12 +43,24 @@ class GraphActivity: AppCompatActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName)
+        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager)
 
         controller?.onCreate()
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        controller?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        controller?.onPause()
     }
 
     override fun onDestroy() {

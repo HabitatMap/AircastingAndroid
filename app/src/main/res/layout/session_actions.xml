@@ -25,7 +25,7 @@
                 android:id="@+id/edit_session_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:icon="@drawable/ic_edit"
+                app:icon="@drawable/ic_add_note"
                 android:text="@string/edit_session"
                 style="@style/Widget.Aircasting.IconButton"
                 app:layout_constraintTop_toTopOf="parent"

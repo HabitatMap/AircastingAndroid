@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteConstraintException
 import com.google.gson.Gson
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.NoteRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncErrorEvent
 import io.lunarlogic.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
@@ -31,6 +32,7 @@ class SessionsSyncService {
     private val removeOldMeasurementsService: RemoveOldMeasurementsService
 
     private val sessionRepository = SessionsRepository()
+    private val noteRepository = NoteRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
@@ -142,10 +144,10 @@ class SessionsSyncService {
 
     private fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val session = sessionRepository.loadSessionAndMeasurementsByUUID(uuid)
+            val session = sessionRepository.loadSessionForUpload(uuid)
             if (session != null && isUploadable(session)) {
                 val onUploadSuccess = {
-                    // TODO: handle update notes etc
+                    // TODO: handle update notes - adding photoPath
                 }
                 uploadService.upload(session, onUploadSuccess)
             }

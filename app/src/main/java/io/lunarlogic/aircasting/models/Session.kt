@@ -1,8 +1,6 @@
 package io.lunarlogic.aircasting.models
 
-import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
@@ -29,7 +27,8 @@ class Session(
     var locationless: Boolean = false,
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
-    var urlLocation: String? = null
+    var urlLocation: String? = null,
+    private var mNotes: List<Note> = mutableListOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -85,6 +84,23 @@ class Session(
     constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
             this(sessionWithStreamsDBObject.session) {
         this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
+            MeasurementStream(streamWithMeasurementsDBObject)
+        }
+    }
+
+    constructor(sessionWithNotesDBObject: SessionWithNotesDBObject):
+            this(sessionWithNotesDBObject.session) {
+        this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
+            Note(noteDBObject)
+        }
+    }
+
+    constructor(sessionForUploadDBObject: SessionForUploadDBObject):
+            this(sessionForUploadDBObject.session) {
+        this.mNotes = sessionForUploadDBObject.notes.map { noteDBObject ->
+            Note(noteDBObject)
+        }
+        this.mStreams = sessionForUploadDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
@@ -161,6 +177,8 @@ class Session(
 
     val status get() = mStatus
     val streams get() = mStreams
+    val notes get() = mNotes
+
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
     val followed get() = followedAt != null

@@ -49,9 +49,22 @@ class SessionsRepository {
         }
     }
 
+    fun loadSessionForUpload(uuid: String): Session? {
+        val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
+
+        if (sessionForUploadDBObject != null) {
+            return Session(sessionForUploadDBObject)
+        } else {
+            return null
+        }
+
+    }
+
     fun update(session: Session) {
-        mDatabase.sessions().update(session.uuid, session.name, session.tags,
-            session.endTime!!, session.status)
+        session.endTime?.let {
+            mDatabase.sessions().update(session.uuid, session.name, session.tags,
+                it, session.status)
+        }
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {

@@ -116,6 +116,7 @@ abstract class SessionsController(
     }
 
     override fun onDisconnectSessionClicked(session: Session) {}
+    override fun addNoteClicked(session: Session) {}
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
