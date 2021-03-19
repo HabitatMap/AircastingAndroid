@@ -36,6 +36,8 @@ class MeasurementsTableContainer {
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
+    private var expandCard: (() -> Unit?)? = null
+    private var onExpandSessionCard: (() -> Unit?)? = null
 
     constructor(
         context: Context,
@@ -62,15 +64,14 @@ class MeasurementsTableContainer {
     fun makeSelectable(displayValues: Boolean = true) {
         mSelectable = true
         mDisplayValues = displayValues
-        mMeasurementValues = mRootView?.measurement_values
+        if (displayValues) mMeasurementValues = mRootView?.measurement_values
 
         refresh()
     }
 
-    fun makeStatic(displayValues: Boolean = true) {
+    fun makeCollapsed(displayValues: Boolean = true) {
         resetMeasurementsView()
-
-        mSelectable = false
+        mSelectable = true
         mDisplayValues = displayValues
         if (!displayValues) mMeasurementValues = null
 
@@ -95,6 +96,11 @@ class MeasurementsTableContainer {
             bindMeasurements()
             stretchTableLayout()
         }
+    }
+
+    fun bindExpandCardCallbacks(expandCardCallback: (() -> Unit?)?, onExpandSessionCardClickedCallback: (() -> Unit?)?) {
+        expandCard = expandCardCallback
+        onExpandSessionCard = onExpandSessionCardClickedCallback
     }
 
     private fun resetMeasurementsView() {
@@ -155,6 +161,8 @@ class MeasurementsTableContainer {
     }
 
     private fun markMeasurementHeaderAsSelected(stream: MeasurementStream) {
+        onExpandSessionCard?.invoke()
+        expandCard?.invoke()
         val index = mMeasurementStreams.indexOf(stream)
         try {
             val headerView = mMeasurementHeaders?.get(index)
