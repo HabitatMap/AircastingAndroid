@@ -12,6 +12,7 @@ import kotlinx.android.parcel.Parcelize
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 
 @Parcelize
 class MicrophoneDeviceItem: DeviceItem() {
@@ -68,6 +69,8 @@ class MicrophoneReader(
         stop()
     }
 
+    var lastTime: Date? = null
+
     override fun onReadComplete(buffer: ShortArray) {
         val power = signalPower.calculatePowerDb(buffer)
         if (power != null) {
@@ -77,7 +80,11 @@ class MicrophoneReader(
                 VERY_LOW, LOW, MID, HIGH, VERY_HIGH, calibrated
             )
 
-            EventBus.getDefault().post(event)
+            val now = Date()
+            if (!(now.year == lastTime?.year && now.month == lastTime?.month && now.day == lastTime?.day && now.hours == lastTime?.hours && now.minutes == lastTime?.minutes && now.seconds == lastTime?.seconds)) {
+                EventBus.getDefault().post(event)
+            }
+            lastTime = now
         }
     }
 
