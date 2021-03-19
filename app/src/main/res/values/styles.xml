@@ -519,6 +519,7 @@
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">@color/aircasting_dark_blue</item>
         <item name="materialButtonStyle">@style/Widget.Aircasting.Button</item>
+        <item name="bottomSheetStyle">@null</item>
     </style>
 
     <!-- Text inputs -->
