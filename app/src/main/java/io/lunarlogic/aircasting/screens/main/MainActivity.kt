@@ -55,7 +55,6 @@ class MainActivity: AppCompatActivity() {
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
-//        setSupportActionBar(findViewById(R.id.topAppBar))
 
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)
