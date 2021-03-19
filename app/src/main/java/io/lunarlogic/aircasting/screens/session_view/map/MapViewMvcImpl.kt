@@ -27,7 +27,7 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     ): super(inflater, parent, supportFragmentManager) {
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
         mLoader = rootView?.loader_map
-        showLoader(mLoader)
+//        showLoader(mLoader)
     }
 
     override fun layoutId(): Int {

@@ -23,13 +23,11 @@ abstract class SessionDetailsViewController(
     private var sensorName: String?
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
-    private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
-
-        mSessionObserver.observe()
+        mViewMvc?.bindSession(mSessionPresenter)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {

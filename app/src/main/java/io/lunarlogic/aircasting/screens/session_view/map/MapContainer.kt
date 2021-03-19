@@ -102,9 +102,9 @@ class MapContainer: OnMapReadyCallback {
             drawFixedMeasurement()
         }
         // sometimes onMapReady is invoked earlier than bindStream
-        if (status.get() == Status.MAP_LOADED.value) {
+//        if (status.get() == Status.MAP_LOADED.value) {
             setup()
-        }
+//        }
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
     }
 
@@ -207,6 +207,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun drawMobileMeasurement(colorPoint: ColorPoint?) {
+        println("ANIA drawMobileMeasurement")
         if (colorPoint == null) return
 
         mMeasurementPoints.add(colorPoint.point)
