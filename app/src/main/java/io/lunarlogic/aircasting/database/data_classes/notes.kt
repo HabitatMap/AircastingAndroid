@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.database.data_classes
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import io.lunarlogic.aircasting.models.Note
 import java.util.*
@@ -47,5 +48,8 @@ interface NoteDao {
     fun insert(note: NoteDBObject): Long
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
-    fun loadNotesBySessionId(sessionId: Long): NoteDBObject? //todo: to be changed on List later on <??>
+    fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?> //todo: to be changed on List later on <??>
+
+    @Query("SELECT * FROM notes WHERE session_id=:sessionId")
+    fun loadLiveDataNotesBySessionId(sessionId: Long): LiveData<List<NoteDBObject?>>
 }

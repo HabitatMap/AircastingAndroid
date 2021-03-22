@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Point
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -13,10 +14,12 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.google.common.collect.Iterables
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
@@ -45,7 +48,13 @@ class GraphContainer: OnChartGestureListener {
     private var mGetMeasurementsSample: () -> List<Measurement>
     private var mMeasurementsSample: List<Measurement> = listOf()
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>) {
+    constructor(
+        rootView: View?,
+        context: Context,
+        defaultZoomSpan: Int?,
+        onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit,
+        getMeasurementsSample: () -> List<Measurement>
+    ) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
@@ -87,6 +96,7 @@ class GraphContainer: OnChartGestureListener {
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
         setLabels()
+//        drawNotes()
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -162,7 +172,11 @@ class GraphContainer: OnChartGestureListener {
     private fun midnightPointLine(limit: Float): LimitLine {
         val line = LimitLine(limit, "")
         line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
-        line.lineColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_700, null)
+        line.lineColor = ResourcesCompat.getColor(
+            mContext.resources,
+            R.color.aircasting_grey_700,
+            null
+        )
         line.lineWidth = 1f
         line.enableDashedLine(20f, 10f, 0f)
         line.textColor = Color.BLACK
@@ -218,16 +232,27 @@ class GraphContainer: OnChartGestureListener {
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
-    override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
+    override fun onChartGestureStart(
+        me: MotionEvent?,
+        lastPerformedGesture: ChartTouchListener.ChartGesture?
+    ) {}
     override fun onChartLongPressed(me: MotionEvent?) {}
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartSingleTapped(me: MotionEvent?) {}
-    override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
+    override fun onChartFling(
+        me1: MotionEvent?,
+        me2: MotionEvent?,
+        velocityX: Float,
+        velocityY: Float
+    ) {}
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
         updateGraphOnGesture()
     }
 
-    override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+    override fun onChartGestureEnd(
+        me: MotionEvent?,
+        lastPerformedGesture: ChartTouchListener.ChartGesture?
+    ) {
         updateGraphOnGesture()
     }
 
@@ -273,4 +298,38 @@ class GraphContainer: OnChartGestureListener {
         mFromLabel?.visibility = View.GONE
         mToLabel?.visibility = View.GONE
     }
+
+    //TODO: below methods are mostly copied from old app
+//    private fun drawNotes() {
+////        TODO("Not yet implemented")
+//        val session = mSessionPresenter?.session
+//    }
+//
+//    private fun place(note: Note) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    private fun place(measurement: Measurement): Point {
+//        val time: Long = measurement.time.getTime()
+//        val span: Float = (lastTime() - firstTime()).toFloat()
+//        val place: Float = (time - firstTime()).toFloat()
+//        val x = (getWidth() * (place / span)) as Int
+//
+//        val value: Double = measurement.getValue()
+//        val y: Int = project(value)
+//
+//        return Point(x, y)
+//    }
+//
+//    private fun project(value: Double): Int {
+//        return (getHeight() * (top - value) / (top - bottom))
+//    }
+//
+//    private fun lastTime(): Long {
+//        return Iterables.getLast(measurements).getTime().getTime()
+//    }
+//
+//    private fun firstTime(): Long {
+//        return measurements.get(0).getTime().getTime()
+//    }
 }

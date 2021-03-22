@@ -3,10 +3,7 @@ package io.lunarlogic.aircasting.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithNotesDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
+import io.lunarlogic.aircasting.database.data_classes.*
 
 class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()
@@ -26,6 +23,11 @@ class SessionsViewModel(): ViewModel() {
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(
             Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
+    }
+
+    // TODO: method to load notes for session with UUID
+    fun loadNotesForSessionWithSessionId(sessionId: Long): LiveData<List<NoteDBObject?>> {
+        return mDatabase.notes().loadLiveDataNotesBySessionId(sessionId)
     }
 
     fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {

@@ -1,10 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.dashboard.charts.ChartData
-import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.models.SensorThreshold
-import io.lunarlogic.aircasting.models.Session
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -20,19 +17,23 @@ class SessionPresenter() {
     var initialSensorName: String? = null
     var visibleTimeSpan: ClosedRange<Date>? = null
     var shouldHideMap: Boolean = false
+    //TODO: add field notes and its usage <- because we're showing notes
+    var notes: List<Note> = listOf()
 
     constructor(
         session: Session,
         sensorThresholds: HashMap<String, SensorThreshold>,
         selectedStream: MeasurementStream? = null,
         expanded: Boolean = false,
-        loading: Boolean = false
+        loading: Boolean = false,
+        notes: List<Note> = listOf()
     ): this() {
         this.session = session
         this.selectedStream = selectedStream ?: defaultStream(session)
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
+        this.notes = notes
         if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.chartData = ChartData(session)
         }

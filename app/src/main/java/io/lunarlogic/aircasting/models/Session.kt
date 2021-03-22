@@ -270,7 +270,8 @@ class Session(
                 session.streams.size != streams.size ||
                 session.measurementsCount() != measurementsCount() ||
                 session.status != status ||
-                session.endTime != endTime
+                session.endTime != endTime ||
+                session.notes != notes
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {

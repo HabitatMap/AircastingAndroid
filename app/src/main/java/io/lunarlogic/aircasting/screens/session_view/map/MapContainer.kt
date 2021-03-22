@@ -2,8 +2,10 @@ package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
 import android.location.Location
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
@@ -18,6 +20,7 @@ import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
@@ -36,6 +39,7 @@ class MapContainer: OnMapReadyCallback {
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
+    private var mNotes: List<Note> = emptyList()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
@@ -97,6 +101,7 @@ class MapContainer: OnMapReadyCallback {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        mNotes = mSessionPresenter?.notes!!
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -136,6 +141,17 @@ class MapContainer: OnMapReadyCallback {
 
         if (latestPoint != null && latestColor != null) {
             drawLastMeasurementMarker(latestPoint, latestColor)
+        }
+
+        drawNotes()
+    }
+
+    private fun drawNotes() {
+        val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.arrow_down)
+        for (note in mNotes) {
+            mMap?.addMarker(MarkerOptions()
+                .position(LatLng(note.latitude!!, note.longitude!!)) //todo: null assertions! be careful later
+                .icon(icon))
         }
     }
 

@@ -2,10 +2,12 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
+import io.lunarlogic.aircasting.models.observers.NoteObserver
 import io.lunarlogic.aircasting.models.observers.SessionObserver
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -24,12 +26,20 @@ abstract class SessionDetailsViewController(
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
+    private val mNotesObserver = NoteObserver(rootActivity, mSessionsViewModel, mSessionPresenter)
+
+    // tODO: load notes
+//    private val mNotes = mSessionsViewModel.loadNotesForSessionWithSessionId(sessionUUID)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc.registerListener(this)
 
         mSessionObserver.observe()
+
+        //todo: observe notes, anallogically like in mSessionObserver (NOT JUST OBSERVE()) !!
+        mNotesObserver.observe()
+
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {

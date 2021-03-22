@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import com.github.mikephil.charting.charts.CombinedChart
+import io.lunarlogic.aircasting.R
 
 
 class TargetZoneCombinedChart: CombinedChart {
