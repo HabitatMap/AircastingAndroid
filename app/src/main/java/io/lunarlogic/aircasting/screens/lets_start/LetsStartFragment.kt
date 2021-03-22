@@ -32,7 +32,7 @@ class LetsStartFragment : Fragment() {
             .appComponent.inject(this)
 
         val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager, settings)
-        controller = LetsStartController(activity, view, context)
+        controller = LetsStartController(activity, view, context, errorHandler)
         controller?.onCreate()
 
         return view.rootView

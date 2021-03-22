@@ -1,16 +1,12 @@
 package io.lunarlogic.aircasting.screens.dashboard.fixed
 
 import android.content.Context
-import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.lib.NavigationController
-import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.models.Session
@@ -18,10 +14,9 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.*
-import org.greenrobot.eventbus.EventBus
 
 class FixedController(
-    private val mRootActivity: FragmentActivity?,
+    mRootActivity: FragmentActivity?,
     mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
@@ -44,7 +39,9 @@ class FixedController(
 
     override fun onRecordNewSessionClicked() {
         if (!ConnectivityManager.isConnected(mContext)) {
-            Toast.makeText(mContext, mContext?.getString(R.string.fixed_session_no_internet_connection), Toast.LENGTH_LONG).show()
+            val header = mContext?.getString(R.string.fixed_session_no_internet_connection_header)
+            val description = mContext?.getString(R.string.fixed_session_no_internet_connection)
+            mErrorHandler.showErrorDialog(mRootActivity?.supportFragmentManager, header, description)
             return
         }
 

@@ -6,8 +6,10 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.lunarlogic.aircasting.BuildConfig
+import io.lunarlogic.aircasting.screens.common.AircastingAlertDialog
 
 class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
     private val TAG = "ErrorHandler"
@@ -43,6 +45,13 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
     fun showError(messageResId: Int) {
         val message = mContext.getString(messageResId)
         showError(message)
+    }
+
+    fun showErrorDialog(fragmentManager: FragmentManager?, header: String?, description: String?) {
+        fragmentManager ?: return
+
+        val dialog = AircastingAlertDialog(fragmentManager, header, description)
+        dialog.show()
     }
 
     fun registerUser(email: String?) {

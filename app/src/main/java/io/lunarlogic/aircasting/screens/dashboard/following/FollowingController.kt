@@ -1,9 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard.following
 
 import android.content.Context
-import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.NavigationController
@@ -39,7 +37,9 @@ class FollowingController(
 
     override fun onRecordNewSessionClicked() {
         if (!ConnectivityManager.isConnected(mContext)) {
-            Toast.makeText(mContext, mContext?.getString(R.string.fixed_session_no_internet_connection), Toast.LENGTH_LONG).show()
+            val header = mContext?.getString(R.string.fixed_session_no_internet_connection_header)
+            val description = mContext?.getString(R.string.fixed_session_no_internet_connection)
+            mErrorHandler.showErrorDialog(mRootActivity?.supportFragmentManager, header, description)
             return
         }
 
