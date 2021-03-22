@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.data_classes.SensorThresholdDBObject
-import io.lunarlogic.aircasting.database.data_classes.SessionWithNotesDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 
@@ -13,6 +12,10 @@ class SessionsViewModel(): ViewModel() {
 
     fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
+    }
+
+    fun reloadSession(uuid: String): SessionWithStreamsDBObject? {
+        return mDatabase.sessions().reloadSessionAndStreamsByUUID(uuid)
     }
 
     fun reloadSessionWithMeasurements(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {

@@ -197,9 +197,9 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun addMobileMeasurement(measurement: Measurement) {
-//        if (mSessionPresenter?.isRecording() == true) {
+        if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
-//        }
+        }
     }
 
     private fun drawFixedMeasurement() {

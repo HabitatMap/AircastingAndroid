@@ -86,9 +86,11 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mListener = null
     }
 
-    override fun addMeasurement(measurement: Measurement) {}
+    override fun addMeasurement(sessionPresenter: SessionPresenter?, measurement: Measurement) {
+        bindSession(sessionPresenter)
+    }
 
-    override fun bindSession(sessionPresenter: SessionPresenter?) {
+    protected open fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
 
         bindSessionDetails()
