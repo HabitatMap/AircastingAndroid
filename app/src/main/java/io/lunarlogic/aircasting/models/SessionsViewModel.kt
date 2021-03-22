@@ -10,10 +10,6 @@ import io.lunarlogic.aircasting.database.data_classes.SessionWithStreamsDBObject
 class SessionsViewModel(): ViewModel() {
     private val mDatabase = DatabaseProvider.get()
 
-    fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
-        return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
-    }
-
     fun reloadSession(uuid: String): SessionWithStreamsDBObject? {
         return mDatabase.sessions().reloadSessionAndStreamsByUUID(uuid)
     }
