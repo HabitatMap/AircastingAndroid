@@ -36,13 +36,6 @@ class FollowingController(
     }
 
     override fun onRecordNewSessionClicked() {
-        if (!ConnectivityManager.isConnected(mContext)) {
-            val header = mContext?.getString(R.string.fixed_session_no_internet_connection_header)
-            val description = mContext?.getString(R.string.fixed_session_no_internet_connection)
-            mErrorHandler.showErrorDialog(mRootActivity?.supportFragmentManager, header, description)
-            return
-        }
-
         NavigationController.goToLetsStart()
     }
 
