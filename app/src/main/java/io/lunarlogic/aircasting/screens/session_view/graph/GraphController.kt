@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.session_view.graph
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
@@ -25,11 +24,11 @@ class GraphController(
     override fun locateRequested() {}
 
     open fun onResume() {
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
     open fun onPause() {
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
     }
 
     override fun addNoteClicked(session: Session) {
