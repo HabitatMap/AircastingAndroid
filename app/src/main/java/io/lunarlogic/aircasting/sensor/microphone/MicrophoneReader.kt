@@ -81,7 +81,7 @@ class MicrophoneReader(
             )
 
             val now = Date()
-            if (!(now.year == lastTime?.year && now.month == lastTime?.month && now.day == lastTime?.day && now.hours == lastTime?.hours && now.minutes == lastTime?.minutes && now.seconds == lastTime?.seconds)) {
+            if (!isSecondTheSame(now, lastTime)) {
                 EventBus.getDefault().post(event)
             }
             lastTime = now
@@ -91,5 +91,14 @@ class MicrophoneReader(
     override fun onReadError(error: Int) {
         val message = mErrorHandler.obtainMessage(ResultCodes.AUDIO_READER_ERROR, AudioReaderError(error))
         message.sendToTarget()
+    }
+
+    private fun isSecondTheSame(date: Date, otherDate: Date?): Boolean {
+        return date.year == otherDate?.year &&
+                date.month == otherDate.month &&
+                date.day == otherDate.day &&
+                date.hours == otherDate.hours &&
+                date.minutes == otherDate.minutes &&
+                date.seconds == otherDate.seconds
     }
 }
