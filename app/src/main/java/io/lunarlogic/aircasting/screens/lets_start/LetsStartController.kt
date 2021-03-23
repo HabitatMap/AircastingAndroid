@@ -1,9 +1,9 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
 import android.content.Context
-import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import androidx.fragment.app.FragmentActivity
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
@@ -13,9 +13,9 @@ import io.lunarlogic.aircasting.screens.sync.SyncActivity
 class LetsStartController(
     private val mRootActivity: FragmentActivity?,
     private val mViewMvc: LetsStartViewMvc,
-    private val mContext: Context?
+    private val mContext: Context?,
+    private val mErrorHandler: ErrorHandler
 ): LetsStartViewMvc.Listener {
-
     fun onCreate() {
         mViewMvc.registerListener(this)
     }
@@ -26,7 +26,9 @@ class LetsStartController(
 
     override fun onFixedSessionSelected() {
         if (!ConnectivityManager.isConnected(mContext)) {
-            Toast.makeText(mContext, mContext?.getString(R.string.fixed_session_no_internet_connection), Toast.LENGTH_LONG).show()
+            val header = mContext?.getString(R.string.fixed_session_no_internet_connection_header)
+            val description = mContext?.getString(R.string.fixed_session_no_internet_connection)
+            mErrorHandler.showErrorDialog(mRootActivity?.supportFragmentManager, header, description)
             return
         }
 

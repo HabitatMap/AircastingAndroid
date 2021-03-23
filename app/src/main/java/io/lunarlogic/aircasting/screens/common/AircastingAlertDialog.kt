@@ -8,8 +8,8 @@ import kotlinx.android.synthetic.main.dialog_alert_aircasting.view.*
 
 class AircastingAlertDialog(
     mFragmentManager : FragmentManager,
-    private val alertHeader : String,
-    private val alertDescription: String
+    private val alertHeader : String?,
+    private val alertDescription: String?
 ) : BaseDialog(mFragmentManager) {
     lateinit var mView: View
 

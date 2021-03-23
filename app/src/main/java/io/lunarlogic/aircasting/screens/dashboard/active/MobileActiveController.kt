@@ -28,7 +28,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class MobileActiveController(
-    private val mRootActivity: FragmentActivity?,
+    mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,

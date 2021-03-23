@@ -31,7 +31,7 @@ import org.greenrobot.eventbus.EventBus
 
 
 abstract class SessionsController(
-    private val mRootActivity: FragmentActivity?,
+    protected val mRootActivity: FragmentActivity?,
     private val mViewMvc: SessionsViewMvc,
     private val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,

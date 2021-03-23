@@ -322,7 +322,8 @@ class NewSessionController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
-        dialog.show()
+        val header = mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header)
+        val description = mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description)
+        errorHandler.showErrorDialog(mFragmentManager, header, description)
     }
 }
