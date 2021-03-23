@@ -1,17 +1,15 @@
 package io.lunarlogic.aircasting.screens.sync.synced
 
+import io.lunarlogic.aircasting.screens.common.BaseController
+
 class AirbeamSyncedController(
-    private var mViewMvc: AirbeamSyncedViewMvc?
-) {
+    viewMvc: AirbeamSyncedViewMvc?
+): BaseController<AirbeamSyncedViewMvc>(viewMvc) {
     fun registerListener(listener: AirbeamSyncedViewMvc.Listener) {
         mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: AirbeamSyncedViewMvc.Listener) {
         mViewMvc?.unregisterListener(listener)
-    }
-
-    fun onDestroy() {
-        mViewMvc = null
     }
 }
