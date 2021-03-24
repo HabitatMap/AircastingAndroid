@@ -8,7 +8,6 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import javax.inject.Inject
 
 /**
@@ -25,10 +24,11 @@ class CreateAccountActivity: AppCompatActivity() {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
+        val FROM_ONBOARDING_KEY = "fromOnboarding"
         fun start(contextActivity: AppCompatActivity?, fromOnboarding: Boolean? = false) {
             contextActivity?.let{
                 val intent = Intent(it, CreateAccountActivity::class.java)
-                intent.putExtra("fromOnboarding", fromOnboarding)
+                intent.putExtra(FROM_ONBOARDING_KEY, fromOnboarding)
                 it.startActivity(intent)
                 it.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
             }
@@ -38,7 +38,7 @@ class CreateAccountActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val fromOnboarding = intent.extras?.get("fromOnboarding") as Boolean?
+        val fromOnboarding = intent.extras?.get(FROM_ONBOARDING_KEY) as Boolean?
 
         (application as AircastingApplication)
             .appComponent.inject(this)
