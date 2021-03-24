@@ -26,7 +26,7 @@ abstract class SessionDetailsViewController(
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
-    private val mNotesObserver = NoteObserver(rootActivity, mSessionsViewModel, mSessionPresenter)
+    private val mNotesObserver = NoteObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
 
     // tODO: load notes
 //    private val mNotes = mSessionsViewModel.loadNotesForSessionWithSessionId(sessionUUID)

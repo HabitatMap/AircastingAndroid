@@ -8,28 +8,37 @@ import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import kotlinx.coroutines.CoroutineScope
 
 class NoteObserver(
     private val mLifecycleOwner: LifecycleOwner,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mSessionPresenter: SessionPresenter
+    private val mSessionPresenter: SessionPresenter,
+    private val onSessionChangedCallback: (coroutineScope: CoroutineScope) -> Unit
 ) {
-    private val sessionsRepository = SessionsRepository()
 
     fun observe() {
         val sessionUUID = mSessionPresenter.sessionUUID
         sessionUUID ?: return
-        var sessionId: Long? = 0
-        DatabaseProvider.runQuery {
-            sessionId = sessionsRepository.getSessionIdByUUID(sessionUUID)
-        }
 
+        var session: Session
         var notesList: List<Note>
 
-        mSessionsViewModel.loadNotesForSessionWithSessionId(sessionId!!).observe(mLifecycleOwner, Observer { notesListDBObject ->
-            notesListDBObject?.let {
-                notesList = notesListDBObject.map { noteDBObject -> Note(noteDBObject!!) } //todo: null check!
-                mSessionPresenter.notes = notesList
+        mSessionsViewModel.loadLiveDataSessionForUploadBySessionUUID(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
+            sessionDBObject?.let {
+                session = Session(sessionDBObject)
+                if (session.hasChangedFrom(mSessionPresenter.session)) {
+                    DatabaseProvider.runQuery { coroutineScope ->
+                        mSessionPresenter.session = session
+                        notesList =
+                            sessionDBObject.notes.map { noteDBObject ->
+                                Note(noteDBObject)
+                            } //todo: this map a bit random for now
+                        mSessionPresenter.notes = notesList
+
+                        onSessionChangedCallback.invoke(coroutineScope)
+                    }
+                }
             }
         })
     }

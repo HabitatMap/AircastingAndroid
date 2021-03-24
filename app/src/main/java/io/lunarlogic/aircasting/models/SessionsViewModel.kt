@@ -30,6 +30,10 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.notes().loadLiveDataNotesBySessionId(sessionId)
     }
 
+    fun loadLiveDataSessionForUploadBySessionUUID(sessionUUID: String): LiveData<SessionForUploadDBObject?> {
+        return mDatabase.sessions().loadLiveDataSessionForUploadByUUID(sessionUUID)
+    }
+
     fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatus(Session.Type.MOBILE, Session.Status.FINISHED)
     }

@@ -28,7 +28,7 @@ class Session(
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
-    private var mNotes: List<Note> = mutableListOf()
+    private var mNotes: List<Note> = listOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -218,7 +218,9 @@ class Session(
             this.contribute,
             this.locationless,
             this.indoor,
-            this.streams
+            this.streams,
+            this.urlLocation,
+            this.notes
         )
     }
 

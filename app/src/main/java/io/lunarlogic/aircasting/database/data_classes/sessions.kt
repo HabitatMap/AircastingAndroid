@@ -173,6 +173,9 @@ interface SessionDao {
     fun loadSessionForUploadByUUID(uuid: String): SessionForUploadDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<SessionForUploadDBObject?>
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
