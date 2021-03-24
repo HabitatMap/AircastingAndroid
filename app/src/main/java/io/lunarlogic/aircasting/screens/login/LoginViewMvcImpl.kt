@@ -13,7 +13,10 @@ import kotlinx.android.synthetic.main.activity_login.view.*
 
 class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?, settings: Settings): super() {
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        settings: Settings,
+        fromOnboarding: Boolean?): super() {
         this.rootView = inflater.inflate(R.layout.activity_login, parent, false)
 
         rootView?.login_button?.setOnClickListener {
@@ -29,7 +32,7 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
         }
 
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
-        if (!settings.onboardingDisplayed()) {
+        if (fromOnboarding == true) {
             progressBarFrame?.visibility = View.VISIBLE
         } else {
             progressBarFrame?.visibility = View.GONE

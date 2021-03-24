@@ -32,9 +32,6 @@ class  LoginController(
 
     fun onStop() {
         mViewMvc.unregisterListener(this)
-        if(!mSettings.onboardingDisplayed()) {
-            mSettings.onboardingAccepted()
-        }
     }
 
     override fun onLoginClicked(username: String, password: String) {

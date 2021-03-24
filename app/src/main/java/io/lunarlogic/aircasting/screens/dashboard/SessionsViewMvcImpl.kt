@@ -21,7 +21,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     private var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
-    private val mAdapter: SessionsRecyclerAdapter<ListenerType>
+private val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var mDidYouKnowBox: ConstraintLayout? = null
 

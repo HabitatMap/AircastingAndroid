@@ -16,7 +16,10 @@ import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.Listener>, CreateAccountViewMvc {
     constructor(
-        inflater: LayoutInflater, parent: ViewGroup?, settings: Settings): super() {
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        settings: Settings,
+        fromOnboarding: Boolean?): super() {
         this.rootView = inflater.inflate(R.layout.activity_create_account, parent, false)
 
         val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
@@ -30,7 +33,7 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
         }
 
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
-        if (!settings.onboardingDisplayed()) {
+        if (fromOnboarding == true) {
             progressBarFrame?.visibility = View.VISIBLE
         } else {
             progressBarFrame?.visibility = View.GONE
