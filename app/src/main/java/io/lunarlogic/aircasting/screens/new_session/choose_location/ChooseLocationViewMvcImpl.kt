@@ -33,7 +33,9 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     private val mDefaultLatitude: Double
     private val mDefaultLongitude: Double
 
-    private lateinit var mMap: GoogleMap
+    private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
+    private var mSupportFragmentManager: FragmentManager?
 
     constructor(
         inflater: LayoutInflater,
@@ -44,6 +46,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
         this.session = session
+        this.mSupportFragmentManager = supportFragmentManager
 
         mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
         mDefaultLongitude = session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
@@ -75,8 +78,8 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
                 }
             })
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+        mMapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
+        mMapFragment?.getMapAsync(this)
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
@@ -91,11 +94,25 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         resetMapToDefaults()
     }
 
+    override fun onDestroy() {
+        mMap = null
+        mMapFragment?.onDestroy()
+//        mMapFragment?.let {
+//            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commit()
+//        }
+        mMapFragment = null
+    }
+
     private fun onContinueClicked() {
-        val target = mMap.cameraPosition.target
-        val latitude = target.latitude
-        val longitude = target.longitude
-        session.location = Session.Location(latitude, longitude)
+        var location: Session.Location? = Session.Location.FAKE_LOCATION
+
+        mMap?.let { map ->
+            val target = map.cameraPosition.target
+            val latitude = target.latitude
+            val longitude = target.longitude
+            location = Session.Location(latitude, longitude)
+        }
+        session.location = location
 
         for (listener in listeners) {
             listener.onContinueClicked(session)
@@ -103,14 +120,14 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     }
 
     private fun setZoomPreferences() {
-        mMap.setMaxZoomPreference(MAX_ZOOM)
-        mMap.setMinZoomPreference(MIN_ZOOM)
+        mMap?.setMaxZoomPreference(MAX_ZOOM)
+        mMap?.setMinZoomPreference(MIN_ZOOM)
     }
 
     private fun updateMapCamera(latitude: Double, longitude: Double, aZoom: Float? = null) {
-        val zoom = aZoom ?: mMap.cameraPosition.zoom
+        val zoom = aZoom ?: mMap?.cameraPosition?.zoom
         val newLocation = LatLng(latitude, longitude)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, zoom))
+        mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, zoom ?: 0f))
     }
 
     private fun resetMapToDefaults() {

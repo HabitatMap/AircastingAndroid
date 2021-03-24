@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.screens.common.BaseController
-import io.lunarlogic.aircasting.screens.common.BaseFragment
 
 class ChooseLocationFragment() : Fragment() {
     private var controller: ChooseLocationController? = null

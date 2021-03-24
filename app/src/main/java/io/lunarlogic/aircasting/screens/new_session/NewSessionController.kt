@@ -82,7 +82,7 @@ class NewSessionController(
     fun onStop() {
         EventBus.getDefault().unregister(this)
     }
-
+    
     private fun goToFirstStep() {
         if (mContextActivity.areLocationServicesOn()) {
             startNewSessionWizard()

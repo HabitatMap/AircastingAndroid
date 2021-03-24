@@ -14,4 +14,9 @@ class ChooseLocationController (
         mViewMvc?.unregisterListener(listener)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mViewMvc?.onDestroy()
+    }
 }

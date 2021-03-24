@@ -9,4 +9,6 @@ interface ChooseLocationViewMvc : ObservableViewMvc<ChooseLocationViewMvc.Listen
     interface Listener {
         fun onContinueClicked(session: Session)
     }
+
+    fun onDestroy()
 }

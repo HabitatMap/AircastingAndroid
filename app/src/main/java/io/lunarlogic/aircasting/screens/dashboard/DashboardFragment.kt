@@ -5,9 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import io.lunarlogic.aircasting.screens.common.BaseController
-import io.lunarlogic.aircasting.screens.common.BaseFragment
-import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 
 class DashboardFragment : Fragment() {
     private var controller: DashboardController? = null
