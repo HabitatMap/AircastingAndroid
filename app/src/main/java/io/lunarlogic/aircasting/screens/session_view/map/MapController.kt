@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.ThreadMode
 class MapController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
-    mViewMvc: SessionDetailsViewMvc,
+    mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
     val fragmentManager: FragmentManager

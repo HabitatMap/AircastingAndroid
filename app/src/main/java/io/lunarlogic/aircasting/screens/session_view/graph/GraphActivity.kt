@@ -71,5 +71,6 @@ class GraphActivity: AppCompatActivity() {
         AppBar.destroy()
         view?.onDestroy()
         controller?.onDestroy()
+        controller = null
     }
 }

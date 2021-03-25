@@ -31,6 +31,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
 
     private var mMarker: Marker? = null
     private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -57,11 +58,17 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     abstract fun layoutId(): Int
     abstract fun shouldInitMap(): Boolean
 
+    override fun onDestroy() {
+        mMap = null
+        mMapFragment?.onDestroy()
+        mMapFragment = null
+    }
+
     private fun initMap(supportFragmentManager: FragmentManager?) {
         if (shouldInitMap()) {
-            val mapFragment =
+            mMapFragment =
                 supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
-            mapFragment?.getMapAsync(this)
+            mMapFragment?.getMapAsync(this)
         } else {
             val instructions = rootView?.findViewById<TextView>(R.id.instructions)
             instructions?.visibility = View.GONE

@@ -30,6 +30,7 @@ class ConfirmationController(
     }
 
     fun onDestroy() {
+        mViewMvc?.onDestroy()
         mViewMvc = null
     }
 

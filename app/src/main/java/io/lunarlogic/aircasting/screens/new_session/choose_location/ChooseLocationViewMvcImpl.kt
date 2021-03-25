@@ -1,24 +1,21 @@
 package io.lunarlogic.aircasting.screens.new_session.choose_location
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import com.google.android.gms.common.api.Status
-import android.view.View
 import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 
 class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Listener>, ChooseLocationViewMvc,
@@ -79,6 +76,9 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
             })
 
         mMapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
+//        val mapOptions = GoogleMapOptions()
+//        mapOptions.useViewLifecycleInFragment(true)
+//        mMapFragment = SupportMapFragment.newInstance(mapOptions)
         mMapFragment?.getMapAsync(this)
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)

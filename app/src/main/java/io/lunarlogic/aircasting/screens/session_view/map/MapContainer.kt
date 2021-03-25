@@ -111,6 +111,7 @@ class MapContainer: OnMapReadyCallback {
     fun destroy() {
         mMap = null
         mContext = null
+        mMapFragment?.onDestroy()
         mMapFragment = null
     }
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
