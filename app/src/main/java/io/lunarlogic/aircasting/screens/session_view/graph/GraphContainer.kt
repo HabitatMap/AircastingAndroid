@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.jobs.MoveViewJob
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import io.lunarlogic.aircasting.R
@@ -80,6 +81,10 @@ class GraphContainer: OnChartGestureListener {
 
     fun destroy() {
         mContext = null
+        // A "hacky" way to fix a memory leak in MPAndroidChart lib
+        // https://github.com/PhilJay/MPAndroidChart/issues/2238
+        // it's possible they'll fix it in the future so we must review it
+        MoveViewJob.getInstance(null, 0f, 0f, null, null);
         mGraph = null
     }
 
