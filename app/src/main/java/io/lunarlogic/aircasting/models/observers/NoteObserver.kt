@@ -27,7 +27,7 @@ class NoteObserver(
         mSessionsViewModel.loadLiveDataSessionForUploadBySessionUUID(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
             sessionDBObject?.let {
                 session = Session(sessionDBObject)
-                if (session.hasChangedFrom(mSessionPresenter.session)) {
+                if (session.hasChangedFrom(mSessionPresenter.session) && session.notes.size != mSessionPresenter.notes.size) { //todo: conditional second just for testing for now
                     DatabaseProvider.runQuery { coroutineScope ->
                         mSessionPresenter.session = session
                         notesList =
