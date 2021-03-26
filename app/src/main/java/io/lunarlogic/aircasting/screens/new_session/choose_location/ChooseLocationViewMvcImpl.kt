@@ -75,16 +75,10 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
                 }
             })
 
-//        val mapOptions = GoogleMapOptions()
-//        mapOptions.useViewLifecycleInFragment(true)
-//        mapOptions.zoomControlsEnabled(true)
-//        mapOptions.zoomGesturesEnabled(true)
-//        mMapFragment = SupportMapFragment.newInstance(mapOptions)
-//        mMapFragment?.let {
-//            supportFragmentManager.beginTransaction().replace(R.id.map, it)
-//        }
-
-        mMapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
+        mMapFragment = SupportMapFragment.newInstance(mapOptions())
+        mMapFragment?.let {
+            supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+        }
         mMapFragment?.getMapAsync(this)
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
@@ -138,5 +132,14 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
 
     private fun resetMapToDefaults() {
         updateMapCamera(mDefaultLatitude, mDefaultLongitude, DEFAULT_ZOOM)
+    }
+
+    private fun mapOptions(): GoogleMapOptions {
+        val mapOptions = GoogleMapOptions()
+        mapOptions.useViewLifecycleInFragment(true)
+        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomGesturesEnabled(true)
+
+        return mapOptions
     }
 }

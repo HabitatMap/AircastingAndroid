@@ -63,16 +63,10 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
 
     private fun initMap(supportFragmentManager: FragmentManager?) {
         if (shouldInitMap()) {
-//            val mapOptions = GoogleMapOptions()
-//            mapOptions.useViewLifecycleInFragment(true)
-//            mapOptions.zoomControlsEnabled(true)
-//            mapOptions.zoomGesturesEnabled(true)
-//            mMapFragment = SupportMapFragment.newInstance(mapOptions)
-//            mMapFragment?.let {
-//                supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)
-//            }
-            mMapFragment =
-                supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+            mMapFragment = SupportMapFragment.newInstance(mapOptions())
+            mMapFragment?.let {
+                supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+            }
             mMapFragment?.getMapAsync(this)
         } else {
             val instructions = rootView?.findViewById<TextView>(R.id.instructions)
@@ -95,7 +89,6 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         mMap = googleMap
-
         val sessionLocation = session?.location ?: return
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
@@ -125,5 +118,17 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
             .color(blueColor, { bold { append(session?.name) } })
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part3))
+    }
+
+    private fun mapOptions(): GoogleMapOptions {
+        val mapOptions = GoogleMapOptions()
+        mapOptions.useViewLifecycleInFragment(true)
+        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomGesturesEnabled(true)
+        mapOptions.tiltGesturesEnabled(false)
+        mapOptions.scrollGesturesEnabled(false)
+        mapOptions.rotateGesturesEnabled(false)
+
+        return mapOptions
     }
 }
