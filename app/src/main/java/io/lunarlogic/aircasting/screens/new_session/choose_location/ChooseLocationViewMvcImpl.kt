@@ -75,10 +75,16 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
                 }
             })
 
-        mMapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
 //        val mapOptions = GoogleMapOptions()
 //        mapOptions.useViewLifecycleInFragment(true)
+//        mapOptions.zoomControlsEnabled(true)
+//        mapOptions.zoomGesturesEnabled(true)
 //        mMapFragment = SupportMapFragment.newInstance(mapOptions)
+//        mMapFragment?.let {
+//            supportFragmentManager.beginTransaction().replace(R.id.map, it)
+//        }
+
+        mMapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mMapFragment?.getMapAsync(this)
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)

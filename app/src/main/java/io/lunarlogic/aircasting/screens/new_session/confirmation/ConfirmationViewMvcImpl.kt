@@ -11,10 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.BitmapHelper
@@ -66,6 +63,14 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
 
     private fun initMap(supportFragmentManager: FragmentManager?) {
         if (shouldInitMap()) {
+//            val mapOptions = GoogleMapOptions()
+//            mapOptions.useViewLifecycleInFragment(true)
+//            mapOptions.zoomControlsEnabled(true)
+//            mapOptions.zoomGesturesEnabled(true)
+//            mMapFragment = SupportMapFragment.newInstance(mapOptions)
+//            mMapFragment?.let {
+//                supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)
+//            }
             mMapFragment =
                 supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
             mMapFragment?.getMapAsync(this)
