@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.NoteRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.safeRegister
@@ -27,9 +28,6 @@ abstract class SessionDetailsViewController(
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
     private val mNotesObserver = NoteObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
-
-    // tODO: load notes
-//    private val mNotes = mSessionsViewModel.loadNotesForSessionWithSessionId(sessionUUID)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);

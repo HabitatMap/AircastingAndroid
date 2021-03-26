@@ -148,20 +148,20 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun drawNotes() {
-        val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.arrow_down)
+        val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_note_icon)
         for (note in mNotes) {
             val marker = mMap?.addMarker(MarkerOptions()
-                .position(LatLng(note.latitude!!, note.longitude!!)) //todo: null assertions! be careful later
+                .position(LatLng(note.latitude!!, note.longitude!!)) //todo: null assertions! be careful later <?>
                 .icon(icon))
             mMarkers.put(marker?.id, mSessionPresenter?.sessionUUID)
         }
-        mMap?.setOnInfoWindowClickListener( object: GoogleMap.OnInfoWindowClickListener{
-            override fun onInfoWindowClick(marker: Marker?) {
-                val id = mMarkers.get(marker?.id)
-
+        mMap?.setOnMarkerClickListener { marker ->
+            val noteId = mMarkers[marker.id] //todo: why this id is always the same ??
+            if (noteId != null) { //todo: is this null check really neccesery
+                mListener?.editNoteClicked(noteId)
             }
+            false
         }
-        )
     }
 
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
