@@ -36,6 +36,7 @@ class MapContainer: OnMapReadyCallback {
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
     private val mMapFragment: SupportMapFragment?
+    private val mMarkers: HashMap<String?, String?> = hashMapOf()  //todo: this is hashMap i need to have to know which marker was clicked, might switch to Long if needed
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -149,10 +150,18 @@ class MapContainer: OnMapReadyCallback {
     private fun drawNotes() {
         val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.arrow_down)
         for (note in mNotes) {
-            mMap?.addMarker(MarkerOptions()
+            val marker = mMap?.addMarker(MarkerOptions()
                 .position(LatLng(note.latitude!!, note.longitude!!)) //todo: null assertions! be careful later
                 .icon(icon))
+            mMarkers.put(marker?.id, mSessionPresenter?.sessionUUID)
         }
+        mMap?.setOnInfoWindowClickListener( object: GoogleMap.OnInfoWindowClickListener{
+            override fun onInfoWindowClick(marker: Marker?) {
+                val id = mMarkers.get(marker?.id)
+
+            }
+        }
+        )
     }
 
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
