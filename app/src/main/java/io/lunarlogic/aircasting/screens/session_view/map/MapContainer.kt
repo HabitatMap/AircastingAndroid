@@ -116,7 +116,7 @@ class MapContainer: OnMapReadyCallback {
         mContext = null
         mMapFragment?.onDestroy()
         mMapFragment?.let {
-            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commit()
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
         }
         mMapFragment = null
     }
