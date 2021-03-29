@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.common.*
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog

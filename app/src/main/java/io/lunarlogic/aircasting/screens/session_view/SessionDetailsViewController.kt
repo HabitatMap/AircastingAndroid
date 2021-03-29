@@ -35,9 +35,7 @@ abstract class SessionDetailsViewController(
 
         mSessionObserver.observe()
 
-        //todo: observe notes, anallogically like in mSessionObserver (NOT JUST OBSERVE()) !!
         mNotesObserver.observe()
-
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {

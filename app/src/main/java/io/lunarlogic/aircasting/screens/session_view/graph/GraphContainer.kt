@@ -103,7 +103,6 @@ class GraphContainer: OnChartGestureListener {
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
         setLabels()
-//        drawNotes() todo: this is probably not needed
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -114,7 +113,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotesSample) // todo: add notes list as arg <?>
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotesSample)
     }
 
     private fun drawData(entries: List<Entry>) {

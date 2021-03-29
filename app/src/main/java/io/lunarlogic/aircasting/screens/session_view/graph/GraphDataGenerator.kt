@@ -44,8 +44,7 @@ class GraphDataGenerator(
                 fill -= 1.0
                 val date = getAverageDate()
 
-                // TODO: check if some note matches the date, check date and hours, minutes?
-                if (noteSamples != null) { //todo: null check needed?
+                if (noteSamples != null) { //todo: null check really needed?
                     for (note in noteSamples) {
                         if (note.date.month == date.month &&
                             note.date.day == date.day &&
@@ -57,7 +56,7 @@ class GraphDataGenerator(
                     }
                 }
 
-                entries.add(buildAverageEntry(date, hasNote))  //todo: include note in adding entry (if there is some)
+                entries.add(buildAverageEntry(date, hasNote))  //todo: why 2 icons are displaying when only 1 note???
 
                 hasNote = false
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)

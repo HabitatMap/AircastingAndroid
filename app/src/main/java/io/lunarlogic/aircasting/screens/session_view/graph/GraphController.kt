@@ -56,7 +56,6 @@ class GraphController(
 
     override fun editNotePressed(markerId: String) {
         EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
-//        TODO("Not yet implemented")
     }
 
     override fun deleteNotePressed(note: Note) {

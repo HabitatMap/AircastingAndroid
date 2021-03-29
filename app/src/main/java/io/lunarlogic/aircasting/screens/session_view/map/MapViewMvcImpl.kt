@@ -65,12 +65,13 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
         mMapContainer.refresh(mSessionPresenter)
     }
 
+    override fun addNote(note: Note) {
+        mMapContainer.refresh(mSessionPresenter) // todo: for some reason refresh doesnt work <?>
+    }
+
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
         mMapContainer.refresh(mSessionPresenter)
     }
 
-    override fun addNote(note: Note) {
-        mMapContainer.refresh(mSessionPresenter) // todo: for some reason refresh doesnt work <?>
-    }
 }

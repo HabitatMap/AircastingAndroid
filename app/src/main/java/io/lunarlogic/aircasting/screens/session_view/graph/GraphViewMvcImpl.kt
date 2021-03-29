@@ -36,8 +36,8 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
     }
 
-    open fun notesSample(): List<Note>? {
-        return mSessionPresenter?.notes
+    open fun notesSample(): List<Note> {
+        return mSessionPresenter?.notes ?: listOf<Note>()
     }
 
     override fun layoutId(): Int {
@@ -71,7 +71,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     override fun addNote(note: Note) {
-        TODO("Not yet implemented") //todo: might move this function form MapViewMvcImpl and GraphViewMvcImpl to SessionDetailsViewMvcImpl, feels thay do the same
+        graphContainer.refresh(mSessionPresenter) // todo: for some reason refresh doesnt work <?>
     }
 
     private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {
