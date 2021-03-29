@@ -30,6 +30,7 @@ class MapContainer: OnMapReadyCallback {
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
     private var mMapFragment: SupportMapFragment?
+    private var mSupportFragmentManager: FragmentManager?
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -50,10 +51,11 @@ class MapContainer: OnMapReadyCallback {
 
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
+        this.mSupportFragmentManager = supportFragmentManager
 
         mMapFragment = SupportMapFragment.newInstance(mapOptions())
         mMapFragment?.let {
-            supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+            mSupportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
         }
         mMapFragment?.getMapAsync(this)
         mMapFragment?.view?.visibility = View.GONE
@@ -113,6 +115,9 @@ class MapContainer: OnMapReadyCallback {
         mMap = null
         mContext = null
         mMapFragment?.onDestroy()
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commit()
+        }
         mMapFragment = null
     }
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {

@@ -29,6 +29,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     private var mMarker: Marker? = null
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
+    private var mSupportFragmentManager: FragmentManager?
 
     constructor(
         inflater: LayoutInflater,
@@ -39,12 +40,13 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     ): super() {
         this.rootView = inflater.inflate(layoutId(), parent, false)
         this.session = session
+        this.mSupportFragmentManager = supportFragmentManager
         this.areMapsDisabled = areMapsDisabled
 
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
 
-        initMap(supportFragmentManager)
+        initMap(mSupportFragmentManager)
 
         val startRecordingButton = rootView?.findViewById<Button>(R.id.start_recording_button)
         startRecordingButton?.setOnClickListener {
@@ -58,6 +60,9 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     override fun onDestroy() {
         mMap = null
         mMapFragment?.onDestroy()
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commit()
+        }
         mMapFragment = null
     }
 

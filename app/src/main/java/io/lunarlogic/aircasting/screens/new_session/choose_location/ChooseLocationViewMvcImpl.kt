@@ -97,9 +97,9 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     override fun onDestroy() {
         mMap = null
         mMapFragment?.onDestroy()
-//        mMapFragment?.let {
-//            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commit()
-//        }
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commit()
+        }
         mMapFragment = null
     }
 
