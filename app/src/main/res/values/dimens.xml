@@ -24,6 +24,7 @@
     <dimen name="line_height_xxl">36dp</dimen>
     <dimen name="line_height_xl">28dp</dimen>
     <dimen name="line_height_l">20dp</dimen>
+    <dimen name="line_height_m">18dp</dimen>
 
     <dimen name="action_bar_size">100dp</dimen>
     <dimen name="app_bar_padding">20dp</dimen>
