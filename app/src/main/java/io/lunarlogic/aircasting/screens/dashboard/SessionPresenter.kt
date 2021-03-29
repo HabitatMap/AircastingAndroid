@@ -17,7 +17,6 @@ class SessionPresenter() {
     var initialSensorName: String? = null
     var visibleTimeSpan: ClosedRange<Date>? = null
     var shouldHideMap: Boolean = false
-    //TODO: add field notes and its usage <- because we're showing notes
     var notes: List<Note> = listOf()
 
     constructor(

@@ -48,11 +48,8 @@ interface NoteDao {
     fun insert(note: NoteDBObject): Long
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
-    fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?> //todo: to be changed on List later on <??>
+    fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?>
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
     fun loadLiveDataNotesBySessionId(sessionId: Long): LiveData<List<NoteDBObject?>>
-
-//    @Query("SELECT * FROM notes WHERE session_id=:sessionId")
-//    fun loadLiveDataNotesBySessionUUID(sessionUUID: String): LiveData<List<NoteDBObject?>>
 }

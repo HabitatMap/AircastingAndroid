@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -12,8 +13,10 @@ import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.common.collect.Iterables
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -234,9 +237,25 @@ class GraphContainer: OnChartGestureListener {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
-        mGraph.setMaxVisibleValueCount(10000000) //todo: added temporary(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
+        mGraph.setMaxVisibleValueCount(10000000) //todo: added temporarily(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
 
         mGraph.onChartGestureListener = this
+        mGraph.setOnChartValueSelectedListener(object: OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                if(e?.icon != null) {
+                    // todo: i might check entry list here to search if neighbour entry has note- it could increase field of icon touch
+                    mListener?.editNoteClicked(mSessionPresenter?.sessionUUID!!)
+                    // todo: this one is a lil bit different than in MapContainer, how to retrieve sessionUUID here?
+                    return
+                }
+                Log.i("GRAPH", "MEASUREMENT WITHOUT NOTE SELECTED")
+            }
+
+            override fun onNothingSelected() {
+                Log.i("GRAPH", "NOTHING SELECTED")
+            }
+
+        })
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}

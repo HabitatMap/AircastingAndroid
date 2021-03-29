@@ -25,11 +25,6 @@ class SessionsViewModel(): ViewModel() {
             Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
     }
 
-    // TODO: method to load notes for session with UUID
-    fun loadNotesForSessionWithSessionId(sessionId: Long): LiveData<List<NoteDBObject?>> {
-        return mDatabase.notes().loadLiveDataNotesBySessionId(sessionId)
-    }
-
     fun loadLiveDataSessionForUploadBySessionUUID(sessionUUID: String): LiveData<SessionForUploadDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionForUploadByUUID(sessionUUID)
     }
