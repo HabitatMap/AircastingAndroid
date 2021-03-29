@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import android.location.Location
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.ObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -12,6 +13,7 @@ interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listene
 
     fun addMeasurement(measurement: Measurement)
     fun centerMap(location: Location)
+    fun addNote(note: Note)
 
     interface Listener: HLUListener {
         fun locateRequested()

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Note
 
 open class GraphViewFixedMvcImpl(
     inflater: LayoutInflater,

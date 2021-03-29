@@ -156,9 +156,9 @@ class MapContainer: OnMapReadyCallback {
             mMarkers.put(marker?.id, mSessionPresenter?.sessionUUID)
         }
         mMap?.setOnMarkerClickListener { marker ->
-            val noteId = mMarkers[marker.id] //todo: why this id is always the same ??
-            if (noteId != null) { //todo: is this null check really neccesery
-                mListener?.editNoteClicked(noteId)
+            val sessionUUID = mMarkers[marker.id] //todo: why this id is always the same ??
+            if (sessionUUID != null) { //todo: is this null check really neccesery
+                mListener?.editNoteClicked(sessionUUID)
             }
             false
         }

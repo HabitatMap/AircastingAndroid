@@ -39,7 +39,7 @@ class GraphContainer: OnChartGestureListener {
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
 
-    private val mGraphDataGenerator = GraphDataGenerator()
+    private var mGraphDataGenerator: GraphDataGenerator
 
     private val DATE_FORMAT = "HH:mm"
     private val mDefaultZoomSpan: Int?
@@ -47,13 +47,16 @@ class GraphContainer: OnChartGestureListener {
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
     private var mGetMeasurementsSample: () -> List<Measurement>
     private var mMeasurementsSample: List<Measurement> = listOf()
+    private var mGetNotesSample: () -> List<Note>?
+    private var mNotesSample: List<Note>? = listOf()
 
     constructor(
         rootView: View?,
         context: Context,
         defaultZoomSpan: Int?,
         onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit,
-        getMeasurementsSample: () -> List<Measurement>
+        getMeasurementsSample: () -> List<Measurement>,
+        getNoteSample: () -> List<Note>?
     ) {
         mContext = context
         mGraph = rootView?.graph
@@ -62,6 +65,9 @@ class GraphContainer: OnChartGestureListener {
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
+        mGetNotesSample = getNoteSample
+
+        mGraphDataGenerator = GraphDataGenerator(mContext)
 
         hideGraph()
         setupGraph()
@@ -78,6 +84,7 @@ class GraphContainer: OnChartGestureListener {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
+        mNotesSample = mGetNotesSample.invoke()
 
         drawSession()
         showGraph()
@@ -96,7 +103,7 @@ class GraphContainer: OnChartGestureListener {
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
         setLabels()
-//        drawNotes()
+//        drawNotes() todo: this is probably not needed
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -107,7 +114,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample)
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotesSample) // todo: add notes list as arg <?>
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -202,6 +209,7 @@ class GraphContainer: OnChartGestureListener {
         dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
         dataSet.setDrawHighlightIndicators(false)
+        dataSet.setDrawIcons(true)
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
         dataSet.cubicIntensity = 0.04f
     }
@@ -227,6 +235,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
+        mGraph.setMaxVisibleValueCount(10000000) // todo: added temporary, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
 
         mGraph.onChartGestureListener = this
     }
@@ -298,38 +307,4 @@ class GraphContainer: OnChartGestureListener {
         mFromLabel?.visibility = View.GONE
         mToLabel?.visibility = View.GONE
     }
-
-    //TODO: below methods are mostly copied from old app
-//    private fun drawNotes() {
-////        TODO("Not yet implemented")
-//        val session = mSessionPresenter?.session
-//    }
-//
-//    private fun place(note: Note) {
-//        TODO("Not yet implemented")
-//    }
-//
-//    private fun place(measurement: Measurement): Point {
-//        val time: Long = measurement.time.getTime()
-//        val span: Float = (lastTime() - firstTime()).toFloat()
-//        val place: Float = (time - firstTime()).toFloat()
-//        val x = (getWidth() * (place / span)) as Int
-//
-//        val value: Double = measurement.getValue()
-//        val y: Int = project(value)
-//
-//        return Point(x, y)
-//    }
-//
-//    private fun project(value: Double): Int {
-//        return (getHeight() * (top - value) / (top - bottom))
-//    }
-//
-//    private fun lastTime(): Long {
-//        return Iterables.getLast(measurements).getTime().getTime()
-//    }
-//
-//    private fun firstTime(): Long {
-//        return measurements.get(0).getTime().getTime()
-//    }
 }

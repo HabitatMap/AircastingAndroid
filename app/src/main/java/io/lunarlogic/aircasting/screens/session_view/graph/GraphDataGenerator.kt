@@ -1,12 +1,18 @@
 package io.lunarlogic.aircasting.screens.session_view.graph
 
+import android.content.Context
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.CalendarUtils
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Note
 import java.util.*
 import kotlin.collections.ArrayList
 
-class GraphDataGenerator {
+class GraphDataGenerator(
+    private val mContext: Context
+) {
     private var cumulativeValue = 0.0
     private var cumulativeTime: Long = 0
     private var count = 0
@@ -16,13 +22,14 @@ class GraphDataGenerator {
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
-    fun generate(samples: List<Measurement>, limit: Int = DEFAULT_LIMIT): Result {
+    fun generate(samples: List<Measurement>, noteSamples: List<Note>?, limit: Int = DEFAULT_LIMIT): Result {
         reset()
 
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
         val fillFactor = 1.0 * limit / samples.size
         var fill = 0.0
+        var hasNote = false
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
@@ -33,13 +40,26 @@ class GraphDataGenerator {
         for (measurement in samples) {
             add(measurement)
             fill += fillFactor
-
             if (fill > 1) {
                 fill -= 1.0
                 val date = getAverageDate()
 
-                entries.add(buildAverageEntry(date))
+                // TODO: check if some note matches the date, check date and hours, minutes?
+                if (noteSamples != null) { //todo: null check needed?
+                    for (note in noteSamples) {
+                        if (note.date.month == date.month &&
+                            note.date.day == date.day &&
+                            note.date.hours == date.hours &&
+                            note.date.minutes == date.minutes &&
+                            note.date.seconds == date.seconds) {
+                            hasNote = true
+                        }
+                    }
+                }
 
+                entries.add(buildAverageEntry(date, hasNote))  //todo: include note in adding entry (if there is some)
+
+                hasNote = false
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
 
                 if (lastDateDayOfMonth != dateOfMonth) {
@@ -71,10 +91,15 @@ class GraphDataGenerator {
         return (cumulativeValue / count)
     }
 
-    private fun buildAverageEntry(date: Date): Entry {
+    private fun buildAverageEntry(date: Date, hasNote: Boolean = false): Entry {
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
-        return Entry(time, value)
+
+        if (hasNote) {
+            return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.arrow_down))
+        } else {
+            return Entry(time, value)
+        }
     }
 
     private fun convertDateToFloat(date: Date): Float {

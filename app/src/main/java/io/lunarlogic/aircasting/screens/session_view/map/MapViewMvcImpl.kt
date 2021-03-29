@@ -9,6 +9,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
@@ -67,5 +68,9 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
         mMapContainer.refresh(mSessionPresenter)
+    }
+
+    override fun addNote(note: Note) {
+        mMapContainer.refresh(mSessionPresenter) // todo: for some reason refresh doesnt work <?>
     }
 }

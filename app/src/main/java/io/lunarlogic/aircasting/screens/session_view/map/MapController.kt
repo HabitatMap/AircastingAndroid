@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view.map
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.database.repositories.NoteRepository
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
@@ -23,13 +24,7 @@ class MapController(
     sessionUUID: String,
     sensorName: String?,
     val fragmentManager: FragmentManager
-): SessionDetailsViewController(
-    rootActivity,
-    mSessionsViewModel,
-    mViewMvc,
-    sessionUUID,
-    sensorName
-),
+): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName),
     SessionDetailsViewMvc.Listener,
     AddNoteBottomSheet.Listener,
     EditNoteBottomSheet.Listener {
@@ -84,9 +79,11 @@ class MapController(
     override fun addNotePressed(session: Session, note: Note) {
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
+        mViewMvc.addNote(note)
     }
 
     override fun editNoteClicked(markerId: String) {
+        // todo: markerId here is in fact sessionUUID:
         EditNoteBottomSheet(this, markerId).show(fragmentManager) // todo: how to deal with these two edit functions??
         // TODO: analogically like in onEditSessionClicked in SessionsController, we need to remember that other people might edit the note and update it before load etc.
     }

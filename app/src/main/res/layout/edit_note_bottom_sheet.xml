@@ -71,6 +71,20 @@
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_6"
                     app:layout_constraintTop_toBottomOf="@id/title"
+                    app:layout_constraintBottom_toTopOf="@id/note_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/note_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="The note was created on: "
+                    android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_6"
+                    app:layout_constraintTop_toBottomOf="@id/description"
                     app:layout_constraintBottom_toTopOf="@id/note_input_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -107,8 +121,20 @@
                     android:id="@+id/edit_note_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Edit note"
+                    android:text="Save changes"
                     app:layout_constraintTop_toBottomOf="@id/note_input_layout"
+                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"/>
+
+                <Button
+                    android:id="@+id/delete_note_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Delete note"
+                    app:layout_constraintTop_toBottomOf="@id/edit_note_button"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +147,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/cancel"
-                    app:layout_constraintTop_toBottomOf="@id/edit_note_button"
+                    app:layout_constraintTop_toBottomOf="@id/delete_note_button"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

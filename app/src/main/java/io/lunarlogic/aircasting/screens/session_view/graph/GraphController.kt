@@ -51,7 +51,7 @@ class GraphController(
     }
 
     override fun editNoteClicked(markerId: String) { // how to deal with these to Edit functions below ???
-        EditNoteBottomSheet(this, markerId).show(fragmentManager)
+        EditNoteBottomSheet(this, markerId).show(fragmentManager) // todo: markerId here is in fact sessionUUID
     }
 
     override fun editNotePressed(markerId: String) {
