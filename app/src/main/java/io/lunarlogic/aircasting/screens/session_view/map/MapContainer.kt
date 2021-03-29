@@ -5,10 +5,7 @@ import android.location.Location
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
@@ -54,7 +51,10 @@ class MapContainer: OnMapReadyCallback {
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
 
-        mMapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+        mMapFragment = SupportMapFragment.newInstance(mapOptions())
+        mMapFragment?.let {
+            supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+        }
         mMapFragment?.getMapAsync(this)
         mMapFragment?.view?.visibility = View.GONE
 
@@ -276,6 +276,15 @@ class MapContainer: OnMapReadyCallback {
     private fun showMap() {
         mMapFragment?.view?.visibility = View.VISIBLE
         mLocateButton?.visibility = View.VISIBLE
+    }
+
+    private fun mapOptions(): GoogleMapOptions {
+        val mapOptions = GoogleMapOptions()
+        mapOptions.useViewLifecycleInFragment(true)
+        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomGesturesEnabled(true)
+
+        return mapOptions
     }
 }
 
