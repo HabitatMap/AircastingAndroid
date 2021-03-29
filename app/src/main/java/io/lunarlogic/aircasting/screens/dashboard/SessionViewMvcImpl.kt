@@ -341,7 +341,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     private fun getExpandedTouchDelegate(child: View) : TouchDelegate {
         val paddingX = 10
-        val paddingY = 40
+        val paddingY = 100
         var rect = Rect()
         child.getHitRect(rect)
         rect.left -= paddingX
