@@ -30,6 +30,7 @@ class GraphDataGenerator(
         val fillFactor = 1.0 * limit / samples.size
         var fill = 0.0
         var hasNote = false
+        var previousNote: Note? = null
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
@@ -50,13 +51,15 @@ class GraphDataGenerator(
                             note.date.day == date.day &&
                             note.date.hours == date.hours &&
                             note.date.minutes == date.minutes &&
-                            note.date.seconds == date.seconds) {
+                            note.date.seconds == date.seconds &&
+                                note != previousNote) {
                             hasNote = true
+                            previousNote = note
                         }
                     }
                 }
 
-                entries.add(buildAverageEntry(date, hasNote))  //todo: why 2 icons are displaying when only 1 note???
+                entries.add(buildAverageEntry(date, hasNote))
 
                 hasNote = false
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
@@ -95,7 +98,7 @@ class GraphDataGenerator(
         val value = getAverageValue().toFloat()
 
         if (hasNote) {
-            return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.arrow_down))
+            return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
         } else {
             return Entry(time, value)
         }
