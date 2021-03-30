@@ -65,7 +65,11 @@ class OnboardingController(
     }
 
     override fun onAcceptClicked() {
-        CreateAccountActivity.start(mContextActivity)
+        CreateAccountActivity.start(mContextActivity, true)
+
+        if(!mSettings.onboardingDisplayed()) {
+            mSettings.onboardingAccepted()
+        }
     }
 
     override fun onLearnMoreYourPrivacyClicked() {

@@ -20,9 +20,12 @@ class LoginActivity: AppCompatActivity() {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
-        fun start(contextActivity: AppCompatActivity?, animation: Boolean = false) {
+        val FROM_ONBOARDING_KEY = "fromOnboarding"
+
+        fun start(contextActivity: AppCompatActivity?, animation: Boolean = false, fromOnboarding: Boolean? = false) {
             contextActivity?.let {
                 val intent = Intent(it, LoginActivity::class.java)
+                intent.putExtra(FROM_ONBOARDING_KEY, fromOnboarding)
                 it.startActivity(intent)
                 if (animation) {
                     it.overridePendingTransition(R.anim.slide_back_in, R.anim.slide_back_out)
@@ -42,10 +45,12 @@ class LoginActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val fromOnboarding = intent.extras?.get(FROM_ONBOARDING_KEY) as Boolean?
+
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LoginViewMvcImpl(layoutInflater, null, settings)
+        val view = LoginViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
         controller = LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
 
         setContentView(view.rootView)

@@ -24,9 +24,11 @@ class CreateAccountActivity: AppCompatActivity() {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
-        fun start(contextActivity: AppCompatActivity?) {
+        val FROM_ONBOARDING_KEY = "fromOnboarding"
+        fun start(contextActivity: AppCompatActivity?, fromOnboarding: Boolean? = false) {
             contextActivity?.let{
                 val intent = Intent(it, CreateAccountActivity::class.java)
+                intent.putExtra(FROM_ONBOARDING_KEY, fromOnboarding)
                 it.startActivity(intent)
                 it.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
             }
@@ -36,11 +38,13 @@ class CreateAccountActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val fromOnboarding = intent.extras?.get(FROM_ONBOARDING_KEY) as Boolean?
+
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = CreateAccountViewMvcImpl(layoutInflater, null, settings)
-        controller = CreateAccountController(this, view, settings, apiServiceFactory)
+        val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
+        controller = CreateAccountController(this, view, settings, apiServiceFactory, fromOnboarding)
 
         setContentView(view.rootView)
     }

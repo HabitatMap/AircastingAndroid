@@ -15,7 +15,8 @@ class CreateAccountController(
     private val mContextActivity: AppCompatActivity,
     private val mViewMvc: CreateAccountViewMvcImpl,
     private val mSettings: Settings,
-    private val mApiServiceFactory: ApiServiceFactory
+    private val mApiServiceFactory: ApiServiceFactory,
+    private val fromOnboarding: Boolean?
 ) : CreateAccountViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler, mApiServiceFactory)
@@ -42,6 +43,6 @@ class CreateAccountController(
     }
 
     override fun onLoginClicked() {
-        LoginActivity.start(mContextActivity, true)
+        LoginActivity.start(mContextActivity, true, fromOnboarding)
     }
 }
