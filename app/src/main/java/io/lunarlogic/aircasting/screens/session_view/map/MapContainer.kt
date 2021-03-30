@@ -115,10 +115,16 @@ class MapContainer: OnMapReadyCallback {
         mMap = null
         mContext = null
         mMapFragment?.onDestroy()
+        println("MARYSIA: parent fragmetn "+mMapFragment?.parentFragment)
+        println("MARYSIA: parent view "+mMapFragment?.view)
+        println("MARYSIA: calling map onDestroy, mapFragment: "+mMapFragment)
         mMapFragment?.let {
             mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
         }
         mMapFragment = null
+        mSupportFragmentManager = null
+        mContext = null
+        System.gc()
     }
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
         val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
