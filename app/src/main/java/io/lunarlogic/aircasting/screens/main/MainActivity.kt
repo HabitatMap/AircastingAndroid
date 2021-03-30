@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -43,6 +44,9 @@ class MainActivity: AppCompatActivity() {
 
         (application as AircastingApplication)
             .appComponent.inject(this)
+
+        // subscribing to custom uncaught exception handler to handle crash
+        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings));
 
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)

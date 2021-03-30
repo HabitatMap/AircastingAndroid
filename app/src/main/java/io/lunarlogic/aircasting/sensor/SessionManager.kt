@@ -100,7 +100,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     fun onStart() {
         registerToEventBus()
-        updateMobileSessions()
+
+        // we only want to do this after a crash/restart becuase MainActivity can be destroyed when the app is in the background
+        // https://stackoverflow.com/questions/59648644/foreground-service-content-intent-not-resuming-the-app-but-relaunching-it
+        if (settings.appRestarted()) {
+            updateMobileSessions()
+            settings.setAppNotRestarted()
+        }
         fixedSessionDownloadMeasurementsService.start()
     }
 

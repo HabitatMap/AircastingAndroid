@@ -9,11 +9,16 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
 
 /**
  * All of the devices need to connect (microphone/bluetooth) in the Foreground Service,
@@ -22,7 +27,11 @@ import org.greenrobot.eventbus.Subscribe
  */
 
 abstract class SensorService : Service() {
+    @Inject
+    lateinit var settings: Settings
+
     private val CHANNEL_ID = "Aircasting ForegroundService"
+    private val stoppedRecording = AtomicBoolean(false)
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -59,11 +68,13 @@ abstract class SensorService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
+
         stopSelf()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        setAppRestarted()
         unregisterFromEventBus()
         onStopService()
     }
@@ -85,6 +96,7 @@ abstract class SensorService : Service() {
 
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
+        stoppedRecording.set(true)
         stopSelf()
     }
 
@@ -94,5 +106,15 @@ abstract class SensorService : Service() {
 
     protected fun unregisterFromEventBus() {
         EventBus.getDefault().unregister(this);
+    }
+
+    private fun setAppRestarted() {
+        // After a crash or user killing the app we want to perform some action in MainActivity.onCreate()
+        // so we are saving information about app restart in Settings
+        // we need to do this becuase MainActivity can be destroyed when the app is in the background
+        // https://stackoverflow.com/questions/59648644/foreground-service-content-intent-not-resuming-the-app-but-relaunching-it
+        if (!stoppedRecording.get()) {
+            settings.setAppRestarted()
+        }
     }
 }
