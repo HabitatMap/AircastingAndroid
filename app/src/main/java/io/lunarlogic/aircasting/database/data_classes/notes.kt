@@ -52,4 +52,6 @@ interface NoteDao {
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
     fun loadLiveDataNotesBySessionId(sessionId: Long): LiveData<List<NoteDBObject?>>
+
+
 }

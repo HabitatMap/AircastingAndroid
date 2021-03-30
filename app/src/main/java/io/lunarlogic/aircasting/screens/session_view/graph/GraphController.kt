@@ -50,12 +50,12 @@ class GraphController(
         EventBus.getDefault().post(event)
     }
 
-    override fun editNoteClicked(markerId: String) { // how to deal with these to Edit functions below ???
-        EditNoteBottomSheet(this, markerId).show(fragmentManager) // todo: markerId here is in fact sessionUUID
+    override fun editNoteClicked(session: Session?, noteNumber: Int) { // how to deal with these to Edit functions below ???
+        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
     }
 
     override fun editNotePressed(markerId: String) {
-        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
+//        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
     }
 
     override fun deleteNotePressed(note: Note) {

@@ -36,7 +36,7 @@ class MapContainer: OnMapReadyCallback {
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
     private val mMapFragment: SupportMapFragment?
-    private val mMarkers: HashMap<String?, String?> = hashMapOf()  //todo: this is hashMap i need to have to know which marker was clicked, might switch to Long if needed
+    private val mMarkers: HashMap<String?, Int> = hashMapOf()  //todo: this is hashMap i need to have to know which marker was clicked, might switch to Long if needed
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -153,12 +153,12 @@ class MapContainer: OnMapReadyCallback {
             val marker = mMap?.addMarker(MarkerOptions()
                 .position(LatLng(note.latitude!!, note.longitude!!)) //todo: null assertions! be careful later <?>
                 .icon(icon))
-            mMarkers.put(marker?.id, mSessionPresenter?.sessionUUID)
+            mMarkers[marker?.id] = mSessionPresenter?.session!!.notes[note.number].number // todo: hmmm
         }
         mMap?.setOnMarkerClickListener { marker ->
-            val sessionUUID = mMarkers[marker.id] //todo: why this id is always the same ??
-            if (sessionUUID != null) { //todo: is this null check really neccesery
-                mListener?.editNoteClicked(sessionUUID)
+            val noteNumber = mMarkers[marker.id]
+            if (noteNumber != null) { //todo: is this null check really neccesery
+                mListener?.editNoteClicked(mSessionPresenter?.session, noteNumber) // the list is empty because we dont update the session here ?!?!?
             }
             false
         }

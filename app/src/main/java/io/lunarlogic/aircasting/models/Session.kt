@@ -177,7 +177,8 @@ class Session(
 
     val status get() = mStatus
     val streams get() = mStreams
-    val notes get() = mNotes
+    var notes get() = mNotes
+        set(value) {mNotes = value}
 
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod

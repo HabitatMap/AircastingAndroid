@@ -244,7 +244,7 @@ class GraphContainer: OnChartGestureListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 if(e?.icon != null) {
                     // todo: i might check entry list here to search if neighbour entry has note- it could increase field of icon touch
-                    mListener?.editNoteClicked(mSessionPresenter?.sessionUUID!!)
+//                    mListener?.editNoteClicked(mSessionPresenter?.session)
                     // todo: this one is a lil bit different than in MapContainer, how to retrieve sessionUUID here?
                     return
                 }

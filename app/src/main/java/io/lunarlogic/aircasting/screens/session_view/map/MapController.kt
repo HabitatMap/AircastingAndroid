@@ -82,17 +82,15 @@ class MapController(
         mViewMvc.addNote(note)
     }
 
-    override fun editNoteClicked(markerId: String) {
-        // todo: markerId here is in fact sessionUUID:
-        EditNoteBottomSheet(this, markerId).show(fragmentManager) // todo: how to deal with these two edit functions??
-        // TODO: analogically like in onEditSessionClicked in SessionsController, we need to remember that other people might edit the note and update it before load etc.
+    override fun editNoteClicked(session: Session?, noteNumber: Int) {
+        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager) // todo: how to deal with these two edit functions??
     }
 
-    override fun editNotePressed(markerId: String) {
-        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
+    override fun editNotePressed(markerId: String) { // Save changes pressed in fact <??>
+//        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
     }
 
-    override fun deleteNotePressed(note: Note) {
+    override fun deleteNotePressed(note: Note) { // Delete session on EditNoteBottomSheet pressed <?>
         TODO("Not yet implemented")
     }
 }

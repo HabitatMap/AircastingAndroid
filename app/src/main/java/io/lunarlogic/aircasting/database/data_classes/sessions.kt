@@ -139,6 +139,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
+    fun loadAllByTypeAndStatusForUpload(type: Session.Type, statuses: List<Int>): LiveData<List<SessionForUploadDBObject>>
+
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatus(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
 

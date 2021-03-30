@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
+import io.lunarlogic.aircasting.models.observers.MobileActiveSessionsObserver
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -40,10 +41,11 @@ class MobileActiveController(
     SessionsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
 
-    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc) //changed from ActiveSEssionsObserver
 
     override fun registerSessionsObserver() {
-        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
+//        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements()) //todo: loadMobileActiveSessionsForUpload
+        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsForUpload())
     }
 
     override fun unregisterSessionsObserver() {
@@ -120,7 +122,7 @@ class MobileActiveController(
     }
 
     override fun addNotePressed(session: Session, note: Note) {
-        session.notes.toMutableList().add(note)
+        session.notes.toMutableList().add(note) // todo: is this even needed ?!!??
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
     }

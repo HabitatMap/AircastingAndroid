@@ -35,6 +35,7 @@ class NoteObserver(
                                 Note(noteDBObject)
                             } //todo: this map a bit random for now
                         mSessionPresenter.notes = notesList
+                        mSessionPresenter.session!!.notes = notesList //todo: null assertion!!
 
                         onSessionChangedCallback.invoke(coroutineScope)
                     }

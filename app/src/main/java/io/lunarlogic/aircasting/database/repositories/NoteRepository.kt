@@ -19,5 +19,4 @@ class NoteRepository {
     fun loadNoteForSessionWithId(sessionId: Long): List<NoteDBObject?> {
         return mDatabase.notes().loadNotesBySessionId(sessionId)
     }
-
 }

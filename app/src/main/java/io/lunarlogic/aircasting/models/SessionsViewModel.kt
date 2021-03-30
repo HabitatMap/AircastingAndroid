@@ -25,6 +25,11 @@ class SessionsViewModel(): ViewModel() {
             Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
     }
 
+    fun loadMobileActiveSessionsForUpload(): LiveData<List<SessionForUploadDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusForUpload(
+            Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
+    }
+
     fun loadLiveDataSessionForUploadBySessionUUID(sessionUUID: String): LiveData<SessionForUploadDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionForUploadByUUID(sessionUUID)
     }

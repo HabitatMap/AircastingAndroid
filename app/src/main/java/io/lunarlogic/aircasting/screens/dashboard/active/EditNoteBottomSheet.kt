@@ -9,18 +9,20 @@ import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
-    private val sessionId: String //todo: soon maybe to be changed on Long- noteId
+    private val mSession: Session?, //todo: maybe i should do it in a smarter way ?
+    private val noteNumber: Int
 ): BottomSheet() {
     interface Listener {
         fun editNotePressed(markerId: String)
         fun deleteNotePressed(note: Note)
     }
-
+    private var mNote: Note? = null
     private var noteInput: EditText? = null
 
     override fun setup() {
         noteInput = contentView?.note_input
-        noteInput?.setText(sessionId) //todo: for now just to check if works fine
+        mNote = mSession?.notes?.get(noteNumber) // getting note by index will not always work (we need to check mSession.notes for a note with certain number
+        noteInput?.setText(mNote?.text) //todo: for now just to check if works fine
 
         val editNoteButton = contentView?.edit_note_button
         editNoteButton?.setOnClickListener {
