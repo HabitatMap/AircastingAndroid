@@ -34,7 +34,6 @@ abstract class SessionDetailsViewController(
         mViewMvc.registerListener(this)
 
         mSessionObserver.observe()
-
         mNotesObserver.observe()
     }
 

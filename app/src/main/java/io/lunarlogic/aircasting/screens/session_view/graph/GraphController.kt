@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.*
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewController
@@ -50,15 +48,15 @@ class GraphController(
         EventBus.getDefault().post(event)
     }
 
-    override fun editNoteClicked(session: Session?, noteNumber: Int) { // how to deal with these to Edit functions below ???
+    override fun editNoteClicked(session: Session?, noteNumber: Int) {
         EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
     }
 
     override fun saveChangesNotePressed(markerId: String) {
-//        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
+        TODO("Not yet implemented")  //to be filled when implementing edit note functionality, todo: change markerId to other variable
     }
 
     override fun deleteNotePressed(note: Note) {
-        TODO("Not yet implemented")
+        TODO("Not yet implemented") //to be filled when implementing delete note functionality
     }
 }

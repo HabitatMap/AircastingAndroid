@@ -71,7 +71,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     override fun addNote(note: Note) {
-        graphContainer.refresh(mSessionPresenter) // todo: for some reason refresh doesnt work <?>
+        graphContainer.refresh(mSessionPresenter)
     }
 
     private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {

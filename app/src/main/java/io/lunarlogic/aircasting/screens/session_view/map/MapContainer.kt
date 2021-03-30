@@ -36,7 +36,7 @@ class MapContainer: OnMapReadyCallback {
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
     private val mMapFragment: SupportMapFragment?
-    private val mMarkers: HashMap<String?, Int?> = hashMapOf()  //todo: this is hashMap i need to have to know which marker was clicked, might switch to Long if needed
+    private val mMarkers: HashMap<String?, Int?> = hashMapOf()  //todo: this is hashMap i need to know which map marker was clicked
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -172,7 +172,7 @@ class MapContainer: OnMapReadyCallback {
         val marker = mMap?.addMarker(MarkerOptions()
             .position(LatLng(note.latitude, note.longitude))
             .icon(icon))
-        mMarkers[marker?.id] = mSessionPresenter?.notes?.get(note.number)?.number  // todo: hmmm, i have to search in notes field with number equal note.number, not by the notes
+        mMarkers[marker?.id] = mSessionPresenter?.notes?.get(note.number)?.number  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
         mMap?.setOnMarkerClickListener { marker ->
             val noteNumber = mMarkers[marker.id]
             if (noteNumber != null) {
@@ -224,14 +224,6 @@ class MapContainer: OnMapReadyCallback {
     fun addMobileMeasurement(measurement: Measurement) {
         if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
-        }
-    }
-
-    fun addNote(note: Note) {
-        if (mSessionPresenter?.isRecording() == true) {
-//            val newNotes = mSessionPresenter?.notes?.toMutableList()?.add(note)
-//            mSessionPresenter?.notes = newNotes
-//            drawNoteMarker(note)
         }
     }
 

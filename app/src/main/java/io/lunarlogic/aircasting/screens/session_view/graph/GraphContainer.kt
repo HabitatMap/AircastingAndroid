@@ -2,8 +2,6 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Point
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -13,11 +11,8 @@ import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.google.common.collect.Iterables
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
@@ -181,11 +176,7 @@ class GraphContainer: OnChartGestureListener {
     private fun midnightPointLine(limit: Float): LimitLine {
         val line = LimitLine(limit, "")
         line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
-        line.lineColor = ResourcesCompat.getColor(
-            mContext.resources,
-            R.color.aircasting_grey_700,
-            null
-        )
+        line.lineColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_700, null)
         line.lineWidth = 1f
         line.enableDashedLine(20f, 10f, 0f)
         line.textColor = Color.BLACK
@@ -243,19 +234,11 @@ class GraphContainer: OnChartGestureListener {
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
-    override fun onChartGestureStart(
-        me: MotionEvent?,
-        lastPerformedGesture: ChartTouchListener.ChartGesture?
-    ) {}
+    override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
     override fun onChartLongPressed(me: MotionEvent?) {}
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartSingleTapped(me: MotionEvent?) {}
-    override fun onChartFling(
-        me1: MotionEvent?,
-        me2: MotionEvent?,
-        velocityX: Float,
-        velocityY: Float
-    ) {}
+    override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
         updateGraphOnGesture()
     }

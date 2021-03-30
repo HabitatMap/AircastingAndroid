@@ -67,7 +67,7 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun addNote(note: Note) {
         super.onNoteAdded(note)
-        mMapContainer.refresh(mSessionPresenter)  //todo: this sessionPResenter does not include this new note, have to refresh sessionPresenter before calling method somehow
+        mMapContainer.refresh(mSessionPresenter)
     }
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {

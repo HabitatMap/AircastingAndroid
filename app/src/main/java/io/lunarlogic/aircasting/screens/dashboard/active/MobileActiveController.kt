@@ -122,7 +122,6 @@ class MobileActiveController(
     }
 
     override fun addNotePressed(session: Session, note: Note) {
-        session.notes.toMutableList().add(note) // todo: is this even needed ?!!??
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
     }

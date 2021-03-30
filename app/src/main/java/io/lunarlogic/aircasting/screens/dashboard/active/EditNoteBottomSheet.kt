@@ -44,7 +44,7 @@ class EditNoteBottomSheet(
             dismiss()
         }
     }
-    
+
     private fun saveChanges() {
         TODO("Not yet implemented") // to be filled when working on edit note ticket
     }
@@ -56,6 +56,5 @@ class EditNoteBottomSheet(
     override fun layoutId(): Int {
         return R.layout.edit_note_bottom_sheet
     }
-
 
 }
