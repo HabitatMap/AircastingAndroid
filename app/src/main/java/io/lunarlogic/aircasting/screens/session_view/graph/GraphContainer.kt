@@ -240,22 +240,6 @@ class GraphContainer: OnChartGestureListener {
         mGraph.setMaxVisibleValueCount(10000000) //todo: added temporarily(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
 
         mGraph.onChartGestureListener = this
-        mGraph.setOnChartValueSelectedListener(object: OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                if(e?.icon != null) {
-                    // todo: i might check entry list here to search if neighbour entry has note- it could increase field of icon touch
-//                    mListener?.editNoteClicked(mSessionPresenter?.session)
-                    // todo: this one is a lil bit different than in MapContainer, how to retrieve sessionUUID here?
-                    return
-                }
-                Log.i("GRAPH", "MEASUREMENT WITHOUT NOTE SELECTED")
-            }
-
-            override fun onNothingSelected() {
-                Log.i("GRAPH", "NOTHING SELECTED")
-            }
-
-        })
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}

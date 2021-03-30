@@ -24,9 +24,14 @@ class EditNoteBottomSheet(
         mNote = mSession?.notes?.get(noteNumber) // getting note by index will not always work (we need to check mSession.notes for a note with certain number
         noteInput?.setText(mNote?.text)
 
-        val editNoteButton = contentView?.edit_note_button
-        editNoteButton?.setOnClickListener {
-            editNote()
+        val saveChangesButton = contentView?.save_changes_button
+        saveChangesButton?.setOnClickListener {
+            saveChanges()
+        }
+
+        val deleteNoteButton = contentView?.delete_note_button
+        deleteNoteButton?.setOnClickListener {
+            deleteNote()
         }
 
         val cancelButton = contentView?.cancel_button
@@ -39,9 +44,13 @@ class EditNoteBottomSheet(
             dismiss()
         }
     }
+    
+    private fun saveChanges() {
+        TODO("Not yet implemented") // to be filled when working on edit note ticket
+    }
 
-    private fun editNote() {
-        TODO("Not yet implemented")
+    private fun deleteNote() {
+        TODO("Not yet implemented") // to be filled when working on delete note ticket
     }
 
     override fun layoutId(): Int {
