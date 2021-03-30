@@ -54,7 +54,7 @@ class GraphController(
         EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
     }
 
-    override fun editNotePressed(markerId: String) {
+    override fun saveChangesNotePressed(markerId: String) {
 //        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
     }
 

@@ -86,7 +86,7 @@ class MapController(
         EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager) // todo: how to deal with these two edit functions??
     }
 
-    override fun editNotePressed(markerId: String) { // Save changes pressed in fact <??>
+    override fun saveChangesNotePressed(markerId: String) { // Save changes pressed in fact <??>
 //        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
     }
 

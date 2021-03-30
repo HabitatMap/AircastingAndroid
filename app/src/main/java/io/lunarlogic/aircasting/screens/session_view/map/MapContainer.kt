@@ -148,19 +148,8 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun drawNotes() {
-        val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_note_icon)
         for (note in mNotes) {
-            val marker = mMap?.addMarker(MarkerOptions()
-                .position(LatLng(note.latitude!!, note.longitude!!)) //todo: null assertions! be careful later <?>
-                .icon(icon))
-            mMarkers[marker?.id] = mSessionPresenter?.session!!.notes[note.number].number // todo: hmmm
-        }
-        mMap?.setOnMarkerClickListener { marker ->
-            val noteNumber = mMarkers[marker.id]
-            if (noteNumber != null) { //todo: is this null check really neccesery
-                mListener?.editNoteClicked(mSessionPresenter?.session, noteNumber) // the list is empty because we dont update the session here ?!?!?
-            }
-            false
+            drawNoteMarker(note)
         }
     }
 
@@ -174,6 +163,23 @@ class MapContainer: OnMapReadyCallback {
                 .position(point)
                 .icon(icon)
         )
+    }
+
+    private fun drawNoteMarker(note: Note) {
+        if (note.latitude == null || note.longitude == null) return
+
+        val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_note_icon)
+        val marker = mMap?.addMarker(MarkerOptions()
+            .position(LatLng(note.latitude, note.longitude))
+            .icon(icon))
+        mMarkers[marker?.id] = mSessionPresenter?.session!!.notes[note.number].number  // todo: hmmm, i have to search in notes field with number equal note.number, not by the notes
+        mMap?.setOnMarkerClickListener { marker ->
+            val noteNumber = mMarkers[marker.id]
+            if (noteNumber != null) {
+                mListener?.editNoteClicked(mSessionPresenter?.session, noteNumber)
+            }
+            false
+        }
     }
 
     private fun animateCameraToSession() {
@@ -218,6 +224,14 @@ class MapContainer: OnMapReadyCallback {
     fun addMobileMeasurement(measurement: Measurement) {
         if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
+        }
+    }
+
+    fun addNote(note: Note) {
+        if (mSessionPresenter?.isRecording() == true) {
+//            val newNotes = mSessionPresenter?.notes?.toMutableList()?.add(note)
+//            mSessionPresenter?.notes = newNotes
+//            drawNoteMarker(note)
         }
     }
 

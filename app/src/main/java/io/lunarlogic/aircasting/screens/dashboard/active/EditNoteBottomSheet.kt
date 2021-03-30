@@ -13,7 +13,7 @@ class EditNoteBottomSheet(
     private val noteNumber: Int
 ): BottomSheet() {
     interface Listener {
-        fun editNotePressed(markerId: String)
+        fun saveChangesNotePressed(markerId: String)
         fun deleteNotePressed(note: Note)
     }
     private var mNote: Note? = null
@@ -22,7 +22,7 @@ class EditNoteBottomSheet(
     override fun setup() {
         noteInput = contentView?.note_input
         mNote = mSession?.notes?.get(noteNumber) // getting note by index will not always work (we need to check mSession.notes for a note with certain number
-        noteInput?.setText(mNote?.text) //todo: for now just to check if works fine
+        noteInput?.setText(mNote?.text)
 
         val editNoteButton = contentView?.edit_note_button
         editNoteButton?.setOnClickListener {
