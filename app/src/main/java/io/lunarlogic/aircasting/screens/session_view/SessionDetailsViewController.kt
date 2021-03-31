@@ -25,6 +25,7 @@ abstract class SessionDetailsViewController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
+        reloadSession()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

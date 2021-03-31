@@ -99,6 +99,7 @@ class MapContainer: OnMapReadyCallback {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
+        println("MARYSIA: session presenter selected stream ${mSessionPresenter?.selectedStream}")
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
 
         if (mSessionPresenter?.isFixed() == true) {
@@ -178,6 +179,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun animateCameraToMobileSession() {
+        println("MARYSIA: animatecamera to mobile session, mMeasurements count ${mMeasurements.size}")
         if (mMeasurements.isEmpty()) return
 
         val boundingBox = SessionBoundingBox.get(mMeasurements)
