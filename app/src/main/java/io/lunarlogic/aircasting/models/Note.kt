@@ -5,7 +5,7 @@ import java.util.*
 
 class Note(
     val date: Date,
-    val text: String,
+    var text: String,
     val latitude: Double?,
     val longitude: Double?,
     val number: Int) {  //,todo: val photoPath: String

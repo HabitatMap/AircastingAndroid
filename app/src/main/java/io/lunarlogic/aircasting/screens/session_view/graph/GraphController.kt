@@ -48,15 +48,15 @@ class GraphController(
         EventBus.getDefault().post(event)
     }
 
-    override fun editNoteClicked(session: Session?, noteNumber: Int) {
+    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
         EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
     }
 
-    override fun saveChangesNotePressed(markerId: String) {
-        TODO("Not yet implemented")  //to be filled when implementing edit note functionality, todo: change markerId to other variable
+    override fun saveChangesNotePressed(note: Note?, session: Session?) {
+        TODO("Not yet implemented")  //to be filled when implementing edit note functionality
     }
 
-    override fun deleteNotePressed(note: Note) {
+    override fun deleteNotePressed(note: Note?) {
         TODO("Not yet implemented") //to be filled when implementing delete note functionality
     }
 }

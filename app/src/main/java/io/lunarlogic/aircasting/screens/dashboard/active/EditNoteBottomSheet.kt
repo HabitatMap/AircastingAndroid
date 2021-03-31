@@ -13,8 +13,8 @@ class EditNoteBottomSheet(
     private val noteNumber: Int
 ): BottomSheet() {
     interface Listener {
-        fun saveChangesNotePressed(markerId: String)
-        fun deleteNotePressed(note: Note)
+        fun saveChangesNotePressed(note: Note?, session: Session?)
+        fun deleteNotePressed(note: Note?)
     }
     private var mNote: Note? = null
     private var noteInput: EditText? = null
@@ -27,11 +27,13 @@ class EditNoteBottomSheet(
         val saveChangesButton = contentView?.save_changes_button
         saveChangesButton?.setOnClickListener {
             saveChanges()
+            dismiss()
         }
 
         val deleteNoteButton = contentView?.delete_note_button
         deleteNoteButton?.setOnClickListener {
             deleteNote()
+            dismiss()
         }
 
         val cancelButton = contentView?.cancel_button
@@ -46,7 +48,10 @@ class EditNoteBottomSheet(
     }
 
     private fun saveChanges() {
-        TODO("Not yet implemented") // to be filled when working on edit note ticket
+        val noteText = noteInput?.text.toString().trim()
+        mNote?.text = noteText
+        mListener.saveChangesNotePressed(mNote, mSession)
+        //TODO("Not yet implemented") // to be filled when working on edit note ticket
     }
 
     private fun deleteNote() {

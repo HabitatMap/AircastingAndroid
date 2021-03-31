@@ -22,7 +22,7 @@ class GraphDataGenerator(
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
-    fun generate(samples: List<Measurement>, noteSamples: List<Note>?, limit: Int = DEFAULT_LIMIT): Result {
+    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT): Result {
         reset()
 
         val entries = ArrayList<Entry>()
@@ -45,14 +45,14 @@ class GraphDataGenerator(
                 fill -= 1.0
                 val date = getAverageDate()
 
-                if (noteSamples != null) { //todo: null check really needed?
-                    for (note in noteSamples) {
+                if (notes != null) { //todo: null check really needed?
+                    for (note in notes) {
                         if (note.date.month == date.month &&
                             note.date.day == date.day &&
                             note.date.hours == date.hours &&
                             note.date.minutes == date.minutes &&
                             note.date.seconds == date.seconds &&
-                                note != previousNote) {
+                                note != previousNote) { // TODO: check if this condition is still needed after fixing bug with 2 measurements in 1 second
                             hasNote = true
                             previousNote = note
                         }

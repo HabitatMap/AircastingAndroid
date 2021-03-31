@@ -95,12 +95,12 @@ class Session(
         }
     }
 
-    constructor(sessionForUploadDBObject: SessionForUploadDBObject):
-            this(sessionForUploadDBObject.session) {
-        this.mNotes = sessionForUploadDBObject.notes.map { noteDBObject ->
+    constructor(completeSessionDBObject: CompleteSessionDBObject):
+            this(completeSessionDBObject.session) {
+        this.mNotes = completeSessionDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }
-        this.mStreams = sessionForUploadDBObject.streams.map { streamWithMeasurementsDBObject ->
+        this.mStreams = completeSessionDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
@@ -274,7 +274,7 @@ class Session(
                 session.measurementsCount() != measurementsCount() ||
                 session.status != status ||
                 session.endTime != endTime ||
-                session.notes != notes
+                session.notes.size != notes.size //TODO: when implementing editing notes, we have to check elements of this list too
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {

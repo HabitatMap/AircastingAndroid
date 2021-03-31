@@ -2,10 +2,8 @@ package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
 import android.location.Location
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
@@ -13,7 +11,6 @@ import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
@@ -36,7 +33,7 @@ class MapContainer: OnMapReadyCallback {
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
     private val mMapFragment: SupportMapFragment?
-    private val mMarkers: HashMap<String?, Int?> = hashMapOf()  //todo: this is hashMap i need to know which map marker was clicked
+    private val mMarkers: HashMap<String?, Int?> = hashMapOf()  // TODO: Clear this variable onDestroy to prevent memory leaks
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -102,7 +99,7 @@ class MapContainer: OnMapReadyCallback {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
-        mNotes = mSessionPresenter?.notes!!
+        mNotes = mSessionPresenter?.session?.notes!!
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -172,11 +169,11 @@ class MapContainer: OnMapReadyCallback {
         val marker = mMap?.addMarker(MarkerOptions()
             .position(LatLng(note.latitude, note.longitude))
             .icon(icon))
-        mMarkers[marker?.id] = mSessionPresenter?.notes?.get(note.number)?.number  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
+        mMarkers[marker?.id] = mSessionPresenter?.session?.notes?.get(note.number)?.number  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
         mMap?.setOnMarkerClickListener { marker ->
             val noteNumber = mMarkers[marker.id]
             if (noteNumber != null) {
-                mListener?.editNoteClicked(mSessionPresenter?.session, noteNumber)
+                mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
             }
             false
         }

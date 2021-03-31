@@ -57,6 +57,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         addNote(event)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: NoteEditedEvent) {
+        // TODO: editNote(event)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: NoteDeletedEvent) {
+        // TODO: deleteNote(event)
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)
@@ -256,5 +266,19 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 noteRepository.insert(sessionId, event.note)
             }
         }
+    }
+
+    private fun editNote(event: NoteEditedEvent) {
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid) //todo: null assertions!
+            sessionId?.let{
+//                noteRepository.update(sessionId, event.note!!) //todo: check if "OnConflictStrategy.REPLACE" works fine here
+            }
+        }
+//        TODO("Editing note in Room database to be implemented")
+    }
+
+    private fun deleteNote(event: NoteDeletedEvent) {
+        TODO("Deleting note from Room database to be implemented")
     }
 }

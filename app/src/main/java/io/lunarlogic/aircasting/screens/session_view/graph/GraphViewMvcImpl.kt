@@ -25,7 +25,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample, this::notesSample)
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample, notes())
         mLoader = rootView?.loader_graph
         showLoader(mLoader)
     }
@@ -36,8 +36,8 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
     }
 
-    open fun notesSample(): List<Note> {
-        return mSessionPresenter?.notes ?: listOf<Note>()
+    open fun notes(): List<Note> {
+        return mSessionPresenter?.session?.notes ?: listOf<Note>()
     }
 
     override fun layoutId(): Int {

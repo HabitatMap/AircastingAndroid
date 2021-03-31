@@ -152,9 +152,9 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun onNoteAdded(note: Note) {
-        val oldNotes = mSessionPresenter?.notes
+        val oldNotes = mSessionPresenter?.session?.notes
         if (oldNotes != null) {
-            mSessionPresenter?.notes = oldNotes + note
+            mSessionPresenter?.session?.notes = oldNotes + note
         }
     }
 

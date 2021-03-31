@@ -13,7 +13,6 @@ import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.models.observers.MobileActiveSessionsObserver
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
@@ -45,7 +44,7 @@ class MobileActiveController(
 
     override fun registerSessionsObserver() {
 //        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements()) //todo: loadMobileActiveSessionsForUpload
-        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsForUpload())
+        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveCompleteSessions())
     }
 
     override fun unregisterSessionsObserver() {

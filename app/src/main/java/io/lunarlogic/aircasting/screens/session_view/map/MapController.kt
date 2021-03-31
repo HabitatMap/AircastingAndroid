@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.repositories.NoteRepository
 import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
+import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
@@ -82,15 +83,17 @@ class MapController(
         mViewMvc.addNote(note)
     }
 
-    override fun editNoteClicked(session: Session?, noteNumber: Int) {
-        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager) // todo: how to deal with these two edit functions??
+    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
+        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
     }
 
-    override fun saveChangesNotePressed(markerId: String) { // Save changes pressed in fact <??>
-//        EditNoteBottomSheet(this, markerId).show(fragmentManager) //todo: note.text just temporary i need to pass sessionId here somehow ??
+    override fun saveChangesNotePressed(note: Note?, session: Session?) { // buttons from edit note bottom sheet
+        TODO("Not yet implemented, NotEditedEvent to be sent here <?>")
+//        val event = NoteEditedEvent(note, session)
+//        EventBus.getDefault().post(event)
     }
 
-    override fun deleteNotePressed(note: Note) { // Delete session on EditNoteBottomSheet pressed <?>
-        TODO("Not yet implemented")
+    override fun deleteNotePressed(note: Note?) { // Delete session on EditNoteBottomSheet pressed
+        TODO("Not yet implemented, NoteDeletedEvent to be sent here <?>")
     }
 }

@@ -45,8 +45,7 @@ class GraphContainer: OnChartGestureListener {
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
     private var mGetMeasurementsSample: () -> List<Measurement>
     private var mMeasurementsSample: List<Measurement> = listOf()
-    private var mGetNotesSample: () -> List<Note>?
-    private var mNotesSample: List<Note>? = listOf()
+    private var mNotes: List<Note>? = listOf()
 
     constructor(
         rootView: View?,
@@ -54,7 +53,7 @@ class GraphContainer: OnChartGestureListener {
         defaultZoomSpan: Int?,
         onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit,
         getMeasurementsSample: () -> List<Measurement>,
-        getNoteSample: () -> List<Note>?
+        getNoteSample: List<Note>?
     ) {
         mContext = context
         mGraph = rootView?.graph
@@ -63,7 +62,7 @@ class GraphContainer: OnChartGestureListener {
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
-        mGetNotesSample = getNoteSample
+        mNotes = getNoteSample
 
         mGraphDataGenerator = GraphDataGenerator(mContext)
 
@@ -82,7 +81,7 @@ class GraphContainer: OnChartGestureListener {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
-        mNotesSample = mGetNotesSample.invoke()
+        mNotes = mSessionPresenter?.session?.notes
 
         drawSession()
         showGraph()
@@ -111,7 +110,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotesSample)
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes)
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -228,7 +227,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
-        mGraph.setMaxVisibleValueCount(10000000) //todo: added temporarily(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
+        mGraph.setMaxVisibleValueCount(10000) //todo: added temporarily(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
 
         mGraph.onChartGestureListener = this
     }

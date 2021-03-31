@@ -17,22 +17,20 @@ class SessionPresenter() {
     var initialSensorName: String? = null
     var visibleTimeSpan: ClosedRange<Date>? = null
     var shouldHideMap: Boolean = false
-    var notes: List<Note> = listOf()
 
     constructor(
         session: Session,
         sensorThresholds: HashMap<String, SensorThreshold>,
         selectedStream: MeasurementStream? = null,
         expanded: Boolean = false,
-        loading: Boolean = false,
-        notes: List<Note> = listOf()
+        loading: Boolean = false
     ): this() {
         this.session = session
         this.selectedStream = selectedStream ?: defaultStream(session)
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-        this.notes = notes
+
         if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.chartData = ChartData(session)
         }
