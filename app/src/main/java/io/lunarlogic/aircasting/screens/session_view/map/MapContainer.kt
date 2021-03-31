@@ -87,7 +87,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun setup() {
-        counter = 0
+//        counter = 0
         clearMap()
 
         mMap?.isBuildingsEnabled = false
@@ -219,11 +219,11 @@ class MapContainer: OnMapReadyCallback {
         drawLastMeasurementMarker(colorPoint?.point, colorPoint?.color)
     }
 
-    var counter = 0
+//    var counter = 0
 
     private fun drawMobileMeasurement(colorPoint: ColorPoint?) {
         if (colorPoint == null) return
-        counter += 1
+//        counter += 1
 
         mMeasurementPoints.add(colorPoint.point)
         mMeasurementSpans.add(StyleSpan(colorPoint.color))
@@ -232,20 +232,20 @@ class MapContainer: OnMapReadyCallback {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
-        if (counter >= 10 && counter % 5 == 0) {
-            val newMeasurements = mMeasurementPoints.take(mMeasurementPoints.size - 4)
-            mMeasurementPoints.clear()
-            mMeasurementPoints.addAll(newMeasurements)
-
-            val newSpans = mMeasurementSpans.take(mMeasurementSpans.size - 4)
-            mMeasurementSpans.clear()
-            mMeasurementSpans.addAll(newSpans)
-
-            mMeasurementsLine?.setSpans(mMeasurementSpans)
-        }
+//        if (counter >= 10 && counter % 5 == 0) {
+//            val newMeasurements = mMeasurementPoints.take(mMeasurementPoints.size - 4)
+//            mMeasurementPoints.clear()
+//            mMeasurementPoints.addAll(newMeasurements)
+//
+//            val newSpans = mMeasurementSpans.take(mMeasurementSpans.size - 4)
+//            mMeasurementSpans.clear()
+//            mMeasurementSpans.addAll(newSpans)
+//
+//            mMeasurementsLine?.setSpans(mMeasurementSpans)
+//        }
 
         mMeasurementsLine?.setPoints(mMeasurementPoints)
-
+        mMeasurementsLine?.setSpans(mMeasurementSpans)
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
 
