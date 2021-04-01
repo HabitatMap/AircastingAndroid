@@ -15,8 +15,8 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
     }
 
-    fun reloadSession(uuid: String): SessionWithStreamsDBObject? {
-        return mDatabase.sessions().reloadSessionAndStreamsByUUID(uuid)
+    fun reloadSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
+        return mDatabase.sessions().reloadSessionAndMeasurementsByUUID(uuid)
     }
 
     fun reloadSessionWithMeasurements(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
