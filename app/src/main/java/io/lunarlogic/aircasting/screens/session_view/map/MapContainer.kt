@@ -116,6 +116,9 @@ class MapContainer: OnMapReadyCallback {
             setup()
         }
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
+        mSessionPresenter?.session?.streams?.forEach {
+            it.clearMeasurements()
+        }
     }
 
     fun destroy() {
