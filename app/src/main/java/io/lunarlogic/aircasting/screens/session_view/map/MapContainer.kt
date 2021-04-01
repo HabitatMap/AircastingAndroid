@@ -33,7 +33,7 @@ class MapContainer: OnMapReadyCallback {
     private var mSupportFragmentManager: FragmentManager?
 
     private var mSessionPresenter: SessionPresenter? = null
-    private var mMeasurements: List<Measurement> = emptyList()
+    private var mMeasurements: MutableList<Measurement> = mutableListOf()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
@@ -97,10 +97,16 @@ class MapContainer: OnMapReadyCallback {
         if (mMeasurements.isNotEmpty()) showMap()
     }
 
-    fun bindSession(sessionPresenter: SessionPresenter?) {
+    fun bindSession(sessionPresenter: SessionPresenter?, refresh: Boolean = false) {
         mSessionPresenter = sessionPresenter
-        println("MARYSIA: session presenter selected stream ${mSessionPresenter?.selectedStream}")
-        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        if (mMeasurements.isEmpty() || refresh) {
+            val measurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+            mMeasurements = if (measurements.isEmpty()) {
+                mutableListOf()
+            } else {
+                measurements as MutableList<Measurement>
+            }
+        }
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -116,9 +122,6 @@ class MapContainer: OnMapReadyCallback {
         mMap = null
         mContext = null
         mMapFragment?.onDestroy()
-        println("MARYSIA: parent fragmetn "+mMapFragment?.parentFragment)
-        println("MARYSIA: parent view "+mMapFragment?.view)
-        println("MARYSIA: calling map onDestroy, mapFragment: "+mMapFragment)
         mMapFragment?.let {
             mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
         }
@@ -179,7 +182,6 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun animateCameraToMobileSession() {
-        println("MARYSIA: animatecamera to mobile session, mMeasurements count ${mMeasurements.size}")
         if (mMeasurements.isEmpty()) return
 
         val boundingBox = SessionBoundingBox.get(mMeasurements)
@@ -211,6 +213,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun addMobileMeasurement(measurement: Measurement) {
+        mMeasurements.add(measurement)
         if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
         }
@@ -262,7 +265,7 @@ class MapContainer: OnMapReadyCallback {
 
     fun refresh(sessionPresenter: SessionPresenter?) {
         clearMap()
-        bindSession(sessionPresenter)
+        bindSession(sessionPresenter, true)
         drawSession()
     }
 

@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.MeasurementStreamChangedEvent
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -26,18 +27,25 @@ abstract class SessionDetailsViewController(
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
         reloadSession()
+        mViewMvc?.bindSession(mSessionPresenter)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        reloadSession()
-
+//        reloadSession()
+        println("MARYSIA: Adding Measurement, not reloading session")
         if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
             mViewMvc?.addMeasurement(mSessionPresenter, measurement)
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: MeasurementStreamChangedEvent) {
+        println("MARYSIA: Changing stream, reloading session")
+        reloadSession()
     }
 
     private fun reloadSession() {

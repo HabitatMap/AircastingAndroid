@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.events.MeasurementStreamChangedEvent
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
@@ -21,6 +22,7 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.session_details.view.*
 import kotlinx.android.synthetic.main.measurements_table.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
+import org.greenrobot.eventbus.EventBus
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -95,7 +97,10 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) { //TODO: check if works fine after Marysia's changes with memory leaks!
             bindSessionDetails()
             showSlider()
-            mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
+            mMeasurementsTableContainer.bindSession(
+                mSessionPresenter,
+                this::onMeasurementStreamChanged
+            )
             bindStatisticsContainer()
 
             mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
@@ -140,6 +145,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+        EventBus.getDefault().post(MeasurementStreamChangedEvent())
         mSessionPresenter?.selectedStream = measurementStream
         mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
