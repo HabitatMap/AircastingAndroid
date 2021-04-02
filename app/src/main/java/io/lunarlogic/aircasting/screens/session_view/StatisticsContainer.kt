@@ -53,7 +53,9 @@ class StatisticsContainer {
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
         mVisibleTimeSpan = sessionPresenter?.visibleTimeSpan
 
-        mStatisticsView?.visibility = View.VISIBLE
+        if (stream != null) {
+            mStatisticsView?.visibility = View.VISIBLE
+        }
 
         bindLastMeasurement(sessionPresenter)
         bindAvgStatistics(stream)

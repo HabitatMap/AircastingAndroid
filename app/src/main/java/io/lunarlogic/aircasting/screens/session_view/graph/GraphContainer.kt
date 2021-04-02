@@ -71,7 +71,10 @@ class GraphContainer: OnChartGestureListener {
         mMeasurementsSample = mGetMeasurementsSample.invoke()
 
         drawSession()
-        showGraph()
+        if (mMeasurementsSample.isNotEmpty()) {
+            showGraph()
+        }
+
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
