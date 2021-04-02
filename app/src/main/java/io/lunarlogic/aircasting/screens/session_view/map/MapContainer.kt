@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
@@ -40,6 +41,8 @@ class MapContainer: OnMapReadyCallback {
     private val mMeasurementPoints = ArrayList<LatLng>()
     private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
+    private var LEVEL_SPANS: Array<StyleSpan>
+    private val FALLBACK_SPAN = StyleSpan(R.color.aircasting_grey_700)
 
     private val status = AtomicInteger(Status.INIT.value)
 
@@ -65,6 +68,12 @@ class MapContainer: OnMapReadyCallback {
             locate()
         }
         mLocateButton?.visibility = View.GONE
+
+        LEVEL_SPANS = arrayOf(
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.LOW)),
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.MEDIUM)),
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.HIGH)),
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.EXTREMELY_HIGH)))
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -106,6 +115,7 @@ class MapContainer: OnMapReadyCallback {
             } else {
                 measurements as MutableList<Measurement>
             }
+
         }
 
         if (mSessionPresenter?.isFixed() == true) {
@@ -119,6 +129,11 @@ class MapContainer: OnMapReadyCallback {
         mSessionPresenter?.session?.streams?.forEach {
             it.clearMeasurements()
         }
+        mSessionPresenter?.selectedStream?.clearMeasurements()
+        println("MARYSIA: +mMeasurements.size): "+mMeasurements.size)
+        println("MARYSIA: selected stream measurements: "+mSessionPresenter?.selectedStream?.measurements?.size)
+        println("MARYSIA: +mSessionPresenter?.session.streams.size): "+mSessionPresenter?.session?.streams?.size)
+        println("MARYSIA: +mSessionPresenter?.session?.streams?.first()?.measurements?.size): "+mSessionPresenter?.session?.streams?.first()?.measurements?.size)
     }
 
     fun destroy() {
@@ -150,7 +165,7 @@ class MapContainer: OnMapReadyCallback {
             latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
 
             if (i > 0) {
-                mMeasurementSpans.add(StyleSpan(latestColor))
+                mMeasurementSpans.add(measurementSpan(measurement))
             }
             latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
             mMeasurementPoints.add(latestPoint)
@@ -218,7 +233,7 @@ class MapContainer: OnMapReadyCallback {
     fun addMobileMeasurement(measurement: Measurement) {
         mMeasurements.add(measurement)
         if (mSessionPresenter?.isRecording() == true) {
-            drawMobileMeasurement(measurementColorPoint(measurement))
+            drawMobileMeasurement(measurement)
         }
     }
 
@@ -234,7 +249,7 @@ class MapContainer: OnMapReadyCallback {
 //        counter += 1
 
         mMeasurementPoints.add(colorPoint.point)
-        mMeasurementSpans.add(StyleSpan(colorPoint.color))
+//        mMeasurementSpans.add(StyleSpan(colorPoint.color))
 
         if (mMeasurementsLine == null) {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
@@ -253,6 +268,21 @@ class MapContainer: OnMapReadyCallback {
 //        }
 
         mMeasurementsLine?.setPoints(mMeasurementPoints)
+//        mMeasurementsLine?.setSpans(mMeasurementSpans)
+        drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
+    }
+
+    private fun drawMobileMeasurement(measurement: Measurement) {
+        val colorPoint = measurementColorPoint(measurement) ?: return
+
+        mMeasurementPoints.add(colorPoint.point)
+        mMeasurementSpans.add(measurementSpan(measurement))
+
+        if (mMeasurementsLine == null) {
+            mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
+        }
+
+        mMeasurementsLine?.setPoints(mMeasurementPoints)
         mMeasurementsLine?.setSpans(mMeasurementSpans)
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
@@ -264,6 +294,20 @@ class MapContainer: OnMapReadyCallback {
         val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
 
         return ColorPoint(point, color)
+    }
+
+    private fun measurementSpan(measurement: Measurement) : StyleSpan {
+        if (measurement.latitude == null || measurement.longitude == null) return FALLBACK_SPAN
+        println("MARYSIA: measurement treshold ${mSessionPresenter?.selectedSensorThreshold()}")
+        val treshold = mSessionPresenter?.selectedSensorThreshold() ?: return FALLBACK_SPAN
+        val level = measurement.getLevel(treshold)
+        println("MARYSIA: measurement level ${level.value}")
+        val span = when (level) {
+            Measurement.Level.EXTREMELY_LOW -> FALLBACK_SPAN
+            Measurement.Level.EXTREMELY_HIGH -> FALLBACK_SPAN
+            else -> LEVEL_SPANS[level.value]
+        }
+        return span
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {

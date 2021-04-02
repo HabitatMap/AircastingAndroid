@@ -42,7 +42,7 @@ class MeasurementColor {
             )
         }
 
-        private fun colorForLevel(context: Context?, level: Measurement.Level): Int {
+        fun colorForLevel(context: Context?, level: Measurement.Level): Int {
             val colorId = when (level) {
                 Measurement.Level.EXTREMELY_LOW -> FALLBACK_COLOR
                 Measurement.Level.EXTREMELY_HIGH -> FALLBACK_COLOR
