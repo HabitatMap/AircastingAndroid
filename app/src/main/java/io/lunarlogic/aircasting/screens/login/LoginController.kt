@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.new_session
 
-import android.content.Context
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -34,7 +33,7 @@ class  LoginController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onLoginClicked(username: String, password: String) {
+    override fun onLoginClicked(profile_name: String, password: String) {
         val successCallback = {
             MainActivity.start(mContextActivity)
         }
@@ -44,7 +43,7 @@ class  LoginController(
             val toast = Toast.makeText(mContextActivity, message, Toast.LENGTH_LONG)
             toast.show()
         }
-        mLoginService.performLogin(username, password, successCallback, errorCallback)
+        mLoginService.performLogin(profile_name, password, successCallback, errorCallback)
     }
 
     override fun onForgotPasswordClicked() {

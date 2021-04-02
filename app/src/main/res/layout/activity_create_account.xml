@@ -99,10 +99,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/username"
+            android:id="@+id/profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/username_hint"
+            android:hint="@string/profile_name_hint"
             app:hintEnabled="false"
             app:errorEnabled="true"
             style="@style/Widget.Aircasting.TextInputLayout"
@@ -114,11 +114,11 @@
             app:layout_constraintRight_toRightOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username_input"
+                android:id="@+id/profile_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="60dp"
-                android:hint="@string/username_hint"
+                android:hint="@string/profile_name_hint"
                 android:inputType="textNoSuggestions"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                 android:textColor="@color/aircasting_grey_700" />
@@ -137,7 +137,7 @@
             android:layout_marginTop="@dimen/keyline_3"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/username"
+            app:layout_constraintTop_toBottomOf="@id/profile_name"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 

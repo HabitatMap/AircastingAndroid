@@ -10,7 +10,6 @@ import io.lunarlogic.aircasting.networking.params.CreateAccountParams
 import io.lunarlogic.aircasting.networking.responses.CreateAccountErrorResponse
 import io.lunarlogic.aircasting.networking.responses.UserResponse
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import okhttp3.Interceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,13 +20,13 @@ class CreateAccountService(
     private val mApiServiceFactory: ApiServiceFactory
 ) {
     fun performCreateAccount(
-        username: String, password: String, email: String, send_emails: Boolean,
+        profile_name: String, password: String, email: String, send_emails: Boolean,
         successCallback: () -> Unit,
         errorCallback: (CreateAccountErrorResponse) -> Unit
     ) {
         val apiService = mApiServiceFactory.get(emptyList())
         val createAccountParams = CreateAccountParams(
-            username,
+            profile_name,
             password,
             email,
             send_emails

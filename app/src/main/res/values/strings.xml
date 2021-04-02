@@ -2,10 +2,10 @@
     <string name="app_name">AirCasting</string>
 
     <!-- Sign in -->
-    <string name="invalid_credentials_message">Incorrect username or password.</string>
+    <string name="invalid_credentials_message">Incorrect profile name or password.</string>
     <string name="login_header">Sign in</string>
     <string name="login_description">to record and map your environment</string>
-    <string name="username_hint">Username</string>
+    <string name="profile_name_hint">Profile name</string>
     <string name="password_hint">Password</string>
     <string name="login_button">Sign in</string>
     <string name="title_dashboard">Dashboard</string>

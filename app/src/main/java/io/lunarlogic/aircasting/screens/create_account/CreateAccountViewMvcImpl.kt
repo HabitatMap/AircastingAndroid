@@ -1,13 +1,11 @@
 package io.lunarlogic.aircasting.screens.create_account
 
-import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
@@ -42,13 +40,13 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
     }
 
     private fun onCreateAccountClicked() {
-        val username = getEditTextValue(R.id.username_input)
+        val profile_name = getEditTextValue(R.id.profile_name_input)
         val password = getEditTextValue(R.id.password_input)
         val email = getEditTextValue(R.id.email_input)
         val send_emails = findViewById<CheckBox>(R.id.send_emails_input).isChecked
 
         for (listener in listeners) {
-            listener.onCreateAccountClicked(username, password, email, send_emails)
+            listener.onCreateAccountClicked(profile_name, password, email, send_emails)
         }
     }
 
@@ -60,7 +58,7 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
 
     override fun showErrors(errorRespose: CreateAccountErrorResponse) {
         showError("email", errorRespose)
-        showError("username", errorRespose)
+        showError("profile_name", errorRespose)
         showError("password", errorRespose)
     }
 

@@ -15,11 +15,11 @@ class LoginService(
     private val mErrorHandler: ErrorHandler,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
-    fun performLogin(username: String, password: String,
+    fun performLogin(profile_name: String, password: String,
                      successCallback: () -> Unit,
                      errorCallback: () -> Unit
     ) {
-        val apiService = mApiServiceFactory.get(username, password)
+        val apiService = mApiServiceFactory.get(profile_name, password)
         val call = apiService.login()
 
         call.enqueue(object : Callback<UserResponse> {

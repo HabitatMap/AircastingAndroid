@@ -8,7 +8,6 @@ import io.lunarlogic.aircasting.networking.responses.*
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -86,10 +85,10 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         return retrofit.create<ApiService>(ApiService::class.java)
     }
 
-    fun get(username: String, password: String): ApiService {
+    fun get(profile_name: String, password: String): ApiService {
         val credentialsEncoded =
             encodedCredentials(
-                username,
+                profile_name,
                 password
             )
         val authInterceptor =
@@ -122,8 +121,8 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
     }
 
-    private fun encodedCredentials(username: String, password: String): String {
-        val credentials = "${username}:${password}"
+    private fun encodedCredentials(profile_name: String, password: String): String {
+        val credentials = "${profile_name}:${password}"
         val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         return "Basic ${encodedCredentials}"
     }
