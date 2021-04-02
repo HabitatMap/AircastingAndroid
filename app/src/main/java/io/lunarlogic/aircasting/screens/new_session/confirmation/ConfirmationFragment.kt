@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import javax.inject.Inject
 
-class ConfirmationFragment() : Fragment() {
-    private var controller: ConfirmationController? = null
+class ConfirmationFragment() : BaseFragment<ConfirmationViewMvcImpl, ConfirmationController>() {
     lateinit var listener: ConfirmationViewMvc.Listener
     lateinit var session: Session
-    private var view: ConfirmationViewMvc? = null
 
     @Inject
     lateinit var settings: Settings
@@ -43,19 +42,5 @@ class ConfirmationFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        controller?.onDestroy()
-        controller = null
-        view = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        controller?.onDestroy()
-        controller = null
-        view = null
     }
 }

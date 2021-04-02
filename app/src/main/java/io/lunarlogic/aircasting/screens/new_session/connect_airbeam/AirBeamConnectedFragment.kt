@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 
-class AirBeamConnectedFragment() : Fragment() {
+class AirBeamConnectedFragment() : BaseFragment<AirBeamConnectedViewMvcImpl, AirBeamConnectedController>() {
 
-    private var controller: AirBeamConnectedController? = null
     lateinit var listener: AirBeamConnectedViewMvc.Listener
-    private var view: AirBeamConnectedViewMvcImpl? = null
     lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
 
@@ -41,19 +42,5 @@ class AirBeamConnectedFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener.let { controller?.unregisterListener(it) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }

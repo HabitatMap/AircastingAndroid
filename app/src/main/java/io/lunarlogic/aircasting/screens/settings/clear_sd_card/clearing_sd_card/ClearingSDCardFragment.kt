@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
 class ClearingSDCardFragment(
     private val mFragmentManager: FragmentManager
-): Fragment(), BaseWizardNavigator.BackPressedListener {
-    private var controller: ClearingSDCardController? = null
-    private var view: ClearingSDCardViewMvcImpl? = null
+): BaseFragment<ClearingSDCardViewMvcImpl, ClearingSDCardController>(), BaseWizardNavigator.BackPressedListener {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,17 +30,5 @@ class ClearingSDCardFragment(
 
     override fun onBackPressed() {
         controller?.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller = null
     }
 }

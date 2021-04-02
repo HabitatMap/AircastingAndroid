@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 
-class DashboardFragment : Fragment() {
-    private var controller: DashboardController? = null
-    private var view: DashboardViewMvcImpl? = null
-
+class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,19 +21,5 @@ class DashboardFragment : Fragment() {
         controller?.onCreate(tabId)
 
         return view?.rootView
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }

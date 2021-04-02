@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
 class AirbeamSyncingFragment(
     private val mFragmentManager: FragmentManager
-): Fragment(), BaseWizardNavigator.BackPressedListener {
-    private var controller: AirbeamSyncingController? = null
-    private var view: AirbeamSyncingViewMvcImpl? = null
+) : BaseFragment<AirbeamSyncingViewMvcImpl, AirbeamSyncingController>(), BaseWizardNavigator.BackPressedListener {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,25 +23,11 @@ class AirbeamSyncingFragment(
             .appComponent.inject(this)
 
         view = AirbeamSyncingViewMvcImpl(layoutInflater, null)
-        controller = AirbeamSyncingController(mFragmentManager, view)
+        controller = AirbeamSyncingController(view, mFragmentManager)
 
         controller?.onCreate()
 
         return view?.rootView
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 
     override fun onBackPressed() {

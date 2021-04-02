@@ -27,18 +27,20 @@ import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.*
+import io.lunarlogic.aircasting.screens.common.BaseController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import org.greenrobot.eventbus.EventBus
 
 
 abstract class SessionsController(
-    protected var mRootActivity: FragmentActivity?,
-    private var mViewMvc: SessionsViewMvc?,
+    private var mRootActivity: FragmentActivity?,
+    viewMvc: SessionsViewMvcImpl<SessionsViewMvc.Listener>?,
     private val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
     private var context: Context?
-) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
+) : BaseController<SessionsViewMvcImpl<SessionsViewMvc.Listener>>(viewMvc), SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -69,9 +71,9 @@ abstract class SessionsController(
         mViewMvc?.unregisterListener(this)
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
+        super.onDestroy()
         unregisterSessionsObserver()
-        mViewMvc = null
         mRootActivity = null
         context = null
     }

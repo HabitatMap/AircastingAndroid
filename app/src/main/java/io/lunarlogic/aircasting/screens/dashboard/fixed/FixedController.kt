@@ -17,14 +17,14 @@ import io.lunarlogic.aircasting.screens.dashboard.*
 
 class FixedController(
     mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc?,
+    viewMvc: SessionsViewMvcImpl<SessionsViewMvc.Listener>?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager,
     private val mContext: Context?
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
+): SessionsController(mRootActivity, viewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)

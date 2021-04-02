@@ -6,13 +6,15 @@ import io.lunarlogic.aircasting.lib.KeyboardHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class ConfirmationController(
-    private var mViewMvc: ConfirmationViewMvc?,
+    viewMvc: ConfirmationViewMvcImpl?,
     private val mSettings: Settings
-): ConfirmationViewMvc.Listener {
+): BaseController<ConfirmationViewMvcImpl>(viewMvc), ConfirmationViewMvc.Listener {
     fun registerToEventBus() {
         EventBus.getDefault().safeRegister(this);
     }
@@ -29,9 +31,9 @@ class ConfirmationController(
         KeyboardHelper.hideKeyboard(context)
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
+        super.onDestroy()
         mViewMvc?.onDestroy()
-        mViewMvc = null
     }
 
     override fun onStartRecordingClicked(session: Session) {

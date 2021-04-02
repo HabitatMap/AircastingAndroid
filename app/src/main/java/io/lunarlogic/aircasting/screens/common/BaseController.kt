@@ -1,9 +1,9 @@
 package io.lunarlogic.aircasting.screens.common
 
-open class BaseController(
-    private var mView: ViewMvc?
+abstract class BaseController<ViewType>(
+    protected var mViewMvc: ViewType?
 ) {
     open fun onDestroy() {
-        mView = null
+        mViewMvc = null
     }
 }

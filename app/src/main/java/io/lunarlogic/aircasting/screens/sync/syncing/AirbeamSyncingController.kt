@@ -4,13 +4,15 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardLinesReadEvent
 import io.lunarlogic.aircasting.lib.safeRegister
+import io.lunarlogic.aircasting.screens.common.BaseController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class AirbeamSyncingController(
-    private val mFragmentManager: FragmentManager,
-    private var mView: AirbeamSyncingViewMvc?
-) {
+    viewMvc: AirbeamSyncingViewMvcImpl?,
+    private val mFragmentManager: FragmentManager
+) : BaseController<AirbeamSyncingViewMvcImpl>(viewMvc) {
     fun onBackPressed() {
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
         mFragmentManager.popBackStack()
@@ -20,14 +22,14 @@ class AirbeamSyncingController(
         EventBus.getDefault().safeRegister(this)
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
+        super.onDestroy()
         EventBus.getDefault().unregister(this)
-        mView = null
     }
 
     @Subscribe
     fun onMessageEvent(event: SDCardLinesReadEvent) {
         val step = event.step
-        mView?.updateProgress(step, event.linesRead)
+        mViewMvc?.updateProgress(step, event.linesRead)
     }
 }

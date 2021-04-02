@@ -3,10 +3,10 @@ package io.lunarlogic.aircasting.screens.dashboard
 import io.lunarlogic.aircasting.screens.common.BaseController
 
 class DashboardController(
-    private var mView: DashboardViewMvc?
-) : BaseController(mView = mView){
+    viewMvc: DashboardViewMvcImpl?
+) : BaseController<DashboardViewMvcImpl>(viewMvc) {
 
     fun onCreate(tabId: Int?) {
-        mView?.goToTab(tabId ?: 0)
+        mViewMvc?.goToTab(tabId ?: 0)
     }
 }

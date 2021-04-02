@@ -278,6 +278,7 @@ class MapContainer: OnMapReadyCallback {
         mMeasurementPoints.add(colorPoint.point)
         mMeasurementSpans.add(measurementSpan(measurement))
 
+        //TODO: check if actually removing and adding polyline won't be better than setting spans on the same polyline over and over again?
         if (mMeasurementsLine == null) {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }

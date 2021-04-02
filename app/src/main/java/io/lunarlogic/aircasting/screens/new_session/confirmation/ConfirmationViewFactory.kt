@@ -13,7 +13,7 @@ class ConfirmationViewFactory {
             supportFragmentManager: FragmentManager?,
             session: Session,
             areMapsDisabled: Boolean
-        ): ConfirmationViewMvc {
+        ): ConfirmationViewMvcImpl {
             return when(session.type) {
                 Session.Type.MOBILE -> MobileSessionConfirmationViewMvcImpl(
                     inflater, container, supportFragmentManager, session, areMapsDisabled)
