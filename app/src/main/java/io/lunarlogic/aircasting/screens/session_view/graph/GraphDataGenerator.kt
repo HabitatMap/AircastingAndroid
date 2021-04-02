@@ -45,7 +45,7 @@ class GraphDataGenerator(
                 fill -= 1.0
                 val date = getAverageDate()
 
-                if (notes != null) { //todo: null check really needed?
+                if (notes != null) {
                     for (note in notes) {
                         if (note.date.month == date.month &&
                             note.date.day == date.day &&
