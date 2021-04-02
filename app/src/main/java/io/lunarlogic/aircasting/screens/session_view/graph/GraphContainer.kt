@@ -227,7 +227,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
-        mGraph.setMaxVisibleValueCount(10000) //todo: added temporarily(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
+        mGraph.setMaxVisibleValueCount(10000) //todo: added temporarily, value should be adjusted during tests(?)- solution from internet, this solves the problem with not drawing icons, but maybe may cause problems with memory ??
 
         mGraph.onChartGestureListener = this
     }
