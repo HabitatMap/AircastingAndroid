@@ -5,8 +5,8 @@ import io.lunarlogic.aircasting.screens.common.BaseController
 
 open class SessionDetailsController(
     private val mContext: Context?,
-    private var mViewMvc: SessionDetailsViewMvc?
-) : BaseController(mView = mViewMvc) {
+    private var viewMvc: SessionDetailsViewMvc?
+) : BaseController<SessionDetailsViewMvc>(viewMvc) {
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
         mViewMvc?.registerListener(listener)

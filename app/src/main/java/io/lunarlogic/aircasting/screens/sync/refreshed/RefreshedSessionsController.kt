@@ -2,11 +2,12 @@ package io.lunarlogic.aircasting.screens.sync.refreshed
 
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.common.BaseController
+import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvcImpl
 
 class RefreshedSessionsController(
     private val mFragmentManager: FragmentManager,
-    private var mViewMvc: RefreshedSessionsViewMvc?
-) : BaseController(mView = mViewMvc) {
+    var viewMvc: RefreshedSessionsViewMvcImpl?
+) : BaseController<RefreshedSessionsViewMvcImpl>(viewMvc) {
     fun registerListener(listener: RefreshedSessionsViewMvc.Listener) {
         mViewMvc?.registerListener(listener)
     }

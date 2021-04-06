@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirController
+import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvcImpl
 
-class RestartAirBeamFragment() : Fragment() {
-    private var controller: RestartAirBeamController? = null
-    private var view: RestartAirBeamViewMvcImpl? = null
+class RestartAirBeamFragment() : BaseFragment<RestartAirBeamViewMvcImpl, RestartAirBeamController>() {
     var listener: RestartAirBeamViewMvc.Listener? = null
     lateinit var sessionType: Session.Type
 
@@ -39,19 +40,5 @@ class RestartAirBeamFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener?.let { controller?.unregisterListener(it) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }

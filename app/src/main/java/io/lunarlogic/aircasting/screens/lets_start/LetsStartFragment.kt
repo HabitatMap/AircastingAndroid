@@ -9,10 +9,12 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import javax.inject.Inject
 
-class LetsStartFragment : Fragment() {
-    private var controller: LetsStartController? = null
+class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController>()  {
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
@@ -36,16 +38,5 @@ class LetsStartFragment : Fragment() {
         controller?.onCreate()
 
         return view.rootView
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        controller?.onDestroy()
-        controller = null
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        controller?.onDestroy()
-        controller = null
     }
 }

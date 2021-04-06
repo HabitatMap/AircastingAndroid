@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedController
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 
-class OnboardingGetStartedFragment: Fragment() {
-    private var controller: OnboardingGetStartedController? = null
+class OnboardingGetStartedFragment: BaseFragment<OnboardingGetStartedViewMvcImpl, OnboardingGetStartedController>() {
     lateinit var listener: OnboardingGetStartedViewMvc.Listener
-    private var view: OnboardingGetStartedViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,18 +31,5 @@ class OnboardingGetStartedFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        controller?.onDestroy()
-        controller = null
-        view = null
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        controller?.onDestroy()
-        controller = null
-        view = null
     }
 }

@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirController
+import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvcImpl
 
-class OnboardingMeasureAndMapFragment: Fragment() {
-    private var controller: OnboardingMeasureAndMapController? = null
-    private var view: OnboardingMeasureAndMapViewMvcImpl? = null
+class OnboardingMeasureAndMapFragment: BaseFragment<OnboardingMeasureAndMapViewMvcImpl, OnboardingMeasureAndMapController>() {
     lateinit var listener: OnboardingMeasureAndMapViewMvc.Listener
 
     override fun onCreateView(
@@ -30,19 +31,5 @@ class OnboardingMeasureAndMapFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.unregisterListener(listener)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }

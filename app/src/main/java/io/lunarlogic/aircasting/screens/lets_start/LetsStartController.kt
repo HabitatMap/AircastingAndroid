@@ -7,22 +7,25 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
+import io.lunarlogic.aircasting.screens.common.BaseController
 import io.lunarlogic.aircasting.screens.sync.SyncActivity
+import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 
 
 class LetsStartController(
     private var mRootActivity: FragmentActivity?,
-    private var mViewMvc: LetsStartViewMvc?,
+    private var viewMvc: LetsStartViewMvcImpl?,
     private var mContext: Context?,
     private val mErrorHandler: ErrorHandler
-): LetsStartViewMvc.Listener {
+): BaseController<LetsStartViewMvcImpl>(viewMvc), LetsStartViewMvc.Listener {
+
     fun onCreate() {
         mViewMvc?.registerListener(this)
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
+        super.onDestroy()
         mViewMvc?.unregisterListener(this)
-        mViewMvc = null
         mRootActivity = null
         mContext = null
     }
