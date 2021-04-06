@@ -34,13 +34,13 @@ import org.greenrobot.eventbus.EventBus
 
 abstract class SessionsController(
     private var mRootActivity: FragmentActivity?,
-    viewMvc: SessionsViewMvcImpl<SessionsViewMvc.Listener>?,
+    private var mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
     private var context: Context?
-) : BaseController<SessionsViewMvcImpl<SessionsViewMvc.Listener>>(viewMvc), SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -71,9 +71,9 @@ abstract class SessionsController(
         mViewMvc?.unregisterListener(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    fun onDestroy() {
         unregisterSessionsObserver()
+        mViewMvc = null
         mRootActivity = null
         context = null
     }
