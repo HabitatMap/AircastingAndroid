@@ -227,6 +227,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             sessionsRespository.markForRemoval(listOf(sessionUUID))
             sessionsSyncService.sync()
         }
+        deleteNotesFromThisSession(sessionUUID)
+    }
+
+    private fun deleteNotesFromThisSession(sessionUUID: String) {
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(sessionUUID)
+            sessionId?.let {
+                noteRepository.deleteAllSessionsForSessionWithId(sessionId)
+            }
+        }
     }
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
@@ -285,6 +295,5 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 noteRepository.delete(sessionId, event.note!!)
             }
         }
-//        TODO("Deleting note from Room database to be implemented")
     }
 }
