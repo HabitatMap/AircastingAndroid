@@ -130,13 +130,11 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"/>
 
-                <!-- Edit and delete buttons are not visible now as we do not have these functionalities implemented -->
                 <Button
                     android:id="@+id/delete_note_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Delete note"
-                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/save_changes_button"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"

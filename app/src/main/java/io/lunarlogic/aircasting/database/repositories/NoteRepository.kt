@@ -27,6 +27,13 @@ class NoteRepository {
         }
     }
 
+    fun delete(sessionId: Long, note: Note) {
+        val oldNoteDBObject = mDatabase.notes().loadNoteBySessionIdAndNumber(sessionId, note.number) // todo: maybe i could change the syntax on delete in a more smooth way <?>
+        oldNoteDBObject?.let {
+            mDatabase.notes().delete(oldNoteDBObject.id)
+        }
+    }
+
     fun loadNoteForSessionWithId(sessionId: Long): List<NoteDBObject?> {
         return mDatabase.notes().loadNotesBySessionId(sessionId)
     }

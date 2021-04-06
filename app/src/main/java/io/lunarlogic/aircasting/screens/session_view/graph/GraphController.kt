@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
+import io.lunarlogic.aircasting.events.NoteDeletedEvent
 import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.models.*
@@ -58,7 +59,8 @@ class GraphController(
         EventBus.getDefault().post(event)
     }
 
-    override fun deleteNotePressed(note: Note?) {
-        TODO("Not yet implemented") //to be filled when implementing delete note functionality
+    override fun deleteNotePressed(note: Note?, session: Session?) {
+        val event = NoteDeletedEvent(note, session)
+        EventBus.getDefault().post(event)
     }
 }

@@ -50,6 +50,9 @@ interface NoteDao {
     @Query("UPDATE notes SET text=:text WHERE id=:id")
     fun update(id: Long, text: String)
 
+    @Query("DELETE FROM notes WHERE id=:id")
+    fun delete(id: Long)
+
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
     fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?>
 

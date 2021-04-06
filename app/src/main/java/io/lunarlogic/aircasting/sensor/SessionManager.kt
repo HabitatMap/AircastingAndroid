@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import android.widget.Toast
+import androidx.room.Database
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
@@ -64,7 +65,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: NoteDeletedEvent) {
-        // TODO: deleteNote(event)
+        deleteNote(event)
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
@@ -271,13 +272,19 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun editNote(event: NoteEditedEvent) {
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid)
-            sessionId?.let{
+            sessionId?.let {
                 noteRepository.update(sessionId, event.note!!)
             }
         }
     }
 
     private fun deleteNote(event: NoteDeletedEvent) {
-        TODO("Deleting note from Room database to be implemented")
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid)
+            sessionId?.let {
+                noteRepository.delete(sessionId, event.note!!)
+            }
+        }
+//        TODO("Deleting note from Room database to be implemented")
     }
 }

@@ -9,19 +9,19 @@ import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
-    private val mSession: Session?, //todo: maybe i should do it in a smarter way ?
+    private val mSession: Session?,
     private val noteNumber: Int
 ): BottomSheet() {
     interface Listener {
         fun saveChangesNotePressed(note: Note?, session: Session?)
-        fun deleteNotePressed(note: Note?)
+        fun deleteNotePressed(note: Note?, session: Session?)
     }
     private var mNote: Note? = null
     private var noteInput: EditText? = null
 
     override fun setup() {
         noteInput = contentView?.note_input
-        mNote = mSession?.notes?.get(noteNumber) // getting note by index will not always work (we need to check mSession.notes for a note with certain number
+        mNote = mSession?.notes?.find { note -> note.number == noteNumber } // getting note by index will not always work (we need to check mSession.notes for a note with certain number
         noteInput?.setText(mNote?.text)
 
         val saveChangesButton = contentView?.save_changes_button
@@ -51,11 +51,10 @@ class EditNoteBottomSheet(
         val noteText = noteInput?.text.toString().trim()
         mNote?.text = noteText
         mListener.saveChangesNotePressed(mNote, mSession)
-        //TODO("Not yet implemented") // to be filled when working on edit note ticket
     }
 
     private fun deleteNote() {
-        TODO("Not yet implemented") // to be filled when working on delete note ticket
+        mListener.deleteNotePressed(mNote, mSession)
     }
 
     override fun layoutId(): Int {
