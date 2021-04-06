@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
+import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
@@ -53,7 +54,8 @@ class GraphController(
     }
 
     override fun saveChangesNotePressed(note: Note?, session: Session?) {
-        TODO("Not yet implemented")  //to be filled when implementing edit note functionality
+        val event = NoteEditedEvent(note, session)
+        EventBus.getDefault().post(event)
     }
 
     override fun deleteNotePressed(note: Note?) {

@@ -59,7 +59,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: NoteEditedEvent) {
-        // TODO: editNote(event)
+        editNote(event)
     }
 
     @Subscribe
@@ -270,12 +270,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun editNote(event: NoteEditedEvent) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid) //todo: null assertions!
+            val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid)
             sessionId?.let{
-//                noteRepository.update(sessionId, event.note!!) //todo: check if "OnConflictStrategy.REPLACE" works fine here
+                noteRepository.update(sessionId, event.note!!)
             }
         }
-//        TODO("Editing note in Room database to be implemented")
     }
 
     private fun deleteNote(event: NoteDeletedEvent) {

@@ -47,7 +47,13 @@ interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(note: NoteDBObject): Long
 
+    @Query("UPDATE notes SET text=:text WHERE id=:id")
+    fun update(id: Long, text: String)
+
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
     fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?>
+
+    @Query("SELECT * FROM notes WHERE session_id=:sessionId AND number=:number")
+    fun loadNoteBySessionIdAndNumber(sessionId: Long, number: Int): NoteDBObject?
 
 }
