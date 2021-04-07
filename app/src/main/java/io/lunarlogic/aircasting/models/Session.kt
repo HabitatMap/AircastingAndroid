@@ -274,7 +274,7 @@ class Session(
                 session.measurementsCount() != measurementsCount() ||
                 session.status != status ||
                 session.endTime != endTime ||
-                session.notes.size != notes.size //TODO: when implementing editing notes, we have to check elements of this list too
+                session.notes.size != notes.size
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {

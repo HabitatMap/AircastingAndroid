@@ -21,7 +21,7 @@ class EditNoteBottomSheet(
 
     override fun setup() {
         noteInput = contentView?.note_input
-        mNote = mSession?.notes?.find { note -> note.number == noteNumber } // getting note by index will not always work (we need to check mSession.notes for a note with certain number
+        mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
 
         val saveChangesButton = contentView?.save_changes_button

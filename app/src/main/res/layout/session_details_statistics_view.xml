@@ -17,9 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/keyline_2"
-        android:paddingBottom="@dimen/keyline_2"
-
->
+        android:paddingBottom="@dimen/keyline_2">
 
         <TextView
             android:id="@+id/avg_label"
@@ -32,8 +30,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/now_label"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            />
+            app:layout_constraintHorizontal_chainStyle="spread_inside" />
 
         <TextView
             android:id="@+id/now_label"
@@ -44,8 +41,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/avg_label"
             app:layout_constraintEnd_toStartOf="@id/peak_label"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-     />
+            app:layout_constraintHorizontal_chainStyle="spread_inside" />
 
         <TextView
             android:id="@+id/peak_label"
@@ -57,8 +53,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/now_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-          />
+            app:layout_constraintHorizontal_chainStyle="spread_inside" />
 
 
         <ImageView

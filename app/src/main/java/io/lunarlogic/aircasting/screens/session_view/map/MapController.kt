@@ -28,7 +28,6 @@ class MapController(
     EditNoteBottomSheet.Listener {
     private var mLocateRequested = false
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: LocationChanged) {
         if (mLocateRequested) {

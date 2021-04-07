@@ -40,10 +40,9 @@ class MobileActiveController(
     SessionsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
 
-    private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc) //changed from ActiveSEssionsObserver
+    private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun registerSessionsObserver() {
-//        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements()) //todo: loadMobileActiveSessionsForUpload
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveCompleteSessions())
     }
 
