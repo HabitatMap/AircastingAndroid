@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+
 import javax.inject.Inject
 
-class SessionDetailsFragment() : Fragment() {
-    private var controller: SessionDetailsController? = null
-    private var view: SessionDetailsViewMvc? = null
+class SessionDetailsFragment() : BaseFragment<SessionDetailsViewMvcImpl, SessionDetailsController>() {
     lateinit var listener: SessionDetailsViewMvc.Listener
     lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
@@ -44,19 +43,5 @@ class SessionDetailsFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener.let { controller?.unregisterListener(it) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }

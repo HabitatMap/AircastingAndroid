@@ -11,13 +11,13 @@ import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAcco
 class SettingsController(
     private val mRootActivity: FragmentActivity?,
     private val mContext: Context?,
-    private var mViewMvc: SettingsViewMvc?,
+    var viewMvc: SettingsViewMvcImpl?,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager
 ) : SettingsViewMvc.Listener,
     SettingsViewMvc.BackendSettingsDialogListener,
     SettingsViewMvc.MicrophoneSettingsDialogListener,
-    BaseController(mView = mViewMvc) {
+    BaseController<SettingsViewMvcImpl>(viewMvc) {
 
     fun onStart(){
         mViewMvc?.registerListener(this)

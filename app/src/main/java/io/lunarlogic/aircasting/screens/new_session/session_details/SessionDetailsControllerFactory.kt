@@ -7,7 +7,7 @@ import io.lunarlogic.aircasting.models.Session
 open class SessionDetailsControllerFactory {
     open fun get(
         mContextActivity: FragmentActivity?,
-        view: SessionDetailsViewMvc?,
+        view: SessionDetailsViewMvcImpl?,
         sessionType: Session.Type,
         fragmentManager: FragmentManager
     ): SessionDetailsController {

@@ -11,7 +11,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
-class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
+class MobileSessionDetailsViewMvcImpl : SessionDetailsViewMvcImpl, SessionDetailsViewMvc {
     private var sessionUUID: String
     private var deviceItem: DeviceItem
 

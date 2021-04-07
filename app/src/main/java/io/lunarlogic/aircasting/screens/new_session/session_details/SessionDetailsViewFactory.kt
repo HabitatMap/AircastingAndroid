@@ -15,7 +15,7 @@ class SessionDetailsViewFactory() {
             deviceItem: DeviceItem,
             sessionUUID: String,
             sessionType: Session.Type
-        ): SessionDetailsViewMvc {
+        ): SessionDetailsViewMvcImpl {
             return when(sessionType) {
                 Session.Type.MOBILE -> MobileSessionDetailsViewMvcImpl(inflater, parent, sessionUUID, deviceItem)
                 Session.Type.FIXED -> FixedSessionDetailsViewMvcImpl(inflater, parent, fragmentManager, sessionUUID, deviceItem)

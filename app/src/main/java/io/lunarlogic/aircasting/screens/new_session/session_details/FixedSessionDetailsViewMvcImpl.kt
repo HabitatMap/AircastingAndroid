@@ -23,7 +23,7 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import kotlinx.android.synthetic.main.network_list_item.view.*
 
 
-class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>,
+class FixedSessionDetailsViewMvcImpl: SessionDetailsViewMvcImpl,
     FixedSessionDetailsViewMvc, FixedSessionDetailsViewMvc.OnPasswordProvidedListener {
     private val fragmentManager: FragmentManager
     private var sessionUUID: String

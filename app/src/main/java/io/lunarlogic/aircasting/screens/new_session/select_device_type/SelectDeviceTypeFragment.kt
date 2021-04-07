@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationController
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvcImpl
 
-class SelectDeviceTypeFragment() : Fragment() {
-    private var controller: SelectDeviceTypeController? = null
+class SelectDeviceTypeFragment() :  BaseFragment<SelectDeviceTypeViewMvcImpl, SelectDeviceTypeController>()  {
     var listener: SelectDeviceTypeViewMvc.Listener? = null
-    private var view: SelectDeviceTypeViewMvcImpl? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,19 +32,5 @@ class SelectDeviceTypeFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener?.let { controller?.unregisterListener(it) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }

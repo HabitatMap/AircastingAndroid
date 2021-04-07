@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsController
+import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvcImpl
 import javax.inject.Inject
 
-class SettingsFragment : Fragment() {
-
-    private var controller : SettingsController? = null
-    private var view: SettingsViewMvcImpl? = null
+class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>() {
 
     @Inject
     lateinit var settings: Settings
@@ -39,19 +39,5 @@ class SettingsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }
