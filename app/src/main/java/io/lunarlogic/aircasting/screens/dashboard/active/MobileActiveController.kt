@@ -13,7 +13,7 @@ import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.models.observers.MobileActiveSessionsObserver
+import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -40,11 +40,10 @@ class MobileActiveController(
     SessionsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
 
-    private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc) //changed from ActiveSEssionsObserver
+    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc) //changed from ActiveSEssionsObserver
 
     override fun registerSessionsObserver() {
-//        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements()) //todo: loadMobileActiveSessionsForUpload
-        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveCompleteSessions())
+        mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
     }
 
     override fun unregisterSessionsObserver() {
