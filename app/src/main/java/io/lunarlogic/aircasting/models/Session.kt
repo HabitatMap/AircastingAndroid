@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.models
 
+import com.google.android.libraries.maps.model.LatLng
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
@@ -336,5 +337,9 @@ class Session(
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
+    }
+
+    fun lastMeasurementLocation(): LatLng {
+        return LatLng(streams.first().measurements.last().latitude!!, streams.first().measurements.last().longitude!!)
     }
 }

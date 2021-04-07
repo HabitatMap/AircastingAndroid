@@ -47,12 +47,7 @@ class GraphDataGenerator(
 
                 if (notes != null) {
                     for (note in notes) {
-                        if (note.date.month == date.month &&
-                            note.date.day == date.day &&
-                            note.date.hours == date.hours &&
-                            note.date.minutes == date.minutes &&
-                            note.date.seconds == date.seconds &&
-                                note != previousNote) { // TODO: check if this condition is still needed after fixing bug with 2 measurements in 1 second
+                        if (isSameDate(note, date) && note != previousNote) { // TODO: check if this condition is still needed after fixing bug with 2 measurements in 1 second
                             hasNote = true
                             previousNote = note
                         }
@@ -121,5 +116,13 @@ class GraphDataGenerator(
         count = 0
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
+    }
+
+    private fun isSameDate(note: Note, date: Date): Boolean {
+        return note.date.month == date.month &&
+                note.date.day == date.day &&
+                note.date.hours == date.hours &&
+                note.date.minutes == date.minutes &&
+                note.date.seconds == date.seconds
     }
 }
