@@ -23,7 +23,7 @@
                 android:padding="@dimen/keyline_8">
 
                 <ImageView
-                    android:id="@+id/edit_loader"
+                    android:id="@+id/edit_note_loader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_loader"

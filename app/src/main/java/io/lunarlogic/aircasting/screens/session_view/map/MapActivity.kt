@@ -56,7 +56,7 @@ class MapActivity: AppCompatActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager)
+        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager) //TODO: if MobileDormant, start MobileDormantController ???
 
         controller?.onCreate()
 
