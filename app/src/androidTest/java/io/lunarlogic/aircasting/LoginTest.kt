@@ -70,7 +70,7 @@ class LoginTest {
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(JsonBody.build(mapOf(
                 "email" to "ania@example.org",
-                "username" to "ania",
+                "profile_name" to "ania",
                 "authentication_token" to "XYZ123FAKETOKEN"
             )))
 
@@ -88,7 +88,7 @@ class LoginTest {
 
         testRule.launchActivity(null)
 
-        onView(withId(R.id.username_input)).perform(ViewActions.typeText("ania@example.org"))
+        onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("ania@example.org"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()

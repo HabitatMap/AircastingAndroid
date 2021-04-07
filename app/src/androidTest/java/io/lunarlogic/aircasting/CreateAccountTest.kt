@@ -74,7 +74,7 @@ class CreateAccountTest {
                 JsonBody.build(
                     mapOf(
                         "email" to "maria@example.org",
-                        "username" to "maria",
+                        "profile_name" to "maria",
                         "authentication_token" to "XYZ123FAKETOKEN"
                     )
                 )
@@ -99,7 +99,7 @@ class CreateAccountTest {
         Thread.sleep(500)
         onView(withId(R.id.email_input)).perform(ViewActions.typeText("maria@example.org"))
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.username_input)).perform(ViewActions.typeText("maria"))
+        onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("maria"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()
@@ -143,7 +143,7 @@ class CreateAccountTest {
         onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
         Thread.sleep(500)
         Espresso.closeSoftKeyboard()
-        onView(withId(R.id.username_input)).perform(ViewActions.typeText("maria"))
+        onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("maria"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
         Espresso.closeSoftKeyboard()

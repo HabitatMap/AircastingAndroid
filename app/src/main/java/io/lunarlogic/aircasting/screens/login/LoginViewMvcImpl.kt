@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.new_session
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
@@ -40,11 +39,11 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     private fun onLoginClicked() {
-        val username = getEditTextValue(R.id.username_input)
+        val profile_name = getEditTextValue(R.id.profile_name_input)
         val password = getEditTextValue(R.id.password_input)
 
         for (listener in listeners) {
-            listener.onLoginClicked(username, password)
+            listener.onLoginClicked(profile_name, password)
         }
     }
 
@@ -61,9 +60,9 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     override fun showError() {
-        val usernameInputLayout = findViewById<TextInputLayout>(R.id.username)
+        val profilenameInputLayout = findViewById<TextInputLayout>(R.id.profile_name)
         val passwordInputLayout = findViewById<TextInputLayout>(R.id.password)
-        usernameInputLayout.error = " "
+        profilenameInputLayout.error = " "
         passwordInputLayout.error = " "
     }
 }

@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.create_account
 
-import android.content.Context
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.R
@@ -29,7 +28,7 @@ class CreateAccountController(
         mViewMvc.unregisterListener(this)
     }
 
-    override fun onCreateAccountClicked(username: String, password: String, email: String, send_emails: Boolean) {
+    override fun onCreateAccountClicked(profile_name: String, password: String, email: String, send_emails: Boolean) {
         val successCallback = {
             MainActivity.start(mContextActivity)
         }
@@ -39,7 +38,7 @@ class CreateAccountController(
             val toast = Toast.makeText(mContextActivity, message, Toast.LENGTH_LONG)
             toast.show()
         }
-        mCreateAccountService.performCreateAccount(username, password, email, send_emails, successCallback, errorCallback)
+        mCreateAccountService.performCreateAccount(profile_name, password, email, send_emails, successCallback, errorCallback)
     }
 
     override fun onLoginClicked() {
