@@ -3,10 +3,12 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 
@@ -54,6 +56,11 @@ class EditNoteBottomSheet(
     }
 
     private fun saveChanges() {
+        if (!ConnectivityManager.isConnected(context)) {  // todo: is this the right place to do it?
+            Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
+            return
+        }
+
         val noteText = noteInput?.text.toString().trim()
         mNote?.text = noteText
         mListener.saveChangesNotePressed(mNote, mSession)

@@ -1,9 +1,12 @@
 package io.lunarlogic.aircasting.screens.dashboard.dormant
 
 import android.content.Context
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.lib.Settings
@@ -14,6 +17,7 @@ import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.screens.dashboard.DeleteSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.active.FinishSessionListener
@@ -52,6 +56,32 @@ class MobileDormantController(
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
+    }
+
+    override fun onMapButtonClicked(session: Session, sensorName: String?) {
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+            }
+        }
+
+        val finallyCallback = {}
+
+        super.onMapButtonClicked(session, sensorName)
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)// TODO: is this effective approach <?>
+    }
+
+    override fun onGraphButtonClicked(session: Session, sensorName: String?) {
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+            }
+        }
+
+        val finallyCallback = {}
+
+        super.onGraphButtonClicked(session, sensorName)
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback) // TODO: is this effective approach <?>
     }
 
 }

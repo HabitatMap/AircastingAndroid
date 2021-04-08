@@ -37,15 +37,15 @@ abstract class SessionsController(
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
-    private val context: Context?
+    protected val context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
-    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
-    private val mSessionRepository = SessionsRepository()
+    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    protected val mSessionRepository = SessionsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
