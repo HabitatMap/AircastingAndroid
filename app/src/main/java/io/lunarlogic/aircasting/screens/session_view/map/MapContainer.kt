@@ -91,9 +91,7 @@ class MapContainer: OnMapReadyCallback {
 
         drawSession()
         animateCameraToSession()
-        if (mMeasurements.isNotEmpty()) {
-            showMap()
-        }
+        if (mMeasurements.isNotEmpty()) showMap()
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
