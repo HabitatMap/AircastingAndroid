@@ -168,8 +168,8 @@ class MeasurementStream(
     }
 
     fun getAvgMeasurement(): Double? {
-        if(measurements.isEmpty()) return null
-        return calculateSum() / measurements.size
+        if(measurements.isEmpty()) return null //todo: i suppose this should be changed to getMeasurementsForTimeSpan
+        return calculateSum() / measurements.size   // todo: measurementsForTimeSpan.size ???
     }
 
     fun calculateSum(): Double {

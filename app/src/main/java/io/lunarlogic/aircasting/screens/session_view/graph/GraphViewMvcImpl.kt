@@ -66,7 +66,10 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {
-        mSessionPresenter?.visibleTimeSpan = timeSpan
-        mStatisticsContainer?.refresh(mSessionPresenter)
+//        if (timeSpan.start < mSessionPresenter?.selectedStream?.measurements?.last()?.time ||
+//            timeSpan.endInclusive > mSessionPresenter?.selectedStream?.measurements?.first()?.time) {
+            mSessionPresenter?.visibleTimeSpan = timeSpan
+            mStatisticsContainer?.refresh(mSessionPresenter)
+//        }
     }
 }

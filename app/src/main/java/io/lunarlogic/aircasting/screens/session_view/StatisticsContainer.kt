@@ -113,7 +113,8 @@ class StatisticsContainer {
         val peak = if (mVisibleTimeSpan == null) {
             mPeak
         } else {
-            stream?.let { calculatePeak(it) }
+            stream?.let {
+                calculatePeak(it) }
         }
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
@@ -127,15 +128,26 @@ class StatisticsContainer {
     }
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
-        return streamMeasurements(stream).size
+        var measurementsSize: Int
+        if (mVisibleTimeSpan == null || stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!).size == 0) {
+            measurementsSize = streamMeasurements(stream).size
+            return measurementsSize
+        } else {
+            measurementsSize = stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!).size
+            return measurementsSize
+        }
+
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
-        return streamMeasurements(stream).maxBy { it.value }?.value ?: 0.0
+        if (mVisibleTimeSpan == null || stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!).size == 0) {
+            return streamMeasurements(stream).maxBy { it.value }?.value ?: 0.0
+        }
+        else return stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!).maxBy { it.value }?.value ?: 0.0
     }
 
     private fun streamMeasurements(stream: MeasurementStream): List<Measurement> {
-        return if (mVisibleTimeSpan == null) {
+        return if (mVisibleTimeSpan == null || stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!).size == 0) {
             stream.measurements
         } else {
             stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!)
