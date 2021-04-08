@@ -130,10 +130,6 @@ class MapContainer: OnMapReadyCallback {
             it.clearMeasurements()
         }
         mSessionPresenter?.selectedStream?.clearMeasurements()
-        println("MARYSIA: +mMeasurements.size): "+mMeasurements.size)
-        println("MARYSIA: selected stream measurements: "+mSessionPresenter?.selectedStream?.measurements?.size)
-        println("MARYSIA: +mSessionPresenter?.session.streams.size): "+mSessionPresenter?.session?.streams?.size)
-        println("MARYSIA: +mSessionPresenter?.session?.streams?.first()?.measurements?.size): "+mSessionPresenter?.session?.streams?.first()?.measurements?.size)
     }
 
     fun destroy() {

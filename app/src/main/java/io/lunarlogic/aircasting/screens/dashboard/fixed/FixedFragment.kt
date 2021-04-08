@@ -10,14 +10,10 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.screens.common.BaseFragment
-import io.lunarlogic.aircasting.screens.dashboard.SessionsController
-import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedController
-import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import javax.inject.Inject
 
 
-class FixedFragment :  Fragment() {
+class FixedFragment : Fragment() {
     private var controller: FixedController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
     private var view: FixedViewMvcImpl? = null

@@ -243,6 +243,4 @@ abstract class SessionsController(
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
     }
-
-
 }
