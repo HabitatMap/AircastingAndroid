@@ -26,7 +26,6 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceVi
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
-import io.lunarlogic.aircasting.screens.common.AircastingAlertDialog
 import io.lunarlogic.aircasting.sensor.AirBeamRecordSessionService
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneService
@@ -142,6 +141,21 @@ class NewSessionController(
     }
 
     override fun onMicrophoneDeviceSelected() {
+        GlobalScope.launch(Dispatchers.Main) {
+            var existing = false
+            val query = GlobalScope.async(Dispatchers.IO) {
+                existing = sessionsRepository.isMicrophoneSessionAlreadyRecording()
+            }
+            query.await()
+            if (existing) {
+                errorHandler.showError(mContextActivity.getString(R.string.you_cant_start_2_microphone_sessions_at_once))
+                } else {
+                goToCreateMicSession()
+            }
+        }
+    }
+
+    private fun goToCreateMicSession() {
         wizardNavigator.goToSessionDetails(Session.generateUUID(), Session.Type.MOBILE, MicrophoneDeviceItem(), this)
 
         if (permissionsManager.audioPermissionsGranted(mContextActivity)) {

@@ -72,6 +72,10 @@ class SessionsRepository {
                 mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
     }
 
+    fun isMicrophoneSessionAlreadyRecording(): Boolean {
+        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(Session.Status.RECORDING, Session.Type.MOBILE, DeviceItem.Type.MIC) != null
+    }
+
     fun disconnectMobileBluetoothSessions() {
         mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
     }

@@ -355,5 +355,6 @@
 
     <string name="bluetooth_failed_connection_alert_header">Bluetooth connection failed</string>
     <string name="bluetooth_failed_connection_alert_description">"Bluetooth connection failed. \n Please toggle the power on your device and try again."</string>
+    <string name="you_cant_start_2_microphone_sessions_at_once">To start a new microphone session you have to finish old one.</string>
 
 </resources>
