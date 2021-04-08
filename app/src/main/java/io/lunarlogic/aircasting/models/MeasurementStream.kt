@@ -121,7 +121,6 @@ class MeasurementStream(
         mMeasurements = emptyList()
     }
 
-
     private fun buildDetailedType(): String? {
         when (sensorPackageName) {
             MicrophoneDeviceItem.DEFAULT_ID -> return MicrophoneDeviceItem.DETAILED_TYPE

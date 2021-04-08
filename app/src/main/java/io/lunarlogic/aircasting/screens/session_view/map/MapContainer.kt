@@ -4,12 +4,10 @@ import android.content.Context
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
@@ -24,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
+    private var LEVEL_SPANS: Array<StyleSpan>
+    private val FALLBACK_SPAN: StyleSpan
 
     private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
@@ -41,8 +41,7 @@ class MapContainer: OnMapReadyCallback {
     private val mMeasurementPoints = ArrayList<LatLng>()
     private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
-    private var LEVEL_SPANS: Array<StyleSpan>
-    private val FALLBACK_SPAN = StyleSpan(R.color.aircasting_grey_700)
+
 
     private val status = AtomicInteger(Status.INIT.value)
 
@@ -74,6 +73,7 @@ class MapContainer: OnMapReadyCallback {
             StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.MEDIUM)),
             StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.HIGH)),
             StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.EXTREMELY_HIGH)))
+        FALLBACK_SPAN = StyleSpan(R.color.aircasting_grey_700)
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -299,16 +299,12 @@ class MapContainer: OnMapReadyCallback {
 
     private fun measurementSpan(measurement: Measurement) : StyleSpan {
         if (measurement.latitude == null || measurement.longitude == null) return FALLBACK_SPAN
-        println("MARYSIA: measurement treshold ${mSessionPresenter?.selectedSensorThreshold()}")
-        val treshold = mSessionPresenter?.selectedSensorThreshold() ?: return FALLBACK_SPAN
-        val level = measurement.getLevel(treshold)
-        println("MARYSIA: measurement level ${level.value}")
-        val span = when (level) {
+        val threshold = mSessionPresenter?.selectedSensorThreshold() ?: return FALLBACK_SPAN
+        return when (val level = measurement.getLevel(threshold)) {
             Measurement.Level.EXTREMELY_LOW -> FALLBACK_SPAN
             Measurement.Level.EXTREMELY_HIGH -> FALLBACK_SPAN
             else -> LEVEL_SPANS[level.value]
         }
-        return span
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
