@@ -149,7 +149,7 @@ class NewSessionController(
             query.await()
             if (existing) {
                 errorHandler.showError(mContextActivity.getString(R.string.you_cant_start_2_microphone_sessions_at_once))
-                } else {
+            } else {
                 goToCreateMicSession()
             }
         }
