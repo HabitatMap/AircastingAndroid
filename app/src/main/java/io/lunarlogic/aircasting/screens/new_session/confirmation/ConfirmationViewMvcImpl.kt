@@ -60,7 +60,6 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     override fun onDestroy() {
         mMap = null
         mMapFragment?.onDestroy()
-        println("MARYSIA: calling map onDestroy, mapFragment: "+mMapFragment)
         mMapFragment?.let {
             mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
         }

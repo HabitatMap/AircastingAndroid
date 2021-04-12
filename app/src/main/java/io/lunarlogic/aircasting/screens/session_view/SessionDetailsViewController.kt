@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.events.MeasurementStreamChangedEvent
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -26,49 +25,16 @@ abstract class SessionDetailsViewController(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
-        reloadSession()
         mViewMvc?.bindSession(mSessionPresenter)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-//        reloadSession()
-        println("MARYSIA: Adding Measurement, not reloading session")
         if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
             mViewMvc?.addMeasurement(mSessionPresenter, measurement)
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: MeasurementStreamChangedEvent) {
-        println("MARYSIA: Changing stream, reloading session")
-        reloadSession()
-    }
-
-    private fun reloadSession() {
-        val sessionUUID = mSessionPresenter?.sessionUUID ?: return
-
-        DatabaseProvider.runQuery { coroutineScope ->
-            val dbSession = mSessionsViewModel.reloadSession(sessionUUID)
-            dbSession?.let {
-                val session = Session(dbSession)
-                mSessionPresenter?.session = session
-
-                var selectedSensorName = mSessionPresenter.initialSensorName
-                if (mSessionPresenter.selectedStream != null) {
-                    selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
-                }
-
-                val measurementStream =
-                    session.streams.firstOrNull { it.sensorName == selectedSensorName }
-                mSessionPresenter.selectedStream = measurementStream
-
-                val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
-                mSessionPresenter.setSensorThresholds(sensorThresholds)
-            }
         }
     }
 
