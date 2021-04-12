@@ -86,7 +86,7 @@ class StatisticsContainer {
                 mSum = stream.calculateSum()
             }
 
-            val sum = if (mVisibleTimeSpan == null) {
+            val sum = if (mVisibleTimeSpan == null || stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!).size == 0) {
                 mSum!!
             } else {
                 stream.calculateSum(mVisibleTimeSpan!!)
