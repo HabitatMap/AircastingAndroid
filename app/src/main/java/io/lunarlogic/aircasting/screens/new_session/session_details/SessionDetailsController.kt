@@ -6,8 +6,8 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 
 open class SessionDetailsController(
     private val mContext: Context?,
-    var viewMvc: io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvcImpl?
-) : BaseController<io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvcImpl>(viewMvc) {
+    private var mViewMvc: SessionDetailsViewMvc?
+) {
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
         mViewMvc?.registerListener(listener)
@@ -18,4 +18,8 @@ open class SessionDetailsController(
     }
 
     open fun onCreate() {}
+
+    fun onDestroy() {
+        mViewMvc = null
+    }
 }

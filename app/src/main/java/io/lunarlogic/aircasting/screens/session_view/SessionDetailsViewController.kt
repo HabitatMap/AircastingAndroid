@@ -34,7 +34,7 @@ abstract class SessionDetailsViewController(
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
-            mViewMvc?.addMeasurement(mSessionPresenter, measurement)
+            mViewMvc?.addMeasurement(measurement)
         }
     }
 

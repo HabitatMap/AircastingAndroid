@@ -17,7 +17,7 @@ import io.lunarlogic.aircasting.models.Session
 
 class FixedSessionDetailsController(
     private val mContextActivity: FragmentActivity?,
-    private val mViewMvc: FixedSessionDetailsViewMvc,
+    private val mViewMvc: FixedSessionDetailsViewMvc?,
     private val mFragmentManager: FragmentManager
 ): SessionDetailsController(mContextActivity, mViewMvc),
     FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener,
@@ -37,7 +37,7 @@ class FixedSessionDetailsController(
                         .filter { !it.name.isEmpty() }
                         .filter { it.frequency <= Network.MAX_FREQUENCY }
                         .distinct()
-                    mViewMvc.bindNetworks(networkList)
+                    mViewMvc?.bindNetworks(networkList)
                 }
             }
 
@@ -51,8 +51,8 @@ class FixedSessionDetailsController(
 
         mWifiManager = mContextActivity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
 
-        mViewMvc.registerOnStreamingMethodChangedListener(this)
-        mViewMvc.registerOnRefreshNetworksListener(this)
+        mViewMvc?.registerOnStreamingMethodChangedListener(this)
+        mViewMvc?.registerOnRefreshNetworksListener(this)
 
         scanForNetworks()
     }

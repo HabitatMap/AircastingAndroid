@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationController
+import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvcImpl
 
-class TurnOnAirBeamFragment() : Fragment() {
-    private var controller: TurnOnAirBeamController? = null
-    private var view: TurnOnAirBeamViewMvcImpl? = null
+class TurnOnAirBeamFragment() : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBeamController>() {
     var listener: TurnOnAirBeamViewMvc.Listener? = null
     lateinit var sessionType: Session.Type
 
@@ -41,19 +42,5 @@ class TurnOnAirBeamFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         listener?.let { controller?.unregisterListener(it) }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        view = null
-        controller?.onDestroy()
-        controller = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        view = null
-        controller?.onDestroy()
-        controller = null
     }
 }
