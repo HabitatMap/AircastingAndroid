@@ -256,9 +256,18 @@ class GraphContainer: OnChartGestureListener {
     private fun updateVisibleTimeSpan() {
         mGraph ?: return
 
+        var timeSpan: ClosedRange<Date>
         val from = mGraph.lowestVisibleX
         val to = mGraph.highestVisibleX
-        val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+        val dateFrom = mGraphDataGenerator.dateFromFloat(from)
+        val dateTo = mGraphDataGenerator.dateFromFloat(to)
+        if (dateFrom.day > dateTo.day || (dateFrom.day == dateTo.day && dateFrom.hours > dateTo.hours) ||
+            (dateFrom.day == dateTo.day && dateFrom.hours == dateTo.hours && dateFrom.minutes > dateTo.minutes)) {
+            timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(from)
+        } else {
+            timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+        }
+
         mOnTimeSpanChanged.invoke(timeSpan)
     }
 
