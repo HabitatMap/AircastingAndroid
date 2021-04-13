@@ -263,7 +263,7 @@ class GraphContainer: OnChartGestureListener {
         val dateTo = mGraphDataGenerator.dateFromFloat(to)
         if (dateFrom.day > dateTo.day || (dateFrom.day == dateTo.day && dateFrom.hours > dateTo.hours) ||
             (dateFrom.day == dateTo.day && dateFrom.hours == dateTo.hours && dateFrom.minutes > dateTo.minutes)) {
-            timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(from)
+            timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(from) // todo: instead of second "from" we might include timeSpan width here somehow, not how though
         } else {
             timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
         }
