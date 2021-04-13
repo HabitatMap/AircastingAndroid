@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
@@ -47,6 +48,18 @@ class FixedController(
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
+    }
+
+    override fun onGraphButtonClicked(session: Session, sensorName: String?) {
+        val onDownloadSuccess = {session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+            }}
+        val finallyCallback = {
+            reloadSession(session)
+        }
+        super.onGraphButtonClicked(session, sensorName) //todo : this downloaded session for some reason does not updates graph
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
     }
 
 }

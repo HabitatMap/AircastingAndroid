@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_graph.view.*
 
 
 abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
-    private val graphContainer: GraphContainer
+    protected val graphContainer: GraphContainer
     private val mLoader: ImageView?
 
     constructor(
