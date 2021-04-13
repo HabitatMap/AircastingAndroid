@@ -6,8 +6,10 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
+import io.lunarlogic.aircasting.models.observers.SessionObserver
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -21,11 +23,19 @@ abstract class SessionDetailsViewController(
     private var sensorName: String?
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
+    private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
-        mViewMvc?.bindSession(mSessionPresenter)
+
+        mSessionObserver.observe()
+    }
+
+    private fun onSessionChanged(coroutineScope: CoroutineScope) {
+        DatabaseProvider.backToUIThread(coroutineScope) {
+            mViewMvc?.bindSession(mSessionPresenter)
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
