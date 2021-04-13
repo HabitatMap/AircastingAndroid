@@ -44,10 +44,9 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
         mMapContainer?.unregisterListener()
     }
 
-    override fun addMeasurement(sessionPresenter: SessionPresenter?, measurement: Measurement) {
-        super.addMeasurement(sessionPresenter, measurement)
+    override fun addMeasurement(measurement: Measurement) {
+        super.addMeasurement(measurement)
         mMapContainer?.addMobileMeasurement(measurement)
-        mStatisticsContainer?.addMeasurement(measurement)
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {

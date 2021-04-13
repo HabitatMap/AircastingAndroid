@@ -34,7 +34,7 @@ class MapContainer: OnMapReadyCallback {
     private var mSupportFragmentManager: FragmentManager?
 
     private var mSessionPresenter: SessionPresenter? = null
-    private var mMeasurements: MutableList<Measurement> = mutableListOf()
+    private var mMeasurements: List<Measurement> = emptyList()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
@@ -96,7 +96,6 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun setup() {
-//        counter = 0
         clearMap()
 
         mMap?.isBuildingsEnabled = false
@@ -106,17 +105,9 @@ class MapContainer: OnMapReadyCallback {
         if (mMeasurements.isNotEmpty()) showMap()
     }
 
-    fun bindSession(sessionPresenter: SessionPresenter?, refresh: Boolean = false) {
+    fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        if (mMeasurements.isEmpty() || refresh) {
-            val measurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
-            mMeasurements = if (measurements.isEmpty()) {
-                mutableListOf()
-            } else {
-                measurements as MutableList<Measurement>
-            }
-
-        }
+        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -142,8 +133,8 @@ class MapContainer: OnMapReadyCallback {
         mMapFragment = null
         mSupportFragmentManager = null
         mContext = null
-        System.gc()
     }
+
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
         val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
         return measurements ?: emptyList()
@@ -227,9 +218,8 @@ class MapContainer: OnMapReadyCallback {
     }
 
     fun addMobileMeasurement(measurement: Measurement) {
-        mMeasurements.add(measurement)
         if (mSessionPresenter?.isRecording() == true) {
-            drawMobileMeasurement(measurement)
+            drawMobileMeasurement(measurementColorPoint(measurement))
         }
     }
 
@@ -238,43 +228,12 @@ class MapContainer: OnMapReadyCallback {
         drawLastMeasurementMarker(colorPoint?.point, colorPoint?.color)
     }
 
-//    var counter = 0
-
     private fun drawMobileMeasurement(colorPoint: ColorPoint?) {
         if (colorPoint == null) return
-//        counter += 1
 
         mMeasurementPoints.add(colorPoint.point)
-//        mMeasurementSpans.add(StyleSpan(colorPoint.color))
+        mMeasurementSpans.add(StyleSpan(colorPoint.color))
 
-        if (mMeasurementsLine == null) {
-            mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
-        }
-
-//        if (counter >= 10 && counter % 5 == 0) {
-//            val newMeasurements = mMeasurementPoints.take(mMeasurementPoints.size - 4)
-//            mMeasurementPoints.clear()
-//            mMeasurementPoints.addAll(newMeasurements)
-//
-//            val newSpans = mMeasurementSpans.take(mMeasurementSpans.size - 4)
-//            mMeasurementSpans.clear()
-//            mMeasurementSpans.addAll(newSpans)
-//
-//            mMeasurementsLine?.setSpans(mMeasurementSpans)
-//        }
-
-        mMeasurementsLine?.setPoints(mMeasurementPoints)
-//        mMeasurementsLine?.setSpans(mMeasurementSpans)
-        drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
-    }
-
-    private fun drawMobileMeasurement(measurement: Measurement) {
-        val colorPoint = measurementColorPoint(measurement) ?: return
-
-        mMeasurementPoints.add(colorPoint.point)
-        mMeasurementSpans.add(measurementSpan(measurement))
-
-        //TODO: check if actually removing and adding polyline won't be better than setting spans on the same polyline over and over again?
         if (mMeasurementsLine == null) {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
@@ -305,7 +264,7 @@ class MapContainer: OnMapReadyCallback {
 
     fun refresh(sessionPresenter: SessionPresenter?) {
         clearMap()
-        bindSession(sessionPresenter, true)
+        bindSession(sessionPresenter)
         drawSession()
     }
 
