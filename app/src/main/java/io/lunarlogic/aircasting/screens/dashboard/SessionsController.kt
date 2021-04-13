@@ -1,11 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -27,8 +23,6 @@ import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.*
-import io.lunarlogic.aircasting.screens.common.BaseController
-import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import org.greenrobot.eventbus.EventBus
 
 
