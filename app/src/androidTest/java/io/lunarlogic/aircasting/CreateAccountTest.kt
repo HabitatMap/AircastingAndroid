@@ -9,21 +9,24 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.di.AppModule
+import io.lunarlogic.aircasting.di.PermissionsModule
+import io.lunarlogic.aircasting.di.TestApiModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
-import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
-import okhttp3.mockwebserver.MockResponse
 import io.lunarlogic.aircasting.helpers.JsonBody
 import io.lunarlogic.aircasting.helpers.MockWebServerDispatcher
+import io.lunarlogic.aircasting.helpers.getFakeApiServiceFactoryFrom
 import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import org.junit.*
+import okhttp3.mockwebserver.MockResponse
+import org.junit.After
 import org.junit.Assert.assertEquals
-
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-
 import java.net.HttpURLConnection
 import javax.inject.Inject
 

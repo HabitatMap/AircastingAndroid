@@ -9,8 +9,6 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister

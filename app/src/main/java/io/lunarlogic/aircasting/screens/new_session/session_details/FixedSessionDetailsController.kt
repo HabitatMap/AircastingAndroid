@@ -10,9 +10,9 @@ import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.NewSessionViewMvc
 import io.lunarlogic.aircasting.screens.new_session.TurnOnWifiDialog
-import io.lunarlogic.aircasting.models.Session
 
 
 class FixedSessionDetailsController(

@@ -11,13 +11,13 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {

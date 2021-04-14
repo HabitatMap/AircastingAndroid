@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
-import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirController
-import io.lunarlogic.aircasting.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvcImpl
 
 class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): BaseFragment<RefreshedSessionsViewMvcImpl, RefreshedSessionsController>(), BaseWizardNavigator.BackPressedListener {
     lateinit var listener: RefreshedSessionsViewMvc.Listener

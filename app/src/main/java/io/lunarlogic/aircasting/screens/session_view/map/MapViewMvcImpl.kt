@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 import kotlinx.android.synthetic.main.activity_map.view.*

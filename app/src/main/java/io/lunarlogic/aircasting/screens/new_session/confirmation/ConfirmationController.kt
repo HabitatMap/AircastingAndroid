@@ -7,7 +7,6 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BaseController
-import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 

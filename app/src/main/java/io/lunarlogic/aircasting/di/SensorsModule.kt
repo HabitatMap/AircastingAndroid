@@ -12,7 +12,9 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionBuilder
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.networking.services.UploadFixedMeasurementsService
-import io.lunarlogic.aircasting.sensor.*
+import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
+import io.lunarlogic.aircasting.sensor.AirBeamDiscoveryService
+import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.*
 import io.lunarlogic.aircasting.sensor.microphone.AudioReader
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneReader

@@ -5,7 +5,10 @@ import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.ValidationHelper

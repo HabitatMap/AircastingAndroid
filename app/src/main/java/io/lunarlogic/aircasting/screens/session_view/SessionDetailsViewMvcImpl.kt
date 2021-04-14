@@ -10,18 +10,16 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
-import io.lunarlogic.aircasting.screens.common.*
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
-import kotlinx.android.synthetic.main.session_details.view.*
-import kotlinx.android.synthetic.main.measurements_table.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
-import org.greenrobot.eventbus.EventBus
+import kotlinx.android.synthetic.main.session_details.view.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {

@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
-
 import javax.inject.Inject
 
 class SessionDetailsFragment() : Fragment() {

@@ -1,15 +1,14 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
 import android.content.Context
-import io.lunarlogic.aircasting.R
-import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
+import androidx.fragment.app.FragmentActivity
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.screens.common.BaseController
+import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.sync.SyncActivity
-import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 
 
 class LetsStartController(

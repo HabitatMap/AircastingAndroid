@@ -12,10 +12,10 @@ import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SyncError
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
-import io.lunarlogic.aircasting.models.Session
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback

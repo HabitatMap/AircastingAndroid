@@ -4,7 +4,6 @@ import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.activity_onboarding.view.*

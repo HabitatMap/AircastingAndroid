@@ -10,15 +10,12 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
-import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 class MainActivity: AppCompatActivity() {

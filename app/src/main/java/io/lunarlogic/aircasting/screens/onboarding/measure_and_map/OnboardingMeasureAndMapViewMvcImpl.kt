@@ -2,8 +2,6 @@ package io.lunarlogic.aircasting.screens.onboarding.measure_and_map
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.onboarding_measure_and_map.view.*

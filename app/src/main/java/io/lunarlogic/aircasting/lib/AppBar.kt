@@ -2,9 +2,7 @@ package io.lunarlogic.aircasting.lib
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import com.google.android.material.appbar.MaterialToolbar
-import io.lunarlogic.aircasting.MobileNavigationDirections
 import io.lunarlogic.aircasting.R
 
 class AppBar {

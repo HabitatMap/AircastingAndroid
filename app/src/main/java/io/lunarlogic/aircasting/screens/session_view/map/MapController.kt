@@ -7,8 +7,8 @@ import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.location.LocationHelper
-import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewController
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus

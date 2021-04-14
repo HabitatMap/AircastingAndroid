@@ -2,11 +2,11 @@ package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
-import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.GzippedParams
 import io.lunarlogic.aircasting.networking.params.CreateSessionBody
 import io.lunarlogic.aircasting.networking.params.SessionParams
-import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

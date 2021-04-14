@@ -8,8 +8,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.nhaarman.mockito_kotlin.whenever
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.whenever
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
@@ -17,25 +17,22 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.di.mocks.FakeFixedSessionDetailsController
-import io.lunarlogic.aircasting.di.TestNewSessionWizardModule
-import io.lunarlogic.aircasting.di.TestPermissionsModule
-import io.lunarlogic.aircasting.di.TestSensorsModule
-import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.*
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
-import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
+import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import org.hamcrest.CoreMatchers.*
-import org.junit.*
-
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-
 import org.mockito.MockitoAnnotations
 import java.util.*
 import javax.inject.Inject

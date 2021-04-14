@@ -3,11 +3,13 @@ package io.lunarlogic.aircasting.sensor.airbeam3
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.pm.PackageManager
-import io.lunarlogic.aircasting.exceptions.*
+import io.lunarlogic.aircasting.exceptions.BLENotSupported
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.exceptions.MissingDeviceAfterConnectionError
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.AirBeamConnector
-import io.lunarlogic.aircasting.models.Session
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 
 

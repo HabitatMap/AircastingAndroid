@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.lib
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.libraries.maps.model.BitmapDescriptor
 import com.google.android.libraries.maps.model.BitmapDescriptorFactory

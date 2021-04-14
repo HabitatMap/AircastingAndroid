@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.di.mocks
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.di.mocks.FakeFixedSessionDetailsController
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.session_details.FixedSessionDetailsViewMvcImpl
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsController

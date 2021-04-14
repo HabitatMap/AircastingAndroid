@@ -1,11 +1,11 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory.Header
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVFileFactory.Header
 
 class SDCardMobileSessionsProcessor(
     private val mCSVFileFactory: SDCardCSVFileFactory,

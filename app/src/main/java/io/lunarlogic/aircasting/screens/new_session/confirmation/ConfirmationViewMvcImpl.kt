@@ -5,18 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
-import com.google.android.libraries.maps.model.*
+import com.google.android.libraries.maps.model.LatLng
+import com.google.android.libraries.maps.model.Marker
+import com.google.android.libraries.maps.model.MarkerOptions
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.BitmapHelper
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 
 abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
@@ -64,7 +65,6 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
             mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
         }
         mMapFragment = null
-        System.gc()
     }
 
     private fun initMap(supportFragmentManager: FragmentManager?) {

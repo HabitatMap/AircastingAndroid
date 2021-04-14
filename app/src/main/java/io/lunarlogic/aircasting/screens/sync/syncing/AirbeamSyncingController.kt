@@ -5,7 +5,6 @@ import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.events.sdcard.SDCardLinesReadEvent
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.screens.common.BaseController
-import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedViewMvcImpl
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 

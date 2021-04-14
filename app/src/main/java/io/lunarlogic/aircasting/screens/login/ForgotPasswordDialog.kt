@@ -6,8 +6,6 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseDialog
 import io.lunarlogic.aircasting.screens.new_session.LoginViewMvc
-import io.lunarlogic.aircasting.screens.settings.SettingsViewMvc
-import kotlinx.android.synthetic.main.forgot_password_dialog.*
 import kotlinx.android.synthetic.main.forgot_password_dialog.view.*
 
 class ForgotPasswordDialog(

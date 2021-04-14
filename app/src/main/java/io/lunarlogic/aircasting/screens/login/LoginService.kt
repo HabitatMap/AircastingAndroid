@@ -4,8 +4,8 @@ import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.InternalAPIError
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.responses.UserResponse
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

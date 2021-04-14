@@ -3,10 +3,9 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.lib.AppBar
-import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc

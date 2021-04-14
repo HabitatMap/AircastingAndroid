@@ -7,10 +7,14 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.xwray.groupie.*
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
+import com.xwray.groupie.Section
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
+import kotlinx.android.synthetic.main.fragment_select_device.view.*
 import kotlinx.android.synthetic.main.select_device_group_header.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.label
@@ -18,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.android.synthetic.main.fragment_select_device.view.*
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {
