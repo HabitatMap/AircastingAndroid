@@ -50,8 +50,8 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
-        mMapContainer?.bindSession(mSessionPresenter)
         super.bindSession(sessionPresenter)
+        mMapContainer?.bindSession(mSessionPresenter)
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) hideLoader(mLoader)
     }
 

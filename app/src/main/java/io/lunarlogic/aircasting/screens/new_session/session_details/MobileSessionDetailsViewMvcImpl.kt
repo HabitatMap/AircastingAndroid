@@ -7,9 +7,10 @@ import com.google.android.material.textfield.TextInputLayout
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
-class MobileSessionDetailsViewMvcImpl : SessionDetailsViewMvcImpl, SessionDetailsViewMvc {
+class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {
     private var sessionUUID: String
     private var deviceItem: DeviceItem
 

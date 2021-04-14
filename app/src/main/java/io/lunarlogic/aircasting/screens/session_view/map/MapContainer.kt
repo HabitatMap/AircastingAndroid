@@ -42,7 +42,6 @@ class MapContainer: OnMapReadyCallback {
     private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
 
-
     private val status = AtomicInteger(Status.INIT.value)
 
     enum class Status(val value: Int) {
