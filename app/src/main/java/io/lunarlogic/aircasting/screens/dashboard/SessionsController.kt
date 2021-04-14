@@ -59,6 +59,7 @@ abstract class SessionsController(
     }
 
     open fun onResume() {
+        mViewMvc.showLoader()
         registerSessionsObserver()
         mViewMvc.registerListener(this)
     }

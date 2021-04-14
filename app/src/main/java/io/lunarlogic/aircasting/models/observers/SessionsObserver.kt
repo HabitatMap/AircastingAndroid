@@ -24,10 +24,10 @@ abstract class SessionsObserver<Type>(
         DatabaseProvider.runQuery { coroutineScope ->
             val sessions = dbSessions.map { dbSession -> buildSession(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
-            hideLoader(coroutineScope)
             if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
                 onSessionsChanged(coroutineScope, sessions, sensorThresholds)
             }
+            hideLoader(coroutineScope)
         }
     }
 
