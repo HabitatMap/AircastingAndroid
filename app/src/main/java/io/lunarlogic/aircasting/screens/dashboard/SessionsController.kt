@@ -59,7 +59,7 @@ abstract class SessionsController(
     }
 
     open fun onResume() {
-        mViewMvc.showLoader() //todo: added temporarily
+        mViewMvc.showLoader()
         registerSessionsObserver()
         mViewMvc.registerListener(this)
     }
