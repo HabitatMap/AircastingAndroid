@@ -101,19 +101,15 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
             mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
         }
         mMapFragment = null
-        System.gc()
     }
 
     private fun onContinueClicked() {
-        var location: Session.Location? = Session.Location.FAKE_LOCATION
-
         mMap?.let { map ->
             val target = map.cameraPosition.target
             val latitude = target.latitude
             val longitude = target.longitude
-            location = Session.Location(latitude, longitude)
+            session.location = Session.Location(latitude, longitude)
         }
-        session.location = location
 
         for (listener in listeners) {
             listener.onContinueClicked(session)
