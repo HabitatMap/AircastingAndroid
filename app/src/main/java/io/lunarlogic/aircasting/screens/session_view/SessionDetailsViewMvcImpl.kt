@@ -91,14 +91,15 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
 
-        bindSessionDetails()
-        if (sessionPresenter?.selectedStream != null) showSlider()
+        if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) { //TODO: check if works fine after Marysia's changes with memory leaks!
+            bindSessionDetails()
+            showSlider()
+            mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
+            bindStatisticsContainer()
 
-        mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
-        bindStatisticsContainer()
-        mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
-
-        mSessionMeasurementsDescription?.visibility = View.VISIBLE
+            mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+            mSessionMeasurementsDescription?.visibility = View.VISIBLE
+        }
     }
 
     private fun showSlider() {

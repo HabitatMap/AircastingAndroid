@@ -163,7 +163,7 @@ class MeasurementStream(
         val measurementsSize = allMeasurements.size
 
         if (amount >= measurementsSize) return allMeasurements
-        
+
         return allMeasurements.subList(measurementsSize - amount, measurementsSize)
     }
 

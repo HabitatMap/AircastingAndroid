@@ -52,7 +52,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         graphContainer.bindSession(mSessionPresenter)
-        hideLoader(mLoader)
+        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) hideLoader(mLoader)
     }
 
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
