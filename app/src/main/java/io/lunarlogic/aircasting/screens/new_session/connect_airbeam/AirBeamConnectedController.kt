@@ -1,17 +1,13 @@
 package io.lunarlogic.aircasting.screens.new_session.connect_airbeam
 
-import android.content.Context
+import io.lunarlogic.aircasting.screens.common.BaseController
 
-class AirBeamConnectedController(
-    private val mContext: Context?,
-    private val mViewMvc: AirBeamConnectedViewMvc
-) {
-
+class AirBeamConnectedController(viewMvc: AirBeamConnectedViewMvcImpl?): BaseController<AirBeamConnectedViewMvcImpl>(viewMvc) {
     fun registerListener(listener: AirBeamConnectedViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: AirBeamConnectedViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
     }
 }

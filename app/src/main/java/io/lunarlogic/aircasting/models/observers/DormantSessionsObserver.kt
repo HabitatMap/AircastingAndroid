@@ -9,7 +9,7 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 class DormantSessionsObserver(
     mLifecycleOwner: LifecycleOwner,
     mSessionsViewModel: SessionsViewModel,
-    mViewMvc: SessionsViewMvc
+    mViewMvc: SessionsViewMvc?
 ): SessionsObserver<SessionWithStreamsDBObject>(mLifecycleOwner, mSessionsViewModel, mViewMvc) {
 
     override fun buildSession(dbSession: SessionWithStreamsDBObject): Session {

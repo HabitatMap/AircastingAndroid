@@ -1,15 +1,17 @@
 package io.lunarlogic.aircasting.screens.onboarding.get_started
 
+import io.lunarlogic.aircasting.screens.common.BaseController
+
 
 class OnboardingGetStartedController(
-    private val mViewMvc: OnboardingGetStartedViewMvc
-) {
+    private var viewMvc: OnboardingGetStartedViewMvcImpl?
+) : BaseController<OnboardingGetStartedViewMvcImpl>(viewMvc){
 
     fun registerListener(listener: OnboardingGetStartedViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: OnboardingGetStartedViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
     }
 }

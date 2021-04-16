@@ -6,7 +6,6 @@ import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Entity(
     tableName = "sessions",

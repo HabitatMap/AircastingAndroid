@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
-import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.active.MobileActiveFragment
 import io.lunarlogic.aircasting.screens.dashboard.dormant.MobileDormantFragment
-import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
+import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 
 enum class SessionsTab(val value: Int){
     FOLLOWING(0),

@@ -2,9 +2,8 @@ package io.lunarlogic.aircasting
 
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.SensorThreshold
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.util.*
 
 /**

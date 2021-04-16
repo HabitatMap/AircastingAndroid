@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 
-class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): Fragment(), BaseWizardNavigator.BackPressedListener {
-    private var controller: RefreshedSessionsController? = null
+class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): BaseFragment<RefreshedSessionsViewMvcImpl, RefreshedSessionsController>(), BaseWizardNavigator.BackPressedListener {
     lateinit var listener: RefreshedSessionsViewMvc.Listener
 
     var success: Boolean = true
@@ -19,10 +18,10 @@ class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = RefreshedSessionsViewMvcImpl(layoutInflater, null, success)
+        view = RefreshedSessionsViewMvcImpl(layoutInflater, null, success)
         controller = RefreshedSessionsController(mFragmentManager, view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

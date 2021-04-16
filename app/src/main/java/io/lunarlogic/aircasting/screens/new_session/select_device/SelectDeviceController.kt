@@ -8,8 +8,8 @@ import android.content.IntentFilter
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 
 class SelectDeviceController(
-    private val mContext: Context?,
-    private val mViewMvc: SelectDeviceViewMvc,
+    private var mContext: Context?,
+    private var mViewMvc: SelectDeviceViewMvc?,
     private val bluetoothManager: BluetoothManager,
     private val mListener: SelectDeviceViewMvc.Listener
 ) : BroadcastReceiver(), SelectDeviceViewMvc.OnRefreshListener {
@@ -20,7 +20,7 @@ class SelectDeviceController(
                 val device: BluetoothDevice? =
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
-                device?.let { mViewMvc.addDeviceItem(DeviceItem(it)) }
+                device?.let { mViewMvc?.addDeviceItem(DeviceItem(it)) }
             }
         }
     }
@@ -29,7 +29,7 @@ class SelectDeviceController(
         bindDevices()
         registerListener(mListener)
         registerBluetoothDeviceFoundReceiver()
-        mViewMvc.registerOnRefreshListener(this)
+        mViewMvc?.registerOnRefreshListener(this)
 
         startScan()
     }
@@ -38,6 +38,11 @@ class SelectDeviceController(
         unregisterListener(mListener)
         unRegisterBluetoothDeviceFoundReceiver()
         stopScan()
+    }
+
+    fun onDestroy() {
+        mContext = null
+        mViewMvc = null
     }
 
     private fun startScan() {
@@ -55,15 +60,15 @@ class SelectDeviceController(
 
     private fun bindDevices() {
         val deviceItems = bluetoothManager.pairedDeviceItems()
-        mViewMvc.bindDeviceItems(deviceItems)
+        mViewMvc?.bindDeviceItems(deviceItems)
     }
 
     private fun registerListener(listener: SelectDeviceViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     private fun unregisterListener(listener: SelectDeviceViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
     }
 
     private fun registerBluetoothDeviceFoundReceiver() {

@@ -7,9 +7,6 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import javax.inject.Singleton
 
 @Module

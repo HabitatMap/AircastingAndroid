@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
-import io.lunarlogic.aircasting.models.*
+import io.lunarlogic.aircasting.models.Note
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewController
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
@@ -15,7 +17,7 @@ import org.greenrobot.eventbus.EventBus
 class GraphController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
-    mViewMvc: SessionDetailsViewMvc,
+    mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
     val fragmentManager: FragmentManager
@@ -25,11 +27,11 @@ class GraphController(
     override fun locateRequested() {}
 
     open fun onResume() {
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
     open fun onPause() {
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
     }
 
     override fun addNoteClicked(session: Session) {

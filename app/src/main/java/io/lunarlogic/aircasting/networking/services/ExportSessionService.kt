@@ -1,10 +1,8 @@
 package io.lunarlogic.aircasting.networking.services
 
 import android.content.Context
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SessionExportFailedError
-import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.networking.responses.ExportSessionResponse
 import retrofit2.Call
 import retrofit2.Callback

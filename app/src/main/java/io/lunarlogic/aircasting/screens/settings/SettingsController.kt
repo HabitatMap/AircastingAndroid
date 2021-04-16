@@ -4,25 +4,27 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.screens.common.BaseController
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
 
 class SettingsController(
     private val mRootActivity: FragmentActivity?,
     private val mContext: Context?,
-    private val mViewMvc: SettingsViewMvc,
+    var viewMvc: SettingsViewMvcImpl?,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager
 ) : SettingsViewMvc.Listener,
     SettingsViewMvc.BackendSettingsDialogListener,
-    SettingsViewMvc.MicrophoneSettingsDialogListener {
+    SettingsViewMvc.MicrophoneSettingsDialogListener,
+    BaseController<SettingsViewMvcImpl>(viewMvc) {
 
     fun onStart(){
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
     fun onStop(){
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
     }
 
     override fun onMyAccountClicked() {

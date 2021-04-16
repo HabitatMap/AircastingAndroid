@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.di.mocks
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.di.mocks.FakeFixedSessionDetailsController
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.new_session.session_details.FixedSessionDetailsViewMvcImpl
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsController
@@ -11,7 +10,7 @@ import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetai
 
 class FakeSessionDetailsControllerFactory: SessionDetailsControllerFactory() {
     override fun get(mContextActivity: FragmentActivity?,
-                     view: SessionDetailsViewMvc,
+                     view: SessionDetailsViewMvc?,
                      sessionType: Session.Type,
                      fragmentManager: FragmentManager
     ): SessionDetailsController {

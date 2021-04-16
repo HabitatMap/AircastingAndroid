@@ -1,11 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -16,28 +12,28 @@ import io.lunarlogic.aircasting.events.DeleteSessionEvent
 import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
 import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
-import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.*
+import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
+import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
+import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import org.greenrobot.eventbus.EventBus
 
 
 abstract class SessionsController(
-    protected val mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc,
+    private var mRootActivity: FragmentActivity?,
+    private var mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
-    private val context: Context?
+    private var context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
@@ -55,18 +51,25 @@ abstract class SessionsController(
     protected abstract fun unregisterSessionsObserver()
 
     fun onCreate() {
-        mViewMvc.showLoader()
+        mViewMvc?.showLoader()
     }
 
     open fun onResume() {
-        mViewMvc.showLoader()
+        mViewMvc?.showLoader()
         registerSessionsObserver()
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
     open fun onPause() {
         unregisterSessionsObserver()
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
+    }
+
+    fun onDestroy() {
+        unregisterSessionsObserver()
+        mViewMvc = null
+        mRootActivity = null
+        context = null
     }
 
     protected fun startNewSession(sessionType: Session.Type) {
@@ -75,8 +78,8 @@ abstract class SessionsController(
 
     override fun onSwipeToRefreshTriggered() {
         mMobileSessionsSyncService.sync(
-            onStartCallback = { mViewMvc.showLoader() },
-            finallyCallback = { mViewMvc.hideLoader() }
+            onStartCallback = { mViewMvc?.showLoader() },
+            finallyCallback = { mViewMvc?.hideLoader() }
         )
     }
 
@@ -109,8 +112,8 @@ abstract class SessionsController(
                 val reloadedSession = Session(dbSessionWithMeasurements)
 
                 DatabaseProvider.backToUIThread(scope) {
-                    mViewMvc.reloadSession(reloadedSession)
-                    mViewMvc.hideLoaderFor(session)
+                    mViewMvc?.reloadSession(reloadedSession)
+                    mViewMvc?.hideLoaderFor(session)
                 }
             }
         }
@@ -121,7 +124,7 @@ abstract class SessionsController(
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
-        mViewMvc.showLoaderFor(session)
+        mViewMvc?.showLoaderFor(session)
         val finallyCallback = { reloadSession(session) }
         mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
     }

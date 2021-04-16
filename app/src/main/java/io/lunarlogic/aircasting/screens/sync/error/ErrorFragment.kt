@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class ErrorFragment: Fragment() {
-    private var controller: ErrorController? = null
+class ErrorFragment: BaseFragment<ErrorViewMvcImpl, ErrorController>() {
     lateinit var listener: ErrorViewMvc.Listener
     var message: String? = null
 
@@ -16,10 +15,10 @@ class ErrorFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ErrorViewMvcImpl(layoutInflater, null, message)
+        view = ErrorViewMvcImpl(layoutInflater, null, message)
         controller = ErrorController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

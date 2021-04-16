@@ -1,8 +1,8 @@
 package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import io.lunarlogic.aircasting.events.sdcard.SDCardClearFinished
-import io.lunarlogic.aircasting.events.sdcard.SDCardReadFinished
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadEvent
+import io.lunarlogic.aircasting.events.sdcard.SDCardReadFinished
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadStepStartedEvent
 import org.greenrobot.eventbus.EventBus
 

@@ -1,7 +1,5 @@
 package io.lunarlogic.aircasting.exceptions
 
-import java.lang.Exception
-
 abstract class BaseException(private val mCause: Exception? = null, private val mMessageToDisplay: String? = null): Exception(mCause) {
     val messageToDisplay: String? get() = mMessageToDisplay
 }

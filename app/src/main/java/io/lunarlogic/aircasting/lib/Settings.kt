@@ -16,6 +16,7 @@ open class Settings(mApplication: Application) {
     protected val BACKEND_PORT_KEY = "backend_port"
     protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
+    protected val APP_RESTARTED = "app_restarted"
 
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
@@ -24,6 +25,7 @@ open class Settings(mApplication: Application) {
     protected val DEFAULT_BACKEND_PORT = "80"
     private val DEFAULT_AIRBEAM3_CONNECTED = false
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
+    private val DEFAULT_APP_RESTARTED = false
 
     private val sharedPreferences: SharedPreferences
 
@@ -53,6 +55,10 @@ open class Settings(mApplication: Application) {
 
     fun airbeam3Connected(): Boolean {
         return getBooleanFromSettings(AIRBEAM3_CONNECTED_KEY, DEFAULT_AIRBEAM3_CONNECTED)
+    }
+
+    fun appRestarted(): Boolean {
+        return getBooleanFromSettings(APP_RESTARTED, DEFAULT_APP_RESTARTED)
     }
 
     open fun onboardingDisplayed(): Boolean {
@@ -97,6 +103,14 @@ open class Settings(mApplication: Application) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
         SessionsSyncService.destroy()
+    }
+
+    fun setAppRestarted() {
+        saveToSettings(APP_RESTARTED, true)
+    }
+
+    fun setAppNotRestarted() {
+        saveToSettings(APP_RESTARTED, false)
     }
 
     fun login(email: String, authToken: String) {

@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class RefreshingSessionsFragment(): Fragment() {
-    private var controller: RefreshingSessionsController? = null
+class RefreshingSessionsFragment(): BaseFragment<RefreshingSessionsViewMvcImpl, RefreshingSessionsController>() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = RefreshingSessionsViewMvcImpl(layoutInflater, null)
+        view = RefreshingSessionsViewMvcImpl(layoutInflater, null)
         controller = RefreshingSessionsController()
 
-        return view.rootView
+        return view?.rootView
     }
 }

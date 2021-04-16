@@ -4,16 +4,20 @@ import android.content.Context
 
 open class SessionDetailsController(
     private val mContext: Context?,
-    private val mViewMvc: SessionDetailsViewMvc
+    private var mViewMvc: SessionDetailsViewMvc?
 ) {
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: SessionDetailsViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
     }
 
     open fun onCreate() {}
+
+    fun onDestroy() {
+        mViewMvc = null
+    }
 }

@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
-class AirBeamConnectedFragment() : Fragment() {
+class AirBeamConnectedFragment() : BaseFragment<AirBeamConnectedViewMvcImpl, AirBeamConnectedController>() {
 
-    private var controller: AirBeamConnectedController? = null
     lateinit var listener: AirBeamConnectedViewMvc.Listener
     lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
@@ -19,7 +18,7 @@ class AirBeamConnectedFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
+        view =
             AirBeamConnectedViewMvcImpl(
                 layoutInflater,
                 null,
@@ -27,9 +26,9 @@ class AirBeamConnectedFragment() : Fragment() {
                 sessionUUID
             )
         controller =
-            AirBeamConnectedController(requireContext(), view)
+            AirBeamConnectedController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

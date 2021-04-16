@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
-import android.widget.Button
 import android.widget.ImageView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BottomSheet

@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.screens.onboarding
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.onboarding.get_started.OnboardingGetStartedFragment

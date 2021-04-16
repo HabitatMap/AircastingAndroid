@@ -3,9 +3,9 @@ package io.lunarlogic.aircasting.models.observers
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import org.greenrobot.eventbus.EventBus
 import io.lunarlogic.aircasting.events.AppToBackgroundEvent
 import io.lunarlogic.aircasting.events.AppToForegroundEvent
+import org.greenrobot.eventbus.EventBus
 
 class AppLifecycleObserver : LifecycleObserver {
 

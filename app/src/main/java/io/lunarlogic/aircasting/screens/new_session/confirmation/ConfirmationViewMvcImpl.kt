@@ -5,21 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
-import com.google.android.libraries.maps.model.*
+import com.google.android.libraries.maps.*
+import com.google.android.libraries.maps.model.LatLng
+import com.google.android.libraries.maps.model.Marker
+import com.google.android.libraries.maps.model.MarkerOptions
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.BitmapHelper
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 
 abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
@@ -31,6 +29,8 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
 
     private var mMarker: Marker? = null
     private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
+    private var mSupportFragmentManager: FragmentManager?
 
     constructor(
         inflater: LayoutInflater,
@@ -41,12 +41,13 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     ): super() {
         this.rootView = inflater.inflate(layoutId(), parent, false)
         this.session = session
+        this.mSupportFragmentManager = supportFragmentManager
         this.areMapsDisabled = areMapsDisabled
 
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
 
-        initMap(supportFragmentManager)
+        initMap(mSupportFragmentManager)
 
         val startRecordingButton = rootView?.findViewById<Button>(R.id.start_recording_button)
         startRecordingButton?.setOnClickListener {
@@ -57,11 +58,22 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     abstract fun layoutId(): Int
     abstract fun shouldInitMap(): Boolean
 
+    override fun onDestroy() {
+        mMap = null
+        mMapFragment?.onDestroy()
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
+        }
+        mMapFragment = null
+    }
+
     private fun initMap(supportFragmentManager: FragmentManager?) {
         if (shouldInitMap()) {
-            val mapFragment =
-                supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
-            mapFragment?.getMapAsync(this)
+            mMapFragment = SupportMapFragment.newInstance(mapOptions())
+            mMapFragment?.let {
+                supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+            }
+            mMapFragment?.getMapAsync(this)
         } else {
             val instructions = rootView?.findViewById<TextView>(R.id.instructions)
             instructions?.visibility = View.GONE
@@ -83,7 +95,6 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         mMap = googleMap
-
         val sessionLocation = session?.location ?: return
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
@@ -113,5 +124,17 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
             .color(blueColor, { bold { append(session?.name) } })
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part3))
+    }
+
+    private fun mapOptions(): GoogleMapOptions {
+        val mapOptions = GoogleMapOptions()
+        mapOptions.useViewLifecycleInFragment(true)
+        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomGesturesEnabled(true)
+        mapOptions.tiltGesturesEnabled(false)
+        mapOptions.scrollGesturesEnabled(false)
+        mapOptions.rotateGesturesEnabled(false)
+
+        return mapOptions
     }
 }

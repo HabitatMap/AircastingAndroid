@@ -10,8 +10,8 @@ import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.ForgotPasswordService
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
 import io.lunarlogic.aircasting.screens.login.ForgotPasswordDialog
-import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.login.LoginService
+import io.lunarlogic.aircasting.screens.main.MainActivity
 
 class  LoginController(
     private val mContextActivity: AppCompatActivity,

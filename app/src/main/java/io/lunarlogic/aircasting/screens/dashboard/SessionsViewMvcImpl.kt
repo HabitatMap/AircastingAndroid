@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
     private var mRecordSessionButton: Button? = null

@@ -1,9 +1,9 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import java.io.OutputStream
-import io.lunarlogic.aircasting.models.Session
 
 class AirBeam2Configurator(private val mSettings: Settings) {
     private val mHexMessagesBuilder = HexMessagesBuilder()

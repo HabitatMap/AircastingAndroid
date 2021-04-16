@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class OnboardingYourPrivacyFragment: Fragment() {
-    private var controller: OnboardingYourPrivacyController? = null
+class OnboardingYourPrivacyFragment: BaseFragment<OnboardingYourPrivacyViewMvcImpl, OnboardingYourPrivacyController>() {
     lateinit var listener: OnboardingYourPrivacyViewMvc.Listener
 
     override fun onCreateView(
@@ -15,10 +14,10 @@ class OnboardingYourPrivacyFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = OnboardingYourPrivacyViewMvcImpl(layoutInflater, null)
+        view = OnboardingYourPrivacyViewMvcImpl(layoutInflater, null)
         controller = OnboardingYourPrivacyController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

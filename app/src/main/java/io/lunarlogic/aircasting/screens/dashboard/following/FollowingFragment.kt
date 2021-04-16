@@ -8,14 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
-import javax.inject.Inject
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import javax.inject.Inject
 
 
 class FollowingFragment : Fragment() {
     private var controller: FollowingController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    private var view: FollowingViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -33,7 +34,7 @@ class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = FollowingViewMvcImpl(
+        view = FollowingViewMvcImpl(
             layoutInflater,
             null,
             childFragmentManager
@@ -54,7 +55,7 @@ class FollowingFragment : Fragment() {
             sessionsRequested = false
         }
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,5 +71,19 @@ class FollowingFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         controller?.onPause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

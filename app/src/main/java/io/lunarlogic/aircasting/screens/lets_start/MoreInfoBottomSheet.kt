@@ -1,8 +1,6 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
-import android.app.Dialog
 import android.graphics.Color
-import android.os.Bundle
 import android.text.SpannableStringBuilder
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold

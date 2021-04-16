@@ -5,10 +5,12 @@ import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
-import io.lunarlogic.aircasting.models.*
+import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.models.observers.SessionObserver
-import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
 import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -18,7 +20,7 @@ import org.greenrobot.eventbus.ThreadMode
 abstract class SessionDetailsViewController(
     protected val rootActivity: AppCompatActivity,
     protected val mSessionsViewModel: SessionsViewModel,
-    protected val mViewMvc: SessionDetailsViewMvc,
+    protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     private var sensorName: String?
 ): SessionDetailsViewMvc.Listener {
@@ -27,14 +29,14 @@ abstract class SessionDetailsViewController(
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
 
         mSessionObserver.observe()
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.bindSession(mSessionPresenter)
+            mViewMvc?.bindSession(mSessionPresenter)
         }
     }
 
@@ -44,7 +46,7 @@ abstract class SessionDetailsViewController(
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
-            mViewMvc.addMeasurement(measurement)
+            mViewMvc?.addMeasurement(measurement)
         }
     }
 
@@ -60,6 +62,7 @@ abstract class SessionDetailsViewController(
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this);
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
+        mViewMvc = null
     }
 }

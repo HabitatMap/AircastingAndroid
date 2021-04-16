@@ -6,17 +6,17 @@ import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
-import io.lunarlogic.aircasting.screens.dashboard.SessionsController
-import io.lunarlogic.aircasting.models.SessionsViewModel
-import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
+import io.lunarlogic.aircasting.screens.dashboard.SessionsController
+import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 
 class FollowingController(
     mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc,
+    mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
     mSettings: Settings,

@@ -18,7 +18,7 @@ class MeasurementColor {
 
         class Level(val from: Int, val to: Int, val color: Int)
 
-        fun forMap(context: Context, measurement: Measurement, sensorThreshold: SensorThreshold?): Int {
+        fun forMap(context: Context?, measurement: Measurement, sensorThreshold: SensorThreshold?): Int {
             sensorThreshold ?: return colorWithResourceId(context, FALLBACK_COLOR)
 
             val level = measurement.getLevel(sensorThreshold)
@@ -33,7 +33,7 @@ class MeasurementColor {
             return colorForLevel(context, level)
         }
 
-        fun levels(threshold: SensorThreshold, context: Context): Array<Level> {
+        fun levels(threshold: SensorThreshold, context: Context?): Array<Level> {
             return arrayOf(
                 Level(threshold.thresholdVeryLow, threshold.thresholdLow, colorWithResourceId(context, LOW_COLOR)),
                 Level(threshold.thresholdLow, threshold.thresholdMedium, colorWithResourceId(context, MEDIUM_COLOR)),
@@ -42,7 +42,7 @@ class MeasurementColor {
             )
         }
 
-        private fun colorForLevel(context: Context, level: Measurement.Level): Int {
+        fun colorForLevel(context: Context?, level: Measurement.Level): Int {
             val colorId = when (level) {
                 Measurement.Level.EXTREMELY_LOW -> FALLBACK_COLOR
                 Measurement.Level.EXTREMELY_HIGH -> FALLBACK_COLOR
@@ -52,8 +52,11 @@ class MeasurementColor {
             return colorWithResourceId(context, colorId)
         }
 
-        private fun colorWithResourceId(context: Context, colorId: Int): Int {
-            return ResourcesCompat.getColor(context.resources, colorId, null)
+        private fun colorWithResourceId(context: Context?, colorId: Int): Int {
+            if (context == null) {
+                return 0
+            }
+            return ResourcesCompat.getColor(context?.resources, colorId, null)
         }
     }
 }

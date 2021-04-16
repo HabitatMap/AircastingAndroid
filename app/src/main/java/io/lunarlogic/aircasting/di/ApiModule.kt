@@ -7,7 +7,6 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 import io.lunarlogic.aircasting.networking.services.UploadFixedMeasurementsService
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardCSVIterator
 import javax.inject.Singleton
 
 open class WebServerFactory

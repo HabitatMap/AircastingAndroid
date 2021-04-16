@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.jobs.MoveViewJob
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import io.lunarlogic.aircasting.R
@@ -28,11 +29,11 @@ import java.util.*
 
 
 class GraphContainer: OnChartGestureListener {
-    private val mContext: Context
+    private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mSessionPresenter: SessionPresenter? = null
-    private val mGraph: TargetZoneCombinedChart?
+    private var mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
 
@@ -78,6 +79,15 @@ class GraphContainer: OnChartGestureListener {
         bindSession(sessionPresenter)
     }
 
+    fun destroy() {
+        mContext = null
+        // A "hacky" way to fix a memory leak in MPAndroidChart lib
+        // https://github.com/PhilJay/MPAndroidChart/issues/2238
+        // it's possible they'll fix it in the future so we must review it
+        MoveViewJob.getInstance(null, 0f, 0f, null, null);
+        mGraph = null
+    }
+
     private fun drawSession() {
         val result = generateData()
         val entries = result.entries
@@ -120,8 +130,8 @@ class GraphContainer: OnChartGestureListener {
         val centerX = last.x - Math.min(zoomSpan, span)/2
         val centerY = (last.y - first.y) / 2
 
-        mGraph.zoom(zoom, 1f, centerX, centerY)
-        mGraph.moveViewToX(last.x - Math.min(zoomSpan, span))
+        mGraph?.zoom(zoom, 1f, centerX, centerY)
+        mGraph?.moveViewToX(last.x - Math.min(zoomSpan, span))
 
         val from = Math.max(last.x - zoomSpan, first.x)
         val to = last.x
@@ -162,7 +172,9 @@ class GraphContainer: OnChartGestureListener {
     private fun midnightPointLine(limit: Float): LimitLine {
         val line = LimitLine(limit, "")
         line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
-        line.lineColor = ResourcesCompat.getColor(mContext.resources, R.color.aircasting_grey_700, null)
+        mContext?.let { context ->
+            line.lineColor = ResourcesCompat.getColor(context.resources, R.color.aircasting_grey_700, null)
+        }
         line.lineWidth = 1f
         line.enableDashedLine(20f, 10f, 0f)
         line.textColor = Color.BLACK
@@ -202,20 +214,20 @@ class GraphContainer: OnChartGestureListener {
     private fun setupGraph() {
         mGraph ?: return
 
-        mGraph.setPinchZoom(true)
-        mGraph.isScaleYEnabled = false
-        mGraph.description = null
-        mGraph.legend?.isEnabled = false
-        mGraph.axisLeft?.setDrawLabels(false)
-        mGraph.axisRight?.setDrawLabels(false)
-        mGraph.axisLeft?.setDrawGridLines(false)
-        mGraph.axisRight?.setDrawGridLines(false)
-        mGraph.xAxis?.setDrawLabels(false)
-        mGraph.xAxis?.setDrawGridLines(false)
-        mGraph.setDrawGridBackground(false)
-        mGraph.isDragDecelerationEnabled = false
+        mGraph?.setPinchZoom(true)
+        mGraph?.isScaleYEnabled = false
+        mGraph?.description = null
+        mGraph?.legend?.isEnabled = false
+        mGraph?.axisLeft?.setDrawLabels(false)
+        mGraph?.axisRight?.setDrawLabels(false)
+        mGraph?.axisLeft?.setDrawGridLines(false)
+        mGraph?.axisRight?.setDrawGridLines(false)
+        mGraph?.xAxis?.setDrawLabels(false)
+        mGraph?.xAxis?.setDrawGridLines(false)
+        mGraph?.setDrawGridBackground(false)
+        mGraph?.isDragDecelerationEnabled = false
 
-        mGraph.onChartGestureListener = this
+        mGraph?.onChartGestureListener = this
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
@@ -248,21 +260,23 @@ class GraphContainer: OnChartGestureListener {
             Thread.sleep(500)
 
             launch(Dispatchers.Main) {
-                val from = mGraph.lowestVisibleX
-                val to = mGraph.highestVisibleX
+                mGraph?.let { graph ->
+                    val from = graph.lowestVisibleX
+                    val to = graph.highestVisibleX
 
-                drawLabels(from, to)
+                    drawLabels(from, to)
+                }
             }
         }
     }
 
     private fun updateVisibleTimeSpan() {
-        mGraph ?: return
-
-        val from = mGraph.lowestVisibleX
-        val to = mGraph.highestVisibleX
-        val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
-        mOnTimeSpanChanged.invoke(timeSpan)
+        mGraph?.let {graph ->
+            val from = graph.lowestVisibleX
+            val to = graph.highestVisibleX
+            val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+            mOnTimeSpanChanged.invoke(timeSpan)
+        }
     }
 
     private fun showGraph() {

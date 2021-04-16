@@ -1,24 +1,21 @@
 package io.lunarlogic.aircasting.screens.new_session.choose_location
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
-import com.google.android.gms.common.api.Status
-import android.view.View
 import io.lunarlogic.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 
 
 class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Listener>, ChooseLocationViewMvc,
@@ -33,7 +30,9 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     private val mDefaultLatitude: Double
     private val mDefaultLongitude: Double
 
-    private lateinit var mMap: GoogleMap
+    private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
+    private var mSupportFragmentManager: FragmentManager?
 
     constructor(
         inflater: LayoutInflater,
@@ -44,6 +43,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
         this.session = session
+        this.mSupportFragmentManager = supportFragmentManager
 
         mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
         mDefaultLongitude = session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
@@ -75,8 +75,11 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
                 }
             })
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+        mMapFragment = SupportMapFragment.newInstance(mapOptions())
+        mMapFragment?.let {
+            supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+        }
+        mMapFragment?.getMapAsync(this)
 
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
@@ -91,11 +94,22 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         resetMapToDefaults()
     }
 
+    override fun onDestroy() {
+        mMap = null
+        mMapFragment?.onDestroy()
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
+        }
+        mMapFragment = null
+    }
+
     private fun onContinueClicked() {
-        val target = mMap.cameraPosition.target
-        val latitude = target.latitude
-        val longitude = target.longitude
-        session.location = Session.Location(latitude, longitude)
+        mMap?.let { map ->
+            val target = map.cameraPosition.target
+            val latitude = target.latitude
+            val longitude = target.longitude
+            session.location = Session.Location(latitude, longitude)
+        }
 
         for (listener in listeners) {
             listener.onContinueClicked(session)
@@ -103,17 +117,26 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
     }
 
     private fun setZoomPreferences() {
-        mMap.setMaxZoomPreference(MAX_ZOOM)
-        mMap.setMinZoomPreference(MIN_ZOOM)
+        mMap?.setMaxZoomPreference(MAX_ZOOM)
+        mMap?.setMinZoomPreference(MIN_ZOOM)
     }
 
     private fun updateMapCamera(latitude: Double, longitude: Double, aZoom: Float? = null) {
-        val zoom = aZoom ?: mMap.cameraPosition.zoom
+        val zoom = aZoom ?: mMap?.cameraPosition?.zoom
         val newLocation = LatLng(latitude, longitude)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, zoom))
+        mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, zoom ?: 0f))
     }
 
     private fun resetMapToDefaults() {
         updateMapCamera(mDefaultLatitude, mDefaultLongitude, DEFAULT_ZOOM)
+    }
+
+    private fun mapOptions(): GoogleMapOptions {
+        val mapOptions = GoogleMapOptions()
+        mapOptions.useViewLifecycleInFragment(true)
+        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomGesturesEnabled(true)
+
+        return mapOptions
     }
 }

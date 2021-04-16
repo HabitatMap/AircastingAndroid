@@ -3,10 +3,10 @@ package io.lunarlogic.aircasting
 import dagger.Component
 import io.lunarlogic.aircasting.di.*
 import io.lunarlogic.aircasting.screens.create_account.CreateAccountActivity
-import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
-import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 import io.lunarlogic.aircasting.screens.dashboard.active.MobileActiveFragment
 import io.lunarlogic.aircasting.screens.dashboard.dormant.MobileDormantFragment
+import io.lunarlogic.aircasting.screens.dashboard.fixed.FixedFragment
+import io.lunarlogic.aircasting.screens.dashboard.following.FollowingFragment
 import io.lunarlogic.aircasting.screens.lets_start.LetsStartFragment
 import io.lunarlogic.aircasting.screens.main.MainActivity
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
@@ -14,11 +14,11 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
-import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardFragment
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
 import io.lunarlogic.aircasting.screens.sync.SyncActivity
 import io.lunarlogic.aircasting.screens.sync.synced.AirbeamSyncedFragment
 import io.lunarlogic.aircasting.screens.sync.syncing.AirbeamSyncingFragment

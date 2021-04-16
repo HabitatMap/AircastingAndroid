@@ -1,17 +1,22 @@
 package io.lunarlogic.aircasting.screens.new_session.choose_location
 
-import android.content.Context
+import io.lunarlogic.aircasting.screens.common.BaseController
 
-class ChooseLocationController(
-    private val mContext: Context?,
-    private val mViewMvc: ChooseLocationViewMvc
-) {
+class ChooseLocationController (
+    viewMvc: ChooseLocationViewMvcImpl?
+) : BaseController<ChooseLocationViewMvcImpl>(viewMvc) {
 
     fun registerListener(listener: ChooseLocationViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: ChooseLocationViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mViewMvc?.onDestroy()
     }
 }

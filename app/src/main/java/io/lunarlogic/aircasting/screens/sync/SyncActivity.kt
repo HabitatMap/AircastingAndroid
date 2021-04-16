@@ -10,7 +10,6 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.networking.services.ApiService
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.permissions.PermissionsManager
 import javax.inject.Inject
@@ -81,6 +80,10 @@ class SyncActivity: AppCompatActivity() {
         controller?.onStop()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        AppBar.destroy()
+    }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

@@ -3,7 +3,8 @@ package io.lunarlogic.aircasting.networking.services
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
 import io.lunarlogic.aircasting.networking.GzippedParams
-import io.lunarlogic.aircasting.networking.params.*
+import io.lunarlogic.aircasting.networking.params.UploadFixedMeasurementsBody
+import io.lunarlogic.aircasting.networking.params.UploadFixedMeasurementsParams
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.CSVMeasurement
 import io.lunarlogic.aircasting.sensor.airbeam3.sync.CSVMeasurementStream
 import retrofit2.Call

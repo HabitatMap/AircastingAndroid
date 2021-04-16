@@ -1,27 +1,32 @@
 package io.lunarlogic.aircasting.screens.lets_start
 
 import android.content.Context
-import io.lunarlogic.aircasting.R
-import androidx.fragment.app.FragmentActivity
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
-import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
+import androidx.fragment.app.FragmentActivity
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
+import io.lunarlogic.aircasting.screens.common.BaseController
+import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.sync.SyncActivity
 
 
 class LetsStartController(
-    private val mRootActivity: FragmentActivity?,
-    private val mViewMvc: LetsStartViewMvc,
-    private val mContext: Context?,
+    private var mRootActivity: FragmentActivity?,
+    private var viewMvc: LetsStartViewMvcImpl?,
+    private var mContext: Context?,
     private val mErrorHandler: ErrorHandler
-): LetsStartViewMvc.Listener {
+): BaseController<LetsStartViewMvcImpl>(viewMvc), LetsStartViewMvc.Listener {
+
     fun onCreate() {
-        mViewMvc.registerListener(this)
+        mViewMvc?.registerListener(this)
     }
 
-    fun onDestroy() {
-        mViewMvc.unregisterListener(this)
+    override fun onDestroy() {
+        super.onDestroy()
+        mViewMvc?.unregisterListener(this)
+        mRootActivity = null
+        mContext = null
     }
 
     override fun onFixedSessionSelected() {
@@ -44,6 +49,6 @@ class LetsStartController(
     }
 
     override fun onMoreInfoClicked() {
-        mViewMvc.showMoreInfoDialog()
+        mViewMvc?.showMoreInfoDialog()
     }
 }

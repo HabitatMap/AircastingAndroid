@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import io.lunarlogic.aircasting.lib.MeasurementColor
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import java.util.*
