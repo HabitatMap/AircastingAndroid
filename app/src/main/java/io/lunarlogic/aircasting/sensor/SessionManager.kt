@@ -220,7 +220,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.markForRemoval(listOf(sessionUUID))
-            sessionsSyncService.sync()
+//            sessionsSyncService.sync()
         }
     }
 
@@ -251,7 +251,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteMarkedForRemoval() {
         DatabaseProvider.runQuery {
             measurementStreamsRepository.deleteMarkedForRemoval()
-            sessionsSyncService.sync()
+            //sessionsSyncService.sync()
         }
     }
 
