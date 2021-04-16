@@ -89,7 +89,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
 
-        if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) { //TODO: check if works fine after Marysia's changes with memory leaks!
+        if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
             mMeasurementsTableContainer.bindSession(

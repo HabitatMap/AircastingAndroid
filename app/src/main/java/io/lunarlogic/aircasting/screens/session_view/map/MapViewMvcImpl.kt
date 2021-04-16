@@ -51,8 +51,9 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
-        mMapContainer?.bindSession(mSessionPresenter)
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) hideLoader(mLoader)
+        mMapContainer?.bindSession(mSessionPresenter)
+
     }
 
     override fun centerMap(location: Location) {
