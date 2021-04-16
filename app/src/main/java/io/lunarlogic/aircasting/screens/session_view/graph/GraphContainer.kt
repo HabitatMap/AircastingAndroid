@@ -86,14 +86,9 @@ class GraphContainer: OnChartGestureListener {
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-        //setLabels()
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
-    }
-
-    private fun setLabels() {
-        mGraph?.let { drawLabels(it.lowestVisibleX, it.highestVisibleX) }
     }
 
     private fun generateData(): GraphDataGenerator.Result {
