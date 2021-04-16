@@ -86,7 +86,7 @@ class GraphContainer: OnChartGestureListener {
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-        setLabels()
+        //setLabels()
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()

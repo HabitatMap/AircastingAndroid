@@ -50,16 +50,4 @@ class FixedController(
         // do nothing
     }
 
-    override fun onGraphButtonClicked(session: Session, sensorName: String?) {
-        val onDownloadSuccess = {session: Session ->
-            DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
-            }}
-        val finallyCallback = {
-            reloadSession(session)
-        }
-        super.onGraphButtonClicked(session, sensorName) //todo : this downloaded session for some reason does not updates graph
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
-    }
-
 }

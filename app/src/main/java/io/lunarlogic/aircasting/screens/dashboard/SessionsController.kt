@@ -43,9 +43,9 @@ abstract class SessionsController(
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
-    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
-    protected val mSessionRepository = SessionsRepository()
+    private val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
+    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    private val mSessionRepository = SessionsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
