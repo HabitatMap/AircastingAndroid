@@ -225,11 +225,14 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.xAxis?.setDrawLabels(false)
         mGraph?.xAxis?.setDrawGridLines(false)
         mGraph?.setDrawGridBackground(false)
+        mGraph?.isDragDecelerationEnabled = false
 
         mGraph?.onChartGestureListener = this
     }
 
-    override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
+    override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
+        updateGraphOnGesture()
+    }
     override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
     override fun onChartLongPressed(me: MotionEvent?) {}
     override fun onChartDoubleTapped(me: MotionEvent?) {}
