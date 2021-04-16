@@ -213,6 +213,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph.xAxis?.setDrawLabels(false)
         mGraph.xAxis?.setDrawGridLines(false)
         mGraph.setDrawGridBackground(false)
+        mGraph.isDragDecelerationEnabled = false
 
         mGraph.onChartGestureListener = this
     }
