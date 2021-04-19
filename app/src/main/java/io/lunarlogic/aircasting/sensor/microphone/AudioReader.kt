@@ -24,7 +24,7 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.util.Log
-import java.util.Arrays
+import java.util.*
 
 /**
  * A class which reads builtin input from the mic in a background thread and

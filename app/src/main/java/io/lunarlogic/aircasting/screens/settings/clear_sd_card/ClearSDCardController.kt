@@ -23,8 +23,8 @@ import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnBlueto
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
-import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
+import io.lunarlogic.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
 import io.lunarlogic.aircasting.sensor.AirBeamClearCardService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

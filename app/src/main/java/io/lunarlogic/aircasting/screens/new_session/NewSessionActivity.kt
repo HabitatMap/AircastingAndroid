@@ -10,11 +10,10 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
-import io.lunarlogic.aircasting.permissions.PermissionsManager
-import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
-import io.lunarlogic.aircasting.sensor.AirBeamConnectorFactory
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionBuilder
+import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.dashboard.DashboardPagerAdapter
 import javax.inject.Inject
 
 class NewSessionActivity : AppCompatActivity() {
@@ -81,6 +80,11 @@ class NewSessionActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         controller?.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppBar.destroy()
     }
 
     override fun onBackPressed() {

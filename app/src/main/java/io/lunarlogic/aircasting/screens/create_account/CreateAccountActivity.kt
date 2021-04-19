@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.screens.create_account
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

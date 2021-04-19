@@ -6,17 +6,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvcImpl
 import kotlinx.android.synthetic.main.activity_map.view.*
 
 
 abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
-    private val mMapContainer: MapContainer
+    private var mMapContainer: MapContainer?
     private val mLoader: ImageView?
 
 
@@ -36,36 +36,42 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun registerListener(listener: SessionDetailsViewMvc.Listener) {
         super.registerListener(listener)
-        mMapContainer.registerListener(listener)
+        mMapContainer?.registerListener(listener)
     }
 
     override fun unregisterListener(listener: SessionDetailsViewMvc.Listener) {
         super.unregisterListener(listener)
-        mMapContainer.unregisterListener()
+        mMapContainer?.unregisterListener()
     }
 
     override fun addMeasurement(measurement: Measurement) {
         super.addMeasurement(measurement)
-        mMapContainer.addMobileMeasurement(measurement)
+        mMapContainer?.addMobileMeasurement(measurement)
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
-        mMapContainer.bindSession(mSessionPresenter)
-        hideLoader(mLoader)
+        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) hideLoader(mLoader)
+        mMapContainer?.bindSession(mSessionPresenter)
+
     }
 
     override fun centerMap(location: Location) {
-        mMapContainer.centerMap(location)
+        mMapContainer?.centerMap(location)
     }
 
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         super.onMeasurementStreamChanged(measurementStream)
-        mMapContainer.refresh(mSessionPresenter)
+        mMapContainer?.refresh(mSessionPresenter)
     }
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
-        mMapContainer.refresh(mSessionPresenter)
+        mMapContainer?.refresh(mSessionPresenter)
+    }
+
+    override fun onDestroy() {
+        mMapContainer?.destroy()
+        mMapContainer = null
     }
 }

@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class OnboardingGetStartedFragment: Fragment() {
-    private var controller: OnboardingGetStartedController? = null
+class OnboardingGetStartedFragment: BaseFragment<OnboardingGetStartedViewMvcImpl, OnboardingGetStartedController>() {
     lateinit var listener: OnboardingGetStartedViewMvc.Listener
 
     override fun onCreateView(
@@ -15,10 +14,10 @@ class OnboardingGetStartedFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = OnboardingGetStartedViewMvcImpl(layoutInflater, null)
+        view = OnboardingGetStartedViewMvcImpl(layoutInflater, null)
         controller = OnboardingGetStartedController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

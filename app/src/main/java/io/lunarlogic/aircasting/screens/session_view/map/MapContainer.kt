@@ -5,34 +5,33 @@ import android.location.Location
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
-import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.lib.BitmapHelper
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
+    private var LEVEL_SPANS: Array<StyleSpan>
+    private val FALLBACK_SPAN: StyleSpan
 
-    private val mContext: Context
+    private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
-    private val mMapFragment: SupportMapFragment?
+    private var mMapFragment: SupportMapFragment?
+    private var mSupportFragmentManager: FragmentManager?
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -53,8 +52,12 @@ class MapContainer: OnMapReadyCallback {
 
     constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
         mContext = context
+        this.mSupportFragmentManager = supportFragmentManager
 
-        mMapFragment = supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment
+        mMapFragment = SupportMapFragment.newInstance(mapOptions())
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+        }
         mMapFragment?.getMapAsync(this)
         mMapFragment?.view?.visibility = View.GONE
 
@@ -63,6 +66,13 @@ class MapContainer: OnMapReadyCallback {
             locate()
         }
         mLocateButton?.visibility = View.GONE
+
+        LEVEL_SPANS = arrayOf(
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.LOW)),
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.MEDIUM)),
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.HIGH)),
+            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.EXTREMELY_HIGH)))
+        FALLBACK_SPAN = StyleSpan(R.color.aircasting_grey_700)
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -91,7 +101,7 @@ class MapContainer: OnMapReadyCallback {
 
         drawSession()
         animateCameraToSession()
-        showMap()
+        if (mMeasurements.isNotEmpty()) showMap()
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
@@ -106,6 +116,21 @@ class MapContainer: OnMapReadyCallback {
             setup()
         }
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
+        clearPresenterMeasurements()
+    }
+
+
+
+    fun destroy() {
+        mMap = null
+        mContext = null
+        mMapFragment?.onDestroy()
+        mMapFragment?.let {
+            mSupportFragmentManager?.beginTransaction()?.remove(it)?.commitAllowingStateLoss()
+        }
+        mMapFragment = null
+        mSupportFragmentManager = null
+        mContext = null
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
@@ -125,7 +150,7 @@ class MapContainer: OnMapReadyCallback {
             latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
 
             if (i > 0) {
-                mMeasurementSpans.add(StyleSpan(latestColor))
+                mMeasurementSpans.add(measurementSpan(measurement))
             }
             latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
             mMeasurementPoints.add(latestPoint)
@@ -213,7 +238,6 @@ class MapContainer: OnMapReadyCallback {
 
         mMeasurementsLine?.setPoints(mMeasurementPoints)
         mMeasurementsLine?.setSpans(mMeasurementSpans)
-
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
 
@@ -224,6 +248,16 @@ class MapContainer: OnMapReadyCallback {
         val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
 
         return ColorPoint(point, color)
+    }
+
+    private fun measurementSpan(measurement: Measurement) : StyleSpan {
+        if (measurement.latitude == null || measurement.longitude == null) return FALLBACK_SPAN
+        val threshold = mSessionPresenter?.selectedSensorThreshold() ?: return FALLBACK_SPAN
+        return when (val level = measurement.getLevel(threshold)) {
+            Measurement.Level.EXTREMELY_LOW -> FALLBACK_SPAN
+            Measurement.Level.EXTREMELY_HIGH -> FALLBACK_SPAN
+            else -> LEVEL_SPANS[level.value]
+        }
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
@@ -255,6 +289,22 @@ class MapContainer: OnMapReadyCallback {
     private fun showMap() {
         mMapFragment?.view?.visibility = View.VISIBLE
         mLocateButton?.visibility = View.VISIBLE
+    }
+
+    private fun mapOptions(): GoogleMapOptions {
+        val mapOptions = GoogleMapOptions()
+        mapOptions.useViewLifecycleInFragment(true)
+        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomGesturesEnabled(true)
+
+        return mapOptions
+    }
+
+    private fun clearPresenterMeasurements() {
+        mSessionPresenter?.session?.streams?.forEach {
+            it.clearMeasurements()
+        }
+        mSessionPresenter?.selectedStream?.clearMeasurements()
     }
 }
 

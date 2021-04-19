@@ -4,16 +4,16 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationFragment
 import io.lunarlogic.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import io.lunarlogic.aircasting.screens.new_session.connect_airbeam.*
+import io.lunarlogic.aircasting.screens.new_session.select_device.*
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
-import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.screens.common.BaseWizardNavigator
-import io.lunarlogic.aircasting.screens.new_session.select_device.*
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,

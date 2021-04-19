@@ -5,7 +5,10 @@ import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.params.*
 import io.lunarlogic.aircasting.networking.responses.*
-import okhttp3.*
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit

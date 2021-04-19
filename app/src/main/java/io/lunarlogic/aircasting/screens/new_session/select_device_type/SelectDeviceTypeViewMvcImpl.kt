@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.screens.new_session.select_device
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.cardview.widget.CardView
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc

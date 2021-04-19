@@ -1,20 +1,17 @@
 package io.lunarlogic.aircasting.screens.session_view
 
 import android.content.Context
-import android.graphics.Typeface
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import androidx.core.view.get
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.session_card.view.*
 
 

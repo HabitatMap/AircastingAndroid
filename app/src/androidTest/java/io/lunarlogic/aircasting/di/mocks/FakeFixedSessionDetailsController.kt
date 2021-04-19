@@ -7,12 +7,12 @@ import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetai
 
 class FakeFixedSessionDetailsController(
     private val mContext: Context?,
-    private val mViewMvc: FixedSessionDetailsViewMvc
+    private var mViewMvc: FixedSessionDetailsViewMvc?
 ): SessionDetailsController(mContext, mViewMvc) {
     companion object {
         val TEST_WIFI_SSID = "fake-wifi"
     }
     init {
-        mViewMvc.bindNetworks(listOf(Network(TEST_WIFI_SSID, 777, 2)))
+        mViewMvc?.bindNetworks(listOf(Network(TEST_WIFI_SSID, 777, 2)))
     }
 }

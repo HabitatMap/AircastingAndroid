@@ -1,7 +1,6 @@
 package io.lunarlogic.aircasting.screens.common
 
-import java.util.Collections
-import java.util.HashSet
+import java.util.*
 
 abstract class BaseObservableViewMvc<ListenerType> : BaseViewMvc(),
     ObservableViewMvc<ListenerType> {

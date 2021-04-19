@@ -61,7 +61,8 @@
                 map:uiScrollGestures="false"
                 map:uiTiltGestures="false"
                 map:uiZoomControls="true"
-                map:uiZoomGestures="true" />
+                map:uiZoomGestures="true"
+            />
 
         <Button
             android:id="@+id/start_recording_button"

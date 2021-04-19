@@ -15,7 +15,6 @@ import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.main.MainActivity
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -10,14 +10,12 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.BuildConfig
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.NavigationController
-import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.lib.Settings
+import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 class MainActivity: AppCompatActivity() {
@@ -44,6 +42,9 @@ class MainActivity: AppCompatActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
+        // subscribing to custom uncaught exception handler to handle crash
+        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings));
+
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
@@ -64,6 +65,7 @@ class MainActivity: AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        AppBar.destroy()
         controller?.onDestroy()
         LocationHelper.stop()
     }

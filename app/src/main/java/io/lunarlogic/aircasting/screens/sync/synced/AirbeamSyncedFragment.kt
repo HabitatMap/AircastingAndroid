@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class AirbeamSyncedFragment: Fragment() {
-    private var controller: AirbeamSyncedController? = null
+class AirbeamSyncedFragment: BaseFragment<AirbeamSyncedViewMvcImpl, AirbeamSyncedController>() {
     lateinit var listener: AirbeamSyncedViewMvc.Listener
 
     override fun onCreateView(
@@ -19,10 +18,10 @@ class AirbeamSyncedFragment: Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = AirbeamSyncedViewMvcImpl(layoutInflater, null)
+        view = AirbeamSyncedViewMvcImpl(layoutInflater, null)
         controller = AirbeamSyncedController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

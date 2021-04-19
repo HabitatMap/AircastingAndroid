@@ -9,14 +9,15 @@ import androidx.fragment.app.activityViewModels
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.sensor.AirBeamReconnector
 import javax.inject.Inject
-import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 
 
 class MobileActiveFragment : Fragment() {
     private var controller: MobileActiveController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    private var view: MobileActiveViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -37,7 +38,7 @@ class MobileActiveFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = MobileActiveViewMvcImpl(
+        view = MobileActiveViewMvcImpl(
             layoutInflater,
             null,
             childFragmentManager
@@ -58,7 +59,7 @@ class MobileActiveFragment : Fragment() {
             sessionsRequested = false
         }
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,5 +75,19 @@ class MobileActiveFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         controller?.onPause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controller?.onDestroy()
+        controller = null
+        view = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controller?.onDestroy()
+        controller = null
+        view = null
     }
 }

@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import javax.inject.Inject
 
-class ConfirmationFragment() : Fragment() {
-    private var controller: ConfirmationController? = null
+class ConfirmationFragment() : BaseFragment<ConfirmationViewMvcImpl, ConfirmationController>() {
     lateinit var listener: ConfirmationViewMvc.Listener
     lateinit var session: Session
 
@@ -26,9 +25,9 @@ class ConfirmationFragment() : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
-        controller = ConfirmationController(context, view, settings)
-        return view.rootView
+        view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
+        controller = ConfirmationController(view, settings)
+        return view?.rootView
     }
 
     override fun onStart() {

@@ -14,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.86"
+        versionName "1.98"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
@@ -135,4 +135,7 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
     androidTestImplementation 'com.nhaarman:mockito-kotlin:1.5.0'
+
+    // Leak detection
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 }

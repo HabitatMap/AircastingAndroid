@@ -1,17 +1,16 @@
 package io.lunarlogic.aircasting.screens.new_session.select_device
 
-import android.content.Context
+import io.lunarlogic.aircasting.screens.common.BaseController
 
 class SelectDeviceTypeController(
-    private val mContext: Context?,
-    private val mViewMvc: SelectDeviceTypeViewMvc
-) {
+    var viewMvc: SelectDeviceTypeViewMvcImpl?
+) : BaseController<SelectDeviceTypeViewMvcImpl>(viewMvc){
 
     fun registerListener(listener: SelectDeviceTypeViewMvc.Listener) {
-        mViewMvc.registerListener(listener)
+        mViewMvc?.registerListener(listener)
     }
 
     fun unregisterListener(listener: SelectDeviceTypeViewMvc.Listener) {
-        mViewMvc.unregisterListener(listener)
+        mViewMvc?.unregisterListener(listener)
     }
 }

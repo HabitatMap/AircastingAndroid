@@ -1,7 +1,10 @@
 package io.lunarlogic.aircasting.database
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import io.lunarlogic.aircasting.database.converters.*
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.database.migrations.*

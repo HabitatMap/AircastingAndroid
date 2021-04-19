@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.bluetooth.BluetoothManager
 
 class SelectDeviceFragment() : Fragment() {
     private var controller: SelectDeviceController? = null
+    private var view: SelectDeviceViewMvcImpl? = null
     var listener: SelectDeviceViewMvc.Listener? = null
     var bluetoothManager: BluetoothManager? = null
     var headerDescription: String? = null
@@ -20,7 +21,7 @@ class SelectDeviceFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
+        view =
             SelectDeviceViewMvcImpl(
                 layoutInflater,
                 null,
@@ -37,7 +38,7 @@ class SelectDeviceFragment() : Fragment() {
                 )
         }
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {
@@ -48,5 +49,19 @@ class SelectDeviceFragment() : Fragment() {
     override fun onStop() {
         super.onStop()
         controller?.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

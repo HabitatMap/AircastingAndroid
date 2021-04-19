@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class OnboardingMeasureAndMapFragment: Fragment() {
-    private var controller: OnboardingMeasureAndMapController? = null
+class OnboardingMeasureAndMapFragment: BaseFragment<OnboardingMeasureAndMapViewMvcImpl, OnboardingMeasureAndMapController>() {
     lateinit var listener: OnboardingMeasureAndMapViewMvc.Listener
 
     override fun onCreateView(
@@ -15,10 +14,10 @@ class OnboardingMeasureAndMapFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = OnboardingMeasureAndMapViewMvcImpl(layoutInflater, null)
+        view = OnboardingMeasureAndMapViewMvcImpl(layoutInflater, null)
         controller = OnboardingMeasureAndMapController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

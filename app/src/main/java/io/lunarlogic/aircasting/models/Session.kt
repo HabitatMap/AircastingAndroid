@@ -6,7 +6,6 @@ import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 import io.lunarlogic.aircasting.sensor.microphone.MicrophoneDeviceItem
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 val TAGS_SEPARATOR = " "
 

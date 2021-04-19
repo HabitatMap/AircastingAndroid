@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.AppBar
 import io.lunarlogic.aircasting.lib.ResultCodes
-import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 
@@ -18,6 +17,7 @@ class MapActivity: AppCompatActivity() {
     private var controller: MapController? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
     private val errorHandler = ErrorHandler(this)
+    private var view: MapViewMvcImpl? = null
 
     companion object {
         val SENSOR_NAME_KEY = "SENSOR_NAME"
@@ -47,7 +47,7 @@ class MapActivity: AppCompatActivity() {
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sessionTab: Int = intent.extras?.getInt(SESSION_TAB_KEY) as Int
 
-        val view = MapViewMvcImplFactory.get(
+        view = MapViewMvcImplFactory.get(
             layoutInflater,
             null,
             supportFragmentManager,
@@ -57,8 +57,8 @@ class MapActivity: AppCompatActivity() {
 
         controller?.onCreate()
 
-        setContentView(view.rootView)
-        AppBar.setup(view.rootView, this)
+        setContentView(view?.rootView)
+        AppBar.setup(view?.rootView, this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -89,6 +89,8 @@ class MapActivity: AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        AppBar.destroy()
+        view?.onDestroy()
         controller?.onDestroy()
     }
 }

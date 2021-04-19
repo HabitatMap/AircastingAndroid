@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class TurnOnAirBeamFragment() : Fragment() {
-    private var controller: TurnOnAirBeamController? = null
+class TurnOnAirBeamFragment() : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBeamController>() {
     var listener: TurnOnAirBeamViewMvc.Listener? = null
     lateinit var sessionType: Session.Type
 
@@ -17,7 +16,7 @@ class TurnOnAirBeamFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
+        view =
             TurnOnAirBeamViewMvcImpl(
                 layoutInflater,
                 null,
@@ -29,7 +28,7 @@ class TurnOnAirBeamFragment() : Fragment() {
                 view
             )
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

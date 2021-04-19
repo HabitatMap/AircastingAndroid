@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.permissions.PermissionsManager
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import javax.inject.Inject
 
-class LetsStartFragment : Fragment() {
-    private var controller: LetsStartController? = null
+class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController>()  {
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
@@ -36,10 +35,5 @@ class LetsStartFragment : Fragment() {
         controller?.onCreate()
 
         return view.rootView
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        controller?.onDestroy()
     }
 }

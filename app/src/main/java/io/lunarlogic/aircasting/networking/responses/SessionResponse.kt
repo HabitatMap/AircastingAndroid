@@ -18,7 +18,4 @@ class SessionResponse(
     val location: String,
     val is_indoor: Boolean,
     val notes: ArrayList<NoteResponse>
-
-    // TODO: add notes field after adding this functionallity
-    // TODO: adding latitude, longitude and is_indoor might be needed when adding resume streaming functionallity
 )

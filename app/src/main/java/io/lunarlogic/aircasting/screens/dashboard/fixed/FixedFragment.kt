@@ -16,6 +16,7 @@ import javax.inject.Inject
 class FixedFragment : Fragment() {
     private var controller: FixedController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    private var view: FixedViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -33,7 +34,7 @@ class FixedFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = FixedViewMvcImpl(
+        view = FixedViewMvcImpl(
             layoutInflater,
             null,
             childFragmentManager
@@ -54,7 +55,7 @@ class FixedFragment : Fragment() {
             sessionsRequested = false
         }
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,5 +71,19 @@ class FixedFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         controller?.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

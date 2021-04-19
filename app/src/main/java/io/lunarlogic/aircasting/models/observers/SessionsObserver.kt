@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 abstract class SessionsObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
     private val mSessionsViewModel: SessionsViewModel,
-    private val mViewMvc: SessionsViewMvc
+    private val mViewMvc: SessionsViewMvc?
 ) {
     private var mSessions = hashMapOf<String, Session>()
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
@@ -24,10 +24,10 @@ abstract class SessionsObserver<Type>(
         DatabaseProvider.runQuery { coroutineScope ->
             val sessions = dbSessions.map { dbSession -> buildSession(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
-            hideLoader(coroutineScope)
             if (anySessionChanged(sessions) || anySensorThresholdChanged(sensorThresholds)) {
                 onSessionsChanged(coroutineScope, sessions, sensorThresholds)
             }
+            hideLoader(coroutineScope)
         }
     }
 
@@ -61,19 +61,19 @@ abstract class SessionsObserver<Type>(
 
     private fun hideLoader(coroutineScope: CoroutineScope) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.hideLoader()
+            mViewMvc?.hideLoader()
         }
     }
 
     private fun showSessionsView(coroutineScope: CoroutineScope, sessions: List<Session>) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.showSessionsView(sessions, mSensorThresholds)
+            mViewMvc?.showSessionsView(sessions, mSensorThresholds)
         }
     }
 
     private fun showEmptyView(coroutineScope: CoroutineScope) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc.showEmptyView()
+            mViewMvc?.showEmptyView()
         }
     }
 

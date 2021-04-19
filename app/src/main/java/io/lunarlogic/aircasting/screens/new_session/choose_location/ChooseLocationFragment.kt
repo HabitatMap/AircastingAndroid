@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 
-class ChooseLocationFragment() : Fragment() {
-    private var controller: ChooseLocationController? = null
+class ChooseLocationFragment() : BaseFragment<ChooseLocationViewMvcImpl, ChooseLocationController>() {
     lateinit var listener: ChooseLocationViewMvc.Listener
     lateinit var session: Session
     lateinit var errorHandler: ErrorHandler
@@ -19,10 +18,10 @@ class ChooseLocationFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = ChooseLocationViewMvcImpl(inflater, container, childFragmentManager, session, errorHandler)
-        controller = ChooseLocationController(context, view)
+        view = ChooseLocationViewMvcImpl(inflater, container, childFragmentManager, session, errorHandler)
+        controller = ChooseLocationController(view)
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

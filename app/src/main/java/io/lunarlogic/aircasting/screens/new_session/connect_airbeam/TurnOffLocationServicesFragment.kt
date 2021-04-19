@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import io.lunarlogic.aircasting.screens.common.BaseFragment
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
 
-class TurnOffLocationServicesFragment: Fragment() {
-    private var controller: TurnOffLocationServicesController? = null
+class TurnOffLocationServicesFragment:  BaseFragment<TurnOffLocationServicesViewMvcImpl, TurnOffLocationServicesController>() {
     var listener: TurnOffLocationServicesViewMvc.Listener? = null
     var deviceItem: DeviceItem? = null
     var sessionUUID: String? = null
@@ -18,7 +17,7 @@ class TurnOffLocationServicesFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =
+        view =
             TurnOffLocationServicesViewMvcImpl(
                 layoutInflater,
                 null,
@@ -31,7 +30,7 @@ class TurnOffLocationServicesFragment: Fragment() {
                 view
             )
 
-        return view.rootView
+        return view?.rootView
     }
 
     override fun onStart() {

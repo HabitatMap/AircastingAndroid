@@ -14,7 +14,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import io.lunarlogic.aircasting.database.AppDatabase
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.di.*
+import io.lunarlogic.aircasting.di.AppModule
+import io.lunarlogic.aircasting.di.PermissionsModule
+import io.lunarlogic.aircasting.di.TestApiModule
 import io.lunarlogic.aircasting.di.TestSettingsModule
 import io.lunarlogic.aircasting.helpers.getMockWebServerFrom
 import io.lunarlogic.aircasting.lib.Settings

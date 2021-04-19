@@ -2,12 +2,12 @@ package io.lunarlogic.aircasting.sensor.airbeam3.sync
 
 import android.content.Context
 import android.util.Log
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.Step
-import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.StepType
-import io.lunarlogic.aircasting.events.sdcard.SDCardReadFinished
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadEvent
+import io.lunarlogic.aircasting.events.sdcard.SDCardReadFinished
 import io.lunarlogic.aircasting.events.sdcard.SDCardReadStepStartedEvent
 import io.lunarlogic.aircasting.lib.safeRegister
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.Step
+import io.lunarlogic.aircasting.sensor.airbeam3.sync.SDCardReader.StepType
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.FileWriter
