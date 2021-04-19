@@ -76,6 +76,12 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(Session.Status.RECORDING, Session.Type.MOBILE, DeviceItem.Type.MIC) != null
     }
 
+
+    fun mobileActiveSessionExists(): Boolean {
+        return mDatabase.sessions().loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
+                mDatabase.sessions().loadSessionByStatusAndType(Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+    }
+
     fun disconnectMobileBluetoothSessions() {
         mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
     }
