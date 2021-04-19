@@ -220,18 +220,14 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.markForRemoval(listOf(sessionUUID))
-//            sessionsSyncService.sync()
         }
     }
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
-        markForRemoval(session, streamsToDelete) {
-            updateSession(session)
-        }
+        markForRemoval(session, streamsToDelete)
     }
 
-    private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?, callback: () -> Unit) {
-        mCallback = callback
+    private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?) {
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
             measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
@@ -251,7 +247,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteMarkedForRemoval() {
         DatabaseProvider.runQuery {
             measurementStreamsRepository.deleteMarkedForRemoval()
-            //sessionsSyncService.sync()
+            sessionsSyncService.sync()
         }
     }
 
