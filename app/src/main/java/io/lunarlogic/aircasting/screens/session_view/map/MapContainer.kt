@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
+import android.graphics.Color
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
@@ -45,6 +46,8 @@ class MapContainer: OnMapReadyCallback {
     private val mMeasurementPoints = ArrayList<LatLng>()
     private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
+
+    private var mMapGrid: HashMap<String, GridSquare>? = null
 
     private val status = AtomicInteger(Status.INIT.value)
 
@@ -98,6 +101,7 @@ class MapContainer: OnMapReadyCallback {
         status.set(Status.MAP_LOADED.value)
     }
 
+
     fun setup() {
         clearMap()
 
@@ -105,6 +109,11 @@ class MapContainer: OnMapReadyCallback {
 
         drawSession()
         animateCameraToSession()
+
+        mMap?.setOnCameraIdleListener {
+            println("MARYSIA: visibleRegion camera idle")
+            drawHeatMap()
+        }
         if (mMeasurements.isNotEmpty()) showMap()
     }
 
@@ -177,6 +186,56 @@ class MapContainer: OnMapReadyCallback {
         }
     }
 
+    private fun drawHeatMap() {
+        val DENSITY = 20
+        println("MARYSIA: map width: ${mMapFragment?.view?.width}")
+        val mapWidth = mMapFragment?.view?.width ?: 0
+        println("MARYSIA: map height: ${mMapFragment?.view?.height}")
+        val mapHeight = mMapFragment?.view?.height ?: 0
+        val size = Math.min(mapWidth, mapHeight) / DENSITY
+        val gridSizeX =  mapWidth / size
+        val gridSizeY = mapHeight / size
+
+        val visibleRegion = mMap?.projection?.visibleRegion
+        println("MARYSIA: visibleRegion: ${visibleRegion}")
+//        val bounds = visibleRegion?.
+        visibleRegion?.let { visibleRegion ->
+            val latNorth = visibleRegion.farLeft.latitude
+            val latSouth = visibleRegion.nearLeft.latitude
+            val lonEast = visibleRegion.farRight.longitude
+            val lonWest = visibleRegion.nearLeft.longitude
+mMap?.addMarker(MarkerOptions().position(visibleRegion.farLeft))
+            println("MARYSIA: latNorth: ${latNorth}")
+            println("MARYSIA: latSouth: ${latSouth}")
+            println("MARYSIA: lonEast: ${lonEast}")
+            println("MARYSIA: lonWest: ${lonWest}")
+            val lonGridSide = (lonEast - lonWest) / gridSizeX
+            val latGridSide = (latNorth - latSouth) / gridSizeY
+            println("MARYSIA: latGridSide: ${latGridSide}")
+
+            for (x in 1..gridSizeX) {
+                for (y in 1..gridSizeY) {
+                    val southWestLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonEast + (x - 1) * lonGridSide)
+                    val southEastLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonEast + x * lonGridSide)
+                    val northEastLatLng = LatLng(latSouth + y * latGridSide, lonEast + x * lonGridSide)
+                    val northWestLatLng = LatLng((latSouth + y * latGridSide), lonEast + (x - 1) * lonGridSide)
+                    println("MARYSIA: southWestLatLng: ${southWestLatLng}")
+                    drawSquare(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
+                }
+            }
+        }
+
+    }
+
+    private fun drawSquare(southWestLatLng: LatLng, southEastLatLng: LatLng, northEastLatLng: LatLng, northWestLatLng: LatLng) {
+
+        val polygon = mMap?.addPolygon(PolygonOptions()
+                .add(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
+            .strokeColor(Color.RED)
+            .fillColor(Color.argb(20, 50, 0, 255))
+            )
+
+    }
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
         if (point == null || color == null) return
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
@@ -332,3 +391,26 @@ class MapContainer: OnMapReadyCallback {
 }
 
 data class ColorPoint(val point: LatLng, val color: Int)
+
+class GridSquare {
+    private var sum: Double = 0.0
+    private var number: Int = 0
+    private var averagedValue: Double = 0.0
+
+
+    constructor(initialMeasurement: Measurement) {
+        sum = initialMeasurement.value
+        number = 1
+
+    }
+    fun addMeasurement(measurement: Measurement) {
+        sum = sum + measurement.value
+        number = number + 1
+        calculateAverage()
+    }
+    private fun calculateAverage() {
+        averagedValue = sum / number
+    }
+
+
+}
