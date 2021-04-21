@@ -18,6 +18,11 @@ open class Settings(mApplication: Application) {
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
 
+    private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
+    private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
+
+    private val DEFAULT_DELETE_SESSION_IN_PROGRESS = false
+    private val DEFAULT_SESSIONS_TO_REMOVE = false
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
@@ -73,6 +78,14 @@ open class Settings(mApplication: Application) {
         return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)
     }
 
+    fun getIsDeleteSessionInProgress(): Boolean? {
+        return getBooleanFromSettings(DELETE_SESSION_IN_PROGERSS_KEY, DEFAULT_DELETE_SESSION_IN_PROGRESS)
+    }
+
+    fun getAreThereSessionsToRemove(): Boolean? {
+        return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
+    }
+
     fun toggleMapSettingsEnabled(){
         val enabled = !areMapsDisabled()
         saveToSettings(MAPS_DISABLED_KEY, enabled)
@@ -111,6 +124,14 @@ open class Settings(mApplication: Application) {
 
     fun setAppNotRestarted() {
         saveToSettings(APP_RESTARTED, false)
+    }
+
+    fun setSessionsToRemove(toRemove: Boolean) {
+        saveToSettings(SESSIONS_TO_REMOVE_KEY, toRemove)
+    }
+
+    fun setDeletingSessionsInProgress(deleteInProgress: Boolean) {
+        saveToSettings(DELETE_SESSION_IN_PROGERSS_KEY, deleteInProgress)
     }
 
     fun login(email: String, authToken: String) {

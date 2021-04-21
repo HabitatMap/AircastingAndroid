@@ -32,7 +32,6 @@ class SessionsSyncService {
     private val removeOldMeasurementsService: RemoveOldMeasurementsService
 
     private val sessionRepository = SessionsRepository()
-    private val noteRepository = NoteRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
@@ -82,7 +81,7 @@ class SessionsSyncService {
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
-        if (syncStarted.get() || syncInBackground.get()) {
+        if (syncStarted.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress() == true) {
             return
         }
 

@@ -219,15 +219,22 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
+            settings.setDeletingSessionsInProgress(true)
             sessionsRespository.markForRemoval(listOf(sessionUUID))
+            sessionsSyncService.sync()
+//            settings.setSessionsToRemove(true) todo: is this needed for sure??
+            settings.setDeletingSessionsInProgress(false)
         }
     }
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
-        markForRemoval(session, streamsToDelete)
+        markForRemoval(session, streamsToDelete) {
+            updateSession(session)
+        }
     }
 
-    private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?) {
+    private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?, callback: () -> Unit) {
+        mCallback = callback
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
             measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
