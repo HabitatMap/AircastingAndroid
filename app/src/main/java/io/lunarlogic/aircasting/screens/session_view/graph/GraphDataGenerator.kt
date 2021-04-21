@@ -1,12 +1,18 @@
 package io.lunarlogic.aircasting.screens.session_view.graph
 
+import android.content.Context
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
+import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.CalendarUtils
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Note
 import java.util.*
 import kotlin.collections.ArrayList
 
-class GraphDataGenerator {
+class GraphDataGenerator(
+    private val mContext: Context
+) {
     private var cumulativeValue = 0.0
     private var cumulativeTime: Long = 0
     private var count = 0
@@ -16,13 +22,15 @@ class GraphDataGenerator {
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
-    fun generate(samples: List<Measurement>, limit: Int = DEFAULT_LIMIT): Result {
+    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT): Result {
         reset()
 
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
         val fillFactor = 1.0 * limit / samples.size
         var fill = 0.0
+        var hasNote = false
+        var previousNote: Note? = null
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
@@ -39,6 +47,19 @@ class GraphDataGenerator {
                 val date = getAverageDate()
 
                 entries.add(buildAverageEntry(date))
+
+                if (notes != null) {
+                    for (note in notes) {
+                        if (isSameDate(note, date) && note != previousNote) { // TODO: check if this condition is still needed after fixing bug with 2 measurements in 1 second
+                            hasNote = true
+                            previousNote = note
+                        }
+                    }
+                }
+
+                entries.add(buildAverageEntry(date, hasNote))
+
+                hasNote = false
 
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
 
@@ -71,10 +92,15 @@ class GraphDataGenerator {
         return (cumulativeValue / count)
     }
 
-    private fun buildAverageEntry(date: Date): Entry {
+    private fun buildAverageEntry(date: Date, hasNote: Boolean = false): Entry {
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
-        return Entry(time, value)
+
+        if (hasNote) {
+            return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
+        } else {
+            return Entry(time, value)
+        }
     }
 
     private fun convertDateToFloat(date: Date): Float {
@@ -94,5 +120,13 @@ class GraphDataGenerator {
         count = 0
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
+    }
+
+    private fun isSameDate(note: Note, date: Date): Boolean {
+        return note.date.month == date.month &&
+                note.date.day == date.day &&
+                note.date.hours == date.hours &&
+                note.date.minutes == date.minutes &&
+                note.date.seconds == date.seconds
     }
 }

@@ -12,6 +12,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
@@ -151,6 +152,13 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mStatisticsContainer?.refresh(mSessionPresenter)
 
         mListener?.onSensorThresholdChanged(sensorThreshold)
+    }
+
+    protected open fun onNoteAdded(note: Note) {
+        val oldNotes = mSessionPresenter?.session?.notes
+        if (oldNotes != null) {
+            mSessionPresenter?.session?.notes = oldNotes + note
+        }
     }
 
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {

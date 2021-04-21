@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
@@ -24,7 +25,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?
     ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample)
+        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample, notes())
         mLoader = rootView?.loader_graph
         showLoader(mLoader)
     }
@@ -33,6 +34,11 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
 
     open fun measurementsSample(): List<Measurement> {
         return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
+    }
+
+
+    open fun notes(): List<Note> {
+        return mSessionPresenter?.session?.notes ?: listOf<Note>()
     }
 
     override fun layoutId(): Int {
@@ -62,6 +68,10 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
+        graphContainer?.refresh(mSessionPresenter)
+    }
+
+    override fun addNote(note: Note) {
         graphContainer?.refresh(mSessionPresenter)
     }
 

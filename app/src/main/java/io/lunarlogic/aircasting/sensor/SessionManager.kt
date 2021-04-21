@@ -57,6 +57,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         addNote(event)
     }
 
+    @Subscribe
+    fun onMessageEvent(event: NoteEditedEvent) {
+        // TODO: editNote(event)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: NoteDeletedEvent) {
+        // TODO: deleteNote(event)
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: NewMeasurementEvent) {
         addMeasurement(event)

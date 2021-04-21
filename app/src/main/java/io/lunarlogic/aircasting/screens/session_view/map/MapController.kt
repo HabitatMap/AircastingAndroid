@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewController
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus
@@ -27,7 +28,8 @@ class MapController(
     val fragmentManager: FragmentManager
 ): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName),
     SessionDetailsViewMvc.Listener,
-    AddNoteBottomSheet.Listener {
+    AddNoteBottomSheet.Listener,
+    EditNoteBottomSheet.Listener {
     private var mLocateRequested = false
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -78,5 +80,20 @@ class MapController(
     override fun addNotePressed(session: Session, note: Note) {
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
+        mViewMvc?.addNote(note)
+    }
+
+    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
+        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
+    }
+
+    override fun saveChangesNotePressed(note: Note?, session: Session?) { // buttons from edit note bottom sheet
+        TODO("Not yet implemented, NotEditedEvent to be sent here <?>")
+        //        val event = NoteEditedEvent(note, session)
+        //        EventBus.getDefault().post(event)
+    }
+
+    override fun deleteNotePressed(note: Note?) { // Delete session on EditNoteBottomSheet pressed
+        TODO("Not yet implemented, NoteDeletedEvent to be sent here <?>")
     }
 }

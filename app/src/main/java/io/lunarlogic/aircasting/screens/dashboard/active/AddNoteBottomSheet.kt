@@ -49,7 +49,7 @@ class AddNoteBottomSheet(
     private fun addNote(mSession: Session) {
         val noteText = noteInput?.text.toString().trim()
         val date = Date()
-        val note = Note(date, noteText, mSession.location?.latitude, mSession.location?.longitude, mSession.notes.size) // todo: add "photoPath" later on
+        val note = Note(date, noteText, mSession.lastMeasurementLocation().latitude, mSession.lastMeasurementLocation().longitude, mSession.notes.size) // todo: add "photoPath" later on
 
         mListener.addNotePressed(mSession, note)
     }

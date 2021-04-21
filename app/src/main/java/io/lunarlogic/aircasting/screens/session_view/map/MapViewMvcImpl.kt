@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
@@ -62,6 +63,11 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
 
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         super.onMeasurementStreamChanged(measurementStream)
+        mMapContainer?.refresh(mSessionPresenter)
+    }
+
+    override fun addNote(note: Note) {
+        super.onNoteAdded(note)
         mMapContainer?.refresh(mSessionPresenter)
     }
 

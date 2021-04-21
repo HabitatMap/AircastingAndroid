@@ -18,6 +18,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
@@ -37,7 +38,7 @@ class GraphContainer: OnChartGestureListener {
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
 
-    private val mGraphDataGenerator = GraphDataGenerator()
+    private var mGraphDataGenerator: GraphDataGenerator
 
     private val DATE_FORMAT = "HH:mm"
     private val mDefaultZoomSpan: Int?
@@ -45,8 +46,9 @@ class GraphContainer: OnChartGestureListener {
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
     private var mGetMeasurementsSample: () -> List<Measurement>
     private var mMeasurementsSample: List<Measurement> = listOf()
+    private var mNotes: List<Note>? = listOf()
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, getNoteSample: List<Note>?) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
@@ -54,6 +56,9 @@ class GraphContainer: OnChartGestureListener {
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
+        mNotes = getNoteSample
+
+        mGraphDataGenerator = GraphDataGenerator(mContext!!)
 
         hideGraph()
         setupGraph()
@@ -70,6 +75,7 @@ class GraphContainer: OnChartGestureListener {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
+        mNotes = mSessionPresenter?.session?.notes
 
         drawSession()
         if (mMeasurementsSample.isNotEmpty()) showGraph()
@@ -102,7 +108,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample)
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes)
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -195,6 +201,7 @@ class GraphContainer: OnChartGestureListener {
         dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
         dataSet.setDrawHighlightIndicators(false)
+        dataSet.setDrawIcons(true)
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
         dataSet.cubicIntensity = 0.04f
     }
@@ -221,6 +228,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.xAxis?.setDrawGridLines(false)
         mGraph?.setDrawGridBackground(false)
         mGraph?.isDragDecelerationEnabled = false
+        mGraph?.setMaxVisibleValueCount(100000) //todo: this allows us to display icon on graph, value may be changed if icons would not display during tests
 
         mGraph?.onChartGestureListener = this
     }
