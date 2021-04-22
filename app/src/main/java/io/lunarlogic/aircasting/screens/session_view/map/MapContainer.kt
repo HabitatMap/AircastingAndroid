@@ -187,7 +187,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun drawHeatMap() {
-        val DENSITY = 20
+        val DENSITY = 10
         println("MARYSIA: map width: ${mMapFragment?.view?.width}")
         val mapWidth = mMapFragment?.view?.width ?: 0
         println("MARYSIA: map height: ${mMapFragment?.view?.height}")
@@ -204,21 +204,17 @@ class MapContainer: OnMapReadyCallback {
             val latSouth = visibleRegion.nearLeft.latitude
             val lonEast = visibleRegion.farRight.longitude
             val lonWest = visibleRegion.nearLeft.longitude
-mMap?.addMarker(MarkerOptions().position(visibleRegion.farLeft))
-            println("MARYSIA: latNorth: ${latNorth}")
-            println("MARYSIA: latSouth: ${latSouth}")
-            println("MARYSIA: lonEast: ${lonEast}")
-            println("MARYSIA: lonWest: ${lonWest}")
+
             val lonGridSide = (lonEast - lonWest) / gridSizeX
             val latGridSide = (latNorth - latSouth) / gridSizeY
             println("MARYSIA: latGridSide: ${latGridSide}")
 
             for (x in 1..gridSizeX) {
                 for (y in 1..gridSizeY) {
-                    val southWestLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonEast + (x - 1) * lonGridSide)
-                    val southEastLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonEast + x * lonGridSide)
-                    val northEastLatLng = LatLng(latSouth + y * latGridSide, lonEast + x * lonGridSide)
-                    val northWestLatLng = LatLng((latSouth + y * latGridSide), lonEast + (x - 1) * lonGridSide)
+                    val southWestLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonWest + (x - 1) * lonGridSide)
+                    val southEastLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonWest + x * lonGridSide)
+                    val northEastLatLng = LatLng(latSouth + y * latGridSide, lonWest + x * lonGridSide)
+                    val northWestLatLng = LatLng((latSouth + y * latGridSide), lonWest + (x - 1) * lonGridSide)
                     println("MARYSIA: southWestLatLng: ${southWestLatLng}")
                     drawSquare(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
                 }
@@ -227,15 +223,7 @@ mMap?.addMarker(MarkerOptions().position(visibleRegion.farLeft))
 
     }
 
-    private fun drawSquare(southWestLatLng: LatLng, southEastLatLng: LatLng, northEastLatLng: LatLng, northWestLatLng: LatLng) {
 
-        val polygon = mMap?.addPolygon(PolygonOptions()
-                .add(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
-            .strokeColor(Color.RED)
-            .fillColor(Color.argb(20, 50, 0, 255))
-            )
-
-    }
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
         if (point == null || color == null) return
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
@@ -396,21 +384,122 @@ class GridSquare {
     private var sum: Double = 0.0
     private var number: Int = 0
     private var averagedValue: Double = 0.0
+    var mPolygonOptions: PolygonOptions
+    private var mPolygon: Polygon? = null
+    val mSouthWestLatLng: LatLng
+    val mSouthEastLatLng: LatLng
+    val mNorthEastLatLng: LatLng
+    val mNorthWestLatLng: LatLng
 
+    constructor(southWestLatLng: LatLng, southEastLatLng: LatLng, northEastLatLng: LatLng, northWestLatLng: LatLng) {
+        mSouthWestLatLng = southWestLatLng
+        mSouthEastLatLng = southEastLatLng
+        mNorthEastLatLng = northEastLatLng
+        mNorthWestLatLng = northWestLatLng
 
-    constructor(initialMeasurement: Measurement) {
-        sum = initialMeasurement.value
-        number = 1
-
+        mPolygonOptions = PolygonOptions()
+            .add(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
+            .strokeColor(Color.RED)
+            .fillColor(Color.argb(20, 50, 0, 255))
     }
+
     fun addMeasurement(measurement: Measurement) {
         sum = sum + measurement.value
         number = number + 1
         calculateAverage()
+        if (averagedValue > 0) {
+            mPolygonOptions = mPolygonOptions.fillColor(getColor())
+        }
+
     }
+
+    private fun getColor(): Int {
+        return Color.argb(20, 0, 50, 255)
+    }
+
+    fun addPolygon(polygon: Polygon) {
+        if (mPolygon != null) {
+            mPolygon?.remove()
+            mPolygon = polygon
+        }
+    }
+
+    fun remove() {
+        mPolygon?.remove()
+    }
+
+    fun inBounds(coordinates: LatLng) : Boolean {
+        // check if given point is in this square bounds
+        return true
+    }
+
     private fun calculateAverage() {
         averagedValue = sum / number
     }
 
 
+}
+
+class MapGrid(val map: GoogleMap, val width: Int, val height: Int, val latNorth: Double, val latSouth: Double, val lonEast: Double, val lonWest: Double ) {
+    //    val visibleRegion = mMap?.projection?.visibleRegion
+//    println("MARYSIA: visibleRegion: ${visibleRegion}")
+//        val bounds = visibleRegion?.
+//    visibleRegion?.let { visibleRegion ->
+//        val latNorth = visibleRegion.farLeft.latitude
+//        val latSouth = visibleRegion.nearLeft.latitude
+//        val lonEast = visibleRegion.farRight.longitude
+
+    //    val mapWidth = mMapFragment?.view?.width ?: 0
+//    val mapHeight = mMapFragment?.view?.height ?: 0
+
+    private val DENSITY = 10
+
+    var mGridSquares: HashMap<String, GridSquare> = HashMap()
+
+    val size = Math.min(width, height) / DENSITY
+
+    val gridSizeX =  width / size
+    val gridSizeY = height / size
+
+    val lonGridSide = (lonEast - lonWest) / gridSizeX
+    val latGridSide = (latNorth - latSouth) / gridSizeY
+
+    init {
+        for (x in 1..gridSizeX) {
+            for (y in 1..gridSizeY) {
+                val southWestLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonWest + (x - 1) * lonGridSide)
+                val southEastLatLng = LatLng(latSouth + (y - 1) * latGridSide, lonWest + x * lonGridSide)
+                val northEastLatLng = LatLng(latSouth + y * latGridSide, lonWest + x * lonGridSide)
+                val northWestLatLng = LatLng((latSouth + y * latGridSide), lonWest + (x - 1) * lonGridSide)
+                println("MARYSIA: southWestLatLng: ${southWestLatLng}")
+                createSquare(x, y, southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
+            }
+        }
+    }
+
+    fun drawAverages() {
+        for (x in 1..gridSizeX) {
+            for (y in 1..gridSizeY) {
+
+                val gridSquare = mGridSquares["${x}_${y}"]
+                gridSquare.
+                gridSquare?.addPolygon(map.addPolygon(gridSquare.mPolygonOptions))
+            }
+        }
+    }
+
+    fun remove() {
+        for (x in 1..gridSizeX) {
+            for (y in 1..gridSizeY) {
+                mGridSquares["${x}_${y}"]?.remove()
+            }
+        }
+    }
+
+    private fun createSquare(x: Int, y: Int, southWestLatLng: LatLng, southEastLatLng: LatLng, northEastLatLng: LatLng, northWestLatLng: LatLng) {
+        mGridSquares["${x}_${y}"] = GridSquare(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
+    }
+
+
+//    }
 }
