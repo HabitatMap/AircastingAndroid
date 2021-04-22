@@ -44,15 +44,15 @@ class GraphDataGenerator(
                 fill -= 1.0
                 val date = getAverageDate()
 
-                if (notes != null) {
+                entries.add(buildAverageEntry(date, hasNote = false))
+
+                if (notes?.isNotEmpty() == true) {
                     for (note in notes) {
                         if (isSameDate(note, date)) {
                             entries.add(buildAverageEntry(date, hasNote = true))
                         }
                     }
                 }
-
-                entries.add(buildAverageEntry(date, hasNote = false))
 
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
 
