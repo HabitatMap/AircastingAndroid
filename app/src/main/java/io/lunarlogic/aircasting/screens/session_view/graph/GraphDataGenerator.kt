@@ -29,8 +29,6 @@ class GraphDataGenerator(
         val midnightPoints = ArrayList<Float>()
         val fillFactor = 1.0 * limit / samples.size
         var fill = 0.0
-        var hasNote = false
-        var previousNote: Note? = null
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
@@ -46,20 +44,15 @@ class GraphDataGenerator(
                 fill -= 1.0
                 val date = getAverageDate()
 
-                entries.add(buildAverageEntry(date))
-
                 if (notes != null) {
                     for (note in notes) {
-                        if (isSameDate(note, date) && note != previousNote) { // TODO: check if this condition is still needed after fixing bug with 2 measurements in 1 second
-                            hasNote = true
-                            previousNote = note
+                        if (isSameDate(note, date)) {
+                            entries.add(buildAverageEntry(date, hasNote = true))
                         }
                     }
                 }
 
-                entries.add(buildAverageEntry(date, hasNote))
-
-                hasNote = false
+                entries.add(buildAverageEntry(date, hasNote = false))
 
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
 
