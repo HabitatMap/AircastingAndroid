@@ -46,7 +46,7 @@ class GraphDataGenerator(
 
                 entries.add(buildAverageEntry(date, hasNote = false))
 
-                if (notes?.isNotEmpty() == true) {
+                if (notes != null) {
                     for (note in notes) {
                         if (isSameDate(note, date)) {
                             entries.add(buildAverageEntry(date, hasNote = true))
