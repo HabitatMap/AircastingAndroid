@@ -1,6 +1,5 @@
 package io.lunarlogic.aircasting.database.data_classes
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import io.lunarlogic.aircasting.models.Note
 import java.util.*
@@ -25,7 +24,8 @@ data class NoteDBObject(
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?,
-    @ColumnInfo(name = "number") val number: Int
+    @ColumnInfo(name = "number") val number: Int,
+    @ColumnInfo(name = "photo_location") val photoPath: String?
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -37,7 +37,8 @@ data class NoteDBObject(
                 note.text,
                 note.latitude,
                 note.longitude,
-                note.number
+                note.number,
+                note.photoPath
             )
     }
 

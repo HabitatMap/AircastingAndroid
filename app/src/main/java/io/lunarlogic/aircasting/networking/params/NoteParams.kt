@@ -10,6 +10,7 @@ class NoteParams {
         this.latitude = note.latitude
         this.longitude = note.longitude
         this.number = note.number
+        this.photoPath = note.photoPath
     }
 
     val date: String
@@ -17,4 +18,5 @@ class NoteParams {
     val latitude: Double?
     val longitude: Double?
     val number: Int
+    val photoPath: String?
 }

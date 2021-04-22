@@ -85,7 +85,6 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:backgroundTint="@color/aircasting_grey_50"
-                    android:visibility="gone"
                     app:icon="@drawable/ic_add_picture"
                     android:layout_marginTop="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6"
@@ -93,6 +92,13 @@
                     app:layout_constraintBottom_toTopOf="@id/note_input_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/temp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/add_picture_button"
+                    app:layout_constraintBottom_toTopOf="@id/note_input_layout"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/note_input_layout"
