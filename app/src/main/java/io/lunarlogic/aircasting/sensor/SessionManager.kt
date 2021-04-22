@@ -31,6 +31,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
+    private val periodicallySyncSessionsService = PeriodicallySyncSessionsService(apiService, errorHandler, settings, sessionsSyncService)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -80,6 +81,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     @Subscribe
     fun onMessageEvent(event: LogoutEvent) {
         fixedSessionDownloadMeasurementsService.stop()
+        periodicallySyncSessionsService.stop()
         SessionsSyncService.destroy()
     }
 
@@ -108,6 +110,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             settings.setAppNotRestarted()
         }
         fixedSessionDownloadMeasurementsService.start()
+        periodicallySyncSessionsService.start()
     }
 
     fun onStop() {
@@ -117,11 +120,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
         sessionsSyncService.resume()
+        periodicallySyncSessionsService.resume()
     }
 
     fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
         sessionsSyncService.pause()
+        periodicallySyncSessionsService.pause()
     }
 
     private fun registerToEventBus() {
@@ -222,7 +227,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             settings.setDeletingSessionsInProgress(true)
             sessionsRespository.markForRemoval(listOf(sessionUUID))
             sessionsSyncService.sync()
-//            settings.setSessionsToRemove(true) todo: is this needed for sure??
+            settings.setSessionsToRemove(true)
             settings.setDeletingSessionsInProgress(false)
         }
     }
