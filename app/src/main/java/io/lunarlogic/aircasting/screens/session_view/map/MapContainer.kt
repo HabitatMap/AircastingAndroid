@@ -121,7 +121,6 @@ class MapContainer: OnMapReadyCallback {
             setup()
         }
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
-        clearPresenterMeasurements()
     }
 
 
@@ -328,13 +327,6 @@ class MapContainer: OnMapReadyCallback {
         mapOptions.zoomGesturesEnabled(true)
 
         return mapOptions
-    }
-
-    private fun clearPresenterMeasurements() {
-        mSessionPresenter?.session?.streams?.forEach {
-            it.clearMeasurements()
-        }
-        mSessionPresenter?.selectedStream?.clearMeasurements()
     }
 }
 
