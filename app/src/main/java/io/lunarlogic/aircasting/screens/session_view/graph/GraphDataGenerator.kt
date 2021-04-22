@@ -29,8 +29,6 @@ class GraphDataGenerator(
         val midnightPoints = ArrayList<Float>()
         val fillFactor = 1.0 * limit / samples.size
         var fill = 0.0
-        var hasNote = false
-        var previousNote: Note? = null
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
@@ -45,23 +43,16 @@ class GraphDataGenerator(
                 fill -= 1.0
                 val date = getAverageDate()
 
+                entries.add(buildAverageEntry(date, hasNote = false))
+
                 if (notes != null) {
                     for (note in notes) {
-                        if (note.date.month == date.month &&
-                            note.date.day == date.day &&
-                            note.date.hours == date.hours &&
-                            note.date.minutes == date.minutes &&
-                            note.date.seconds == date.seconds &&
-                                note != previousNote) { // TODO: check if this condition is still needed after fixing bug with 2 measurements in 1 second
-                            hasNote = true
-                            previousNote = note
+                        if (isSameDate(note, date)) {
+                            entries.add(buildAverageEntry(date, hasNote = true))
                         }
                     }
                 }
 
-                entries.add(buildAverageEntry(date, hasNote))
-
-                hasNote = false
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
 
                 if (lastDateDayOfMonth != dateOfMonth) {
@@ -121,5 +112,13 @@ class GraphDataGenerator(
         count = 0
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
+    }
+
+    private fun isSameDate(note: Note, date: Date): Boolean {
+        return note.date.month == date.month &&
+                note.date.day == date.day &&
+                note.date.hours == date.hours &&
+                note.date.minutes == date.minutes &&
+                note.date.seconds == date.seconds
     }
 }
