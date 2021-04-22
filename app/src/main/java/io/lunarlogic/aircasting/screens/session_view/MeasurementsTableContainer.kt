@@ -23,6 +23,7 @@ class MeasurementsTableContainer {
     private var mSelectable: Boolean
     private var mDisplayValues: Boolean
     private var mDisplayAvarages = false
+    private var mCollapsed: Boolean = false
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<String, Int> = HashMap()
@@ -50,12 +51,13 @@ class MeasurementsTableContainer {
         mSelectable = selectable
         mDisplayValues = displayValues
 
+        mCollapsed = displayValues
+
         mMeasurementsTable = rootView?.measurements_table
         mMeasurementHeaders = rootView?.measurement_headers
 
-        if (mDisplayValues) {
-            mMeasurementValues = rootView?.measurement_values
-        }
+        if (mDisplayValues) mMeasurementValues = rootView?.measurement_values
+
     }
 
     fun makeSelectable(displayValues: Boolean = true) {
@@ -69,9 +71,10 @@ class MeasurementsTableContainer {
     fun makeCollapsed(displayValues: Boolean = true) {
         resetMeasurementsView()
         mSelectable = true
-        mDisplayValues = displayValues
-        if (!displayValues) mMeasurementValues = null
+        mCollapsed = true
 
+        mDisplayValues = displayValues
+         if (!displayValues && mCollapsed) mMeasurementValues = null
         refresh()
     }
 
@@ -98,6 +101,7 @@ class MeasurementsTableContainer {
     fun bindExpandCardCallbacks(expandCardCallback: (() -> Unit?)?, onExpandSessionCardClickedCallback: (() -> Unit?)?) {
         expandCard = expandCardCallback
         onExpandSessionCard = onExpandSessionCardClickedCallback
+        mCollapsed = false
     }
 
     private fun resetMeasurementsView() {
@@ -132,7 +136,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream) {
+            if (stream == mSessionPresenter?.selectedStream && !mCollapsed) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
@@ -194,7 +198,7 @@ class MeasurementsTableContainer {
         mMeasurementValues?.addView(valueViewContainer)
         
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream) {
+            if (stream == mSessionPresenter?.selectedStream && !mCollapsed) {
                 setValueViewBorder(valueViewContainer, color)
             }
 
