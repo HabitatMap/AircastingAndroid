@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
+import io.lunarlogic.aircasting.events.NoteDeletedEvent
+import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
@@ -56,10 +58,13 @@ class GraphController(
     }
 
     override fun saveChangesNotePressed(note: Note?, session: Session?) {
-        TODO("Not yet implemented")  //to be filled when implementing edit note functionality
+        val event = NoteEditedEvent(note, session)
+        EventBus.getDefault().post(event)
     }
 
-    override fun deleteNotePressed(note: Note?) {
-        TODO("Not yet implemented") //to be filled when implementing delete note functionality
+    override fun deleteNotePressed(note: Note?, session: Session?) {
+        val event = NoteDeletedEvent(note, session)
+        EventBus.getDefault().post(event)
     }
+
 }

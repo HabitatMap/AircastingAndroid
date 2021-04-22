@@ -195,7 +195,7 @@ class MapContainer: OnMapReadyCallback {
         val marker = mMap?.addMarker(MarkerOptions()
             .position(LatLng(note.latitude, note.longitude))
             .icon(icon))
-        mMarkers[marker?.id] = mSessionPresenter?.session?.notes?.get(note.number)?.number  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
+        mMarkers[marker?.id] = note.number
         mMap?.setOnMarkerClickListener { marker ->
             val noteNumber = mMarkers[marker.id]
             if (noteNumber != null) {

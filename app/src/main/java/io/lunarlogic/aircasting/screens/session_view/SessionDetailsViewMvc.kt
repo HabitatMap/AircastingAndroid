@@ -14,6 +14,7 @@ interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listene
     fun centerMap(location: Location)
     fun onDestroy()
     fun addNote(note: Note)
+    fun deleteNote(note: Note)
 
     interface Listener: HLUListener {
         fun locateRequested()

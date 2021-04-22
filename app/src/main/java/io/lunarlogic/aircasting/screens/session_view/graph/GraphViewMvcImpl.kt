@@ -75,6 +75,10 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         graphContainer?.refresh(mSessionPresenter)
     }
 
+    override fun deleteNote(note: Note) {
+        graphContainer?.refresh(mSessionPresenter)
+    }
+
     private fun onTimeSpanChanged(timeSpan: ClosedRange<Date>) {
         mSessionPresenter?.visibleTimeSpan = timeSpan
         mStatisticsContainer?.refresh(mSessionPresenter)

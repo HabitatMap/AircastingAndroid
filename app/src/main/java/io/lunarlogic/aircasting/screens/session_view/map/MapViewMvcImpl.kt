@@ -71,6 +71,11 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
         mMapContainer?.refresh(mSessionPresenter)
     }
 
+    override fun deleteNote(note: Note) {
+        super.onNoteDeleted(note)
+        mMapContainer?.refresh(mSessionPresenter)
+    }
+
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         super.onSensorThresholdChanged(sensorThreshold)
         mMapContainer?.refresh(mSessionPresenter)

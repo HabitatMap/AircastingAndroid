@@ -3,9 +3,7 @@ package io.lunarlogic.aircasting.screens.session_view.map
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.events.LocationChanged
-import io.lunarlogic.aircasting.events.NoteCreatedEvent
-import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
@@ -31,6 +29,7 @@ class MapController(
     AddNoteBottomSheet.Listener,
     EditNoteBottomSheet.Listener {
     private var mLocateRequested = false
+    protected var editNoteDialog: EditNoteBottomSheet? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: LocationChanged) {
@@ -84,16 +83,22 @@ class MapController(
     }
 
     override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
+        startEditNoteDialog(session, noteNumber)
     }
 
     override fun saveChangesNotePressed(note: Note?, session: Session?) { // buttons from edit note bottom sheet
-        TODO("Not yet implemented, NotEditedEvent to be sent here <?>")
-        //        val event = NoteEditedEvent(note, session)
-        //        EventBus.getDefault().post(event)
+        val event = NoteEditedEvent(note, session)
+        EventBus.getDefault().post(event)
     }
 
-    override fun deleteNotePressed(note: Note?) { // Delete session on EditNoteBottomSheet pressed
-        TODO("Not yet implemented, NoteDeletedEvent to be sent here <?>")
+    override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
+        val event = NoteDeletedEvent(note, session)
+        EventBus.getDefault().post(event)
+        mViewMvc?.deleteNote(note!!)
+    }
+
+    fun startEditNoteDialog(session: Session?, noteNumber: Int) {
+        editNoteDialog = EditNoteBottomSheet(this, session, noteNumber)
+        editNoteDialog?.show(fragmentManager)
     }
 }

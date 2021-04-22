@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
@@ -46,6 +47,32 @@ class MobileDormantController(
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
+    }
+
+    override fun onMapButtonClicked(session: Session, sensorName: String?) {
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+            }
+        }
+
+        val finallyCallback = {}
+
+        super.onMapButtonClicked(session, sensorName)
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+    }
+
+    override fun onGraphButtonClicked(session: Session, sensorName: String?) {
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+            }
+        }
+
+        val finallyCallback = {}
+
+        super.onGraphButtonClicked(session, sensorName)
+        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
     }
 
 }
