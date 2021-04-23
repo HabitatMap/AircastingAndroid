@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
@@ -85,7 +86,7 @@ class MobileActiveController(
     }
 
     override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, mContext).show(fragmentManager)
+        AddNoteBottomSheet(this, session, mContext, mErrorHandler).show(fragmentManager)
     }
 
     override fun onReconnectSessionClicked(session: Session) {

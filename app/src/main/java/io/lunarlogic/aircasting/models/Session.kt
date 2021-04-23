@@ -333,13 +333,13 @@ class Session(
         }
     }
 
+    fun lastMeasurement(): Measurement {
+        return streams.first().lastMeasurement()
+    }
+
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
-    }
-
-    fun lastMeasurementLocation(): LatLng {
-        return LatLng(streams.first().measurements.last().latitude!!, streams.first().measurements.last().longitude!!)
     }
 }

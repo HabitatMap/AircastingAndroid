@@ -3,6 +3,8 @@ package io.lunarlogic.aircasting.screens.dashboard.active
 import android.content.Context
 import android.widget.EditText
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.exceptions.NotesNoLocationError
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BottomSheet
@@ -13,7 +15,8 @@ import java.util.*
 class AddNoteBottomSheet(
     private val mListener: Listener,
     private var mSession: Session,
-    private val mContext: Context?
+    private val mContext: Context?,
+    private val mErrorHandler: ErrorHandler
 ) : BottomSheet() {
     interface Listener {
         fun addNotePressed(session: Session, note: Note)
@@ -47,9 +50,15 @@ class AddNoteBottomSheet(
     }
 
     private fun addNote(mSession: Session) {
+        val lastMeasurement = mSession.lastMeasurement()
+        if (lastMeasurement.latitude == null || lastMeasurement.longitude == null) {
+            mErrorHandler.handleAndDisplay(NotesNoLocationError())
+            return
+        }
+
         val noteText = noteInput?.text.toString().trim()
         val date = Date()
-        val note = Note(date, noteText, mSession.lastMeasurementLocation().latitude, mSession.lastMeasurementLocation().longitude, mSession.notes.size) // todo: add "photoPath" later on
+        val note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, mSession.notes.size) // todo: add "photoPath" later on
 
         mListener.addNotePressed(mSession, note)
     }

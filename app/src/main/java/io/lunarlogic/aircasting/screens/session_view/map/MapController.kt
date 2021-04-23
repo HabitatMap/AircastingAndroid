@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.events.LocationChanged
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
@@ -30,6 +31,7 @@ class MapController(
     AddNoteBottomSheet.Listener,
     EditNoteBottomSheet.Listener {
     private var mLocateRequested = false
+    private val mErrorHandler = ErrorHandler(rootActivity)
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -68,7 +70,7 @@ class MapController(
     }
 
     override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, rootActivity).show(fragmentManager)
+        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler).show(fragmentManager)
     }
 
     override fun onFinishSessionConfirmed(session: Session) {

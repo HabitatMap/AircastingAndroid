@@ -180,6 +180,10 @@ class MeasurementStream(
         return getMeasurementsForTimeSpan(visibleTimeSpan).sumByDouble { it.value }
     }
 
+    fun lastMeasurement(): Measurement {
+        return measurements.last()
+    }
+
     private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
         val allMeasurements = ArrayList<Measurement?>(measurements)
         val size = allMeasurements.size
