@@ -161,6 +161,13 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         }
     }
 
+    protected open fun onNoteDeleted(note: Note) {
+        val oldNotes = mSessionPresenter?.session?.notes
+        if (oldNotes != null) {
+            mSessionPresenter?.session?.notes = oldNotes.minus(oldNotes.find { oldNote -> oldNote.number == note.number }!!)
+        }
+    }
+
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
         onSensorThresholdChanged(sensorThreshold)
         mHLUSlider.refresh(sensorThreshold)
