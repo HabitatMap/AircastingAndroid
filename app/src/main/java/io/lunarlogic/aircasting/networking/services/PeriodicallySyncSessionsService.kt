@@ -5,6 +5,8 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
 import retrofit2.Call
 
+// We need this service to handle deleting sessions in quick succession.
+// It periodically checks if sync is needed (it's possible that sync() didn't trigger after deleting sessions when we delete a couple sessions one after another quickly
 class PeriodicallySyncSessionsService(
     private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
