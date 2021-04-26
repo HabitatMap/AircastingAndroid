@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
@@ -26,6 +27,7 @@ class GraphController(
     SessionDetailsViewMvc.Listener,
     AddNoteBottomSheet.Listener,
     EditNoteBottomSheet.Listener {
+    private val mErrorHandler = ErrorHandler(rootActivity)
     override fun locateRequested() {}
 
     open fun onResume() {
@@ -37,7 +39,7 @@ class GraphController(
     }
 
     override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, rootActivity).show(fragmentManager)
+        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler).show(fragmentManager)
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
@@ -52,6 +54,7 @@ class GraphController(
     }
 
     override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
+        // TODO: this is not working now, displaying note from graph view will be added in "Ready"
         EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
     }
 

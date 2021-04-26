@@ -48,7 +48,7 @@ class GraphContainer: OnChartGestureListener {
     private var mMeasurementsSample: List<Measurement> = listOf()
     private var mNotes: List<Note>? = listOf()
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, getNoteSample: List<Note>?) {
+    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
         mContext = context
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
@@ -56,7 +56,7 @@ class GraphContainer: OnChartGestureListener {
         mDefaultZoomSpan = defaultZoomSpan
         mOnTimeSpanChanged = onTimeSpanChanged
         mGetMeasurementsSample = getMeasurementsSample
-        mNotes = getNoteSample
+        mNotes = notes
 
         mGraphDataGenerator = GraphDataGenerator(mContext!!)
 

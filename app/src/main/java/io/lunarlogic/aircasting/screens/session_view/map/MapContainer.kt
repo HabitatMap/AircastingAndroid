@@ -34,7 +34,7 @@ class MapContainer: OnMapReadyCallback {
     private val mLocateButton: ImageView?
     private var mMapFragment: SupportMapFragment?
     private var mSupportFragmentManager: FragmentManager?
-    private val mMarkers: HashMap<String?, Int?> = hashMapOf() // TODO: Clear this variable onDestroy to prevent memory leaks
+    private var mMarkers: HashMap<String?, Int?>? = hashMapOf()
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
@@ -135,6 +135,7 @@ class MapContainer: OnMapReadyCallback {
         mMapFragment = null
         mSupportFragmentManager = null
         mContext = null
+        mMarkers = null
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
@@ -195,9 +196,9 @@ class MapContainer: OnMapReadyCallback {
         val marker = mMap?.addMarker(MarkerOptions()
             .position(LatLng(note.latitude, note.longitude))
             .icon(icon))
-        mMarkers[marker?.id] = mSessionPresenter?.session?.notes?.get(note.number)?.number  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
+        mMarkers?.set(marker?.id, mSessionPresenter?.session?.notes?.get(note.number)?.number)  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
         mMap?.setOnMarkerClickListener { marker ->
-            val noteNumber = mMarkers[marker.id]
+            val noteNumber = mMarkers?.get(marker.id)
             if (noteNumber != null) {
                 mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
             }

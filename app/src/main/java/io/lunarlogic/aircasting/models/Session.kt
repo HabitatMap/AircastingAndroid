@@ -28,7 +28,7 @@ class Session(
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
-    private var mNotes: List<Note> = listOf()
+    private var mNotes: List<Note> = mutableListOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -332,13 +332,13 @@ class Session(
         }
     }
 
+    fun lastMeasurement(): Measurement {
+        return streams.first().lastMeasurement()
+    }
+
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {
         val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
         formatter.timeZone = TimeZone.getDefault()
         return formatter
-    }
-
-    fun lastMeasurementLocation(): LatLng {
-        return LatLng(streams.first().measurements.last().latitude!!, streams.first().measurements.last().longitude!!)
     }
 }
