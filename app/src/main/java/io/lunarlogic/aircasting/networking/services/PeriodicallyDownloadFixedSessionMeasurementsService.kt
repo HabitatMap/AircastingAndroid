@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.networking.services
 
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.responses.SessionWithMeasurementsResponse
 import kotlinx.coroutines.Dispatchers
