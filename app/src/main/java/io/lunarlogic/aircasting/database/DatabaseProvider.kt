@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
         SensorThresholdDBObject::class,
         NoteDBObject::class
     ),
-    version = 25,
+    version = 26,
     exportSchema = true
 )
 @TypeConverters(
@@ -62,7 +62,8 @@ class DatabaseProvider {
                     MIGRATION_21_22,
                     MIGRATION_22_23,
                     MIGRATION_23_24,
-                    MIGRATION_24_25
+                    MIGRATION_24_25,
+                    MIGRATION_25_26
                 ).build()
             }
 

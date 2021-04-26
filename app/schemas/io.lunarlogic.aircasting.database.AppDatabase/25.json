@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 25,
-    "identityHash": "937e8c95267aaf0300a5c12f73a8180a",
+    "identityHash": "d5fa1fa8e00cc5242babb3097f881e50",
     "entities": [
       {
         "tableName": "sessions",
@@ -412,7 +412,7 @@
       },
       {
         "tableName": "notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session_id` INTEGER NOT NULL, `date` INTEGER NOT NULL, `text` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `number` INTEGER NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session_id` INTEGER NOT NULL, `date` INTEGER NOT NULL, `text` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `number` INTEGER NOT NULL, `photo_location` TEXT, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -455,6 +455,12 @@
             "columnName": "number",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "photoPath",
+            "columnName": "photo_location",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -490,7 +496,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"937e8c95267aaf0300a5c12f73a8180a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d5fa1fa8e00cc5242babb3097f881e50\")"
     ]
   }
 }

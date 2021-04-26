@@ -64,7 +64,8 @@ class AddNoteBottomSheet(
             noteText,
             mSession.streams[0].measurements.last().latitude,
             mSession.streams[0].measurements.last().longitude,
-            mSession.notes.size
+            mSession.notes.size,
+            ""
         ) // todo: add "photoPath" later on, how to get this photoPath i want to add here
 
         mListener.addNotePressed(mSession, note)
