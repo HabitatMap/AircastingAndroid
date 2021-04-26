@@ -6,7 +6,6 @@ import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.Polygon
 import com.google.android.libraries.maps.model.PolygonOptions
-import io.lunarlogic.aircasting.exceptions.MapGridSquareSearchException
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.SensorThreshold
@@ -86,7 +85,7 @@ class MapGrid(val context: Context?, val map: GoogleMap, val sensorThreshold: Se
     private fun gridSquareKey(x: Int, y: Int): String {
         return "${x}_${y}"
     }
-    private fun getSquareXY(measurement: Measurement, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int): Pair<Int, Int> {
+    private fun getSquareXY(measurement: Measurement, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int): Pair<Int, Int>? {
         if (indexXstart == indexXend && indexYstart == indexYend) return Pair(indexXstart + 1, indexYstart + 1)
 
         var newIndexXstart = indexXstart
@@ -96,11 +95,11 @@ class MapGrid(val context: Context?, val map: GoogleMap, val sensorThreshold: Se
 
         val middleX = indexXstart  + (indexXend - indexXstart) / 2
         val middleY = indexYstart  + (indexYend - indexYstart) / 2
-        val middleSquare = mGridSquares["${middleX+1}_${middleY+1}"]
+        val middleSquare = getGridSquare(middleX + 1, middleY + 1)
         val middleLon = middleSquare?.mNorthEastLatLng?.longitude
         val middleLat = middleSquare?.mNorthEastLatLng?.latitude
 
-        if (measurement.longitude == null || measurement.latitude == null || middleLon == null || middleLat == null) throw MapGridSquareSearchException()
+        if (measurement.longitude == null || measurement.latitude == null || middleLon == null || middleLat == null) return null
 
         if(measurement.longitude >= middleLon) {
             newIndexXstart = middleX + 1
@@ -119,9 +118,10 @@ class MapGrid(val context: Context?, val map: GoogleMap, val sensorThreshold: Se
 
     private fun assignMeasurementToSquare(measurement: Measurement) {
         val squareXY = getSquareXY(measurement, 0, gridSizeX - 1, 0, gridSizeY - 1)
-        val gridSquare = getGridSquare(squareXY.first, squareXY.second)
-
-        gridSquare?.addMeasurement(measurement)
+        squareXY?.let {
+            val gridSquare = getGridSquare(squareXY.first, squareXY.second)
+            gridSquare?.addMeasurement(measurement)
+        }
     }
 
     private fun drawAverages() {
