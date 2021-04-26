@@ -23,8 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
-    private var LEVEL_SPANS: Array<StyleSpan>
-    private val FALLBACK_SPAN: StyleSpan
 
     private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
@@ -42,7 +40,6 @@ class MapContainer: OnMapReadyCallback {
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
     private val mMeasurementPoints = ArrayList<LatLng>()
-//    private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
 
     private var mMapGrid: MapGrid? = null
@@ -71,13 +68,6 @@ class MapContainer: OnMapReadyCallback {
             locate()
         }
         mLocateButton?.visibility = View.GONE
-
-        LEVEL_SPANS = arrayOf(
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.LOW)),
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.MEDIUM)),
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.HIGH)),
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.EXTREMELY_HIGH)))
-        FALLBACK_SPAN = StyleSpan(R.color.aircasting_grey_700)
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -159,15 +149,11 @@ class MapContainer: OnMapReadyCallback {
         var i = 0
         for (measurement in mMeasurements) {
             latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
-
-//            if (i > 0) {
-//                mMeasurementSpans.add(measurementSpan(measurement))
-//            }
             latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
             mMeasurementPoints.add(latestPoint)
             i += 1
         }
-        mMeasurementsLineOptions.addAll(mMeasurementPoints)//.addAllSpans(mMeasurementSpans)
+        mMeasurementsLineOptions.addAll(mMeasurementPoints)
         mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
 
         if (latestPoint != null && latestColor != null) {
@@ -286,14 +272,12 @@ class MapContainer: OnMapReadyCallback {
         if (colorPoint == null) return
 
         mMeasurementPoints.add(colorPoint.point)
-//        mMeasurementSpans.add(StyleSpan(colorPoint.color))
 
         if (mMeasurementsLine == null) {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
         mMeasurementsLine?.setPoints(mMeasurementPoints)
-//        mMeasurementsLine?.setSpans(mMeasurementSpans)
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
 
@@ -320,7 +304,6 @@ class MapContainer: OnMapReadyCallback {
     private fun clearMap() {
         mMap?.clear()
         mMeasurementPoints.clear()
-//        mMeasurementSpans.clear()
         mMeasurementsLine = null
         mMeasurementsLineOptions = defaultPolylineOptions()
     }
