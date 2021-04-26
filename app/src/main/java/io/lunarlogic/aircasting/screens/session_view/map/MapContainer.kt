@@ -1,9 +1,11 @@
 package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
+import android.graphics.Color
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
@@ -309,11 +311,17 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun defaultPolylineOptions(): PolylineOptions {
+        val lineColor = mContext?.let { context ->
+            ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
+        }
+
         return PolylineOptions()
-            .width(20f)
+            .width(12f)
+            .color(lineColor ?: Color.BLUE)
             .jointType(JointType.ROUND)
             .endCap(RoundCap())
             .startCap(RoundCap())
+            .zIndex(1000f)
     }
 
     private fun showMap() {
