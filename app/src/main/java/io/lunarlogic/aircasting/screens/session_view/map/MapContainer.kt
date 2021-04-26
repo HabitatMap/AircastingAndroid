@@ -13,12 +13,14 @@ import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
+import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.collections.HashMap
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
@@ -32,9 +34,11 @@ class MapContainer: OnMapReadyCallback {
     private val mLocateButton: ImageView?
     private var mMapFragment: SupportMapFragment?
     private var mSupportFragmentManager: FragmentManager?
+    private var mMarkers: HashMap<String?, Int?>? = hashMapOf()
 
     private var mSessionPresenter: SessionPresenter? = null
     private var mMeasurements: List<Measurement> = emptyList()
+    private var mNotes: List<Note> = emptyList()
 
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
@@ -107,6 +111,7 @@ class MapContainer: OnMapReadyCallback {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        mNotes = mSessionPresenter?.session?.notes!!
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -116,7 +121,6 @@ class MapContainer: OnMapReadyCallback {
             setup()
         }
         if (mMeasurements.isNotEmpty()) status.set(Status.SESSION_LOADED.value)
-        clearPresenterMeasurements()
     }
 
 
@@ -131,6 +135,7 @@ class MapContainer: OnMapReadyCallback {
         mMapFragment = null
         mSupportFragmentManager = null
         mContext = null
+        mMarkers = null
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
@@ -162,6 +167,14 @@ class MapContainer: OnMapReadyCallback {
         if (latestPoint != null && latestColor != null) {
             drawLastMeasurementMarker(latestPoint, latestColor)
         }
+
+        drawNotes()
+    }
+
+    private fun drawNotes() {
+        for (note in mNotes) {
+            drawNoteMarker(note)
+        }
     }
 
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
@@ -174,6 +187,23 @@ class MapContainer: OnMapReadyCallback {
                 .position(point)
                 .icon(icon)
         )
+    }
+
+    private fun drawNoteMarker(note: Note) {
+        if (note.latitude == null || note.longitude == null) return
+
+        val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_note_icon)
+        val marker = mMap?.addMarker(MarkerOptions()
+            .position(LatLng(note.latitude, note.longitude))
+            .icon(icon))
+        mMarkers?.set(marker?.id, mSessionPresenter?.session?.notes?.get(note.number)?.number)  // todo: hmmm, i should probably search in 'notes' field with number equal note.number, not by the notes index
+        mMap?.setOnMarkerClickListener { marker ->
+            val noteNumber = mMarkers?.get(marker.id)
+            if (noteNumber != null) {
+                mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
+            }
+            false
+        }
     }
 
     private fun animateCameraToSession() {
@@ -298,13 +328,6 @@ class MapContainer: OnMapReadyCallback {
         mapOptions.zoomGesturesEnabled(true)
 
         return mapOptions
-    }
-
-    private fun clearPresenterMeasurements() {
-        mSessionPresenter?.session?.streams?.forEach {
-            it.clearMeasurements()
-        }
-        mSessionPresenter?.selectedStream?.clearMeasurements()
     }
 }
 

@@ -19,7 +19,7 @@ class SessionObserver(
         sessionUUID ?: return
         var session: Session
 
-        mSessionsViewModel.loadSessionWithMeasurements(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
+        mSessionsViewModel.loadLiveDataCompleteSessionBySessionUUID(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
             sessionDBObject?.let {
                 session = Session(sessionDBObject)
                 if (session.hasChangedFrom(mSessionPresenter.session)) {

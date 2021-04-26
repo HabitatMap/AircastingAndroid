@@ -85,7 +85,7 @@ class MobileActiveController(
     }
 
     override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, mContext).show(fragmentManager)
+        AddNoteBottomSheet(this, session, mContext, mErrorHandler).show(fragmentManager)
     }
 
     override fun onReconnectSessionClicked(session: Session) {

@@ -71,3 +71,6 @@ class SDCardDownloadedFileCorrupted():
 
 class SDCardSessionsFinalSyncError(cause: Exception? = null):
     BaseException(cause, "There was a problem while sending mobile sessions to the backend.")
+
+class NotesNoLocationError():
+    BaseException(null, "Note could not be added because location of last measurement could not be retrieved.")

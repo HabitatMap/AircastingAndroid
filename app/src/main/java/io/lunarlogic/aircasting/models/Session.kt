@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.models
 
+import com.google.android.libraries.maps.model.LatLng
 import io.lunarlogic.aircasting.database.data_classes.*
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
@@ -94,12 +95,12 @@ class Session(
         }
     }
 
-    constructor(sessionForUploadDBObject: SessionForUploadDBObject):
-            this(sessionForUploadDBObject.session) {
-        this.mNotes = sessionForUploadDBObject.notes.map { noteDBObject ->
+    constructor(completeSessionDBObject: CompleteSessionDBObject):
+            this(completeSessionDBObject.session) {
+        this.mNotes = completeSessionDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }
-        this.mStreams = sessionForUploadDBObject.streams.map { streamWithMeasurementsDBObject ->
+        this.mStreams = completeSessionDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
@@ -176,7 +177,8 @@ class Session(
 
     val status get() = mStatus
     val streams get() = mStreams
-    val notes get() = mNotes
+    var notes get() = mNotes
+        set(value) {mNotes = value}
 
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
@@ -217,7 +219,9 @@ class Session(
             this.contribute,
             this.locationless,
             this.indoor,
-            this.streams
+            this.streams,
+            this.urlLocation,
+            this.notes
         )
     }
 
@@ -269,7 +273,8 @@ class Session(
                 session.streams.size != streams.size ||
                 session.measurementsCount() != measurementsCount() ||
                 session.status != status ||
-                session.endTime != endTime
+                session.endTime != endTime ||
+                session.notes.size != notes.size
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {
@@ -325,6 +330,10 @@ class Session(
         } else {
             location
         }
+    }
+
+    fun lastMeasurement(): Measurement {
+        return streams.first().lastMeasurement()
     }
 
     private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {

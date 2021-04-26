@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.models
 
+import android.util.Log
+import com.google.android.libraries.maps.model.LatLng
 import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject
 import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBObject
@@ -116,11 +118,7 @@ class MeasurementStream(
             0
         }
     }
-
-    fun clearMeasurements() {
-        mMeasurements = emptyList()
-    }
-
+    
     private fun buildDetailedType(): String? {
         when (sensorPackageName) {
             MicrophoneDeviceItem.DEFAULT_ID -> return MicrophoneDeviceItem.DETAILED_TYPE
@@ -192,5 +190,9 @@ class MeasurementStream(
         } else {
             allMeasurements
         }
+    }
+
+    fun lastMeasurement(): Measurement {
+        return measurements.last()
     }
 }
