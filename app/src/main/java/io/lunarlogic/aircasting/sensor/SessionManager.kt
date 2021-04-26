@@ -31,7 +31,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
-    private val periodicallySyncSessionsService = PeriodicallySyncSessionsService(apiService, errorHandler, settings, sessionsSyncService)
+    private val periodicallySyncSessionsService = PeriodicallySyncSessionsService(settings, sessionsSyncService)
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
