@@ -1,11 +1,9 @@
 package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
-import android.graphics.Color
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
-import androidx.core.graphics.alpha
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
@@ -16,14 +14,12 @@ import io.lunarlogic.aircasting.lib.SessionBoundingBox
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Note
-import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.HashMap
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
@@ -113,7 +109,6 @@ class MapContainer: OnMapReadyCallback {
         animateCameraToSession()
 
         mMap?.setOnCameraIdleListener {
-            println("MARYSIA: visibleRegion camera idle")
             drawHeatMap()
         }
         if (mMeasurements.isNotEmpty()) showMap()
@@ -128,7 +123,6 @@ class MapContainer: OnMapReadyCallback {
             drawFixedMeasurement()
         }
         // sometimes onMapReady is invoked earlier than bindStream
-        println("MARYSIA: map status in bindSession ${status.get()}")
         if (status.get() == Status.MAP_LOADED.value) {
             setup()
         }
@@ -193,7 +187,6 @@ class MapContainer: OnMapReadyCallback {
         val mapWidth = mMapFragment?.view?.width ?: 0
         val mapHeight = mMapFragment?.view?.height ?: 0
 
-
         mMap?.let { map ->
             val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
             sensorThreshold?.let { sensorThreshold ->
@@ -202,8 +195,7 @@ class MapContainer: OnMapReadyCallback {
                     mMapGrid = null
                 }
                 mMapGrid = MapGrid(mContext, map, sensorThreshold, mapWidth, mapHeight )
-                println("MARYSIA: drawing heatmap mMeasurements count ${mMeasurements.size}")
-                mMapGrid?.drawMap(mMeasurements)
+                mMapGrid?.drawHeatMap(mMeasurements)
             }
         }
 

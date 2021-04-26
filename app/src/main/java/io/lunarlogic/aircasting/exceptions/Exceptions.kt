@@ -74,3 +74,6 @@ class SDCardSessionsFinalSyncError(cause: Exception? = null):
 
 class NotesNoLocationError():
     BaseException(null, "Note could not be added because location of last measurement could not be retrieved.")
+
+class MapGridSquareSearchException():
+        BaseException(null, "Could not find grid square: some coordinates are null")
