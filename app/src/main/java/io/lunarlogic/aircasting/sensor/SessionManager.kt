@@ -226,7 +226,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         DatabaseProvider.runQuery {
             settings.setDeletingSessionsInProgress(true)
             sessionsRespository.markForRemoval(listOf(sessionUUID))
-            sessionsSyncService.sync()
             settings.setSessionsToRemove(true)
             settings.setDeletingSessionsInProgress(false)
         }
