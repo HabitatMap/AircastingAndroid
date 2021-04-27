@@ -173,7 +173,7 @@ class MapContainer: OnMapReadyCallback {
 
     private fun drawHeatMap() {
         if (mSessionPresenter?.isFixed() == true) return
-        
+
         val mapWidth = mMapFragment?.view?.width ?: 0
         val mapHeight = mMapFragment?.view?.height ?: 0
 
