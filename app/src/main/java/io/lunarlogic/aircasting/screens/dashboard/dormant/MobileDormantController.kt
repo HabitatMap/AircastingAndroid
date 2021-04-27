@@ -49,30 +49,4 @@ class MobileDormantController(
         // do nothing
     }
 
-    override fun onMapButtonClicked(session: Session, sensorName: String?) {
-        val onDownloadSuccess = { session: Session ->
-            DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
-            }
-        }
-
-        val finallyCallback = {}
-
-        super.onMapButtonClicked(session, sensorName)
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
-    }
-
-    override fun onGraphButtonClicked(session: Session, sensorName: String?) {
-        val onDownloadSuccess = { session: Session ->
-            DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
-            }
-        }
-
-        val finallyCallback = {}
-
-        super.onGraphButtonClicked(session, sensorName)
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
-    }
-
 }

@@ -10,12 +10,10 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
-import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.models.MeasurementStream
-import io.lunarlogic.aircasting.models.Note
-import io.lunarlogic.aircasting.models.SensorThreshold
+import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
@@ -155,17 +153,14 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun onNoteAdded(note: Note) {
-        val oldNotes = mSessionPresenter?.session?.notes
-        if (oldNotes != null) {
-            mSessionPresenter?.session?.notes = oldNotes + note
-        }
+        mSessionPresenter?.session?.notes?.add(note)
     }
 
     protected open fun onNoteDeleted(note: Note) {
-        val oldNotes = mSessionPresenter?.session?.notes
-        if (oldNotes != null) {
-            mSessionPresenter?.session?.notes = oldNotes.minus(oldNotes.find { oldNote -> oldNote.number == note.number }!!)
-        }
+        mSessionPresenter?.session?.notes?.remove(
+            mSessionPresenter?.session?.notes?.find { note -> // I use this strange syntax instead of just remove(), because remove(note) does not work for some reason
+                note.number == note.number
+        })
     }
 
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {

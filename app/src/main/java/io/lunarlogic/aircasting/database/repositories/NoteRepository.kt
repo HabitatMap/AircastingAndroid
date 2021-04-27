@@ -17,28 +17,14 @@ class NoteRepository {
     }
 
     fun update(sessionId: Long, note: Note) {
-        // I need to obtain old note object to get item id (primary key) in the database- i 'number' from new Note field because these 2 are the same with changed text in fact
-        val oldNoteDBObject = mDatabase.notes().loadNoteBySessionIdAndNumber(sessionId, note.number)
-
-        val noteDBObject = NoteDBObject(sessionId, note)
-
-        oldNoteDBObject?.let{
-            mDatabase.notes().update(oldNoteDBObject.id, noteDBObject.text)
-        }
+        mDatabase.notes().update(sessionId, note.number, note.text)
     }
 
     fun delete(sessionId: Long, note: Note) {
-        val oldNoteDBObject = mDatabase.notes().loadNoteBySessionIdAndNumber(sessionId, note.number)
-        oldNoteDBObject?.let {
-            mDatabase.notes().delete(oldNoteDBObject.id)
-        }
+        mDatabase.notes().delete(sessionId, note.number)
     }
 
     fun deleteAllSessionsForSessionWithId(sessionId: Long) {
         mDatabase.notes().deleteAllNotesForSessionWithId(sessionId)
-    }
-
-    fun loadNoteForSessionWithId(sessionId: Long): List<NoteDBObject?> {
-        return mDatabase.notes().loadNotesBySessionId(sessionId)
     }
 }

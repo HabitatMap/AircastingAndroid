@@ -239,16 +239,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             settings.setSessionsToRemove(true)
             settings.setDeletingSessionsInProgress(false)
         }
-        deleteNotesFromThisSession(sessionUUID)
-    }
-
-    private fun deleteNotesFromThisSession(sessionUUID: String) {
-        DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(sessionUUID)
-            sessionId?.let {
-                noteRepository.deleteAllSessionsForSessionWithId(sessionId)
-            }
-        }
     }
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
@@ -293,18 +283,22 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun editNote(event: NoteEditedEvent) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid)
-            sessionId?.let {
-                noteRepository.update(sessionId, event.note!!)
+            event.session?.let {
+                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+                if (sessionId != null && event.note != null) {
+                    noteRepository.update(sessionId, event.note)
+                }
             }
         }
     }
 
     private fun deleteNote(event: NoteDeletedEvent) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(event.session!!.uuid)
-            sessionId?.let {
-                noteRepository.delete(sessionId, event.note!!)
+            event.session?.let {
+                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+                if (sessionId != null && event.note != null) {
+                    noteRepository.delete(sessionId, event.note)
+                }
             }
         }
     }

@@ -28,7 +28,7 @@ class Session(
     private var mIndoor: Boolean = false,
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
-    private var mNotes: List<Note> = mutableListOf()
+    private var mNotes: MutableList<Note> = mutableListOf()
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -92,14 +92,14 @@ class Session(
             this(sessionWithNotesDBObject.session) {
         this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
-        }
+        }.toMutableList()
     }
 
     constructor(completeSessionDBObject: CompleteSessionDBObject):
             this(completeSessionDBObject.session) {
         this.mNotes = completeSessionDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
-        }
+        }.toMutableList()
         this.mStreams = completeSessionDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }

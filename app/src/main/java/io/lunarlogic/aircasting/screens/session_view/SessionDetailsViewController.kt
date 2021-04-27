@@ -2,13 +2,18 @@ package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.models.observers.SessionObserver
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.SessionDownloadService
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
 import kotlinx.coroutines.CoroutineScope
@@ -22,10 +27,17 @@ abstract class SessionDetailsViewController(
     protected val mSessionsViewModel: SessionsViewModel,
     protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
-    private var sensorName: String?
+    private var sensorName: String?,
+    private val mSettings: Settings,
+    mApiServiceFactory: ApiServiceFactory
 ): SessionDetailsViewMvc.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
+
+    protected val mErrorHandler = ErrorHandler(rootActivity)
+    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    protected val mSessionRepository = SessionsRepository()
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);

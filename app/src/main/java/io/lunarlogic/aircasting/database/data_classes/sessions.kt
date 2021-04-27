@@ -80,7 +80,7 @@ class SessionWithNotesDBObject {
         entityColumn = "session_id",
         entity = NoteDBObject::class
     )
-    lateinit var notes: List<NoteDBObject>
+    lateinit var notes: MutableList<NoteDBObject>
 }
 
 class SessionWithStreamsAndMeasurementsDBObject {
@@ -123,7 +123,7 @@ class CompleteSessionDBObject {
         entityColumn = "session_id",
         entity = NoteDBObject::class
     )
-    lateinit var notes: List<NoteDBObject>
+    lateinit var notes: MutableList<NoteDBObject>
 }
 
 @Dao
