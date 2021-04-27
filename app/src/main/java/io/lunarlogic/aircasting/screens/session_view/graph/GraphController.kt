@@ -27,13 +27,12 @@ class GraphController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    val fragmentManager: FragmentManager,
+    fragmentManager: FragmentManager,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, mSettings, mApiServiceFactory),
+): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
     SessionDetailsViewMvc.Listener,
-    AddNoteBottomSheet.Listener,
-    EditNoteBottomSheet.Listener {
+    AddNoteBottomSheet.Listener {
     override fun locateRequested() {}
 
     open fun onResume() {
@@ -56,32 +55,6 @@ class GraphController(
 
     override fun addNotePressed(session: Session, note: Note) {
         val event = NoteCreatedEvent(session, note)
-        EventBus.getDefault().post(event)
-    }
-
-    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        // TODO: this is not working now, displaying note from graph view will be added in "Ready"
-        val onDownloadSuccess = { session: Session ->
-            DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
-            }
-        }
-
-        val finallyCallback = {}
-
-        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
-        session?.let {
-            mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
-        }
-    }
-
-    override fun saveChangesNotePressed(note: Note?, session: Session?) {
-        val event = NoteEditedEvent(note, session)
-        EventBus.getDefault().post(event)
-    }
-
-    override fun deleteNotePressed(note: Note?, session: Session?) {
-        val event = NoteDeletedEvent(note, session)
         EventBus.getDefault().post(event)
     }
 }

@@ -27,15 +27,13 @@ class MapController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    val fragmentManager: FragmentManager,
+    fragmentManager: FragmentManager,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, mSettings, mApiServiceFactory),
+): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
     SessionDetailsViewMvc.Listener,
-    AddNoteBottomSheet.Listener,
-    EditNoteBottomSheet.Listener {
+    AddNoteBottomSheet.Listener {
     private var mLocateRequested = false
-    protected var editNoteDialog: EditNoteBottomSheet? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: LocationChanged) {
@@ -88,38 +86,11 @@ class MapController(
         mViewMvc?.addNote(note)
     }
 
-    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        // TODO: this is not working now, displaying note from graph view will be added in "Ready"
-        val onDownloadSuccess = { session: Session ->
-            DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
-            }
-        }
-
-        val finallyCallback = {}
-
-        startEditNoteDialog(session, noteNumber)
-        session?.let {
-            mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
-        }
-    }
-
-    override fun saveChangesNotePressed(note: Note?, session: Session?) { // buttons from edit note bottom sheet
-        val event = NoteEditedEvent(note, session)
-        EventBus.getDefault().post(event)
-    }
-
     override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
-        val event = NoteDeletedEvent(note, session)
-        EventBus.getDefault().post(event)
+        super.deleteNotePressed(note, session)
         if (note != null) {
             mViewMvc?.deleteNote(note)
         }
-    }
-
-    fun startEditNoteDialog(session: Session?, noteNumber: Int) {
-        editNoteDialog = EditNoteBottomSheet(this, session, noteNumber)
-        editNoteDialog?.show(fragmentManager)
     }
 
 }
