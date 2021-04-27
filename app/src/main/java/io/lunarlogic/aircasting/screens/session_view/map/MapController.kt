@@ -86,7 +86,6 @@ class MapController(
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
         mViewMvc?.addNote(note)
-        mViewMvc?.addNote(note)
     }
 
     override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
@@ -113,7 +112,9 @@ class MapController(
     override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
         val event = NoteDeletedEvent(note, session)
         EventBus.getDefault().post(event)
-        mViewMvc?.deleteNote(note!!)
+        if (note != null) {
+            mViewMvc?.deleteNote(note)
+        }
     }
 
     fun startEditNoteDialog(session: Session?, noteNumber: Int) {
