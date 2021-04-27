@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng
+import com.google.android.libraries.maps.model.LatLngBounds
 import com.google.android.libraries.maps.model.Polygon
 import com.google.android.libraries.maps.model.PolygonOptions
 import io.lunarlogic.aircasting.lib.MeasurementColor
@@ -86,7 +87,16 @@ class MapGrid(val context: Context?, val map: GoogleMap, val sensorThreshold: Se
         return "${x}_${y}"
     }
     private fun getSquareXY(measurement: Measurement, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int): Pair<Int, Int>? {
-        if (indexXstart == indexXend && indexYstart == indexYend) return Pair(indexXstart + 1, indexYstart + 1)
+        if (indexXstart == indexXend && indexYstart == indexYend) {
+            val gridSquare = getGridSquare(indexXstart + 1, indexYstart + 1)
+            if (gridSquare == null || measurement.longitude == null || measurement.latitude == null) return null
+
+            return if (gridSquare.inBounds(LatLng(measurement.latitude, measurement.longitude))) {
+                Pair(indexXstart + 1, indexYstart + 1)
+            } else {
+                null
+            }
+        }
 
         var newIndexXstart = indexXstart
         var newIndexYstart = indexYstart
@@ -193,6 +203,11 @@ class MapGrid(val context: Context?, val map: GoogleMap, val sensorThreshold: Se
 
         fun remove() {
             mPolygon?.remove()
+        }
+
+        fun inBounds(coordinates: LatLng) : Boolean {
+            val bounds = LatLngBounds(mSouthWestLatLng, mNorthEastLatLng)
+            return bounds.contains(coordinates)
         }
 
         private fun addPolygon() {
