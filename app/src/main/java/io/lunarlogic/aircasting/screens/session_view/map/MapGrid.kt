@@ -126,32 +126,33 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
         return "${x}_${y}"
     }
     private fun getSquareXY(measurement: Measurement, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int): Pair<Int, Int>? {
-        // TODO: actually, let's always check if coordinates are in bounds of the middle square?- sometimes we may skip couple of steps this way. In case of one square left, it shoudl be the middle one...)
-        if (indexXstart == indexXend && indexYstart == indexYend) {
-            val gridSquare = getGridSquare(indexXstart + 1, indexYstart + 1)
-            if (gridSquare == null || measurement.longitude == null || measurement.latitude == null) return null
+        val middleX = indexXstart  + (indexXend - indexXstart) / 2
+        val middleY = indexYstart  + (indexYend - indexYstart) / 2
+        val middleSquare = getGridSquare(middleX + 1, middleY + 1)
 
-            return if (gridSquare.inBounds(LatLng(measurement.latitude, measurement.longitude))) {
-                Pair(indexXstart + 1, indexYstart + 1)
-            } else {
-                null
+        if (middleSquare == null || measurement.longitude == null || measurement.latitude == null) return null
+
+        // We check every time if point is in binds of middle square. It may be the last square checked (indexStart == indexEnd)
+            if (middleSquare.inBounds(LatLng(measurement.latitude, measurement.longitude))) {
+                return Pair(middleX + 1, middleY + 1)
             }
-        }
+        // if this is the last square checked and point is not in its bounds, return null
+            if (indexXstart == indexXend && indexYstart == indexYend) {
+                return null
+            }
+//        }
 
         var newIndexXstart = indexXstart
         var newIndexYstart = indexYstart
         var newIndexXend = indexXend
         var newIndexYend = indexYend
 
-        val middleX = indexXstart  + (indexXend - indexXstart) / 2
-        val middleY = indexYstart  + (indexYend - indexYstart) / 2
-        val middleSquare = getGridSquare(middleX + 1, middleY + 1)
         val middleLon = middleSquare?.mNorthEastLatLng?.longitude
         val middleLat = middleSquare?.mNorthEastLatLng?.latitude
 
         if (measurement.longitude == null || measurement.latitude == null || middleLon == null || middleLat == null) return null
 
-        if(measurement.longitude >= middleLon) {
+        if (measurement.longitude >= middleLon) {
             newIndexXstart = middleX + 1
         } else {
             newIndexXend = middleX
