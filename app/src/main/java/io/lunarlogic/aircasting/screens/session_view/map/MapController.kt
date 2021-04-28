@@ -3,15 +3,16 @@ package io.lunarlogic.aircasting.screens.session_view.map
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import io.lunarlogic.aircasting.events.LocationChanged
-import io.lunarlogic.aircasting.events.NoteCreatedEvent
-import io.lunarlogic.aircasting.events.StopRecordingEvent
+import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewController
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
@@ -26,12 +27,12 @@ class MapController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    val fragmentManager: FragmentManager
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName),
+    fragmentManager: FragmentManager,
+    mSettings: Settings,
+    mApiServiceFactory: ApiServiceFactory
+): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
     SessionDetailsViewMvc.Listener,
-    AddNoteBottomSheet.Listener,
-    EditNoteBottomSheet.Listener {
-    private val mErrorHandler = ErrorHandler(rootActivity)
+    AddNoteBottomSheet.Listener {
     private var mLocateRequested = false
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -85,17 +86,11 @@ class MapController(
         mViewMvc?.addNote(note)
     }
 
-    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
+    override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
+        super.deleteNotePressed(note, session)
+        if (note != null) {
+            mViewMvc?.deleteNote(note)
+        }
     }
 
-    override fun saveChangesNotePressed(note: Note?, session: Session?) { // buttons from edit note bottom sheet
-        TODO("Not yet implemented, NotEditedEvent to be sent here <?>")
-        //        val event = NoteEditedEvent(note, session)
-        //        EventBus.getDefault().post(event)
-    }
-
-    override fun deleteNotePressed(note: Note?) { // Delete session on EditNoteBottomSheet pressed
-        TODO("Not yet implemented, NoteDeletedEvent to be sent here <?>")
-    }
 }

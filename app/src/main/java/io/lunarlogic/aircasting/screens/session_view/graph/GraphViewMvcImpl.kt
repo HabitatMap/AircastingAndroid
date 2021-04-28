@@ -36,7 +36,6 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
     }
 
-
     open fun notes(): List<Note> {
         return mSessionPresenter?.session?.notes ?: listOf<Note>()
     }
@@ -72,6 +71,10 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     override fun addNote(note: Note) {
+        graphContainer?.refresh(mSessionPresenter)
+    }
+
+    override fun deleteNote(note: Note) {
         graphContainer?.refresh(mSessionPresenter)
     }
 

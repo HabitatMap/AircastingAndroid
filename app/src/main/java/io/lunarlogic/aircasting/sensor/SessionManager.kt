@@ -60,12 +60,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: NoteEditedEvent) {
-        // TODO: editNote(event)
+        editNote(event)
     }
 
     @Subscribe
     fun onMessageEvent(event: NoteDeletedEvent) {
-        // TODO: deleteNote(event)
+        deleteNote(event)
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
@@ -277,6 +277,28 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
             sessionId?.let{
                 noteRepository.insert(sessionId, event.note)
+            }
+        }
+    }
+
+    private fun editNote(event: NoteEditedEvent) {
+        DatabaseProvider.runQuery {
+            event.session?.let {
+                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+                if (sessionId != null && event.note != null) {
+                    noteRepository.update(sessionId, event.note)
+                }
+            }
+        }
+    }
+
+    private fun deleteNote(event: NoteDeletedEvent) {
+        DatabaseProvider.runQuery {
+            event.session?.let {
+                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+                if (sessionId != null && event.note != null) {
+                    noteRepository.delete(sessionId, event.note)
+                }
             }
         }
     }

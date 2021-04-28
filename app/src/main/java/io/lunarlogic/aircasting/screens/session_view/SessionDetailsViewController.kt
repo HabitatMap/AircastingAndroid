@@ -1,15 +1,22 @@
 package io.lunarlogic.aircasting.screens.session_view
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
+import io.lunarlogic.aircasting.events.NoteDeletedEvent
+import io.lunarlogic.aircasting.events.NoteEditedEvent
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
-import io.lunarlogic.aircasting.models.Measurement
-import io.lunarlogic.aircasting.models.SensorThreshold
-import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.models.observers.SessionObserver
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
+import io.lunarlogic.aircasting.networking.services.SessionDownloadService
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
 import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
@@ -22,10 +29,20 @@ abstract class SessionDetailsViewController(
     protected val mSessionsViewModel: SessionsViewModel,
     protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
-    private var sensorName: String?
-): SessionDetailsViewMvc.Listener {
+    private var sensorName: String?,
+    val fragmentManager: FragmentManager,
+    private val mSettings: Settings,
+    mApiServiceFactory: ApiServiceFactory
+): SessionDetailsViewMvc.Listener,
+    EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
+    protected var editNoteDialog: EditNoteBottomSheet? = null
+
+    protected val mErrorHandler = ErrorHandler(rootActivity)
+    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    protected val mSessionRepository = SessionsRepository()
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
@@ -64,5 +81,39 @@ abstract class SessionDetailsViewController(
         EventBus.getDefault().unregister(this);
         mViewMvc?.unregisterListener(this)
         mViewMvc = null
+    }
+
+    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
+        // TODO: this is not working now on <graph>, displaying note from graph view will be added in "Ready"
+        val onDownloadSuccess = { session: Session ->
+            DatabaseProvider.runQuery {
+                mSessionRepository.update(session)
+            }
+            editNoteDialog?.reload(session)
+        }
+
+        val finallyCallback = {
+            editNoteDialog?.hideLoader()
+        }
+
+        startEditNoteDialog(session, noteNumber)
+        session?.let {
+            mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+        }
+    }
+
+    fun startEditNoteDialog(session: Session?, noteNumber: Int) {
+        editNoteDialog = EditNoteBottomSheet(this, session, noteNumber)
+        editNoteDialog?.show(fragmentManager)
+    }
+
+    override fun saveChangesNotePressed(note: Note?, session: Session?) {
+        val event = NoteEditedEvent(note, session)
+        EventBus.getDefault().post(event)
+    }
+
+    override fun deleteNotePressed(note: Note?, session: Session?) {
+        val event = NoteDeletedEvent(note, session)
+        EventBus.getDefault().post(event)
     }
 }

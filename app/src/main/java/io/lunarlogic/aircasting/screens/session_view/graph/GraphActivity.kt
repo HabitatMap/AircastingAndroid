@@ -5,15 +5,25 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.AppBar
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
+import javax.inject.Inject
 
 class GraphActivity: AppCompatActivity() {
     private var controller: GraphController? = null
     private var view: SessionDetailsViewMvc? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
+
+    @Inject
+    lateinit var settings: Settings
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
         val SESSION_UUID_KEY = "SESSION_UUID"
@@ -34,6 +44,9 @@ class GraphActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        (application as AircastingApplication)
+            .appComponent.inject(this)
+
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
         val sessionTab: Int = intent.extras?.getInt(SESSION_TAB_KEY) as Int
@@ -44,7 +57,7 @@ class GraphActivity: AppCompatActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager)
+        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory)
 
         controller?.onCreate()
 

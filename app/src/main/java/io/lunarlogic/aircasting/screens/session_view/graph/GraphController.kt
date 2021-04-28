@@ -3,12 +3,17 @@ package io.lunarlogic.aircasting.screens.session_view.graph
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.NoteCreatedEvent
+import io.lunarlogic.aircasting.events.NoteDeletedEvent
+import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.events.StopRecordingEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
+import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewController
@@ -22,12 +27,12 @@ class GraphController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    val fragmentManager: FragmentManager
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName),
+    fragmentManager: FragmentManager,
+    mSettings: Settings,
+    mApiServiceFactory: ApiServiceFactory
+): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
     SessionDetailsViewMvc.Listener,
-    AddNoteBottomSheet.Listener,
-    EditNoteBottomSheet.Listener {
-    private val mErrorHandler = ErrorHandler(rootActivity)
+    AddNoteBottomSheet.Listener {
     override fun locateRequested() {}
 
     open fun onResume() {
@@ -51,18 +56,5 @@ class GraphController(
     override fun addNotePressed(session: Session, note: Note) {
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
-    }
-
-    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        // TODO: this is not working now, displaying note from graph view will be added in "Ready"
-        EditNoteBottomSheet(this, session, noteNumber).show(fragmentManager)
-    }
-
-    override fun saveChangesNotePressed(note: Note?, session: Session?) {
-        TODO("Not yet implemented")  //to be filled when implementing edit note functionality
-    }
-
-    override fun deleteNotePressed(note: Note?) {
-        TODO("Not yet implemented") //to be filled when implementing delete note functionality
     }
 }

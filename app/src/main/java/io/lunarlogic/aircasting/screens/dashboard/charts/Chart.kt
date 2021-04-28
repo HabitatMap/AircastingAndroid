@@ -63,8 +63,7 @@ class Chart {
     }
 
     private fun setEntries(sessionPresenter: SessionPresenter?) {
-        mEntries =
-            sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
     }
 
     private fun drawChart() {

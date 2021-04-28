@@ -23,6 +23,17 @@
                 android:padding="@dimen/keyline_8">
 
                 <ImageView
+                    android:id="@+id/edit_note_loader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_loader"
+                    android:tint="@color/aircasting_blue_400"
+                    android:layout_marginTop="@dimen/keyline_8"
+                    android:layout_marginBottom="@dimen/keyline_8"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/title" />
+
+                <ImageView
                     android:id="@+id/edit_loader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -118,13 +129,11 @@
                         android:backgroundTint="@color/aircasting_grey_100"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Edit and delete buttons are not visible now as we do not have these functionalities implemented -->
                 <Button
                     android:id="@+id/save_changes_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Save changes"
-                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/note_input_layout"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"
@@ -137,7 +146,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Delete note"
-                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/save_changes_button"
                     app:layout_constraintBottom_toTopOf="@+id/cancel_button"
                     app:layout_constraintStart_toStartOf="parent"

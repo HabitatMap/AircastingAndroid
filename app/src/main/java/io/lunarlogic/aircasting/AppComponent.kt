@@ -14,6 +14,8 @@ import io.lunarlogic.aircasting.screens.new_session.NewSessionActivity
 import io.lunarlogic.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import io.lunarlogic.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import io.lunarlogic.aircasting.screens.onboarding.OnboardingActivity
+import io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity
+import io.lunarlogic.aircasting.screens.session_view.map.MapActivity
 import io.lunarlogic.aircasting.screens.settings.SettingsFragment
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
 import io.lunarlogic.aircasting.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardFragment
@@ -56,6 +58,8 @@ interface AppComponent {
     fun inject(fragment: LetsStartFragment)
     fun inject(activity: NewSessionActivity)
     fun inject(fragment: SessionDetailsFragment)
+    fun inject(activity: MapActivity)
+    fun inject(activity: GraphActivity)
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)
