@@ -102,6 +102,7 @@ class MapContainer: OnMapReadyCallback {
         clearMap()
 
         mMap?.isBuildingsEnabled = false
+        mMap?.uiSettings?.isZoomControlsEnabled = false
 
         drawSession()
         animateCameraToSession()
