@@ -1,17 +1,21 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
+import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.TAGS_SEPARATOR
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
-    private val mSession: Session?,
+    private var mSession: Session?,
     private val noteNumber: Int
 ): BottomSheet() {
     interface Listener {
@@ -20,11 +24,13 @@ class EditNoteBottomSheet(
     }
     private var mNote: Note? = null
     private var noteInput: EditText? = null
+    private var mLoader: ImageView? = null
 
     override fun setup() {
         noteInput = contentView?.note_input
         mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
+        mLoader = contentView?.edit_note_loader
 
         val saveChangesButton = contentView?.save_changes_button
         saveChangesButton?.setOnClickListener {
@@ -47,6 +53,8 @@ class EditNoteBottomSheet(
         closeButton?.setOnClickListener {
             dismiss()
         }
+
+        showLoader()
     }
 
     private fun saveChanges() {
@@ -66,6 +74,22 @@ class EditNoteBottomSheet(
 
     override fun layoutId(): Int {
         return R.layout.edit_note_bottom_sheet
+    }
+
+    fun reload(session: Session) {
+        mSession = session
+        noteInput?.setText(mNote?.text)
+    }
+
+    fun showLoader() {
+        AnimatedLoader(mLoader).start()
+        mLoader?.visibility = View.VISIBLE
+        noteInput?.isEnabled = false
+    }
+
+    fun hideLoader() {
+        mLoader?.visibility = View.GONE
+        noteInput?.isEnabled = true
     }
 
 }
