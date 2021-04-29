@@ -118,7 +118,6 @@ class AircastingHeatmap(val context: Context?, val mMap: GoogleMap, val sensorTh
             if (indexXstart == indexXend && indexYstart == indexYend) {
                 return null
             }
-//        }
 
         var newIndexXstart = indexXstart
         var newIndexYstart = indexYstart
