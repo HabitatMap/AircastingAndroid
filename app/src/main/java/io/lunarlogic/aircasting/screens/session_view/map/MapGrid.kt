@@ -200,7 +200,7 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
     inner class GridSquare {
         private var mSum: Double = 0.0
         private var mNumber: Int = 0
-        private var mAveragedValue: Double = 0.0
+        private var mAveragedValue: Double? = null
         private var mLevel: Measurement.Level? = null
         private var mPolygonOptions: PolygonOptions
         private var mPolygon: Polygon? = null
@@ -226,8 +226,8 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
             mSum += measurement.value
             mNumber += 1
             calculateAverage()
-            if (mAveragedValue > 0) {
-                val newLevel = Measurement.getLevel(mAveragedValue, sensorThreshold)
+            mAveragedValue?.let { averagedValue ->
+                val newLevel = Measurement.getLevel(averagedValue, sensorThreshold)
                 if (newLevel != mLevel) {
                     mLevel = newLevel
                     mNewColor = true
@@ -280,7 +280,7 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
         }
 
         private fun shouldDrawPolygon() : Boolean {
-            return mNewColor || (mPolygon == null  && mAveragedValue > 0)
+            return mNewColor || (mPolygon == null && mAveragedValue != null)
         }
 
         private fun calculateAverage() {
