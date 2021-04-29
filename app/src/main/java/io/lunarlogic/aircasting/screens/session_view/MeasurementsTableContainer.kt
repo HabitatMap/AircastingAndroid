@@ -198,7 +198,7 @@ class MeasurementsTableContainer {
         mMeasurementValues?.addView(valueViewContainer)
         
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream && !mCollapsed) {
+            if (stream == mSessionPresenter?.selectedStream) {
                 setValueViewBorder(valueViewContainer, color)
             }
 
