@@ -44,7 +44,7 @@ class MapContainer: OnMapReadyCallback {
     private val mMeasurementPoints = ArrayList<LatLng>()
     private var mLastMeasurementMarker: Marker? = null
 
-    private var mMapGrid: MapGrid? = null
+    private var mAircastingHeatmap: AircastingHeatmap? = null
 
     private val status = AtomicInteger(Status.INIT.value)
 
@@ -180,12 +180,12 @@ class MapContainer: OnMapReadyCallback {
         mMap?.let { map ->
             val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
             sensorThreshold?.let { sensorThreshold ->
-                if (mMapGrid != null) {
-                    mMapGrid?.remove()
-                    mMapGrid = null
+                if (mAircastingHeatmap != null) {
+                    mAircastingHeatmap?.remove()
+                    mAircastingHeatmap = null
                 }
-                mMapGrid = MapGrid(mContext, map, sensorThreshold, mapWidth, mapHeight )
-                mMapGrid?.drawHeatMap(mMeasurements)
+                mAircastingHeatmap = AircastingHeatmap(mContext, map, sensorThreshold, mapWidth, mapHeight )
+                mAircastingHeatmap?.drawHeatMap(mMeasurements)
             }
         }
 
@@ -263,7 +263,7 @@ class MapContainer: OnMapReadyCallback {
     fun addMobileMeasurement(measurement: Measurement) {
         if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
-            mMapGrid?.addMeasurement(measurement)
+            mAircastingHeatmap?.addMeasurement(measurement)
         }
     }
 

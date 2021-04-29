@@ -3,10 +3,7 @@ package io.lunarlogic.aircasting.screens.session_view.map
 import android.content.Context
 import android.graphics.Color
 import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.LatLngBounds
-import com.google.android.libraries.maps.model.Polygon
-import com.google.android.libraries.maps.model.PolygonOptions
+import com.google.android.libraries.maps.model.*
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.SensorThreshold
@@ -33,74 +30,55 @@ import io.lunarlogic.aircasting.models.SensorThreshold
  * (only if the level has changed)
  */
 
-class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: SensorThreshold, mapWidth: Int, mapHeight: Int) {
+class AircastingHeatmap(val context: Context?, val mMap: GoogleMap, val sensorThreshold: SensorThreshold, mapWidth: Int, mapHeight: Int) {
     private val DENSITY = 10
 
     var mGridSquares: HashMap<String, GridSquare?> = HashMap()
     var mVisibleRegion: VisibleRegionCoordinates
 
-    var gridSizeX: Int
-    var gridSizeY: Int
+    var mGridSizeX: Int
+    var mGridSizeY: Int
 
     init {
         mVisibleRegion = getVisibleRegionCoordinates()
 
         val size = Math.min(mapWidth, mapHeight) / DENSITY
 
-        gridSizeX = mapWidth / size
-        gridSizeY = mapHeight / size
+        mGridSizeX = mapWidth / size
+        mGridSizeY = mapHeight / size
 
-        val lonGridSide = (mVisibleRegion.lonEast - mVisibleRegion.lonWest) / gridSizeX
-        val latGridSide = (mVisibleRegion.latNorth - mVisibleRegion.latSouth) / gridSizeY
-
-
-        for (x in 1..gridSizeX) {
-            for (y in 1..gridSizeY) {
-                val southWestLatLng =
-                    LatLng(southLatitude(latGridSide, y), westLongitude(lonGridSide, x))
-                val southEastLatLng =
-                    LatLng(southLatitude(latGridSide, y), eastLongitude(lonGridSide, x))
-                val northEastLatLng =
-                    LatLng(northLatitude(latGridSide, y), eastLongitude(lonGridSide, x))
-                val northWestLatLng =
-                    LatLng(northLatitude(latGridSide, y), westLongitude(lonGridSide, x))
-
-                setGridSquare(x, y, GridSquare(
-                    southWestLatLng,
-                    southEastLatLng,
-                    northEastLatLng,
-                    northWestLatLng
-                ))
-            }
-        }
+       initGrid()
     }
 
     fun drawHeatMap(measurements: List<Measurement>) {
         measurements.forEach { measurement ->
             assignMeasurementToSquare(measurement)
         }
-        drawAverages()
+        drawPolygons()
     }
 
     fun addMeasurement(measurement: Measurement) {
         assignMeasurementToSquare(measurement)
-        drawAverages()
+        drawPolygons()
     }
 
-    private fun eastLongitude(longitudeSize: Double, x: Int) : Double {
-        return mVisibleRegion.lonWest + x * longitudeSize
-    }
+    private fun initGrid() {
 
-    private fun westLongitude(longitudeSize: Double, x: Int) : Double {
-        return mVisibleRegion.lonWest + (x - 1) * longitudeSize
-    }
+        val lonGridSize = (mVisibleRegion.lonEast - mVisibleRegion.lonWest) / mGridSizeX
+        val latGridSize = (mVisibleRegion.latNorth - mVisibleRegion.latSouth) / mGridSizeY
 
-    private fun northLatitude(latitudeSize: Double, y: Int) : Double {
-        return mVisibleRegion.latSouth + y * latitudeSize
-    }
+        for (x in 1..mGridSizeX) {
+            for (y in 1..mGridSizeY) {
+                val gridCalculator = GridCalculator(x, y, mVisibleRegion, lonGridSize, latGridSize)
 
-    private fun southLatitude(latitudeSize: Double, y: Int) : Double {
-        return mVisibleRegion.latSouth + (y - 1) * latitudeSize
+                setGridSquare(x, y, GridSquare(
+                    gridCalculator.southWestLatLng(),
+                    gridCalculator.southEastLatLng(),
+                    gridCalculator.northEastLatLng(),
+                    gridCalculator.northWestLatLng()
+                ))
+            }
+        }
     }
 
     private fun getVisibleRegionCoordinates(): VisibleRegionCoordinates {
@@ -158,7 +136,7 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
             newIndexXend = middleX
         }
 
-        if(measurement.latitude >= middleLat) {
+        if (measurement.latitude >= middleLat) {
             newIndexYstart = middleY + 1
         } else {
             newIndexYend = middleY
@@ -168,16 +146,16 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
     }
 
     private fun assignMeasurementToSquare(measurement: Measurement) {
-        val squareXY = getSquareXY(measurement, 0, gridSizeX - 1, 0, gridSizeY - 1)
+        val squareXY = getSquareXY(measurement, 0, mGridSizeX - 1, 0, mGridSizeY - 1)
         squareXY?.let {
             val gridSquare = getGridSquare(squareXY.first, squareXY.second)
             gridSquare?.addMeasurement(measurement)
         }
     }
 
-    private fun drawAverages() {
-        for (x in 1..gridSizeX) {
-            for (y in 1..gridSizeY) {
+    private fun drawPolygons() {
+        for (x in 1..mGridSizeX) {
+            for (y in 1..mGridSizeY) {
                 val gridSquare = getGridSquare(x, y)
                 gridSquare?.drawPolygon()
             }
@@ -185,8 +163,8 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
     }
 
     fun remove() {
-        for (x in 1..gridSizeX) {
-            for (y in 1..gridSizeY) {
+        for (x in 1..mGridSizeX) {
+            for (y in 1..mGridSizeY) {
                 removeGridSquare(x, y)
             }
         }
@@ -289,4 +267,37 @@ class MapGrid(val context: Context?, val mMap: GoogleMap, val sensorThreshold: S
     }
 
     class VisibleRegionCoordinates(val latNorth: Double, val latSouth: Double, var lonEast: Double, val lonWest: Double)
+
+    class GridCalculator(val x: Int, val y: Int, val visibleRegion: VisibleRegionCoordinates, val lonGridSize: Double, val latGridSize: Double) {
+        fun southWestLatLng(): LatLng {
+            return LatLng(southLatitude(), westLongitude())
+        }
+        fun southEastLatLng(): LatLng {
+            return LatLng(southLatitude(), eastLongitude())
+        }
+
+        fun northEastLatLng(): LatLng {
+           return LatLng(northLatitude(), eastLongitude())
+        }
+
+        fun northWestLatLng(): LatLng {
+            return LatLng(northLatitude(), westLongitude())
+        }
+
+        private fun eastLongitude() : Double {
+            return visibleRegion.lonWest + x * lonGridSize
+        }
+
+        private fun westLongitude() : Double {
+            return visibleRegion.lonWest + (x - 1) * lonGridSize
+        }
+
+        private fun northLatitude() : Double {
+            return visibleRegion.latSouth + y * latGridSize
+        }
+
+        private fun southLatitude() : Double {
+            return visibleRegion.latSouth + (y - 1) * latGridSize
+        }
+    }
 }
