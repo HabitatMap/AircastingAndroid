@@ -1,9 +1,11 @@
 package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
+import android.graphics.Color
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
@@ -20,12 +22,9 @@ import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.HashMap
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
-    private var LEVEL_SPANS: Array<StyleSpan>
-    private val FALLBACK_SPAN: StyleSpan
 
     private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
@@ -43,8 +42,9 @@ class MapContainer: OnMapReadyCallback {
     private var mMeasurementsLineOptions: PolylineOptions = defaultPolylineOptions()
     private var mMeasurementsLine: Polyline? = null
     private val mMeasurementPoints = ArrayList<LatLng>()
-    private val mMeasurementSpans = ArrayList<StyleSpan>()
     private var mLastMeasurementMarker: Marker? = null
+
+    private var mAircastingHeatmap: AircastingHeatmap? = null
 
     private val status = AtomicInteger(Status.INIT.value)
 
@@ -70,13 +70,6 @@ class MapContainer: OnMapReadyCallback {
             locate()
         }
         mLocateButton?.visibility = View.GONE
-
-        LEVEL_SPANS = arrayOf(
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.LOW)),
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.MEDIUM)),
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.HIGH)),
-            StyleSpan(MeasurementColor.colorForLevel(mContext, Measurement.Level.EXTREMELY_HIGH)))
-        FALLBACK_SPAN = StyleSpan(R.color.aircasting_grey_700)
     }
 
     fun registerListener(listener: SessionDetailsViewMvc.Listener) {
@@ -98,6 +91,7 @@ class MapContainer: OnMapReadyCallback {
         status.set(Status.MAP_LOADED.value)
     }
 
+
     fun setup() {
         clearMap()
 
@@ -105,6 +99,10 @@ class MapContainer: OnMapReadyCallback {
 
         drawSession()
         animateCameraToSession()
+
+        mMap?.setOnCameraIdleListener {
+            drawHeatMap()
+        }
         if (mMeasurements.isNotEmpty()) showMap()
     }
 
@@ -153,15 +151,11 @@ class MapContainer: OnMapReadyCallback {
         var i = 0
         for (measurement in mMeasurements) {
             latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
-
-            if (i > 0) {
-                mMeasurementSpans.add(measurementSpan(measurement))
-            }
             latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
             mMeasurementPoints.add(latestPoint)
             i += 1
         }
-        mMeasurementsLineOptions.addAll(mMeasurementPoints).addAllSpans(mMeasurementSpans)
+        mMeasurementsLineOptions.addAll(mMeasurementPoints)
         mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
 
         if (latestPoint != null && latestColor != null) {
@@ -176,6 +170,27 @@ class MapContainer: OnMapReadyCallback {
             drawNoteMarker(note)
         }
     }
+
+    private fun drawHeatMap() {
+        if (mSessionPresenter?.isFixed() == true) return
+
+        val mapWidth = mMapFragment?.view?.width ?: 0
+        val mapHeight = mMapFragment?.view?.height ?: 0
+
+        mMap?.let { map ->
+            val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
+            sensorThreshold?.let { sensorThreshold ->
+                if (mAircastingHeatmap != null) {
+                    mAircastingHeatmap?.remove()
+                    mAircastingHeatmap = null
+                }
+                mAircastingHeatmap = AircastingHeatmap(mContext, map, sensorThreshold, mapWidth, mapHeight )
+                mAircastingHeatmap?.drawHeatMap(mMeasurements)
+            }
+        }
+
+    }
+
 
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
         if (point == null || color == null) return
@@ -248,6 +263,7 @@ class MapContainer: OnMapReadyCallback {
     fun addMobileMeasurement(measurement: Measurement) {
         if (mSessionPresenter?.isRecording() == true) {
             drawMobileMeasurement(measurementColorPoint(measurement))
+            mAircastingHeatmap?.addMeasurement(measurement)
         }
     }
 
@@ -260,14 +276,12 @@ class MapContainer: OnMapReadyCallback {
         if (colorPoint == null) return
 
         mMeasurementPoints.add(colorPoint.point)
-        mMeasurementSpans.add(StyleSpan(colorPoint.color))
 
         if (mMeasurementsLine == null) {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
         mMeasurementsLine?.setPoints(mMeasurementPoints)
-        mMeasurementsLine?.setSpans(mMeasurementSpans)
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
 
@@ -280,19 +294,10 @@ class MapContainer: OnMapReadyCallback {
         return ColorPoint(point, color)
     }
 
-    private fun measurementSpan(measurement: Measurement) : StyleSpan {
-        if (measurement.latitude == null || measurement.longitude == null) return FALLBACK_SPAN
-        val threshold = mSessionPresenter?.selectedSensorThreshold() ?: return FALLBACK_SPAN
-        return when (val level = measurement.getLevel(threshold)) {
-            Measurement.Level.EXTREMELY_LOW -> FALLBACK_SPAN
-            Measurement.Level.EXTREMELY_HIGH -> FALLBACK_SPAN
-            else -> LEVEL_SPANS[level.value]
-        }
-    }
-
     fun refresh(sessionPresenter: SessionPresenter?) {
         clearMap()
         bindSession(sessionPresenter)
+        drawHeatMap()
         drawSession()
     }
 
@@ -303,17 +308,22 @@ class MapContainer: OnMapReadyCallback {
     private fun clearMap() {
         mMap?.clear()
         mMeasurementPoints.clear()
-        mMeasurementSpans.clear()
         mMeasurementsLine = null
         mMeasurementsLineOptions = defaultPolylineOptions()
     }
 
     private fun defaultPolylineOptions(): PolylineOptions {
+        val lineColor = mContext?.let { context ->
+            ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
+        }
+
         return PolylineOptions()
-            .width(20f)
+            .width(10f)
+            .color(lineColor ?: Color.BLUE)
             .jointType(JointType.ROUND)
             .endCap(RoundCap())
             .startCap(RoundCap())
+            .zIndex(1000f)
     }
 
     private fun showMap() {
@@ -324,7 +334,7 @@ class MapContainer: OnMapReadyCallback {
     private fun mapOptions(): GoogleMapOptions {
         val mapOptions = GoogleMapOptions()
         mapOptions.useViewLifecycleInFragment(true)
-        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomControlsEnabled(false)
         mapOptions.zoomGesturesEnabled(true)
 
         return mapOptions
