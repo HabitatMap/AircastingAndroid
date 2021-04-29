@@ -334,7 +334,7 @@ class MapContainer: OnMapReadyCallback {
     private fun mapOptions(): GoogleMapOptions {
         val mapOptions = GoogleMapOptions()
         mapOptions.useViewLifecycleInFragment(true)
-        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomControlsEnabled(false)
         mapOptions.zoomGesturesEnabled(true)
 
         return mapOptions
