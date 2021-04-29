@@ -314,11 +314,11 @@ class MapContainer: OnMapReadyCallback {
 
     private fun defaultPolylineOptions(): PolylineOptions {
         val lineColor = mContext?.let { context ->
-            ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400_transparent, null)
+            ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
         }
 
         return PolylineOptions()
-            .width(6f)
+            .width(10f)
             .color(lineColor ?: Color.BLUE)
             .jointType(JointType.ROUND)
             .endCap(RoundCap())
