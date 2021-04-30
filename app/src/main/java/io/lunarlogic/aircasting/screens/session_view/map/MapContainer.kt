@@ -102,12 +102,9 @@ class MapContainer: OnMapReadyCallback {
         clearMap()
 
         mMap?.isBuildingsEnabled = false
-        mMap?.uiSettings?.isZoomControlsEnabled = false
-
         // This padding is need to show map compass in the right upper corner instead of left upper corner
         // https://developers.google.com/maps/documentation/android-sdk/map#map_padding
         mMap?.setPadding(850, 0, 0, 0)
-
 
         drawSession()
         animateCameraToSession()
@@ -330,7 +327,7 @@ class MapContainer: OnMapReadyCallback {
     private fun mapOptions(): GoogleMapOptions {
         val mapOptions = GoogleMapOptions()
         mapOptions.useViewLifecycleInFragment(true)
-        mapOptions.zoomControlsEnabled(true)
+        mapOptions.zoomControlsEnabled(false)
         mapOptions.zoomGesturesEnabled(true)
 
         return mapOptions
