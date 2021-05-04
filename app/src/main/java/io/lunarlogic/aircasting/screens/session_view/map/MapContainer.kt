@@ -339,6 +339,7 @@ class MapContainer: OnMapReadyCallback {
         mapOptions.useViewLifecycleInFragment(true)
         mapOptions.zoomControlsEnabled(false)
         mapOptions.zoomGesturesEnabled(true)
+        mapOptions.mapToolbarEnabled(false)
 
         return mapOptions
     }
