@@ -18,7 +18,7 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
 
-    private val DEFAULT_LIMIT = 1000
+    private val DEFAULT_LIMIT = 60
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
@@ -40,8 +40,10 @@ class GraphDataGenerator(
             add(measurement)
             fill += fillFactor
 
+            //if (measurement == samples.last()) break
+
             if (fill > 1) {
-                fill -= 1.0
+                fill = 0.0 // przy zmianie z fill -= 1.0 na fill = 0.0 graf zamiast przeskakiwać przez cały czas przeskakuje co tyle sekund/measurementów ile jest podane w limit
                 val date = getAverageDate()
 
                 entries.add(buildAverageEntry(date, hasNote = false))
