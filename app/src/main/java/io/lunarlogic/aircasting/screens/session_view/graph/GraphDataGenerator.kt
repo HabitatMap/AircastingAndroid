@@ -22,11 +22,15 @@ class GraphDataGenerator(
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
+    // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
     fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT): Result {
         reset()
 
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
+        // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
+        // e.g. if samples.size is less then DEFAULT_LIMIT, fillFactor is more then 1- it means we draw entry for each measurement
+        // if samples.size is a bit more then DEFAULT_LIMIT then the fillFactor is ~~0.6-0.9, what means that we build one entry per 2 measurements
         val fillFactor = 1.0 * limit / samples.size
         var fill = 0.0
 
@@ -40,10 +44,8 @@ class GraphDataGenerator(
             add(measurement)
             fill += fillFactor
 
-            //if (measurement == samples.last()) break
-
             if (fill > 1) {
-                fill = 0.0 // przy zmianie z fill -= 1.0 na fill = 0.0 graf zamiast przeskakiwać przez cały czas przeskakuje co tyle sekund/measurementów ile jest podane w limit
+                fill = 0.0
                 val date = getAverageDate()
 
                 entries.add(buildAverageEntry(date, hasNote = false))
