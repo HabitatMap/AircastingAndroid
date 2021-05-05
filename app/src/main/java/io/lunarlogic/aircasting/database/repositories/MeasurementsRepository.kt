@@ -16,7 +16,8 @@ class MeasurementsRepository {
                 measurement.value,
                 measurement.time,
                 measurement.latitude,
-                measurement.longitude
+                measurement.longitude,
+                measurement.is_averaged
             )
         }
 
@@ -30,7 +31,8 @@ class MeasurementsRepository {
             measurement.value,
             measurement.time,
             measurement.latitude,
-            measurement.longitude
+            measurement.longitude,
+            measurement.is_averaged
         )
 
         return mDatabase.measurements().insert(measurementDBObject)
@@ -55,6 +57,22 @@ class MeasurementsRepository {
         lastExpectedMeasurementTime: Date
     ) {
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
+    }
+
+    fun getNonAveragedMeasurementsCount(sessionId: Long, time: Date): Int {
+        return mDatabase.measurements().getNonAveragedMeasurementsCount(sessionId, time)
+    }
+
+    fun getNonAveragedMeasurementsOlderThan(streamId: Long, time: Date): List<MeasurementDBObject> {
+        return mDatabase.measurements().getNonAveragedMeasurementsOlderThan(streamId, time)
+    }
+
+    fun deleteMeasurementsAfterAveraging(streamId: Long, time: Date) {
+        mDatabase.measurements().deleteAveragedInTransaction(streamId, time)
+    }
+
+    fun averageMeasurement(measurementId: Long, value: Double) {
+        mDatabase.measurements().averageMeasurement(measurementId, value)
     }
 
 }

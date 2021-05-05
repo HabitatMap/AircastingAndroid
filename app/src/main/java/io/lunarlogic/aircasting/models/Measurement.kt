@@ -10,7 +10,9 @@ class Measurement(
     val value: Double,
     val time: Date,
     val latitude: Double? = null,
-    val longitude: Double? = null) {
+    val longitude: Double? = null,
+    var is_averaged: Boolean = false
+    ) {
 
     constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?):
             this(event.measuredValue, Date(event.creationTime), latitude, longitude)
@@ -19,7 +21,8 @@ class Measurement(
         measurementDBObject.value,
         measurementDBObject.time,
         measurementDBObject.latitude,
-        measurementDBObject.longitude
+        measurementDBObject.longitude,
+        measurementDBObject.is_averaged
     )
 
     constructor(measurementResponse: MeasurementResponse): this(

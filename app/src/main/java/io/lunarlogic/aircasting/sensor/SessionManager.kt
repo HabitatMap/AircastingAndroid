@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.AveragingService
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -169,6 +170,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     val measurementStreamId =
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
+
+                    AveragingService(sessionId).averageMeasurements()
                 } catch( e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }
