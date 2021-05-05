@@ -17,6 +17,7 @@ class GraphDataGenerator(
     private var cumulativeTime: Long = 0
     private var count = 0
     private var startTime = Date()
+    private var hasNote = false
 
     private val DEFAULT_LIMIT = 1000
 
@@ -37,22 +38,14 @@ class GraphDataGenerator(
         var lastDateDayOfMonth = CalendarUtils.dayOfMonth(startTime)
 
         for (measurement in samples) {
-            add(measurement)
+            add(measurement, notes)
             fill += fillFactor
 
             if (fill > 1) {
                 fill -= 1.0
                 val date = getAverageDate()
 
-                entries.add(buildAverageEntry(date, hasNote = false))
-
-                if (notes != null) {
-                    for (note in notes) {
-                        if (isSameDate(note, date)) {
-                            entries.add(buildAverageEntry(date, hasNote = true))
-                        }
-                    }
-                }
+                entries.add(buildAverageEntry(date, hasNote))
 
                 val dateOfMonth = CalendarUtils.dayOfMonth(date)
 
@@ -103,16 +96,22 @@ class GraphDataGenerator(
         return (date.time - startTime.time).toFloat()
     }
 
-    private fun add(measurement: Measurement) {
+    private fun add(measurement: Measurement, notes: List<Note>?) {
         cumulativeValue += measurement.value
         cumulativeTime += measurement.time.time
         count += 1
+        if (hasNote != true && notes != null) {
+            for (note in notes) {
+                if (isSameDate(note, Date(measurement.time.time))) hasNote = true
+            }
+        }
     }
 
     private fun reset() {
         count = 0
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
+        hasNote = false
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
