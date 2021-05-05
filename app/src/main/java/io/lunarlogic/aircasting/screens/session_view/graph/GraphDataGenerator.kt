@@ -18,7 +18,7 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
 
-    private val DEFAULT_LIMIT = 60
+    private val DEFAULT_LIMIT = 1000
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
