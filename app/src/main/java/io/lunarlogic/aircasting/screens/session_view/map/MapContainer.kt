@@ -214,6 +214,7 @@ class MapContainer: OnMapReadyCallback {
         val marker = mMap?.addMarker(MarkerOptions()
             .position(LatLng(note.latitude, note.longitude))
             .icon(icon))
+        marker?.zIndex = Float.MAX_VALUE // We set Z-index so the note marker are first to be 'clicked' when user press map
         mMarkers?.set(marker?.id, note.number)
         mMap?.setOnMarkerClickListener { marker ->
             val noteNumber = mMarkers?.get(marker.id)
