@@ -96,9 +96,6 @@ class MapContainer: OnMapReadyCallback {
         clearMap()
 
         mMap?.isBuildingsEnabled = false
-        // This padding is need to show map compass in the right upper corner instead of left upper corner
-        // https://developers.google.com/maps/documentation/android-sdk/map#map_padding
-        mMap?.setPadding(850, 0, 0, 0)
 
         drawSession()
         animateCameraToSession()
