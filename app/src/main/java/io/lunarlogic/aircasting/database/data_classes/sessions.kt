@@ -179,6 +179,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
 
+    @Query("SELECT * FROM sessions WHERE id=:id AND deleted=0")
+    fun loadSessionById(id: Long): SessionDBObject?
+
     @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND deleted=0")
     fun loadSessionByStatusAndType(status: Session.Status, type: Session.Type): SessionDBObject?
 

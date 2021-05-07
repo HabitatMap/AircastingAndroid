@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 25,
-    "identityHash": "5e1b2ab74246824fd023a7e91cc72c7e",
+    "identityHash": "a35891e9f8dc6349f233871fadafcaad",
     "entities": [
       {
         "tableName": "sessions",
@@ -262,7 +262,7 @@
       },
       {
         "tableName": "measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `is_averaged` INTEGER NOT NULL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -307,8 +307,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "is_averaged",
-            "columnName": "is_averaged",
+            "fieldPath": "averaging_frequency",
+            "columnName": "averaging_frequency",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -496,7 +496,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5e1b2ab74246824fd023a7e91cc72c7e\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a35891e9f8dc6349f233871fadafcaad\")"
     ]
   }
 }

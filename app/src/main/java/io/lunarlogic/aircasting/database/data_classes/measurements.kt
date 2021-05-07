@@ -25,7 +25,7 @@ data class MeasurementDBObject(
     @ColumnInfo(name = "time") val time: Date,
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?,
-    @ColumnInfo(name = "is_averaged") val is_averaged: Boolean = false
+    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -54,17 +54,18 @@ interface MeasurementDao {
     @Query("DELETE FROM measurements WHERE session_id=:sessionId AND time < :lastExpectedMeasurementDate ")
     fun delete(sessionId: Long, lastExpectedMeasurementDate: Date)
 
-    @Query("DELETE FROM measurements WHERE is_averaged=0 AND measurement_stream_id=:streamId AND time < :time")
-    fun deleteAveraged(streamId: Long, time: Date)
+    // TODO pass averaging frequency
+    @Query("DELETE FROM measurements WHERE averaging_frequency=:averaging_frequency AND measurement_stream_id=:streamId AND time < :time")
+    fun deleteAveraged(streamId: Long, time: Date, averaging_frequency: Int)
 
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId ORDER BY time DESC LIMIT :limit")
     fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 
-    @Query("SELECT * FROM measurements WHERE is_averaged=0 AND measurement_stream_id=:streamId AND time < :time")
-    fun getNonAveragedMeasurementsOlderThan(streamId: Long, time: Date): List<MeasurementDBObject>
+    @Query("SELECT * FROM measurements WHERE averaging_frequency=:averagingFrequency AND measurement_stream_id=:streamId")
+    fun getNonAveragedMeasurements(streamId: Long, averagingFrequency: Int): List<MeasurementDBObject>
 
-    @Query("SELECT COUNT(id) FROM measurements WHERE is_averaged=0 AND session_id=:sessionId AND time < :time")
-    fun getNonAveragedMeasurementsCount(sessionId: Long, time: Date): Int
+    @Query("SELECT COUNT(id) FROM measurements WHERE averaging_frequency=:averagingFrequency AND session_id=:sessionId")
+    fun getNonAveragedMeasurementsCount(sessionId: Long, averagingFrequency: Int): Int
 
     @Transaction
     fun deleteInTransaction(streamId: Long, lastExpectedMeasurementDate: Date) {
@@ -72,10 +73,10 @@ interface MeasurementDao {
     }
 
     @Transaction
-    fun deleteAveragedInTransaction(streamId: Long, time: Date) {
-        deleteAveraged(streamId, time)
+    fun deleteAveragedInTransaction(streamId: Long, time: Date, averagingFrequency: Int) {
+        deleteAveraged(streamId, time, averagingFrequency)
     }
 
-    @Query("UPDATE measurements SET is_averaged=1, value=:value WHERE id=:measurement_id")
-    fun averageMeasurement(measurement_id: Long, value: Double)
+    @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")
+    fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int)
 }

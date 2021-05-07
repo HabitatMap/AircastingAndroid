@@ -14,44 +14,65 @@ import kotlin.collections.HashMap
 
 class AveragingService(
     val sessionId: Long
-
 ) {
-    private val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000
-    private val SECOND_TRESHOLD_TIME = 8 * 60 * 60 * 1000
-    private val THRESHOLDS = listOf<AveragingThreshold>(
-        AveragingThreshold(windowSize = 60, time = SECOND_TRESHOLD_TIME),
-        AveragingThreshold(windowSize = 5, time = FIRST_TRESHOLD_TIME)
-    )
+    private val FIRST_TRESHOLD_TIME =  10000//2 * 60 * 60 * 1000 // 2 hours
+    private val SECOND_TRESHOLD_TIME = 20000//9 * 60 * 60 * 1000 // 9 hours
+    private val THRESHOLDS = arrayOf(AveragingThreshold(windowSize = 60, time = SECOND_TRESHOLD_TIME),
+        AveragingThreshold(windowSize = 5, time = FIRST_TRESHOLD_TIME),
+        AveragingThreshold(windowSize = 1, time = 0))
 
     private val LOG_TAG = "AveragingService"
 
     private var measurementsToAverage: List<MeasurementDBObject>? = null
     private val measurementRepository = MeasurementsRepository()
     private val mMeasurementStreamsRepository = MeasurementStreamsRepository()
+    private val mSessionsRepository = SessionsRepository()
 
     fun averageMeasurements(): Int {
         var dbSessionId: Long? = null
         var startAveragingTime: Date? = null
         var thresholdTime: Int? = null
         var windowSize: Int? = null
+        var previousWindowSize: Int? = null
+        var averagingFrequency: Int = 1
         var averagedCount = 0
         var nonAveragedMeasurementsCount = 0
         var streamIds: List<Long>? = null
+        var sessionLength: Long = 0
 
             dbSessionId = sessionId
+            val session = mSessionsRepository.getSessionById(sessionId)
 
             dbSessionId?.let { sessionId ->
-                THRESHOLDS.forEach { threshold ->
+                THRESHOLDS.forEachIndexed { index, threshold ->
                     val sessionEndTime = Date() // TODO make sure we take always endTime of the sessin
+//                    val lastMeasurementTime = measurementRepository.lastMeasurementTime(dbSessionId)
+                    if (session?.endTime != null && session?.startTime != null) {
+                        sessionLength = session.endTime.time - session.startTime.time
+                    }
+                    println("MARYSIA: startTime ${session?.startTime} endTime ${session?.endTime} length ${sessionLength}")
+                    if (sessionLength > threshold.time) {
+                        println("MARYSIA: reached threshold with window ${threshold.windowSize}")
+                    }
+                    if (index < 2) {
                         nonAveragedMeasurementsCount =
                             measurementRepository.getNonAveragedMeasurementsCount(
                                 sessionId,
-                                Date(sessionEndTime.time - threshold.time)
+                                THRESHOLDS[index + 1].windowSize
                             )
+
+                        println("MARYSIA: measurements to average: ${nonAveragedMeasurementsCount}")
+                    }
+
                     if (nonAveragedMeasurementsCount > 0) {
                         println("MARYSIA: averaging threshold window: ${threshold.windowSize}")
                         thresholdTime = threshold.time
-                        windowSize = threshold.windowSize
+                        previousWindowSize = THRESHOLDS[index + 1].windowSize
+                        averagingFrequency = threshold.windowSize
+                        println("MARYSIA: averagingFrequency: ${averagingFrequency}")
+                        windowSize = averagingFrequency / previousWindowSize!!
+                        println("MARYSIA: window size: ${windowSize}")
+
                     }
                 }
 
@@ -64,11 +85,13 @@ class AveragingService(
                 val sessionEndTime = Date() //TODO make sure we take always endTime of the sessin
                 startAveragingTime = Date(sessionEndTime.time - thresholdTime!!)
 
+
                 streamIds?.forEach { streamId ->
+                    println("MARYSIA: averaging historical measurements:")
                     measurementsToAverage =
-                        measurementRepository.getNonAveragedMeasurementsOlderThan(
+                        measurementRepository.getNonAveragedMeasurements(
                             streamId,
-                            startAveragingTime!!
+                            previousWindowSize ?: 1
                         )
 
                     if (measurementsToAverage == null) {
@@ -85,7 +108,8 @@ class AveragingService(
                                     val averagedMeasurementId = middle.id
                                     measurementRepository.averageMeasurement(
                                         averagedMeasurementId,
-                                        average
+                                        average,
+                                        averagingFrequency
                                     )
                                     println("MARYSIA: averaged measurement ${measurementsInWindow.map { "${it.value}}, " }} -> ${average}")
                                 }
@@ -93,9 +117,20 @@ class AveragingService(
 
                             measurementRepository.deleteMeasurementsAfterAveraging(
                                 streamId,
-                                startAveragingTime!!
+                                startAveragingTime!!,
+                                previousWindowSize ?: 1
                             )
                         }
+                    }
+
+                    if (averagingFrequency > 1) {
+
+                        measurementsToAverage =
+                            measurementRepository.getNonAveragedMeasurements(
+                                streamId,
+                                1
+                            )
+                        println("MARYSIA: we should also average new measurements:${measurementsToAverage?.size}")
                     }
 
                     }

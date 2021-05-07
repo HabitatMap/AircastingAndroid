@@ -31,6 +31,10 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
+    fun getSessionById(id: Long): SessionDBObject? {
+        return mDatabase.sessions().loadSessionById(id)
+    }
+
     fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
         return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
     }

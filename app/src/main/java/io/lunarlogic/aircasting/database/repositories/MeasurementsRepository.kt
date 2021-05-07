@@ -17,7 +17,7 @@ class MeasurementsRepository {
                 measurement.time,
                 measurement.latitude,
                 measurement.longitude,
-                measurement.is_averaged
+                measurement.averagingFrequency
             )
         }
 
@@ -32,7 +32,7 @@ class MeasurementsRepository {
             measurement.time,
             measurement.latitude,
             measurement.longitude,
-            measurement.is_averaged
+            measurement.averagingFrequency
         )
 
         return mDatabase.measurements().insert(measurementDBObject)
@@ -59,20 +59,20 @@ class MeasurementsRepository {
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
-    fun getNonAveragedMeasurementsCount(sessionId: Long, time: Date): Int {
-        return mDatabase.measurements().getNonAveragedMeasurementsCount(sessionId, time)
+    fun getNonAveragedMeasurementsCount(sessionId: Long, averagingFrequency: Int): Int {
+        return mDatabase.measurements().getNonAveragedMeasurementsCount(sessionId, averagingFrequency )
     }
 
-    fun getNonAveragedMeasurementsOlderThan(streamId: Long, time: Date): List<MeasurementDBObject> {
-        return mDatabase.measurements().getNonAveragedMeasurementsOlderThan(streamId, time)
+    fun getNonAveragedMeasurements(streamId: Long, averagingFrequency: Int): List<MeasurementDBObject> {
+        return mDatabase.measurements().getNonAveragedMeasurements(streamId, averagingFrequency)
     }
 
-    fun deleteMeasurementsAfterAveraging(streamId: Long, time: Date) {
-        mDatabase.measurements().deleteAveragedInTransaction(streamId, time)
+    fun deleteMeasurementsAfterAveraging(streamId: Long, time: Date, averagingFrequency: Int) {
+        mDatabase.measurements().deleteAveragedInTransaction(streamId, time, averagingFrequency)
     }
 
-    fun averageMeasurement(measurementId: Long, value: Double) {
-        mDatabase.measurements().averageMeasurement(measurementId, value)
+    fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {
+        mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency)
     }
 
 }

@@ -11,7 +11,7 @@ class Measurement(
     val time: Date,
     val latitude: Double? = null,
     val longitude: Double? = null,
-    var is_averaged: Boolean = false
+    var averagingFrequency: Int = 1
     ) {
 
     constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?):
@@ -22,7 +22,7 @@ class Measurement(
         measurementDBObject.time,
         measurementDBObject.latitude,
         measurementDBObject.longitude,
-        measurementDBObject.is_averaged
+        measurementDBObject.averaging_frequency
     )
 
     constructor(measurementResponse: MeasurementResponse): this(
