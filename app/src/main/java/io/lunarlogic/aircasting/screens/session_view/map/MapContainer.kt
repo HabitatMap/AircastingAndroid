@@ -1,10 +1,13 @@
 package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.location.Location
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
@@ -89,8 +92,9 @@ class MapContainer: OnMapReadyCallback {
             setup()
         }
         status.set(Status.MAP_LOADED.value)
-    }
 
+        setCustomCompassLocation()
+    }
 
     fun setup() {
         clearMap()
@@ -339,6 +343,27 @@ class MapContainer: OnMapReadyCallback {
         mapOptions.mapToolbarEnabled(false)
 
         return mapOptions
+    }
+
+    private fun setCustomCompassLocation() {
+        mMapFragment?.view?.let { mapView ->
+            mapView.findViewWithTag<View>("GoogleMapMyLocationButton").parent.let { parent ->
+                val vg: ViewGroup = parent as ViewGroup
+                vg.post {
+                    val mapCompass: View = parent.getChildAt(4)
+                    val rlp = RelativeLayout.LayoutParams(mapCompass.height, mapCompass.height)
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+
+                    val topMargin = (5 * Resources.getSystem().displayMetrics.density).toInt()
+                    val rightMargin = (5 * Resources.getSystem().displayMetrics.density).toInt()
+                    rlp.setMargins(0, topMargin, rightMargin, 0)
+                    mapCompass.layoutParams = rlp
+                }
+            }
+        }
     }
 }
 
