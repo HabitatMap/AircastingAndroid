@@ -109,7 +109,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber) //todo: temporarily added, JAK DOSTAĆ TĄ LICZBE WIDOCZNYCH MEASUREMENTÓW
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber)
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -283,7 +283,7 @@ class GraphContainer: OnChartGestureListener {
             if (!graph.isFullyZoomedOut) {
                 val fromDate = Date(from.toLong())
                 val toDate = Date(to.toLong())
-                val diff = (toDate.time - fromDate.time)/1000 // count of measurements between these 2 dates in mobile session
+                val diff = (toDate.time - fromDate.time) / 1000 // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
                 mVisibleEntriesNumber = diff.toInt()
             } else {
                 mVisibleEntriesNumber = mMeasurementsSample.size
