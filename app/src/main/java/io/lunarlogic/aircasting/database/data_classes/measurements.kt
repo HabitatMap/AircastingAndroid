@@ -55,8 +55,8 @@ interface MeasurementDao {
     fun delete(sessionId: Long, lastExpectedMeasurementDate: Date)
 
     // TODO pass averaging frequency
-    @Query("DELETE FROM measurements WHERE averaging_frequency=:averaging_frequency AND measurement_stream_id=:streamId AND time < :time")
-    fun deleteAveraged(streamId: Long, time: Date, averaging_frequency: Int)
+    @Query("DELETE FROM measurements WHERE measurement_stream_id=:streamId AND id IN (:measurementsIds)")
+    fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>)
 
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId ORDER BY time DESC LIMIT :limit")
     fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
@@ -73,8 +73,8 @@ interface MeasurementDao {
     }
 
     @Transaction
-    fun deleteAveragedInTransaction(streamId: Long, time: Date, averagingFrequency: Int) {
-        deleteAveraged(streamId, time, averagingFrequency)
+    fun deleteInTransaction(streamId: Long, measurementsIds: List<Long>) {
+        deleteMeasurements(streamId, measurementsIds)
     }
 
     @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")

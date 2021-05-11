@@ -67,8 +67,8 @@ class MeasurementsRepository {
         return mDatabase.measurements().getNonAveragedMeasurements(streamId, averagingFrequency)
     }
 
-    fun deleteMeasurementsAfterAveraging(streamId: Long, time: Date, averagingFrequency: Int) {
-        mDatabase.measurements().deleteAveragedInTransaction(streamId, time, averagingFrequency)
+    fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
+        mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
     }
 
     fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {

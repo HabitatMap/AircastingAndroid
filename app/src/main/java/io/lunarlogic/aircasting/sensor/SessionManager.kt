@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
@@ -171,7 +170,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
 
-                    AveragingService(sessionId).averageMeasurements()
+                    AveragingService(sessionId).perform()
                 } catch( e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }

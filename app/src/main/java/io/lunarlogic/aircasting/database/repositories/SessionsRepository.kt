@@ -142,4 +142,8 @@ class SessionsRepository {
     fun updateUrlLocation(session: Session, urlLocation: String?) {
         mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
     }
+    
+    fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
+        mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
+    }
 }
