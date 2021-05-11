@@ -37,7 +37,7 @@ class GraphContainer: OnChartGestureListener {
     private var mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
-    private var mVisibleEntriesNumber: Int = 0
+    private var mVisibleEntriesNumber: Int = 60
 
     private var mGraphDataGenerator: GraphDataGenerator
 
@@ -76,7 +76,6 @@ class GraphContainer: OnChartGestureListener {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
-        mVisibleEntriesNumber = mMeasurementsSample.size //TODO: is this needed??
         mNotes = mSessionPresenter?.session?.notes
 
         drawSession()
@@ -281,15 +280,13 @@ class GraphContainer: OnChartGestureListener {
             val to = graph.highestVisibleX
             val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
 
-            if ((from - to) < mDefaultZoomSpan!!) {
-                for (measurement in mMeasurementsSample) {
-                    mVisibleEntriesNumber = 0
-                    if (measurement.time > timeSpan.start && measurement.time < timeSpan.endInclusive) {
-                        mVisibleEntriesNumber += 1
-                    }
-                }
+            if (!graph.isFullyZoomedOut) {
+                val fromDate = Date(from.toLong())
+                val toDate = Date(to.toLong())
+                val diff = (toDate.time - fromDate.time)/1000 // count of measurements between these 2 dates in mobile session
+                mVisibleEntriesNumber = diff.toInt()
             } else {
-                   mVisibleEntriesNumber = mMeasurementsSample.size
+                mVisibleEntriesNumber = mMeasurementsSample.size
             }
 
             mOnTimeSpanChanged.invoke(timeSpan)
