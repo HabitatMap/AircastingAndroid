@@ -37,6 +37,7 @@ class GraphContainer: OnChartGestureListener {
     private var mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
+    private var mVisibleEntriesNumber: Int = 0
 
     private var mGraphDataGenerator: GraphDataGenerator
 
@@ -75,6 +76,7 @@ class GraphContainer: OnChartGestureListener {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
+        mVisibleEntriesNumber = mMeasurementsSample.size //TODO: is this needed??
         mNotes = mSessionPresenter?.session?.notes
 
         drawSession()
@@ -108,7 +110,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes)
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber) //todo: temporarily added, JAK DOSTAĆ TĄ LICZBE WIDOCZNYCH MEASUREMENTÓW
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -278,6 +280,18 @@ class GraphContainer: OnChartGestureListener {
             val from = graph.lowestVisibleX
             val to = graph.highestVisibleX
             val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+
+            if ((from - to) < mDefaultZoomSpan!!) {
+                for (measurement in mMeasurementsSample) {
+                    mVisibleEntriesNumber = 0
+                    if (measurement.time > timeSpan.start && measurement.time < timeSpan.endInclusive) {
+                        mVisibleEntriesNumber += 1
+                    }
+                }
+            } else {
+                   mVisibleEntriesNumber = mMeasurementsSample.size
+            }
+
             mOnTimeSpanChanged.invoke(timeSpan)
         }
     }

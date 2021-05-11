@@ -83,6 +83,16 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
         mStatisticsContainer?.refresh(mSessionPresenter)
     }
 
+    private fun newMeasurementsSample(timeSpan: ClosedRange<Date>): List<Measurement> {
+        val newMeasurementsSample = mutableListOf<Measurement>()
+        for (measurement in measurementsSample()) {
+            if (measurement.time > timeSpan.start && measurement.time < timeSpan.endInclusive) {
+                newMeasurementsSample.add(measurement)
+            }
+        }
+        return newMeasurementsSample
+    }
+
     override fun onDestroy() {
         graphContainer?.destroy()
         graphContainer = null
