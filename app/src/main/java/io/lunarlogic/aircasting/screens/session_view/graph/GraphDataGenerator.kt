@@ -36,7 +36,6 @@ class GraphDataGenerator(
         // if samples.size is a bit more then DEFAULT_LIMIT then the fillFactor is ~~0.6-0.9, what means that we build one entry per 2 measurements
         val fillFactor = 1.0 * limit / visibleMeasurementsSize
         var fill = 0.0
-        Log.i("GRAPH_GENERATOR", visibleMeasurementsSize.toString())
 
         val firstMeasurement = samples.firstOrNull()
         firstMeasurement ?: return Result(entries, midnightPoints)
