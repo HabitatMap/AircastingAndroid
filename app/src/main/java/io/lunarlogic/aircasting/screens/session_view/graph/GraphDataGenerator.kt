@@ -20,7 +20,7 @@ class GraphDataGenerator(
     private var startTime = Date()
     private var hasNote = false
 
-    private val DEFAULT_LIMIT = 60 // JUST FOR TESTING
+    private val DEFAULT_LIMIT = 1000
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
 
