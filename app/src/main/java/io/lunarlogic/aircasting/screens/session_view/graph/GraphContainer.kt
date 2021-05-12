@@ -31,6 +31,11 @@ import java.util.*
 
 
 class GraphContainer: OnChartGestureListener {
+    private val MOBILE_SESSION_MEASUREMENT_FREQUENCY = 1000
+    private val FIXED_SESSION_MEASUREMENT_FREQUENCY = 60 * 1000
+    private val DATE_FORMAT = "HH:mm"
+    private var mVisibleEntriesNumber: Int = 60
+
     private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
@@ -38,13 +43,9 @@ class GraphContainer: OnChartGestureListener {
     private var mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
-    private var mVisibleEntriesNumber: Int = 60
-    private val MOBILE_SESSION_MEASUREMENT_FREQUENCY = 1000
-    private val FIXED_SESSION_MEASUREMENT_FREQUENCY = 60 * 1000
 
     private var mGraphDataGenerator: GraphDataGenerator
 
-    private val DATE_FORMAT = "HH:mm"
     private val mDefaultZoomSpan: Int?
     private var shouldZoomToDefault = true
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
