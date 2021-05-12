@@ -19,6 +19,7 @@ import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.Note
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import io.lunarlogic.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
@@ -38,6 +39,8 @@ class GraphContainer: OnChartGestureListener {
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
     private var mVisibleEntriesNumber: Int = 60
+    private val MOBILE_SESSION_MEASUREMENT_FREQUENCY = 1000
+    private val FIXED_SESSION_MEASUREMENT_FREQUENCY = 60 * 1000
 
     private var mGraphDataGenerator: GraphDataGenerator
 
@@ -280,10 +283,11 @@ class GraphContainer: OnChartGestureListener {
             val to = graph.highestVisibleX
             val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
 
+            // TODO: below code is not universal for all types of sensors, we should somehow count "measurement frequency" later on
             if (!graph.isFullyZoomedOut) {
                 val fromDate = Date(from.toLong())
                 val toDate = Date(to.toLong())
-                val diff = (toDate.time - fromDate.time) / 1000 // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
+                val diff = (toDate.time - fromDate.time) / sessionMeasurementFrequency() // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
                 mVisibleEntriesNumber = diff.toInt()
             } else {
                 mVisibleEntriesNumber = mMeasurementsSample.size
@@ -303,5 +307,12 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.visibility = View.GONE
         mFromLabel?.visibility = View.GONE
         mToLabel?.visibility = View.GONE
+    }
+
+    private fun sessionMeasurementFrequency(): Int {
+        if (mSessionPresenter?.session?.type == Session.Type.MOBILE)
+            return MOBILE_SESSION_MEASUREMENT_FREQUENCY
+        else
+            return FIXED_SESSION_MEASUREMENT_FREQUENCY
     }
 }
