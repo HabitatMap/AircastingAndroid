@@ -288,7 +288,7 @@ class GraphContainer: OnChartGestureListener {
             if (!graph.isFullyZoomedOut) {
                 val fromDate = Date(from.toLong())
                 val toDate = Date(to.toLong())
-                val diff = (toDate.time - fromDate.time) / sessionMeasurementFrequency() // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
+                val diff = (toDate.time - fromDate.time) / sessionMeasurementsFrequency() // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
                 mVisibleEntriesNumber = diff.toInt()
             } else {
                 mVisibleEntriesNumber = mMeasurementsSample.size
@@ -310,7 +310,7 @@ class GraphContainer: OnChartGestureListener {
         mToLabel?.visibility = View.GONE
     }
 
-    private fun sessionMeasurementFrequency(): Int {
+    private fun sessionMeasurementsFrequency(): Int {
         if (mSessionPresenter?.session?.type == Session.Type.MOBILE)
             return MOBILE_SESSION_MEASUREMENT_FREQUENCY
         else
