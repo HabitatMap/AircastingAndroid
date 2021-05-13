@@ -11,8 +11,8 @@ import java.util.*
 class AveragingService(
     val sessionId: Long
 ) {
-    private val FIRST_TRESHOLD_TIME = 2 * 60 * 1000 //2 * 60 * 60 * 1000 // 2 hours
-    private val SECOND_TRESHOLD_TIME = 4 * 60 * 1000 //9 * 60 * 60 * 1000 // 9 hours
+    private val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+    private val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
     private val THRESHOLDS = arrayOf(
         AveragingThreshold(windowSize = 60, time = SECOND_TRESHOLD_TIME),
         AveragingThreshold(windowSize = 5, time = FIRST_TRESHOLD_TIME),
@@ -50,12 +50,14 @@ class AveragingService(
             setAveragingThreshold()
             if (newAveragingThreshold) {
                 // if we changed threshold frequency for bigger than 1 we should recalculate all previpus measurements
+                //TODO: this should be happening in a background job
                 averagePreviousMeasurements()
                 newAveragingThreshold = false
             }
         }
 
-        // TODO here average current measurements
+        //  here average current measurements
+        // TODO this should be run in a background job every 5/60 seconds
         mStreamIds?.forEach { streamId ->
             if (mCurrentAveragingThreshold != null && mCurrentAveragingThreshold?.windowSize!! > 1) {
 
