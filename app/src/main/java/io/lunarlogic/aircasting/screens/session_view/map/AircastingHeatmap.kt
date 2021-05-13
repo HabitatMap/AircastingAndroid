@@ -197,6 +197,7 @@ class AircastingHeatmap(val context: Context?, val mMap: GoogleMap, val sensorTh
             mPolygonOptions = PolygonOptions()
                 .add(southWestLatLng, southEastLatLng, northEastLatLng, northWestLatLng)
                 .strokeWidth(0f)
+                .strokeColor(Color.TRANSPARENT)
         }
 
         fun addMeasurement(measurement: Measurement) {
