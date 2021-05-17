@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -77,7 +79,11 @@ class EditNoteBottomSheet(
     }
 
     private fun viewPhoto() {
-        TODO("Not yet implemented") // todo: show some sort of dialog that displays the image
+        //TODO("Not yet implemented") // todo: show some sort of dialog that displays the image
+        val intent = Intent(Intent.ACTION_VIEW)
+        //intent.data = Uri.parse(mNote?.photoPath)
+
+        startActivity(intent)
     }
 
     fun reload(session: Session) {

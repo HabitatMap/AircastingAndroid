@@ -82,7 +82,7 @@ class AddNoteBottomSheet(
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
-        // TODO: ask for camera permision <?>
+        // TODO: ask for camera permision <?>, change for image capture intent
 //        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         try {
