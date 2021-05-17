@@ -90,6 +90,10 @@ open class MapController(
         EventBus.getDefault().post(event)
     }
 
+    override fun viewPhotoPressed(note: Note?) {
+        TODO("Not yet implemented")
+    }
+
     override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
         val event = NoteDeletedEvent(note, session)
         EventBus.getDefault().post(event)

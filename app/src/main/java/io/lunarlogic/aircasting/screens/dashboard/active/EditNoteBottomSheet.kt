@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.AnimatedLoader
+import io.lunarlogic.aircasting.lib.PhotoHelper
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.ConnectivityManager
@@ -19,11 +20,13 @@ class EditNoteBottomSheet(
 ): BottomSheet() {
     interface Listener {
         fun saveChangesNotePressed(note: Note?, session: Session?)
+        fun viewPhotoPressed(note: Note?)
         fun deleteNotePressed(note: Note?, session: Session?)
     }
     private var mNote: Note? = null
     private var noteInput: EditText? = null
     private var mLoader: ImageView? = null
+    private var notePicture: ImageView? = null
 
     override fun setup() {
         noteInput = contentView?.note_input
@@ -31,11 +34,18 @@ class EditNoteBottomSheet(
         noteInput?.setText(mNote?.text)
 
         mLoader = contentView?.edit_note_loader
+        notePicture = contentView?.note_picture_image_view
+        notePicture?.setImageBitmap(mNote?.photoPath?.let { PhotoHelper.decodeBase64(it) })
 
         val saveChangesButton = contentView?.save_changes_button
         saveChangesButton?.setOnClickListener {
             saveChanges()
             dismiss()
+        }
+
+        val viewPhotoButton = contentView?.view_photo_button
+        viewPhotoButton?.setOnClickListener {
+            viewPhoto()
         }
 
         val deleteNoteButton = contentView?.delete_note_button
@@ -64,6 +74,10 @@ class EditNoteBottomSheet(
         val noteText = noteInput?.text.toString().trim()
         mNote?.text = noteText
         mListener.saveChangesNotePressed(mNote, mSession)
+    }
+
+    private fun viewPhoto() {
+        TODO("Not yet implemented") // todo: show some sort of dialog that displays the image
     }
 
     fun reload(session: Session) {

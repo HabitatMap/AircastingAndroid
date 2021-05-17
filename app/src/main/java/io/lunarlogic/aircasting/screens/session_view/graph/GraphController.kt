@@ -59,6 +59,10 @@ class GraphController(
         EventBus.getDefault().post(event)
     }
 
+    override fun viewPhotoPressed(note: Note?) {
+        TODO("Not yet implemented")
+    }
+
     override fun deleteNotePressed(note: Note?, session: Session?) {
         val event = NoteDeletedEvent(note, session)
         EventBus.getDefault().post(event)
