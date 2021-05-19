@@ -59,12 +59,20 @@ class MeasurementsRepository {
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
-    fun getNonAveragedMeasurementsCount(sessionId: Long, averagingFrequency: Int): Int {
-        return mDatabase.measurements().getNonAveragedMeasurementsCount(sessionId, averagingFrequency )
+    fun getNonAveragedPreviousMeasurementsCount(sessionId: Long, crossingThresholdTime: Date, newAveragingFrequency: Int): Int {
+        return mDatabase.measurements().getNonAveragedPreviousMeasurementsCount(sessionId, crossingThresholdTime, newAveragingFrequency )
     }
 
-    fun getNonAveragedMeasurements(streamId: Long, averagingFrequency: Int): List<MeasurementDBObject> {
-        return mDatabase.measurements().getNonAveragedMeasurements(streamId, averagingFrequency)
+    fun getNonAveragedCurrentMeasurementsCount(sessionId: Long, crossingThresholdTime: Date): Int {
+        return mDatabase.measurements().getNonAveragedCurrentMeasurementsCount(sessionId, crossingThresholdTime )
+    }
+
+    fun getNonAveragedPreviousMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
+        return mDatabase.measurements().getNonAveragedPreviousMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
+    }
+
+    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
+        return mDatabase.measurements().getNonAveragedCurrentMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
     }
 
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {

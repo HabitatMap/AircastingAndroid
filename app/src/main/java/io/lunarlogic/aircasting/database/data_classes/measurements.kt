@@ -61,11 +61,17 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId ORDER BY time DESC LIMIT :limit")
     fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 
-    @Query("SELECT * FROM measurements WHERE averaging_frequency=:averagingFrequency AND measurement_stream_id=:streamId")
-    fun getNonAveragedMeasurements(streamId: Long, averagingFrequency: Int): List<MeasurementDBObject>
+    @Query("SELECT * FROM measurements WHERE averaging_frequency < :averagingFrequency AND measurement_stream_id=:streamId AND time <:thresholdCrossingTime")
+    fun getNonAveragedPreviousMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject>
 
-    @Query("SELECT COUNT(id) FROM measurements WHERE averaging_frequency=:averagingFrequency AND session_id=:sessionId")
-    fun getNonAveragedMeasurementsCount(sessionId: Long, averagingFrequency: Int): Int
+    @Query("SELECT * FROM measurements WHERE averaging_frequency < :averagingFrequency AND measurement_stream_id=:streamId AND time >:thresholdCrossingTime")
+    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject>
+
+    @Query("SELECT COUNT(id) FROM measurements WHERE averaging_frequency < :newAveragingFrequency AND session_id=:sessionId AND time < :crossingThresholdTime")
+    fun getNonAveragedPreviousMeasurementsCount(sessionId: Long, crossingThresholdTime: Date, newAveragingFrequency: Int): Int
+
+    @Query("SELECT COUNT(id) FROM measurements WHERE averaging_frequency> 1 AND session_id=:sessionId AND time > :crossingThresholdTime")
+    fun getNonAveragedCurrentMeasurementsCount(sessionId: Long, crossingThresholdTime: Date): Int
 
     @Transaction
     fun deleteInTransaction(streamId: Long, lastExpectedMeasurementDate: Date) {
