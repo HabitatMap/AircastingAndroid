@@ -1,17 +1,20 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
+import android.content.Context
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.sensor.HexMessagesBuilder
 import java.io.OutputStream
 
-class AirBeam2Configurator(private val mSettings: Settings) {
+class AirBeam2Configurator(private val mContext: Context,
+                           private val mSettings: Settings) {
     private val mHexMessagesBuilder = HexMessagesBuilder()
 
     fun sendAuth(sessionUUID: String, outputStream: OutputStream) {
         sendUUID(sessionUUID, outputStream)
         sleepFor(3000)
-        sendAuthToken(mSettings.getAuthToken()!!, outputStream)
+        sendAuthToken(AuthenticationHelper.getAuthToken(mContext)!!, outputStream)
     }
 
     fun configure(

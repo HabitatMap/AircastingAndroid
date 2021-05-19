@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
@@ -13,6 +15,7 @@ import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
@@ -36,7 +39,7 @@ abstract class SessionsController(
     private var context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
-    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mApiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(context!!)!!) //todo: null checks
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)

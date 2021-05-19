@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import io.lunarlogic.aircasting.exceptions.AirBeam3ConfiguringFailed
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.DateConverter
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
@@ -259,7 +260,7 @@ class AirBeam3Configurator(
     }
 
     private fun authRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(mSettings.getAuthToken()!!))
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(AuthenticationHelper.getAuthToken(context)!!))
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("token", status)) }
     }
 

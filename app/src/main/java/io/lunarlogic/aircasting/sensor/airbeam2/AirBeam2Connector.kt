@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.sensor.airbeam2
 
 import android.bluetooth.BluetoothSocket
+import android.content.Context
 import io.lunarlogic.aircasting.exceptions.*
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.Session
@@ -12,10 +13,11 @@ import java.util.*
 
 
 open class AirBeam2Connector(
+    private val mContext: Context,
     mSettings: Settings,
     private val mErrorHandler: ErrorHandler
 ): AirBeamConnector() {
-    private val mAirBeamConfigurator = AirBeam2Configurator(mSettings)
+    private val mAirBeamConfigurator = AirBeam2Configurator(mContext, mSettings)
     private val mAirBeam2Reader = AirBeam2Reader(mErrorHandler)
 
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")

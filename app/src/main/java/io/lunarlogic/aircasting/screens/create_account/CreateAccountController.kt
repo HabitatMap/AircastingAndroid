@@ -18,7 +18,7 @@ class CreateAccountController(
     private val fromOnboarding: Boolean?
 ) : CreateAccountViewMvc.Listener {
     private val mErrorHandler = ErrorHandler(mContextActivity)
-    private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler, mApiServiceFactory)
+    private val mCreateAccountService = CreateAccountService(mSettings, mErrorHandler, mApiServiceFactory, mContextActivity)
 
     fun onStart() {
         mViewMvc.registerListener(this)

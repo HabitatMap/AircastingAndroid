@@ -14,9 +14,9 @@ open class AirBeamConnectorFactory(
 ) {
     open fun get(deviceItem: DeviceItem): AirBeamConnector? {
         when(deviceItem.type) {
-            DeviceItem.Type.AIRBEAM2 -> return AirBeam2Connector(mSettings, mErrorHandler)
+            DeviceItem.Type.AIRBEAM2 -> return AirBeam2Connector(mContext, mSettings, mErrorHandler)
             DeviceItem.Type.AIRBEAM3 -> return AirBeam3Connector(mContext, mSettings, mErrorHandler)
-            else -> return AirBeam2Connector(mSettings, mErrorHandler)
+            else -> return AirBeam2Connector(mContext, mSettings, mErrorHandler)
         }
     }
 }

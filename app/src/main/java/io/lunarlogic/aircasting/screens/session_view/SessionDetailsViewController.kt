@@ -8,6 +8,7 @@ import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.NoteDeletedEvent
 import io.lunarlogic.aircasting.events.NoteEditedEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -40,7 +41,7 @@ abstract class SessionDetailsViewController(
     protected var editNoteDialog: EditNoteBottomSheet? = null
 
     protected val mErrorHandler = ErrorHandler(rootActivity)
-    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mApiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(rootActivity)!!)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
 

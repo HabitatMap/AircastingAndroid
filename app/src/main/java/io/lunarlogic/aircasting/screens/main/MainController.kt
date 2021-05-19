@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.events.DisconnectExternalSensorsEvent
 import io.lunarlogic.aircasting.events.LocationPermissionsResultEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.ResultCodes
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiService
@@ -27,9 +28,9 @@ class MainController(
     private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
-        if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {
+        if (!mSettings.onboardingDisplayed() && AuthenticationHelper.getAuthToken(rootActivity) == null) {
             showOnboardingScreen()
-        } else if (mSettings.getAuthToken() == null) {
+        } else if (AuthenticationHelper.getAuthToken(rootActivity) == null) {
             showLoginScreen()
         } else {
             setupDashboard()
@@ -57,7 +58,7 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+        val apiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(rootActivity)!!)
         mSessionManager = SessionManager(rootActivity, apiService, mSettings)
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)

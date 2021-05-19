@@ -29,7 +29,7 @@ class MyAccountController(
     override fun onSignOutClicked() {
         EventBus.getDefault().post(LogoutEvent())
 
-        mSettings.logout()
+        // TODO: LOGOUT from account manager instead of: mSettings.logout()
         clearDatabase()
 
         LoginActivity.startAfterSignOut(mContext)

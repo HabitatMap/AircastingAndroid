@@ -1,5 +1,7 @@
 package io.lunarlogic.aircasting.screens.create_account
 
+import android.accounts.AccountManager
+import android.content.Context
 import com.google.gson.Gson
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.InternalAPIError
@@ -17,7 +19,8 @@ import retrofit2.Response
 class CreateAccountService(
     val mSettings: Settings,
     private val mErrorHandler: ErrorHandler,
-    private val mApiServiceFactory: ApiServiceFactory
+    private val mApiServiceFactory: ApiServiceFactory,
+    private val mContext: Context
 ) {
     fun performCreateAccount(
         profile_name: String, password: String, email: String, send_emails: Boolean,
@@ -32,6 +35,7 @@ class CreateAccountService(
             send_emails
         )
         val createAccountBody = CreateAccountBody(createAccountParams)
+        val accountManager = AccountManager.get(mContext)
         val call = apiService.createAccount(createAccountBody)
 
         call.enqueue(object : Callback<UserResponse> {
@@ -39,7 +43,8 @@ class CreateAccountService(
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
-                        mSettings.login(body.email, body.authentication_token)
+                        //mSettings.login(body.email, body.authentication_token)
+                        // todo: accountManager.login ??
                     }
                     successCallback()
                 } else if (response.code() == 422) {
