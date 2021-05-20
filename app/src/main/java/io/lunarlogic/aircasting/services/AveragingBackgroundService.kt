@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.services
 
 
 class AveragingBackgroundService(val averagingService: AveragingService) {
+    //TODO use default interval from averaging service
     private val DEFAULT_INTERVAL = 5 * 1000L
     private val thread = AveragingThread()
 
@@ -29,6 +30,7 @@ class AveragingBackgroundService(val averagingService: AveragingService) {
         }
 
         fun cancel() {
+            averageMeasurementsFinal()
             interrupt()
         }
 
@@ -36,11 +38,12 @@ class AveragingBackgroundService(val averagingService: AveragingService) {
             val begin = System.currentTimeMillis()
             averagingService.perform()
             val end = System.currentTimeMillis()
-//            if (averagingService.mShouldAveragePreviousMeasurements) {
-//                averagingService.setShouldAveragePreviousMeasurements(false)
-//            }
 
             return end - begin
+        }
+
+        private fun averageMeasurementsFinal() {
+            averagingService.perform(true)
         }
 
         private fun currentInterval(averagingTime: Long): Long {
@@ -50,8 +53,11 @@ class AveragingBackgroundService(val averagingService: AveragingService) {
                 if (it > 1) interval = it * 1000L
             }
 
-            println("MARYSIA: interval ${interval - averagingTime}")
-            return interval - averagingTime
+            interval -= averagingTime
+            if (interval < 0) interval = 0
+
+            println("MARYSIA: interval ${interval}")
+            return interval
         }
     }
 }
