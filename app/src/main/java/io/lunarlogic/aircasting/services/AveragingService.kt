@@ -11,26 +11,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 
 class AveragingService {
-    private val sessionId: Long
-    private val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
-    private val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
-    private val THRESHOLDS = arrayOf(
-        AveragingThreshold(
-            windowSize = 60,
-            time = SECOND_TRESHOLD_TIME
-        ),
-        AveragingThreshold(
-            windowSize = 5,
-            time = FIRST_TRESHOLD_TIME
-        ),
-        AveragingThreshold(
-            windowSize = 1,
-            time = 0
-        )
-    )
-
     private val LOG_TAG = "AveragingService"
 
+    private val sessionId: Long
     private var mDBSession: SessionDBObject?
 
     private val mMeasurementsRepository = MeasurementsRepository()
@@ -53,6 +36,25 @@ class AveragingService {
     }
 
     companion object {
+        private val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+        val FIRST_THRESHOLD_FREQUENCY = 5
+        private val SECOND_THRESHOLD_FREQUENCY = 60
+        private val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
+
+        private val THRESHOLDS = arrayOf(
+            AveragingThreshold(
+                windowSize = SECOND_THRESHOLD_FREQUENCY,
+                time = SECOND_TRESHOLD_TIME
+            ),
+            AveragingThreshold(
+                windowSize = FIRST_THRESHOLD_FREQUENCY,
+                time = FIRST_TRESHOLD_TIME
+            ),
+            AveragingThreshold(
+                windowSize = 1,
+                time = 0
+            )
+        )
         /**
          * We keep separate singleton objects for each session in case someone is recording multiple mobile sessions
          */

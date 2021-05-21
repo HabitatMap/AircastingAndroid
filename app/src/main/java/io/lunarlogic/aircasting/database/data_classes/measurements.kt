@@ -54,7 +54,6 @@ interface MeasurementDao {
     @Query("DELETE FROM measurements WHERE session_id=:sessionId AND time < :lastExpectedMeasurementDate ")
     fun delete(sessionId: Long, lastExpectedMeasurementDate: Date)
 
-    // TODO pass averaging frequency
     @Query("DELETE FROM measurements WHERE measurement_stream_id=:streamId AND id IN (:measurementsIds)")
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>)
 
