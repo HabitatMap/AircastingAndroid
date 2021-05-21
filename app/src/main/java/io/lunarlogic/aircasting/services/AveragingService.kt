@@ -7,6 +7,7 @@ import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsReposito
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 
 class AveragingService {
@@ -32,14 +33,14 @@ class AveragingService {
 
     private var mDBSession: SessionDBObject?
 
-    private val measurementRepository = MeasurementsRepository()
+    private val mMeasurementsRepository = MeasurementsRepository()
     private val mMeasurementStreamsRepository = MeasurementStreamsRepository()
     private val mSessionsRepository = SessionsRepository()
 
     private val mFirstThresholdTime: Long
     private val mSecondThresholdTime: Long
 
-    private var mNewAveragingThreshold: Boolean = false
+    private var mNewAveragingThreshold = AtomicBoolean(false)
     private var mStreamIds: List<Long>? = null
 
     private constructor(sessionId: Long) {
@@ -52,6 +53,9 @@ class AveragingService {
     }
 
     companion object {
+        /**
+         * We keep separate singleton objects for each session in case someone is recording multiple mobile sessions
+         */
         private var mSingletons: HashMap<Long, AveragingService?> = hashMapOf()
 
         fun get(sessionId: Long): AveragingService {
@@ -69,57 +73,68 @@ class AveragingService {
         }
     }
 
+    private fun streamIds() : List<Long>? {
+        if (mStreamIds?.isEmpty() ?: false) {
+            mStreamIds = getStreamIds()
+        }
+
+        return mStreamIds
+    }
+
     private fun getStreamIds() : List<Long>? {
         return mMeasurementStreamsRepository.getStreamsIdsBySessionIds(listOf(sessionId))
     }
 
+    /**
+     * Will perform measurements averaging on new (current) measurements. It will average all measurements recorded AFTER
+     * crossing last averaging threshold that are not averaged yet and fall exactly into averaging windows of current frequency
+     * e.g. if current averaging frequency is 5s and since last averagin we recorded 6 measrements, 5 measurements will be
+     * averaged to 1 and 1 measurements will be left unaveraged. Measurements recorded BEFORE crossing last averaging threshold
+     * will be averaged separately by averagePreviousMeasurements()
+     *
+     * @param final False by default. If true, if will delete the remaining measurements not falling into exact window
+     */
     fun perform(final: Boolean = false) {
         var measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
 
-        setAveragingThreshold()
+        // When while checking we find out the threshold has changed since last time checked
+        // we will 1) update session averaging frequency in DB
+        // 2) set mNewAveragingThreshold to true so we can perform averaging previous measurements
+        checkAveragingFrequency()
 
-        mStreamIds?.forEach { streamId ->
+        streamIds()?.forEach { streamId ->
             measurementsToAverage[streamId] = getCurrentMeasurementsToAverage(streamId)
         }
 
         if (currentAveragingThreshold().windowSize > 1) {
-            val currentWindowSize = currentAveragingThreshold().windowSize
-            val thresholdTime = currentAveragingThreshold().time
-
-            if (currentWindowSize == null || thresholdTime == null) {
-                Log.d(LOG_TAG, "No averaging will be performed - not enough measurements to average")
-            } else {
-                crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-                    averageMeasurements(
-                        measurementsToAverage,
-                        currentWindowSize,
-                        currentWindowSize,
-                        true,
-                        final
-                    )
-                }
-
+            crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
+                averageMeasurements(
+                    measurementsToAverage,
+                    currentAveragingThreshold().windowSize,
+                    currentAveragingThreshold().windowSize,
+                    true,
+                    final
+                )
             }
         }
-}
+    }
 
     private fun getCurrentMeasurementsToAverage(streamId: Long):  List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
             currentAveragingThreshold()?.let { currentAveragingThreshold ->
-                measurementRepository.getNonAveragedCurrentMeasurements(
+                mMeasurementsRepository.getNonAveragedCurrentMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
                     Date(crossingLastThresholdTime)
                 )
             }
-
         }
     }
 
     private fun getPreviousMeasurementsToAverage(streamId: Long):  List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
             currentAveragingThreshold()?.let { currentAveragingThreshold ->
-                measurementRepository.getNonAveragedPreviousMeasurements(
+                mMeasurementsRepository.getNonAveragedPreviousMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
                     Date(crossingLastThresholdTime)
@@ -129,10 +144,11 @@ class AveragingService {
         }
     }
 
-    private fun setAveragingThreshold() {
+    private fun checkAveragingFrequency() {
+        mDBSession = mSessionsRepository.getSessionById(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
-            if (currentAveragingThreshold()?.windowSize > dbAveragingFrequency) {
-                mNewAveragingThreshold = true
+            if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
+                mNewAveragingThreshold.set(true)
                 updateCurrentAveragingFrequency()
             }
         }
@@ -158,49 +174,25 @@ class AveragingService {
         current: Boolean,
         final: Boolean = false
     ) {
-        var averagedMeasurementsIds: List<Long>
         var measurements: List<MeasurementDBObject>?
 
-        if (mStreamIds?.isEmpty() ?: false) {
-            mStreamIds = getStreamIds()
-        }
-
-        mStreamIds?.forEach { streamId ->
-            println("MARYSIA: averaging measurements, current: ${current}")
+        streamIds()?.forEach { streamId ->
             measurements = measurementsToAverage[streamId]
 
             if (measurements == null) {
                 Log.d(LOG_TAG, "No measurements to average")
             } else {
-                println("MARYSIA: averaging measurements count ${measurements!!.size}")
                 if (measurements!!.size > windowSize || final) {
                     measurements?.let {
                         it.chunked(windowSize!!) { measurementsInWindow: List<MeasurementDBObject> ->
-                            if (!current || (measurementsInWindow.size == windowSize)) {
-                                averagedMeasurementsIds = mutableListOf<Long>()
-
-                                val averagedMeasurements = measurementsInWindow.toMutableList()
-                                val middleIndex = measurementsInWindow.size / 2
-                                val middle = averagedMeasurements.removeAt(middleIndex)
-                                val average =
-                                    measurementsInWindow.sumByDouble { it.value } / measurementsInWindow.size
-                                val averagedMeasurementId = middle.id
-                                measurementRepository.averageMeasurement(
-                                    averagedMeasurementId,
-                                    average,
-                                    averagingFrequency
-                                )
-                                averagedMeasurementsIds = averagedMeasurements.map { it.id }
-                                measurementRepository.deleteMeasurements(
-                                    streamId,
-                                    averagedMeasurementsIds
-                                )
-                                println("MARYSIA: averaged measurement ${measurementsInWindow.map { "${it.value}}, " }} -> ${average}")
+                            if (measurementsInWindow.size == windowSize) {
+                                averageMeasurementsInWindow(measurementsInWindow, averagingFrequency, streamId)
                             } else {
-                                if (final) {
-                                    println("MARYSIA: averaging final measurements deleting the remaining ${measurementsInWindow.size}")
+                                // if this is final averaging after the session has finished OR it is averaging previous measurements
+                                // we want to delete remaining measurements instead of averaging smaller amount
+                                if (final || !current) {
                                     val finalMeasurementsIds = measurementsInWindow.map { it.id }
-                                    measurementRepository.deleteMeasurements(
+                                    mMeasurementsRepository.deleteMeasurements(
                                         streamId,
                                         finalMeasurementsIds
                                     )
@@ -214,39 +206,53 @@ class AveragingService {
         }
     }
 
+    private fun averageMeasurementsInWindow(measurementsInWindow: List<MeasurementDBObject>, averagingFrequency: Int, streamId: Long) {
+        var averagedMeasurementsIds: List<Long>
+
+        var averagedMeasurements = measurementsInWindow.toMutableList()
+        val middleIndex = measurementsInWindow.size / 2
+        val middle = averagedMeasurements.removeAt(middleIndex)
+        val average =
+            measurementsInWindow.sumByDouble { it.value } / measurementsInWindow.size
+        val averagedMeasurementId = middle.id
+        mMeasurementsRepository.averageMeasurement(
+            averagedMeasurementId,
+            average,
+            averagingFrequency
+        )
+        averagedMeasurementsIds = averagedMeasurements.map { it.id }
+        mMeasurementsRepository.deleteMeasurements(
+            streamId,
+            averagedMeasurementsIds
+        )
+    }
     fun averagePreviousMeasurements() {
-        println("MARYSIA: averaging historical measurements: ${mNewAveragingThreshold}")
-        setAveragingThreshold()
-        if (!mNewAveragingThreshold) return
+        checkAveragingFrequency()
+        if (!mNewAveragingThreshold.get()) return
 
         var windowSize: Int? = null
         var previousWindowSize: Int? = null
         var averagingFrequency: Int? = 1
         var thresholdTime: Int? = null
-        var threshold: AveragingThreshold? = currentAveragingThreshold()
         var measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
 
-        if (mStreamIds?.isEmpty() ?: false) {
-            mStreamIds = getStreamIds()
-        }
-
-        mStreamIds?.forEach { streamId ->
+        streamIds()?.forEach { streamId ->
             measurementsToAverage[streamId] = getPreviousMeasurementsToAverage(streamId)
         }
 
         val nonAveragedMeasurementsCount =
-            crossingLastThresholdTime()?.let {
-                measurementRepository.getNonAveragedPreviousMeasurementsCount(
+            crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
+                mMeasurementsRepository.getNonAveragedPreviousMeasurementsCount(
                     sessionId,
-                    Date(it),
-                    threshold?.windowSize ?: 1
+                    Date(crossingLastThresholdTime),
+                    currentAveragingThreshold().windowSize
                 )
             }
 
         if (nonAveragedMeasurementsCount ?: 0 > 0) {
-            thresholdTime = threshold?.time
+            thresholdTime = currentAveragingThreshold().time
             previousWindowSize = THRESHOLDS[currentAveragingThresholdIndex() + 1].windowSize
-            averagingFrequency = threshold?.windowSize
+            averagingFrequency = currentAveragingThreshold().windowSize
             windowSize = averagingFrequency!! / previousWindowSize
         }
 
@@ -261,16 +267,14 @@ class AveragingService {
                     windowSize,
                     false
                 )
-                mNewAveragingThreshold = false
+                mNewAveragingThreshold.set(false)
             }
         }
     }
 
     private fun updateCurrentAveragingFrequency() {
-        mDBSession?.let {session ->
-            currentAveragingThreshold()?.let { averagingThreshold ->
-                mSessionsRepository.updateSessionAveragingFrequency(session.id, averagingThreshold.windowSize)
-            }
+        currentAveragingThreshold().let { averagingThreshold ->
+            mSessionsRepository.updateSessionAveragingFrequency(sessionId, averagingThreshold.windowSize)
         }
     }
 
