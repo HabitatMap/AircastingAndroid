@@ -54,6 +54,8 @@ class AirBeam3Configurator(
     val sdCardReader =
         SDCardReader()
 
+    private val authenticationHelper = AuthenticationHelper(mContext) // todo: this one is a bit yolo, maybe i should inject this one everywhere <?>
+
     fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
@@ -260,7 +262,7 @@ class AirBeam3Configurator(
     }
 
     private fun authRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(AuthenticationHelper.getAuthToken(context)!!))
+        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(authenticationHelper.getAuthToken()!!))
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("token", status)) }
     }
 

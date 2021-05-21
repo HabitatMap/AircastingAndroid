@@ -1,8 +1,10 @@
 package io.lunarlogic.aircasting.di
 
+import android.accounts.AccountManager
 import dagger.Module
 import dagger.Provides
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
@@ -29,9 +31,10 @@ open class ApiModule {
     fun providesUploadFixedMeasurementsService(
         apiServiceFactory: ApiServiceFactory,
         settings: Settings,
-        errorHandler: ErrorHandler
+        errorHandler: ErrorHandler,
+        authenticationHelper: AuthenticationHelper
     ): UploadFixedMeasurementsService? {
-        val authToken = settings.getAuthToken() ?: return null
+        val authToken = authenticationHelper.getAuthToken() ?: return null
 
         val apiService = apiServiceFactory.get(authToken)
         return UploadFixedMeasurementsService(apiService, errorHandler)
@@ -41,9 +44,10 @@ open class ApiModule {
     fun providesSessionsSyncService(
         apiServiceFactory: ApiServiceFactory,
         settings: Settings,
-        errorHandler: ErrorHandler
+        errorHandler: ErrorHandler,
+        authenticationHelper: AuthenticationHelper
     ): SessionsSyncService? {
-        val authToken = settings.getAuthToken() ?: return null
+        val authToken = authenticationHelper.getAuthToken() ?: return null
 
         val apiService = apiServiceFactory.get(authToken)
         return SessionsSyncService.get(apiService, errorHandler, settings)

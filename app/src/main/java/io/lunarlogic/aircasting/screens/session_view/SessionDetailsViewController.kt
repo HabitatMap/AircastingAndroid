@@ -41,7 +41,8 @@ abstract class SessionDetailsViewController(
     protected var editNoteDialog: EditNoteBottomSheet? = null
 
     protected val mErrorHandler = ErrorHandler(rootActivity)
-    private val mApiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(rootActivity)!!)
+    private val authenticationHelper = AuthenticationHelper(rootActivity) // todo: this one is a bit yolo, maybe i should inject this one everywhere <?>
+    private val mApiService =  mApiServiceFactory.get(authenticationHelper.getAuthToken()!!)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
 

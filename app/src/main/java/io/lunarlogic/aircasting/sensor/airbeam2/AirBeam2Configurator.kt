@@ -10,11 +10,12 @@ import java.io.OutputStream
 class AirBeam2Configurator(private val mContext: Context,
                            private val mSettings: Settings) {
     private val mHexMessagesBuilder = HexMessagesBuilder()
+    private val authenticationHelper = AuthenticationHelper(mContext) // todo: this one is a bit yolo, maybe i should inject this one everywhere <?>
 
     fun sendAuth(sessionUUID: String, outputStream: OutputStream) {
         sendUUID(sessionUUID, outputStream)
         sleepFor(3000)
-        sendAuthToken(AuthenticationHelper.getAuthToken(mContext)!!, outputStream)
+        sendAuthToken(authenticationHelper.getAuthToken()!!, outputStream)
     }
 
     fun configure(

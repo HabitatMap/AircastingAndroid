@@ -33,7 +33,7 @@ class  LoginController(
 
     fun onStart() {
         mViewMvc.registerListener(this)
-        accountManager = AccountManager.get(mContextActivity) // todo: potential memory leak ??
+        //accountManager = AccountManager.get(mContextActivity) // todo: potential memory leak ??
     }
 
     fun onStop() {

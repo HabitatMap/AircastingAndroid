@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.lib.AppBar
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import javax.inject.Inject
 
@@ -15,6 +16,9 @@ class MyAccountActivity : AppCompatActivity() {
 
     @Inject
     lateinit var settings: Settings
+
+//    @Inject
+//    lateinit var authenticationHelper: AuthenticationHelper
 
     companion object{
         fun start(context: Context?) {

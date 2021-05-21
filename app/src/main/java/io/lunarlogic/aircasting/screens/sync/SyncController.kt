@@ -51,7 +51,8 @@ class SyncController(
     TurnOffLocationServicesViewMvc.Listener,
     ErrorViewMvc.Listener {
 
-    private val mApiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(mContextActivity)!!)
+    private val authenticationHelper = AuthenticationHelper(mContextActivity) // todo: this one is a bit yolo, maybe i should inject this one everywhere <?>
+    private val mApiService =  mApiServiceFactory.get(authenticationHelper.getAuthToken()!!)
     private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mWizardNavigator = SyncWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
 

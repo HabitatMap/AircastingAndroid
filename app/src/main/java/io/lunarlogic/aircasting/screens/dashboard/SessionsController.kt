@@ -39,7 +39,8 @@ abstract class SessionsController(
     private var context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
-    private val mApiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(context!!)!!) //todo: null checks
+    private val authenticationHelper = AuthenticationHelper(context!!) // todo: this one is a bit yolo, maybe i should inject this one everywhere <?>
+    private val mApiService =  mApiServiceFactory.get(authenticationHelper.getAuthToken()!!) //todo: null checks
 
     protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)

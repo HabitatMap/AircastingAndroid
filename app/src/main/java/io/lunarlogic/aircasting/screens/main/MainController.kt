@@ -26,11 +26,12 @@ class MainController(
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
+    private val authenticationHelper = AuthenticationHelper(rootActivity) // todo: this one is a bit yolo, maybe i should inject this one everywhere <?>
 
     fun onCreate() {
-        if (!mSettings.onboardingDisplayed() && AuthenticationHelper.getAuthToken(rootActivity) == null) {
+        if (!mSettings.onboardingDisplayed() && authenticationHelper.getAuthToken() == null) {
             showOnboardingScreen()
-        } else if (AuthenticationHelper.getAuthToken(rootActivity) == null) {
+        } else if (authenticationHelper.getAuthToken() == null) {
             showLoginScreen()
         } else {
             setupDashboard()
@@ -58,7 +59,7 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService =  mApiServiceFactory.get(AuthenticationHelper.getAuthToken(rootActivity)!!)
+        val apiService =  mApiServiceFactory.get(authenticationHelper.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService, mSettings)
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)

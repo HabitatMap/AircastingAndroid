@@ -6,10 +6,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import io.lunarlogic.aircasting.authentication.Authenticator
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.InternalAPIError
 import io.lunarlogic.aircasting.exceptions.UnexpectedAPIError
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.responses.UserResponse
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
@@ -26,6 +28,7 @@ class LoginService(
 ) {  // TODO: maybe :AbstractAccountAuthenticator here ?? AUTHENTICATOR AS A FIELD I GUESS
     private var mAuthenticator: Authenticator? = null
     private lateinit var accountManager: AccountManager
+    private val authenticationHelper: AuthenticationHelper = AuthenticationHelper(mContext)
 
     fun performLogin(
         profile_name: String, password: String,
@@ -45,8 +48,7 @@ class LoginService(
                         //mSettings.login(body.email, body.authentication_token)
                         // TODO: Add Account Manager and add account to Account Manager <??>
                         // https://www.pilanites.com/android-account-manager/   <-- building authentication activity chapter
-                        addOrFindAccount(body.email, password)
-
+                        addOrFindAccount(body.email, password, body.authentication_token)
                     }
                     successCallback()
                 } else if (response.code() == 401) {
@@ -62,15 +64,19 @@ class LoginService(
         })
     }
 
-    fun addOrFindAccount(email: String, password: String): Account {
+    fun addOrFindAccount(email: String, password: String, authToken: String?): Account {
         val accounts = accountManager.getAccountsByType("AirCastingAndroid") //AuthConstants.ACCOUNT_TYPE
         val account = if (accounts.isNullOrEmpty()) Account(email, "AirCastingAndroid") else accounts.first()
 
         if (accounts.isEmpty()) {
-            accountManager.addAccountExplicitly(account, password, null);
+            finishAccountAdd(account.name, authToken, password)
+            accountManager.setPassword(account, password)
+            accountManager.setAuthToken(account, "oauth", authToken)
         } else {
-            accountManager.setPassword(accounts[0], password);
+            accountManager.setPassword(account, password)
+            accountManager.setAuthToken(account, "oauth", authToken)
         }
+        Log.i("LOGIN_SER", account.toString() + " " + accounts.toString() + " " + authToken)
         return account
     }
 
@@ -83,5 +89,9 @@ class LoginService(
 //        setAccountAuthenticatorResult(intent.extras)
         //mContextActivity.setResult(Activity.RESULT_OK, intent)
         //mContextActivity.finish() // todo ????
+        val bundle = Bundle()
+        bundle.putParcelable(AccountManager.KEY_INTENT, intent)
+        accountManager.addAccountExplicitly(Account(accountName, "AirCastingAndroid"), password, bundle)
+        //bundle.
     }
 }

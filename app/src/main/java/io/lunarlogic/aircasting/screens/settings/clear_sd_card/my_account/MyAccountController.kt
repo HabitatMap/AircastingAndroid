@@ -1,8 +1,11 @@
 package io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.content.Context
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.LogoutEvent
+import io.lunarlogic.aircasting.lib.AuthenticationHelper
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.screens.new_session.LoginActivity
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +19,11 @@ class MyAccountController(
     private val mViewMvc: MyAccountViewMvc,
     private val mSettings: Settings
 ) : MyAccountViewMvc.Listener{
+    private val mAuthenticationHelper = AuthenticationHelper(mContext)
 
     fun onStart(){
         mViewMvc.registerListener(this)
-        mViewMvc.bindAccountDetail(mSettings.getEmail())
+        mViewMvc.bindAccountDetail(mAuthenticationHelper.getEmail())
     }
 
     fun onStop(){
@@ -30,6 +34,9 @@ class MyAccountController(
         EventBus.getDefault().post(LogoutEvent())
 
         // TODO: LOGOUT from account manager instead of: mSettings.logout()
+        mAuthenticationHelper.removeAccount()
+//        accountManager.setAuthToken(null)
+//        accountManager.setPassword(null)
         clearDatabase()
 
         LoginActivity.startAfterSignOut(mContext)
