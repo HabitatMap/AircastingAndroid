@@ -1,8 +1,12 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -13,6 +17,8 @@ import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 
 
@@ -27,9 +33,9 @@ class AddNoteBottomSheet(
 
     private var noteInput: EditText? = null
     private var photoUri: Uri? = null
-    private var imageEncoded: String = ""
+    private var imageEncoded: String = "pp"
     val PICK_PHOTO_CODE = 1046
-    val REQUEST_IMAGE_PICTURE = 1
+    val CAMERA_REQUEST_CODE = 1888
 
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
@@ -77,28 +83,48 @@ class AddNoteBottomSheet(
     }
 
     private fun attachPhoto() {
-
-        val intent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        // TODO: ask for camera permision <?>, change for image capture intent
-//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         try {
-            startActivityForResult(intent, PICK_PHOTO_CODE)
+            startActivityForResult(intent, CAMERA_REQUEST_CODE)
         } catch (e: ActivityNotFoundException) {
             Log.e("ATTACH_PHOTO", "Cant take picture")
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if ((data != null) && requestCode == PICK_PHOTO_CODE) {
-            photoUri = data.data  // this is the moment we get local path to our photo
-        }
+        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            imageEncoded = PhotoHelper.getBase64String(imageBitmap)
 
-        val bitmap = MediaStore.Images.Media.getBitmap(this.context?.contentResolver, photoUri)
-        imageEncoded = PhotoHelper.getBase64String(bitmap)
+            val tempUri = getImageUri(mContext!!, imageBitmap)
+            val finalFile = File(getRealPathFromURI(tempUri))
+            imageEncoded = finalFile.path
+            Log.i("ADD_NOTE", imageEncoded)
+        }
     }
+
+    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "Title")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
+        return mContext?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+    }
+
+    fun getRealPathFromURI(uri: Uri?): String? {
+        var path = ""
+        if (mContext?.contentResolver != null) {
+            val cursor: Cursor? = mContext.contentResolver?.query(uri!!, null, null, null, null) //todo: null assertions
+            if (cursor != null) {
+                cursor.moveToFirst()
+                val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+                path = cursor.getString(idx)
+                cursor.close()
+            }
+        }
+        return path
+    }
+
 }

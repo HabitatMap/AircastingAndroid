@@ -76,7 +76,7 @@
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <!-- Below button should be displayed after adding the functionality-->
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_picture_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -86,6 +86,7 @@
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:backgroundTint="@color/aircasting_grey_50"
                     app:icon="@drawable/ic_add_picture"
+                    app:iconTint="@color/aircasting_grey_700"
                     android:layout_marginTop="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6"
                     app:layout_constraintTop_toBottomOf="@id/description"
