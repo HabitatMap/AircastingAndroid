@@ -7,8 +7,6 @@ import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 open class Settings(mApplication: Application) {
     private val PRIVATE_MODE = 0
     protected val PREFERENCES_NAME = "preferences"
-    protected val EMAIL_KEY = "email"
-//    protected val AUTH_TOKEN_KEY = "auth_token"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
     protected val CALIBRATION_KEY = "calibration"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
@@ -36,14 +34,6 @@ open class Settings(mApplication: Application) {
 
     init {
         sharedPreferences = mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
-    }
-
-//    fun getAuthToken(): String? {
-//        return getStringFromSettings(AUTH_TOKEN_KEY)
-//    }
-
-    fun getEmail(): String? {
-        return getStringFromSettings(EMAIL_KEY)
     }
 
     fun getCalibrationValue(): Int {
@@ -134,14 +124,9 @@ open class Settings(mApplication: Application) {
         saveToSettings(DELETE_SESSION_IN_PROGERSS_KEY, deleteInProgress)
     }
 
-//    fun login(email: String, authToken: String) {
-//        saveToSettings(EMAIL_KEY, email)
-//        saveToSettings(AUTH_TOKEN_KEY, authToken)
-//    }
-
-//    open fun logout(){
-//        deleteFromSettings()
-//    }
+    open fun logout(){
+        deleteFromSettings()
+    }
 
     open fun getStringFromSettings(key: String, default: String? = null): String? {
         return sharedPreferences.getString(key, default)

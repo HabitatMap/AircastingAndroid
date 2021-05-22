@@ -57,7 +57,7 @@ class MainController(
     }
 
     private fun setupDashboard() {
-        mErrorHandler.registerUser(mSettings.getEmail())
+        mErrorHandler.registerUser(authenticationHelper.getEmail())
 
         val apiService =  mApiServiceFactory.get(authenticationHelper.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService, mSettings)

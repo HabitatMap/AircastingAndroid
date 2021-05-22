@@ -17,8 +17,8 @@ class MyAccountActivity : AppCompatActivity() {
     @Inject
     lateinit var settings: Settings
 
-//    @Inject
-//    lateinit var authenticationHelper: AuthenticationHelper
+    //@Inject
+    //lateinit var authenticationHelper: AuthenticationHelper //todo: this injection does not work
 
     companion object{
         fun start(context: Context?) {

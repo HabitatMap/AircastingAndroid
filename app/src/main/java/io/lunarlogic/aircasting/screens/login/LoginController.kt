@@ -1,14 +1,10 @@
 package io.lunarlogic.aircasting.screens.new_session
 
-import android.accounts.Account
 import android.accounts.AccountManager
-import android.app.Activity
-import android.content.Intent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.authentication.AuthenticatorService
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
@@ -29,11 +25,9 @@ class  LoginController(
     private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory, mContextActivity)
     private val mForgotPasswordService = ForgotPasswordService(mContextActivity, mErrorHandler, mApiServiceFactory)
-    private lateinit var accountManager: AccountManager
 
     fun onStart() {
         mViewMvc.registerListener(this)
-        //accountManager = AccountManager.get(mContextActivity) // todo: potential memory leak ??
     }
 
     fun onStop() {
@@ -43,7 +37,6 @@ class  LoginController(
     override fun onLoginClicked(profile_name: String, password: String) {
         val successCallback = {
             MainActivity.start(mContextActivity)
-            //createAccountInAccountManager(profile_name, password, token) // todo: this is so randoom for now
         }
         val message = mContextActivity.getString(R.string.invalid_credentials_message)
         val errorCallback = {
@@ -69,5 +62,4 @@ class  LoginController(
     override fun confirmClicked(emailValue: String) {
         mForgotPasswordService.resetPassword(emailValue)
     }
-
 }

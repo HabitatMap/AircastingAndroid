@@ -33,10 +33,10 @@ class MyAccountController(
     override fun onSignOutClicked() {
         EventBus.getDefault().post(LogoutEvent())
 
-        // TODO: LOGOUT from account manager instead of: mSettings.logout()
+        mSettings.logout()
         mAuthenticationHelper.removeAccount()
-//        accountManager.setAuthToken(null)
-//        accountManager.setPassword(null)
+//      todo:  accountManager.setAuthToken(null) ??
+//      todo:  accountManager.setPassword(null) ??
         clearDatabase()
 
         LoginActivity.startAfterSignOut(mContext)
