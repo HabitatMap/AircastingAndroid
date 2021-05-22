@@ -3,14 +3,17 @@ package io.lunarlogic.aircasting.screens.dashboard
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
+    private val mSessionsViewModel = SessionsViewModel()
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
@@ -44,6 +47,9 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
+                if (sessionPresenter?.expanded == true && sessionPresenter.session?.tab == SessionsTab.FIXED) {
+                     downloadMeasurementsForSession(sessionPresenter.session!!)
+                }
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
@@ -53,6 +59,25 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
 
         notifyDataSetChanged()
+    }
+
+    fun downloadMeasurementsForSession(session: Session) {
+        showLoaderFor(session)
+        reloadSessionMeasurements(session)
+    }
+
+    protected fun reloadSessionMeasurements(session: Session) {
+        DatabaseProvider.runQuery { scope ->
+            val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            dbSessionWithMeasurements?.let {
+                val reloadedSession = Session(dbSessionWithMeasurements)
+
+                DatabaseProvider.backToUIThread(scope) {
+                    reloadSession(reloadedSession)
+                    hideLoaderFor(session)
+                }
+            }
+        }
     }
 
     fun showLoaderFor(session: Session) {
