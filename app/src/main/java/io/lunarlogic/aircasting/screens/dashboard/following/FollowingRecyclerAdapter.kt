@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.following
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionCardListener
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 
@@ -22,5 +23,9 @@ class FollowingRecyclerAdapter(
             )
         viewMvc.registerListener(mListener)
         return MyViewHolder(viewMvc)
+    }
+
+    override fun fetchMeasurementsForFixed(session: Session) {
+        // do nothing
     }
 }

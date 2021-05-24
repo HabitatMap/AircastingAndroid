@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.screens.dashboard.dormant
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
 
 
@@ -21,5 +22,9 @@ class MobileDormantRecyclerAdapter(
             )
         viewMvc.registerListener(mListener)
         return MyViewHolder(viewMvc)
+    }
+
+    override fun fetchMeasurementsForFixed(session: Session) {
+        //do nothing
     }
 }

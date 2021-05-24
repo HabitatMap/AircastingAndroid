@@ -13,7 +13,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
-    private val mSessionsViewModel = SessionsViewModel()
+    protected val mSessionsViewModel = SessionsViewModel()
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
@@ -22,6 +22,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private var mSessionUUIDS: List<String> = emptyList()
     private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    abstract fun fetchMeasurementsForFixed(session: Session)
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS.get(position)
@@ -47,10 +48,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                // todo: add method containing if(){} that will be overriden only in FixedRecyclerAdapter
-                if (sessionPresenter?.expanded == true && (sessionPresenter.session?.tab == SessionsTab.FIXED || sessionPresenter.session?.tab == SessionsTab.FOLLOWING)) { //todo: this Tab check is not enough - when we follow the session session.tab == FOLLOWING, maybe calling isFixed() would be ok??
-                     downloadMeasurementsForSession(sessionPresenter.session!!)  // todo: we might move this to FixedRecyclerAdapter instead of putting this inside IF <??>
-                }
+                fetchMeasurementsForFixed(sessionPresenter?.session!!)
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
@@ -60,24 +58,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
 
         notifyDataSetChanged()
-    }
-
-    fun downloadMeasurementsForSession(session: Session) {
-        reloadSessionMeasurements(session)
-    }
-
-    protected fun reloadSessionMeasurements(session: Session) { // TODO: to trzebaby pewnie przenieść do Controllera
-        // TODO: gdzie to powinienem przenieść właściwie ???
-        DatabaseProvider.runQuery { scope ->
-            val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-            dbSessionWithMeasurements?.let {
-                val reloadedSession = Session(dbSessionWithMeasurements)
-
-                DatabaseProvider.backToUIThread(scope) {
-                    reloadSession(reloadedSession)
-                }
-            }
-        }
     }
 
     fun showLoaderFor(session: Session) {
