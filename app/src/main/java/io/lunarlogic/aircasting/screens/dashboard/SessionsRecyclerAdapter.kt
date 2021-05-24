@@ -47,9 +47,9 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                if (sessionPresenter?.expanded == true && sessionPresenter.session?.tab == SessionsTab.FIXED) {
-                     downloadMeasurementsForSession(sessionPresenter.session!!)
-                }
+                if (sessionPresenter?.expanded == true && (sessionPresenter.session?.tab == SessionsTab.FIXED || sessionPresenter.session?.tab == SessionsTab.FOLLOWING)) { //todo: this Tab check is not enough - when we follow the session session.tab == FOLLOWING, maybe calling isFixed() would be ok??
+                     downloadMeasurementsForSession(sessionPresenter.session!!)  // todo: we might move this to FixedRecyclerAdapter instead of putting this inside IF <??>
+                } // todo: we bind all sessions when 'follow' one session, maybe we should add some additional check which session do we have to bind or get use some other function in this case?
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
@@ -66,7 +66,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         reloadSessionMeasurements(session)
     }
 
-    protected fun reloadSessionMeasurements(session: Session) {
+    protected fun reloadSessionMeasurements(session: Session) { // TODO: to trzebaby pewnie przenieść do Controllera
+        // TODO: gdzie to powinienem przenieść właściwie ???
         DatabaseProvider.runQuery { scope ->
             val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSessionWithMeasurements?.let {
