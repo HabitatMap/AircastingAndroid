@@ -47,9 +47,10 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
+                // todo: add method containing if(){} that will be overriden only in FixedRecyclerAdapter
                 if (sessionPresenter?.expanded == true && (sessionPresenter.session?.tab == SessionsTab.FIXED || sessionPresenter.session?.tab == SessionsTab.FOLLOWING)) { //todo: this Tab check is not enough - when we follow the session session.tab == FOLLOWING, maybe calling isFixed() would be ok??
                      downloadMeasurementsForSession(sessionPresenter.session!!)  // todo: we might move this to FixedRecyclerAdapter instead of putting this inside IF <??>
-                } // todo: we bind all sessions when 'follow' one session, maybe we should add some additional check which session do we have to bind or get use some other function in this case?
+                }
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
@@ -62,7 +63,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     fun downloadMeasurementsForSession(session: Session) {
-        showLoaderFor(session)
         reloadSessionMeasurements(session)
     }
 
@@ -75,7 +75,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
                 DatabaseProvider.backToUIThread(scope) {
                     reloadSession(reloadedSession)
-                    hideLoaderFor(session)
                 }
             }
         }
