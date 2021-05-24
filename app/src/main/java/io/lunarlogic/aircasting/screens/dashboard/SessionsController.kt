@@ -93,7 +93,6 @@ abstract class SessionsController(
 
     private fun updateFollowedAt(session: Session) {
         DatabaseProvider.runQuery {
-            mViewMvc?.showLoaderFor(session) //todo: seems we need this line to show loader when reloading session but it causes app to crash when unfollowing "Following" session
             mSessionsViewModel.updateFollowedAt(session)
             reloadSession(session)
         }
