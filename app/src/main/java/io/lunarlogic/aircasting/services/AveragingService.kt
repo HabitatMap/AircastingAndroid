@@ -76,7 +76,7 @@ class AveragingService {
     }
 
     private fun streamIds() : List<Long>? {
-        if (mStreamIds?.isEmpty() ?: false) {
+        if (mStreamIds?.isEmpty() == true) {
             mStreamIds = getStreamIds()
         }
 
@@ -109,21 +109,19 @@ class AveragingService {
         }
 
         if (currentAveragingThreshold().windowSize > 1) {
-            crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-                averageMeasurements(
-                    measurementsToAverage,
-                    currentAveragingThreshold().windowSize,
-                    currentAveragingThreshold().windowSize,
-                    true,
-                    final
-                )
-            }
+            averageMeasurements(
+                measurementsToAverage,
+                currentAveragingThreshold().windowSize,
+                currentAveragingThreshold().windowSize,
+                true,
+                final
+            )
         }
     }
 
     private fun getCurrentMeasurementsToAverage(streamId: Long):  List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-            currentAveragingThreshold()?.let { currentAveragingThreshold ->
+            currentAveragingThreshold().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedCurrentMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
@@ -135,7 +133,7 @@ class AveragingService {
 
     private fun getPreviousMeasurementsToAverage(streamId: Long):  List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-            currentAveragingThreshold()?.let { currentAveragingThreshold ->
+            currentAveragingThreshold().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedPreviousMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
@@ -185,26 +183,38 @@ class AveragingService {
                 Log.d(LOG_TAG, "No measurements to average")
             } else {
                 if (measurements!!.size > windowSize || final) {
-                    measurements?.let {
-                        it.chunked(windowSize!!) { measurementsInWindow: List<MeasurementDBObject> ->
-                            if (measurementsInWindow.size == windowSize) {
-                                averageMeasurementsInWindow(measurementsInWindow, averagingFrequency, streamId)
-                            } else {
-                                // if this is final averaging after the session has finished OR it is averaging previous measurements
-                                // we want to delete remaining measurements instead of averaging smaller amount
-                                if (final || !current) {
-                                    val finalMeasurementsIds = measurementsInWindow.map { it.id }
-                                    mMeasurementsRepository.deleteMeasurements(
-                                        streamId,
-                                        finalMeasurementsIds
-                                    )
-                                }
-                            }
-
-                        }
-                    }
+                    averageStreamMeasurements(streamId, measurements!!, windowSize, averagingFrequency, current, final)
                 }
             }
+        }
+    }
+
+    private fun averageStreamMeasurements(streamId: Long,
+                                          measurements: List<MeasurementDBObject>,
+                                          windowSize: Int,
+                                          averagingFrequency: Int,
+                                          current: Boolean,
+                                          final: Boolean = false) {
+
+        measurements.chunked(windowSize) { measurementsInWindow: List<MeasurementDBObject> ->
+            if (measurementsInWindow.size == windowSize) {
+                averageMeasurementsInWindow(measurementsInWindow, averagingFrequency, streamId)
+            } else {
+                removeTrailingMeasurements(measurementsInWindow, streamId, final, !current)
+            }
+
+        }
+    }
+
+    private fun removeTrailingMeasurements(trailingMeasurements: List<MeasurementDBObject>, streamId: Long, isFinalAveraging: Boolean, isPreviousMeasurementsAveraging: Boolean) {
+        // if this is final averaging after the session has finished OR it is averaging previous measurements
+        // we want to delete remaining measurements instead of averaging smaller amount
+        if (isFinalAveraging || isPreviousMeasurementsAveraging) {
+            val trailingMeasurementsIds = trailingMeasurements.map { it.id }
+            mMeasurementsRepository.deleteMeasurements(
+                streamId,
+                trailingMeasurementsIds
+            )
         }
     }
 
