@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.session_view.graph
 
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
@@ -35,7 +36,8 @@ class GraphController(
     AddNoteBottomSheet.Listener {
     override fun locateRequested() {}
 
-    open fun onResume() {
+    override fun onResume() {
+        super.onResume()
         mViewMvc?.registerListener(this)
     }
 

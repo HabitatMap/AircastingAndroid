@@ -44,7 +44,8 @@ class MapController(
         }
     }
 
-    open fun onResume() {
+    override fun onResume() {
+        super.onResume()
         mViewMvc?.registerListener(this)
     }
 

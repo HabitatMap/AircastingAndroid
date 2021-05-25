@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 abstract class SessionDetailsViewController(
@@ -43,6 +44,7 @@ abstract class SessionDetailsViewController(
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
+    private var mShouldRefreshStatistics = AtomicBoolean(false)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
@@ -51,9 +53,17 @@ abstract class SessionDetailsViewController(
         mSessionObserver.observe()
     }
 
+    open fun onResume() {
+        mShouldRefreshStatistics.set(true)
+    }
+
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
         DatabaseProvider.backToUIThread(coroutineScope) {
             mViewMvc?.bindSession(mSessionPresenter)
+            if (mShouldRefreshStatistics.get()) {
+                mViewMvc?.refreshStatisticsContainer()
+                mShouldRefreshStatistics.set(false)
+            }
         }
     }
 

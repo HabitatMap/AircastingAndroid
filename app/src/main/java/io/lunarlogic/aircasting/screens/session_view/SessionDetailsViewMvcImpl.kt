@@ -103,6 +103,10 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         }
     }
 
+    override fun refreshStatisticsContainer() {
+        mStatisticsContainer?.refresh(mSessionPresenter)
+    }
+
     private fun showSlider() {
         val visibilityIndex = context.resources.getInteger(R.integer.visible_in_larger_screens)
         /**

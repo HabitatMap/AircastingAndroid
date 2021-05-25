@@ -11,6 +11,7 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUListener
 interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listener> {
     fun addMeasurement(measurement: Measurement)
     fun bindSession(sessionPresenter: SessionPresenter?)
+    fun refreshStatisticsContainer()
     fun centerMap(location: Location)
     fun onDestroy()
     fun addNote(note: Note)
