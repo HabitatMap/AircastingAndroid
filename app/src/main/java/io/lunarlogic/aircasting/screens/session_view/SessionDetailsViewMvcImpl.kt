@@ -103,7 +103,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         }
     }
 
-    override fun refresh() {
+    override fun refreshStatisticsContainer() {
         mStatisticsContainer?.refresh(mSessionPresenter)
     }
 

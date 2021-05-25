@@ -36,7 +36,7 @@ abstract class SessionDetailsViewController(
     mApiServiceFactory: ApiServiceFactory
 ): SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
-    protected var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
+    private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
     protected var editNoteDialog: EditNoteBottomSheet? = null
 
@@ -44,7 +44,7 @@ abstract class SessionDetailsViewController(
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
-    private var mShouldRefresh = AtomicBoolean(false)
+    private var mShouldRefreshStatistics = AtomicBoolean(false)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this);
@@ -54,15 +54,15 @@ abstract class SessionDetailsViewController(
     }
 
     open fun onResume() {
-        mShouldRefresh.set(true)
+        mShouldRefreshStatistics.set(true)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
         DatabaseProvider.backToUIThread(coroutineScope) {
             mViewMvc?.bindSession(mSessionPresenter)
-            if (mShouldRefresh.get()) {
-                mViewMvc?.refresh()
-                mShouldRefresh.set(false)
+            if (mShouldRefreshStatistics.get()) {
+                mViewMvc?.refreshStatisticsContainer()
+                mShouldRefreshStatistics.set(false)
             }
         }
     }
