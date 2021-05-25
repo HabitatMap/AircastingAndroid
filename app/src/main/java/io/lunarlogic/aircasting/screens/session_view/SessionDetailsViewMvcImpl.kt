@@ -140,7 +140,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun bindStatisticsContainer() {
-
         mStatisticsContainer?.bindSession(mSessionPresenter)
     }
 
