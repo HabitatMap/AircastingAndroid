@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 25,
-    "identityHash": "937e8c95267aaf0300a5c12f73a8180a",
+    "identityHash": "bbd6eaf73c270ab68b8b51822b03b1ee",
     "entities": [
       {
         "tableName": "sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -119,6 +119,12 @@
           {
             "fieldPath": "is_indoor",
             "columnName": "is_indoor",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "averaging_frequency",
+            "columnName": "averaging_frequency",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -262,7 +268,7 @@
       },
       {
         "tableName": "measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -305,6 +311,12 @@
             "columnName": "longitude",
             "affinity": "REAL",
             "notNull": false
+          },
+          {
+            "fieldPath": "averaging_frequency",
+            "columnName": "averaging_frequency",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -490,7 +502,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"937e8c95267aaf0300a5c12f73a8180a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"bbd6eaf73c270ab68b8b51822b03b1ee\")"
     ]
   }
 }

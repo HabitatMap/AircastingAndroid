@@ -30,7 +30,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "contribute") val contribute: Boolean = false,
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
-    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false
+    @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
+    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
 
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -179,6 +180,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
 
+    @Query("SELECT * FROM sessions WHERE id=:id AND deleted=0")
+    fun loadSessionById(id: Long): SessionDBObject?
+
     @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND deleted=0")
     fun loadSessionByStatusAndType(status: Session.Status, type: Session.Type): SessionDBObject?
 
@@ -226,4 +230,7 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionAndNotesByUUID(uuid: String): SessionWithNotesDBObject?
+
+    @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
+    fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
 }

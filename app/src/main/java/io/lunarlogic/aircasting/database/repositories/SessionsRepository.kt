@@ -31,6 +31,10 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
+    fun getSessionById(id: Long): SessionDBObject? {
+        return mDatabase.sessions().loadSessionById(id)
+    }
+
     fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
         return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
     }
@@ -137,5 +141,9 @@ class SessionsRepository {
 
     fun updateUrlLocation(session: Session, urlLocation: String?) {
         mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
+    }
+
+    fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
+        mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
     }
 }

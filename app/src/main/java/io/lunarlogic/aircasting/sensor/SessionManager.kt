@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
@@ -13,6 +12,7 @@ import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.services.AveragingService
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
@@ -20,6 +20,8 @@ import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.services.*
+import io.lunarlogic.aircasting.services.AveragingBackgroundService
+import io.lunarlogic.aircasting.services.AveragingPreviousMeasurementsBackgroundService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,6 +34,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
     private val fixedSessionDownloadMeasurementsService = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
     private val periodicallySyncSessionsService = PeriodicallySyncSessionsService(settings, sessionsSyncService)
+    private var averagingBackgroundService: AveragingBackgroundService? = null
+    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? = null
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -169,6 +173,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     val measurementStreamId =
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
+
                 } catch( e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }
@@ -177,6 +182,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        var DBsessionId: Long? = null
+
         EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
         session.startRecording()
@@ -190,17 +197,33 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
 
         DatabaseProvider.runQuery {
-            sessionsRespository.insert(session)
+            DBsessionId = sessionsRespository.insert(session)
+            if (session.isMobile()) {
+                DBsessionId?.let {
+                    val averagingService = AveragingService.get(it)
+                    averagingBackgroundService = AveragingBackgroundService(averagingService)
+                    averagingBackgroundService?.start()
+                    averagingPreviousMeasurementsBackgroundService =
+                        AveragingPreviousMeasurementsBackgroundService(averagingService)
+                    averagingPreviousMeasurementsBackgroundService?.start()
+                }
+            }
         }
+
+
     }
 
     private fun stopRecording(uuid: String) {
         DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
             val session = sessionsRespository.loadSessionAndMeasurementsByUUID(uuid)
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
                 sessionsSyncService.sync()
+                averagingBackgroundService?.stop()
+                averagingPreviousMeasurementsBackgroundService?.stop()
+                AveragingService.destroy(sessionId)
             }
         }
     }

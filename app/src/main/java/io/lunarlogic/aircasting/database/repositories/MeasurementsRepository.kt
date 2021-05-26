@@ -16,7 +16,8 @@ class MeasurementsRepository {
                 measurement.value,
                 measurement.time,
                 measurement.latitude,
-                measurement.longitude
+                measurement.longitude,
+                measurement.averagingFrequency
             )
         }
 
@@ -30,7 +31,8 @@ class MeasurementsRepository {
             measurement.value,
             measurement.time,
             measurement.latitude,
-            measurement.longitude
+            measurement.longitude,
+            measurement.averagingFrequency
         )
 
         return mDatabase.measurements().insert(measurementDBObject)
@@ -55,6 +57,30 @@ class MeasurementsRepository {
         lastExpectedMeasurementTime: Date
     ) {
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
+    }
+
+    fun getNonAveragedPreviousMeasurementsCount(sessionId: Long, crossingThresholdTime: Date, newAveragingFrequency: Int): Int {
+        return mDatabase.measurements().getNonAveragedPreviousMeasurementsCount(sessionId, crossingThresholdTime, newAveragingFrequency )
+    }
+
+    fun getNonAveragedCurrentMeasurementsCount(sessionId: Long, crossingThresholdTime: Date): Int {
+        return mDatabase.measurements().getNonAveragedCurrentMeasurementsCount(sessionId, crossingThresholdTime )
+    }
+
+    fun getNonAveragedPreviousMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
+        return mDatabase.measurements().getNonAveragedPreviousMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
+    }
+
+    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
+        return mDatabase.measurements().getNonAveragedCurrentMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
+    }
+
+    fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
+        mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
+    }
+
+    fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {
+        mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency)
     }
 
 }
