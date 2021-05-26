@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.events.DeleteStreamsEvent
 import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
+import io.lunarlogic.aircasting.exceptions.SessionUploadPendingError
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
@@ -142,7 +143,7 @@ abstract class SessionsController(
         if (session.urlLocation != null) {
             openShareIntentChooser(session, sensor)
         } else {
-            Toast.makeText(context, context?.getString(R.string.session_upload_pending), Toast.LENGTH_LONG).show()
+            mErrorHandler.handleAndDisplay(SessionUploadPendingError())
         }
     }
 
