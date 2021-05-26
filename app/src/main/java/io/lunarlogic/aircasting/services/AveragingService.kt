@@ -261,6 +261,7 @@ class AveragingService {
             measurementsToDeleteIds
         )
     }
+    
     fun averagePreviousMeasurements() {
         checkAveragingFrequency()
         if (!mNewAveragingThreshold.get()) return
