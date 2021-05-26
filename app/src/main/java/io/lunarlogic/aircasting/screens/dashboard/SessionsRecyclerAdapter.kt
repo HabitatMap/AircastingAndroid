@@ -5,12 +5,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
+import io.lunarlogic.aircasting.models.SessionsViewModel
 
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
+    protected val mSessionsViewModel = SessionsViewModel()
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
@@ -19,6 +21,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private var mSessionUUIDS: List<String> = emptyList()
     private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS.get(position)
@@ -44,7 +47,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                sessionPresenter!!.session = session
+                sessionPresenter!!.session = prepareSession(sessionPresenter.session!!, sessionPresenter.expanded)
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
                 val sessionPresenter = SessionPresenter(session, sensorThresholds)
