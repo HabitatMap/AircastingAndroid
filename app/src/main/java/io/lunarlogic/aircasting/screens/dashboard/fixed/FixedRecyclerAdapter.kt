@@ -26,14 +26,6 @@ class FixedRecyclerAdapter(
     }
 
     override fun fetchSessionMeasurements(session: Session) {
-        downloadMeasurementsForSession(session)
-    }
-
-    fun downloadMeasurementsForSession(session: Session) {
-        reloadSessionMeasurements(session)
-    }
-
-    protected fun reloadSessionMeasurements(session: Session) {
         DatabaseProvider.runQuery { scope ->
             val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSessionWithMeasurements?.let {
