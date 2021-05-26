@@ -242,7 +242,7 @@ class AveragingService {
     }
 
     private fun averageMeasurementsInWindow(measurementsInWindow: List<MeasurementDBObject>, averagingFrequency: Int, streamId: Long) {
-        var averagedMeasurementsIds: List<Long>
+        var measurementsToDeleteIds: List<Long>
 
         var averagedMeasurements = measurementsInWindow.toMutableList()
         val middleIndex = measurementsInWindow.size / 2
@@ -255,10 +255,10 @@ class AveragingService {
             average,
             averagingFrequency
         )
-        averagedMeasurementsIds = averagedMeasurements.map { it.id }
+        measurementsToDeleteIds = averagedMeasurements.map { it.id }
         mMeasurementsRepository.deleteMeasurements(
             streamId,
-            averagedMeasurementsIds
+            measurementsToDeleteIds
         )
     }
     fun averagePreviousMeasurements() {
