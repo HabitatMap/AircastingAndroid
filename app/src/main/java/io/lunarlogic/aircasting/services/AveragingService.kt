@@ -205,7 +205,7 @@ class AveragingService {
             if (measurements == null) {
                 Log.d(LOG_TAG, "No measurements to average")
             } else {
-                if (measurements!!.size > windowSize || isFinal) {
+                if (measurements!!.size >= windowSize || isFinal) {
                     averageStreamMeasurements(streamId, measurements!!, windowSize, averagingFrequency, isCurrent, isFinal)
                 }
             }
