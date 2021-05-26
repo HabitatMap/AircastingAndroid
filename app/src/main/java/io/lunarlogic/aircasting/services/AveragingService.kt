@@ -67,18 +67,19 @@ class AveragingService {
 
         private val THRESHOLDS = arrayOf(
             AveragingThreshold(
-                windowSize = SECOND_THRESHOLD_FREQUENCY,
-                time = SECOND_TRESHOLD_TIME
+                windowSize = 1,
+                time = 0
             ),
             AveragingThreshold(
                 windowSize = FIRST_THRESHOLD_FREQUENCY,
                 time = FIRST_TRESHOLD_TIME
             ),
             AveragingThreshold(
-                windowSize = 1,
-                time = 0
+                windowSize = SECOND_THRESHOLD_FREQUENCY,
+                time = SECOND_TRESHOLD_TIME
             )
         )
+        
         /**
          * We keep separate singleton objects for each session in case someone is recording multiple mobile sessions
          */
@@ -261,7 +262,7 @@ class AveragingService {
             measurementsToDeleteIds
         )
     }
-    
+
     fun averagePreviousMeasurements() {
         checkAveragingFrequency()
         if (!mNewAveragingThreshold.get()) return
@@ -287,9 +288,9 @@ class AveragingService {
 
         if (nonAveragedMeasurementsCount ?: 0 > 0) {
             thresholdTime = currentAveragingThreshold().time
-            previousWindowSize = THRESHOLDS[currentAveragingThresholdIndex() + 1].windowSize
+            previousWindowSize = THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
             averagingFrequency = currentAveragingThreshold().windowSize
-            windowSize = averagingFrequency!! / previousWindowSize
+            windowSize = averagingFrequency / previousWindowSize
         }
 
 
@@ -316,7 +317,7 @@ class AveragingService {
 
     private fun crossingLastThresholdTime() : Long? {
         return when (currentAveragingThresholdIndex()) {
-            0 -> mSecondThresholdTime
+            2 -> mSecondThresholdTime
             1 -> mFirstThresholdTime
             else -> null
         }
@@ -328,9 +329,9 @@ class AveragingService {
 
     private fun currentAveragingThresholdIndex() : Int {
         return when {
-            Date().time > mSecondThresholdTime -> 0
+            Date().time > mSecondThresholdTime -> 2
             Date().time > mFirstThresholdTime -> 1
-            else -> 2
+            else -> 0
         }
     }
 }
