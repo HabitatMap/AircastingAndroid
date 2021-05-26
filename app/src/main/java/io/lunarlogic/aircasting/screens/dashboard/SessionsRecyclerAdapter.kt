@@ -21,7 +21,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private var mSessionUUIDS: List<String> = emptyList()
     private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
-    abstract fun fetchSessionMeasurements(session: Session)
+    abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS.get(position)
@@ -47,8 +47,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                fetchSessionMeasurements(sessionPresenter?.session!!)
-                sessionPresenter!!.session = session
+                sessionPresenter!!.session = prepareSession(sessionPresenter.session!!, sessionPresenter.expanded)
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
                 val sessionPresenter = SessionPresenter(session, sensorThresholds)

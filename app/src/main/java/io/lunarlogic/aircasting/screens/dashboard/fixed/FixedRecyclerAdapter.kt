@@ -25,16 +25,18 @@ class FixedRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun fetchSessionMeasurements(session: Session) {
+    override fun prepareSession(session: Session, expanded: Boolean): Session {
+        if (!expanded) {
+            return session
+        }
+
+        var reloadedSession: Session? = null
         DatabaseProvider.runQuery { scope ->
             val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSessionWithMeasurements?.let {
-                val reloadedSession = Session(dbSessionWithMeasurements)
-
-                DatabaseProvider.backToUIThread(scope) {
-                    reloadSession(reloadedSession)
-                }
+                reloadedSession = Session(dbSessionWithMeasurements)
             }
         }
+        return reloadedSession ?: session
     }
 }

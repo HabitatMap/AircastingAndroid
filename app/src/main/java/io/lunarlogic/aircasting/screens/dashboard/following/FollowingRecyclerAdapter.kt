@@ -25,7 +25,8 @@ class FollowingRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun fetchSessionMeasurements(session: Session) {
+    override fun prepareSession(session: Session, expanded: Boolean): Session {
         // do nothing
+        return session
     }
 }

@@ -94,7 +94,7 @@ abstract class SessionsController(
     private fun updateFollowedAt(session: Session) {
         DatabaseProvider.runQuery {
             mSessionsViewModel.updateFollowedAt(session)
-            reloadSession(session)
+            // reloadSession(session)
         }
     }
 
