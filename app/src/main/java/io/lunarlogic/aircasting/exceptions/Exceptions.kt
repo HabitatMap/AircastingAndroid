@@ -37,6 +37,9 @@ class SyncError(t: Throwable? = null):
 class SessionExportFailedError(t: Throwable? = null):
         BaseException(Exception(t), "Something wrong happened during exporting session data.")
 
+class SessionUploadPendingError(t: Throwable? = null):
+        BaseException(Exception(t), "Session upload pending - wait a couple of minutes and try again.")
+
 class DownloadMeasurementsError(t: Throwable? = null):
     BaseException(Exception(t))
 

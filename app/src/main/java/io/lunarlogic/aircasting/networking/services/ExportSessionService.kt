@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.networking.services
 import android.content.Context
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SessionExportFailedError
+import io.lunarlogic.aircasting.exceptions.SessionUploadPendingError
 import io.lunarlogic.aircasting.networking.responses.ExportSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,7 +18,7 @@ class ExportSessionService(private val apiService: ApiService, private val error
                 if (response.isSuccessful) {
                     successCallback.invoke()
                 } else {
-                    errorHandler.handle(SessionExportFailedError())
+                    errorHandler.handle(SessionUploadPendingError())
                 }
             }
 
