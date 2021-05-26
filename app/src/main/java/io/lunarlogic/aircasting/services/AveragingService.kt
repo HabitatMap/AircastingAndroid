@@ -183,13 +183,12 @@ class AveragingService {
      * iterates through them in chinks and takes locatiom from the middle one and average from all of the values
      * after averaging it deletes the rest of the measuemrenst, leaving only the ones with averaged values
      *
-     * @param previousWindowSize we use that to get measurements to average from DB
-     *        in case of first averaging we pass 1 which is default frequency for new measurement records
-     *        we also need that to reaverage previous measurements after reaching second threshold (we pass there previous
-     *        frequency used for averaging)
+     * @param averagingFrequency actual averaging frequency that we want to save to DB. It will be *current* frequency
      * @param windowSize actual window size we want to average. For second threshold, when reaveraging previously averaged
      *        measurements, we need to calculate it *current / previous*
-     * @param averagingFrequency actual averaging frequency that we want to save to DB. It will be *current* frequency
+     * @param isCurrent we pass true for current and false for averaging of previous measurements
+     * @param isFinal false by default, will be true only when running final averaging on session finish (so we know whether
+     *        we should trim measurements that cannot be averaed using full averaging window)
      */
     private fun averageMeasurements(
         measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?>,
