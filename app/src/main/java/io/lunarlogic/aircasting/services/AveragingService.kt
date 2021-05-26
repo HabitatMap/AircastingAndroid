@@ -10,6 +10,30 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
 
+/**
+ * Averaging for long mobile sessions
+ *
+ * General rules:
+ * - for streams containing >2 hrs but <9 hrs of data apply a 5-second avg. time interval.
+ * - for streams containing >9 hrs of data apply a 60-second avg. time interval
+ *
+ * Use case:
+ * - the mobile active session reaches a duration of 2 hours and 5 seconds.
+ * - at 2 hours and 5 seconds, the first 5-second average measurement is plotted on the map and graph.
+ * - all of the data from the prior 2 hours is transformed into 5-second averages and the map and graph and stats are updated accordingly.
+ *
+ * Notes:
+ * - averages should be attached to the middle value geocoordinates and timestamps,
+ * i.e. if its a 5-second avg spanning the time frame 10:00:00 to 10:00:05,
+ * the avg value gets pegged to the geocoordinates and timestamp from 10:00:03.
+ * - thresholds are calculated based on ellapsed time of session, not based on actual measurements records
+ * (pauses in sessions are not taken into account)
+ * - if there are any final, unaveraged measurements on 2h+ or 9h+ session which would not fall into full averaging window
+ * (5s or 60s) they should be deleted
+ * - on threshold crossing (at 2h and at 9h into session) we also trim measurements that not fit into given window size
+ * 
+ */
+
 class AveragingService {
     private val LOG_TAG = "AveragingService"
 
