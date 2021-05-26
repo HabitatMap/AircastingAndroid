@@ -31,7 +31,7 @@ import kotlin.collections.HashMap
  * - if there are any final, unaveraged measurements on 2h+ or 9h+ session which would not fall into full averaging window
  * (5s or 60s) they should be deleted
  * - on threshold crossing (at 2h and at 9h into session) we also trim measurements that not fit into given window size
- * 
+ *
  */
 
 class AveragingService {
@@ -118,9 +118,9 @@ class AveragingService {
      * averaged to 1 and 1 measurements will be left unaveraged. Measurements recorded BEFORE crossing last averaging threshold
      * will be averaged separately by averagePreviousMeasurements()
      *
-     * @param final False by default. If true, if will delete the remaining measurements not falling into exact window
+     * @param isFinal False by default. If true, if will delete the remaining measurements not falling into exact window
      */
-    fun perform(final: Boolean = false) {
+    fun perform(isFinal: Boolean = false) {
         var measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
 
         // When while checking we find out the threshold has changed since last time checked
@@ -138,7 +138,7 @@ class AveragingService {
                 currentAveragingThreshold().windowSize,
                 currentAveragingThreshold().windowSize,
                 true,
-                final
+                isFinal
             )
         }
     }
@@ -195,8 +195,8 @@ class AveragingService {
         measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?>,
         averagingFrequency: Int,
         windowSize: Int,
-        current: Boolean,
-        final: Boolean = false
+        isCurrent: Boolean,
+        isFinal: Boolean = false
     ) {
         var measurements: List<MeasurementDBObject>?
 
@@ -206,8 +206,8 @@ class AveragingService {
             if (measurements == null) {
                 Log.d(LOG_TAG, "No measurements to average")
             } else {
-                if (measurements!!.size > windowSize || final) {
-                    averageStreamMeasurements(streamId, measurements!!, windowSize, averagingFrequency, current, final)
+                if (measurements!!.size > windowSize || isFinal) {
+                    averageStreamMeasurements(streamId, measurements!!, windowSize, averagingFrequency, isCurrent, isFinal)
                 }
             }
         }
@@ -217,14 +217,14 @@ class AveragingService {
                                           measurements: List<MeasurementDBObject>,
                                           windowSize: Int,
                                           averagingFrequency: Int,
-                                          current: Boolean,
-                                          final: Boolean = false) {
+                                          isCurrent: Boolean,
+                                          isFinal: Boolean = false) {
 
         measurements.chunked(windowSize) { measurementsInWindow: List<MeasurementDBObject> ->
             if (measurementsInWindow.size == windowSize) {
                 averageMeasurementsInWindow(measurementsInWindow, averagingFrequency, streamId)
             } else {
-                removeTrailingMeasurements(measurementsInWindow, streamId, final, !current)
+                removeTrailingMeasurements(measurementsInWindow, streamId, isFinal, !isCurrent)
             }
 
         }
