@@ -9,7 +9,6 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.models.observers.DormantSessionsObserver
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.models.Session
-import io.lunarlogic.aircasting.models.observers.ActiveSessionsObserver
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.screens.dashboard.EditSessionBottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.SessionsController
@@ -27,7 +26,7 @@ class FixedController(
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
-    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFixedSessionsWithMeasurements())

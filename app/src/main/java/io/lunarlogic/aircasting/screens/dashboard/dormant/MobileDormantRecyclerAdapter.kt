@@ -24,7 +24,7 @@ class MobileDormantRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun fetchMeasurementsForFixed(session: Session) {
-        //do nothing
+    override fun fetchSessionMeasurements(session: Session) {
+        // We don't have to fetch measurements because measurements in expanded sessions are not updated anymore for dormant session
     }
 }

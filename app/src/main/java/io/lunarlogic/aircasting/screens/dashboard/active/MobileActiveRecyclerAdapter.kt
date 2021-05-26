@@ -23,7 +23,7 @@ class MobileActiveRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun fetchMeasurementsForFixed(session: Session) {
-        // do nothing
+    override fun fetchSessionMeasurements(session: Session) {
+        // We only have to do this for fixed tab for expanded sessions. Mobile active sessions have measurements fixed anyway
     }
 }

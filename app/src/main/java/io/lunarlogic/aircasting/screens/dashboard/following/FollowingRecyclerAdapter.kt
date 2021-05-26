@@ -25,7 +25,7 @@ class FollowingRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun fetchMeasurementsForFixed(session: Session) {
+    override fun fetchSessionMeasurements(session: Session) {
         // do nothing
     }
 }

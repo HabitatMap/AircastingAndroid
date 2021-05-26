@@ -3,7 +3,6 @@ package io.lunarlogic.aircasting.screens.dashboard
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.models.SensorThreshold
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
@@ -22,7 +21,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private var mSessionUUIDS: List<String> = emptyList()
     private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
-    abstract fun fetchMeasurementsForFixed(session: Session)
+    abstract fun fetchSessionMeasurements(session: Session)
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS.get(position)
@@ -48,7 +47,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                fetchMeasurementsForFixed(sessionPresenter?.session!!)
+                fetchSessionMeasurements(sessionPresenter?.session!!)
                 sessionPresenter!!.session = session
                 sessionPresenter!!.chartData?.refresh(session)
             } else {
