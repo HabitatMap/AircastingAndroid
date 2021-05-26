@@ -170,7 +170,14 @@ abstract class SessionsController(
     }
 
     override fun onShareSessionClicked(session: Session) {
-        startShareSessionBottomSheet(session)
+        var reloadedSession: Session? = null
+        DatabaseProvider.runQuery { scope ->
+            val dbSession = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            dbSession?.let {
+                reloadedSession = Session(dbSession)
+                startShareSessionBottomSheet(reloadedSession ?: session)
+            }
+        }
     }
 
     override fun onDeleteSessionClicked(session: Session) {

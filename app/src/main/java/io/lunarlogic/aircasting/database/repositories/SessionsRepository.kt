@@ -63,7 +63,7 @@ class SessionsRepository {
     fun update(session: Session) {
         session.endTime?.let {
             mDatabase.sessions().update(session.uuid, session.name, session.tags,
-                it, session.status)
+                it, session.status, session.version, session.urlLocation)
         }
     }
 
@@ -133,5 +133,9 @@ class SessionsRepository {
 
     fun updateSessionStatus(session: Session, status: Session.Status) {
         mDatabase.sessions().updateStatus(session.uuid, status)
+    }
+
+    fun updateUrlLocation(session: Session, urlLocation: String?) {
+        mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
     }
 }

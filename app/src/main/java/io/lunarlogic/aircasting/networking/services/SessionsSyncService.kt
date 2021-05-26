@@ -16,6 +16,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.params.SyncSessionBody
 import io.lunarlogic.aircasting.networking.params.SyncSessionParams
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
+import io.lunarlogic.aircasting.networking.responses.UploadSessionResponse
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -145,7 +146,10 @@ class SessionsSyncService {
         uuids.forEach { uuid ->
             val session = sessionRepository.loadSessionForUpload(uuid)
             if (session != null && isUploadable(session)) {
-                val onUploadSuccess = {
+                val onUploadSuccess = { response: Response<UploadSessionResponse> ->
+                    DatabaseProvider.runQuery {
+                        sessionRepository.updateUrlLocation(session, response.body()?.location)
+                    }
                     // TODO: handle update notes - adding photoPath
                 }
                 uploadService.upload(session, onUploadSuccess)

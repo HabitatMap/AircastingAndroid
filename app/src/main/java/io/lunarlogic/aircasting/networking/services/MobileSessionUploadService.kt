@@ -12,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MobileSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    fun upload(session: Session, successCallback: () -> Unit) {
+    fun upload(session: Session, successCallback: (response: Response<UploadSessionResponse>) -> Unit) {
         val sessionParams = SessionParams(session)
         val sessionBody = CreateSessionBody(
             GzippedParams.get(sessionParams, SessionParams::class.java)
@@ -21,7 +21,7 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {
-                    successCallback()
+                    successCallback(response)
                 } else {
                     errorHandler.handle(UnexpectedAPIError())
                 }

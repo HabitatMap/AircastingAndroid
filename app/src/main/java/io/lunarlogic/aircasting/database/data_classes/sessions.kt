@@ -188,14 +188,17 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND device_type=:deviceType AND deleted=0")
     fun loadSessionByStatusTypeAndDeviceType(status: Session.Status, type: Session.Type, deviceType: DeviceItem.Type): SessionDBObject?
 
-    @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status WHERE uuid=:uuid")
-    fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status)
+    @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status, version=:version, url_location=:urlLocation WHERE uuid=:uuid")
+    fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status, version: Int, urlLocation: String?)
 
     @Query("UPDATE sessions SET followed_at=:followedAt WHERE uuid=:uuid")
     fun updateFollowedAt(uuid: String, followedAt: Date?)
 
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
     fun updateStatus(uuid: String, status: Session.Status)
+
+    @Query("UPDATE sessions SET url_location=:urlLocation WHERE uuid=:uuid")
+    fun updateUrlLocation(uuid: String, urlLocation: String?)
 
     @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
     fun disconnectSession(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
