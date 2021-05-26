@@ -198,12 +198,15 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
         DatabaseProvider.runQuery {
             DBsessionId = sessionsRespository.insert(session)
-            DBsessionId?.let {
-                val averagingService = AveragingService.get(it)
-                averagingBackgroundService = AveragingBackgroundService(averagingService)
-                averagingBackgroundService?.start()
-                averagingPreviousMeasurementsBackgroundService = AveragingPreviousMeasurementsBackgroundService(averagingService)
-                averagingPreviousMeasurementsBackgroundService?.start()
+            if (session.isMobile()) {
+                DBsessionId?.let {
+                    val averagingService = AveragingService.get(it)
+                    averagingBackgroundService = AveragingBackgroundService(averagingService)
+                    averagingBackgroundService?.start()
+                    averagingPreviousMeasurementsBackgroundService =
+                        AveragingPreviousMeasurementsBackgroundService(averagingService)
+                    averagingPreviousMeasurementsBackgroundService?.start()
+                }
             }
         }
 
