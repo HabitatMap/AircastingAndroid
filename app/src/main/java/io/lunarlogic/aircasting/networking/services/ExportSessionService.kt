@@ -18,12 +18,12 @@ class ExportSessionService(private val apiService: ApiService, private val error
                 if (response.isSuccessful) {
                     successCallback.invoke()
                 } else {
-                    errorHandler.handle(SessionUploadPendingError())
+                    errorHandler.handleAndDisplay(SessionUploadPendingError())
                 }
             }
 
             override fun onFailure(call: Call<ExportSessionResponse>, t: Throwable) {
-                errorHandler.handle(SessionExportFailedError(t))
+                errorHandler.handleAndDisplay(SessionExportFailedError(t))
             }
         })
     }
