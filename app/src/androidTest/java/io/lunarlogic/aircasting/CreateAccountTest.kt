@@ -77,7 +77,7 @@ class CreateAccountTest {
                 JsonBody.build(
                     mapOf(
                         "email" to "maria@example.org",
-                        "profile_name" to "maria",
+                        "username" to "maria",
                         "authentication_token" to "XYZ123FAKETOKEN"
                     )
                 )

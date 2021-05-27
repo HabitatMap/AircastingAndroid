@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
         SensorThresholdDBObject::class,
         NoteDBObject::class
     ),
-    version = 25,
+    version = 26,
     exportSchema = true
 )
 @TypeConverters(

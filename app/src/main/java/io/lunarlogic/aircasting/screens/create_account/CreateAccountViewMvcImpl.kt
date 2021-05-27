@@ -58,7 +58,7 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
 
     override fun showErrors(errorRespose: CreateAccountErrorResponse) {
         showError("email", errorRespose)
-        showError("profile_name", errorRespose)
+        showError("username", errorRespose)
         showError("password", errorRespose)
     }
 
