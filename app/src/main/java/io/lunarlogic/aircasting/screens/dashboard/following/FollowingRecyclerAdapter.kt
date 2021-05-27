@@ -26,7 +26,7 @@ class FollowingRecyclerAdapter(
     }
 
     override fun prepareSession(session: Session, expanded: Boolean): Session {
-        // do nothing
+        // We only have to reload measurements for fixed tab for expanded sessions. Followed sessions have measurements fetched anyway
         return session
     }
 }
