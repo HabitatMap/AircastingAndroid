@@ -20,13 +20,13 @@ class CreateAccountService(
     private val mApiServiceFactory: ApiServiceFactory
 ) {
     fun performCreateAccount(
-        profile_name: String, password: String, email: String, send_emails: Boolean,
+        username: String, password: String, email: String, send_emails: Boolean,
         successCallback: () -> Unit,
         errorCallback: (CreateAccountErrorResponse) -> Unit
     ) {
         val apiService = mApiServiceFactory.get(emptyList())
         val createAccountParams = CreateAccountParams(
-            profile_name,
+            username,
             password,
             email,
             send_emails

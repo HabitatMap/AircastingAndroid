@@ -88,10 +88,10 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         return retrofit.create<ApiService>(ApiService::class.java)
     }
 
-    fun get(profile_name: String, password: String): ApiService {
+    fun get(username: String, password: String): ApiService {
         val credentialsEncoded =
             encodedCredentials(
-                profile_name,
+                username,
                 password
             )
         val authInterceptor =
@@ -124,8 +124,8 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
     }
 
-    private fun encodedCredentials(profile_name: String, password: String): String {
-        val credentials = "${profile_name}:${password}"
+    private fun encodedCredentials(username: String, password: String): String {
+        val credentials = "${username}:${password}"
         val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         return "Basic ${encodedCredentials}"
     }

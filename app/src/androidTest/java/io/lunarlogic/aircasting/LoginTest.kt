@@ -74,7 +74,7 @@ class LoginTest {
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(JsonBody.build(mapOf(
                 "email" to "ania@example.org",
-                "profile_name" to "ania",
+                "username" to "ania",
                 "authentication_token" to "XYZ123FAKETOKEN"
             )))
 
