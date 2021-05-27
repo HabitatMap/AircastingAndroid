@@ -195,4 +195,8 @@ class MeasurementStream(
     fun lastMeasurement(): Measurement {
         return measurements.last()
     }
+
+    fun firstMeasurement(): Measurement {
+        return measurements.first()
+    }
 }

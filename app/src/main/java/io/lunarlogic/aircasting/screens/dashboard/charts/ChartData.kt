@@ -100,7 +100,7 @@ class ChartData(
 
         stream?.let { stream ->
             entries =  when (mSession.type) {
-                Session.Type.MOBILE -> ChartAveragesCreator().getMobileEntries(stream)
+                Session.Type.MOBILE -> ChartAveragesCreator().getMobileEntriesNew(stream)
                 Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
             }
         }

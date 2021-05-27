@@ -5,6 +5,7 @@ import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import java.util.*
+import kotlin.math.roundToInt
 
 class ChartAveragesCreator {
     companion object {
@@ -16,6 +17,41 @@ class ChartAveragesCreator {
     }
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
+
+    fun getMobileEntriesNew(stream: MeasurementStream): MutableList<Entry>? {
+        println("MARYSIA: entries calculated the old way: ${getMobileEntries(stream)}")
+        var entries: MutableList<Entry>? = mutableListOf()
+
+        val lastMeasurementTime = stream.lastMeasurement().time.time
+        val sessionStartTime = stream.firstMeasurement().time.time
+        val secondsFromFullMinute = (lastMeasurementTime - sessionStartTime) % 60
+
+        var minuteEnd = lastMeasurementTime
+        var minuteStart = minuteEnd - 60 * 1000
+
+        for(i in 8 downTo 0) {
+            if ( minuteStart < sessionStartTime) break
+            entries?.add(
+                Entry(
+                    i.toFloat(),
+                    averagedValue(stream, minuteStart, minuteEnd)
+                ))
+            minuteEnd = minuteStart
+            minuteStart = minuteEnd - 60 * 1000
+        }
+
+        return entries
+    }
+
+    private fun averagedValue(stream: MeasurementStream, minuteStart: Long, minuteEnd: Long): Float {
+
+        val timeSpan = Date(minuteStart)..Date(minuteEnd)
+        val measurements = stream.getMeasurementsForTimeSpan(timeSpan)
+        val sum = measurements.sumByDouble { it.value}
+        val avg = sum/measurements.size
+
+        return avg.toFloat()
+    }
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
         val periodData: MutableList<List<Measurement>?>
