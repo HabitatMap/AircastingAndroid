@@ -108,6 +108,18 @@ class StreamWithMeasurementsDBObject {
     lateinit var measurements: List<MeasurementDBObject>
 }
 
+class StreamWithLastMeasurementsDBObject {
+    @Embedded
+    lateinit var stream: MeasurementStreamDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "stream_id",
+        entity = ActiveSessionMeasurementDBObject::class
+    )
+    lateinit var measurements: List<ActiveSessionMeasurementDBObject>
+}
+
 class CompleteSessionDBObject {
     @Embedded
     lateinit var session: SessionDBObject
@@ -127,6 +139,19 @@ class CompleteSessionDBObject {
     lateinit var notes: MutableList<NoteDBObject>
 }
 
+class SessionWithStreamsAndLastMeasurementsDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<StreamWithLastMeasurementsDBObject>
+}
+
+
 @Dao
 interface SessionDao {
     @Query("SELECT * FROM sessions")
@@ -137,6 +162,9 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
+    fun loadAllByTypeAndStatusWithLastMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusForComplete(type: Session.Type, statuses: List<Int>): LiveData<List<CompleteSessionDBObject>>

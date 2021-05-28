@@ -1,5 +1,6 @@
 package io.lunarlogic.aircasting.models
 
+import io.lunarlogic.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import io.lunarlogic.aircasting.database.data_classes.MeasurementDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.lib.DateConverter
@@ -23,6 +24,13 @@ class Measurement(
         measurementDBObject.latitude,
         measurementDBObject.longitude,
         measurementDBObject.averaging_frequency
+    )
+
+    constructor(activeSessionMeasurementDBObject: ActiveSessionMeasurementDBObject): this(
+        activeSessionMeasurementDBObject.value,
+        activeSessionMeasurementDBObject.time,
+        activeSessionMeasurementDBObject.latitude,
+        activeSessionMeasurementDBObject.longitude
     )
 
     constructor(measurementResponse: MeasurementResponse): this(

@@ -20,9 +20,10 @@ import kotlinx.coroutines.launch
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
-        NoteDBObject::class
+        NoteDBObject::class,
+        ActiveSessionMeasurementDBObject::class
     ),
-    version = 26,
+    version = 27,
     exportSchema = true
 )
 @TypeConverters(
@@ -38,6 +39,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun measurements(): MeasurementDao
     abstract fun sensorThresholds(): SensorThresholdDao
     abstract fun notes(): NoteDao
+    abstract fun activeSessionsMeasurements(): ActiveSessionMeasurementDao
 }
 
 class DatabaseProvider {
@@ -66,7 +68,8 @@ class DatabaseProvider {
                     MIGRATION_22_23,
                     MIGRATION_23_24,
                     MIGRATION_24_25,
-                    MIGRATION_25_26
+                    MIGRATION_25_26,
+                    MIGRATION_26_27
                 ).build()
             }
 
