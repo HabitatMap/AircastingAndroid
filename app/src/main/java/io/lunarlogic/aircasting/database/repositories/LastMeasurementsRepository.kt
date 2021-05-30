@@ -25,6 +25,10 @@ class LastMeasurementsRepository {
         return mDatabase.activeSessionsMeasurements().getOldestMeasurementId(sessionId, streamId)
     }
 
+    private fun update(id: Int, measurement: Measurement) {
+        mDatabase.activeSessionsMeasurements().update(id, measurement.value, measurement.time, measurement.latitude, measurement.longitude)
+    }
+
     fun deleteAndInsert(measurement: ActiveSessionMeasurementDBObject) {
         mDatabase.activeSessionsMeasurements().deleteAndInsertInTransaction(measurement)
     }
@@ -32,7 +36,7 @@ class LastMeasurementsRepository {
     fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
         val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
 
-        if (lastMeasurementsCount > 15 ) {
+        if (lastMeasurementsCount > 540 ) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
                 streamId,
                 sessionId,
@@ -41,7 +45,6 @@ class LastMeasurementsRepository {
                 measurement.latitude,
                 measurement.longitude
             )
-
             deleteAndInsert(activeSessionMeasurementDBObject)
         } else {
             insert(streamId, sessionId, measurement)
