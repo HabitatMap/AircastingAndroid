@@ -53,6 +53,12 @@ abstract class AirBeamConnector {
         }
     }
 
+    fun reconnect() {
+        if (mDeviceItem == null || mSessionUUID == null) return
+
+        connect(mDeviceItem!!, mSessionUUID!!)
+    }
+
     abstract fun reconnectMobileSession()
     abstract fun triggerSDCardDownload()
     abstract fun clearSDCard()
@@ -78,6 +84,13 @@ abstract class AirBeamConnector {
             stop()
             cancelStarted.set(false)
         }
+    }
+
+    private fun tryReconnect(): Boolean {
+        connectionStarted.set(false)
+        reconnect()
+        // how to determine wether it was successful or not? maybe different event?
+        return false
     }
 
     fun registerListener(listener: Listener) {
@@ -119,8 +132,11 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
+        println("MARYSIA: DISCONNECTED")
         if (mDeviceItem?.id == event.deviceId) {
-            disconnect()
+            if (!tryReconnect()) {
+                disconnect()
+            }
         }
     }
 
