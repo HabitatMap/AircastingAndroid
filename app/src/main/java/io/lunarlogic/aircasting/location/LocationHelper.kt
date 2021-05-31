@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.IntentSender
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -14,30 +15,33 @@ import org.greenrobot.eventbus.EventBus
 
 class LocationHelper(private val mContext: Context) {
     companion object {
-        private lateinit var singleton: LocationHelper
+        private var singleton: LocationHelper? = null
         private var started = false
 
         fun setup(context: Context) {
-            singleton = LocationHelper(context)
+            if (singleton == null) singleton = LocationHelper(context)
+            Log.i("SESS_MAN", "singleton setup, singleton: "+ singleton.toString())
         }
 
         fun checkLocationServicesSettings(activity: AppCompatActivity) {
-            singleton.checkLocationServicesSettings(activity)
+            singleton?.checkLocationServicesSettings(activity)
         }
 
         fun start() {
             if (!started) {
-                singleton.start()
+                singleton?.start()
+                Log.i("SESS_MAN", "start singleton (in if): " + singleton.toString())
             }
             started = true
+            Log.i("SESS_MAN", "start singleton (after if): " + singleton.toString())
         }
 
         fun stop() {
-            singleton.stop()
+            singleton?.stop()
         }
 
         fun lastLocation(): Location? {
-            return singleton.lastLocation
+            return singleton?.lastLocation
         }
     }
 
@@ -87,6 +91,7 @@ class LocationHelper(private val mContext: Context) {
                 EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
             }
         }
+        Log.i("SESS_MAN", "locationCallback: "+ locationCallback.toString())
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }

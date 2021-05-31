@@ -46,7 +46,7 @@ abstract class SessionDetailsViewController(
     protected val mSessionRepository = SessionsRepository()
     private var mShouldRefreshStatistics = AtomicBoolean(false)
 
-    fun onCreate() {
+    open fun onCreate() {
         EventBus.getDefault().safeRegister(this);
         mViewMvc?.registerListener(this)
 

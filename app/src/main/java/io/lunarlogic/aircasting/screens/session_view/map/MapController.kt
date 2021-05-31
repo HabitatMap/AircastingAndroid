@@ -1,7 +1,9 @@
 package io.lunarlogic.aircasting.screens.session_view.map
 
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.events.*
@@ -42,6 +44,13 @@ class MapController(
             location?.let { mViewMvc?.centerMap(location) }
             mLocateRequested = false
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+//        if (ContextCompat.checkSelfPermission(rootActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+//            LocationHelper.start()
+//        }
     }
 
     override fun onResume() {
