@@ -11,9 +11,22 @@ class DashboardController(
     private val mSessionRepository = SessionsRepository()
 
     fun onCreate(tabId: Int?) {
-        DatabaseProvider.runQuery {
-            if (mSessionRepository.mobileActiveSessionExists()) viewMvc?.goToTab(DashboardPagerAdapter.tabIndexForSessionType(Session.Type.MOBILE, Session.Status.RECORDING))
-            else viewMvc?.goToTab(tabId ?: 0)
+        DatabaseProvider.runQuery { scope ->
+            if (mSessionRepository.mobileActiveSessionExists()) {
+                DatabaseProvider.backToUIThread(scope) {
+                    viewMvc?.goToTab(
+                        DashboardPagerAdapter.tabIndexForSessionType(
+                            Session.Type.MOBILE,
+                            Session.Status.RECORDING
+                        )
+                    )
+                }
+            }
+            else {
+                DatabaseProvider.backToUIThread(scope) {
+                    viewMvc?.goToTab(tabId ?: 0)
+                }
+            }
         }
     }
 }
