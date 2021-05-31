@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.IntentSender
 import android.location.Location
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -20,7 +19,6 @@ class LocationHelper(private val mContext: Context) {
 
         fun setup(context: Context) {
             if (singleton == null) singleton = LocationHelper(context)
-            Log.i("SESS_MAN", "singleton setup, singleton: "+ singleton.toString())
         }
 
         fun checkLocationServicesSettings(activity: AppCompatActivity) {
@@ -30,10 +28,8 @@ class LocationHelper(private val mContext: Context) {
         fun start() {
             if (!started) {
                 singleton?.start()
-                Log.i("SESS_MAN", "start singleton (in if): " + singleton.toString())
             }
             started = true
-            Log.i("SESS_MAN", "start singleton (after if): " + singleton.toString())
         }
 
         fun stop() {
@@ -91,7 +87,6 @@ class LocationHelper(private val mContext: Context) {
                 EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
             }
         }
-        Log.i("SESS_MAN", "locationCallback: "+ locationCallback.toString())
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }

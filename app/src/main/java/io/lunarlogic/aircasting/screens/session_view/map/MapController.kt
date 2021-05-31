@@ -46,13 +46,6 @@ class MapController(
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-//        if (ContextCompat.checkSelfPermission(rootActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
-//            LocationHelper.start()
-//        }
-    }
-
     override fun onResume() {
         super.onResume()
         mViewMvc?.registerListener(this)
