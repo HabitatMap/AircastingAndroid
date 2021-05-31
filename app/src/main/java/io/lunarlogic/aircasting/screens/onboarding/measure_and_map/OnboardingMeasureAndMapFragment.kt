@@ -22,7 +22,7 @@ class OnboardingMeasureAndMapFragment: BaseFragment<OnboardingMeasureAndMapViewM
 
     override fun onStart() {
         super.onStart()
-        controller?.registerListener(listener)
+        listener.let { controller?.registerListener(it) }
     }
 
     override fun onStop() {
