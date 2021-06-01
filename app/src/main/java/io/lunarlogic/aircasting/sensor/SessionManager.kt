@@ -163,7 +163,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         val measurementStream = MeasurementStream(event)
 
         val location = LocationHelper.lastLocation()
-        Log.i("SESS_MAN", location.toString()) //todo: check if this is null or smth??
         val measurement = Measurement(event, location?.latitude , location?.longitude)
 
         val deviceId = event.deviceId ?: return
