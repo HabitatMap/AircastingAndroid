@@ -106,6 +106,13 @@ class Session(
         }
     }
 
+    constructor(sessionWithStreamsAndLastMeasurementsDBObject: SessionWithStreamsAndLastMeasurementsDBObject):
+            this(sessionWithStreamsAndLastMeasurementsDBObject.session) {
+        this.mStreams = sessionWithStreamsAndLastMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
+            MeasurementStream(streamWithMeasurementsDBObject)
+        }
+    }
+
     companion object {
         fun generateUUID(): String {
             return UUID.randomUUID().toString()
@@ -275,7 +282,8 @@ class Session(
                 session.measurementsCount() != measurementsCount() ||
                 session.status != status ||
                 session.endTime != endTime ||
-                session.notes.size != notes.size
+                session.notes.size != notes.size ||
+                (session.measurementsCount() > 0 && session.lastMeasurement().time != lastMeasurement().time)
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {

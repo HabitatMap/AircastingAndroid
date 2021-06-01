@@ -5,10 +5,7 @@ import android.database.sqlite.SQLiteConstraintException
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
-import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
-import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
-import io.lunarlogic.aircasting.database.repositories.NoteRepository
-import io.lunarlogic.aircasting.database.repositories.SessionsRepository
+import io.lunarlogic.aircasting.database.repositories.*
 import io.lunarlogic.aircasting.events.*
 import io.lunarlogic.aircasting.exceptions.DBInsertException
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
@@ -39,6 +36,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
+    private val activeSessionMeasurementsRepository = ActiveSessionMeasurementsRepository()
     private val noteRepository = NoteRepository()
     private var mCallback: (() -> Unit)? = null
 
@@ -173,7 +171,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     val measurementStreamId =
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
-
+                    activeSessionMeasurementsRepository.createOrReplace(sessionId, measurementStreamId, measurement)
                 } catch( e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }
@@ -220,6 +218,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
+                activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
                 sessionsSyncService.sync()
                 averagingBackgroundService?.stop()
                 averagingPreviousMeasurementsBackgroundService?.stop()

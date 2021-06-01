@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.android.libraries.maps.model.LatLng
 import com.google.common.collect.Lists
 import io.lunarlogic.aircasting.database.data_classes.MeasurementStreamDBObject
+import io.lunarlogic.aircasting.database.data_classes.StreamWithLastMeasurementsDBObject
 import io.lunarlogic.aircasting.database.data_classes.StreamWithMeasurementsDBObject
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.networking.responses.SessionStreamResponse
@@ -60,6 +61,13 @@ class MeasurementStream(
     constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject):
             this(streamWithMeasurementsDBObject.stream) {
         this.mMeasurements = streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
+            Measurement(measurementDBObject)
+        }
+    }
+
+    constructor(streamWithLastMeasurementsDBObject: StreamWithLastMeasurementsDBObject):
+            this(streamWithLastMeasurementsDBObject.stream) {
+        this.mMeasurements = streamWithLastMeasurementsDBObject.measurements.map { measurementDBObject ->
             Measurement(measurementDBObject)
         }
     }

@@ -20,8 +20,8 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.sessions().loadFollowingWithMeasurements()
     }
 
-    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithMeasurements(
+    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
             Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
     }
 
