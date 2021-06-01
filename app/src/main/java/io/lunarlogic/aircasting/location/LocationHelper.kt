@@ -14,30 +14,30 @@ import org.greenrobot.eventbus.EventBus
 
 class LocationHelper(private val mContext: Context) {
     companion object {
-        private lateinit var singleton: LocationHelper
+        private var singleton: LocationHelper? = null
         private var started = false
 
         fun setup(context: Context) {
-            singleton = LocationHelper(context)
+            if (singleton == null) singleton = LocationHelper(context)
         }
 
         fun checkLocationServicesSettings(activity: AppCompatActivity) {
-            singleton.checkLocationServicesSettings(activity)
+            singleton?.checkLocationServicesSettings(activity)
         }
 
         fun start() {
             if (!started) {
-                singleton.start()
+                singleton?.start()
             }
             started = true
         }
 
         fun stop() {
-            singleton.stop()
+            singleton?.stop()
         }
 
         fun lastLocation(): Location? {
-            return singleton.lastLocation
+            return singleton?.lastLocation
         }
     }
 
