@@ -81,6 +81,7 @@ class GraphContainer: OnChartGestureListener {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
         mNotes = mSessionPresenter?.session?.notes
+        if (mGraph?.isFullyZoomedOut == true) mVisibleEntriesNumber = mMeasurementsSample.size
 
         drawSession()
         if (mMeasurementsSample.isNotEmpty()) showGraph()
