@@ -26,6 +26,8 @@ abstract class AirBeamConnector {
     protected val cancelStarted = AtomicBoolean(false)
     protected val connectionEstablished = AtomicBoolean(false)
     protected val connectionTimedOut = AtomicBoolean(false)
+    protected val reconnectionStarted = AtomicBoolean(false)
+    protected val reconnectionSuccessful = AtomicBoolean(false)
 
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
@@ -87,9 +89,24 @@ abstract class AirBeamConnector {
     }
 
     private fun tryReconnect(): Boolean {
+        println("MARYSIA: trying to reconect")
+        if (reconnectionStarted.get()) {
+            return false
+        } else {
+            reconnectionStarted.set(true)
+        }
+        reconnectionSuccessful.set(false)
         connectionStarted.set(false)
-        reconnect()
-        // how to determine wether it was successful or not? maybe different event?
+        for(i in 1..5) {
+            println("MARYSIA: trying to reconect no ${i}")
+            reconnect()
+            if (reconnectionSuccessful.get()) {
+                reconnectionStarted.set(false)
+                return true
+            }
+            Thread.sleep(20 * 1000)
+        }
+        reconnectionStarted.set(false)
         return false
     }
 
@@ -100,10 +117,14 @@ abstract class AirBeamConnector {
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
         mDeviceItem = deviceItem
         connectionEstablished.set(true)
+        if (reconnectionStarted.get()) {
+            reconnectionSuccessful.set(true)
+        }
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
     fun onConnectionFailed(deviceId: String) {
+        if (reconnectionStarted.get()) return
         mTimerTask?.cancel()
         if (connectionTimedOut.get() == false) {
             mListener?.onConnectionFailed(deviceId)
@@ -111,8 +132,14 @@ abstract class AirBeamConnector {
     }
 
     fun onDisconnected(deviceId: String) {
-        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
-        mListener?.onDisconnect(deviceId)
+        if (mDeviceItem?.id == deviceId) {
+            println("MARYSIA: onDisconnected, trying to RECONNECT")
+            if (!tryReconnect()) {
+                EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
+                mListener?.onDisconnect(deviceId)
+            }
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -133,11 +160,7 @@ abstract class AirBeamConnector {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
         println("MARYSIA: DISCONNECTED")
-        if (mDeviceItem?.id == event.deviceId) {
-            if (!tryReconnect()) {
-                disconnect()
-            }
-        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

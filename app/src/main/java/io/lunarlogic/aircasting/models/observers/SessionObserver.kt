@@ -19,6 +19,7 @@ class SessionObserver(
         sessionUUID ?: return
         var session: Session
 
+//        n = numberOFMEasurements
         mSessionsViewModel.loadLiveDataCompleteSessionBySessionUUID(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
             sessionDBObject?.let {
                 session = Session(sessionDBObject)

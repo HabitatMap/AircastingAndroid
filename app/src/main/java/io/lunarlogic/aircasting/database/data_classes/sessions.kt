@@ -174,6 +174,8 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
 
+    // SELECT * FROM sessions WHERE ROWID % :n = 0
+    // n = ?
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
 

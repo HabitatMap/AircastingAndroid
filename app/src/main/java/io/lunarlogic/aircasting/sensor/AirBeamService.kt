@@ -51,11 +51,11 @@ abstract class AirBeamService: SensorService(),
     }
 
     override fun onDisconnect(deviceId: String) {
-        reconnect()
+        tryReconnect()
         stopSelf()
     }
 
-    private fun reconnect() {
+    private fun tryReconnect() {
         try {
             mAirBeamConnector?.reconnect()
         } catch (e: BLENotSupported) {
