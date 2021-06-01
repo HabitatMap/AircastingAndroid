@@ -218,6 +218,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
+                activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
                 sessionsSyncService.sync()
                 averagingBackgroundService?.stop()
                 averagingPreviousMeasurementsBackgroundService?.stop()

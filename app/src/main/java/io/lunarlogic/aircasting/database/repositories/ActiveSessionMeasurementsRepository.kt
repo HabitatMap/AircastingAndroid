@@ -44,4 +44,10 @@ class ActiveSessionMeasurementsRepository {
         }
     }
 
+    fun deleteBySessionId(sessionId: Long?) {
+        sessionId?.let {
+            mDatabase.activeSessionsMeasurements().deleteActiveSessionMeasurementsBySession(sessionId)
+        }
+    }
+
 }

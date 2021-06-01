@@ -56,6 +56,9 @@ interface ActiveSessionMeasurementDao {
     @Query("DELETE FROM active_sessions_measurements WHERE id=:id")
     fun deleteActiveSessionMeasurement(id: Int)
 
+    @Query("DELETE FROM active_sessions_measurements WHERE session_id=:sessionId")
+    fun deleteActiveSessionMeasurementsBySession(sessionId: Long)
+
     @Transaction
     fun deleteAndInsertInTransaction(measurement: ActiveSessionMeasurementDBObject) {
         val id = getOldestMeasurementId(measurement.sessionId, measurement.streamId)
