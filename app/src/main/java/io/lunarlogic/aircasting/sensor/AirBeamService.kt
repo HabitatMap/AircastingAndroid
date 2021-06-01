@@ -51,10 +51,12 @@ abstract class AirBeamService: SensorService(),
     }
 
     override fun onDisconnect(deviceId: String) {
-        tryReconnect()
+        // Not sure if we should try to reconnect from here or directly from AirbeamConnector
+//        tryReconnect()
         stopSelf()
     }
 
+    // ??
     private fun tryReconnect() {
         try {
             mAirBeamConnector?.reconnect()

@@ -29,6 +29,8 @@ abstract class AirBeamConnector {
     protected val reconnectionStarted = AtomicBoolean(false)
     protected val reconnectionSuccessful = AtomicBoolean(false)
 
+    private var reconnectionTriesNumber = 0
+
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
 
@@ -56,6 +58,7 @@ abstract class AirBeamConnector {
     }
 
     fun reconnect() {
+        // check if they are set properly
         if (mDeviceItem == null || mSessionUUID == null) return
 
         connect(mDeviceItem!!, mSessionUUID!!)
@@ -88,26 +91,26 @@ abstract class AirBeamConnector {
         }
     }
 
-    private fun tryReconnect(): Boolean {
+    private fun tryReconnect(tryNumber: Int = 1) {
+        reconnectionTriesNumber += 1
         println("MARYSIA: trying to reconect")
+        if (tryNumber > 5) {
+            EventBus.getDefault().post(SensorDisconnectedEvent(mDeviceItem.id))
+            mListener?.onDisconnect(mDeviceItem.id)
+            reconnectionStarted.set(false)
+            return
+        }
+
         if (reconnectionStarted.get()) {
-            return false
+            return
         } else {
             reconnectionStarted.set(true)
         }
         reconnectionSuccessful.set(false)
         connectionStarted.set(false)
-        for(i in 1..5) {
-            println("MARYSIA: trying to reconect no ${i}")
-            reconnect()
-            if (reconnectionSuccessful.get()) {
-                reconnectionStarted.set(false)
-                return true
-            }
-            Thread.sleep(20 * 1000)
-        }
-        reconnectionStarted.set(false)
-        return false
+        reconnect()
+
+
     }
 
     fun registerListener(listener: Listener) {
@@ -134,9 +137,11 @@ abstract class AirBeamConnector {
     fun onDisconnected(deviceId: String) {
         if (mDeviceItem?.id == deviceId) {
             println("MARYSIA: onDisconnected, trying to RECONNECT")
-            if (!tryReconnect()) {
+            if (!reconnectionStarted.get()) {
                 EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
                 mListener?.onDisconnect(deviceId)
+            } else {
+                tryReconnect(reconnectionTriesNumber + 1)
             }
         }
 
