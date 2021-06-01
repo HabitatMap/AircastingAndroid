@@ -40,8 +40,6 @@ data class ActiveSessionMeasurementDBObject(
 
 @Dao
 interface ActiveSessionMeasurementDao {
-//    @Query("SELECT * FROM measurements")
-//    fun getAll(): List<MeasurementDBObject>
 
     @Query("SELECT count(id) FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId")
     fun countBySessionAndStream(sessionId: Long, streamId: Long): Int
@@ -57,9 +55,6 @@ interface ActiveSessionMeasurementDao {
 
     @Query("DELETE FROM active_sessions_measurements WHERE id=:id")
     fun deleteActiveSessionMeasurement(id: Int)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(measurements: List<ActiveSessionMeasurementDBObject>): List<Long>
 
     @Transaction
     fun deleteAndInsertInTransaction(measurement: ActiveSessionMeasurementDBObject) {

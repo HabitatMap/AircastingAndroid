@@ -36,7 +36,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
-    private val lastMeasurementsRepository = LastMeasurementsRepository()
+    private val activeSessionMeasurementsRepository = ActiveSessionMeasurementsRepository()
     private val noteRepository = NoteRepository()
     private var mCallback: (() -> Unit)? = null
 
@@ -171,7 +171,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     val measurementStreamId =
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
-                    lastMeasurementsRepository.createOrReplace(sessionId, measurementStreamId, measurement)
+                    activeSessionMeasurementsRepository.createOrReplace(sessionId, measurementStreamId, measurement)
                 } catch( e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }
