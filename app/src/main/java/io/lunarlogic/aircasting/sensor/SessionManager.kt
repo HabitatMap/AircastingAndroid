@@ -2,7 +2,6 @@ package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
