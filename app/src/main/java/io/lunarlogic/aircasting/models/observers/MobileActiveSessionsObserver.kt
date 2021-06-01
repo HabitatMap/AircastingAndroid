@@ -6,7 +6,7 @@ import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionsViewMvc
 
-class ActiveMobileSessionsObserver(
+class MobileActiveSessionsObserver(
     mLifecycleOwner: LifecycleOwner,
     mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionsViewMvc?
