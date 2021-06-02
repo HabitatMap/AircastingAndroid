@@ -21,6 +21,7 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.*
@@ -162,7 +163,7 @@ class MapContainer: OnMapReadyCallback {
         mMeasurementsLineOptions.addAll(mMeasurementPoints)
         mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
 
-        if (latestPoint != null && latestColor != null) {
+        if (latestPoint != null && latestColor != null  && mSessionPresenter?.session?.tab != SessionsTab.MOBILE_DORMANT) {
             drawLastMeasurementMarker(latestPoint, latestColor)
         }
 
