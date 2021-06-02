@@ -13,6 +13,7 @@ import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
@@ -89,6 +90,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
 
+        if (sessionPresenter?.session?.tab == SessionsTab.MOBILE_DORMANT) mStatisticsContainer = null
         if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
@@ -96,6 +98,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
                 mSessionPresenter,
                 this::onMeasurementStreamChanged
             )
+
             bindStatisticsContainer()
 
             mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
