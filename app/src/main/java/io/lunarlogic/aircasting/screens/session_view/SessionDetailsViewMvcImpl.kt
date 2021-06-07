@@ -59,7 +59,12 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
             true
         )
 
-        mStatisticsContainer = StatisticsContainer(this.rootView, context)
+        if (shouldShowStatisticsContainer()) {
+            mStatisticsContainer = StatisticsContainer(this.rootView, context)
+        } else {
+            mStatisticsContainer = null
+        }
+
         mMoreButton = this.rootView?.more_button
         mMoreInvisibleButton = this.rootView?.more_invisible_button
         mMoreButton?.setOnClickListener {
@@ -90,7 +95,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
 
-        bindStatisticsContainer()
         if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
@@ -99,9 +103,15 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
                 this::onMeasurementStreamChanged
             )
 
+            bindStatisticsContainer()
             mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
             mSessionMeasurementsDescription?.visibility = View.VISIBLE
         }
+    }
+
+    protected fun shouldShowStatisticsContainer(): Boolean {
+        //todo: do nadpisania w dormancie żeby zwracała false
+        return true
     }
 
     override fun refreshStatisticsContainer() {
@@ -141,7 +151,9 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun bindStatisticsContainer() {
-        mStatisticsContainer?.bindSession(mSessionPresenter)
+        if (shouldShowStatisticsContainer()) {
+            mStatisticsContainer?.bindSession(mSessionPresenter)
+        }
     }
 
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
