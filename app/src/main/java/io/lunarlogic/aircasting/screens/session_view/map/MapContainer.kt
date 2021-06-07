@@ -163,7 +163,7 @@ class MapContainer: OnMapReadyCallback {
         mMeasurementsLineOptions.addAll(mMeasurementPoints)
         mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
 
-        if (latestPoint != null && latestColor != null  && mSessionPresenter?.session?.tab != SessionsTab.MOBILE_DORMANT) {
+        if (latestPoint != null && latestColor != null) {
             drawLastMeasurementMarker(latestPoint, latestColor)
         }
 
@@ -200,6 +200,7 @@ class MapContainer: OnMapReadyCallback {
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
         if (point == null || color == null) return
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
+        if (!shouldDrawLastMeasurement()) return
 
         val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_dot_20, color)
         mLastMeasurementMarker = mMap?.addMarker(
@@ -366,6 +367,10 @@ class MapContainer: OnMapReadyCallback {
                 }
             }
         }
+    }
+
+    private fun shouldDrawLastMeasurement(): Boolean {
+        return mSessionPresenter?.session?.tab != SessionsTab.MOBILE_DORMANT
     }
 }
 
