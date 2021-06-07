@@ -90,7 +90,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
 
-        if (sessionPresenter?.session?.tab == SessionsTab.MOBILE_DORMANT) mStatisticsContainer = null
+        bindStatisticsContainer()
         if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
@@ -98,8 +98,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
                 mSessionPresenter,
                 this::onMeasurementStreamChanged
             )
-
-            bindStatisticsContainer()
 
             mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
             mSessionMeasurementsDescription?.visibility = View.VISIBLE
