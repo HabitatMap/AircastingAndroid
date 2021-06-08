@@ -36,6 +36,9 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements")
     fun getAll(): List<MeasurementDBObject>
 
+    @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId")
+    fun getByStreamId(streamId: Long): List<MeasurementDBObject>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(measurement: MeasurementDBObject): Long
 

@@ -119,6 +119,10 @@ class MeasurementStream(
         }
     }
 
+    fun setMeasurements(measurements: List<Measurement>) {
+        mMeasurements = measurements
+    }
+
     fun sensorNameOrder(): Int? {
         return if (sensorName.contains(AIRBEAM_SENSOR_NAME_REGEX, true)) {
             AirBeamSensorName.fromString(detailedType)?.ordinal

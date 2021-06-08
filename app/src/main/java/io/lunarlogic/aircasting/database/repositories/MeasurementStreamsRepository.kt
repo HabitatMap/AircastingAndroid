@@ -7,6 +7,13 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 class MeasurementStreamsRepository {
     private val mDatabase = DatabaseProvider.get()
 
+    fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
+        var streamDBObject = mDatabase.measurementStreams().
+        loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
+
+        return streamDBObject?.id
+    }
+
     fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStream): Long {
         var streamDBObject = mDatabase.measurementStreams().
             loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)

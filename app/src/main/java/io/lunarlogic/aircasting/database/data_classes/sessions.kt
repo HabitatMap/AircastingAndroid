@@ -72,18 +72,6 @@ class SessionWithStreamsDBObject {
     lateinit var streams: List<MeasurementStreamDBObject>
 }
 
-class SessionWithNotesDBObject {
-    @Embedded
-    lateinit var session: SessionDBObject
-
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "session_id",
-        entity = NoteDBObject::class
-    )
-    lateinit var notes: MutableList<NoteDBObject>
-}
-
 class SessionWithStreamsAndMeasurementsDBObject {
     @Embedded
     lateinit var session: SessionDBObject
@@ -138,6 +126,38 @@ class CompleteSessionDBObject {
     )
     lateinit var notes: MutableList<NoteDBObject>
 }
+
+class SessionWithNotesDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: MutableList<NoteDBObject>
+}
+
+class SessionWithStreamsAndNotesDBObject {
+    @Embedded
+    lateinit var session: SessionDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<MeasurementStreamDBObject>
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: MutableList<NoteDBObject>
+}
+
 
 class SessionWithStreamsAndLastMeasurementsDBObject {
     @Embedded
@@ -197,7 +217,7 @@ interface SessionDao {
     fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionWithNotesByUUID(uuid: String): SessionWithNotesDBObject?
+    fun loadSessionWithNotesByUUID(uuid: String):  LiveData<SessionWithStreamsAndNotesDBObject?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
@@ -255,9 +275,6 @@ interface SessionDao {
 
     @Query("SELECT id FROM sessions WHERE type=:type AND deleted=0")
     fun loadSessionUuidsByType(type: Session.Type): List<Long>
-
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionAndNotesByUUID(uuid: String): SessionWithNotesDBObject?
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)

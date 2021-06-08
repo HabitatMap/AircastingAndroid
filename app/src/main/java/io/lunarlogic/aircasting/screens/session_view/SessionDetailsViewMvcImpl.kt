@@ -9,17 +9,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
-import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
+import kotlinx.coroutines.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -37,6 +39,8 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     private val mMoreButton: ImageView?
     private val mMoreInvisibleButton: Button?
     private val mHLUSlider: HLUSlider
+
+    private val mMeasurementsRepository = MeasurementsRepository()
 
     constructor(
         inflater: LayoutInflater,
@@ -93,9 +97,14 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun addMeasurement(measurement: Measurement) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
-        mSessionPresenter = sessionPresenter
 
-        if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
+        mSessionPresenter = sessionPresenter
+        println("MARYSIA: sessionPresenter ${mSessionPresenter}")
+        reloadMeasurements()
+
+
+        println("MARYSIA: mSessionPresenter?.selectedStream?.measurements ${mSessionPresenter?.selectedStream?.measurements?.size}")
+        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
             mMeasurementsTableContainer.bindSession(
@@ -111,6 +120,48 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     protected open fun shouldShowStatisticsContainer(): Boolean {
         return true
+    }
+
+
+    private fun reloadMeasurements() {
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                val result = loadMeasurements()
+                onMeasurementsLoadResult(result)
+            }
+            query.await()
+        }
+
+    }
+
+    private fun onMeasurementsLoadResult(measurements: List<Measurement>) {
+        mSessionPresenter?.selectedStream?.setMeasurements(measurements)
+    }
+
+    fun loadMeasurements(): List<Measurement> {
+        var measurements: List<Measurement> = listOf()
+            mSessionPresenter?.let { sessionPresenter ->
+                sessionPresenter.sessionUUID?.let { sessionUUID ->
+                    val sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
+                    sessionDBObject?.let { session ->
+                        sessionPresenter.selectedStream?.let { selectedStream ->
+                            val selectedStreamId =
+                                MeasurementStreamsRepository().getId(session.id, selectedStream)
+                            selectedStreamId?.let { selectedStreamId ->
+                                measurements =
+                                    mMeasurementsRepository.getAllByStreamId(selectedStreamId)
+                                        .map { measurementDBObject ->
+                                            Measurement(measurementDBObject)
+                                        }
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        return measurements
     }
 
     override fun refreshStatisticsContainer() {
@@ -157,6 +208,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
+        reloadMeasurements()
         mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
