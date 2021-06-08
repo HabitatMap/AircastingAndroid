@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.session_view
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -86,6 +87,7 @@ class StatisticsContainer {
         if (stream != null) {
             if (mSum == null) {
                 mSum = stream.calculateSum()
+                Log.i("STAT_CON", "mSum: " + stream.calculateSum().toString())
             }
 
             val sum = if (mVisibleTimeSpan == null) {
@@ -93,8 +95,10 @@ class StatisticsContainer {
             } else {
                 stream.calculateSum(mVisibleTimeSpan!!)
             }
-
+            Log.i("STAT_CON", "Sum: " + sum.toString())
             avg = sum / calculateMeasurementsSize(stream)
+            Log.i("STAT_CON", "number of measurements" + calculateMeasurementsSize(stream).toString())
+            Log.i("STAT_CON", "Avg: " + avg.toString())
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)

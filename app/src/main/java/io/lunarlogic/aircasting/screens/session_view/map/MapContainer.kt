@@ -198,9 +198,9 @@ class MapContainer: OnMapReadyCallback {
 
 
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
+        if (!shouldDrawLastMeasurement()) return
         if (point == null || color == null) return
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
-        if (!shouldDrawLastMeasurement()) return
 
         val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_dot_20, color)
         mLastMeasurementMarker = mMap?.addMarker(
