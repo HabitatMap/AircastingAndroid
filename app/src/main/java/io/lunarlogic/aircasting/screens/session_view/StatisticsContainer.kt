@@ -93,8 +93,8 @@ class StatisticsContainer {
             } else {
                 stream.calculateSum(mVisibleTimeSpan!!)
             }
-            avg = sum / calculateMeasurementsSize(stream)
 
+            avg = sum / calculateMeasurementsSize(stream)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
