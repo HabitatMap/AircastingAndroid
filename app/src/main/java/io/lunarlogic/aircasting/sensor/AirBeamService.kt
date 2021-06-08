@@ -1,14 +1,17 @@
 package io.lunarlogic.aircasting.sensor
 
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.AirBeamConnectionFailedEvent
 import io.lunarlogic.aircasting.events.AirBeamConnectionSuccessfulEvent
 import io.lunarlogic.aircasting.exceptions.BLENotSupported
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.screens.new_session.select_device.DeviceItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
-
 
 abstract class AirBeamService: SensorService(),
     AirBeamConnector.Listener {
@@ -19,7 +22,12 @@ abstract class AirBeamService: SensorService(),
     lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
 
     @Inject
+    lateinit var airbeamReconnector: AirBeamReconnector
+
+    @Inject
     lateinit var errorHandler: ErrorHandler
+
+    private var reconnectionTriesNumber = 1
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
@@ -53,18 +61,10 @@ abstract class AirBeamService: SensorService(),
     override fun onDisconnect(deviceId: String) {
         // Not sure if we should try to reconnect from here or directly from AirbeamConnector
 //        tryReconnect()
+
         stopSelf()
     }
 
-    // ??
-    private fun tryReconnect() {
-        try {
-            mAirBeamConnector?.reconnect()
-        } catch (e: BLENotSupported) {
-            errorHandler.handleAndDisplay(e)
-            onConnectionFailed()
-        }
-    }
 
     private fun onConnectionFailed() {
         val event = AirBeamConnectionFailedEvent()
