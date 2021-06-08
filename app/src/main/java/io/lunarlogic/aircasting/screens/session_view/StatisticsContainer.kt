@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.session_view
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,6 +30,7 @@ class StatisticsContainer {
     private var mSensorThreshold: SensorThreshold? = null
 
     private var mSum: Double? = null
+    private var measurementValues: List<Double>? = null
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
@@ -67,7 +69,11 @@ class StatisticsContainer {
         val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
-        mSum?.let { mSum = it + (mNow ?: 0.0) }
+        // mSum?.let { mSum = it + (mNow ?: 0.0) }
+        measurementValues = stream?.measurements?.map { measurement ->
+            measurement.value
+        }
+        mSum = measurementValues?.sumByDouble { it }
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
         }
@@ -95,6 +101,8 @@ class StatisticsContainer {
             }
 
             avg = sum / calculateMeasurementsSize(stream)
+            Log.i("STAT_CON", "number of measurements" + calculateMeasurementsSize(stream).toString())
+            Log.i("STAT_CON", "Avg: " + avg.toString())
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
