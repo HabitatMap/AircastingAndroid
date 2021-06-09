@@ -3,6 +3,8 @@ package io.lunarlogic.aircasting.screens.session_view
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.events.NewMeasurementEvent
 import io.lunarlogic.aircasting.events.NoteDeletedEvent
@@ -18,7 +20,7 @@ import io.lunarlogic.aircasting.networking.services.SessionDownloadService
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUValidationErrorToast
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -44,6 +46,7 @@ abstract class SessionDetailsViewController(
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
+    private val mMeasurementsRepository = MeasurementsRepository()
     private var mShouldRefreshStatistics = AtomicBoolean(false)
 
     fun onCreate() {
@@ -58,6 +61,7 @@ abstract class SessionDetailsViewController(
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
+        reloadMeasurements()
         DatabaseProvider.backToUIThread(coroutineScope) {
             mViewMvc?.bindSession(mSessionPresenter)
             if (mShouldRefreshStatistics.get()) {
@@ -82,6 +86,7 @@ abstract class SessionDetailsViewController(
             mSessionsViewModel.updateSensorThreshold(sensorThreshold)
         }
     }
+
 
     override fun onHLUDialogValidationFailed() {
         HLUValidationErrorToast.show(rootActivity)
@@ -125,5 +130,64 @@ abstract class SessionDetailsViewController(
     override fun deleteNotePressed(note: Note?, session: Session?) {
         val event = NoteDeletedEvent(note, session)
         EventBus.getDefault().post(event)
+    }
+
+    private fun reloadMeasurements() {
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                val result = loadMeasurements()
+                onMeasurementsLoadResult(result)
+            }
+            query.await()
+        }
+
+    }
+
+    private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
+        mSessionPresenter?.session?.streams?.forEach { stream ->
+            measurements[stream.sensorName]?.let { streamMeasurements ->
+                stream.setMeasurements(streamMeasurements)
+                println("MARYSIA: loading measurements for stream ${stream.sensorName}")
+            }
+
+        }
+    }
+
+    private fun loadMeasurements(): HashMap<String, List<Measurement>> {
+        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
+        mSessionPresenter?.let { sessionPresenter ->
+            sessionPresenter.sessionUUID?.let { sessionUUID ->
+                val sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
+                sessionDBObject?.let { session ->
+                    sessionPresenter.selectedStream?.let { selectedStream ->
+                        sessionPresenter.session?.streams?.forEach { measurementStream ->
+                            val streamId =
+                                MeasurementStreamsRepository().getId(session.id, measurementStream)
+
+                            streamId?.let { streamId ->
+                                measurements[measurementStream.sensorName] = if (measurementStream == selectedStream) {
+                                    mMeasurementsRepository.getAllByStreamId(streamId)
+                                        .map { measurementDBObject ->
+                                            Measurement(measurementDBObject)
+                                        }
+                                } else {
+                                    mMeasurementsRepository.getLastMeasurementsForStream(
+                                        streamId,
+                                        1
+                                    )
+                                        .mapNotNull { measurementDBObject ->
+                                            measurementDBObject?.let { measurement ->
+                                                Measurement(measurement)
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return measurements
     }
 }

@@ -97,11 +97,8 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun addMeasurement(measurement: Measurement) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
-
         mSessionPresenter = sessionPresenter
         println("MARYSIA: sessionPresenter ${mSessionPresenter}")
-        reloadMeasurements()
-
 
         println("MARYSIA: mSessionPresenter?.selectedStream?.measurements ${mSessionPresenter?.selectedStream?.measurements?.size}")
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
@@ -121,67 +118,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected open fun shouldShowStatisticsContainer(): Boolean {
         return true
     }
-
-
-    private fun reloadMeasurements() {
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                val result = loadMeasurements()
-                onMeasurementsLoadResult(result)
-            }
-            query.await()
-        }
-
-    }
-
-    private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
-        mSessionPresenter?.session?.streams?.forEach { stream ->
-            measurements[stream.sensorName]?.let { streamMeasurements ->
-                stream.setMeasurements(streamMeasurements)
-                println("MARYSIA: loading measurements for stream ${stream.sensorName}")
-            }
-
-        }
-    }
-
-    private fun loadMeasurements(): HashMap<String, List<Measurement>> {
-        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
-            mSessionPresenter?.let { sessionPresenter ->
-                sessionPresenter.sessionUUID?.let { sessionUUID ->
-                    val sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
-                    sessionDBObject?.let { session ->
-                        sessionPresenter.selectedStream?.let { selectedStream ->
-                            sessionPresenter.session?.streams?.forEach { measurementStream ->
-                                val streamId =
-                                    MeasurementStreamsRepository().getId(session.id, measurementStream)
-
-                                streamId?.let { streamId ->
-                                    measurements[measurementStream.sensorName] = if (measurementStream == selectedStream) {
-                                        mMeasurementsRepository.getAllByStreamId(streamId)
-                                            .map { measurementDBObject ->
-                                                Measurement(measurementDBObject)
-                                            }
-                                    } else {
-                                        mMeasurementsRepository.getLastMeasurementsForStream(
-                                            streamId,
-                                            1
-                                        )
-                                            .mapNotNull { measurementDBObject ->
-                                                measurementDBObject?.let { measurement ->
-                                                    Measurement(measurement)
-                                                }
-                                            }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-        return measurements
-    }
-
+    
     override fun refreshStatisticsContainer() {
         mStatisticsContainer?.refresh(mSessionPresenter)
     }
@@ -226,7 +163,6 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
-        reloadMeasurements()
         mStatisticsContainer?.refresh(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
