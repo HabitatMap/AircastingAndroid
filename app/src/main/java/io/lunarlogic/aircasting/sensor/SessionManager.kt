@@ -172,6 +172,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
                     activeSessionMeasurementsRepository.createOrReplace(sessionId, measurementStreamId, measurement)
+                    sessionsRespository.updateLastMeasurementTime(sessionId, measurement.time)
                 } catch( e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }

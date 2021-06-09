@@ -146,4 +146,8 @@ class SessionsRepository {
     fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
         mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
     }
+
+    fun updateLastMeasurementTime(sessionId: Long, time: Date) {
+        mDatabase.sessions().updateLastMeasurementTime(sessionId, time)
+    }
 }
