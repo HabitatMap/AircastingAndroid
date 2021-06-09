@@ -134,28 +134,46 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     }
 
-    private fun onMeasurementsLoadResult(measurements: List<Measurement>) {
-        mSessionPresenter?.selectedStream?.setMeasurements(measurements)
+    private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
+        mSessionPresenter?.session?.streams?.forEach { stream ->
+            measurements[stream.sensorName]?.let { streamMeasurements ->
+                stream.setMeasurements(streamMeasurements)
+                println("MARYSIA: loading measurements for stream ${stream.sensorName}")
+            }
+
+        }
     }
 
-    fun loadMeasurements(): List<Measurement> {
-        var measurements: List<Measurement> = listOf()
+    private fun loadMeasurements(): HashMap<String, List<Measurement>> {
+        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
             mSessionPresenter?.let { sessionPresenter ->
                 sessionPresenter.sessionUUID?.let { sessionUUID ->
                     val sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
                     sessionDBObject?.let { session ->
                         sessionPresenter.selectedStream?.let { selectedStream ->
-                            val selectedStreamId =
-                                MeasurementStreamsRepository().getId(session.id, selectedStream)
-                            selectedStreamId?.let { selectedStreamId ->
-                                measurements =
-                                    mMeasurementsRepository.getAllByStreamId(selectedStreamId)
-                                        .map { measurementDBObject ->
-                                            Measurement(measurementDBObject)
-                                        }
+                            sessionPresenter.session?.streams?.forEach { measurementStream ->
+                                val streamId =
+                                    MeasurementStreamsRepository().getId(session.id, measurementStream)
 
+                                streamId?.let { streamId ->
+                                    measurements[measurementStream.sensorName] = if (measurementStream == selectedStream) {
+                                        mMeasurementsRepository.getAllByStreamId(streamId)
+                                            .map { measurementDBObject ->
+                                                Measurement(measurementDBObject)
+                                            }
+                                    } else {
+                                        mMeasurementsRepository.getLastMeasurementsForStream(
+                                            streamId,
+                                            1
+                                        )
+                                            .mapNotNull { measurementDBObject ->
+                                                measurementDBObject?.let { measurement ->
+                                                    Measurement(measurement)
+                                                }
+                                            }
+                                    }
+                                }
                             }
-
                         }
                     }
                 }
