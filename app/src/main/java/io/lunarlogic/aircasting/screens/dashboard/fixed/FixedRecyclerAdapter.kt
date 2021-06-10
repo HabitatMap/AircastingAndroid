@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionsRecyclerAdapter
+import kotlinx.coroutines.*
 
 
 class FixedRecyclerAdapter(
@@ -31,12 +32,17 @@ class FixedRecyclerAdapter(
         }
 
         var reloadedSession: Session? = null
-        DatabaseProvider.runQuery { scope ->
-            val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-            dbSessionWithMeasurements?.let {
-                reloadedSession = Session(dbSessionWithMeasurements)
+
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                dbSessionWithMeasurements?.let {
+                    reloadedSession = Session(dbSessionWithMeasurements)
+                }
             }
+            query.await()
         }
+
         return reloadedSession ?: session
     }
 }
