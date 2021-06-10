@@ -21,6 +21,7 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.models.Note
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
 import io.lunarlogic.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
 import java.util.*
@@ -197,6 +198,7 @@ class MapContainer: OnMapReadyCallback {
 
 
     private fun drawLastMeasurementMarker(point: LatLng?, color: Int?) {
+        if (!shouldDrawLastMeasurement()) return
         if (point == null || color == null) return
         if (mLastMeasurementMarker != null) mLastMeasurementMarker!!.remove()
 
@@ -365,6 +367,10 @@ class MapContainer: OnMapReadyCallback {
                 }
             }
         }
+    }
+
+    private fun shouldDrawLastMeasurement(): Boolean {
+        return mSessionPresenter?.session?.tab != SessionsTab.MOBILE_DORMANT
     }
 }
 
