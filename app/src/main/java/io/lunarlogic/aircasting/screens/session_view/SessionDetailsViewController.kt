@@ -73,8 +73,6 @@ abstract class SessionDetailsViewController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        println("MARYSIA: new measurement, going to bind session")
-
         if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
@@ -136,6 +134,11 @@ abstract class SessionDetailsViewController(
         EventBus.getDefault().post(event)
     }
 
+    override fun refreshSession() {
+        reloadMeasurements()
+        mViewMvc?.bindSession(mSessionPresenter)
+    }
+
     private fun reloadMeasurements() {
         runBlocking {
             val query = GlobalScope.async(Dispatchers.IO) {
@@ -151,7 +154,6 @@ abstract class SessionDetailsViewController(
         mSessionPresenter?.session?.streams?.forEach { stream ->
             measurements[stream.sensorName]?.let { streamMeasurements ->
                 stream.setMeasurements(streamMeasurements)
-                println("MARYSIA: loading measurements for stream ${stream.sensorName}")
             }
 
         }

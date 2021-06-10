@@ -53,10 +53,7 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
-            println("MARYSIA: hide loader")
             hideLoader(mLoader)
-        } else {
-            println("MARYSIA: measurements: ${mSessionPresenter?.selectedStream?.measurements?.size}")
         }
         mMapContainer?.bindSession(mSessionPresenter)
 

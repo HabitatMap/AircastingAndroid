@@ -98,9 +98,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        println("MARYSIA: sessionPresenter ${mSessionPresenter}")
 
-        println("MARYSIA: mSessionPresenter?.selectedStream?.measurements ${mSessionPresenter?.selectedStream?.measurements?.size}")
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
@@ -164,6 +162,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
         mStatisticsContainer?.refresh(mSessionPresenter)
+        mListener?.refreshSession()
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 
