@@ -118,7 +118,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected open fun shouldShowStatisticsContainer(): Boolean {
         return true
     }
-    
+
     override fun refreshStatisticsContainer() {
         mStatisticsContainer?.refresh(mSessionPresenter)
     }
