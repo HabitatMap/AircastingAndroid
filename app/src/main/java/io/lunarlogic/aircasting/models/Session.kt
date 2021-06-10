@@ -294,7 +294,7 @@ class Session(
                 session.status != status ||
                 session.endTime != endTime ||
                 session.notes.size != notes.size ||
-                session.lastMeasurementTime != lastMeasurementTime ||
+//                session.lastMeasurementTime != lastMeasurementTime ||
                 (session.measurementsCount() > 0 && session.lastMeasurement().time != lastMeasurement().time)
     }
 

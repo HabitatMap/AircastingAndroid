@@ -23,6 +23,7 @@ class SessionObserver(
             sessionDBObject?.let {
                 session = Session(sessionDBObject)
                 if (session.hasChangedFrom(mSessionPresenter.session)) {
+                    println("MARYSIA: session has changed, going to bind session")
                     onSessionChanged(session)
                 }
             }

@@ -73,10 +73,14 @@ abstract class SessionDetailsViewController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
+        println("MARYSIA: new measurement, going to bind session")
+
         if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
+            reloadMeasurements()
+            mViewMvc?.bindSession(mSessionPresenter)
             mViewMvc?.addMeasurement(measurement)
         }
     }
