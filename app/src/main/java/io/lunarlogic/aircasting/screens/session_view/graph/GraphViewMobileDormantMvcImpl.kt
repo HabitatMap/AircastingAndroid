@@ -15,11 +15,11 @@ class GraphViewMobileDormantMvcImpl(
         mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description_long)
     }
 
-    override fun bindStatisticsContainer() {
-        mStatisticsContainer = null
-    }
-
     override fun defaultZoomSpan(): Int? {
         return null // will fallback to entire session span
+    }
+
+    override fun shouldShowStatisticsContainer(): Boolean {
+        return false
     }
 }

@@ -11,11 +11,11 @@ class MapViewMobileDormantMvcImpl(
     supportFragmentManager: FragmentManager?
 ): MapViewMvcImpl(inflater, parent, supportFragmentManager) {
 
-    override fun bindStatisticsContainer() {
-        mStatisticsContainer = null
-    }
-
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description_long)
+    }
+
+    override fun shouldShowStatisticsContainer(): Boolean {
+        return false
     }
 }
