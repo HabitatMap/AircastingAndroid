@@ -18,4 +18,8 @@ class GraphViewMobileDormantMvcImpl(
     override fun defaultZoomSpan(): Int? {
         return null // will fallback to entire session span
     }
+
+    override fun shouldShowStatisticsContainer(): Boolean {
+        return false
+    }
 }

@@ -109,8 +109,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         }
     }
 
-    protected fun shouldShowStatisticsContainer(): Boolean {
-        //todo: do nadpisania w dormancie żeby zwracała false
+    protected open fun shouldShowStatisticsContainer(): Boolean {
         return true
     }
 
