@@ -14,6 +14,8 @@ import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.safeRegister
 import io.lunarlogic.aircasting.location.LocationHelper
 import io.lunarlogic.aircasting.models.*
+import io.lunarlogic.aircasting.models.observers.FixedSessionObserver
+import io.lunarlogic.aircasting.models.observers.MobileSessionObserver
 import io.lunarlogic.aircasting.models.observers.SessionObserver
 import io.lunarlogic.aircasting.networking.services.ApiServiceFactory
 import io.lunarlogic.aircasting.networking.services.SessionDownloadService
@@ -39,7 +41,21 @@ abstract class SessionDetailsViewController(
 ): SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
-    private val mSessionObserver = SessionObserver(rootActivity, mSessionsViewModel, mSessionPresenter, this::onSessionChanged)
+    private val mSessionObserver = if (mSessionPresenter.isFixed()) {
+        FixedSessionObserver(
+            rootActivity,
+            mSessionsViewModel,
+            mSessionPresenter,
+            this::onSessionChanged
+        )
+    } else {
+        MobileSessionObserver(
+            rootActivity,
+            mSessionsViewModel,
+            mSessionPresenter,
+            this::onSessionChanged
+        )
+    }
     protected var editNoteDialog: EditNoteBottomSheet? = null
 
     protected val mErrorHandler = ErrorHandler(rootActivity)
