@@ -230,5 +230,5 @@ abstract class SessionDetailsViewController(
 
         return measurements
     }
-    
+
 }

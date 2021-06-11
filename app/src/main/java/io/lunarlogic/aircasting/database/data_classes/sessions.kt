@@ -31,8 +31,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
-    @ColumnInfo(name = "last_measurement_time") val lastMeasurementTime: Date? = null
+    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
 
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -279,7 +278,4 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
-
-    @Query("UPDATE sessions SET last_measurement_time=:time WHERE id=:sessionId")
-    fun updateLastMeasurementTime(sessionId: Long, time: Date)
 }

@@ -29,8 +29,7 @@ class Session(
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
     private var mNotes: MutableList<Note> = mutableListOf(),
-    var averagingFrequency: Int = 1,
-    var lastMeasurementTime: Date? = null
+    var averagingFrequency: Int = 1
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -294,7 +293,6 @@ class Session(
                 session.status != status ||
                 session.endTime != endTime ||
                 session.notes.size != notes.size ||
-//                session.lastMeasurementTime != lastMeasurementTime ||
                 (session.measurementsCount() > 0 && session.lastMeasurement().time != lastMeasurement().time)
     }
 
