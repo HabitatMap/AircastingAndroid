@@ -136,7 +136,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream && !mCollapsed) {
+            if (stream == mSessionPresenter?.selectedStream) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
