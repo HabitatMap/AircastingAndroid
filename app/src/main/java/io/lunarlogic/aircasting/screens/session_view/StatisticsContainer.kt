@@ -29,8 +29,8 @@ class StatisticsContainer {
 
     private var mSensorThreshold: SensorThreshold? = null
 
-    private var mSum: Double? = null
-    private var measurementValues: List<Measurement?> = mutableListOf()
+    //private var mSum: Double? = null
+    private var mMeasurementValues: MutableList<Double?> = mutableListOf()
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
@@ -69,20 +69,16 @@ class StatisticsContainer {
         val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
-        measurementValues += stream?.measurements?.lastOrNull() //todo: it might add 1 measurement 2 times... hmmm
-//        mSum = null // todo: add measurement to list, increase mSum (?) of value of this measurement
-//         mSum?.let { mSum = it + (mNow ?: 0.0) }
-//        measurementValues = stream?.measurements?.map { measurement ->
-//            measurement.value
-//        }
-        //mSum = measurementValues?.sumByDouble { it }
+        mMeasurementValues.add(mNow) //todo: it might add 1 measurement 2 times... hmmm
+
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
         }
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
-        mSum = null
+        mMeasurementValues = mutableListOf()
+        //mSum = null
         mPeak = null
         mNow = null
         bindSession(sessionPresenter)
@@ -92,17 +88,7 @@ class StatisticsContainer {
         var avg: Double? = null
 
         if (stream != null) {
-            if (mSum == null && measurementValues.isNotEmpty()) {  // todo: and if "measurementValues != null/empty"
-                mSum = stream.calculateSum()
-            } else {
-                mSum = measurementValues.sumByDouble { it!!.value }
-            }// todo: else { sumByDouble !!}
-
-            val sum = if (mVisibleTimeSpan == null) {
-                mSum!!
-            } else {
-                stream.calculateSum(mVisibleTimeSpan!!)
-            }
+            val sum = calculateSum(stream)
 
             avg = sum / calculateMeasurementsSize(stream)
             Log.i("STAT_CON", "number of measurements" + calculateMeasurementsSize(stream).toString())
@@ -110,6 +96,15 @@ class StatisticsContainer {
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
+    }
+
+    private fun calculateSum(stream: MeasurementStream?): Double {
+        if (mVisibleTimeSpan != null) {
+            return streamMeasurements(stream!!).sumByDouble { it!!.value }
+        } else if (mMeasurementValues.isEmpty()) {
+            mMeasurementValues = streamMeasurements(stream!!).map { it!!.value }.toMutableList()
+        }
+        return mMeasurementValues.sumByDouble { it!! }
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
@@ -150,7 +145,7 @@ class StatisticsContainer {
 
     private fun streamMeasurements(stream: MeasurementStream): List<Measurement?> {
         return if (mVisibleTimeSpan == null) {
-            measurementValues
+            return stream.measurements
         } else {
             stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!)
         }
