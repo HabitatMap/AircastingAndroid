@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.models.Session
 
 class MapViewFixedMvcImpl(
     inflater: LayoutInflater,
@@ -13,5 +14,9 @@ class MapViewFixedMvcImpl(
 
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text = context.getString(R.string.session_measurements_description)
+    }
+
+    override fun getSessionType(): Session.Type {
+        return Session.Type.FIXED
     }
 }

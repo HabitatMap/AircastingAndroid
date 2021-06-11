@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.models.observers
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import io.lunarlogic.aircasting.database.DatabaseProvider
 import io.lunarlogic.aircasting.models.Session
@@ -8,26 +9,31 @@ import io.lunarlogic.aircasting.models.SessionsViewModel
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.coroutines.CoroutineScope
 
-class SessionObserver(
+abstract class SessionObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
-    private val mSessionsViewModel: SessionsViewModel,
+    protected val mSessionsViewModel: SessionsViewModel,
     private val mSessionPresenter: SessionPresenter,
     private val onSessionChangedCallback: (coroutineScope: CoroutineScope) -> Unit
-) {
-    fun observe() {
-        val sessionUUID = mSessionPresenter.sessionUUID
-        sessionUUID ?: return
-        var session: Session
 
-        mSessionsViewModel.loadLiveDataCompleteSessionBySessionUUID(sessionUUID).observe(mLifecycleOwner, Observer { sessionDBObject ->
-            sessionDBObject?.let {
-                session = Session(sessionDBObject)
-                if (session.hasChangedFrom(mSessionPresenter.session)) {
-                    onSessionChanged(session)
-                }
+) {
+    private var mObserver: Observer<Type?> = Observer { sessionDBObject ->
+        sessionDBObject?.let {
+            val session = buildSession(sessionDBObject)
+            if (session.hasChangedFrom(mSessionPresenter.session)) {
+                onSessionChanged(session)
             }
-        })
+        }
     }
+
+    private var mSessionLiveData: LiveData<Type?>? = null
+
+    fun observe() {
+        mSessionLiveData = sessionLiveData()
+        mSessionLiveData?.observe(mLifecycleOwner, mObserver)
+    }
+
+    abstract fun sessionLiveData(): LiveData<Type?>?
+    abstract fun buildSession(dbSession: Type): Session
 
     private fun onSessionChanged(session: Session) {
         mSessionPresenter.session = session

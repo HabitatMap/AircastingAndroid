@@ -9,17 +9,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
+import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
+import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
-import io.lunarlogic.aircasting.screens.dashboard.SessionsTab
-import io.lunarlogic.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
+import kotlinx.coroutines.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -37,6 +39,8 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     private val mMoreButton: ImageView?
     private val mMoreInvisibleButton: Button?
     private val mHLUSlider: HLUSlider
+
+    private val mMeasurementsRepository = MeasurementsRepository()
 
     constructor(
         inflater: LayoutInflater,
@@ -93,9 +97,10 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun addMeasurement(measurement: Measurement) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
+        mListener?.refreshSession()
         mSessionPresenter = sessionPresenter
 
-        if (sessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
+        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
             bindSessionDetails()
             showSlider()
             mMeasurementsTableContainer.bindSession(
@@ -158,6 +163,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
         mStatisticsContainer?.refresh(mSessionPresenter)
+        bindSession(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 

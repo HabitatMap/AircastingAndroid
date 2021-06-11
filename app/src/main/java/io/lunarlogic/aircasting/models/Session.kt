@@ -96,6 +96,16 @@ class Session(
         }.toMutableList()
     }
 
+    constructor(sessionWithStreamsAndNotesDBObject: SessionWithStreamsAndNotesDBObject):
+            this(sessionWithStreamsAndNotesDBObject.session) {
+        this.mNotes = sessionWithStreamsAndNotesDBObject.notes.map { noteDBObject ->
+            Note(noteDBObject)
+        }.toMutableList()
+        this.mStreams = sessionWithStreamsAndNotesDBObject.streams.map { measurementStreamDBObject ->
+            MeasurementStream(measurementStreamDBObject)
+        }
+    }
+
     constructor(completeSessionDBObject: CompleteSessionDBObject):
             this(completeSessionDBObject.session) {
         this.mNotes = completeSessionDBObject.notes.map { noteDBObject ->

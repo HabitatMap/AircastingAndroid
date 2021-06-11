@@ -83,4 +83,8 @@ class MeasurementsRepository {
         mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency)
     }
 
+    fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {
+        return mDatabase.measurements().getByStreamId(streamId)
+    }
+
 }
