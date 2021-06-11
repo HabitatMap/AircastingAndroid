@@ -92,7 +92,6 @@ abstract class SessionDetailsViewController(
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, location?.latitude , location?.longitude)
 
-            reloadMeasurements()
             mViewMvc?.bindSession(mSessionPresenter)
             mViewMvc?.addMeasurement(measurement)
         }
@@ -152,7 +151,6 @@ abstract class SessionDetailsViewController(
     override fun refreshSession() {
         if (mSessionPresenter.isFixed()) return
         reloadMeasurements()
-        mViewMvc?.bindSession(mSessionPresenter)
     }
 
     private fun reloadMeasurements() {

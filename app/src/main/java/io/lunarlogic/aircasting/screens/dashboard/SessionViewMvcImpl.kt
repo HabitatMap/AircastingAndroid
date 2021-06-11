@@ -143,6 +143,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
+        // TODO: check what is going on with binding measurements table because it is bind 6 times every second
         bindLoader(sessionPresenter)
         bindSelectedStream(sessionPresenter)
         bindExpanded(sessionPresenter)

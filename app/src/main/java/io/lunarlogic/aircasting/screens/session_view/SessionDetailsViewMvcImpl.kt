@@ -97,6 +97,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     override fun addMeasurement(measurement: Measurement) {}
 
     override fun bindSession(sessionPresenter: SessionPresenter?) {
+        mListener?.refreshSession()
         mSessionPresenter = sessionPresenter
 
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
@@ -162,7 +163,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter?.selectedStream = measurementStream
         mStatisticsContainer?.refresh(mSessionPresenter)
-        mListener?.refreshSession()
+        bindSession(mSessionPresenter)
         mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 
