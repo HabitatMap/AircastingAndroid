@@ -3,6 +3,8 @@ package io.lunarlogic.aircasting.screens.session_view
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.database.DatabaseProvider
+import io.lunarlogic.aircasting.database.data_classes.MeasurementDBObject
+import io.lunarlogic.aircasting.database.data_classes.SessionDBObject
 import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
 import io.lunarlogic.aircasting.database.repositories.SessionsRepository
@@ -175,39 +177,58 @@ abstract class SessionDetailsViewController(
 
     private fun loadMeasurements(): HashMap<String, List<Measurement>> {
         var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
-        mSessionPresenter?.let { sessionPresenter ->
-            sessionPresenter.sessionUUID?.let { sessionUUID ->
-                val sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
-                sessionDBObject?.let { session ->
-                    sessionPresenter.selectedStream?.let { selectedStream ->
-                        sessionPresenter.session?.streams?.forEach { measurementStream ->
-                            val streamId =
-                                MeasurementStreamsRepository().getId(session.id, measurementStream)
+        val sessionUUID = mSessionPresenter.sessionUUID
+        var sessionDBObject: SessionDBObject? = null
 
-                            streamId?.let { streamId ->
-                                measurements[measurementStream.sensorName] = if (measurementStream == selectedStream) {
-                                    mMeasurementsRepository.getAllByStreamId(streamId)
-                                        .map { measurementDBObject ->
-                                            Measurement(measurementDBObject)
-                                        }
-                                } else {
-                                    mMeasurementsRepository.getLastMeasurementsForStream(
-                                        streamId,
-                                        1
-                                    )
-                                        .mapNotNull { measurementDBObject ->
-                                            measurementDBObject?.let { measurement ->
-                                                Measurement(measurement)
-                                            }
-                                        }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+        sessionUUID?.let { sessionUUID ->
+            sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
         }
+
+
+        sessionDBObject?.let { session ->
+            mSessionPresenter.selectedStream?.let { selectedStream ->
+                measurements = loadMeasurementsForStreams(session.id,  mSessionPresenter.session?.streams, selectedStream)
+            }
+        }
+
         return measurements
     }
+
+    private fun measurementsList(measurements: List<MeasurementDBObject?>): List<Measurement> {
+        return measurements.mapNotNull { measurementDBObject ->
+            measurementDBObject?.let { measurement ->
+                Measurement(measurement)
+            }
+        }
+    }
+
+    private fun loadMeasurementsForStreams(
+        sessionId: Long,
+        measurementStreams: List<MeasurementStream>?,
+        selectedStream: MeasurementStream
+    ): HashMap<String, List<Measurement>> {
+        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
+
+        measurementStreams?.forEach { measurementStream ->
+            val streamId =
+                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+
+            streamId?.let { streamId ->
+                measurements[measurementStream.sensorName] =
+                    if (measurementStream == selectedStream) {
+                        measurementsList(mMeasurementsRepository.getAllByStreamId(streamId))
+                    } else {
+                        measurementsList(
+                            mMeasurementsRepository.getLastMeasurementsForStream(
+                                streamId,
+                                1
+                            )
+                        )
+                    }
+            }
+        }
+
+        return measurements
+    }
+    
 }
