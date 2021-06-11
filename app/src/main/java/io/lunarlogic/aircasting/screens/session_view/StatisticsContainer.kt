@@ -30,7 +30,7 @@ class StatisticsContainer {
     private var mSensorThreshold: SensorThreshold? = null
 
     private var mSum: Double? = null
-    private var measurementValues: List<Double>? = null
+    private var measurementValues: List<Measurement?> = mutableListOf()
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
@@ -69,11 +69,13 @@ class StatisticsContainer {
         val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
-        // mSum?.let { mSum = it + (mNow ?: 0.0) }
-        measurementValues = stream?.measurements?.map { measurement ->
-            measurement.value
-        }
-        mSum = measurementValues?.sumByDouble { it }
+        measurementValues += stream?.measurements?.lastOrNull() //todo: it might add 1 measurement 2 times... hmmm
+//        mSum = null // todo: add measurement to list, increase mSum (?) of value of this measurement
+//         mSum?.let { mSum = it + (mNow ?: 0.0) }
+//        measurementValues = stream?.measurements?.map { measurement ->
+//            measurement.value
+//        }
+        //mSum = measurementValues?.sumByDouble { it }
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
         }
@@ -90,9 +92,11 @@ class StatisticsContainer {
         var avg: Double? = null
 
         if (stream != null) {
-            if (mSum == null) {
+            if (mSum == null && measurementValues.isNotEmpty()) {  // todo: and if "measurementValues != null/empty"
                 mSum = stream.calculateSum()
-            }
+            } else {
+                mSum = measurementValues.sumByDouble { it!!.value }
+            }// todo: else { sumByDouble !!}
 
             val sum = if (mVisibleTimeSpan == null) {
                 mSum!!
@@ -141,12 +145,12 @@ class StatisticsContainer {
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
-        return streamMeasurements(stream).maxBy { it.value }?.value ?: 0.0
+        return streamMeasurements(stream).maxBy { it!!.value }?.value ?: 0.0
     }
 
-    private fun streamMeasurements(stream: MeasurementStream): List<Measurement> {
+    private fun streamMeasurements(stream: MeasurementStream): List<Measurement?> {
         return if (mVisibleTimeSpan == null) {
-            stream.measurements
+            measurementValues
         } else {
             stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!)
         }
