@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
+import io.lunarlogic.aircasting.models.Session
 
 class GraphViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
@@ -21,5 +22,9 @@ class GraphViewMobileDormantMvcImpl(
 
     override fun shouldShowStatisticsContainer(): Boolean {
         return false
+    }
+
+    override fun getSessionType(): Session.Type {
+        return Session.Type.MOBILE
     }
 }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.models.Measurement
+import io.lunarlogic.aircasting.models.Session
 
 open class GraphViewFixedMvcImpl(
     inflater: LayoutInflater,
@@ -19,5 +20,9 @@ open class GraphViewFixedMvcImpl(
 
     override fun measurementsSample(): List<Measurement> {
         return mSessionPresenter?.selectedStream?.getLastMeasurements(MEASUREMENTS_SAMPLE_SIZE) ?: listOf<Measurement>()
+    }
+
+    override fun getSessionType(): Session.Type {
+        return Session.Type.FIXED
     }
 }

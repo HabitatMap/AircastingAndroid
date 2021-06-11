@@ -41,7 +41,7 @@ abstract class SessionDetailsViewController(
 ): SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
-    private val mSessionObserver = if (mSessionPresenter.isFixed()) {
+    private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {
         FixedSessionObserver(
             rootActivity,
             mSessionsViewModel,
@@ -77,7 +77,6 @@ abstract class SessionDetailsViewController(
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
-        reloadMeasurements()
         DatabaseProvider.backToUIThread(coroutineScope) {
             mViewMvc?.bindSession(mSessionPresenter)
             if (mShouldRefreshStatistics.get()) {
@@ -151,6 +150,7 @@ abstract class SessionDetailsViewController(
     }
 
     override fun refreshSession() {
+        if (mSessionPresenter.isFixed()) return
         reloadMeasurements()
         mViewMvc?.bindSession(mSessionPresenter)
     }

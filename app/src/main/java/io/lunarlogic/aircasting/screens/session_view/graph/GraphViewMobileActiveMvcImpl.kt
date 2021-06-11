@@ -72,4 +72,8 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
     }
+
+    override fun getSessionType(): Session.Type {
+        return Session.Type.MOBILE
+    }
 }
