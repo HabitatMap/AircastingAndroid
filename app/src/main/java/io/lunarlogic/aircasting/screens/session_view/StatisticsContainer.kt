@@ -69,7 +69,7 @@ class StatisticsContainer {
         val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
-        mMeasurementValues.add(mNow) //todo: it might add 1 measurement 2 times... hmmm
+        mMeasurementValues.add(mNow)
 
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
@@ -101,7 +101,8 @@ class StatisticsContainer {
     private fun calculateSum(stream: MeasurementStream?): Double {
         if (mVisibleTimeSpan != null) {
             return streamMeasurements(stream!!).sumByDouble { it!!.value }
-        } else if (mMeasurementValues.isEmpty()) {
+        }
+        if (mMeasurementValues.isEmpty()) {
             mMeasurementValues = streamMeasurements(stream!!).map { it!!.value }.toMutableList()
         }
         return mMeasurementValues.sumByDouble { it!! }
