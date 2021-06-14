@@ -30,7 +30,7 @@ class StatisticsContainer {
     private var mSensorThreshold: SensorThreshold? = null
 
     //private var mSum: Double? = null
-    private var mMeasurementValues: MutableList<Double?> = mutableListOf()
+    private var mMeasurementValues: MutableList<Double?>? = null
     private var mNow: Double? = null
     private var mPeak: Double? = null
 
@@ -69,7 +69,10 @@ class StatisticsContainer {
         val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
-        mMeasurementValues.add(mNow)
+
+        setMeasurementValues(stream)
+
+        mMeasurementValues?.add(mNow)
 
         if (mPeak != null && mNow != null && mNow!! > mPeak!!) {
             mPeak = mNow
@@ -77,7 +80,7 @@ class StatisticsContainer {
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
-        mMeasurementValues = mutableListOf()
+        mMeasurementValues = null
         //mSum = null
         mPeak = null
         mNow = null
@@ -99,13 +102,10 @@ class StatisticsContainer {
     }
 
     private fun calculateSum(stream: MeasurementStream?): Double {
-        if (mVisibleTimeSpan != null) {
-            return streamMeasurements(stream!!).sumByDouble { it!!.value }
-        }
-        if (mMeasurementValues.isEmpty()) {
-            mMeasurementValues = streamMeasurements(stream!!).map { it!!.value }.toMutableList()
-        }
-        return mMeasurementValues.sumByDouble { it!! }
+        if (stream == null) return 0.0
+        val values = streamMeasurementsValues(stream)
+
+        return values?.sum() ?: 0.0
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
@@ -137,20 +137,41 @@ class StatisticsContainer {
     }
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
-        return streamMeasurements(stream).size
+        return streamMeasurementsValues(stream)?.size ?: 0
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
-        return streamMeasurements(stream).maxBy { it!!.value }?.value ?: 0.0
+        val values = streamMeasurementsValues(stream)
+        return values?.max() ?: 0.0
     }
 
-    private fun streamMeasurements(stream: MeasurementStream): List<Measurement?> {
-        return if (mVisibleTimeSpan == null) {
-            return stream.measurements
+    private fun streamMeasurementsValues(stream: MeasurementStream): List<Double>? {
+        val measurementValues = if (mVisibleTimeSpan != null) {
+            measurementValuesForSpan(stream, mVisibleTimeSpan!!)
         } else {
-            stream.getMeasurementsForTimeSpan(mVisibleTimeSpan!!)
+            setMeasurementValues(stream)
+            mMeasurementValues
+        }
+        return measurementValues?.filterNotNull()
+    }
+
+    private fun setMeasurementValues(stream: MeasurementStream?) {
+        if (mMeasurementValues == null) {
+            mMeasurementValues = measurementValues(stream)
         }
     }
+    private fun measurementValues(stream: MeasurementStream?): MutableList<Double?> {
+        if (stream == null) return mutableListOf()
+
+        return stream.measurements.map { it.value }.toMutableList()
+    }
+
+    private fun measurementValuesForSpan(stream: MeasurementStream?, visibleTimeSpan: ClosedRange<Date>): List<Double> {
+        if (stream == null) return listOf()
+
+        return stream.getMeasurementsForTimeSpan(visibleTimeSpan).map { it.value }
+    }
+
     private fun getNowValue(stream: MeasurementStream?): Double? {
         return stream?.measurements?.lastOrNull()?.value
     }
