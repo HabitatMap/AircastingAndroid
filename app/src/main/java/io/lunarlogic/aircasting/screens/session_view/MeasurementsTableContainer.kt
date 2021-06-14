@@ -136,6 +136,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
+            //todo: 2 rozne klasy measurements table, abstract metoda shouldShowMEasurementSelected(): Boolean, i nadpisywać ją w podklasach, użyć tych klas odpowiednio w graph i map view
             if (stream == mSessionPresenter?.selectedStream) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
