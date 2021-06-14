@@ -17,7 +17,8 @@ import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
 import io.lunarlogic.aircasting.screens.common.BottomSheet
 import io.lunarlogic.aircasting.screens.dashboard.charts.Chart
-import io.lunarlogic.aircasting.screens.session_view.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
@@ -71,7 +72,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         expandCardCallback = { expandSessionCard() }
         onExpandSessionCardClickedCallback = { onExpandSessionCardClicked() }
 
-        mMeasurementsTableContainer = MeasurementsTableContainer(
+        mMeasurementsTableContainer = SessionCardMeasurementsTableContainer(
             context,
             inflater,
             this.rootView,
