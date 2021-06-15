@@ -1,6 +1,7 @@
 package io.lunarlogic.aircasting.screens.dashboard.active
 
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import io.lunarlogic.aircasting.R
@@ -112,7 +113,6 @@ class MobileActiveController(
     override fun onFinishSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
-
         goToDormantTab()
     }
 

@@ -9,9 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import io.lunarlogic.aircasting.R
-import io.lunarlogic.aircasting.database.repositories.MeasurementStreamsRepository
 import io.lunarlogic.aircasting.database.repositories.MeasurementsRepository
-import io.lunarlogic.aircasting.database.repositories.SessionsRepository
 import io.lunarlogic.aircasting.lib.AnimatedLoader
 import io.lunarlogic.aircasting.models.*
 import io.lunarlogic.aircasting.screens.common.BaseObservableViewMvc
@@ -19,9 +17,10 @@ import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
+import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
-import kotlinx.coroutines.*
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -55,7 +54,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mSessionNameTextView = this.rootView?.session_name
         mSessionMeasurementsDescription = this.findViewById(R.id.session_measurements_description)
 
-        mMeasurementsTableContainer = MeasurementsTableContainer(
+        mMeasurementsTableContainer = SessionDetailsMeasurementsTableContainer(
             context,
             inflater,
             this.rootView,

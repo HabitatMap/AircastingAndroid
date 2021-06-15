@@ -1,4 +1,4 @@
-package io.lunarlogic.aircasting.screens.session_view
+package io.lunarlogic.aircasting.screens.session_view.measurement_table_container
 
 import android.content.Context
 import android.view.Gravity
@@ -12,10 +12,11 @@ import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
 import io.lunarlogic.aircasting.models.MeasurementStream
 import io.lunarlogic.aircasting.screens.dashboard.SessionPresenter
+import io.lunarlogic.aircasting.screens.session_view.SelectedSensorBorder
 import kotlinx.android.synthetic.main.session_card.view.*
 
 
-class MeasurementsTableContainer {
+abstract class MeasurementsTableContainer {
     private val mContext: Context
     private val mRootView: View?
     private val mLayoutInflater: LayoutInflater
@@ -23,7 +24,7 @@ class MeasurementsTableContainer {
     private var mSelectable: Boolean
     private var mDisplayValues: Boolean
     private var mDisplayAvarages = false
-    private var mCollapsed: Boolean = false
+    protected var mCollapsed: Boolean = false
 
     private val mMeasurementStreams: MutableList<MeasurementStream> = mutableListOf()
     private val mLastMeasurementColors: HashMap<String, Int> = HashMap()
@@ -32,7 +33,7 @@ class MeasurementsTableContainer {
     private val mMeasurementHeaders: TableRow?
     private var mMeasurementValues: TableRow? = null
 
-    private var mSessionPresenter: SessionPresenter? = null
+    protected var mSessionPresenter: SessionPresenter? = null
     private var mOnMeasurementStreamChanged: ((MeasurementStream) -> Unit)? = null
     private var expandCard: (() -> Unit?)? = null
     private var onExpandSessionCard: (() -> Unit?)? = null
@@ -59,6 +60,8 @@ class MeasurementsTableContainer {
         if (mDisplayValues) mMeasurementValues = rootView?.measurement_values
 
     }
+
+    abstract fun shouldShowSelectedMeasurement(stream: MeasurementStream): Boolean
 
     fun makeSelectable(displayValues: Boolean = true) {
         mSelectable = true
@@ -136,7 +139,7 @@ class MeasurementsTableContainer {
         mMeasurementStreams.add(stream)
 
         if (mSelectable) {
-            if (stream == mSessionPresenter?.selectedStream && !mCollapsed) {
+            if (shouldShowSelectedMeasurement(stream)) {
                 markMeasurementHeaderAsSelected(headerTextView)
             }
 
