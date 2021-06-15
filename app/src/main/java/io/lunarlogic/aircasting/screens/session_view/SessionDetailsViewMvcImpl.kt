@@ -18,7 +18,7 @@ import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialog
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUDialogListener
 import io.lunarlogic.aircasting.screens.session_view.hlu.HLUSlider
 import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
-import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.SessionDetailsViewMeasurementsTableContainer
+import io.lunarlogic.aircasting.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
 
@@ -54,7 +54,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         mSessionNameTextView = this.rootView?.session_name
         mSessionMeasurementsDescription = this.findViewById(R.id.session_measurements_description)
 
-        mMeasurementsTableContainer = SessionDetailsViewMeasurementsTableContainer(
+        mMeasurementsTableContainer = SessionDetailsMeasurementsTableContainer(
             context,
             inflater,
             this.rootView,

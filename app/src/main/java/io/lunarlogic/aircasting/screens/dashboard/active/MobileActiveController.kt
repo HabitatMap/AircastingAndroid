@@ -83,7 +83,6 @@ class MobileActiveController(
 
     override fun onDisconnectSessionClicked(session: Session) {
         airBeamReconnector.disconnect(session)
-        Log.i("SESS", "disconnectSEssionClicked: " + session.status.toString())
     }
 
     override fun addNoteClicked(session: Session) {
@@ -101,7 +100,6 @@ class MobileActiveController(
             finallyCallback = {
                 GlobalScope.launch(Dispatchers.Main) {
                     mViewMvc?.hideReconnectingLoaderFor(session)
-                    Log.i("SESS", "onReconnectSessionClicked: " + session.status.toString())
                 }
 
             }
@@ -115,7 +113,6 @@ class MobileActiveController(
     override fun onFinishSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
-        Log.i("SESS", "on finish confirmed: " + session.status.toString())
         goToDormantTab()
     }
 

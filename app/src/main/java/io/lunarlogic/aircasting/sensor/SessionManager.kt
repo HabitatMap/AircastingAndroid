@@ -216,7 +216,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
             val session = sessionsRespository.loadSessionAndMeasurementsByUUID(uuid)
-            Log.i("SESS", "before stop recording events " + session?.status.toString())
             session?.let {
                 it.stopRecording()
                 sessionsRespository.update(it)
@@ -225,7 +224,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 averagingBackgroundService?.stop()
                 averagingPreviousMeasurementsBackgroundService?.stop()
                 AveragingService.destroy(sessionId)
-                Log.i("SESS", "after stop recording events " + it.status.toString())
             }
         }
     }
@@ -233,7 +231,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun disconnectSession(deviceId: String) {
         DatabaseProvider.runQuery {
             sessionsRespository.disconnectSession(deviceId)
-            Log.i("SESS", "disconnectSession, sessionManager: " + deviceId)
         }
     }
 
