@@ -10,4 +10,5 @@ class SessionDetailsViewMeasurementsTableContainer(context: Context, inflater: L
     override fun shouldShowSelectedMeasurement(stream: MeasurementStream): Boolean {
         return stream == mSessionPresenter?.selectedStream
     }
+
 }

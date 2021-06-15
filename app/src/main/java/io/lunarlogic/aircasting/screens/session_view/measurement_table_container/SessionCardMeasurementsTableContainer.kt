@@ -12,5 +12,4 @@ class SessionCardMeasurementsTableContainer(context: Context, inflater: LayoutIn
         return stream == mSessionPresenter?.selectedStream && !mCollapsed
     }
 
-
 }
