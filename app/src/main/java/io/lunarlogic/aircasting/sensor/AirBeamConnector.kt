@@ -111,6 +111,7 @@ abstract class AirBeamConnector {
 
         reconnectionSuccessful.set(false)
         connectionStarted.set(false)
+        // we need to disconnect (close socket )
         reconnect()
 
 
