@@ -1,12 +1,11 @@
 package io.lunarlogic.aircasting.screens.session_view.measurement_table_container
 
 import android.content.Context
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.widget.*
 import androidx.core.view.forEach
 import androidx.core.view.get
+import androidx.core.view.size
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.lib.MeasurementColor
 import io.lunarlogic.aircasting.models.Measurement
@@ -199,19 +198,13 @@ abstract class MeasurementsTableContainer {
 
         val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)
-        
+
         if (mSelectable) {
             if (stream == mSessionPresenter?.selectedStream) {
                 setValueViewBorder(valueViewContainer, color)
             }
-
-            valueViewContainer.setOnClickListener {
-                onMeasurementClicked(stream)
-
-                markMeasurementHeaderAsSelected(stream)
-                setValueViewBorder(valueViewContainer, color)
-            }
         }
+
     }
 
     private fun getMeasurementValue(stream: MeasurementStream): Double? {
@@ -242,12 +235,12 @@ abstract class MeasurementsTableContainer {
         }
 
         valueView.background = null
-        valueTextView.setOnClickListener {
-            changeSelectedStream(stream)
-        }
 
-        val containerLayout = LinearLayout(mContext)
-        containerLayout.gravity = Gravity.CENTER
+        val inflater: LayoutInflater = LayoutInflater.from(mContext)
+        var containerLayout: LinearLayout = inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
+        containerLayout.setOnClickListener(View.OnClickListener {
+            changeSelectedStream(stream)
+        })
         containerLayout.addView(valueView)
 
         return containerLayout
