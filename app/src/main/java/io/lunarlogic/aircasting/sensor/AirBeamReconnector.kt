@@ -69,11 +69,17 @@ class AirBeamReconnector(
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
         mFinallyCallback?.invoke()
+        unregisterFromEventBus()
     }
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         mErrorCallback?.invoke()
         mFinallyCallback?.invoke()
+        unregisterFromEventBus()
+    }
+
+    private fun unregisterFromEventBus() {
+        EventBus.getDefault().unregister(this);
     }
 }
