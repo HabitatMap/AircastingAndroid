@@ -21,12 +21,22 @@ class AirBeamReconnector(
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
 
+    private var mReconnectionTriesNumber: Int? = null
+    private val RECONNECTION_TRIES_MAX = 5
+
     fun disconnect(session: Session) {
         sendDisconnectedEvent(session)
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
     fun reconnect(session: Session, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
+        if (mReconnectionTriesNumber != null) {
+            mReconnectionTriesNumber?.let { tries ->
+                if (tries > RECONNECTION_TRIES_MAX) {
+                    return
+                }
+            }
+        }
         EventBus.getDefault().safeRegister(this)
 
         // disconnecting first to make sure the connector thread is stopped correctly etc
@@ -43,6 +53,11 @@ class AirBeamReconnector(
         )
     }
 
+    fun tryReconnect(session: Session, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
+        mReconnectionTriesNumber = 1
+        reconnect(session, errorCallback, finallyCallback)
+    }
+
     private fun reconnect(deviceItem: DeviceItem) {
         AirBeamReconnectSessionService.startService(mContext, deviceItem, mSession?.uuid)
     }
@@ -53,7 +68,7 @@ class AirBeamReconnector(
 
     private fun sendDisconnectedEvent(session: Session) {
         val deviceId = session.deviceId
-        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId)) }
+        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, session.uuid)) }
     }
 
     private fun updateSessionStatus(session: Session?, status: Session.Status) {
@@ -66,6 +81,9 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
+        if (mReconnectionTriesNumber != null) {
+            mReconnectionTriesNumber = null
+        }
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
         mFinallyCallback?.invoke()
@@ -74,9 +92,20 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        mErrorCallback?.invoke()
-        mFinallyCallback?.invoke()
-        unregisterFromEventBus()
+        if (mReconnectionTriesNumber != null) {
+            mReconnectionTriesNumber?.let { tries ->
+                if (tries > 5) {
+                    return
+                } else {
+                    mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
+                    reconnect(event.deviceItem)
+                }
+            }
+        } else {
+            mErrorCallback?.invoke()
+            mFinallyCallback?.invoke()
+            unregisterFromEventBus()
+        }
     }
 
     private fun unregisterFromEventBus() {

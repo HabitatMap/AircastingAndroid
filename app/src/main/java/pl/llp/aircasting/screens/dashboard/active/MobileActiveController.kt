@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.events.SensorDisconnectedEvent
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
@@ -131,6 +132,32 @@ class MobileActiveController(
         val deviceId = event.deviceId ?: return
         
         mViewMvc?.hideLoaderFor(deviceId)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        event.sessionUUID?.let { sessionUUID ->
+            val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
+            sessionDBObject?.let { sessionDBObject ->
+                val session = Session(sessionDBObject)
+                mViewMvc?.showReconnectingLoaderFor(session)
+                airBeamReconnector.tryReconnect(session,
+                    errorCallback = {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
+                        }
+                    },
+                    finallyCallback = {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            mViewMvc?.hideReconnectingLoaderFor(session)
+                        }
+
+                    }
+                )
+            }
+
+        }
+
     }
 
     private fun goToDormantTab() {

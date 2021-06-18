@@ -29,7 +29,7 @@ abstract class AirBeamService: SensorService(),
             mAirBeamConnector?.connect(deviceItem, sessionUUID)
         } catch (e: BLENotSupported) {
             errorHandler.handleAndDisplay(e)
-            onConnectionFailed()
+            onConnectionFailed(deviceItem)
         }
     }
 
@@ -47,15 +47,15 @@ abstract class AirBeamService: SensorService(),
     }
 
     override fun onConnectionFailed(deviceId: String) {
-        onConnectionFailed()
+        onConnectionFailed(deviceId)
     }
 
     override fun onDisconnect(deviceId: String) {
         stopSelf()
     }
 
-    private fun onConnectionFailed() {
-        val event = AirBeamConnectionFailedEvent()
+    private fun onConnectionFailed(deviceItem: DeviceItem) {
+        val event = AirBeamConnectionFailedEvent(deviceItem)
         EventBus.getDefault().post(event)
     }
 }

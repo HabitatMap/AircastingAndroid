@@ -27,6 +27,10 @@ abstract class AirBeamConnector {
     protected val connectionEstablished = AtomicBoolean(false)
     protected val connectionTimedOut = AtomicBoolean(false)
 
+//    private var reconnectionTriesNumber: Int? = null
+//    protected val reconnectionStarted = AtomicBoolean(false)
+//    private val RECONNECTION_TRIES_MAX = 5
+
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
 
@@ -98,7 +102,7 @@ abstract class AirBeamConnector {
     }
 
     fun onDisconnected(deviceId: String) {
-        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
+        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, mSessionUUID))
         mListener?.onDisconnect(deviceId)
     }
 
@@ -114,14 +118,23 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
+        println("MARYSIA: DisconnectExternalSensorsEvent received")
         disconnect()
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
+        println("MARYSIA: SensorDisconnectedEvent received")
+        // IF WE ARE HERE IT MEANS SOME DISCONNECTION HAPPENED
         if (mDeviceItem?.id == event.deviceId) {
             disconnect()
         }
+    }
+
+    fun reconnect() {
+        if (mDeviceItem == null || mSessionUUID == null) return
+
+        connect(mDeviceItem!!, mSessionUUID!!)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
