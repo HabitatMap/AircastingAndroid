@@ -60,7 +60,7 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     override fun showError() {
-        val profilenameInputLayout = findViewById<TextInputLayout>(R.id.profile_name)
+        val profilenameInputLayout = findViewById<TextInputLayout>(R.id.username)
         val passwordInputLayout = findViewById<TextInputLayout>(R.id.password)
         profilenameInputLayout.error = " "
         passwordInputLayout.error = " "
