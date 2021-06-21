@@ -26,4 +26,11 @@ class AircastingApplication: Application() {
             .addObserver(AppLifecycleObserver())
 
     }
+
+    fun refreshComponent() {
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .permissionsModule(permissionsModule)
+            .build()
+    }
 }

@@ -2,9 +2,15 @@ package io.lunarlogic.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
+import androidx.lifecycle.MutableLiveData
+import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.AppComponent
+import io.lunarlogic.aircasting.DaggerAppComponent
+import io.lunarlogic.aircasting.di.AppModule
+import io.lunarlogic.aircasting.di.PermissionsModule
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
-open class Settings(mApplication: Application) {
+open class Settings(private val mApplication: Application) {
     private val PRIVATE_MODE = 0
     protected val PREFERENCES_NAME = "preferences"
     protected val EMAIL_KEY = "email"
@@ -18,6 +24,8 @@ open class Settings(mApplication: Application) {
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
 
+    private lateinit var appComponent: AppComponent
+
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
 
@@ -26,7 +34,7 @@ open class Settings(mApplication: Application) {
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
-    protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
+    protected open val DEFAULT_BACKEND_URL = MutableLiveData<String>("http://aircasting.org")
     protected val DEFAULT_BACKEND_PORT = "80"
     private val DEFAULT_AIRBEAM3_CONNECTED = false
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
@@ -71,7 +79,7 @@ open class Settings(mApplication: Application) {
     }
 
     open fun getBackendUrl(): String? {
-        return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL)
+        return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL.value)
     }
 
     open fun getBackendPort(): String? {
@@ -116,6 +124,7 @@ open class Settings(mApplication: Application) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
         SessionsSyncService.destroy()
+        if (mApplication is AircastingApplication) mApplication.refreshComponent() //todo: app crashes if url does not have "http/https part"
     }
 
     fun setAppRestarted() {
