@@ -5,9 +5,6 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.AppComponent
-import io.lunarlogic.aircasting.DaggerAppComponent
-import io.lunarlogic.aircasting.di.AppModule
-import io.lunarlogic.aircasting.di.PermissionsModule
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
 open class Settings(private val mApplication: Application) {
@@ -34,7 +31,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
-    protected open val DEFAULT_BACKEND_URL = MutableLiveData<String>("http://aircasting.org")
+    protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
     private val DEFAULT_AIRBEAM3_CONNECTED = false
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
@@ -79,7 +76,7 @@ open class Settings(private val mApplication: Application) {
     }
 
     open fun getBackendUrl(): String? {
-        return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL.value)
+        return getStringFromSettings(BACKEND_URL_KEY, DEFAULT_BACKEND_URL)
     }
 
     open fun getBackendPort(): String? {
