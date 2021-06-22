@@ -20,10 +20,8 @@ class BackendSettingsConfirmationDialog(
         mView = inflater.inflate(R.layout.dialog_backend_settings_confirmation, null)
 
         mView.ok_button.setOnClickListener {
-            if (mUrl != null) {
-                if (mPort != null) {
-                    listener.confirmClicked(mUrl, mPort)
-                }
+            if (mUrl != null && mPort != null) {
+                listener.confirmClicked(mUrl, mPort)
             }
         }
 

@@ -22,8 +22,6 @@ open class Settings(private val mApplication: Application) {
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
 
-    private lateinit var appComponent: AppComponent
-
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
 
