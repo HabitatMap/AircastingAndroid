@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import io.lunarlogic.aircasting.exceptions.BaseException
+import io.lunarlogic.aircasting.exceptions.CSVGenerationError
+import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.lib.CSVHelper
 import io.lunarlogic.aircasting.models.Session
 import io.lunarlogic.aircasting.networking.responses.SyncResponse
@@ -13,7 +16,8 @@ import java.io.IOException
 class CSVGenerationService(
     private val session: Session,
     private val context: Context,
-    private val csvHelper: CSVHelper
+    private val csvHelper: CSVHelper,
+    private val errorHandler: ErrorHandler
     ) {
         private val thread = CSVThread()
 
@@ -25,18 +29,8 @@ class CSVGenerationService(
             thread.cancel()
         }
 
-        fun pause() {
-            thread.paused = true
-        }
-
-        fun resume() {
-            thread.paused = false
-        }
-
         inner class CSVThread(): Thread() {
-            var paused = false
             private var call: Call<SyncResponse>? = null
-
 
             override fun run() {
                 try {
@@ -51,6 +45,7 @@ class CSVGenerationService(
                         context.startActivity(Intent.createChooser(sendIntent, "SHARE"))
                     }
                 } catch (e: InterruptedException) {
+                    errorHandler.handleAndDisplay(CSVGenerationError())
                     return
                 }
             }
@@ -64,11 +59,9 @@ class CSVGenerationService(
                 return try {
                     csvHelper.prepareCSV(context, session)
                 } catch (e: IOException) {
-//                    Log.e("Error while creating session CSV", e)
+                    errorHandler.handleAndDisplay(CSVGenerationError())
                     null
                 }
-
-
             }
         }
 }

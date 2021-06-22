@@ -158,7 +158,7 @@ abstract class SessionsController(
     }
 
     private fun shareLocalFile(session: Session) {
-        CSVGenerationService(session, context!!, CSVHelper()).start()
+        CSVGenerationService(session, context!!, CSVHelper(), mErrorHandler).start()
     }
 
 
