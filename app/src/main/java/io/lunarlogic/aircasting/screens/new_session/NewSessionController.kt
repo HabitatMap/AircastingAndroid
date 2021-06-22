@@ -282,7 +282,7 @@ class NewSessionController(
         wifiPassword: String?
     ) {
 
-        val currentLocation = Session.Location.get(LocationHelper.lastLocation())
+        val currentLocation = Session.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
 
         val session = sessionBuilder.build(
             sessionUUID,

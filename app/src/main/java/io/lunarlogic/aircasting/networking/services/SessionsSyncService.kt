@@ -183,7 +183,7 @@ class SessionsSyncService {
     }
 
     private fun isUploadable(session: Session): Boolean {
-        return !session.locationless && session.isMobile()
+        return !(session.locationless && session.isMobile())
     }
 
     private fun handleSyncError(shouldDisplayErrors: Boolean, call: Call<SyncResponse>, t: Throwable? = null) {
