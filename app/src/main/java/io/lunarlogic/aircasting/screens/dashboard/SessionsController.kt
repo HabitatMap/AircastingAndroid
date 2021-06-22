@@ -14,6 +14,7 @@ import io.lunarlogic.aircasting.events.ExportSessionEvent
 import io.lunarlogic.aircasting.events.UpdateSessionEvent
 import io.lunarlogic.aircasting.exceptions.ErrorHandler
 import io.lunarlogic.aircasting.exceptions.SessionUploadPendingError
+import io.lunarlogic.aircasting.lib.CSVHelper
 import io.lunarlogic.aircasting.lib.NavigationController
 import io.lunarlogic.aircasting.lib.Settings
 import io.lunarlogic.aircasting.lib.ShareHelper
@@ -148,9 +149,18 @@ abstract class SessionsController(
     }
 
     override fun onShareFilePressed(session: Session, emailInput: String) { // handling button in ShareSessionBottomSheet
-        val event = ExportSessionEvent(session, emailInput)
-        EventBus.getDefault().post(event)
+        if (session.locationless) {
+            shareLocalFile(session)
+        } else {
+            val event = ExportSessionEvent(session, emailInput)
+            EventBus.getDefault().post(event)
+        }
     }
+
+    private fun shareLocalFile(session: Session) {
+        CSVGenerationService(session, context!!, CSVHelper(), mErrorHandler).start()
+    }
+
 
     override fun onEditSessionClicked(session: Session) {
         if (!ConnectivityManager.isConnected(context)) {

@@ -2,6 +2,7 @@ package io.lunarlogic.aircasting.sensor
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
+import android.location.Location
 import android.widget.Toast
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.database.DatabaseProvider
@@ -159,8 +160,21 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun addMeasurement(event: NewMeasurementEvent) {
         val measurementStream = MeasurementStream(event)
 
-        val location = LocationHelper.lastLocation()
-        val measurement = Measurement(event, location?.latitude , location?.longitude)
+        val locationless = settings.areMapsDisabled()
+        val lat: Double?
+        val lon: Double?
+
+        if (locationless) {
+            val fakeLocation = Session.Location.FAKE_LOCATION
+            lat = fakeLocation.latitude
+            lon = fakeLocation.longitude
+        }
+        else {
+            val location = LocationHelper.lastLocation()
+            lat = location?.latitude
+            lon = location?.longitude
+        }
+        val measurement = Measurement(event, lat , lon)
 
         val deviceId = event.deviceId ?: return
 

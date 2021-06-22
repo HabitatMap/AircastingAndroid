@@ -77,3 +77,6 @@ class SDCardSessionsFinalSyncError(cause: Exception? = null):
 
 class NotesNoLocationError():
     BaseException(null, "Note could not be added because location of last measurement could not be retrieved.")
+
+class CSVGenerationError():
+    BaseException(null, "There was a problem while generating a CSV file.")

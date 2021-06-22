@@ -162,7 +162,11 @@ class Session(
             // if for some reason current location is not available
             val DEFAULT_LOCATION = Location(40.7128, -74.0060)
 
-            fun get(location: android.location.Location?): Location {
+            fun get(location: android.location.Location?, locationless: Boolean = false): Location {
+                if (locationless) {
+                    return FAKE_LOCATION
+                }
+                
                 if (location == null) {
                     return DEFAULT_LOCATION
                 }
