@@ -2,12 +2,9 @@ package io.lunarlogic.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
-import io.lunarlogic.aircasting.AircastingApplication
-import io.lunarlogic.aircasting.AppComponent
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
-open class Settings(private val mApplication: Application) {
+open class Settings(mApplication: Application) {
     private val PRIVATE_MODE = 0
     protected val PREFERENCES_NAME = "preferences"
     protected val EMAIL_KEY = "email"
@@ -20,8 +17,6 @@ open class Settings(private val mApplication: Application) {
     protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
-
-    private lateinit var appComponent: AppComponent
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -121,7 +116,6 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
         SessionsSyncService.destroy()
-        if (mApplication is AircastingApplication) mApplication.refreshComponent() //todo: app crashes if url does not have "http/https part"
     }
 
     fun setAppRestarted() {
