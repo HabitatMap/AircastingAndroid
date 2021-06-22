@@ -8,7 +8,7 @@ import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.AppComponent
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
-open class Settings(private val mApplication: Application) {
+open class Settings(mApplication: Application) {
     private val PRIVATE_MODE = 0
     protected val PREFERENCES_NAME = "preferences"
     protected val EMAIL_KEY = "email"

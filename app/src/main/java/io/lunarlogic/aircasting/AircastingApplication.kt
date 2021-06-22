@@ -26,5 +26,4 @@ class AircastingApplication: Application() {
             .addObserver(AppLifecycleObserver())
 
     }
-
 }
