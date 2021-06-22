@@ -3,6 +3,7 @@ package io.lunarlogic.aircasting.lib
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
+import com.jakewharton.processphoenix.ProcessPhoenix
 import io.lunarlogic.aircasting.AircastingApplication
 import io.lunarlogic.aircasting.AppComponent
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
@@ -121,7 +122,8 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
         SessionsSyncService.destroy()
-        if (mApplication is AircastingApplication) mApplication.refreshComponent() //todo: app crashes if url does not have "http/https part"
+        ProcessPhoenix.triggerRebirth(mApplication)
+        //if (mApplication is AircastingApplication) mApplication.refreshComponent() //todo: app crashes if url does not have "http/https part"
     }
 
     fun setAppRestarted() {

@@ -1,8 +1,11 @@
 package io.lunarlogic.aircasting.screens.settings
 
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
@@ -35,7 +38,7 @@ class BackendSettingsDialog(
     private fun settingsConfirmed() {
         val urlValue = mView.url_input.text.toString().trim()
         val portValue = mView.port_input.text.toString().trim()
-        listener.confirmClicked(urlValue, portValue)
-        dismiss()
+        BackendSettingsConfirmationDialog(requireFragmentManager(), listener, urlValue, portValue).show()
     }
+
 }
