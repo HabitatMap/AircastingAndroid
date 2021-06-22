@@ -2,6 +2,10 @@ package io.lunarlogic.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
+import androidx.lifecycle.MutableLiveData
+import com.jakewharton.processphoenix.ProcessPhoenix
+import io.lunarlogic.aircasting.AircastingApplication
+import io.lunarlogic.aircasting.AppComponent
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
 open class Settings(mApplication: Application) {
@@ -116,6 +120,7 @@ open class Settings(mApplication: Application) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
         SessionsSyncService.destroy()
+        ProcessPhoenix.triggerRebirth(mApplication)
     }
 
     fun setAppRestarted() {

@@ -67,6 +67,6 @@ class SettingsController(
     fun startBackendSettingsDialog(){
         val url = mSettings.getBackendUrl()
         val port = mSettings.getBackendPort()
-        BackendSettingsDialog(fragmentManager, url, port, this).show()
+        BackendSettingsDialog(fragmentManager, url, port, this, mContext).show()
     }
 }
