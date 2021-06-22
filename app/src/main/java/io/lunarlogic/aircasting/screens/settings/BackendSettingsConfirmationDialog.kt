@@ -7,12 +7,13 @@ import io.lunarlogic.aircasting.R
 import io.lunarlogic.aircasting.screens.common.BaseDialog
 import kotlinx.android.synthetic.main.dialog_backend_settings_confirmation.view.*
 
-class BackendSettingsConfirmationDialog(mFragmentManager: FragmentManager,
-                                        private val listener: SettingsViewMvc.BackendSettingsDialogListener,
-                                        private val mUrl: String?,
-                                        private val mPort: String?) : BaseDialog(
-    mFragmentManager
-) {
+class BackendSettingsConfirmationDialog(
+    mFragmentManager: FragmentManager,
+    private val listener: SettingsViewMvc.BackendSettingsDialogListener,
+    private val mUrl: String?,
+    private val mPort: String?
+    )
+    : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {

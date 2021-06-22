@@ -123,7 +123,6 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(BACKEND_PORT_KEY, port)
         SessionsSyncService.destroy()
         ProcessPhoenix.triggerRebirth(mApplication)
-        //if (mApplication is AircastingApplication) mApplication.refreshComponent() //todo: app crashes if url does not have "http/https part"
     }
 
     fun setAppRestarted() {
