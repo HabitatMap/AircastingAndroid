@@ -72,7 +72,8 @@ class ShareSessionBottomSheet(
             radioGroup?.visibility = View.GONE
             shareLinkButton?.visibility = View.GONE
             selectStreamTextView?.visibility = View.GONE
-            emailCsvTextView?.text = getString(R.string.email_csv_file_without_share_link)
+            emailInput?.visibility = View.GONE
+            emailCsvTextView?.text = getString(R.string.generate_csv_file_without_share_link)
         } else {
             setRadioButtonsForChosenSession()
 
@@ -88,9 +89,11 @@ class ShareSessionBottomSheet(
 
     private fun shareFilePressed() {
         val emailInput = emailInput?.text.toString().trim()
-        if (!ValidationHelper.isValidEmail(emailInput)) {
-            showError()
-            return
+        if (!session.locationless) {
+            if (!ValidationHelper.isValidEmail(emailInput)) {
+                showError()
+                return
+            }
         }
         mListener.onShareFilePressed(session, emailInput)
         dismiss()

@@ -321,7 +321,7 @@
     <string name="fixed_session_no_internet_connection_header">No internet connection</string>
     <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
     <string name="provided_email_is_not_correct">Provided email is not correct</string>
-    <string name="email_csv_file_without_share_link">Email a CSV file with your session data</string>
+    <string name="generate_csv_file_without_share_link">Generate a CSV file with your session data</string>
 
     <!-- Did you know box -->
     <string name="did_you_know">Did you know?</string>
