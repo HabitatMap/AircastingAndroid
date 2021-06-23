@@ -2,13 +2,10 @@ package io.lunarlogic.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
 import com.jakewharton.processphoenix.ProcessPhoenix
-import io.lunarlogic.aircasting.AircastingApplication
-import io.lunarlogic.aircasting.AppComponent
 import io.lunarlogic.aircasting.networking.services.SessionsSyncService
 
-open class Settings(mApplication: Application) {
+open class Settings(private val mApplication: Application) {
     private val PRIVATE_MODE = 0
     protected val PREFERENCES_NAME = "preferences"
     protected val EMAIL_KEY = "email"
