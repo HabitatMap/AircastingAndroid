@@ -242,6 +242,13 @@ class MapContainer: OnMapReadyCallback {
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
         mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+
+        if (mSessionPresenter?.isRecording() == true) {
+            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mMeasurements.last().latitude!!, mMeasurements.last().longitude!!),
+                50F // 50 is hardcoded zoom value for now
+            ))
+        }
+
     }
 
     private fun animateCameraToFixedSession() {
