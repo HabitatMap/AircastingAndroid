@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.lunarlogic.aircasting">
+    package="pl.llp.aircasting">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -26,37 +26,37 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Aircasting"
         android:largeHeap="true"
-        android:name=".AircastingApplication">
+        android:name="pl.llp.aircasting.AircastingApplication">
 
         <service
-            android:name=".sensor.microphone.MicrophoneService"
+            android:name="pl.llp.aircasting.sensor.microphone.MicrophoneService"
             android:stopWithTask="true" >
         </service>
 
         <service
-            android:name=".sensor.AirBeamRecordSessionService"
+            android:name="pl.llp.aircasting.sensor.AirBeamRecordSessionService"
             android:stopWithTask="true">
         </service>
 
         <service
-            android:name=".sensor.AirBeamReconnectSessionService"
+            android:name="pl.llp.aircasting.sensor.AirBeamReconnectSessionService"
             android:stopWithTask="true">
         </service>
 
         <service
-            android:name=".sensor.AirBeamSyncService"
+            android:name="pl.llp.aircasting.sensor.AirBeamSyncService"
             android:stopWithTask="true">
         </service>
 
         <service
-            android:name=".sensor.AirBeamClearCardService"
+            android:name="pl.llp.aircasting.sensor.AirBeamClearCardService"
             android:stopWithTask="true">
         </service>
 
-        <activity android:name=".screens.onboarding.OnboardingActivity"
+        <activity android:name="pl.llp.aircasting.screens.onboarding.OnboardingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".screens.main.MainActivity"
+            android:name="pl.llp.aircasting.screens.main.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,34 +66,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".screens.new_session.LoginActivity"
+            android:name="pl.llp.aircasting.screens.new_session.LoginActivity"
             android:screenOrientation="portrait"
             android:noHistory="true"
             android:excludeFromRecents="true">
         </activity>
         <activity
-            android:name=".screens.create_account.CreateAccountActivity"
+            android:name="pl.llp.aircasting.screens.create_account.CreateAccountActivity"
             android:screenOrientation="portrait"
             android:noHistory="false"
             android:excludeFromRecents="true">
         </activity>
         <activity android:label=""
-            android:name=".screens.new_session.NewSessionActivity"
+            android:name="pl.llp.aircasting.screens.new_session.NewSessionActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name=".screens.session_view.map.MapActivity"
+            android:name="pl.llp.aircasting.screens.session_view.map.MapActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name="io.lunarlogic.aircasting.screens.session_view.graph.GraphActivity"
+            android:name="pl.llp.aircasting.screens.session_view.graph.GraphActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name="io.lunarlogic.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity"
+            android:name="pl.llp.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name=".screens.settings.clear_sd_card.ClearSDCardActivity"
+            android:name="pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity"
             android:screenOrientation="portrait" />
         <activity   android:label=""
-            android:name=".screens.sync.SyncActivity"
+            android:name="pl.llp.aircasting.screens.sync.SyncActivity"
             android:screenOrientation="portrait"/>
 
         <meta-data
@@ -106,7 +106,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="io.lunarlogic.aircasting.fileprovider"
+            android:authorities="pl.llp.aircasting.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
