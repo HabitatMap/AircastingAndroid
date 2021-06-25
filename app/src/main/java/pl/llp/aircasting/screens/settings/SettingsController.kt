@@ -1,12 +1,17 @@
 package pl.llp.aircasting.screens.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
+
 
 class SettingsController(
     private val mRootActivity: FragmentActivity?,
@@ -49,6 +54,12 @@ class SettingsController(
 
     override fun onMicrophoneSettingsClicked() {
         startMicrophoneSettingsDialog()
+    }
+
+    override fun yourPrivacyClicked() {
+        val uri: Uri = Uri.parse(mContext?.getString(R.string.your_privacy_link))
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        mContext?.let { startActivity(it, intent, null) }
     }
 
     override fun confirmClicked(urlValue: String, portValue: String) {

@@ -4,7 +4,6 @@ import pl.llp.aircasting.screens.common.ObservableViewMvc
 
 interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
 
-    //TODO: maybe i should make some interface like 'BackendSettingsViewMvc and place below interface there?:
     interface BackendSettingsDialogListener{
         fun confirmClicked(urlValue: String, portValue: String)
     }
@@ -20,5 +19,6 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
         fun onToggleMapsEnabled()
         fun onClearSDCardClicked()
         fun onMicrophoneSettingsClicked()
+        fun yourPrivacyClicked()
     }
 }
