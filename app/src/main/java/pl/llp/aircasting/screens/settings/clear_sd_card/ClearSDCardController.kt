@@ -28,6 +28,7 @@ import pl.llp.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardCl
 import pl.llp.aircasting.sensor.AirBeamClearCardService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.permissions.LocationPermissionPopUp
 
 class ClearSDCardController(
     private val mContextActivity: AppCompatActivity,
@@ -59,8 +60,12 @@ class ClearSDCardController(
         if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToFirstStep()
         } else {
-            mPermissionsManager.requestLocationPermissions(mContextActivity)
+            showLocationPermissionPopUp()
         }
+    }
+
+    private fun showLocationPermissionPopUp() {
+        LocationPermissionPopUp(mFragmentManager, mPermissionsManager, mContextActivity).show()
     }
 
     private fun setupProgressBarMax() {

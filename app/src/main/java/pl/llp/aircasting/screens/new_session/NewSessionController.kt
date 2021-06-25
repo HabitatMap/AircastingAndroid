@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import java.util.*
 
 class NewSessionController(
@@ -77,8 +78,12 @@ class NewSessionController(
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
             goToFirstStep()
         } else {
-            permissionsManager.requestLocationPermissions(mContextActivity)
+            showLocationPermissionPopUp()
         }
+    }
+
+    private fun showLocationPermissionPopUp() {
+        LocationPermissionPopUp(mFragmentManager, permissionsManager, mContextActivity).show()
     }
 
     private fun setupProgressMax() {
