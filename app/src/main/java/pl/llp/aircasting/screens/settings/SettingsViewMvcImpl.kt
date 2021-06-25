@@ -53,6 +53,10 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             }
         }
 
+        val yourPrivacyButton = rootView?.findViewById<Button>(R.id.your_privacy_button)
+        yourPrivacyButton?.setOnClickListener {
+            yourPrivacyClicked()
+        }
 
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME
@@ -91,6 +95,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     private fun onMyAccountClicked() {
         for(listener in listeners){
             listener.onMyAccountClicked()
+        }
+    }
+
+    private fun yourPrivacyClicked() {
+        for(listener in listeners){
+            listener.yourPrivacyClicked()
         }
     }
 }
