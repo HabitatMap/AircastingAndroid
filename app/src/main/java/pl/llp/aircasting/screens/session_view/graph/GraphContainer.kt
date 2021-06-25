@@ -235,6 +235,7 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.setDrawGridBackground(false)
         mGraph?.isDragDecelerationEnabled = false
         mGraph?.setMaxVisibleValueCount(100000) //todo: this allows us to display icon on graph, value may be changed if icons would not display during tests
+        if (android.os.Build.VERSION.SDK_INT < 24 ) mGraph?.setHardwareAccelerationEnabled(false)
 
         mGraph?.onChartGestureListener = this
     }
