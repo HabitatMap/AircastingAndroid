@@ -35,6 +35,7 @@ import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.permissions.LocationPermissionPopUp
 
 class SyncController(
     private val mContextActivity: AppCompatActivity,
@@ -66,8 +67,12 @@ class SyncController(
         if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
             goToRefreshingSessions()
         } else {
-            mPermissionsManager.requestLocationPermissions(mContextActivity)
+            showLocationPermissionPopUp()
         }
+    }
+
+    private fun showLocationPermissionPopUp() {
+        LocationPermissionPopUp(mFragmentManager, mPermissionsManager, mContextActivity).show()
     }
 
     private fun setupProgressBarMax() {
