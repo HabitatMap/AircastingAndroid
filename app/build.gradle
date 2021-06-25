@@ -10,11 +10,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "io.lunarlogic.aircasting"
+        applicationId "pl.llp.aircasting"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "2.0.0"
+        versionCode 110
+        versionName "2.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key

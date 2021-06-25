@@ -15,19 +15,19 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="io.lunarlogic.aircasting.screens.dashboard.DashboardFragment"
+        android:name="pl.llp.aircasting.screens.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_lets_start" />
 
     <fragment
         android:id="@+id/navigation_lets_start"
-        android:name="io.lunarlogic.aircasting.screens.lets_start.LetsStartFragment"
+        android:name="pl.llp.aircasting.screens.lets_start.LetsStartFragment"
         android:label="     "
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="io.lunarlogic.aircasting.screens.settings.SettingsFragment"
+        android:name="pl.llp.aircasting.screens.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

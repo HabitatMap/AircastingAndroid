@@ -1,0 +1,212 @@
+package pl.llp.aircasting.screens.session_view
+
+import android.location.Location
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.FragmentManager
+import pl.llp.aircasting.R
+import pl.llp.aircasting.database.repositories.MeasurementsRepository
+import pl.llp.aircasting.lib.AnimatedLoader
+import pl.llp.aircasting.models.*
+import pl.llp.aircasting.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.screens.session_view.hlu.HLUDialog
+import pl.llp.aircasting.screens.session_view.hlu.HLUDialogListener
+import pl.llp.aircasting.screens.session_view.hlu.HLUSlider
+import pl.llp.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
+import pl.llp.aircasting.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
+import kotlinx.android.synthetic.main.hlu_slider.view.*
+import kotlinx.android.synthetic.main.session_details.view.*
+
+
+abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
+    private val mFragmentManager: FragmentManager?
+    private var mListener: SessionDetailsViewMvc.Listener? = null
+
+    private val mSessionDateTextView: TextView?
+    private val mSessionNameTextView: TextView?
+    protected val mSessionMeasurementsDescription: TextView?
+
+    protected var mSessionPresenter: SessionPresenter? = null
+
+    private val mMeasurementsTableContainer: MeasurementsTableContainer
+    protected var mStatisticsContainer: StatisticsContainer?
+    private val mMoreButton: ImageView?
+    private val mMoreInvisibleButton: Button?
+    private val mHLUSlider: HLUSlider
+
+    private val mMeasurementsRepository = MeasurementsRepository()
+
+    constructor(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        supportFragmentManager: FragmentManager?
+    ): super() {
+        this.mFragmentManager = supportFragmentManager
+
+        this.rootView = inflater.inflate(layoutId(), parent, false)
+
+        mSessionDateTextView = this.rootView?.session_date
+        mSessionNameTextView = this.rootView?.session_name
+        mSessionMeasurementsDescription = this.findViewById(R.id.session_measurements_description)
+
+        mMeasurementsTableContainer = SessionDetailsMeasurementsTableContainer(
+            context,
+            inflater,
+            this.rootView,
+            true,
+            true
+        )
+
+        if (shouldShowStatisticsContainer()) {
+            mStatisticsContainer = StatisticsContainer(this.rootView, context)
+        } else {
+            mStatisticsContainer = null
+        }
+
+        mMoreButton = this.rootView?.more_button
+        mMoreInvisibleButton = this.rootView?.more_invisible_button
+        mMoreButton?.setOnClickListener {
+            onMoreButtonPressed()
+        }
+        mMoreInvisibleButton?.setOnClickListener {
+            onMoreButtonPressed()
+        }
+        mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
+
+        mSessionMeasurementsDescription?.visibility = View.GONE
+    }
+
+    abstract fun layoutId(): Int
+
+    override fun registerListener(listener: SessionDetailsViewMvc.Listener) {
+        super.registerListener(listener)
+        mListener = listener
+    }
+
+    override fun unregisterListener(listener: SessionDetailsViewMvc.Listener) {
+        super.unregisterListener(listener)
+        mListener = null
+    }
+
+    override fun addMeasurement(measurement: Measurement) {}
+
+    override fun bindSession(sessionPresenter: SessionPresenter?) {
+        mListener?.refreshSession()
+        mSessionPresenter = sessionPresenter
+
+        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
+            bindSessionDetails()
+            showSlider()
+            mMeasurementsTableContainer.bindSession(
+                mSessionPresenter,
+                this::onMeasurementStreamChanged
+            )
+
+            bindStatisticsContainer()
+            mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+            mSessionMeasurementsDescription?.visibility = View.VISIBLE
+        }
+    }
+
+    protected open fun shouldShowStatisticsContainer(): Boolean {
+        return true
+    }
+
+    override fun refreshStatisticsContainer() {
+        mStatisticsContainer?.refresh(mSessionPresenter)
+    }
+
+    private fun showSlider() {
+        val visibilityIndex = context.resources.getInteger(R.integer.visible_in_larger_screens)
+        /**
+        * 0 means visible, see VISIBILITY_FLAGS in View class:
+        * private static final int[] VISIBILITY_FLAGS = {VISIBLE, INVISIBLE, GONE};
+        * we keep them in integers.xml as indexes (0, 1, 2) instead of values (0, 4, 8)
+        * because this is how they are used in XML
+        */
+
+        if (visibilityIndex != 0) {
+            mMoreButton?.visibility = View.GONE
+        } else {
+            mMoreButton?.visibility = View.VISIBLE
+        }
+        mHLUSlider.show()
+    }
+
+    override fun centerMap(location: Location) {}
+
+    private fun bindSessionDetails() {
+        val session = mSessionPresenter?.session
+        session ?: return
+
+        mSessionDateTextView?.text = session.durationString()
+        mSessionNameTextView?.text = session.name
+        bindSessionMeasurementsDescription()
+    }
+
+    protected open fun bindSessionMeasurementsDescription() {
+        mSessionMeasurementsDescription?.text = context.getString(R.string.parameters)
+    }
+
+    protected open fun bindStatisticsContainer() {
+        if (shouldShowStatisticsContainer()) {
+            mStatisticsContainer?.bindSession(mSessionPresenter)
+        }
+    }
+
+    protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+        mSessionPresenter?.selectedStream = measurementStream
+        mStatisticsContainer?.refresh(mSessionPresenter)
+        bindSession(mSessionPresenter)
+        mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
+    }
+
+    protected open fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
+        mMeasurementsTableContainer.refresh()
+        mStatisticsContainer?.refresh(mSessionPresenter)
+
+        mListener?.onSensorThresholdChanged(sensorThreshold)
+    }
+
+    protected open fun onNoteAdded(note: Note) {
+        mSessionPresenter?.session?.notes?.add(note)
+    }
+
+    protected open fun onNoteDeleted(note: Note) {
+        mSessionPresenter?.session?.notes?.remove(
+            mSessionPresenter?.session?.notes?.find { note -> // I use this strange syntax instead of just remove(), because remove(note) does not work for some reason
+                note.number == note.number
+        })
+    }
+
+    override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
+        onSensorThresholdChanged(sensorThreshold)
+        mHLUSlider.refresh(sensorThreshold)
+    }
+
+    override fun onValidationFailed() {
+        mListener?.onHLUDialogValidationFailed()
+    }
+
+    private fun onMoreButtonPressed() {
+        mFragmentManager?.let {
+            val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
+            val measurementStream = mSessionPresenter?.selectedStream
+            HLUDialog(sensorThreshold, measurementStream, mFragmentManager, this).show()
+        }
+    }
+
+    fun showLoader(loader: ImageView?) {
+        AnimatedLoader(loader).start()
+        loader?.visibility = View.VISIBLE
+    }
+
+    fun hideLoader(loader: ImageView?) {
+        loader?.visibility = View.GONE
+    }
+}
