@@ -33,7 +33,11 @@ class SDCardReader {
 
         try {
             val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
-            val measurementsInStepCount = measurementsInStepCountString?.toInt()
+            val measurementsInStepCount = if (measurementsInStepCountString?.contains("⸮") == true) {
+                0
+            } else {
+                measurementsInStepCountString?.toInt()
+            }
 
             if (stepType != null && measurementsInStepCount != null) {
                 EventBus.getDefault().post(
