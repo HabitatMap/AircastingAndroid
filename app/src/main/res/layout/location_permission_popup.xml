@@ -7,25 +7,32 @@
     android:orientation="vertical"
     android:background="@drawable/dialog_background">
 
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_map_pin"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_4"/>
+
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-        android:text="Location permissions are needed"
+        android:text="@string/use_your_location"
         android:textSize="@dimen/text_size_m"
         android:textAlignment="center"
         app:lineHeight="@dimen/keyline_6"
-        android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_6" />
+        android:layout_marginBottom="@dimen/keyline_4" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="The AirCasting app collects location data to enable geolocation of your health and environmental monitoring measurements. When recording a mobile session, the app will track your location even when the app is closed or not in use."
+        android:text="@string/when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements"
         android:textAppearance="?attr/textAppearanceHeadline4"
         android:paddingBottom="@dimen/keyline_6"
         android:paddingTop="@dimen/keyline_2"
@@ -44,6 +51,6 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginBottom="@dimen/keyline_8"
-        android:text="@string/ok" />
+        android:text="@string/okay" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
