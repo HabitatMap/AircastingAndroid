@@ -1,5 +1,6 @@
 package pl.llp.aircasting.sensor.airbeam3.sync
 
+import androidx.core.text.isDigitsOnly
 import pl.llp.aircasting.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.events.sdcard.SDCardReadFinished
@@ -33,7 +34,9 @@ class SDCardReader {
 
         try {
             val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
-            val measurementsInStepCount = if (measurementsInStepCountString?.contains("⸮") == true) {
+            // if the line is counter and is not a number, set to 0
+            // if the line is not counter - ignore this is e.g. SD_SYNC_FINISH
+            val measurementsInStepCount = if (counterNotInitialized(valueString)) {
                 0
             } else {
                 measurementsInStepCountString?.toInt()
@@ -54,6 +57,14 @@ class SDCardReader {
         } else if (valueString == CLEAR_FINISHED) {
             EventBus.getDefault().post(SDCardClearFinished())
         }
+    }
+
+    private fun counterNotInitialized(metaDataString: String): Boolean {
+        val metaDataSplit = metaDataString.split(":")
+        val description = metaDataSplit.firstOrNull()?.trim()
+        val value = metaDataSplit.lastOrNull()?.trim()
+
+        return (description?.contains("Counter") == true && value?.isDigitsOnly() == false)
     }
 
     fun onMeasurementsDownloaded(data: ByteArray?) {
