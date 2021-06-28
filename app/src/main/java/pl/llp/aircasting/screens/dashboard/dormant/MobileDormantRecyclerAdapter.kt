@@ -29,25 +29,25 @@ class MobileDormantRecyclerAdapter(
     }
 
     override fun prepareSession(session: Session, expanded: Boolean): Session {
-//        if (!expanded) {
-//            return session
-//        }
-//
-//        var reloadedSession: Session? = null
-//
-//        runBlocking {
-//            val query = GlobalScope.async(Dispatchers.IO) {
-//                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-//                dbSessionWithMeasurements?.let {
-//                    reloadedSession = Session(dbSessionWithMeasurements)
-//                }
-//            }
-//            query.await()
-//        }
-//
-//        return reloadedSession ?: session
+        if (!expanded) {
+            return session
+        }
+
+        var reloadedSession: Session? = null
+
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                dbSessionWithMeasurements?.let {
+                    reloadedSession = Session(dbSessionWithMeasurements)
+                }
+            }
+            query.await()
+        }
+
+        return reloadedSession ?: session
 
         // We only have to reload measurements for fixed tab for expanded sessions. Mobile dormant sessions are not reloaded anymore
-        return session
+//        return session
     }
 }
