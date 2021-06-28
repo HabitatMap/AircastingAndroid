@@ -7,6 +7,14 @@
     android:orientation="vertical"
     android:background="@drawable/dialog_background">
 
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_map_pin"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_4"/>
+
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -16,10 +24,9 @@
         android:textSize="@dimen/text_size_m"
         android:textAlignment="center"
         app:lineHeight="@dimen/keyline_6"
-        android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_6" />
+        android:layout_marginBottom="@dimen/keyline_4" />
 
     <TextView
         android:id="@+id/description"
