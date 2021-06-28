@@ -364,4 +364,9 @@
     <string name="bluetooth_failed_connection_alert_description">"Bluetooth connection failed. \n Please toggle the power on your device and try again."</string>
     <string name="you_cant_start_2_microphone_sessions_at_once">A phone microphone session is already being recorded and displayed under the mobile active tab</string>
 
+    <!-- Location disclosure -->
+    <string name="use_your_location">Use your location</string>
+    <string name="when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements">When recording a mobile session, AirCasting will track your location even when the app is closed or not in use. Allow AirCasting to use your location all the time to map your mobile measurements.</string>
+    <string name="okay">Okay</string>
+
 </resources>
