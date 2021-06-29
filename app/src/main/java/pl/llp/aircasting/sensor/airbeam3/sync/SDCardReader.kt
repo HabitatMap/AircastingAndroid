@@ -34,11 +34,12 @@ class SDCardReader {
 
         try {
             val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
-            // if the line is counter and is not a number, set to 0
-            // if the line is not counter - ignore this is e.g. SD_SYNC_FINISH
-            val measurementsInStepCount = if (counterNotInitialized(valueString)) {
-                0
+
+            val measurementsInStepCount = if (isCounterStep(valueString)) {
+                // if the line is counter and is not a number, set to 0
+                measurementsInStepCountString?.toIntOrNull() ?: 0
             } else {
+                // if the line is not counter - it will throw a NumberFormatException
                 measurementsInStepCountString?.toInt()
             }
 
@@ -59,12 +60,11 @@ class SDCardReader {
         }
     }
 
-    private fun counterNotInitialized(metaDataString: String): Boolean {
-        val metaDataSplit = metaDataString.split(":")
-        val description = metaDataSplit.firstOrNull()?.trim()
-        val value = metaDataSplit.lastOrNull()?.trim()
+    private fun isCounterStep(metaDataString: String): Boolean {
+        val metaDataFields = metaDataString.split(":")
+        val description = metaDataFields.firstOrNull()?.trim()
 
-        return (description?.contains("Counter") == true && value?.isDigitsOnly() == false)
+        return description?.contains("Counter") == true
     }
 
     fun onMeasurementsDownloaded(data: ByteArray?) {
