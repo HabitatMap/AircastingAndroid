@@ -69,7 +69,7 @@ abstract class AirBeamConnector {
         Timer().schedule(mTimerTask, CONNECTION_TIMEOUT)
     }
 
-    private fun disconnect() {
+    fun disconnect() {
         unregisterFromEventBus()
 
         if (!cancelStarted.get()) {

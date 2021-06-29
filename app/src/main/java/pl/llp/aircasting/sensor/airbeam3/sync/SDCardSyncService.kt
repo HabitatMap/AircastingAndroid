@@ -138,6 +138,9 @@ class SDCardSyncService(
 
     private fun finish() {
         mSDCardDownloadService.deleteFiles()
+        // should we also do it after crearing SD card??
+//        mAirBeamConnector?.onDisconnected(mDeviceItem?.id!!)
+//        mAirBeamConnector?.disconnect()
         cleanup()
         Log.d(TAG, "Sync finished")
     }
