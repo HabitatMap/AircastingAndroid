@@ -7,6 +7,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.CalendarUtils
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.Note
+import pl.llp.aircasting.services.AveragingService
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -115,7 +116,12 @@ class GraphDataGenerator(
         count += 1
         if (hasNote != true && notes != null) {
             for (note in notes) {
-                if (isSameDate(note, Date(measurement.time.time))) hasNote = true
+                when { // todo: this is moment when i want to check length of the session to use the right method
+                    Date().time <= AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDate(note, Date(measurement.time.time))) hasNote = true
+                    Date().time > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time))) hasNote = true
+                    Date().time > AveragingService.SECOND_TRESHOLD_TIME -> if (isSameDateAbove9HoursAveraging(note, Date(measurement.time.time))) hasNote = true
+                }
+
             }
         }
     }
@@ -133,5 +139,17 @@ class GraphDataGenerator(
                 note.date.hours == date.hours &&
                 note.date.minutes == date.minutes &&
                 note.date.seconds == date.seconds
+    }
+
+    private fun isSameDateAbove2HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 5 seconds
+        val dateBefore = Date(date.time + 2500)
+        val dateAfter = Date(date.time - 2500)
+        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 2.5 seconds for now
+    }
+
+    private fun isSameDateAbove9HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 1 minute
+        val dateBefore = Date(date.time + 30000)
+        val dateAfter = Date(date.time - 30000)
+        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 30 seconds for now
     }
 }
