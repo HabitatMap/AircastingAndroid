@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.location.Location
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -29,6 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer: OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
+    private var currentZoom : Float? = null
 
     private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
@@ -107,6 +109,8 @@ class MapContainer: OnMapReadyCallback {
 
         mMap?.setOnCameraIdleListener {
             drawHeatMap()
+            currentZoom = mMap?.cameraPosition?.zoom
+            Log.i("MAP", "Current zoom " + currentZoom.toString())
         }
         if (mMeasurements.isNotEmpty()) showMap()
     }
@@ -238,15 +242,18 @@ class MapContainer: OnMapReadyCallback {
 
     private fun animateCameraToMobileSession() {
         if (mMeasurements.isEmpty()) return
-
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
         mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
 
+        Log.i("MAP", "Current zoom: " + currentZoom.toString())
         if (mSessionPresenter?.isRecording() == true) {
-            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mMeasurements.last().latitude!!, mMeasurements.last().longitude!!),
-                50F // 50 is hardcoded zoom value for now
-            ))
+            if (currentZoom != null) {
+                val lastLat = mMeasurements.let { it.last().latitude }
+                val lastLong = mMeasurements.let { it. last().longitude}
+                Log.i("MAP", "Current zoom: " + currentZoom.toString())
+                centerMap(LatLng(lastLat!!, lastLong!!))  //, currentZoom
+            }
         }
 
     }
@@ -270,8 +277,8 @@ class MapContainer: OnMapReadyCallback {
         centerMap(position)
     }
 
-    private fun centerMap(position: LatLng) {
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM))
+    private fun centerMap(position: LatLng, zoom: Float = DEFAULT_ZOOM) {
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom))
     }
 
     fun addMobileMeasurement(measurement: Measurement) {
