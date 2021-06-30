@@ -116,6 +116,8 @@ class MobileActiveController(
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
+        val event = StopRecordingEvent(session.uuid)
+        EventBus.getDefault().post(event)
         SyncActivity.start(mRootActivity, onFinish = { goToDormantTab() })
     }
 
