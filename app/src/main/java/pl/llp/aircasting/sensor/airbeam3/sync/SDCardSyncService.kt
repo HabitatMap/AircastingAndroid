@@ -12,6 +12,7 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
     private val mSDCardDownloadService: SDCardDownloadService,
@@ -26,6 +27,7 @@ class SDCardSyncService(
     private var mAirBeamConnector: AirBeamConnector? = null
     private var mDeviceItem: DeviceItem? = null
 
+    private var mSessionsSyncStarted = AtomicBoolean(false)
     /*
 
         High level sync flow:
@@ -99,12 +101,16 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Sending mobile sessions to backend")
+        mSessionsSyncStarted.set(true)
         sessionsSyncService.sync()
     }
 
     @Subscribe
     fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        sendFixedMeasurementsToBackend()
+        if (mSessionsSyncStarted.get()) {
+            mSessionsSyncStarted.set(false)
+            sendFixedMeasurementsToBackend()
+        }
     }
 
     @Subscribe
@@ -138,9 +144,11 @@ class SDCardSyncService(
 
     private fun finish() {
         mSDCardDownloadService.deleteFiles()
-        // should we also do it after crearing SD card??
-//        mAirBeamConnector?.onDisconnected(mDeviceItem?.id!!)
-//        mAirBeamConnector?.disconnect()
+        mDeviceItem?.let { deviceItem ->
+            mAirBeamConnector?.onDisconnected(deviceItem.id)
+            mAirBeamConnector?.disconnect()
+        }
+
         cleanup()
         Log.d(TAG, "Sync finished")
     }
