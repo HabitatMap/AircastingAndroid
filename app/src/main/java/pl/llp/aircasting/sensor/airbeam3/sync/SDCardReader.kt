@@ -33,7 +33,14 @@ class SDCardReader {
 
         try {
             val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
-            val measurementsInStepCount = measurementsInStepCountString?.toInt()
+
+            val measurementsInStepCount = if (isCounterStep(valueString)) {
+                // if the line is counter and is not a number, set to 0
+                measurementsInStepCountString?.toIntOrNull() ?: 0
+            } else {
+                // if the line is not counter - it will throw a NumberFormatException
+                measurementsInStepCountString?.toInt()
+            }
 
             if (stepType != null && measurementsInStepCount != null) {
                 EventBus.getDefault().post(
@@ -50,6 +57,13 @@ class SDCardReader {
         } else if (valueString == CLEAR_FINISHED) {
             EventBus.getDefault().post(SDCardClearFinished())
         }
+    }
+
+    private fun isCounterStep(metaDataString: String): Boolean {
+        val metaDataFields = metaDataString.split(":")
+        val description = metaDataFields.firstOrNull()?.trim()
+
+        return description?.contains("Counter") == true
     }
 
     fun onMeasurementsDownloaded(data: ByteArray?) {
