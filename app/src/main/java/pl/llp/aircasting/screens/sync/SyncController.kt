@@ -36,6 +36,7 @@ import pl.llp.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
+import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncController(
     private val mContextActivity: AppCompatActivity,
@@ -58,6 +59,7 @@ class SyncController(
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
     private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mWizardNavigator = SyncWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
+    private var mSessionsSyncStarted = AtomicBoolean(false)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -89,12 +91,17 @@ class SyncController(
     }
 
     private fun refreshSessionList() {
+        mSessionsSyncStarted.set(true)
         mSessionsSyncService.sync(shouldDisplayErrors = false)
     }
 
     @Subscribe
     fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        mWizardNavigator.goToRefreshingSessionsSuccess(this)
+        if (mSessionsSyncStarted.get()) {
+            mSessionsSyncStarted.set(false)
+            mWizardNavigator.goToRefreshingSessionsSuccess(this)
+        }
+
     }
 
     @Subscribe
