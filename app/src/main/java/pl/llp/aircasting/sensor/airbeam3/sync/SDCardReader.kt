@@ -1,6 +1,5 @@
 package pl.llp.aircasting.sensor.airbeam3.sync
 
-import androidx.core.text.isDigitsOnly
 import pl.llp.aircasting.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.events.sdcard.SDCardReadFinished
