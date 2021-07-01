@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.EventBus
 class SDCardReader {
     private val DOWNLOAD_FINISHED = "SD_SYNC_FINISH"
     private val CLEAR_FINISHED = "SD_DELETE_FINISH"
+    private val COUNTER_STEP_PATTERN = "Count"
 
     private var stepType: StepType? =
         StepType.MOBILE
@@ -31,16 +32,10 @@ class SDCardReader {
         data ?: return
         val valueString = String(data)
 
-        try {
-            val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
+        val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
 
-            val measurementsInStepCount = if (isCounterStep(valueString)) {
-                // if the line is counter and is not a number, set to 0
-                measurementsInStepCountString?.toIntOrNull() ?: 0
-            } else {
-                // if the line is not counter - it will throw a NumberFormatException
-                measurementsInStepCountString?.toInt()
-            }
+        if (isCounterStep(valueString)) {
+            val measurementsInStepCount = measurementsInStepCountString?.toIntOrNull() ?: 0
 
             if (stepType != null && measurementsInStepCount != null) {
                 EventBus.getDefault().post(
@@ -48,8 +43,6 @@ class SDCardReader {
                 )
                 stepType = stepType?.next()
             }
-        } catch (e: NumberFormatException) {
-            // ignore - this is e.g. SD_SYNC_FINISH
         }
 
         if (valueString == DOWNLOAD_FINISHED) {
@@ -63,7 +56,7 @@ class SDCardReader {
         val metaDataFields = metaDataString.split(":")
         val description = metaDataFields.firstOrNull()?.trim()
 
-        return description?.contains("Counter") == true
+        return description?.contains(COUNTER_STEP_PATTERN) == true
     }
 
     fun onMeasurementsDownloaded(data: ByteArray?) {
