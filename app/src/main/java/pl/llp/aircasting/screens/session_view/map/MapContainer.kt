@@ -34,6 +34,7 @@ class MapContainer: OnMapReadyCallback {
 
     private var mContext: Context?
     private var mListener: SessionDetailsViewMvc.Listener? = null
+    private var isCenteredToLastLocation = false
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
@@ -109,10 +110,23 @@ class MapContainer: OnMapReadyCallback {
 
         mMap?.setOnCameraIdleListener {
             drawHeatMap()
-            currentZoom = mMap?.cameraPosition?.zoom
-            Log.i("MAP", "Current zoom " + currentZoom.toString())
+            if (!isCenteredToLastLocation) setCurrentZoom() // we want to center the map over last user's location only when user enters the map
+
         }
         if (mMeasurements.isNotEmpty()) showMap()
+    }
+
+    private fun setCurrentZoom() {
+        currentZoom = mMap?.cameraPosition?.zoom
+
+        if (mSessionPresenter?.isRecording() == true) {
+            val lastLat = mMeasurements.let { it.last().latitude }
+            val lastLong = mMeasurements.let { it. last().longitude}
+            centerMap(LatLng(lastLat!!, lastLong!!), currentZoom!!)
+
+        }
+
+        isCenteredToLastLocation = true
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
@@ -245,16 +259,6 @@ class MapContainer: OnMapReadyCallback {
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
         mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
-
-        Log.i("MAP", "Current zoom: " + currentZoom.toString())
-        if (mSessionPresenter?.isRecording() == true) {
-            if (currentZoom != null) {
-                val lastLat = mMeasurements.let { it.last().latitude }
-                val lastLong = mMeasurements.let { it. last().longitude}
-                Log.i("MAP", "Current zoom: " + currentZoom.toString())
-                centerMap(LatLng(lastLat!!, lastLong!!))  //, currentZoom
-            }
-        }
 
     }
 
