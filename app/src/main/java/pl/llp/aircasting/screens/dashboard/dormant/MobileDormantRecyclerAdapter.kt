@@ -46,8 +46,5 @@ class MobileDormantRecyclerAdapter(
         }
 
         return reloadedSession ?: session
-
-        // We only have to reload measurements for fixed tab for expanded sessions. Mobile dormant sessions are not reloaded anymore
-//        return session
     }
 }
