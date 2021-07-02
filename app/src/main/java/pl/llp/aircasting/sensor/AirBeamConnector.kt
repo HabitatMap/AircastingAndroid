@@ -15,7 +15,7 @@ import kotlin.concurrent.timerTask
 abstract class AirBeamConnector {
     interface Listener {
         fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?)
-        fun onConnectionFailed(deviceId: String)
+        fun onConnectionFailed(deviceItem: DeviceItem)
         fun onDisconnect(deviceId: String)
     }
 
@@ -67,7 +67,7 @@ abstract class AirBeamConnector {
         mTimerTask = timerTask {
             if (connectionEstablished.get() == false) {
                 connectionTimedOut.set(true)
-                mListener?.onConnectionFailed(deviceItem.id)
+                mListener?.onConnectionFailed(deviceItem)
             }
         }
         Timer().schedule(mTimerTask, CONNECTION_TIMEOUT)
@@ -94,10 +94,10 @@ abstract class AirBeamConnector {
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
-    fun onConnectionFailed(deviceId: String) {
+    fun onConnectionFailed(deviceItem: DeviceItem) {
         mTimerTask?.cancel()
         if (connectionTimedOut.get() == false) {
-            mListener?.onConnectionFailed(deviceId)
+            mListener?.onConnectionFailed(deviceItem)
         }
     }
 
@@ -118,23 +118,14 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
-        println("MARYSIA: DisconnectExternalSensorsEvent received")
         disconnect()
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        println("MARYSIA: SensorDisconnectedEvent received")
-        // IF WE ARE HERE IT MEANS SOME DISCONNECTION HAPPENED
         if (mDeviceItem?.id == event.deviceId) {
             disconnect()
         }
-    }
-
-    fun reconnect() {
-        if (mDeviceItem == null || mSessionUUID == null) return
-
-        connect(mDeviceItem!!, mSessionUUID!!)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

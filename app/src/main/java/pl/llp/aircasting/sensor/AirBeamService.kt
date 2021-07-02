@@ -1,5 +1,8 @@
 package pl.llp.aircasting.sensor
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.events.AirBeamConnectionSuccessfulEvent
@@ -7,6 +10,12 @@ import pl.llp.aircasting.exceptions.BLENotSupported
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.database.repositories.SessionsRepository
+import pl.llp.aircasting.events.SensorDisconnectedEvent
+import pl.llp.aircasting.models.Session
 import javax.inject.Inject
 
 
@@ -21,10 +30,16 @@ abstract class AirBeamService: SensorService(),
     @Inject
     lateinit var errorHandler: ErrorHandler
 
+    @Inject
+    lateinit var airbeamReconnector: AirBeamReconnector
+
+    protected val mSessionRepository = SessionsRepository()
+
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         mAirBeamConnector?.registerListener(this)
+
         try {
             mAirBeamConnector?.connect(deviceItem, sessionUUID)
         } catch (e: BLENotSupported) {
@@ -46,16 +61,27 @@ abstract class AirBeamService: SensorService(),
         EventBus.getDefault().post(event)
     }
 
-    override fun onConnectionFailed(deviceId: String) {
-        onConnectionFailed(deviceId)
-    }
-
     override fun onDisconnect(deviceId: String) {
         stopSelf()
     }
 
-    private fun onConnectionFailed(deviceItem: DeviceItem) {
+    override fun onConnectionFailed(deviceItem: DeviceItem) {
         val event = AirBeamConnectionFailedEvent(deviceItem)
         EventBus.getDefault().post(event)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        if (airbeamReconnector.mReconnectionTriesNumber != null) return
+        event.sessionUUID?.let { sessionUUID ->
+            DatabaseProvider.runQuery { scope ->
+                val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
+                sessionDBObject?.let { sessionDBObject ->
+                    val session = Session(sessionDBObject)
+                    airbeamReconnector.tryReconnect(session)
+                }
+            }
+        }
+
     }
 }

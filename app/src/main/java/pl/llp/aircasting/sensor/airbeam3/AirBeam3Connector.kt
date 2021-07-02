@@ -74,7 +74,7 @@ open class AirBeam3Connector(
     override fun onDeviceConnected(device: BluetoothDevice) {}
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
-        onConnectionFailed(deviceItem.id)
+        onConnectionFailed(deviceItem)
     }
     override fun onDeviceReady(device: BluetoothDevice) {}
     override fun onDeviceDisconnecting(device: BluetoothDevice) {}

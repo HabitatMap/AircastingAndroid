@@ -78,14 +78,14 @@ open class AirBeam2Connector(
             } catch(e: IOException) {
                 val deviceId = deviceItem.id
                 onDisconnected(deviceId)
-                onConnectionFailed(deviceId)
+                onConnectionFailed(deviceItem)
 
                 if (!cancelStarted.get() && !connectionEstablished.get()) {
                     mErrorHandler.handle(AirBeamConnectionOpenFailed(e))
                     cancel()
                 }
             } catch(e: Exception) {
-                onConnectionFailed(deviceItem.id)
+                onConnectionFailed(deviceItem)
 
                 mErrorHandler.handle(UnknownError(e))
                 cancel()
