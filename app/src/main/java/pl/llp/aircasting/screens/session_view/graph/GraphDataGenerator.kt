@@ -142,14 +142,14 @@ class GraphDataGenerator(
     }
 
     private fun isSameDateAbove2HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 5 seconds
-        val dateBefore = Date(date.time + 2500)
-        val dateAfter = Date(date.time - 2500)
+        val dateBefore = Date(date.time + 5000)
+        val dateAfter = Date(date.time - 5000)
         return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 2.5 seconds for now
     }
 
     private fun isSameDateAbove9HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 1 minute
-        val dateBefore = Date(date.time + 30000)
-        val dateAfter = Date(date.time - 30000)
+        val dateBefore = Date(date.time + 60000)
+        val dateAfter = Date(date.time - 60000)
         return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 30 seconds for now
     }
 }
