@@ -31,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.absoluteValue
 
 
 class GraphContainer: OnChartGestureListener {
@@ -250,20 +251,23 @@ class GraphContainer: OnChartGestureListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 Log.i("GRAPH", e?.icon.toString()+ " e.x: " + e?.x.toString()+ " e.y: "+ e?.y.toString())
 
-                for (entry in mEntries) { //TODO: it does not make a sense to go through whole mEntries... i have to check only the closes entries to the selected one
+                for (entry in mEntries) {
                     if (entry.x < e?.x!! + 5000 && entry.x > e.x - 5000 && entry.y < e.y + 5000 && entry.y > e.y - 5000 && entry.icon != null) {// ofc we do not want to check if icon is null .... //&& entry.y < e.y + 500 && entry.y > e.y - 500 && e.icon != null
 //                        EditNoteBottomSheet(,mSessionPresenter.session,).show()
                         val notes = mSessionPresenter?.session?.notes
                         if (notes != null) {
                             Log.i("GRAPH", notes.toString())
+                            var tempValue = Float.MAX_VALUE
+                            var noteNumber = 0
                             for (note in notes) {
-                                //TODO: for some reason below comparison does not work because our dates are moved for about 5 seconds :|
                                 Log.i("GRAPH", note.date.toString() + " " + dateFromFloat(entry.x).toString())
-                                if(note.date == dateFromFloat(entry.x)) {
-                                    Log.i("GRAPH", note.date.toString())
-                                    mListener?.noteMarkerClicked(mSessionPresenter?.session, note.number) // this should show editNoteBottomSheet
+                                val temp = (note.date.time - e.x).absoluteValue
+                                if(temp < tempValue) {
+                                    tempValue = temp
+                                    noteNumber = note.number
                                 }
                             }
+                            mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber) // this should show editNoteBottomSheet
                         }
                         Log.i("GRAPH", "Edit note bottomsheet should be on now :) e.x: "+ e.x.toString() + " entry.x: "+ entry.x.toString() + " entry.y: "+ entry.y.toString())
                         break
