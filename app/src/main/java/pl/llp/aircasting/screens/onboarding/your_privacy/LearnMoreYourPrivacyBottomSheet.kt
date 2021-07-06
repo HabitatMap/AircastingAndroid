@@ -1,12 +1,7 @@
 package pl.llp.aircasting.screens.onboarding.your_privacy
 
 import android.app.Dialog
-import android.graphics.Color
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.bold
-import androidx.core.text.color
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.learn_more_onboarding_your_privacy.view.*
