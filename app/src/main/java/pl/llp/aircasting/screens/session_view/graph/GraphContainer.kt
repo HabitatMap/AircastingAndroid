@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -11,9 +12,11 @@ import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.jobs.MoveViewJob
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.lib.MeasurementColor
@@ -52,6 +55,8 @@ class GraphContainer: OnChartGestureListener {
     private var mGetMeasurementsSample: () -> List<Measurement>
     private var mMeasurementsSample: List<Measurement> = listOf()
     private var mNotes: List<Note>? = listOf()
+
+    private var mEntries: List<Entry> = listOf()
 
     constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
         mContext = context
@@ -108,6 +113,8 @@ class GraphContainer: OnChartGestureListener {
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
+
+        mEntries = entries
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -238,6 +245,41 @@ class GraphContainer: OnChartGestureListener {
         if (android.os.Build.VERSION.SDK_INT < 24 ) mGraph?.setHardwareAccelerationEnabled(false)
 
         mGraph?.onChartGestureListener = this
+
+        mGraph?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                Log.i("GRAPH", e?.icon.toString()+ " e.x: " + e?.x.toString()+ " e.y: "+ e?.y.toString())
+
+                for (entry in mEntries) { //TODO: it does not make a sense to go through whole mEntries... i have to check only the closes entries to the selected one
+                    if (entry.x < e?.x!! + 5000 && entry.x > e.x - 5000 && entry.y < e.y + 5000 && entry.y > e.y - 5000 && entry.icon != null) {// ofc we do not want to check if icon is null .... //&& entry.y < e.y + 500 && entry.y > e.y - 500 && e.icon != null
+//                        EditNoteBottomSheet(,mSessionPresenter.session,).show()
+                        val notes = mSessionPresenter?.session?.notes
+                        if (notes != null) {
+                            Log.i("GRAPH", notes.toString())
+                            for (note in notes) {
+                                //TODO: for some reason below comparison does not work because our dates are moved for about 5 seconds :|
+                                Log.i("GRAPH", note.date.toString() + " " + dateFromFloat(entry.x).toString())
+                                if(note.date == dateFromFloat(entry.x)) {
+                                    Log.i("GRAPH", note.date.toString())
+                                    mListener?.noteMarkerClicked(mSessionPresenter?.session, note.number) // this should show editNoteBottomSheet
+                                }
+                            }
+                        }
+                        Log.i("GRAPH", "Edit note bottomsheet should be on now :) e.x: "+ e.x.toString() + " entry.x: "+ entry.x.toString() + " entry.y: "+ entry.y.toString())
+                        break
+                    }
+                }
+            }
+
+            override fun onNothingSelected() {
+                Log.i("GRAPH", "Nothing selected")
+            }
+
+        })
+    }
+
+    private fun dateFromFloat(float: Float): Date {
+        return Date(float.toLong() + mSessionPresenter?.session?.lastMeasurement()?.time?.time!!)
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
