@@ -72,7 +72,7 @@ class AirBeamReconnector(
         )
     }
 
-    fun tryReconnect(session: Session) {
+    fun initReconnectionTries(session: Session) {
         if (mReconnectionTriesNumber != null) return
         mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1
@@ -132,10 +132,11 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
+                    // TODO: should we invoke callbacks here?
                     return
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
-                    Thread.sleep(5000)
+                    Thread.sleep(RECONNECTION_TRIES_INTERVAL)
                     reconnect(event.deviceItem)
                 }
             }

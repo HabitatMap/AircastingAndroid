@@ -1,8 +1,5 @@
 package pl.llp.aircasting.sensor
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.events.AirBeamConnectionSuccessfulEvent
@@ -78,7 +75,7 @@ abstract class AirBeamService: SensorService(),
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
                 sessionDBObject?.let { sessionDBObject ->
                     val session = Session(sessionDBObject)
-                    airbeamReconnector.tryReconnect(session)
+                    airbeamReconnector.initReconnectionTries(session)
                 }
             }
         }
