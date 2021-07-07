@@ -28,23 +28,4 @@ class MobileDormantRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun prepareSession(session: Session, expanded: Boolean): Session {
-        if (!expanded) {
-            return session
-        }
-
-        var reloadedSession: Session? = null
-
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-                dbSessionWithMeasurements?.let {
-                    reloadedSession = Session(dbSessionWithMeasurements)
-                }
-            }
-            query.await()
-        }
-
-        return reloadedSession ?: session
-    }
 }

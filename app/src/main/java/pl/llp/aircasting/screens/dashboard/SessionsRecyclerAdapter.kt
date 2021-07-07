@@ -3,6 +3,10 @@ package pl.llp.aircasting.screens.dashboard
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -21,7 +25,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private var mSessionUUIDS: List<String> = emptyList()
     private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
-    abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS.get(position)
@@ -56,6 +59,26 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
 
         notifyDataSetChanged()
+    }
+
+    open fun prepareSession(session: Session, expanded: Boolean): Session {
+        if (!expanded) {
+            return session
+        }
+
+        var reloadedSession: Session? = null
+
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                dbSessionWithMeasurements?.let {
+                    reloadedSession = Session(dbSessionWithMeasurements)
+                }
+            }
+            query.await()
+        }
+
+        return reloadedSession ?: session
     }
 
     fun showLoaderFor(session: Session) {
