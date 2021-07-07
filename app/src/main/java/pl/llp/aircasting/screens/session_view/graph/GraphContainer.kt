@@ -58,6 +58,7 @@ class GraphContainer: OnChartGestureListener {
     private var mNotes: List<Note>? = listOf()
 
     private var mEntries: List<Entry> = listOf()
+    private var mEntriesWithIcons: MutableList<Entry> = mutableListOf()
 
     constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
         mContext = context
@@ -116,6 +117,13 @@ class GraphContainer: OnChartGestureListener {
         drawThresholds()
 
         mEntries = entries
+        mEntriesWithIcons = mutableListOf()
+
+        for (entry in mEntries) {
+            if (entry.icon != null) {
+                mEntriesWithIcons.add(entry)
+            }
+        }
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -255,18 +263,20 @@ class GraphContainer: OnChartGestureListener {
                     val to = mGraph?.highestVisibleX
                     val from = mGraph?.lowestVisibleX
                     val clickRange = (to?.minus(from!!))?.div(20) // assuming range of 5 % of visible x?
-                    if (entry.x < e?.x!! + clickRange!! && entry.x > e.x - clickRange && entry.y < e.y + clickRange && entry.y > e.y - clickRange && entry.icon != null) { //todo: instead of 5000, get e.g. 5% of visible x range
+                    if (entry.x < e?.x!! + clickRange!! && entry.x > e.x - clickRange && entry.y < e.y + clickRange && entry.y > e.y - clickRange && entry.icon != null) {
                         val notes = mSessionPresenter?.session?.notes
                         if (notes != null) {
                             var tempValue = Long.MAX_VALUE
                             var noteNumber = -1
-                            for (note in notes) {
-                                val temp = (note.date.time - e.x.toLong()).absoluteValue //todo: we have to use note.date here, but how to properly put it together with our entry's x
+                            Log.i("GRAPH", "entryWithIcons: " + mEntriesWithIcons.first().toString())
+                            for (entryWithIcon in mEntriesWithIcons) { // TODO: maybe i should keep entries with icons in a list and check which entry is the closest to touch point
+                                val temp = (e.x.toLong() - entryWithIcon.x.toLong()).absoluteValue //todo: we have to use note.date here, but how to properly put it together with our entry's x
                                 if(temp < tempValue) {
                                     tempValue = temp
-                                    noteNumber = note.number
+                                    noteNumber = mEntriesWithIcons.indexOf(entryWithIcon)
                                 }
-                                Log.i("GRAPH", "THIS IS MAIN LOG NOW, TEMP: " + temp + " note number: " + noteNumber.toString()+ " note date.time: " + note.date.time.toString())
+                                Log.i("GRAPH", "entryWithIcon.x: " + entryWithIcon.x + " e.x: " + e.x.toLong().toString())
+                                Log.i("GRAPH", "THIS IS MAIN LOG NOW, TEMP: " + temp + " note number: " + noteNumber.toString()+ " note date.time: " + entryWithIcon.x.toString())
                             }
                             mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber) // this should show editNoteBottomSheet
                         }
