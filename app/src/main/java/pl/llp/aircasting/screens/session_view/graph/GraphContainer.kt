@@ -249,27 +249,28 @@ class GraphContainer: OnChartGestureListener {
 
         mGraph?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                Log.i("GRAPH", e?.icon.toString()+ " e.x: " + e?.x.toString()+ " e.y: "+ e?.y.toString())
+                Log.i("GRAPH", "first entry x: " + mEntries.first().x.toString() + " last entry x: " + mEntries.last().x.toString())
 
                 for (entry in mEntries) {
-                    if (entry.x < e?.x!! + 5000 && entry.x > e.x - 5000 && entry.y < e.y + 5000 && entry.y > e.y - 5000 && entry.icon != null) {// ofc we do not want to check if icon is null .... //&& entry.y < e.y + 500 && entry.y > e.y - 500 && e.icon != null
-//                        EditNoteBottomSheet(,mSessionPresenter.session,).show()
+                    val to = mGraph?.highestVisibleX
+                    val from = mGraph?.lowestVisibleX
+                    val clickRange = (to?.minus(from!!))?.div(20) // assuming range of 5 % of visible x?
+                    if (entry.x < e?.x!! + clickRange!! && entry.x > e.x - clickRange && entry.y < e.y + clickRange && entry.y > e.y - clickRange && entry.icon != null) { //todo: instead of 5000, get e.g. 5% of visible x range
                         val notes = mSessionPresenter?.session?.notes
                         if (notes != null) {
-                            Log.i("GRAPH", notes.toString())
-                            var tempValue = Float.MAX_VALUE
-                            var noteNumber = 0
+                            var tempValue = Long.MAX_VALUE
+                            var noteNumber = -1
                             for (note in notes) {
-                                Log.i("GRAPH", note.date.toString() + " " + dateFromFloat(entry.x).toString())
-                                val temp = (note.date.time - e.x).absoluteValue
+                                val temp = (note.date.time - e.x.toLong()).absoluteValue //todo: we have to use note.date here, but how to properly put it together with our entry's x
                                 if(temp < tempValue) {
                                     tempValue = temp
                                     noteNumber = note.number
                                 }
+                                Log.i("GRAPH", "THIS IS MAIN LOG NOW, TEMP: " + temp + " note number: " + noteNumber.toString()+ " note date.time: " + note.date.time.toString())
                             }
                             mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber) // this should show editNoteBottomSheet
                         }
-                        Log.i("GRAPH", "Edit note bottomsheet should be on now :) e.x: "+ e.x.toString() + " entry.x: "+ entry.x.toString() + " entry.y: "+ entry.y.toString())
+                        //Log.i("GRAPH", "Edit note bottomsheet should be on now :) e.x: "+ e.x.toString() + " entry.x: "+ entry.x.toString() + " entry.y: "+ entry.y.toString())
                         break
                     }
                 }
