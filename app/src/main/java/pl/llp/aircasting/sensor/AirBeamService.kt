@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.SensorDisconnectedEvent
+import pl.llp.aircasting.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.models.Session
 import javax.inject.Inject
 
@@ -69,6 +70,9 @@ abstract class AirBeamService: SensorService(),
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
+        println("MARYSIA: is this happening while screen is off?")
+        errorHandler.handle(SensorDisconnectedError("called from AirBeamService"))
+        println("MARYSIA: airbeamReconnector.mReconnectionTriesNumber ${airbeamReconnector.mReconnectionTriesNumber }")
         if (airbeamReconnector.mReconnectionTriesNumber != null) return
         event.sessionUUID?.let { sessionUUID ->
             DatabaseProvider.runQuery { scope ->

@@ -102,6 +102,7 @@ abstract class AirBeamConnector {
     }
 
     fun onDisconnected(deviceId: String) {
+        println("MARYSIA: AirBeamConnector onDisconnected sending event")
         EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, mSessionUUID))
         mListener?.onDisconnect(deviceId)
     }

@@ -80,3 +80,6 @@ class NotesNoLocationError():
 
 class CSVGenerationError():
     BaseException(null, "There was a problem while generating a CSV file.")
+
+class SensorDisconnectedError(additionalMessage: String?):
+    BaseException(null, "Sensor has been disconnected, cause unknown. Will init reconnection. ${additionalMessage}")

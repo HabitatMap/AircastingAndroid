@@ -77,6 +77,7 @@ open class AirBeam2Connector(
                 }
             } catch(e: IOException) {
                 val deviceId = deviceItem.id
+                mErrorHandler.handle(SensorDisconnectedError("called from Airbeam2Connector"))
                 onDisconnected(deviceId)
                 onConnectionFailed(deviceItem)
 

@@ -11,6 +11,7 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import pl.llp.aircasting.exceptions.SensorDisconnectedError
 
 
 open class AirBeam3Connector(
@@ -80,6 +81,8 @@ open class AirBeam3Connector(
     override fun onDeviceDisconnecting(device: BluetoothDevice) {}
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
+        println("MARYSIA Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id}")
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector"))
         onDisconnected(deviceItem.id)
     }
 }

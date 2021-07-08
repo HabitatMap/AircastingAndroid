@@ -12,6 +12,7 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
         val SESSION_UUID_KEY = "inputExtraSessionUUID"
 
         fun startService(context: Context, deviceItem: DeviceItem, sessionUUID: String? = null) {
+            println("MARYSIA: is reconnect service started?? maybe context is null? ${context}")
             val startIntent = Intent(context, AirBeamReconnectSessionService::class.java)
 
             startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
