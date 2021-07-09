@@ -58,7 +58,7 @@ class GraphContainer: OnChartGestureListener {
     private var mNotes: List<Note>? = listOf()
 
     private var mEntries: List<Entry> = listOf()
-    private var mEntriesWithIcons: MutableList<Entry> = mutableListOf()
+    private var mEntriesWithIcons: HashMap<Entry, Int> = hashMapOf()
 
     constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
         mContext = context
@@ -117,11 +117,14 @@ class GraphContainer: OnChartGestureListener {
         drawThresholds()
 
         mEntries = entries
-        mEntriesWithIcons = mutableListOf()
+        mEntriesWithIcons = hashMapOf()
 
         for (entry in mEntries) {
             if (entry.icon != null) {
-                mEntriesWithIcons.add(entry)
+                mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number?.let {
+                    mEntriesWithIcons.put(entry, it)
+                }
+                Log.i("GRAPH", "entryWith: " + entry.x + " " + entry.y + " " + mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number.toString())
             }
         }
 
@@ -268,12 +271,12 @@ class GraphContainer: OnChartGestureListener {
                         if (notes != null) {
                             var tempValue = Long.MAX_VALUE
                             var noteNumber = -1
-                            Log.i("GRAPH", "entryWithIcons: " + mEntriesWithIcons.first().toString())
-                            for (entryWithIcon in mEntriesWithIcons) { // TODO: maybe i should keep entries with icons in a list and check which entry is the closest to touch point
-                                val temp = (e.x.toLong() - entryWithIcon.x.toLong()).absoluteValue //todo: we have to use note.date here, but how to properly put it together with our entry's x
+                            Log.i("GRAPH", "entryWithIcons: " + mEntriesWithIcons.toString())
+                            for ((entryWithIcon, number) in mEntriesWithIcons) {
+                                val temp = (e.x.toLong() - entryWithIcon.x.toLong()).absoluteValue
                                 if(temp < tempValue) {
                                     tempValue = temp
-                                    noteNumber = mEntriesWithIcons.indexOf(entryWithIcon)
+                                    noteNumber = number //todo: this one is not always true after deleting session
                                 }
                                 Log.i("GRAPH", "entryWithIcon.x: " + entryWithIcon.x + " e.x: " + e.x.toLong().toString())
                                 Log.i("GRAPH", "THIS IS MAIN LOG NOW, TEMP: " + temp + " note number: " + noteNumber.toString()+ " note date.time: " + entryWithIcon.x.toString())
@@ -291,10 +294,6 @@ class GraphContainer: OnChartGestureListener {
             }
 
         })
-    }
-
-    private fun dateFromFloat(float: Float): Date {
-        return Date(float.toLong() + mSessionPresenter?.session?.lastMeasurement()?.time?.time!!)
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
