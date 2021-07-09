@@ -263,6 +263,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun animateCameraToFixedSession() {
+        if (mMeasurements.isEmpty()) return
         val session = mSessionPresenter?.session
         val location = session?.location
 
