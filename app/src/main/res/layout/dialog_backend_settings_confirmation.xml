@@ -25,7 +25,7 @@
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Application is about to restart, are you sure?"
+        android:text="Application is about to restart and log out, are you sure?"
         style="@style/TextAppearance.Aircasting.Cards.Body1"
         android:textSize="@dimen/text_size_s"
         android:textAlignment="center"

@@ -2,7 +2,10 @@ package pl.llp.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.util.Log
 import com.jakewharton.processphoenix.ProcessPhoenix
+import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.events.LogoutEvent
 import pl.llp.aircasting.networking.services.SessionsSyncService
 
 open class Settings(private val mApplication: Application) {
@@ -116,6 +119,9 @@ open class Settings(private val mApplication: Application) {
     fun backendSettingsChanged(url: String, port: String) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
+        Log.i("SHARED", "backend settings changed")
+        EventBus.getDefault().post(LogoutEvent())
+        logout()
         SessionsSyncService.destroy()
         ProcessPhoenix.triggerRebirth(mApplication)
     }
@@ -176,8 +182,13 @@ open class Settings(private val mApplication: Application) {
     }
 
     private fun deleteFromSettings(){
+        val keys = sharedPreferences.all.map { it.key }
         val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.apply()
+        for (key in keys) {
+            if (key != BACKEND_URL_KEY && key != BACKEND_PORT_KEY) {
+                editor.remove(key)
+                editor.apply()
+            }
+        }
     }
 }
