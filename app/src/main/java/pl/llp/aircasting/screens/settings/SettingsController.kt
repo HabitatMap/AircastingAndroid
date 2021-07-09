@@ -11,6 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.R
+import pl.llp.aircasting.database.ClearDatabaseService
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
@@ -28,6 +29,7 @@ class SettingsController(
     SettingsViewMvc.BackendSettingsDialogListener,
     SettingsViewMvc.MicrophoneSettingsDialogListener,
     BaseController<SettingsViewMvcImpl>(viewMvc) {
+    private val clearDatabaseService = ClearDatabaseService()
 
     fun onStart(){
         mViewMvc?.registerListener(this)
@@ -69,7 +71,7 @@ class SettingsController(
 
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
-        clearDatabase()
+        clearDatabaseService.clearDatabase()
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {
@@ -87,14 +89,4 @@ class SettingsController(
         BackendSettingsDialog(fragmentManager, url, port, this, mContext).show()
     }
 
-    private fun clearDatabase() {
-        // to make sure downloading sessions stopped before we start deleting them
-        Thread.sleep(1000)
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                DatabaseProvider.get().clearAllTables()
-            }
-            query.await()
-        }
-    }
 }
