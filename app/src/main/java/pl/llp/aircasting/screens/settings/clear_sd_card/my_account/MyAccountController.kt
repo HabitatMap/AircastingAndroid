@@ -1,14 +1,9 @@
 package pl.llp.aircasting.screens.settings.clear_sd_card.my_account
 
 import android.content.Context
-import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.events.LogoutEvent
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.new_session.LoginActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.ClearDatabaseService
 
@@ -32,7 +27,7 @@ class MyAccountController(
         EventBus.getDefault().post(LogoutEvent())
 
         mSettings.logout()
-        clearDatabaseService.clearDatabase()
+        clearDatabaseService.perform()
 
         LoginActivity.startAfterSignOut(mContext)
     }

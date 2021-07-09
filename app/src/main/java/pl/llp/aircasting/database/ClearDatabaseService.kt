@@ -6,7 +6,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
 class ClearDatabaseService {
-    fun clearDatabase() {
+    fun perform() {
         // to make sure downloading sessions stopped before we start deleting them
         Thread.sleep(1000)
         runBlocking {
