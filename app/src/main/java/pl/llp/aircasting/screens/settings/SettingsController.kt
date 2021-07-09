@@ -6,7 +6,12 @@ import android.net.Uri
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.R
+import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
@@ -64,6 +69,7 @@ class SettingsController(
 
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
+        clearDatabase()
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {
@@ -79,5 +85,16 @@ class SettingsController(
         val url = mSettings.getBackendUrl()
         val port = mSettings.getBackendPort()
         BackendSettingsDialog(fragmentManager, url, port, this, mContext).show()
+    }
+
+    private fun clearDatabase() {
+        // to make sure downloading sessions stopped before we start deleting them
+        Thread.sleep(1000)
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                DatabaseProvider.get().clearAllTables()
+            }
+            query.await()
+        }
     }
 }
