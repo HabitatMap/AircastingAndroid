@@ -119,7 +119,6 @@ open class Settings(private val mApplication: Application) {
     fun backendSettingsChanged(url: String, port: String) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
-        Log.i("SHARED", "backend settings changed")
         EventBus.getDefault().post(LogoutEvent())
         logout()
         SessionsSyncService.destroy()

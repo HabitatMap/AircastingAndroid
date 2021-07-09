@@ -66,7 +66,6 @@ class SettingsController(
 
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
-        clearDatabaseService.perform()
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {

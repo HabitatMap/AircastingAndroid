@@ -27,7 +27,6 @@ class MyAccountController(
         EventBus.getDefault().post(LogoutEvent())
 
         mSettings.logout()
-        clearDatabaseService.perform()
 
         LoginActivity.startAfterSignOut(mContext)
     }
