@@ -117,6 +117,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun setCurrentZoom() {
+        if (mMeasurements.isEmpty()) return
         currentZoom = mMap?.cameraPosition?.zoom
 
         if (mSessionPresenter?.isRecording() == true) {
@@ -294,6 +295,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun drawFixedMeasurement() {
+        if (mMeasurements.isEmpty()) return
         val colorPoint = measurementColorPoint(mMeasurements.last())
         drawLastMeasurementMarker(colorPoint?.point, colorPoint?.color)
     }
