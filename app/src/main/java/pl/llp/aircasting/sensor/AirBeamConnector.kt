@@ -27,10 +27,6 @@ abstract class AirBeamConnector {
     protected val connectionEstablished = AtomicBoolean(false)
     protected val connectionTimedOut = AtomicBoolean(false)
 
-//    private var reconnectionTriesNumber: Int? = null
-//    protected val reconnectionStarted = AtomicBoolean(false)
-//    private val RECONNECTION_TRIES_MAX = 5
-
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
 
@@ -40,6 +36,7 @@ abstract class AirBeamConnector {
     abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
+        println("MARYSIA: trying to connect, AirbeamConnector connect()")
         mDeviceItem = deviceItem
         mSessionUUID = sessionUUID
 
@@ -89,12 +86,18 @@ abstract class AirBeamConnector {
     }
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        println("MARYSIA: Airbeam2Conector onConnectionSuccessful")
         mDeviceItem = deviceItem
+        val bluetoothDevice = deviceItem.bluetoothDevice ?: return
+        println("MARYSIA: bluetoothDevice.bondState ${bluetoothDevice.bondState}")
+
+        println("MARYSIA: bluetoothDevice.bondState ${bluetoothDevice.bondState}")
         connectionEstablished.set(true)
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
     fun onConnectionFailed(deviceItem: DeviceItem) {
+        println("MARYSIA: Airbeam2Conector onConnectionFailed")
         mTimerTask?.cancel()
         if (connectionTimedOut.get() == false) {
             mListener?.onConnectionFailed(deviceItem)
@@ -144,3 +147,5 @@ abstract class AirBeamConnector {
         EventBus.getDefault().unregister(this);
     }
 }
+
+

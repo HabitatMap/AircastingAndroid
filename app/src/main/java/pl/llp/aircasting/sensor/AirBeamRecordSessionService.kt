@@ -6,8 +6,13 @@ import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
+import javax.inject.Inject
 
 open class AirBeamRecordSessionService: AirBeamService() {
+    var mIntent: Intent? = null
+
+    @Inject
+    lateinit var mAirBeamDiscoveryService: AirBeamDiscoveryService
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -28,15 +33,29 @@ open class AirBeamRecordSessionService: AirBeamService() {
         val appComponent = app.appComponent
         appComponent.inject(this)
 
-        return super.onStartCommand(intent, flags, startId)
+        mIntent = intent
+        val discoverySuccessful = runAirBeamDiscoveryService()
+
+        println("MARYSIA: We ran discovery, found an item, put to intent? ${mIntent?.extras}")
+        return super.onStartCommand(mIntent, flags, startId)
     }
 
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
-        val deviceItem = intent.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
-        val sessionUUID: String? = intent.getStringExtra(SESSION_UUID_KEY)
 
-        connect(deviceItem, sessionUUID)
+        val deviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem?
+        println("MARYSIA: record session service startSensor device item id ${deviceItem?.id}")
+        deviceItem?.let { deviceItem ->
+            val sessionUUID: String? = mIntent?.getStringExtra(SESSION_UUID_KEY)
+            println("MARYSIA: record session service startSensor trying to connect with ${deviceItem?.id}")
+            connect(deviceItem, sessionUUID)
+        }
+
+    }
+
+    open fun runAirBeamDiscoveryService(): Boolean? {
+        // do nothing
+        return null
     }
 }

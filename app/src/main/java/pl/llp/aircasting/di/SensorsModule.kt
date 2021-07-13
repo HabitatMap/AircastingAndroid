@@ -127,7 +127,7 @@ open class SensorsModule {
     open fun providesAirBeamDiscoveryService(
         application: AircastingApplication,
         bluetoothManager: BluetoothManager
-    ): AirBeamDiscoveryService = AirBeamDiscoveryService()
+    ): AirBeamDiscoveryService = AirBeamDiscoveryService(application, bluetoothManager)
 
     @Provides
     @Singleton

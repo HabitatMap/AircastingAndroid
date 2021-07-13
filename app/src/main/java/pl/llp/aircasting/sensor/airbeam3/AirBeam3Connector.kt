@@ -1,17 +1,22 @@
 package pl.llp.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGattCallback
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import no.nordicsemi.android.ble.observer.BondingObserver
+import no.nordicsemi.android.ble.observer.ConnectionObserver
 import pl.llp.aircasting.exceptions.BLENotSupported
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.MissingDeviceAfterConnectionError
+import pl.llp.aircasting.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
-import no.nordicsemi.android.ble.observer.ConnectionObserver
-import pl.llp.aircasting.exceptions.SensorDisconnectedError
 
 
 open class AirBeam3Connector(

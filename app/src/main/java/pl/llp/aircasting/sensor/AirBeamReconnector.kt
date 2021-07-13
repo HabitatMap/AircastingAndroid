@@ -71,15 +71,8 @@ class AirBeamReconnector(
         mErrorCallback = errorCallback
         mFinallyCallback = finallyCallback
 
-        println("MARYSIA: reconnect try, mSession ${mSession}")
-        val application = mContext.applicationContext as AircastingApplication
-        mAirBeamDiscoveryService.find(
-            deviceSelector = { deviceItem -> deviceItem.id == session.deviceId },
-            onDiscoverySuccessful = { deviceItem -> reconnect(deviceItem) },
-            onDiscoveryFailed = { onDiscoveryFailed() },
-            deviceItemId = session.deviceId,
-            application = application
-        )
+        println("MARYSIA: reconnect try, mSession  device id ${session.deviceId}")
+        reconnect(session.deviceId)
     }
 
     fun initReconnectionTries(session: Session) {
@@ -90,9 +83,9 @@ class AirBeamReconnector(
         reconnect(session, { mListener?.errorCallback() }, { mListener?.finallyCallback(session) })
     }
 
-    private fun reconnect(deviceItem: DeviceItem) {
+    private fun reconnect(deviceId: String?) {
         println("MARYSIA: is this reconnect(deviceItem) callback is called?")
-        AirBeamReconnectSessionService.startService(mContext, deviceItem, mSession?.uuid)
+        AirBeamReconnectSessionService.startService(mContext, deviceId, mSession?.uuid)
     }
 
     private fun onDiscoveryFailed() {
@@ -155,7 +148,7 @@ class AirBeamReconnector(
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
                     Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-                    reconnect(event.deviceItem)
+                    reconnect(event.deviceItem.id)
                 }
             }
         } else {
