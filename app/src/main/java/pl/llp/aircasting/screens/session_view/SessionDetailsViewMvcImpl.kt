@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.session_view
 
 import android.location.Location
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -178,6 +179,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun onNoteDeleted(note: Note) {
+        Log.i("NOTE", "onNoteDeleted. deleted note number: " + note.number.toString())
         mSessionPresenter?.session?.notes?.remove(
             mSessionPresenter?.session?.notes?.find { note -> // I use this strange syntax instead of just remove(), because remove(note) does not work for some reason
                 note.number == note.number

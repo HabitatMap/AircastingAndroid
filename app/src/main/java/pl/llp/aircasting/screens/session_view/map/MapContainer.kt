@@ -116,6 +116,9 @@ class MapContainer: OnMapReadyCallback {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
         mNotes = mSessionPresenter?.session?.notes!!
+        for (note in mNotes) {
+            Log.i("NOTE", "bindSession, noteNumber: " + note.number.toString())
+        }
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
