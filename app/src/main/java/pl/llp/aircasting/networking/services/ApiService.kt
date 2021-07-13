@@ -61,7 +61,6 @@ interface ApiService {
 open class ApiServiceFactory(private val mSettings: Settings) {
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
-    private lateinit var baseUrl : HttpUrl
 
     fun get(interceptors: List<Interceptor>): ApiService {
         val logging = HttpLoggingInterceptor()
@@ -79,11 +78,11 @@ open class ApiServiceFactory(private val mSettings: Settings) {
             .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
 
-        baseUrl()
+
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
-            .baseUrl(baseUrl)
+            .baseUrl(baseUrl())
             .build()
 
         return retrofit.create<ApiService>(ApiService::class.java)
@@ -121,13 +120,14 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         )
     }
 
-    protected open fun baseUrl() {
+    protected open fun baseUrl() : HttpUrl {
+        var baseUrl: HttpUrl
         if (mSettings.getBackendUrl()?.last()?.equals("/") == true) {
             baseUrl = HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
         } else {
             baseUrl = HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort() + "/")
         }
-
+        return baseUrl
     }
 
     private fun encodedCredentials(username: String, password: String): String {
