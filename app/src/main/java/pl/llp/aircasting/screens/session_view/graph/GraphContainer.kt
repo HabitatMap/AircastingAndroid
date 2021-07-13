@@ -124,7 +124,7 @@ class GraphContainer: OnChartGestureListener {
                 mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number?.let {
                     mEntriesWithIcons.put(entry, it)
                 }
-                Log.i("GRAPH", "entryWith: " + entry.x + " " + entry.y + " " + mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number.toString())
+                //Log.i("GRAPH", "entryWith: " + entry.x + " " + entry.y + " " + mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number.toString())
             }
         }
 
