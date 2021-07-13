@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.location.Location
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -173,6 +174,7 @@ class MapContainer: OnMapReadyCallback {
     private fun drawNotes() {
         for (note in mNotes) {
             drawNoteMarker(note)
+            Log.i("NOTE", note.number.toString())
         }
     }
 
