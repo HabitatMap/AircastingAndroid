@@ -121,7 +121,14 @@ open class ApiServiceFactory(private val mSettings: Settings) {
     }
 
     protected open fun baseUrl() : HttpUrl {
-        return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
+        val URL_SUFFIX = "/"
+        var baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
+
+        if (mSettings.getBackendUrl()?.last()?.equals(URL_SUFFIX) == true) {
+            return HttpUrl.get(baseUrl)
+        } else {
+            return HttpUrl.get(baseUrl + URL_SUFFIX)
+        }
     }
 
     private fun encodedCredentials(username: String, password: String): String {
