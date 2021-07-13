@@ -61,6 +61,7 @@ interface ApiService {
 open class ApiServiceFactory(private val mSettings: Settings) {
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
+    private lateinit var baseUrl : HttpUrl
 
     fun get(interceptors: List<Interceptor>): ApiService {
         val logging = HttpLoggingInterceptor()
@@ -78,11 +79,11 @@ open class ApiServiceFactory(private val mSettings: Settings) {
             .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
 
-
+        baseUrl()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
-            .baseUrl(baseUrl())
+            .baseUrl(baseUrl)
             .build()
 
         return retrofit.create<ApiService>(ApiService::class.java)
@@ -120,11 +121,11 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         )
     }
 
-    protected open fun baseUrl() : HttpUrl {
+    protected open fun baseUrl() {
         if (mSettings.getBackendUrl()?.last()?.equals("/") == true) {
-            return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
+            baseUrl = HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort())
         } else {
-            return HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort() + "/")
+            baseUrl = HttpUrl.get(mSettings.getBackendUrl() + ":" + mSettings.getBackendPort() + "/")
         }
 
     }
