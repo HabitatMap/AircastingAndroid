@@ -19,7 +19,6 @@ class LogoutService(
         EventBus.getDefault().post(LogoutEvent())
         mSettings.logout()
         clearDatabase()
-        SessionsSyncService.destroy()
         callback?.invoke()
     }
 

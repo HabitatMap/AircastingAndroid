@@ -190,7 +190,6 @@ open class Settings(private val mApplication: Application) {
         val editor = sharedPreferences.edit()
         for (key in keys) {
             if (key != BACKEND_URL_KEY && key != BACKEND_PORT_KEY) {
-                println("MARYSIA: removing setting key ${key}")
                 editor.remove(key)
                 editor.apply()
             }
