@@ -38,8 +38,6 @@ open class Settings(private val mApplication: Application) {
 
     private val sharedPreferences: SharedPreferences
 
-
-
     init {
         sharedPreferences = mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
     }
@@ -119,7 +117,7 @@ open class Settings(private val mApplication: Application) {
     }
 
     fun backendSettingsChanged(url: String, port: String) {
-        val logoutService = LogoutService(mSettings = this)
+        val logoutService = LogoutService(this)
 
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
@@ -127,7 +125,6 @@ open class Settings(private val mApplication: Application) {
         logoutService.perform {
             ProcessPhoenix.triggerRebirth(mApplication)
         }
-
     }
 
     fun setAppRestarted() {

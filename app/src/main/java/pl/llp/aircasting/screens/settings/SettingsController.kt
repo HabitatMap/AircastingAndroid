@@ -24,7 +24,6 @@ class SettingsController(
     SettingsViewMvc.MicrophoneSettingsDialogListener,
     BaseController<SettingsViewMvcImpl>(viewMvc) {
 
-
     fun onStart(){
         mViewMvc?.registerListener(this)
     }
@@ -65,7 +64,6 @@ class SettingsController(
 
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
-
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {

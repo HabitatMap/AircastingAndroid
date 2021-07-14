@@ -10,7 +10,7 @@ class MyAccountController(
     private val mViewMvc: MyAccountViewMvc,
     private val mSettings: Settings
 ) : MyAccountViewMvc.Listener {
-    private val logoutService = LogoutService(mSettings = mSettings)
+    private val logoutService = LogoutService(mSettings)
 
     fun onStart(){
         mViewMvc.registerListener(this)
