@@ -77,9 +77,8 @@ open class AirBeam2Connector(
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
-                val deviceId = deviceItem.id
                 mErrorHandler.handle(SensorDisconnectedError("called from Airbeam2Connector"))
-                onDisconnected(deviceId)
+                onDisconnected(deviceItem)
                 onConnectionFailed(deviceItem)
 
                 if (!cancelStarted.get() && !connectionEstablished.get()) {

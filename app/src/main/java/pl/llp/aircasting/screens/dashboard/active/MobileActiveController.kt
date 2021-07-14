@@ -100,6 +100,7 @@ class MobileActiveController(
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc?.showReconnectingLoaderFor(session)
         airBeamReconnector.reconnect(session,
+            deviceItem = null,
             errorCallback = {
                 GlobalScope.launch(Dispatchers.Main) {
                     mErrorHandler.showError(R.string.errors_airbeam_connection_failed)

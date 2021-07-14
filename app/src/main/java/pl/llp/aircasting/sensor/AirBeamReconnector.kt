@@ -50,7 +50,7 @@ class AirBeamReconnector(
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
-    fun reconnect(session: Session, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
+    fun reconnect(session: Session, deviceItem: DeviceItem?, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
         println("MARYSIA reconnect, registering to Eventbus ")
         EventBus.getDefault().safeRegister(this)
 
@@ -72,20 +72,20 @@ class AirBeamReconnector(
         mFinallyCallback = finallyCallback
 
         println("MARYSIA: reconnect try, mSession  device id ${session.deviceId}")
-        reconnect(session.deviceId)
+        reconnect(session.deviceId, deviceItem)
     }
 
-    fun initReconnectionTries(session: Session) {
+    fun initReconnectionTries(session: Session, deviceItem: DeviceItem?) {
         println("MARYSIA: init reconnection")
         if (mReconnectionTriesNumber != null) return
         mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1
-        reconnect(session, { mListener?.errorCallback() }, { mListener?.finallyCallback(session) })
+        reconnect(session, deviceItem, { mListener?.errorCallback() }, { mListener?.finallyCallback(session) })
     }
 
-    private fun reconnect(deviceId: String?) {
+    private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
         println("MARYSIA: is this reconnect(deviceItem) callback is called?")
-        AirBeamReconnectSessionService.startService(mContext, deviceId, mSession?.uuid)
+        AirBeamReconnectSessionService.startService(mContext, deviceId, deviceItem, mSession?.uuid)
     }
 
     private fun onDiscoveryFailed() {
@@ -95,7 +95,7 @@ class AirBeamReconnector(
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
             if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
-                reconnect(mSession!!, mErrorCallback!!, mFinallyCallback!!)
+                reconnect(mSession!!, null,  mErrorCallback!!, mFinallyCallback!!)
             }
         } else {
             mFinallyCallback?.invoke()
@@ -104,7 +104,7 @@ class AirBeamReconnector(
 
     private fun sendDisconnectedEvent(session: Session) {
         val deviceId = session.deviceId
-        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, session.uuid)) }
+        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid)) }
     }
 
     private fun updateSessionStatus(session: Session?, status: Session.Status) {

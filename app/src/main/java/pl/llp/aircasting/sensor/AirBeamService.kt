@@ -34,6 +34,7 @@ abstract class AirBeamService: SensorService(),
     protected val mSessionRepository = SessionsRepository()
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
+        println("MARYSIA: connect, device type: ${deviceItem.type}")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         mAirBeamConnector?.registerListener(this)
@@ -79,7 +80,7 @@ abstract class AirBeamService: SensorService(),
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
                 sessionDBObject?.let { sessionDBObject ->
                     val session = Session(sessionDBObject)
-                    airbeamReconnector.initReconnectionTries(session)
+                    airbeamReconnector.initReconnectionTries(session, event.device)
                 }
             }
         }

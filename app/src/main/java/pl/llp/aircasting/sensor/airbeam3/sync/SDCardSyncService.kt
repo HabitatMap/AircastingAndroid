@@ -145,7 +145,7 @@ class SDCardSyncService(
     private fun finish() {
         mSDCardDownloadService.deleteFiles()
         mDeviceItem?.let { deviceItem ->
-            mAirBeamConnector?.onDisconnected(deviceItem.id)
+            mAirBeamConnector?.onDisconnected(deviceItem)
             mAirBeamConnector?.disconnect()
         }
 

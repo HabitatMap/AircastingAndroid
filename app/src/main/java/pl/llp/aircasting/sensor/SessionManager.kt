@@ -53,7 +53,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        disconnectSession(event.deviceId)
+        disconnectSession(event.sessionDeviceId)
     }
 
     @Subscribe

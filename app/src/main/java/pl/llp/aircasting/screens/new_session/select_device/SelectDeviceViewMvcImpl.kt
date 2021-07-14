@@ -202,6 +202,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
     }
 
     private fun onConnectClicked() {
+        println("MARYSIA selected device item ${mSelectedDeviceItem}")
         mSelectedDeviceItem ?: return
 
         for (listener in listeners) {

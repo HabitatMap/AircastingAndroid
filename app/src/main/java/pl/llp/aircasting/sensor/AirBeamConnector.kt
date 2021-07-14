@@ -88,10 +88,11 @@ abstract class AirBeamConnector {
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
         println("MARYSIA: Airbeam2Conector onConnectionSuccessful")
         mDeviceItem = deviceItem
-        val bluetoothDevice = deviceItem.bluetoothDevice ?: return
-        println("MARYSIA: bluetoothDevice.bondState ${bluetoothDevice.bondState}")
-
-        println("MARYSIA: bluetoothDevice.bondState ${bluetoothDevice.bondState}")
+        println("MARYSIA conected device item: ${deviceItem}")
+        println("MARYSIA conected device item: ${deviceItem.id}")
+        println("MARYSIA conected device item: ${deviceItem.address}")
+        println("MARYSIA conected device item: ${deviceItem.bluetoothDevice}")
+        println("MARYSIA conected device item: ${deviceItem.address}")
         connectionEstablished.set(true)
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
@@ -104,10 +105,10 @@ abstract class AirBeamConnector {
         }
     }
 
-    fun onDisconnected(deviceId: String) {
+    fun onDisconnected(device: DeviceItem) {
         println("MARYSIA: AirBeamConnector onDisconnected sending event")
-        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, mSessionUUID))
-        mListener?.onDisconnect(deviceId)
+        EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
+        mListener?.onDisconnect(device.id)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -127,7 +128,7 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        if (mDeviceItem?.id == event.deviceId) {
+        if (mDeviceItem?.id == event.sessionDeviceId) {
             disconnect()
         }
     }

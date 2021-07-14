@@ -1,3 +1,5 @@
 package pl.llp.aircasting.events
 
-class SensorDisconnectedEvent(val deviceId: String, val sessionUUID: String?)
+import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
+
+class SensorDisconnectedEvent(val sessionDeviceId: String, val device: DeviceItem?, val sessionUUID: String?)

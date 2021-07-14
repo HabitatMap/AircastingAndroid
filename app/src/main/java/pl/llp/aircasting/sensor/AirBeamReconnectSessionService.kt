@@ -19,11 +19,14 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
         val SESSION_UUID_KEY = "inputExtraSessionUUID"
         val SESSION_DEVICE_ID_KEY = "inputExtraSessionDeviceId"
 
-        fun startService(context: Context, deviceId: String?, sessionUUID: String? = null) {
+        fun startService(context: Context, sessionDeviceId: String?, deviceItem: DeviceItem?, sessionUUID: String? = null) {
             println("MARYSIA: is reconnect service started?? maybe context is null? ${context}")
             val startIntent = Intent(context, AirBeamReconnectSessionService::class.java)
 
-            startIntent.putExtra(SESSION_DEVICE_ID_KEY, deviceId)
+            startIntent.putExtra(SESSION_DEVICE_ID_KEY, sessionDeviceId)
+            deviceItem?.let { deviceItem ->
+                startIntent.putExtra(AirBeamSyncService.DEVICE_ITEM_KEY, deviceItem as Parcelable)
+            }
             startIntent.putExtra(SESSION_UUID_KEY, sessionUUID)
 
             ContextCompat.startForegroundService(context, startIntent)
@@ -47,6 +50,7 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
         )
 
         return mDiscoverySuccessful
+        return true
     }
 
     fun onDiscoverySuccessful(deviceItem: DeviceItem) {
