@@ -22,11 +22,10 @@ import pl.llp.aircasting.services.AveragingPreviousMeasurementsBackgroundService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.database.ClearDatabaseService
+import pl.llp.aircasting.database.LogoutService
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
-    private val clearDatabaseService = ClearDatabaseService()
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
@@ -94,7 +93,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: LogoutEvent) {
-        clearDatabaseService.perform()
         fixedSessionDownloadMeasurementsService.stop()
         periodicallySyncSessionsService.stop()
         SessionsSyncService.destroy()
