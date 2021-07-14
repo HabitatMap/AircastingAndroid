@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.database.ClearDatabaseService
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
@@ -24,7 +23,7 @@ class SettingsController(
     SettingsViewMvc.BackendSettingsDialogListener,
     SettingsViewMvc.MicrophoneSettingsDialogListener,
     BaseController<SettingsViewMvcImpl>(viewMvc) {
-    private val clearDatabaseService = ClearDatabaseService()
+
 
     fun onStart(){
         mViewMvc?.registerListener(this)
@@ -66,6 +65,7 @@ class SettingsController(
 
     override fun confirmClicked(urlValue: String, portValue: String) {
         mSettings.backendSettingsChanged(urlValue, portValue)
+
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {

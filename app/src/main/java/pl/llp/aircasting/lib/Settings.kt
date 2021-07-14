@@ -2,9 +2,9 @@ package pl.llp.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import com.jakewharton.processphoenix.ProcessPhoenix
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.database.LogoutService
 import pl.llp.aircasting.events.LogoutEvent
 import pl.llp.aircasting.networking.services.SessionsSyncService
 
@@ -37,6 +37,8 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_APP_RESTARTED = false
 
     private val sharedPreferences: SharedPreferences
+
+
 
     init {
         sharedPreferences = mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
@@ -117,12 +119,15 @@ open class Settings(private val mApplication: Application) {
     }
 
     fun backendSettingsChanged(url: String, port: String) {
+        val logoutService = LogoutService(mSettings = this)
+
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
-        EventBus.getDefault().post(LogoutEvent())
-        logout()
-        SessionsSyncService.destroy()
-        ProcessPhoenix.triggerRebirth(mApplication)
+
+        logoutService.perform {
+            ProcessPhoenix.triggerRebirth(mApplication)
+        }
+
     }
 
     fun setAppRestarted() {
@@ -181,10 +186,11 @@ open class Settings(private val mApplication: Application) {
     }
 
     private fun deleteFromSettings(){
-        val keys = sharedPreferences.all.map { it.key }
+        val keys = sharedPreferences.all.keys
         val editor = sharedPreferences.edit()
         for (key in keys) {
             if (key != BACKEND_URL_KEY && key != BACKEND_PORT_KEY) {
+                println("MARYSIA: removing setting key ${key}")
                 editor.remove(key)
                 editor.apply()
             }
