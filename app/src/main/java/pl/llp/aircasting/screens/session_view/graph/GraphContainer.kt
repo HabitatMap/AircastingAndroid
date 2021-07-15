@@ -2,7 +2,6 @@ package pl.llp.aircasting.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -31,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.math.absoluteValue
 
 
 class GraphContainer: OnChartGestureListener {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.location.Location
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -116,9 +115,6 @@ class MapContainer: OnMapReadyCallback {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
         mNotes = mSessionPresenter?.session?.notes!!
-        for (note in mNotes) {
-            Log.i("NOTE", "bindSession, noteNumber: " + note.number.toString())
-        }
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -177,7 +173,6 @@ class MapContainer: OnMapReadyCallback {
     private fun drawNotes() {
         for (note in mNotes) {
             drawNoteMarker(note)
-            Log.i("NOTE", note.number.toString())
         }
     }
 

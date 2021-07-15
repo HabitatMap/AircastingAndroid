@@ -1,6 +1,5 @@
 package pl.llp.aircasting.screens.dashboard.active
 
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -31,8 +30,6 @@ class EditNoteBottomSheet(
         mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
         mLoader = contentView?.edit_note_loader
-
-        Log.i("NOTE", "note number: " + noteNumber.toString())
 
         val saveChangesButton = contentView?.save_changes_button
         saveChangesButton?.setOnClickListener {
