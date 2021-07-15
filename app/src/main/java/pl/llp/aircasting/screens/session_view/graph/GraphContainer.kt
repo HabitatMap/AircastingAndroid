@@ -55,7 +55,7 @@ class GraphContainer: OnChartGestureListener {
     private var mMeasurementsSample: List<Measurement> = listOf()
     private var mNotes: List<Note>? = listOf()
 
-    private var mNoteRanges: List<ClosedRange<Long>> = listOf()
+    private var mNoteValueRanges: List<ClosedRange<Long>> = listOf() // When generating entries for graph I check which entries got their note icon, I keep here "Ranges" of values which I want to react graph click (ChartValueSelectedListener)
 
     constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
         mContext = context
@@ -107,7 +107,7 @@ class GraphContainer: OnChartGestureListener {
     private fun drawSession() {
         val result = generateData()
         val entries = result.entries
-        mNoteRanges = result.noteRanges
+        mNoteValueRanges = result.noteRanges
 
         zoom(entries)
         drawData(entries)
@@ -245,14 +245,30 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.onChartGestureListener = this
 
         mGraph?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
+            override fun onValueSelected(entry: Entry?, h: Highlight?) {
                 var noteNumber = -1
-                for (range in mNoteRanges) {
-                    if (range.contains(e?.x?.toLong()!!)) {
-                        noteNumber = mNotes!![mNoteRanges.indexOf(range)].number
-                        mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
+                val tempRanges = mutableListOf<ClosedRange<Long>>()
+                for (range in mNoteValueRanges) {
+                    if (entry?.x?.toLong()?.let { range.contains(it) } == true) {
+                        tempRanges.add(range)
                     }
                 }
+                if (tempRanges.size == 0) {
+                    return
+                } else if (tempRanges.size == 1) {
+                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
+                } else {
+                    // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
+                    var tempDistance = Long.MAX_VALUE
+                    for (range in tempRanges) {
+                        val rangeDistance = entry?.x?.toLong()?.minus((range.endInclusive - range.start) / 2) ?: Long.MAX_VALUE
+                        if (rangeDistance < tempDistance ) {
+                            tempDistance = rangeDistance
+                            noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                        }
+                    }
+                }
+                mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
             }
 
             override fun onNothingSelected() {
