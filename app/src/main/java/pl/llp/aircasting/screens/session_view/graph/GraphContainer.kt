@@ -57,8 +57,7 @@ class GraphContainer: OnChartGestureListener {
     private var mMeasurementsSample: List<Measurement> = listOf()
     private var mNotes: List<Note>? = listOf()
 
-    private var mEntries: List<Entry> = listOf()
-    private var mEntriesWithIcons: HashMap<Entry, Int> = hashMapOf()
+    private var mNoteRanges: List<ClosedRange<Long>> = listOf()
 
     constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
         mContext = context
@@ -110,23 +109,12 @@ class GraphContainer: OnChartGestureListener {
     private fun drawSession() {
         val result = generateData()
         val entries = result.entries
+        mNoteRanges = result.noteRanges
 
         zoom(entries)
         drawData(entries)
         drawMidnightPointLines(result.midnightPoints)
         drawThresholds()
-
-        mEntries = entries
-        mEntriesWithIcons = hashMapOf()
-
-        for (entry in mEntries) {
-            if (entry.icon != null) {
-                mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number?.let {
-                    mEntriesWithIcons.put(entry, it)
-                }
-                //Log.i("GRAPH", "entryWith: " + entry.x + " " + entry.y + " " + mSessionPresenter?.session?.notes?.get(mEntriesWithIcons.size)?.number.toString())
-            }
-        }
 
         mGraph?.invalidate()
         mGraph?.calculateOffsets()
@@ -260,37 +248,17 @@ class GraphContainer: OnChartGestureListener {
 
         mGraph?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                Log.i("GRAPH", "first entry x: " + mEntries.first().x.toString() + " last entry x: " + mEntries.last().x.toString())
-
-                for (entry in mEntries) {
-                    val to = mGraph?.highestVisibleX
-                    val from = mGraph?.lowestVisibleX
-                    val clickRange = (to?.minus(from!!))?.div(20) // assuming range of 5 % of visible x?
-                    if (entry.x < e?.x!! + clickRange!! && entry.x > e.x - clickRange && entry.y < e.y + clickRange && entry.y > e.y - clickRange && entry.icon != null) {
-                        val notes = mSessionPresenter?.session?.notes
-                        if (notes != null) {
-                            var tempValue = Long.MAX_VALUE
-                            var noteNumber = -1
-                            Log.i("GRAPH", "entryWithIcons: " + mEntriesWithIcons.toString())
-                            for ((entryWithIcon, number) in mEntriesWithIcons) {
-                                val temp = (e.x.toLong() - entryWithIcon.x.toLong()).absoluteValue
-                                if(temp < tempValue) {
-                                    tempValue = temp
-                                    noteNumber = number //todo: this one is not always true after deleting session
-                                }
-                                Log.i("GRAPH", "entryWithIcon.x: " + entryWithIcon.x + " e.x: " + e.x.toLong().toString())
-                                Log.i("GRAPH", "THIS IS MAIN LOG NOW, TEMP: " + temp + " note number: " + noteNumber.toString()+ " note date.time: " + entryWithIcon.x.toString())
-                            }
-                            mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber) // this should show editNoteBottomSheet
-                        }
-                        //Log.i("GRAPH", "Edit note bottomsheet should be on now :) e.x: "+ e.x.toString() + " entry.x: "+ entry.x.toString() + " entry.y: "+ entry.y.toString())
-                        break
+                var noteNumber = -1
+                for (range in mNoteRanges) {
+                    if (range.contains(e?.x?.toLong()!!)) {
+                        noteNumber = mNotes!![mNoteRanges.indexOf(range)].number
+                        mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
                     }
                 }
             }
 
             override fun onNothingSelected() {
-                Log.i("GRAPH", "Nothing selected")
+                // do nothing
             }
 
         })
