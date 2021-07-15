@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.screens.common.AircastingAlertDialog
 
@@ -25,7 +26,10 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
         exception.messageToDisplay?.let { Log.e(TAG, exception.messageToDisplay) }
 
         if (!BuildConfig.DEBUG) {
-            exception.messageToDisplay?.let { crashlytics.log(it) }
+            exception.messageToDisplay?.let {
+                crashlytics.log(it)
+                crashlytics.recordException(exception)
+            }
             exception.cause?.let { crashlytics.recordException(it) }
         }
     }

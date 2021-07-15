@@ -77,7 +77,7 @@ open class AirBeam2Connector(
                     mAirBeam2Reader.run(socket.inputStream)
                 }
             } catch(e: IOException) {
-                mErrorHandler.handle(SensorDisconnectedError("called from Airbeam2Connector"))
+                mErrorHandler.handle(SensorDisconnectedError("called from Airbeam2Connector: IOException"))
                 onDisconnected(deviceItem)
                 onConnectionFailed(deviceItem)
 

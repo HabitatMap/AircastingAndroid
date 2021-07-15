@@ -58,6 +58,7 @@ abstract class AirBeamService: SensorService(),
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         val event = AirBeamConnectionSuccessfulEvent(deviceItem, sessionUUID)
         EventBus.getDefault().post(event)
+        errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionSuccessful"))
     }
 
     override fun onDisconnect(deviceId: String) {
@@ -67,12 +68,14 @@ abstract class AirBeamService: SensorService(),
     override fun onConnectionFailed(deviceItem: DeviceItem) {
         val event = AirBeamConnectionFailedEvent(deviceItem)
         EventBus.getDefault().post(event)
+        errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionFailed"))
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
         println("MARYSIA: is this happening while screen is off?")
-        errorHandler.handle(SensorDisconnectedError("called from AirBeamService"))
+        errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
         println("MARYSIA: airbeamReconnector.mReconnectionTriesNumber ${airbeamReconnector.mReconnectionTriesNumber }")
         if (airbeamReconnector.mReconnectionTriesNumber != null) return
         event.sessionUUID?.let { sessionUUID ->

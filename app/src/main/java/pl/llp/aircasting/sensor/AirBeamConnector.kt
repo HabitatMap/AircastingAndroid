@@ -8,6 +8,8 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.exceptions.SensorDisconnectedError
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
@@ -37,6 +39,7 @@ abstract class AirBeamConnector {
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         println("MARYSIA: trying to connect, AirbeamConnector connect()")
+
         mDeviceItem = deviceItem
         mSessionUUID = sessionUUID
 

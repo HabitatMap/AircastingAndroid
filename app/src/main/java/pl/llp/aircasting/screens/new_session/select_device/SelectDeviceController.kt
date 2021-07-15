@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import pl.llp.aircasting.bluetooth.BluetoothManager
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.exceptions.SensorDisconnectedError
 
 class SelectDeviceController(
     private var mContext: Context?,
