@@ -21,7 +21,7 @@ class GraphDataGenerator(
 
     private val DEFAULT_LIMIT = 1000
 
-    class Result(val entries: List<Entry>, val midnightPoints: List<Float>)
+    class Result(val entries: List<Entry>, val midnightPoints: List<Float>, val noteRanges: MutableList<ClosedRange<Long>>)
 
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
     fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?): Result {
@@ -30,6 +30,7 @@ class GraphDataGenerator(
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
         val visibleMeasurementsSize = visibleMeasurementsSize ?: samples.size
+        val noteRanges = mutableListOf<ClosedRange<Long>>()
         // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
         // e.g. if samples.size is less then DEFAULT_LIMIT, fillFactor is more then 1- it means we draw entry for each measurement
         // if samples.size is a bit more then DEFAULT_LIMIT then the fillFactor is ~~0.6-0.9, what means that we build one entry per 2 measurements
@@ -37,7 +38,7 @@ class GraphDataGenerator(
         var fill = 0.0
 
         val firstMeasurement = samples.firstOrNull()
-        firstMeasurement ?: return Result(entries, midnightPoints)
+        firstMeasurement ?: return Result(entries, midnightPoints, noteRanges)
         startTime = firstMeasurement.time
 
         var lastDateDayOfMonth = CalendarUtils.dayOfMonth(startTime)
@@ -68,7 +69,14 @@ class GraphDataGenerator(
             entries.add(buildAverageEntry(date))
         }
 
-        return Result(entries, midnightPoints)
+        val range = (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
+        for (entry in entries) {
+            if (entry.icon != null) {
+                noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
+            }
+        }
+
+        return Result(entries, midnightPoints, noteRanges)
     }
 
     fun dateFromFloat(float: Float): Date {
