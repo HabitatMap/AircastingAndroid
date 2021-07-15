@@ -85,12 +85,12 @@ class AveragingService {
          */
         private var mSingletons: HashMap<Long, AveragingService?> = hashMapOf()
 
-        fun get(sessionId: Long): AveragingService {
+        fun get(sessionId: Long): AveragingService? {
             if (mSingletons[sessionId] == null) {
                 mSingletons[sessionId] = AveragingService(sessionId)
             }
 
-            return mSingletons[sessionId]!!
+            return mSingletons[sessionId]
         }
 
         fun destroy(sessionId: Long?) {
