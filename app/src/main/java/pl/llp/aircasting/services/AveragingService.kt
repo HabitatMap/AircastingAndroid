@@ -60,7 +60,7 @@ class AveragingService {
     }
 
     companion object {
-        private val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+        private val FIRST_TRESHOLD_TIME = 1 * 90 * 60 * 1000 // 2 hours
         val FIRST_THRESHOLD_FREQUENCY = 5
         private val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
         private val SECOND_THRESHOLD_FREQUENCY = 60
@@ -171,7 +171,9 @@ class AveragingService {
 
     private fun checkAveragingFrequency() {
         mDBSession = mSessionsRepository.getSessionById(sessionId)
+        println("MARYSIA: averaging frequency")
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
+            println("MARYSIA: averaging frequency ${dbAveragingFrequency}")
             if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
                 mNewAveragingThreshold.set(true)
                 updateCurrentAveragingFrequency()
@@ -265,6 +267,7 @@ class AveragingService {
 
     fun averagePreviousMeasurements() {
         checkAveragingFrequency()
+        println("MARYSIA: ${mNewAveragingThreshold}")
         if (!mNewAveragingThreshold.get()) return
 
         var windowSize: Int? = null

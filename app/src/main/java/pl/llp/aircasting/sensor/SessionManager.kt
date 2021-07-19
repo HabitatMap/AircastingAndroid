@@ -221,10 +221,10 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                             AveragingPreviousMeasurementsBackgroundService(averagingService)
                         averagingPreviousMeasurementsBackgroundService?.start()
                     }
+                }
             }
+
         }
-
-
     }
 
     private fun stopRecording(uuid: String) {
