@@ -38,14 +38,16 @@ open class AirBeamRecordSessionService: AirBeamService() {
         mDeviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem?
         if (mDeviceItem == null) {
             val discoverySuccessful = runAirBeamDiscoveryService()
+            println("MARYSIA: We ran discovery, found an item, put to intent? ${mIntent?.extras}")
         }
 
 
-        println("MARYSIA: We ran discovery, found an item, put to intent? ${mIntent?.extras}")
+
         return super.onStartCommand(mIntent, flags, startId)
     }
 
     override fun startSensor(intent: Intent?) {
+        println("MARYSIA: startSensor recordSession, intent ${intent} extras ${intent?.extras}")
         intent ?: return
 
         println("MARYSIA: record session service startSensor device item id ${mDeviceItem?.id}")

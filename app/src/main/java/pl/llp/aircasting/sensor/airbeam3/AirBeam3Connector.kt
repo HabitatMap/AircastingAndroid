@@ -36,8 +36,9 @@ open class AirBeam3Connector(
         val bluetoothDevice = deviceItem.bluetoothDevice ?: return
 
         airBeam3Configurator.connect(bluetoothDevice)
-            .timeout(100000)
+            .timeout(0)
             .retry(3, 100)
+            .fail { device, status ->  onFailedCallback(device, status)}
             .done { _ -> onConnectionSuccessful(deviceItem) }
             .enqueue()
     }
@@ -45,6 +46,12 @@ open class AirBeam3Connector(
     private fun bleNotSupported(): Boolean {
         val packageManager = mContext.packageManager
         return !packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
+    }
+
+    private fun onFailedCallback(device: BluetoothDevice, reason: Int) {
+        println("MARYSIA: Airbeam3 connect failed device ${device} reason ${reason}")
+        val deviceItem = DeviceItem(device)
+        onDisconnected(deviceItem)
     }
 
     override fun stop() {

@@ -49,18 +49,20 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
             context = this
         )
 
+        Thread.sleep(2000)
         return mDiscoverySuccessful
-        return true
     }
 
     fun onDiscoverySuccessful(deviceItem: DeviceItem) {
         println("MARYSIA: putting newly discovered device item into our Intent ${deviceItem}")
         mIntent?.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
+        mDeviceItem = deviceItem
         mDiscoverySuccessful = true
     }
 
     fun onDiscoveryFailed() {
         mDiscoverySuccessful = false
+        mAirBeamDiscoveryService.unRegisterBluetoothDeviceFoundReceiver(this)
     }
 
     @Subscribe

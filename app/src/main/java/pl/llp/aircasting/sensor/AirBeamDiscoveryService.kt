@@ -48,7 +48,7 @@ open class AirBeamDiscoveryService(
             onDiscoverySuccessful(deviceItem)
         } else {
             println("MARYSIA dicovery service, should fail after timeout")
-            registerBluetoothDeviceFoundReceiver(context)
+//            registerBluetoothDeviceFoundReceiver(context)
             mBluetoothManager.startDiscovery()
             failAfterTimeout()
         }
@@ -79,7 +79,7 @@ open class AirBeamDiscoveryService(
         context.registerReceiver(this, filter)
     }
 
-    private fun unRegisterBluetoothDeviceFoundReceiver(context: Context) {
+    fun unRegisterBluetoothDeviceFoundReceiver(context: Context) {
         context.unregisterReceiver(this)
     }
 

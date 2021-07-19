@@ -148,7 +148,7 @@ class AirBeamReconnector(
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
                     Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-                    reconnect(event.deviceItem.id)
+                    reconnect(event.deviceItem.id, event.deviceItem)
                 }
             }
         } else {

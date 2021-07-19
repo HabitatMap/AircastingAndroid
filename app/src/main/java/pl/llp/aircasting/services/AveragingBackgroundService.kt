@@ -33,6 +33,7 @@ class AveragingBackgroundService(val averagingService: AveragingService) {
 
         private fun averageMeasurements(): Long {
             val begin = System.currentTimeMillis()
+            println("MARYSIA: Averaging backgroudn service perform")
             averagingService.perform()
             val end = System.currentTimeMillis()
 

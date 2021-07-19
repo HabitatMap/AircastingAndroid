@@ -89,7 +89,7 @@ abstract class AirBeamConnector {
     }
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        println("MARYSIA: Airbeam2Conector onConnectionSuccessful")
+        println("MARYSIA: AirbeamConector onConnectionSuccessful")
         mDeviceItem = deviceItem
         println("MARYSIA conected device item: ${deviceItem}")
         println("MARYSIA conected device item: ${deviceItem.id}")
@@ -109,7 +109,7 @@ abstract class AirBeamConnector {
     }
 
     fun onDisconnected(device: DeviceItem) {
-        println("MARYSIA: AirBeamConnector onDisconnected sending event")
+        println("MARYSIA: AirBeamConnector onDisconnected sending event device ${device}")
         EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
         mListener?.onDisconnect(device.id)
     }
