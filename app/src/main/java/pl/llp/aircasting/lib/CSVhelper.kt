@@ -70,7 +70,7 @@ class CSVHelper {
 
             //            Uri uri = Uri.fromFile(file);
             val uri: Uri =
-                FileProvider.getUriForFile(context, "io.lunarlogic.aircasting.fileprovider", file)
+                FileProvider.getUriForFile(context, "pl.llp.aircasting.fileprovider", file)
 
             uri
         } finally {
