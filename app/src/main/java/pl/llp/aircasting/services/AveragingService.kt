@@ -171,9 +171,7 @@ class AveragingService {
 
     private fun checkAveragingFrequency() {
         mDBSession = mSessionsRepository.getSessionById(sessionId)
-        println("MARYSIA: averaging frequency")
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
-            println("MARYSIA: averaging frequency ${dbAveragingFrequency}")
             if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
                 mNewAveragingThreshold.set(true)
                 updateCurrentAveragingFrequency()

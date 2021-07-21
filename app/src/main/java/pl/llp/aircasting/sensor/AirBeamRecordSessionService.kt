@@ -36,12 +36,6 @@ open class AirBeamRecordSessionService: AirBeamService() {
 
         mIntent = intent
         mDeviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem?
-        if (mDeviceItem == null) {
-            val discoverySuccessful = runAirBeamDiscoveryService()
-            println("MARYSIA: We ran discovery, found an item, put to intent? ${mIntent?.extras}")
-        }
-
-
 
         return super.onStartCommand(mIntent, flags, startId)
     }
@@ -57,10 +51,5 @@ open class AirBeamRecordSessionService: AirBeamService() {
             connect(deviceItem, sessionUUID)
         }
 
-    }
-
-    open fun runAirBeamDiscoveryService(): Boolean? {
-        // do nothing
-        return null
     }
 }

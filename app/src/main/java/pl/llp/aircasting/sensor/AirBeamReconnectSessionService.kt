@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
-    private var mDiscoverySuccessful: Boolean? = null
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -36,33 +35,6 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         super.onConnectionSuccessful(deviceItem, sessionUUID)
         mAirBeamConnector?.reconnectMobileSession()
-    }
-
-    override fun runAirBeamDiscoveryService(): Boolean? {
-        val sessionDeviceId = mIntent?.getStringExtra(SESSION_DEVICE_ID_KEY)
-        println("MARYSIA: device if from intent, runAirBeamDiscoveryService ${sessionDeviceId}")
-        mAirBeamDiscoveryService.registerBluetoothDeviceFoundReceiver(this)
-        mAirBeamDiscoveryService.find(
-            deviceSelector = { deviceItem -> deviceItem.id == sessionDeviceId },
-            onDiscoverySuccessful = { deviceItem -> onDiscoverySuccessful(deviceItem) },
-            onDiscoveryFailed = { onDiscoveryFailed() },
-            context = this
-        )
-
-        Thread.sleep(2000)
-        return mDiscoverySuccessful
-    }
-
-    fun onDiscoverySuccessful(deviceItem: DeviceItem) {
-        println("MARYSIA: putting newly discovered device item into our Intent ${deviceItem}")
-        mIntent?.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
-        mDeviceItem = deviceItem
-        mDiscoverySuccessful = true
-    }
-
-    fun onDiscoveryFailed() {
-        mDiscoverySuccessful = false
-        mAirBeamDiscoveryService.unRegisterBluetoothDeviceFoundReceiver(this)
     }
 
     @Subscribe

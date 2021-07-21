@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
@@ -71,8 +72,19 @@ class AirBeamReconnector(
         mErrorCallback = errorCallback
         mFinallyCallback = finallyCallback
 
+        if (deviceItem?.type == DeviceItem.Type.AIRBEAM3) {
+            reconnect(session.deviceId, deviceItem)
+        } else {
+            mAirBeamDiscoveryService.find(
+                deviceSelector = { deviceItem -> deviceItem.id == session.deviceId },
+                onDiscoverySuccessful = { deviceItem -> reconnect(deviceItem.id, deviceItem) },
+                onDiscoveryFailed = { onDiscoveryFailed() },
+                context = mContext
+            )
+        }
+
         println("MARYSIA: reconnect try, mSession  device id ${session.deviceId}")
-        reconnect(session.deviceId, deviceItem)
+
     }
 
     fun initReconnectionTries(session: Session, deviceItem: DeviceItem?) {
@@ -138,7 +150,7 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-        println("MARYSIA:  reconnection AirBeamConnectionFailedEvent - before if")
+    println("MARYSIA:  reconnection AirBeamConnectionFailedEvent - before if number tries ${mReconnectionTriesNumber}")
         if (mReconnectionTriesNumber != null) {
             println("MARYSIA:  reconnection AirBeamConnectionFailedEvent")
             mReconnectionTriesNumber?.let { tries ->
