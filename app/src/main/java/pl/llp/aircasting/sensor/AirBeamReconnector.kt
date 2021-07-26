@@ -155,7 +155,9 @@ class AirBeamReconnector(
             println("MARYSIA:  reconnection AirBeamConnectionFailedEvent")
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
-                    // TODO: should we invoke callbacks here?
+                    mErrorCallback?.invoke()
+                    mFinallyCallback?.invoke()
+                    unregisterFromEventBus()
                     return
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
