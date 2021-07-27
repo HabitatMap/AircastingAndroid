@@ -36,7 +36,6 @@ class ConfirmationController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        println("MARYSIA: confirmation controller onStartRecodingClicked")
         // do nothing
     }
 

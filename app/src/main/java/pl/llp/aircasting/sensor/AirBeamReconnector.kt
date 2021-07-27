@@ -46,17 +46,14 @@ class AirBeamReconnector(
     }
 
     fun disconnect(session: Session) {
-        println("MARYSIA airbeam reconnector disconnect sending event")
         sendDisconnectedEvent(session)
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
     fun reconnect(session: Session, deviceItem: DeviceItem?, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
-        println("MARYSIA reconnect, registering to Eventbus ")
         EventBus.getDefault().safeRegister(this)
 
         if (mReconnectionTriesNumber != null) {
-            println("MARYSIA:  reconnection try # ${mReconnectionTriesNumber}")
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
                     return
@@ -64,7 +61,6 @@ class AirBeamReconnector(
             }
         } else {
             // disconnecting first to make sure the connector thread is stopped correctly etc
-            println("MARYSIA: AirBeamReConnector reconnect else sending event")
             sendDisconnectedEvent(session)
         }
 
@@ -82,13 +78,9 @@ class AirBeamReconnector(
                 context = mContext
             )
         }
-
-        println("MARYSIA: reconnect try, mSession  device id ${session.deviceId}")
-
     }
 
     fun initReconnectionTries(session: Session, deviceItem: DeviceItem?) {
-        println("MARYSIA: init reconnection")
         if (mReconnectionTriesNumber != null) return
         mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1
@@ -96,14 +88,11 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
-        println("MARYSIA: is this reconnect(deviceItem) callback is called?")
         AirBeamReconnectSessionService.startService(mContext, deviceId, deviceItem, mSession?.uuid)
     }
 
     private fun onDiscoveryFailed() {
-        println("MARYSIA:  reconnection onDiscoveryFailed - before if")
         if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
-            println("MARYSIA:  reconnection onDiscoveryFailed")
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
             if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
@@ -129,7 +118,6 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
-        println("MARYSIA: reconnection successful")
         resetTriesNumberWithDelay()
 
         updateSessionStatus(mSession, Session.Status.RECORDING)
@@ -142,7 +130,6 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) {
             val timerTask = timerTask {
                 mReconnectionTriesNumber = null
-                println("MARYSIA: nulling mReconnectionTriesNumber ${mReconnectionTriesNumber}")
             }
             Timer().schedule(timerTask, RECONNECTION_TRIES_RESET_DELAY)
         }
@@ -150,9 +137,7 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
-    println("MARYSIA:  reconnection AirBeamConnectionFailedEvent - before if number tries ${mReconnectionTriesNumber}")
         if (mReconnectionTriesNumber != null) {
-            println("MARYSIA:  reconnection AirBeamConnectionFailedEvent")
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
                     mErrorCallback?.invoke()

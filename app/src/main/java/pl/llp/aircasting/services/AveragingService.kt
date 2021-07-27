@@ -265,7 +265,6 @@ class AveragingService {
 
     fun averagePreviousMeasurements() {
         checkAveragingFrequency()
-        println("MARYSIA: ${mNewAveragingThreshold}")
         if (!mNewAveragingThreshold.get()) return
 
         var windowSize: Int? = null

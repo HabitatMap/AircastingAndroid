@@ -19,7 +19,6 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
         val SESSION_DEVICE_ID_KEY = "inputExtraSessionDeviceId"
 
         fun startService(context: Context, sessionDeviceId: String?, deviceItem: DeviceItem?, sessionUUID: String? = null) {
-            println("MARYSIA: is reconnect service started?? maybe context is null? ${context}")
             val startIntent = Intent(context, AirBeamReconnectSessionService::class.java)
 
             startIntent.putExtra(SESSION_DEVICE_ID_KEY, sessionDeviceId)
@@ -39,7 +38,6 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
     @Subscribe
     fun onMessageEvent(event: AirBeamDiscoveryFailedEvent) {
-        println("MARYSIA: AirBeamDiscoveryFailedEvent in service, stopSelf()")
         stopSelf()
     }
 }

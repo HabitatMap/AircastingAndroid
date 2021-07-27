@@ -1,20 +1,16 @@
 package pl.llp.aircasting.sensor
 
-import android.app.Service
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
-import pl.llp.aircasting.events.AppToForegroundEvent
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.sensor.microphone.MicrophoneReader
 import java.util.*
-import javax.inject.Inject
 import kotlin.concurrent.timerTask
 
 open class AirBeamDiscoveryService(
@@ -28,6 +24,7 @@ open class AirBeamDiscoveryService(
     private var mOnDiscoveryFailed: (() -> Unit)? = null
 
     private val DISCOVERY_TIMEOUT = 5000L
+    private val TAG = "AirBeamDiscoveryService"
 
     fun find(
         deviceSelector: (DeviceItem) -> Boolean,
@@ -39,15 +36,11 @@ open class AirBeamDiscoveryService(
         mDeviceSelector = deviceSelector
         mOnDiscoverySuccessful = onDiscoverySuccessful
         mOnDiscoveryFailed = onDiscoveryFailed
-        println("MARYSIA discovery service: deviceSelector ${mDeviceSelector}")
         val deviceItem = getDeviceItemFromPairedDevices(deviceSelector)
-
-        println("MARYSIA discovery service: device item ${deviceItem}")
 
         if (deviceItem != null) {
             onDiscoverySuccessful(deviceItem)
         } else {
-            println("MARYSIA dicovery service, should fail after timeout")
             registerBluetoothDeviceFoundReceiver(context)
             mBluetoothManager.startDiscovery()
             failAfterTimeout()
@@ -56,7 +49,6 @@ open class AirBeamDiscoveryService(
 
 
     private fun failAfterTimeout() {
-        println("MARYSIA: discovery service, fail after time out mDeviceItem ${mDeviceItem}")
         Timer().schedule(timerTask {
             if (mDeviceItem == null) {
                 onDiscoveryFailed()
@@ -65,37 +57,28 @@ open class AirBeamDiscoveryService(
     }
 
     private fun getDeviceItemFromPairedDevices(deviceSelector: (DeviceItem) -> Boolean): DeviceItem? {
-        println("MARYSIA: trying to pair device mBluetoothManager ${mBluetoothManager}")
-        println("MARYSIA: trying to pair device mBluetoothManager.pairedDeviceItems() ${mBluetoothManager.pairedDeviceItems()}")
-        mBluetoothManager.pairedDeviceItems().forEach { item ->
-            println("MARYSIA: paired item id ${item.id}")
-        }
         return mBluetoothManager.pairedDeviceItems().find(deviceSelector)
     }
 
-    fun registerBluetoothDeviceFoundReceiver(context: Context) {
-        println("MARYSIA: registering Bluetooth devive found")
+    private fun registerBluetoothDeviceFoundReceiver(context: Context) {
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         context.registerReceiver(this, filter)
     }
 
-    fun unRegisterBluetoothDeviceFoundReceiver(context: Context) {
+    private fun unRegisterBluetoothDeviceFoundReceiver(context: Context) {
         context.unregisterReceiver(this)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        // TODO: MAYBE if we register for the receiver while we are in the foreground? HOW?
-        println("MARYSIA: ----- onReceive")
         when(intent.action) {
             BluetoothDevice.ACTION_FOUND -> {
                 val device: BluetoothDevice? =
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
-                println("MARYSIA: BluetoothDevice.ACTION_FOUND")
                 device?.let { onBluetoothDeviceFound(context, DeviceItem(device)) }
             }
             else -> {
-                println("MARYSIA: Broadcast onReceive action ${intent.action}")
+                Log.d(TAG, "Broadcast onReceive action ${intent.action}")
             }
         }
     }

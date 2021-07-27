@@ -92,7 +92,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         val sessionPresenter = mSessionPresenters[session.uuid]
 
         sessionPresenter?.reconnecting = false
-        println("MARYSIA: reconnected, changing disconnected view ${sessionPresenter?.reconnecting}")
         notifyDataSetChanged()
     }
 

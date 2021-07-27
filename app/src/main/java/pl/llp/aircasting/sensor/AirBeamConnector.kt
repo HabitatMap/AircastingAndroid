@@ -38,8 +38,6 @@ abstract class AirBeamConnector {
     abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
-        println("MARYSIA: trying to connect, AirbeamConnector connect()")
-
         mDeviceItem = deviceItem
         mSessionUUID = sessionUUID
 
@@ -89,19 +87,12 @@ abstract class AirBeamConnector {
     }
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
-        println("MARYSIA: AirbeamConector onConnectionSuccessful")
         mDeviceItem = deviceItem
-        println("MARYSIA conected device item: ${deviceItem}")
-        println("MARYSIA conected device item: ${deviceItem.id}")
-        println("MARYSIA conected device item: ${deviceItem.address}")
-        println("MARYSIA conected device item: ${deviceItem.bluetoothDevice}")
-        println("MARYSIA conected device item: ${deviceItem.address}")
         connectionEstablished.set(true)
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
     fun onConnectionFailed(deviceItem: DeviceItem) {
-        println("MARYSIA: Airbeam2Conector onConnectionFailed")
         mTimerTask?.cancel()
         if (connectionTimedOut.get() == false) {
             mListener?.onConnectionFailed(deviceItem)
@@ -109,7 +100,6 @@ abstract class AirBeamConnector {
     }
 
     fun onDisconnected(device: DeviceItem) {
-        println("MARYSIA: AirBeamConnector onDisconnected sending event device ${device}")
         EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
         mListener?.onDisconnect(device.id)
     }

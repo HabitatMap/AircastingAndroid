@@ -34,7 +34,6 @@ abstract class AirBeamService: SensorService(),
     protected val mSessionRepository = SessionsRepository()
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
-        println("MARYSIA: connect, device type: ${deviceItem.type}")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         mAirBeamConnector?.registerListener(this)
@@ -74,9 +73,8 @@ abstract class AirBeamService: SensorService(),
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        println("MARYSIA: is this happening while screen is off?")
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
-        println("MARYSIA: airbeamReconnector.mReconnectionTriesNumber ${airbeamReconnector.mReconnectionTriesNumber }")
+
         if (airbeamReconnector.mReconnectionTriesNumber != null) return
         event.sessionUUID?.let { sessionUUID ->
             DatabaseProvider.runQuery { scope ->
@@ -87,6 +85,5 @@ abstract class AirBeamService: SensorService(),
                 }
             }
         }
-
     }
 }

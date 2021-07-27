@@ -62,10 +62,6 @@ class SelectDeviceController(
 
     private fun bindDevices() {
         val deviceItems = bluetoothManager.pairedDeviceItems()
-        println("MARYSIA connecting, paired device items:")
-        deviceItems.forEach {
-            println("MARYSIA item id: ${it.id} address: ${it.address}, ${it.bluetoothDevice}")
-        }
         mViewMvc?.bindDeviceItems(deviceItems)
     }
 

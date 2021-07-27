@@ -301,7 +301,6 @@ class NewSessionController(
             settings
         )
 
-        println("MARYSIA: session device id? New session on session details confirmation ${session.deviceId}")
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
 
@@ -317,7 +316,6 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        println("MARYSIA: ne session, on start recoreing clicked, device id ${session.deviceId}")
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
