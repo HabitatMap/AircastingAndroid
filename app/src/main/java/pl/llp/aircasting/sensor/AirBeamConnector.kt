@@ -15,7 +15,7 @@ import kotlin.concurrent.timerTask
 abstract class AirBeamConnector {
     interface Listener {
         fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?)
-        fun onConnectionFailed(deviceId: String)
+        fun onConnectionFailed(deviceItem: DeviceItem)
         fun onDisconnect(deviceId: String)
     }
 
@@ -63,7 +63,7 @@ abstract class AirBeamConnector {
         mTimerTask = timerTask {
             if (connectionEstablished.get() == false) {
                 connectionTimedOut.set(true)
-                mListener?.onConnectionFailed(deviceItem.id)
+                mListener?.onConnectionFailed(deviceItem)
             }
         }
         Timer().schedule(mTimerTask, CONNECTION_TIMEOUT)
@@ -90,16 +90,16 @@ abstract class AirBeamConnector {
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
-    fun onConnectionFailed(deviceId: String) {
+    fun onConnectionFailed(deviceItem: DeviceItem) {
         mTimerTask?.cancel()
         if (connectionTimedOut.get() == false) {
-            mListener?.onConnectionFailed(deviceId)
+            mListener?.onConnectionFailed(deviceItem)
         }
     }
 
-    fun onDisconnected(deviceId: String) {
-        EventBus.getDefault().post(SensorDisconnectedEvent(deviceId))
-        mListener?.onDisconnect(deviceId)
+    fun onDisconnected(device: DeviceItem) {
+        EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
+        mListener?.onDisconnect(device.id)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -119,7 +119,7 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        if (mDeviceItem?.id == event.deviceId) {
+        if (mDeviceItem?.id == event.sessionDeviceId) {
             disconnect()
         }
     }

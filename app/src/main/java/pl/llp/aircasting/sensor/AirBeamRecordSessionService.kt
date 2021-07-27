@@ -8,6 +8,8 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 
 open class AirBeamRecordSessionService: AirBeamService() {
+    var mIntent: Intent? = null
+    var mDeviceItem: DeviceItem? = null
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -28,15 +30,18 @@ open class AirBeamRecordSessionService: AirBeamService() {
         val appComponent = app.appComponent
         appComponent.inject(this)
 
-        return super.onStartCommand(intent, flags, startId)
+        mIntent = intent
+        mDeviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem?
+
+        return super.onStartCommand(mIntent, flags, startId)
     }
 
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
-        val deviceItem = intent.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem
-        val sessionUUID: String? = intent.getStringExtra(SESSION_UUID_KEY)
-
-        connect(deviceItem, sessionUUID)
+        mDeviceItem?.let { deviceItem ->
+            val sessionUUID: String? = mIntent?.getStringExtra(SESSION_UUID_KEY)
+            connect(deviceItem, sessionUUID)
+        }
     }
 }

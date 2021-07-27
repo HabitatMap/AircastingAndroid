@@ -88,8 +88,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     fun hideReconnectingLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
-        sessionPresenter?.reconnecting = false
 
+        sessionPresenter?.reconnecting = false
         notifyDataSetChanged()
     }
 

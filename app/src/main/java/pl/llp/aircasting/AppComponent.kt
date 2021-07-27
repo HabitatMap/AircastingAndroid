@@ -25,6 +25,7 @@ import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedFragment
 import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingFragment
 import pl.llp.aircasting.sensor.AirBeamClearCardService
+import pl.llp.aircasting.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.sensor.AirBeamSyncService
 import pl.llp.aircasting.sensor.microphone.MicrophoneService

@@ -113,8 +113,9 @@ dependencies {
     implementation 'com.google.auto.value:auto-value-annotations:1.6.2'
 
     // for Firebase Crashlytics and Test Lab
-    implementation 'com.google.firebase:firebase-analytics:17.4.0'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
+    implementation platform('com.google.firebase:firebase-bom:28.2.0')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation "androidx.room:room-runtime:2.2.5"
     kapt "android.arch.persistence.room:compiler:2.2.5"

@@ -53,7 +53,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     @Subscribe
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        disconnectSession(event.deviceId)
+        disconnectSession(event.sessionDeviceId)
     }
 
     @Subscribe
@@ -213,6 +213,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             if (session.isMobile()) {
                 DBsessionId?.let {
                     val averagingService = AveragingService.get(it)
+
                     averagingService?.let { averagingService ->
                         averagingBackgroundService = AveragingBackgroundService(averagingService)
                         averagingBackgroundService?.start()
@@ -222,9 +223,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     }
                 }
             }
+
         }
-
-
     }
 
     private fun stopRecording(uuid: String) {

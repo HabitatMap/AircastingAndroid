@@ -38,9 +38,15 @@ class MobileActiveController(
     private val mContext: Context
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener,
-    AddNoteBottomSheet.Listener {
+    AddNoteBottomSheet.Listener,
+    AirBeamReconnector.Listener {
 
     private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun onCreate() {
+        super.onCreate()
+        airBeamReconnector.registerListener(this)
+    }
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileActiveSessionsWithMeasurements())
@@ -91,17 +97,9 @@ class MobileActiveController(
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc?.showReconnectingLoaderFor(session)
         airBeamReconnector.reconnect(session,
-            errorCallback = {
-                GlobalScope.launch(Dispatchers.Main) {
-                    mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
-                }
-            },
-            finallyCallback = {
-                GlobalScope.launch(Dispatchers.Main) {
-                    mViewMvc?.hideReconnectingLoaderFor(session)
-                }
-
-            }
+            deviceItem = null,
+            errorCallback = { errorCallback() },
+            finallyCallback = { finallyCallback(session) }
         )
     }
 
@@ -139,5 +137,23 @@ class MobileActiveController(
             Session.Status.FINISHED
         )
         NavigationController.goToDashboard(tabId)
+    }
+
+    override fun beforeReconnection(session: Session) {
+        GlobalScope.launch(Dispatchers.Main) {
+            mViewMvc?.showReconnectingLoaderFor(session)
+        }
+    }
+
+    override fun errorCallback() {
+        GlobalScope.launch(Dispatchers.Main) {
+            mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
+        }
+    }
+
+    override fun finallyCallback(session: Session) {
+        GlobalScope.launch(Dispatchers.Main) {
+            mViewMvc?.hideReconnectingLoaderFor(session)
+        }
     }
 }

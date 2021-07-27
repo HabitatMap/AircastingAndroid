@@ -52,7 +52,7 @@ abstract class SessionsController(
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
 
-    fun onCreate() {
+    open fun onCreate() {
         mViewMvc?.showLoader()
     }
 

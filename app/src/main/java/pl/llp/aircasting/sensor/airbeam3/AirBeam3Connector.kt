@@ -1,16 +1,21 @@
 package pl.llp.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGattCallback
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import no.nordicsemi.android.ble.observer.ConnectionObserver
 import pl.llp.aircasting.exceptions.BLENotSupported
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.MissingDeviceAfterConnectionError
+import pl.llp.aircasting.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
-import no.nordicsemi.android.ble.observer.ConnectionObserver
 
 
 open class AirBeam3Connector(
@@ -30,8 +35,9 @@ open class AirBeam3Connector(
         val bluetoothDevice = deviceItem.bluetoothDevice ?: return
 
         airBeam3Configurator.connect(bluetoothDevice)
-            .timeout(100000)
+            .timeout(0)
             .retry(3, 100)
+            .fail { device, status ->  onFailedCallback(device, status)}
             .done { _ -> onConnectionSuccessful(deviceItem) }
             .enqueue()
     }
@@ -39,6 +45,11 @@ open class AirBeam3Connector(
     private fun bleNotSupported(): Boolean {
         val packageManager = mContext.packageManager
         return !packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
+    }
+
+    private fun onFailedCallback(device: BluetoothDevice, reason: Int) {
+        val deviceItem = DeviceItem(device)
+        onDisconnected(deviceItem)
     }
 
     override fun stop() {
@@ -74,12 +85,13 @@ open class AirBeam3Connector(
     override fun onDeviceConnected(device: BluetoothDevice) {}
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
-        onConnectionFailed(deviceItem.id)
+        onConnectionFailed(deviceItem)
     }
     override fun onDeviceReady(device: BluetoothDevice) {}
     override fun onDeviceDisconnecting(device: BluetoothDevice) {}
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
-        onDisconnected(deviceItem.id)
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))
+        onDisconnected(deviceItem)
     }
 }

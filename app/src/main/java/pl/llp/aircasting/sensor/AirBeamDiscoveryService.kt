@@ -5,12 +5,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.bluetooth.BluetoothManager
+import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
 import kotlin.concurrent.timerTask
 
-class AirBeamDiscoveryService(
+open class AirBeamDiscoveryService(
     private val mContext: Context,
     private val mBluetoothManager: BluetoothManager
 ): BroadcastReceiver() {
@@ -21,6 +24,7 @@ class AirBeamDiscoveryService(
     private var mOnDiscoveryFailed: (() -> Unit)? = null
 
     private val DISCOVERY_TIMEOUT = 5000L
+    private val TAG = "AirBeamDiscoveryService"
 
     fun find(
         deviceSelector: (DeviceItem) -> Boolean,
@@ -30,7 +34,6 @@ class AirBeamDiscoveryService(
         mDeviceSelector = deviceSelector
         mOnDiscoverySuccessful = onDiscoverySuccessful
         mOnDiscoveryFailed = onDiscoveryFailed
-
         val deviceItem = getDeviceItemFromPairedDevices(deviceSelector)
 
         if (deviceItem != null) {
@@ -41,6 +44,7 @@ class AirBeamDiscoveryService(
             failAfterTimeout()
         }
     }
+
 
     private fun failAfterTimeout() {
         Timer().schedule(timerTask {
@@ -71,6 +75,9 @@ class AirBeamDiscoveryService(
 
                 device?.let { onBluetoothDeviceFound(DeviceItem(device)) }
             }
+            else -> {
+                Log.d(TAG, "Broadcast onReceive action ${intent.action}")
+            }
         }
     }
 
@@ -84,6 +91,6 @@ class AirBeamDiscoveryService(
     }
 
     private fun onDiscoveryFailed() {
-        mOnDiscoveryFailed?.invoke()
+        EventBus.getDefault().post(AirBeamDiscoveryFailedEvent())
     }
 }
