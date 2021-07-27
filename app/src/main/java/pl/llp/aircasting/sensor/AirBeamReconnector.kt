@@ -158,6 +158,7 @@ class AirBeamReconnector(
                     mErrorCallback?.invoke()
                     mFinallyCallback?.invoke()
                     unregisterFromEventBus()
+                    resetTriesNumberWithDelay()
                     return
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
