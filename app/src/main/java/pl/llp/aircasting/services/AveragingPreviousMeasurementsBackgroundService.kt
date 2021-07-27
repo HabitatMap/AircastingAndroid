@@ -31,7 +31,6 @@ class AveragingPreviousMeasurementsBackgroundService(val averagingService: Avera
         }
 
         private fun averageMeasurements() {
-            println("MARYSIA: Averaging previous measurements, running every minute?")
             averagingService.averagePreviousMeasurements()
         }
     }

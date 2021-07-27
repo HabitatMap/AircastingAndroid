@@ -24,7 +24,6 @@ open class AirBeam2Connector(
     private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
 
     override fun start(deviceItem: DeviceItem) {
-        println("MARYSIA: start Airbeam2Connector, device item ${deviceItem.id}")
         mThread = ConnectThread(deviceItem)
         mThread?.start()
     }

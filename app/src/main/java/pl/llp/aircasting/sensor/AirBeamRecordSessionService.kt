@@ -41,13 +41,10 @@ open class AirBeamRecordSessionService: AirBeamService() {
     }
 
     override fun startSensor(intent: Intent?) {
-        println("MARYSIA: startSensor recordSession, intent ${intent} extras ${intent?.extras}")
         intent ?: return
 
-        println("MARYSIA: record session service startSensor device item id ${mDeviceItem?.id}")
         mDeviceItem?.let { deviceItem ->
             val sessionUUID: String? = mIntent?.getStringExtra(SESSION_UUID_KEY)
-            println("MARYSIA: record session service startSensor trying to connect with ${mDeviceItem?.id}")
             connect(deviceItem, sessionUUID)
         }
 
