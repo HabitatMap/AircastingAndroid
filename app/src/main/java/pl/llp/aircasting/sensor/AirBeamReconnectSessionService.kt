@@ -6,15 +6,11 @@ import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
-import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
 
 class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
     companion object {
-        val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
         val SESSION_UUID_KEY = "inputExtraSessionUUID"
         val SESSION_DEVICE_ID_KEY = "inputExtraSessionDeviceId"
 

@@ -29,10 +29,8 @@ open class AirBeamDiscoveryService(
     fun find(
         deviceSelector: (DeviceItem) -> Boolean,
         onDiscoverySuccessful: (deviceItem: DeviceItem) -> Unit,
-        onDiscoveryFailed: () -> Unit,
-        context: Context
+        onDiscoveryFailed: () -> Unit
     ) {
-
         mDeviceSelector = deviceSelector
         mOnDiscoverySuccessful = onDiscoverySuccessful
         mOnDiscoveryFailed = onDiscoveryFailed
@@ -41,7 +39,7 @@ open class AirBeamDiscoveryService(
         if (deviceItem != null) {
             onDiscoverySuccessful(deviceItem)
         } else {
-            registerBluetoothDeviceFoundReceiver(context)
+            registerBluetoothDeviceFoundReceiver()
             mBluetoothManager.startDiscovery()
             failAfterTimeout()
         }
@@ -60,13 +58,13 @@ open class AirBeamDiscoveryService(
         return mBluetoothManager.pairedDeviceItems().find(deviceSelector)
     }
 
-    private fun registerBluetoothDeviceFoundReceiver(context: Context) {
+    private fun registerBluetoothDeviceFoundReceiver() {
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        context.registerReceiver(this, filter)
+        mContext.registerReceiver(this, filter)
     }
 
-    private fun unRegisterBluetoothDeviceFoundReceiver(context: Context) {
-        context.unregisterReceiver(this)
+    private fun unRegisterBluetoothDeviceFoundReceiver() {
+        mContext.unregisterReceiver(this)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -75,7 +73,7 @@ open class AirBeamDiscoveryService(
                 val device: BluetoothDevice? =
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
-                device?.let { onBluetoothDeviceFound(context, DeviceItem(device)) }
+                device?.let { onBluetoothDeviceFound(DeviceItem(device)) }
             }
             else -> {
                 Log.d(TAG, "Broadcast onReceive action ${intent.action}")
@@ -83,10 +81,10 @@ open class AirBeamDiscoveryService(
         }
     }
 
-    private fun onBluetoothDeviceFound(context: Context, deviceItem: DeviceItem) {
+    private fun onBluetoothDeviceFound(deviceItem: DeviceItem) {
         if (mDeviceSelector?.invoke(deviceItem) == true) {
             mDeviceItem = deviceItem
-            unRegisterBluetoothDeviceFoundReceiver(context)
+            unRegisterBluetoothDeviceFoundReceiver()
 
             mOnDiscoverySuccessful?.invoke(deviceItem)
         }

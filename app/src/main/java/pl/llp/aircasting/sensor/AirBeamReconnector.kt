@@ -1,7 +1,6 @@
 package pl.llp.aircasting.sensor
 
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
@@ -12,10 +11,8 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
@@ -74,8 +71,7 @@ class AirBeamReconnector(
             mAirBeamDiscoveryService.find(
                 deviceSelector = { deviceItem -> deviceItem.id == session.deviceId },
                 onDiscoverySuccessful = { deviceItem -> reconnect(deviceItem.id, deviceItem) },
-                onDiscoveryFailed = { onDiscoveryFailed() },
-                context = mContext
+                onDiscoveryFailed = { onDiscoveryFailed() }
             )
         }
     }
@@ -140,9 +136,7 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
-                    mErrorCallback?.invoke()
-                    mFinallyCallback?.invoke()
-                    unregisterFromEventBus()
+                    finalizeReconnection()
                     resetTriesNumberWithDelay()
                     return
                 } else {
@@ -152,10 +146,14 @@ class AirBeamReconnector(
                 }
             }
         } else {
-            mErrorCallback?.invoke()
-            mFinallyCallback?.invoke()
-            unregisterFromEventBus()
+            finalizeReconnection()
         }
+    }
+
+    private fun finalizeReconnection() {
+        mErrorCallback?.invoke()
+        mFinallyCallback?.invoke()
+        unregisterFromEventBus()
     }
 
     @Subscribe

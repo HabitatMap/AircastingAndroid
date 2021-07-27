@@ -3,7 +3,6 @@ package pl.llp.aircasting.screens.dashboard.active
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import kotlinx.coroutines.CoroutineScope
 import pl.llp.aircasting.R
 import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.events.NoteCreatedEvent
@@ -27,8 +26,6 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.database.DatabaseProvider
-import pl.llp.aircasting.events.SensorDisconnectedEvent
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,

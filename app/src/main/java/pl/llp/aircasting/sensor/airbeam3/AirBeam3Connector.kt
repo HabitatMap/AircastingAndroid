@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import no.nordicsemi.android.ble.observer.BondingObserver
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import pl.llp.aircasting.exceptions.BLENotSupported
 import pl.llp.aircasting.exceptions.ErrorHandler

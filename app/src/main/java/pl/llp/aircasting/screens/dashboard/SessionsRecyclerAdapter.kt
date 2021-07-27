@@ -3,8 +3,6 @@ package pl.llp.aircasting.screens.dashboard
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel

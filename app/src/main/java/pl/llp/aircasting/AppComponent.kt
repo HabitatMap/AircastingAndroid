@@ -72,5 +72,4 @@ interface AppComponent {
     fun inject(activity: AirBeamRecordSessionService)
     fun inject(activity: AirBeamSyncService)
     fun inject(activity: AirBeamClearCardService)
-    fun inject(activity: AirBeamDiscoveryService)
 }

@@ -6,14 +6,10 @@ import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import javax.inject.Inject
 
 open class AirBeamRecordSessionService: AirBeamService() {
     var mIntent: Intent? = null
     var mDeviceItem: DeviceItem? = null
-
-    @Inject
-    lateinit var mAirBeamDiscoveryService: AirBeamDiscoveryService
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -47,6 +43,5 @@ open class AirBeamRecordSessionService: AirBeamService() {
             val sessionUUID: String? = mIntent?.getStringExtra(SESSION_UUID_KEY)
             connect(deviceItem, sessionUUID)
         }
-
     }
 }

@@ -11,9 +11,6 @@ import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
-import pl.llp.aircasting.exceptions.BaseException
-import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.exceptions.NotesNoLocationError
 import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings

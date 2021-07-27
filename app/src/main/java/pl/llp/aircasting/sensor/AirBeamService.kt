@@ -68,14 +68,13 @@ abstract class AirBeamService: SensorService(),
         val event = AirBeamConnectionFailedEvent(deviceItem)
         EventBus.getDefault().post(event)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionFailed"))
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
-
         if (airbeamReconnector.mReconnectionTriesNumber != null) return
+
         event.sessionUUID?.let { sessionUUID ->
             DatabaseProvider.runQuery { scope ->
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
