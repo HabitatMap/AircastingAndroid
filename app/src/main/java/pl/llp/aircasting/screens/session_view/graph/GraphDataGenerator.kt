@@ -117,9 +117,9 @@ class GraphDataGenerator(
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when { // todo: this is moment when i want to check length of the session to use the right method
-                    (startTime.time - Date().time) <= AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDate(note, Date(measurement.time.time))) hasNote = true
-                    (startTime.time - Date().time) > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time))) hasNote = true
-                    (startTime.time - Date().time) > AveragingService.SECOND_TRESHOLD_TIME -> if (isSameDateAbove9HoursAveraging(note, Date(measurement.time.time))) hasNote = true
+                    (Date().time - startTime.time) <= AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDate(note, Date(measurement.time.time))) hasNote = true
+                    (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time))) hasNote = true
+                    (Date().time - startTime.time) > AveragingService.SECOND_TRESHOLD_TIME -> if (isSameDateAbove9HoursAveraging(note, Date(measurement.time.time))) hasNote = true
                 }
 
             }
@@ -142,14 +142,14 @@ class GraphDataGenerator(
     }
 
     private fun isSameDateAbove2HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 5 seconds
-        val dateBefore = Date(date.time + 5000)
-        val dateAfter = Date(date.time - 5000)
+        val dateBefore = Date(date.time + 2500)
+        val dateAfter = Date(date.time - 2500)
         return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 2.5 seconds for now
     }
 
     private fun isSameDateAbove9HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 1 minute
-        val dateBefore = Date(date.time + 60000)
-        val dateAfter = Date(date.time - 60000)
+        val dateBefore = Date(date.time + 30000)
+        val dateAfter = Date(date.time - 30000)
         return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 30 seconds for now
     }
 }
