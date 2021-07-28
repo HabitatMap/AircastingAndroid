@@ -91,8 +91,10 @@ class SyncController(
     }
 
     private fun refreshSessionList() {
+        println("MARYSIA: normally sessions sync would be run, commented now")
         mSessionsSyncStarted.set(true)
-        mSessionsSyncService.sync(shouldDisplayErrors = false)
+        EventBus.getDefault().post(SessionsSyncSuccessEvent())
+//        mSessionsSyncService.sync(shouldDisplayErrors = false)
     }
 
     @Subscribe

@@ -12,6 +12,7 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.networking.services.AverageAndSyncSDCardSessionsService
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
@@ -84,14 +85,16 @@ class SDCardSyncService(
         Log.d(TAG, "Processing mobile sessions")
 
         mSDCardMobileSessionsProcessor.run(deviceItem.id,
-            onFinishCallback = {
-                sendMobileMeasurementsToBackend()
+            onFinishCallback = { processedSessionsIds ->
+                sendMobileMeasurementsToBackend(processedSessionsIds)
             }
         )
     }
 
-    private fun sendMobileMeasurementsToBackend() {
+    private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
+        println("MARYSIA: processed sessionsIds ${sessionsIds}")
         val sessionsSyncService = mSessionsSyncService
+
 
         if (sessionsSyncService == null) {
             val cause = SDCardMissingSessionsSyncServiceError()
@@ -101,12 +104,20 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Sending mobile sessions to backend")
+        // this should not be needed
         mSessionsSyncStarted.set(true)
-        sessionsSyncService.sync()
+
+        val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
+        averageAndSyncSDCardSessionsService.start()
+        Thread.sleep(3000)
+        // maybe we should send here SessionsSyncSuccessEvent (rename it or something) so the wizard knows what to do
+        EventBus.getDefault().post(SessionsSyncSuccessEvent())
+//        sessionsSyncService.sync()
     }
 
     @Subscribe
     fun onMessageEvent(event: SessionsSyncSuccessEvent) {
+        // this should not be needed once we perform sessions sync in  the background
         if (mSessionsSyncStarted.get()) {
             mSessionsSyncStarted.set(false)
             sendFixedMeasurementsToBackend()

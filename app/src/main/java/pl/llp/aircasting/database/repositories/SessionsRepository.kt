@@ -136,6 +136,7 @@ class SessionsRepository {
     }
 
     fun updateSessionStatus(session: Session, status: Session.Status) {
+        println("MARYSIA: updateSessioStatus sessionRepository ${session.uuid}")
         mDatabase.sessions().updateStatus(session.uuid, status)
     }
 
