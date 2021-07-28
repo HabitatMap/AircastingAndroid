@@ -113,12 +113,11 @@ class GraphDataGenerator(
         cumulativeValue += measurement.value
         cumulativeTime += measurement.time.time
         count += 1
-        // TODO: uncomment below lines for the release build after fixing all bugs connected with displaying notes on graph
-//        if (hasNote != true && notes != null) {
-//            for (note in notes) {
-//                if (isSameDate(note, Date(measurement.time.time))) hasNote = true
-//            }
-//        }
+        if (hasNote != true && notes != null) {
+            for (note in notes) {
+                if (isSameDate(note, Date(measurement.time.time))) hasNote = true
+            }
+        }
     }
 
     private fun reset() {
