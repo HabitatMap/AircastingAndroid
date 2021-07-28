@@ -178,10 +178,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     }
 
     protected open fun onNoteDeleted(note: Note) {
-        mSessionPresenter?.session?.notes?.remove(
-            mSessionPresenter?.session?.notes?.find { note -> // I use this strange syntax instead of just remove(), because remove(note) does not work for some reason
-                note.number == note.number
-        })
+        mSessionPresenter?.session?.notes?.remove(note)
     }
 
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
