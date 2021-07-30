@@ -103,7 +103,6 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Sending mobile sessions to backend")
-        // this should not be needed
         mSessionsSyncStarted.set(true)
 
         val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
