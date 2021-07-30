@@ -109,15 +109,14 @@ class SDCardSyncService(
 
         val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
         averageAndSyncSDCardSessionsService.start()
-        Thread.sleep(3000)
-        // maybe we should send here SessionsSyncSuccessEvent (rename it or something) so the wizard knows what to do
+
+        // We leave this screen hanging for 2 sec so the user knows the sync upload was initiated
+        Thread.sleep(2000)
         EventBus.getDefault().post(SessionsSyncSuccessEvent())
-//        sessionsSyncService.sync()
     }
 
     @Subscribe
     fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        // this should not be needed once we perform sessions sync in  the background
         if (mSessionsSyncStarted.get()) {
             mSessionsSyncStarted.set(false)
             sendFixedMeasurementsToBackend()

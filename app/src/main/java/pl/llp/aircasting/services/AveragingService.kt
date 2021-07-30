@@ -263,7 +263,8 @@ class AveragingService {
         )
     }
 
-    fun averagePreviousMeasurements() {
+    fun averagePreviousMeasurements(isFinal: Boolean = false) {
+        println("MARYSIA: averaging previous measurements for session ${sessionId}")
         checkAveragingFrequency()
         if (!mNewAveragingThreshold.get()) return
 
@@ -328,9 +329,11 @@ class AveragingService {
     }
 
     private fun currentAveragingThresholdIndex() : Int {
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId) ?: Date()
+        println("MARYSIA: currentAveragingThresholdIndex lastmeasurementtime ${mMeasurementsRepository.lastMeasurementTime(sessionId)}")
         return when {
-            Date().time > mSecondThresholdTime -> 2
-            Date().time > mFirstThresholdTime -> 1
+            lastMeasurementTime.time > mSecondThresholdTime -> 2
+            lastMeasurementTime.time > mFirstThresholdTime -> 1
             else -> 0
         }
     }

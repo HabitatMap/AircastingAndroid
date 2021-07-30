@@ -47,7 +47,6 @@ class SDCardMobileSessionsProcessor(
             sessionId = dbSession.id
         }
 
-        // But at this point session is finished!!
         if (session.isDisconnected()) {
             println("MARYSIA: processSession, is disconnected")
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
@@ -56,9 +55,8 @@ class SDCardMobileSessionsProcessor(
             }
 
             finishSession(sessionId, session)
+            mProcessedSessionsIds.add(sessionId)
         }
-
-        mProcessedSessionsIds.add(sessionId)
     }
 
     private fun processMeasurements(deviceId: String, sessionId: Long, streamHeaderValue: Int, csvMeasurements: List<CSVMeasurement>) {

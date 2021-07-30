@@ -52,6 +52,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
+    fun onMessageEvent(event: StandaloneModeEvent) {
+        startStandaloneMode(event.sessionUUID)
+    }
+
+    @Subscribe
     fun onMessageEvent(event: SensorDisconnectedEvent) {
         disconnectSession(event.sessionDeviceId)
     }
@@ -240,6 +245,15 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 averagingPreviousMeasurementsBackgroundService?.stop()
                 AveragingService.destroy(sessionId)
             }
+        }
+    }
+
+    private fun startStandaloneMode(uuid: String) {
+        DatabaseProvider.runQuery {
+            val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
+            averagingBackgroundService?.stop()
+            averagingPreviousMeasurementsBackgroundService?.stop()
+            AveragingService.destroy(sessionId)
         }
     }
 
