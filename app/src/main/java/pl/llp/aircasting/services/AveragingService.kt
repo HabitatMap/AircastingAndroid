@@ -263,7 +263,7 @@ class AveragingService {
         )
     }
 
-    fun averagePreviousMeasurements(isFinal: Boolean = false) {
+    fun averagePreviousMeasurements() {
         checkAveragingFrequency()
         if (!mNewAveragingThreshold.get()) return
 

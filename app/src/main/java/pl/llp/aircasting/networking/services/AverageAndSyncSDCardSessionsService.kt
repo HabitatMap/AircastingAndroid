@@ -43,7 +43,7 @@ class AverageAndSyncSDCardSessionsService(
         private fun averageMeasurements() {
             sessionsIds.forEach { sessionId ->
                 val averagingService = AveragingService.get(sessionId)
-                averagingService?.averagePreviousMeasurements(true)
+                averagingService?.averagePreviousMeasurements()
                 averagingService?.perform(true)
             }
         }
