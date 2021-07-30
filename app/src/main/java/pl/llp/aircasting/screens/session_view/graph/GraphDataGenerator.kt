@@ -19,6 +19,8 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
     private var hasNote = false
+    private var shouldAddNextIcon = true
+    private var averagingCount = 0
 
     private val DEFAULT_LIMIT = 1000
 
@@ -106,11 +108,14 @@ class GraphDataGenerator(
         cumulativeValue += measurement.value
         cumulativeTime += measurement.time.time
         count += 1
+        if (measurement.averagingFrequency == 1 && (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME) averagingCount += 1
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when { // todo: this is moment when i want to check length of the session to use the right method
                     (Date().time - startTime.time) <= AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDate(note, Date(measurement.time.time))) hasNote = true
-                    (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time))) hasNote = true
+                    (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time), measurement)) {
+                        hasNote = true
+                    }
                     (Date().time - startTime.time) > AveragingService.SECOND_TRESHOLD_TIME -> if (isSameDateAbove9HoursAveraging(note, Date(measurement.time.time))) hasNote = true
                 }
 
@@ -123,6 +128,8 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
+        shouldAddNextIcon = true
+        if (averagingCount == 4) averagingCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
@@ -133,15 +140,16 @@ class GraphDataGenerator(
                 note.date.seconds == date.seconds
     }
 
-    private fun isSameDateAbove2HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 5 seconds
-        val dateBefore = Date(date.time + 2500)
+    private fun isSameDateAbove2HoursAveraging(note: Note, date: Date, measurement: Measurement): Boolean { //method checking if there was note in range of 5 seconds
+        if (averagingCount < 4 && measurement.averagingFrequency == 1) return false
+        val dateBefore = Date(date.time + 2500)  //todo: hardcoded 2.5 seconds for now
         val dateAfter = Date(date.time - 2500)
-        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 2.5 seconds for now
+        return note.date.after(dateAfter) && note.date.before(dateBefore)
     }
 
     private fun isSameDateAbove9HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 1 minute
-        val dateBefore = Date(date.time + 30000)
+        val dateBefore = Date(date.time + 30000)  //todo: hardcoded 30 seconds for now
         val dateAfter = Date(date.time - 30000)
-        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 30 seconds for now
+        return note.date.after(dateAfter) && note.date.before(dateBefore)
     }
 }
