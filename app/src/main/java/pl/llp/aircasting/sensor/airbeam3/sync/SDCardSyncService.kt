@@ -92,7 +92,6 @@ class SDCardSyncService(
     }
 
     private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
-        println("MARYSIA: processed sessionsIds ${sessionsIds}")
         val sessionsSyncService = mSessionsSyncService
 
 

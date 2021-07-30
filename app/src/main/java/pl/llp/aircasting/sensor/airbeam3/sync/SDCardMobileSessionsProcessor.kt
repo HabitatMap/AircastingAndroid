@@ -21,7 +21,6 @@ class SDCardMobileSessionsProcessor(
 
         DatabaseProvider.runQuery {
             mSDCardCSVIterator.run(file).forEach { csvSession ->
-                println("MARYSIA: processSession, mSDCardCSVIterator.run(file).forEach csvSession: ${csvSession}")
                 processSession(deviceId, csvSession)
             }
 
@@ -30,7 +29,6 @@ class SDCardMobileSessionsProcessor(
     }
 
     private fun processSession(deviceId: String, csvSession: CSVSession?) {
-        println("MARYSIA: processSession, csvSession: ${csvSession}")
         csvSession ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
@@ -38,19 +36,15 @@ class SDCardMobileSessionsProcessor(
         val sessionId: Long
 
         if (dbSession == null) {
-            println("MARYSIA: processSession, no dbSession: ${dbSession}")
             session = csvSession.toSession(deviceId) ?: return
             sessionId = mSessionsRepository.insert(session)
         } else {
-            println("MARYSIA: processSession, dbSession: ${dbSession}")
             session = Session(dbSession)
             sessionId = dbSession.id
         }
 
         if (session.isDisconnected()) {
-            println("MARYSIA: processSession, is disconnected")
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
-                println("MARYSIA: processSession, process stream ${headerKey}")
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
             }
 
@@ -73,7 +67,6 @@ class SDCardMobileSessionsProcessor(
 
         // filtering measurements to save only the once we don't already have
         val filteredCSVMeasurements = filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
-        println("MARYSIA: processing measurements, filtered: ${filteredCSVMeasurements}")
         val measurements = filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
@@ -85,7 +78,6 @@ class SDCardMobileSessionsProcessor(
     }
 
     private fun finishSession(sessionId: Long, session: Session) {
-        println("MARYSIA: processSession, finish session ${sessionId}")
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
         session.stopRecording(lastMeasurementTime)
         mSessionsRepository.update(session)
