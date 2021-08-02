@@ -19,7 +19,6 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
     private var hasNote = false
-    private var shouldAddNextIcon = true
     private var averagingCount = 0
 
     private val DEFAULT_LIMIT = 1000
@@ -136,8 +135,7 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
-        shouldAddNextIcon = true
-        if (averagingCount == 4) averagingCount = 0
+        if (averagingCount == 5) averagingCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
@@ -149,7 +147,7 @@ class GraphDataGenerator(
     }
 
     private fun isSameDateAbove2HoursAveraging(note: Note, date: Date, measurement: Measurement): Boolean { //method checking if there was note in range of 5 seconds
-        if (averagingCount < 4 && measurement.averagingFrequency == 1) return false
+        if (averagingCount < 5 && measurement.averagingFrequency == 1) return false
         val dateBefore = Date(date.time + 2500)  //todo: hardcoded 2.5 seconds for now
         val dateAfter = Date(date.time - 2500)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
