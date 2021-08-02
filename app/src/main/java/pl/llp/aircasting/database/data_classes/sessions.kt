@@ -190,10 +190,16 @@ interface SessionDao {
     fun loadAllByTypeAndStatusForComplete(type: Session.Type, statuses: List<Int>): LiveData<List<CompleteSessionDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
+    fun loadAllByTypeAndStatusWithNotes(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndNotesDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatus(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
+
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
+    fun loadAllByTypeWithNotes(type: Session.Type): LiveData<List<SessionWithStreamsAndNotesDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY followed_at DESC")
     fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
