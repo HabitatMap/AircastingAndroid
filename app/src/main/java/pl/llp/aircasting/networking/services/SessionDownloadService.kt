@@ -1,6 +1,5 @@
 package pl.llp.aircasting.networking.services
 
-import android.util.Log
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.lib.DateConverter
@@ -37,7 +36,6 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             }
 
             override fun onFailure(call: Call<SessionResponse>, t: Throwable) {
-                Log.i("SESS_FAIL", t.message.toString())
                 errorHandler.handle(UnexpectedAPIError(t))
                 finallyCallback?.invoke()
             }
