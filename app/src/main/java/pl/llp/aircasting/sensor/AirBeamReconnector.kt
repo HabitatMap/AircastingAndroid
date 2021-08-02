@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
@@ -31,6 +32,7 @@ class AirBeamReconnector(
     private var mFinallyCallback: (() -> Unit)? = null
     private var mListener: AirBeamReconnector.Listener? = null
 
+    private var mStandaloneMode = AtomicBoolean(false)
     var mReconnectionTriesNumber: Int? = null
     private val RECONNECTION_TRIES_MAX = 15
     private val RECONNECTION_TRIES_INTERVAL = 15000L // 15s between reconnection tries
@@ -43,6 +45,7 @@ class AirBeamReconnector(
     }
 
     fun disconnect(session: Session) {
+        mStandaloneMode.set(true)
         sendDisconnectedEvent(session)
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
@@ -77,6 +80,7 @@ class AirBeamReconnector(
     }
 
     fun initReconnectionTries(session: Session, deviceItem: DeviceItem?) {
+        if (mStandaloneMode.get()) return
         if (mReconnectionTriesNumber != null) return
         mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1

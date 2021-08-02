@@ -14,7 +14,9 @@ class SDCardMobileSessionsProcessor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mMeasurementsRepository: MeasurementsRepository
 ) {
-    fun run(deviceId: String, onFinishCallback: () -> Unit) {
+    private val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
+
+    fun run(deviceId: String, onFinishCallback: (MutableList<Long>) -> Unit) {
         val file = mCSVFileFactory.getMobileFile()
 
         DatabaseProvider.runQuery {
@@ -22,7 +24,7 @@ class SDCardMobileSessionsProcessor(
                 processSession(deviceId, csvSession)
             }
 
-            onFinishCallback.invoke()
+            onFinishCallback.invoke(mProcessedSessionsIds)
         }
     }
 
@@ -47,6 +49,7 @@ class SDCardMobileSessionsProcessor(
             }
 
             finishSession(sessionId, session)
+            mProcessedSessionsIds.add(sessionId)
         }
     }
 

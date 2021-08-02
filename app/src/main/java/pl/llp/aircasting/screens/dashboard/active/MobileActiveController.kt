@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.events.StandaloneModeEvent
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
@@ -87,6 +88,7 @@ class MobileActiveController(
     }
 
     override fun onDisconnectSessionClicked(session: Session) {
+        EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
         airBeamReconnector.disconnect(session)
     }
 
@@ -114,8 +116,6 @@ class MobileActiveController(
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        val event = StopRecordingEvent(session.uuid)
-        EventBus.getDefault().post(event)
         SyncActivity.start(mRootActivity, onFinish = { goToDormantTab() })
     }
 

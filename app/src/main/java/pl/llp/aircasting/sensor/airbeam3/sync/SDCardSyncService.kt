@@ -12,6 +12,7 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.networking.services.AverageAndSyncSDCardSessionsService
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
@@ -84,14 +85,15 @@ class SDCardSyncService(
         Log.d(TAG, "Processing mobile sessions")
 
         mSDCardMobileSessionsProcessor.run(deviceItem.id,
-            onFinishCallback = {
-                sendMobileMeasurementsToBackend()
+            onFinishCallback = { processedSessionsIds ->
+                sendMobileMeasurementsToBackend(processedSessionsIds)
             }
         )
     }
 
-    private fun sendMobileMeasurementsToBackend() {
+    private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
         val sessionsSyncService = mSessionsSyncService
+
 
         if (sessionsSyncService == null) {
             val cause = SDCardMissingSessionsSyncServiceError()
@@ -102,7 +104,13 @@ class SDCardSyncService(
 
         Log.d(TAG, "Sending mobile sessions to backend")
         mSessionsSyncStarted.set(true)
-        sessionsSyncService.sync()
+
+        val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
+        averageAndSyncSDCardSessionsService.start()
+
+        // We leave this screen hanging for 2 sec so the user knows the sync upload was initiated
+        Thread.sleep(2000)
+        EventBus.getDefault().post(SessionsSyncSuccessEvent())
     }
 
     @Subscribe

@@ -328,9 +328,10 @@ class AveragingService {
     }
 
     private fun currentAveragingThresholdIndex() : Int {
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId) ?: Date()
         return when {
-            Date().time > mSecondThresholdTime -> 2
-            Date().time > mFirstThresholdTime -> 1
+            lastMeasurementTime.time > mSecondThresholdTime -> 2
+            lastMeasurementTime.time > mFirstThresholdTime -> 1
             else -> 0
         }
     }
