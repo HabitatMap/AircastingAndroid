@@ -115,12 +115,12 @@ class GraphDataGenerator(
         cumulativeValue += measurement.value
         cumulativeTime += measurement.time.time
         count += 1
-        if (measurement.averagingFrequency == 1 && (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME) averagingCount += 1
+        //if (measurement.averagingFrequency == 1 && (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME) averagingCount += 1
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when { // todo: this is moment when i want to check length of the session to use the right method
                     (Date().time - startTime.time) <= AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDate(note, Date(measurement.time.time))) hasNote = true
-                    (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time), measurement)) {
+                    (Date().time - startTime.time) > AveragingService.FIRST_TRESHOLD_TIME -> if (isSameDateAbove2HoursAveraging(note, Date(measurement.time.time), measurement) && measurement.averagingFrequency != 1) {
                         hasNote = true
                     }
                     (Date().time - startTime.time) > AveragingService.SECOND_TRESHOLD_TIME -> if (isSameDateAbove9HoursAveraging(note, Date(measurement.time.time))) hasNote = true
@@ -135,7 +135,7 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
-        if (averagingCount == 5) averagingCount = 0
+        //if (averagingCount == 5) averagingCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
@@ -147,7 +147,7 @@ class GraphDataGenerator(
     }
 
     private fun isSameDateAbove2HoursAveraging(note: Note, date: Date, measurement: Measurement): Boolean { //method checking if there was note in range of 5 seconds
-        if (averagingCount < 5 && measurement.averagingFrequency == 1) return false
+        //if (averagingCount < 5 && measurement.averagingFrequency == 1) return false
         val dateBefore = Date(date.time + 2500)  //todo: hardcoded 2.5 seconds for now
         val dateAfter = Date(date.time - 2500)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
