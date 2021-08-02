@@ -29,7 +29,7 @@ class MobileDormantController(
 
 
     override fun registerSessionsObserver() {
-        mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurements())
+        mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurementsAndNotes())
     }
 
     override fun unregisterSessionsObserver() {
