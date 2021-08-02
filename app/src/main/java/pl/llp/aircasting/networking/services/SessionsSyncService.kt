@@ -179,6 +179,11 @@ class SessionsSyncService {
                                     session.streams
                                 )
                             }
+                            for (note in session.notes) {
+                                sessionId?.let {
+                                    noteRepository.insert(it, note)
+                                }
+                            }
                         } catch (e: SQLiteConstraintException) {
                             errorHandler.handle(DBInsertException(e))
                         }
