@@ -116,7 +116,6 @@ abstract class SessionDetailsViewController(
     }
 
     override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        // TODO: this is not working now on <graph>, displaying note from graph view will be added in "Ready"
         val onDownloadSuccess = { session: Session ->
             DatabaseProvider.runQuery {
                 mSessionRepository.update(session)

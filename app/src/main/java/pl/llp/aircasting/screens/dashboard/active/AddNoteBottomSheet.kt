@@ -5,12 +5,15 @@ import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.EditText
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.NotesNoLocationError
@@ -114,13 +117,17 @@ class AddNoteBottomSheet(
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "Title")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
-        return mContext?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+           //ActivityCompat.requestPermissions(mContext., {android.Manifest.permission.WRITE_EXTERNAL_STORAGE},1)
+        }
+
+        return mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
     fun getRealPathFromURI(uri: Uri?): String? {
         var path = ""
         if (mContext?.contentResolver != null) {
-            val cursor: Cursor? = mContext.contentResolver?.query(uri!!, null, null, null, null) //todo: null assertions
+            val cursor: Cursor? = mContext.contentResolver?.query(uri!!, null, null, null, null) //todo: null assertions to remove??
             if (cursor != null) {
                 cursor.moveToFirst()
                 val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)

@@ -68,7 +68,7 @@ class MapController(
     }
 
     override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler).show(fragmentManager)
+        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler).show(fragmentManager) //todo: add rootActivity to AddNoteBottomSheet constructor so we can ask for permission there
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
