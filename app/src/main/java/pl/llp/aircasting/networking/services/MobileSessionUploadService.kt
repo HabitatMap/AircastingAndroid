@@ -17,7 +17,6 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         val sessionBody = CreateSessionBody(
             GzippedParams.get(sessionParams, SessionParams::class.java)
         )
-
         val call = apiService.createMobileSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
