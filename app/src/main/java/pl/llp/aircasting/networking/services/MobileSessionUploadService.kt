@@ -17,7 +17,7 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         val sessionBody = CreateSessionBody(
             GzippedParams.get(sessionParams, SessionParams::class.java)
         )
-        //TODO: somehow i have to use Gzipped params to create proper json of Notes <?>
+
         val call = apiService.createMobileSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
