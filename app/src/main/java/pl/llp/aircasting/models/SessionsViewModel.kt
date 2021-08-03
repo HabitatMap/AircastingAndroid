@@ -41,8 +41,8 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.sessions().loadAllByTypeAndStatusWithNotes(Session.Type.MOBILE, Session.Status.FINISHED)
     }
 
-    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndNotesDBObject>> { //todo: to be changed
-        return mDatabase.sessions().loadAllByTypeWithNotes(Session.Type.FIXED)
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
