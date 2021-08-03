@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.session_view.map
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.events.*
 import pl.llp.aircasting.lib.Settings

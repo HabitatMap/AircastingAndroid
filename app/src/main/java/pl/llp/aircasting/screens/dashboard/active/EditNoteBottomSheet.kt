@@ -1,16 +1,23 @@
 package pl.llp.aircasting.screens.dashboard.active
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
+import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.screens.common.BottomSheet
-import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
+import java.io.File
+
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
@@ -63,7 +70,11 @@ class EditNoteBottomSheet(
 
     private fun saveChanges() {
         if (!ConnectivityManager.isConnected(context)) {
-            Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                context?.getString(R.string.errors_network_required_edit),
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 
@@ -74,6 +85,12 @@ class EditNoteBottomSheet(
 
     private fun viewPhoto() {
         // TODO: open simple activity displaying note photo
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Log.i("PHOTO", mNote?.photoPath.toString())
+        intent.setDataAndType(FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".fileprovider", File(mNote?.photoPath)), "image/*")
+        startActivity(intent)
     }
 
     private fun deleteNote() {

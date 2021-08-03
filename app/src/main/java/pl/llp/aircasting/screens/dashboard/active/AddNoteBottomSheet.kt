@@ -12,6 +12,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.R
@@ -36,6 +37,7 @@ class AddNoteBottomSheet(
     }
 
     private var noteInput: EditText? = null
+    private var notePhotoImageView: ImageView? = null
     private var photoUri: Uri? = null
     private var imageEncoded: String = "pp"
     val PICK_PHOTO_CODE = 1046
@@ -69,6 +71,8 @@ class AddNoteBottomSheet(
         attachPhotoButton?.setOnClickListener {
             attachPhoto()
         }
+
+        notePhotoImageView = contentView?.note_photo_image_view
     }
 
     private fun addNote(mSession: Session) {
@@ -107,6 +111,7 @@ class AddNoteBottomSheet(
             val tempUri = getImageUri(mContext!!, imageBitmap)
             val finalFile = File(getRealPathFromURI(tempUri))
             imageEncoded = finalFile.path
+            notePhotoImageView?.setImageBitmap(imageBitmap) // show taken photo on image view below attach photo button
             Log.i("ADD_NOTE", imageEncoded)
         }
     }
@@ -118,7 +123,7 @@ class AddNoteBottomSheet(
         values.put(MediaStore.Images.Media.TITLE, "Title")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
         if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-           //ActivityCompat.requestPermissions(mContext., {android.Manifest.permission.WRITE_EXTERNAL_STORAGE},1)
+           //todo: ActivityCompat.requestPermissions(mContext., {android.Manifest.permission.WRITE_EXTERNAL_STORAGE},1)
         }
 
         return mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)

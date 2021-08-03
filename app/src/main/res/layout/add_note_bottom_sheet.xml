@@ -75,7 +75,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <!-- Below button should be displayed after adding the functionality-->
                 <Button
                     android:id="@+id/add_picture_button"
                     android:layout_width="0dp"
@@ -94,13 +93,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
+                <ImageView
+                    android:id="@+id/note_photo_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_picture_button"
+                    app:layout_constraintBottom_toTopOf="@id/note_input_layout"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/note_input_layout"
                     style="@style/Widget.Aircasting.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@+id/add_note_button"
-                    app:layout_constraintTop_toBottomOf="@id/add_picture_button"
+                    app:layout_constraintTop_toBottomOf="@id/note_photo_image_view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:errorEnabled="true"
