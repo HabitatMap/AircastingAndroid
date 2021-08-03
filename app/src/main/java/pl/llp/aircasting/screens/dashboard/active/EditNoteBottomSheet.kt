@@ -37,6 +37,11 @@ class EditNoteBottomSheet(
             dismiss()
         }
 
+        val viewPhotoButton = contentView?.view_photo_button
+        viewPhotoButton?.setOnClickListener {
+            viewPhoto()
+        }
+
         val deleteNoteButton = contentView?.delete_note_button
         deleteNoteButton?.setOnClickListener {
             deleteNote()
@@ -65,6 +70,10 @@ class EditNoteBottomSheet(
         val noteText = noteInput?.text.toString().trim()
         mNote?.text = noteText
         mListener.saveChangesNotePressed(mNote, mSession)
+    }
+
+    private fun viewPhoto() {
+        // TODO: open simple activity displaying note photo
     }
 
     private fun deleteNote() {
