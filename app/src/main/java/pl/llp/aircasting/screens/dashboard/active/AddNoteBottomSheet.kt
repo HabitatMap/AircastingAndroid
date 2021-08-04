@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.EditText
@@ -24,6 +25,8 @@ import pl.llp.aircasting.screens.common.BottomSheet
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AddNoteBottomSheet(
@@ -39,7 +42,8 @@ class AddNoteBottomSheet(
     private var noteInput: EditText? = null
     private var notePhotoImageView: ImageView? = null
     private var photoUri: Uri? = null
-    private var imageEncoded: String = "pp"
+    private var photoPath: String = ""
+    private var imageEncoded: String = ""
     val PICK_PHOTO_CODE = 1046
     val CAMERA_REQUEST_CODE = 1888
 
@@ -108,11 +112,32 @@ class AddNoteBottomSheet(
             val imageBitmap = data?.extras?.get("data") as Bitmap
             //imageEncoded = PhotoHelper.getBase64String(imageBitmap)
 
-            val tempUri = getImageUri(mContext!!, imageBitmap)
-            val finalFile = File(getRealPathFromURI(tempUri))
-            imageEncoded = finalFile.path
+            // ZE STAREJ APPKI:
+            val picturesDir = File(activity?.filesDir, "pictures")
+            val target = File(picturesDir, System.currentTimeMillis().toString() + ".jpg")
+            // - ZE STAREJ APPKI
+            imageEncoded = target.toString() // todo: just a trial what happens
+
+//            val tempUri = getImageUri(mContext!!, imageBitmap)
+//            val finalFile = File(getRealPathFromURI(tempUri))
+//            imageEncoded = finalFile.path
             notePhotoImageView?.setImageBitmap(imageBitmap) // show taken photo on image view below attach photo button
             Log.i("ADD_NOTE", imageEncoded)
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            photoPath = absolutePath
         }
     }
 
