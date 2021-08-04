@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.NotesNoLocationError
@@ -46,6 +47,7 @@ class AddNoteBottomSheet(
     private var imageEncoded: String = ""
     val PICK_PHOTO_CODE = 1046
     val CAMERA_REQUEST_CODE = 1888
+    val REQUEST_IMAGE_CAPTURE = 1
 
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
@@ -90,31 +92,32 @@ class AddNoteBottomSheet(
         val date = Date()
         var note: Note
         if (mSession.notes.isNullOrEmpty())
-            note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, 0, imageEncoded)
+            note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, 0, photoPath)
         else
-            note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, mSession.notes.last().number + 1, imageEncoded)
+            note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, mSession.notes.last().number + 1, photoPath)
 
         mListener.addNotePressed(mSession, note)
     }
 
     private fun attachPhoto() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        try {
-            startActivityForResult(intent, CAMERA_REQUEST_CODE)
-        } catch (e: ActivityNotFoundException) {
-            Log.e("ATTACH_PHOTO", "Cant take picture")
-        }
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//
+//        try {
+//            startActivityForResult(intent, CAMERA_REQUEST_CODE)
+//        } catch (e: ActivityNotFoundException) {
+//            Log.e("ATTACH_PHOTO", "Cant take picture")
+//        }
+        dispatchTakePictureIntent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
+        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) { // NOWA WERSJA TU NIE WCHODZI RACZEJ (TA Z CREATEIMAGEFILE()
             val imageBitmap = data?.extras?.get("data") as Bitmap
             //imageEncoded = PhotoHelper.getBase64String(imageBitmap)
 
             // ZE STAREJ APPKI:
-            val picturesDir = File(activity?.filesDir, "pictures")
-            val target = File(picturesDir, System.currentTimeMillis().toString() + ".jpg")
+            val picturesDir = createImageFile() //File(activity?.filesDir, "pictures")
+            val target = File(picturesDir, "")  //System.currentTimeMillis().toString() + ".jpg"
             // - ZE STAREJ APPKI
             imageEncoded = target.toString() // todo: just a trial what happens
 
@@ -138,6 +141,34 @@ class AddNoteBottomSheet(
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             photoPath = absolutePath
+            Log.i("PHOTO", photoPath)
+        }
+    }
+
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(mContext!!.packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        mContext,
+                        "pl.llp.aircasting.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI) // this photoURI should store taken picture
+                    Log.i("PHOTO", photoURI.toString())
+                    photoPath = photoURI.toString()
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
         }
     }
 
