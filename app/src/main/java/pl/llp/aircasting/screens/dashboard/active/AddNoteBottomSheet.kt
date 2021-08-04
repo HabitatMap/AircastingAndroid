@@ -111,22 +111,28 @@ class AddNoteBottomSheet(
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) { // NOWA WERSJA TU NIE WCHODZI RACZEJ (TA Z CREATEIMAGEFILE()
-            val imageBitmap = data?.extras?.get("data") as Bitmap
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // TODO: set the image view with bitmap which is result of this intent, now it does not work
+            val imageBitmap = data?.extras?.get("data") as Bitmap?
+            Log.i("PHOTO", imageBitmap.toString())
+            notePhotoImageView?.setImageBitmap(imageBitmap)
+        }
+//        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) { // NOWA WERSJA TU NIE WCHODZI RACZEJ (TA Z CREATEIMAGEFILE()
+//            val imageBitmap = data?.extras?.get("data") as Bitmap
             //imageEncoded = PhotoHelper.getBase64String(imageBitmap)
 
             // ZE STAREJ APPKI:
-            val picturesDir = createImageFile() //File(activity?.filesDir, "pictures")
-            val target = File(picturesDir, "")  //System.currentTimeMillis().toString() + ".jpg"
+//            val picturesDir = createImageFile() //File(activity?.filesDir, "pictures")
+//            val target = File(picturesDir, "")  //System.currentTimeMillis().toString() + ".jpg"
             // - ZE STAREJ APPKI
-            imageEncoded = target.toString() // todo: just a trial what happens
+//            imageEncoded = target.toString() // todo: just a trial what happens
 
 //            val tempUri = getImageUri(mContext!!, imageBitmap)
 //            val finalFile = File(getRealPathFromURI(tempUri))
 //            imageEncoded = finalFile.path
-            notePhotoImageView?.setImageBitmap(imageBitmap) // show taken photo on image view below attach photo button
-            Log.i("ADD_NOTE", imageEncoded)
-        }
+//            notePhotoImageView?.setImageBitmap(imageBitmap) // show taken photo on image view below attach photo button
+//
+//        }
     }
 
     @Throws(IOException::class)
@@ -166,36 +172,36 @@ class AddNoteBottomSheet(
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI) // this photoURI should store taken picture
                     Log.i("PHOTO", photoURI.toString())
                     photoPath = photoURI.toString()
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
                 }
             }
         }
     }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "Title")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
-        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-           //todo: ActivityCompat.requestPermissions(mContext., {android.Manifest.permission.WRITE_EXTERNAL_STORAGE},1)
-        }
-
-        return mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-    }
-
-    fun getRealPathFromURI(uri: Uri?): String? {
-        var path = ""
-        if (mContext?.contentResolver != null) {
-            val cursor: Cursor? = mContext.contentResolver?.query(uri!!, null, null, null, null) //todo: null assertions to remove??
-            if (cursor != null) {
-                cursor.moveToFirst()
-                val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-                path = cursor.getString(idx)
-                cursor.close()
-            }
-        }
-        return path
-    }
+//    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+//        val bytes = ByteArrayOutputStream()
+//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+//        val values = ContentValues()
+//        values.put(MediaStore.Images.Media.TITLE, "Title")
+//        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
+//        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//           //todo: ActivityCompat.requestPermissions(mContext., {android.Manifest.permission.WRITE_EXTERNAL_STORAGE},1)
+//        }
+//
+//        return mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+//    }
+//
+//    fun getRealPathFromURI(uri: Uri?): String? {
+//        var path = ""
+//        if (mContext?.contentResolver != null) {
+//            val cursor: Cursor? = mContext.contentResolver?.query(uri!!, null, null, null, null) //todo: null assertions to remove??
+//            if (cursor != null) {
+//                cursor.moveToFirst()
+//                val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+//                path = cursor.getString(idx)
+//                cursor.close()
+//            }
+//        }
+//        return path
+//    }
 }
