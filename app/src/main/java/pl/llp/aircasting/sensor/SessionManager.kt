@@ -26,7 +26,7 @@ import pl.llp.aircasting.database.LogoutService
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
-    private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
+    private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings, mContext)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)

@@ -1,5 +1,6 @@
 package pl.llp.aircasting.networking.services
 
+import android.util.Log
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
@@ -39,7 +40,7 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         }
 
         val call = apiService.downloadSessionWithMeasurements(session.uuid)
-
+        Log.i("CALL", call.request().url().toString())
         val sessionId = dbSessionWithMeasurements.session.id
 
         call.enqueue(DownloadMeasurementsCallback(

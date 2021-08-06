@@ -57,7 +57,7 @@ class SyncController(
     ErrorViewMvc.Listener {
 
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
+    private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings, mContextActivity)
     private val mWizardNavigator = SyncWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
     private var mSessionsSyncStarted = AtomicBoolean(false)
 

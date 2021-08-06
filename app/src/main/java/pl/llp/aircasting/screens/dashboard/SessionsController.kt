@@ -40,7 +40,7 @@ abstract class SessionsController(
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
-    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
+    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings, context!!)
     protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()

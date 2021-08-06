@@ -67,7 +67,7 @@ class MainController(
     }
 
     private fun sync(apiService: ApiService) {
-        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings)
+        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings, rootActivity)
 
         mMobileSessionsSyncService.sync(
             onStartCallback = { mViewMvc.showLoader() },

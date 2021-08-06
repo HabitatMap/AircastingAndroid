@@ -2,11 +2,13 @@ package pl.llp.aircasting.di
 
 import dagger.Module
 import dagger.Provides
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.networking.services.SessionsSyncService
 import pl.llp.aircasting.networking.services.UploadFixedMeasurementsService
+import javax.inject.Inject
 import javax.inject.Singleton
 
 open class WebServerFactory
@@ -41,11 +43,12 @@ open class ApiModule {
     fun providesSessionsSyncService(
         apiServiceFactory: ApiServiceFactory,
         settings: Settings,
-        errorHandler: ErrorHandler
+        errorHandler: ErrorHandler,
+        app: AircastingApplication
     ): SessionsSyncService? {
         val authToken = settings.getAuthToken() ?: return null
 
         val apiService = apiServiceFactory.get(authToken)
-        return SessionsSyncService.get(apiService, errorHandler, settings)
+        return SessionsSyncService.get(apiService, errorHandler, settings, app)
     }
 }

@@ -12,7 +12,7 @@ import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.lib.Settings
 
 class ConnectivityManager(apiService: ApiService, context: Context, settings: Settings): BroadcastReceiver() {
-    val sessionSyncService = SessionsSyncService.get(apiService, ErrorHandler(context), settings)
+    val sessionSyncService = SessionsSyncService.get(apiService, ErrorHandler(context), settings, context)
 
     companion object {
         val ACTION = ConnectivityManager.CONNECTIVITY_ACTION

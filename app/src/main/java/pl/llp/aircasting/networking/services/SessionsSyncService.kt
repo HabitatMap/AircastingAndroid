@@ -1,5 +1,6 @@
 package pl.llp.aircasting.networking.services
 
+import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import com.google.gson.Gson
 import pl.llp.aircasting.database.DatabaseProvider
@@ -26,6 +27,7 @@ class SessionsSyncService {
     private val apiService: ApiService
     private val errorHandler: ErrorHandler
     private val settings: Settings
+    private val context: Context
 
     private val uploadService: MobileSessionUploadService
     private val downloadService: SessionDownloadService
@@ -40,12 +42,13 @@ class SessionsSyncService {
     private var mCall: Call<SyncResponse>? = null
 
 
-    private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
+    private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings, context: Context) {
         this.apiService = apiService
         this.errorHandler = errorHandler
         this.settings = settings
+        this.context = context
 
-        this.uploadService = MobileSessionUploadService(apiService, errorHandler)
+        this.uploadService = MobileSessionUploadService(apiService, errorHandler, context)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
         this.removeOldMeasurementsService = RemoveOldMeasurementsService()
     }
@@ -53,9 +56,9 @@ class SessionsSyncService {
     companion object {
         private var mSingleton: SessionsSyncService? = null
 
-        fun get(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings): SessionsSyncService {
+        fun get(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings, context: Context): SessionsSyncService {
             if (mSingleton == null) {
-                mSingleton = SessionsSyncService(apiService, errorHandler, settings)
+                mSingleton = SessionsSyncService(apiService, errorHandler, settings, context)
             }
 
             return mSingleton!!

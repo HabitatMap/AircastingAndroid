@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -96,6 +97,7 @@ class AddNoteBottomSheet(
         else
             note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, mSession.notes.last().number + 1, photoPath)
 
+        Log.i("PHOTO", "after creating note, photoPath: " + note.photoPath.toString())
         mListener.addNotePressed(mSession, note)
     }
 
@@ -113,8 +115,9 @@ class AddNoteBottomSheet(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // TODO: set the image view with bitmap which is result of this intent, now it does not work
-            val imageBitmap = data?.extras?.get("data") as Bitmap?
-            Log.i("PHOTO", imageBitmap.toString())
+            val inputStream = context?.contentResolver?.openInputStream(Uri.parse(photoPath))
+            val imageBitmap = BitmapFactory.decodeStream(inputStream)
+            Log.i("PHOTO", "onActivityResult, imageBitmap: " + imageBitmap.toString())
             notePhotoImageView?.setImageBitmap(imageBitmap)
         }
 //        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) { // NOWA WERSJA TU NIE WCHODZI RACZEJ (TA Z CREATEIMAGEFILE()
@@ -147,7 +150,7 @@ class AddNoteBottomSheet(
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             photoPath = absolutePath
-            Log.i("PHOTO", photoPath)
+            Log.i("PHOTO", "createImageFile, photoPath: " + photoPath)
         }
     }
 
@@ -170,7 +173,7 @@ class AddNoteBottomSheet(
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI) // this photoURI should store taken picture
-                    Log.i("PHOTO", photoURI.toString())
+                    Log.i("PHOTO", "photoUri: " + photoURI.toString())
                     photoPath = photoURI.toString()
                     startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
                 }
