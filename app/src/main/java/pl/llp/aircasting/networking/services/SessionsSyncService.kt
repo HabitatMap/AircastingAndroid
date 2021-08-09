@@ -20,6 +20,7 @@ import pl.llp.aircasting.networking.responses.SyncResponse
 import pl.llp.aircasting.networking.responses.UploadSessionResponse
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.repositories.NoteRepository
+import pl.llp.aircasting.lib.NoteResponseParser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,6 +39,7 @@ class SessionsSyncService {
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
+    private val noteResponseParser: NoteResponseParser
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
     private var syncInBackground = AtomicBoolean(false)
@@ -54,6 +56,7 @@ class SessionsSyncService {
         this.uploadService = MobileSessionUploadService(apiService, errorHandler, context)
         this.downloadService = SessionDownloadService(apiService, errorHandler)
         this.removeOldMeasurementsService = RemoveOldMeasurementsService()
+        this.noteResponseParser = NoteResponseParser(errorHandler)
     }
 
     companion object {
