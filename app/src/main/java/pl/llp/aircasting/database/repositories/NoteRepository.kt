@@ -18,6 +18,10 @@ class NoteRepository {
         mDatabase.notes().update(sessionId, note.number, note.text)
     }
 
+    fun updateNotePhotoLocation(sessionId: Long, number: Int, photoLocation: String) {
+        mDatabase.notes().updatePhotoLocation(sessionId, number, photoLocation)
+    }
+
     fun delete(sessionId: Long, note: Note) {
         mDatabase.notes().delete(sessionId, note.number)
     }

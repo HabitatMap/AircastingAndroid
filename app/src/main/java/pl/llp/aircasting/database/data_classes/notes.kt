@@ -54,6 +54,9 @@ interface NoteDao {
     @Query("UPDATE notes SET text=:text WHERE session_id=:sessionId AND number=:number")
     fun update(sessionId: Long, number: Int, text: String)
 
+    @Query("UPDATE notes SET photo_location=:photoPath WHERE session_id=:sessionId AND number=:number")
+    fun updatePhotoLocation(sessionId: Long, number: Int, photoPath: String?)
+
     @Query("DELETE FROM notes WHERE session_id=:sessionId AND number=:number")
     fun delete(sessionId: Long, number: Int)
 

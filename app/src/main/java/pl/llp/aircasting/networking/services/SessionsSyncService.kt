@@ -2,6 +2,7 @@ package pl.llp.aircasting.networking.services
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import com.google.gson.Gson
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
@@ -18,6 +19,7 @@ import pl.llp.aircasting.networking.params.SyncSessionParams
 import pl.llp.aircasting.networking.responses.SyncResponse
 import pl.llp.aircasting.networking.responses.UploadSessionResponse
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.database.repositories.NoteRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,6 +37,7 @@ class SessionsSyncService {
 
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
+    private val noteRepository = NoteRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
     private var syncInBackground = AtomicBoolean(false)
@@ -151,6 +154,10 @@ class SessionsSyncService {
                 val onUploadSuccess = { response: Response<UploadSessionResponse> ->
                     DatabaseProvider.runQuery {
                         sessionRepository.updateUrlLocation(session, response.body()?.location)
+                        if (response.body()?.notes?.isNotEmpty() == true) {
+                            Log.i("PHOTO", response.body()?.notes?.first()?.photoPath + " and the note number is: " + response.body()?.notes?.first()?.number)
+//                            noteRepository.updateNotePhotoLocation(session, response.body()?.notes!![0].number, response.body()?.notes[0].photoPath) TODO:
+                        }
                     }
                     // TODO: handle update notes - adding photoPath
                 }
