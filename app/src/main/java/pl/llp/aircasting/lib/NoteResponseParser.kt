@@ -9,23 +9,21 @@ import java.util.*
 
 class NoteResponseParser(private val errorHandler: ErrorHandler) {
     fun noteFromResponse(noteResponse: NoteResponse): Note {
-        try {
             return Note(
-                DateConverter.fromString(noteResponse.date)!!,
+                parseDate(noteResponse.date),
                 noteResponse.text,
                 noteResponse.latitude,
                 noteResponse.longitude,
                 noteResponse.number
             )
+    }
+
+    private fun parseDate(date: String): Date {
+        try {
+            return DateConverter.fromString(date)!!
         } catch (parseDateError: ParseDateError) {
             errorHandler.handle(parseDateError)
-            return Note(
-                Date(),
-                noteResponse.text,
-                noteResponse.latitude,
-                noteResponse.longitude,
-                noteResponse.number
-            )
+            return Date()
         }
     }
 }
