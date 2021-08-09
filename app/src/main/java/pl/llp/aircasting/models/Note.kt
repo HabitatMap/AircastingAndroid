@@ -22,16 +22,12 @@ class Note(
     )
 
     constructor(noteResponse: NoteResponse): this(
-        DateConverter.fromString(noteResponse.date)!!, //todo: "!!' to be removed!
+        DateConverter.fromString(noteResponse.date)!!,
         noteResponse.text,
         noteResponse.latitude,
         noteResponse.longitude,
         noteResponse.number
     )
-
-    fun dateFromResponse(date: String) {
-
-    }
 }
 
 

@@ -3,6 +3,7 @@ package pl.llp.aircasting.networking.services
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.lib.DateConverter
+import pl.llp.aircasting.lib.NoteResponseParser
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
@@ -14,6 +15,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SessionDownloadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+
+    private val noteResponseParser = NoteResponseParser(errorHandler)
+
     fun download(uuid: String, successCallback: (Session) -> Unit?, finallyCallback: (() -> Unit?)? = null) {
         val call = apiService.downloadSession(uuid)
         call.enqueue(object : Callback<SessionResponse> {
@@ -74,7 +78,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
         }
 
         session.notes = sessionResponse.notes.map { noteResponse ->
-            Note(noteResponse)
+            noteResponseParser.noteFromResponse(noteResponse)
         }.toMutableList()
 
         return session

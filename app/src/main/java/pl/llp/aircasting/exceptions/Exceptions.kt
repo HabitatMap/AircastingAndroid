@@ -83,3 +83,6 @@ class CSVGenerationError():
 
 class SensorDisconnectedError(additionalMessage: String?):
     BaseException(null, "RECONNECTION LOGS: ${additionalMessage}")
+
+class ParseDateError(cause: Exception? = null):
+        BaseException(cause, "There was a problem when parsing a date")
