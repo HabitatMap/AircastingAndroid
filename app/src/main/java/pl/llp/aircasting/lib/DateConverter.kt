@@ -9,13 +9,9 @@ class DateConverter {
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
         fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
-            try {
                 val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
                 parser.timeZone = TimeZone.getDefault()
                 return parser.parse(dateString)
-            } catch (parseException: ParseException) {
-                return Date()
-            }
         }
 
         fun toDateString(
