@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.graph.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import pl.llp.aircasting.services.AveragingService
 import java.util.*
 
 
@@ -114,7 +115,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber)
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.first(), mMeasurementsSample.last()))
     }
 
     private fun drawData(entries: List<Entry>) {
