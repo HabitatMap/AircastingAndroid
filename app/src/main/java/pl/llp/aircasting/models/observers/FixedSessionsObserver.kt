@@ -7,7 +7,7 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.screens.dashboard.SessionsViewMvc
 
-class DormantSessionsObserver(
+class FixedSessionsObserver(
     mLifecycleOwner: LifecycleOwner,
     mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionsViewMvc?

@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.models.observers.DormantSessionsObserver
+import pl.llp.aircasting.models.observers.FixedSessionsObserver
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ApiServiceFactory
@@ -26,7 +26,7 @@ class FixedController(
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
-    private var mSessionsObserver = DormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver = FixedSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFixedSessionsWithMeasurements())
