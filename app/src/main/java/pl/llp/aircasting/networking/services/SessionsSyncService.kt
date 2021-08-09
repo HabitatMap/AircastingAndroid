@@ -172,8 +172,8 @@ class SessionsSyncService {
                                 )
                             }
                             for (note in session.notes) {
-                                sessionId?.let {
-                                    noteRepository.insert(it, note)
+                                sessionId?.let { sessionId ->
+                                    noteRepository.insert(sessionId, note)
                                 }
                             }
                         } catch (e: SQLiteConstraintException) {

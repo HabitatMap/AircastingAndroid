@@ -1,5 +1,6 @@
 package pl.llp.aircasting.lib
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -8,9 +9,13 @@ class DateConverter {
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
         fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
-            val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
-            parser.timeZone = TimeZone.getDefault()
-            return parser.parse(dateString)
+            try {
+                val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
+                parser.timeZone = TimeZone.getDefault()
+                return parser.parse(dateString)
+            } catch (parseException: ParseException) {
+                return Date()
+            }
         }
 
         fun toDateString(
