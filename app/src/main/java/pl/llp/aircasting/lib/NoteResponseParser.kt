@@ -14,7 +14,8 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
                 noteResponse.text,
                 noteResponse.latitude,
                 noteResponse.longitude,
-                noteResponse.number
+                noteResponse.number,
+                noteResponse.photoLocation
             )
     }
 
