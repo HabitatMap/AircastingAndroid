@@ -17,6 +17,8 @@ import pl.llp.aircasting.networking.params.SyncSessionParams
 import pl.llp.aircasting.networking.responses.SyncResponse
 import pl.llp.aircasting.networking.responses.UploadSessionResponse
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.database.repositories.NoteRepository
+import pl.llp.aircasting.lib.NoteResponseParser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +35,7 @@ class SessionsSyncService {
 
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
+    private val noteRepository = NoteRepository()
     private val gson = Gson()
     private val syncStarted = AtomicBoolean(false)
     private var syncInBackground = AtomicBoolean(false)
@@ -168,6 +171,11 @@ class SessionsSyncService {
                                     sessionId,
                                     session.streams
                                 )
+                            }
+                            for (note in session.notes) {
+                                sessionId?.let { sessionId ->
+                                    noteRepository.insert(sessionId, note)
+                                }
                             }
                         } catch (e: SQLiteConstraintException) {
                             errorHandler.handle(DBInsertException(e))

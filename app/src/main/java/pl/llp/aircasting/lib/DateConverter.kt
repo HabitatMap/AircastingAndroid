@@ -1,5 +1,6 @@
 package pl.llp.aircasting.lib
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 

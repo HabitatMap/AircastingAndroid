@@ -37,6 +37,10 @@ class SessionsViewModel(): ViewModel() {
         return mDatabase.sessions().loadAllByTypeAndStatus(Session.Type.MOBILE, Session.Status.FINISHED)
     }
 
+    fun loadMobileDormantSessionsWithMeasurementsAndNotes(): LiveData<List<SessionWithStreamsAndNotesDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithNotes(Session.Type.MOBILE, Session.Status.FINISHED)
+    }
+
     fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
