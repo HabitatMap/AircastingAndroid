@@ -24,13 +24,6 @@ class Note(
         noteDBObject.photoPath
     )
 
-    constructor(noteResponse: NoteResponse): this(
-        DateConverter.fromString(noteResponse.date)!!,
-        noteResponse.text,
-        noteResponse.latitude,
-        noteResponse.longitude,
-        noteResponse.number
-    )
 }
 
 
