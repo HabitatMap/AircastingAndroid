@@ -31,13 +31,7 @@ class GraphDataGenerator(
     )
 
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
-    fun generate(
-        samples: List<Measurement>,
-        notes: List<Note>?,
-        limit: Int = DEFAULT_LIMIT,
-        visibleMeasurementsSize: Int?,
-        averagingFrequency: Int
-    ): Result {
+    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int): Result {
         reset()
 
         val entries = ArrayList<Entry>()
@@ -175,5 +169,6 @@ class GraphDataGenerator(
         val dateAfter = Date(date.time - averagingFrequency * 1000 / 2L)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
     }
+
 }
 
