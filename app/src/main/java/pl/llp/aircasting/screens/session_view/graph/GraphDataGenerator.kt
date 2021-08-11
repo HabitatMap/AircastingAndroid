@@ -160,7 +160,7 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
-        if (averagingCount == 5) averagingCount = 0
+        //if (averagingCount == 5) averagingCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
