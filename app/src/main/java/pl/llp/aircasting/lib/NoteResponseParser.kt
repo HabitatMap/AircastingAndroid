@@ -21,7 +21,7 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
     private fun parseDate(date: String): Date {
         try {
             return DateConverter.fromString(date) ?: Date()
-        } catch (parseException: ParseDateError) {
+        } catch (parseException: ParseException) {
             errorHandler.handle(ParseDateError(parseException))
             return Date()
         }
