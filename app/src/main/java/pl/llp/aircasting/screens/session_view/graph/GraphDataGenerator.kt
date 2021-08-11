@@ -7,6 +7,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.CalendarUtils
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.Note
+import pl.llp.aircasting.services.AveragingService
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,19 +19,21 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
     private var hasNote = false
+    private var averagingGeneratorFrequency = 0
 
     private val DEFAULT_LIMIT = 1000
 
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>, val noteRanges: MutableList<ClosedRange<Long>>)
 
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
-    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?): Result {
+    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int): Result {
         reset()
 
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
         val visibleMeasurementsSize = visibleMeasurementsSize ?: samples.size
         val noteRanges = mutableListOf<ClosedRange<Long>>()
+        averagingGeneratorFrequency = averagingFrequency
         // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
         // e.g. if samples.size is less then DEFAULT_LIMIT, fillFactor is more then 1- it means we draw entry for each measurement
         // if samples.size is a bit more then DEFAULT_LIMIT then the fillFactor is ~~0.6-0.9, what means that we build one entry per 2 measurements
@@ -113,9 +116,15 @@ class GraphDataGenerator(
         cumulativeValue += measurement.value
         cumulativeTime += measurement.time.time
         count += 1
+
+        val measurementDate = Date(measurement.time.time)
         if (hasNote != true && notes != null) {
             for (note in notes) {
-                if (isSameDate(note, Date(measurement.time.time))) hasNote = true
+                when (averagingGeneratorFrequency) {
+                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY)) hasNote = true
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY)) hasNote = true
+                }
             }
         }
     }
@@ -134,4 +143,11 @@ class GraphDataGenerator(
                 note.date.minutes == date.minutes &&
                 note.date.seconds == date.seconds
     }
+
+    private fun isSameDateAveraging(note: Note, date: Date, averagingFrequency: Int): Boolean {
+        val dateBefore = Date(date.time + averagingFrequency * 1000/2L) // multiplication by 1000 to have correct number of milliseconds and division by 2 to keep correct date interval
+        val dateAfter = Date(date.time - averagingFrequency * 1000/2L)
+        return note.date.after(dateAfter) && note.date.before(dateBefore)
+    }
+
 }
