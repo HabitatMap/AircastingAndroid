@@ -170,5 +170,13 @@ class GraphDataGenerator(
         return note.date.after(dateAfter) && note.date.before(dateBefore)
     }
 
+    private fun shouldDrawNote(note: Note, date: Date): Boolean {
+        return isSameDate(note, date)
+    }
+
+    private fun shouldDrawNoteAveraging(note: Note, date: Date, frequencyThreshold: Int): Boolean {
+        return isSameDateAveraging(note, date, frequencyThreshold)
+    }
+
 }
 
