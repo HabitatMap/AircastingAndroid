@@ -144,10 +144,24 @@ class GraphDataGenerator(
                 note.date.seconds == date.seconds
     }
 
+<<<<<<< HEAD
     private fun isSameDateAveraging(note: Note, date: Date, averagingFrequency: Int): Boolean {
         val dateBefore = Date(date.time + averagingFrequency * 1000/2L) // multiplication by 1000 to have correct number of milliseconds and division by 2 to keep correct date interval
         val dateAfter = Date(date.time - averagingFrequency * 1000/2L)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
     }
 
+=======
+    private fun isSameDateAbove2HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 5 seconds
+        val dateBefore = Date(date.time + 2500)
+        val dateAfter = Date(date.time - 2500)
+        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 2.5 seconds for now
+    }
+
+    private fun isSameDateAbove9HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 1 minute
+        val dateBefore = Date(date.time + 30000)
+        val dateAfter = Date(date.time - 30000)
+        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 30 seconds for now
+    }
+>>>>>>> 13f5bf0a (first attempt to fix displaying notes on graph)
 }
