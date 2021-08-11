@@ -1,6 +1,8 @@
 package pl.llp.aircasting.models
 
 import pl.llp.aircasting.database.data_classes.NoteDBObject
+import pl.llp.aircasting.lib.DateConverter
+import pl.llp.aircasting.networking.responses.NoteResponse
 import java.util.*
 
 class Note(
@@ -19,6 +21,14 @@ class Note(
         noteDBObject.longitude,
         noteDBObject.number,
         noteDBObject.photoPath
+    )
+
+    constructor(noteResponse: NoteResponse): this(
+        DateConverter.fromString(noteResponse.date)!!, //todo: "!!' to be removed!
+        noteResponse.text,
+        noteResponse.latitude,
+        noteResponse.longitude,
+        noteResponse.number
     )
 }
 

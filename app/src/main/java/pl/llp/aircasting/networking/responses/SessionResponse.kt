@@ -15,5 +15,5 @@ class SessionResponse(
     val streams: HashMap<String, SessionStreamResponse>,
     val location: String,
     val is_indoor: Boolean,
-    val notes: ArrayList<NoteResponse>
+    val notes: MutableList<NoteResponse>
 )

@@ -5,6 +5,7 @@ import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.models.MeasurementStream
+import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.TAGS_SEPARATOR
 import pl.llp.aircasting.networking.params.SessionParams
@@ -37,6 +38,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             }
 
             override fun onFailure(call: Call<SessionResponse>, t: Throwable) {
+                Log.i("SESS_FAIL", t.message.toString())
                 errorHandler.handle(UnexpectedAPIError(t))
                 finallyCallback?.invoke()
             }
@@ -73,6 +75,10 @@ class SessionDownloadService(private val apiService: ApiService, private val err
         if (sessionResponse.latitude != null && sessionResponse.longitude != null) {
             session.location = Session.Location(sessionResponse.latitude, sessionResponse.longitude)
         }
+
+        session.notes = sessionResponse.notes.map { noteResponse ->
+            Note(noteResponse)
+        }.toMutableList()
 
         return session
     }
