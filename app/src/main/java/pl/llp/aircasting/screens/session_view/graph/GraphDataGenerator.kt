@@ -20,6 +20,8 @@ class GraphDataGenerator(
     private var startTime = Date()
     private var hasNote = false
     private var averagingGeneratorFrequency = 0
+    private var shouldAddNextIcon = true
+    private var averagingCount = 0
 
     private val DEFAULT_LIMIT = 1000
 
@@ -159,6 +161,8 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
+        shouldAddNextIcon = true
+        if (averagingCount == 4) averagingCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
