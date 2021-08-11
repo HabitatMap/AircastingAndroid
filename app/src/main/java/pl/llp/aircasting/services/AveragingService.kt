@@ -6,6 +6,7 @@ import pl.llp.aircasting.database.data_classes.SessionDBObject
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
+import pl.llp.aircasting.models.Measurement
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
@@ -60,10 +61,11 @@ class AveragingService {
     }
 
     companion object {
+        val DEFAULT_FREQUENCY = 1
         val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
         val FIRST_THRESHOLD_FREQUENCY = 5
         val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
-        private val SECOND_THRESHOLD_FREQUENCY = 60
+        val SECOND_THRESHOLD_FREQUENCY = 60
 
         private val THRESHOLDS = arrayOf(
             AveragingThreshold(
@@ -97,6 +99,15 @@ class AveragingService {
             sessionId?.let { id ->
                 mSingletons[id] = null
             }
+        }
+
+        fun getAveragingThreshold(firstMeasurement: Measurement, lastMeasurement: Measurement): Int {
+            when {
+                lastMeasurement.time.time - firstMeasurement.time.time < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
+                (lastMeasurement.time.time - firstMeasurement.time.time > FIRST_TRESHOLD_TIME)  &&  (lastMeasurement.time.time - firstMeasurement.time.time < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
+                lastMeasurement.time.time - firstMeasurement.time.time > SECOND_TRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
+            }
+            return 0
         }
     }
 
