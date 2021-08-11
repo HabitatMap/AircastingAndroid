@@ -23,10 +23,20 @@ class GraphDataGenerator(
 
     private val DEFAULT_LIMIT = 1000
 
-    class Result(val entries: List<Entry>, val midnightPoints: List<Float>, val noteRanges: MutableList<ClosedRange<Long>>)
+    class Result(
+        val entries: List<Entry>,
+        val midnightPoints: List<Float>,
+        val noteRanges: MutableList<ClosedRange<Long>>
+    )
 
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
-    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int): Result {
+    fun generate(
+        samples: List<Measurement>,
+        notes: List<Note>?,
+        limit: Int = DEFAULT_LIMIT,
+        visibleMeasurementsSize: Int?,
+        averagingFrequency: Int
+    ): Result {
         reset()
 
         val entries = ArrayList<Entry>()
@@ -72,7 +82,8 @@ class GraphDataGenerator(
             entries.add(buildAverageEntry(date))
         }
 
-        val range = (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
+        val range =
+            (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
         for (entry in entries) {
             if (entry.icon != null) {
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
@@ -121,9 +132,23 @@ class GraphDataGenerator(
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
-                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY)) hasNote = true
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY)) hasNote = true
+                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(
+                            note,
+                            measurementDate
+                        )
+                    ) hasNote = true
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(
+                            note,
+                            measurementDate,
+                            AveragingService.FIRST_THRESHOLD_FREQUENCY
+                        )
+                    ) hasNote = true
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(
+                            note,
+                            measurementDate,
+                            AveragingService.SECOND_THRESHOLD_FREQUENCY
+                        )
+                    ) hasNote = true
                 }
             }
         }
@@ -144,24 +169,10 @@ class GraphDataGenerator(
                 note.date.seconds == date.seconds
     }
 
-<<<<<<< HEAD
     private fun isSameDateAveraging(note: Note, date: Date, averagingFrequency: Int): Boolean {
-        val dateBefore = Date(date.time + averagingFrequency * 1000/2L) // multiplication by 1000 to have correct number of milliseconds and division by 2 to keep correct date interval
-        val dateAfter = Date(date.time - averagingFrequency * 1000/2L)
+        val dateBefore = Date(date.time + averagingFrequency * 1000 / 2L) // multiplication by 1000 to have correct number of milliseconds and division by 2 to keep correct date interval
+        val dateAfter = Date(date.time - averagingFrequency * 1000 / 2L)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
     }
-
-=======
-    private fun isSameDateAbove2HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 5 seconds
-        val dateBefore = Date(date.time + 2500)
-        val dateAfter = Date(date.time - 2500)
-        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 2.5 seconds for now
-    }
-
-    private fun isSameDateAbove9HoursAveraging(note: Note, date: Date): Boolean { //method checking if there was note in range of 1 minute
-        val dateBefore = Date(date.time + 30000)
-        val dateAfter = Date(date.time - 30000)
-        return note.date.after(dateAfter) && note.date.before(dateBefore) //hardcoded 30 seconds for now
-    }
->>>>>>> 13f5bf0a (first attempt to fix displaying notes on graph)
 }
+
