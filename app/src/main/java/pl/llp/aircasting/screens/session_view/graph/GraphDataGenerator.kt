@@ -117,12 +117,13 @@ class GraphDataGenerator(
         cumulativeTime += measurement.time.time
         count += 1
 
+        val measurementDate = Date(measurement.time.time)
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
-                    AveragingService.DEFAULT_FREQUENCY -> shouldDrawNote(note, Date(measurement.time.time))
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> shouldDrawNoteAveraging(note, Date(measurement.time.time), AveragingService.FIRST_THRESHOLD_FREQUENCY)
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> shouldDrawNoteAveraging(note, Date(measurement.time.time), AveragingService.SECOND_THRESHOLD_FREQUENCY)
+                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY)) hasNote = true
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY)) hasNote = true
                 }
             }
         }
@@ -147,14 +148,6 @@ class GraphDataGenerator(
         val dateBefore = Date(date.time + averagingFrequency * 1000/2L) // multiplication by 1000 to have correct number of milliseconds and division by 2 to keep correct date interval
         val dateAfter = Date(date.time - averagingFrequency * 1000/2L)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
-    }
-
-    private fun shouldDrawNote(note: Note, date: Date): Boolean {
-        return isSameDate(note, date)
-    }
-
-    private fun shouldDrawNoteAveraging(note: Note, date: Date, frequencyThreshold: Int): Boolean {
-        return isSameDateAveraging(note, date, frequencyThreshold)
     }
 
 }
