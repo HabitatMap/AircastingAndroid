@@ -120,9 +120,9 @@ class GraphDataGenerator(
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
-                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, Date(measurement.time.time))) hasNote = true
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, Date(measurement.time.time), AveragingService.FIRST_THRESHOLD_FREQUENCY)) hasNote = true
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, Date(measurement.time.time), AveragingService.SECOND_THRESHOLD_FREQUENCY)) hasNote = true
+                    AveragingService.DEFAULT_FREQUENCY -> shouldDrawNote(note, Date(measurement.time.time))
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> shouldDrawNoteAveraging(note, Date(measurement.time.time), AveragingService.FIRST_THRESHOLD_FREQUENCY)
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> shouldDrawNoteAveraging(note, Date(measurement.time.time), AveragingService.SECOND_THRESHOLD_FREQUENCY)
                 }
             }
         }
@@ -144,9 +144,17 @@ class GraphDataGenerator(
     }
 
     private fun isSameDateAveraging(note: Note, date: Date, averagingFrequency: Int): Boolean {
-        val dateBefore = Date(date.time + averagingFrequency * 500L) // multiplication by 500 because we need to get number of miliseconds instead of seconds
-        val dateAfter = Date(date.time - averagingFrequency * 500L)
+        val dateBefore = Date(date.time + averagingFrequency * 1000/2L) // multiplication by 1000 to have correct number of milliseconds and division by 2 to keep correct date interval
+        val dateAfter = Date(date.time - averagingFrequency * 1000/2L)
         return note.date.after(dateAfter) && note.date.before(dateBefore)
+    }
+
+    private fun shouldDrawNote(note: Note, date: Date): Boolean {
+        return isSameDate(note, date)
+    }
+
+    private fun shouldDrawNoteAveraging(note: Note, date: Date, frequencyThreshold: Int): Boolean {
+        return isSameDateAveraging(note, date, frequencyThreshold)
     }
 
 }
