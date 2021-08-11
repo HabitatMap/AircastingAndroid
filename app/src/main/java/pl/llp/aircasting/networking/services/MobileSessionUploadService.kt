@@ -24,6 +24,7 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
             compression = true,
             photos = photos // there might be a few photos, we need to have variable number of arguments here
         )
+
         val call = apiService.createMobileSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {

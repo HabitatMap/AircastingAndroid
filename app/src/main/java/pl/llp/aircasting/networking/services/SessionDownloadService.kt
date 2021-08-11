@@ -1,5 +1,6 @@
 package pl.llp.aircasting.networking.services
 
+import android.util.Log
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.lib.DateConverter
