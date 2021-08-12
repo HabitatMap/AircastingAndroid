@@ -40,6 +40,10 @@ class SettingsController(
         startBackendSettingsDialog()
     }
 
+    override fun onToggle24hourFormatEnabled() {
+        mSettings.toggleUse24HourFormatEnabled()
+    }
+
     override fun onToggleCrowdMapEnabled() {
         mSettings.toggleCrowdMapEnabled()
     }
