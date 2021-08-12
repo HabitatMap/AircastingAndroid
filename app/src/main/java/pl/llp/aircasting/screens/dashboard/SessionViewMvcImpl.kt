@@ -51,6 +51,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mSessionPresenter: SessionPresenter? = null
     protected var expandCardCallback: (() -> Unit?)? = null
     protected var onExpandSessionCardClickedCallback: (() -> Unit?)? = null
+    private var using24HourFormat: Boolean? = true
 
     constructor(
         inflater: LayoutInflater,
@@ -188,7 +189,12 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected fun bindSessionDetails() {
         val session = mSessionPresenter?.session
 
-        mDateTextView.text = session?.durationString()
+        if (using24HourFormat == true) {
+            mDateTextView.text = session?.durationString()
+        } else {
+            mDateTextView.text = session?.durationString12HourFormat()
+        }
+
         mNameTextView.text = session?.name
         mInfoTextView.text = session?.infoString()
     }

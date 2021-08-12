@@ -182,7 +182,8 @@ class Session(
     }
 
     private val DATE_FORMAT = "MM/dd/yy"
-    private val HOUR_FORMAT = "HH:mm"
+    private val HOUR_FORMAT_24 = "HH:mm"
+    private val HOUR_FORMAT_12 = "hh:mm a"
 
     val type get() = mType
     var name get() = mName
@@ -305,7 +306,24 @@ class Session(
 
     fun durationString(): String {
         val dateFormatter = dateTimeFormatter(DATE_FORMAT)
-        val hourFormatter = dateTimeFormatter(HOUR_FORMAT)
+        val hourFormatter = dateTimeFormatter(HOUR_FORMAT_24)
+
+        var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
+
+        if (endTime == null) return durationString
+
+        if (isTheSameDay(startTime, endTime!!)) {
+            durationString += "-${hourFormatter.format(endTime)}"
+        } else {
+            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
+        }
+
+        return durationString
+    }
+
+    fun durationString12HourFormat(): String {
+        val dateFormatter = dateTimeFormatter(DATE_FORMAT)
+        val hourFormatter = dateTimeFormatter(HOUR_FORMAT_12)
 
         var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
 

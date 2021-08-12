@@ -99,7 +99,6 @@ open class Settings(private val mApplication: Application) {
 
     fun toggleUse24HourFormatEnabled() {
         val enabled = !isUsing24HourFormat()
-        Log.i("SETT", enabled.toString())
         saveToSettings(USE_24_HOUR_FORMAT_KEY, enabled)
     }
 
