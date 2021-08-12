@@ -40,6 +40,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
     private val mHLUSlider: HLUSlider
 
     private val mMeasurementsRepository = MeasurementsRepository()
+    private var using24HourFormat: Boolean? = true
 
     constructor(
         inflater: LayoutInflater,
@@ -144,7 +145,12 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         val session = mSessionPresenter?.session
         session ?: return
 
-        mSessionDateTextView?.text = session.durationString()
+        if (using24HourFormat == true) {
+            mSessionDateTextView?.text = session?.durationString()
+        } else {
+            mSessionDateTextView?.text = session?.durationString12HourFormat()
+        }
+
         mSessionNameTextView?.text = session.name
         bindSessionMeasurementsDescription()
     }
