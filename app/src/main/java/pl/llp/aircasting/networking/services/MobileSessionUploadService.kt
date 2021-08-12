@@ -20,9 +20,9 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         val sessionParams = SessionParams(session)
         val photos = attachPhotos(session)
         val sessionBody = CreateSessionBody(
-            GzippedParams.get(sessionParams, SessionParams::class.java),
-            compression = true,
-            photos = photos // there might be a few photos, we need to have variable number of arguments here
+            GzippedParams.get(sessionParams, SessionParams::class.java)//,
+            //compression = true,
+            //photos = photos // there might be a few photos, we need to have variable number of arguments here
         )
 
         val call = apiService.createMobileSession(sessionBody)
@@ -30,13 +30,16 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {
                     successCallback(response)
+                    Log.i("UPLOAD_CALL", response.body().toString())
                 } else {
                     errorHandler.handle(UnexpectedAPIError())
+                    Log.i("UPLOAD_CALL", "fail else: " + response.message())
                 }
             }
 
             override fun onFailure(call: Call<UploadSessionResponse>, t: Throwable) {
                 errorHandler.handle(UnexpectedAPIError(t))
+                Log.i("UPLOAD_CALL", "fail onFailure: " + t.stackTrace)
             }
         })
     }
@@ -48,7 +51,8 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
                 photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context))
             }
         }
-        Log.i("PHOTO", photos.first().toString())
+        if (photos.isNotEmpty()) Log.i("PHOTO", photos.first().toString())
+        if (photos.isEmpty()) Log.i("PHOTO", "photos: empty")
         return photos
     }
 }
