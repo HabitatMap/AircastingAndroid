@@ -25,7 +25,7 @@ data class NoteDBObject(
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?,
     @ColumnInfo(name = "number") val number: Int,
-    @ColumnInfo(name = "photo_location") val photoPath: String
+    @ColumnInfo(name = "photo_location") val photoPath: String?
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0

@@ -7,5 +7,5 @@ class NoteResponse (
     val latitude: Double?,
     val longitude: Double?,
     val number: Int,
-    val photoLocation: String //todo: according to old app, maybe I do not need anything more then number and photoLocation????
+    val photoLocation: String? //todo: according to old app, maybe I do not need anything more then number and photoLocation????
 )

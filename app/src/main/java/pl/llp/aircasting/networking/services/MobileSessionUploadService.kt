@@ -20,9 +20,9 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         val sessionParams = SessionParams(session)
         val photos = attachPhotos(session)
         val sessionBody = CreateSessionBody(
-            GzippedParams.get(sessionParams, SessionParams::class.java)//,
-            //compression = true,
-            //photos = photos // there might be a few photos, we need to have variable number of arguments here
+            GzippedParams.get(sessionParams, SessionParams::class.java),
+            compression = true,
+            photos = photos // there might be a few photos, we need to have variable number of arguments here
         )
 
         val call = apiService.createMobileSession(sessionBody)
