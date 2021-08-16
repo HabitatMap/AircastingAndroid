@@ -20,6 +20,7 @@ import pl.llp.aircasting.screens.dashboard.charts.Chart
 import pl.llp.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
+import pl.llp.aircasting.lib.DateHelper
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType> {
@@ -189,12 +190,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected fun bindSessionDetails() {
         val session = mSessionPresenter?.session
 
-        if (using24HourFormat == true) {
-            mDateTextView.text = session?.durationString()
-        } else {
-            mDateTextView.text = session?.durationString12HourFormat()
-        }
-
+        mDateTextView.text = DateHelper.createDurationString(session!!)
         mNameTextView.text = session?.name
         mInfoTextView.text = session?.infoString()
     }
