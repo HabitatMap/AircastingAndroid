@@ -1,5 +1,6 @@
 package pl.llp.aircasting.networking.services
 
+import okhttp3.MultipartBody
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.models.Session
@@ -19,7 +20,9 @@ class FixedSessionUploadService(private val apiService: ApiService, private val 
         val sessionParams = SessionParams(session)
 
         val sessionBody = CreateSessionBody(
-            GzippedParams.get(sessionParams, SessionParams::class.java)
+            GzippedParams.get(sessionParams, SessionParams::class.java),
+            compression = true,
+            photos = MultipartBody.Part.createFormData("", "") //TODO: this is random at this moment
         )
         val call = apiService.createFixedSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {

@@ -22,14 +22,14 @@ import java.io.File
 class MobileSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler, private val context: Context) {
     fun upload(session: Session, successCallback: (response: Response<UploadSessionResponse>) -> Unit) {
         val sessionParams = SessionParams(session)
-        val photos = attachPhotos(session)
+        val photos = attachPhotos(session) //this one should be some sort of list
         val sessionBody = CreateSessionBody(
             GzippedParams.get(sessionParams, SessionParams::class.java),
-            compression = true//,
-            //photos = photos // there might be a few photos, we need to have variable number of arguments here
+            compression = true,
+            photos = photos // there might be a few photos, we need to have variable number of arguments here
         )
 
-        val call = apiService.createMobileSession(sessionBody, true, photos)
+        val call = apiService.createMobileSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {
@@ -62,7 +62,7 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         return MultipartBody.Part.createFormData(
             "jpeg",
             file.name,
-            RequestBody.create(MediaType.parse("multipart/form-date"), file)
+            RequestBody.create(MediaType.parse("multipart/form-data"), file)
         )
     }
 }
