@@ -11,10 +11,7 @@ import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
-import pl.llp.aircasting.lib.AppBar
-import pl.llp.aircasting.lib.DateHelper
-import pl.llp.aircasting.lib.NavigationController
-import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.*
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
@@ -50,6 +47,7 @@ class MainActivity: AppCompatActivity() {
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
         DateHelper.setup(settings)
+        DateConverter.setup(settings)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
