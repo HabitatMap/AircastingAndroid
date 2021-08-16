@@ -2,12 +2,8 @@ package pl.llp.aircasting.lib
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import com.jakewharton.processphoenix.ProcessPhoenix
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.LogoutService
-import pl.llp.aircasting.events.LogoutEvent
-import pl.llp.aircasting.networking.services.SessionsSyncService
 
 open class Settings(private val mApplication: Application) {
     private val PRIVATE_MODE = 0
