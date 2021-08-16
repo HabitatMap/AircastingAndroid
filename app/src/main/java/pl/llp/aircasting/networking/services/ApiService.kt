@@ -1,28 +1,23 @@
 package pl.llp.aircasting.networking.services
 
 import android.util.Base64
+import okhttp3.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.params.*
 import pl.llp.aircasting.networking.responses.*
-import okhttp3.HttpUrl
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 
 interface ApiService {
+    @Multipart
     @POST("/api/sessions")
-    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+    fun createMobileSession(@Part("session") session: CreateSessionBody, @Part("compression") compression: Boolean, @Part("photos[]") photo: MultipartBody.Part): Call<UploadSessionResponse>
 
     @POST("/api/realtime/sessions.json")
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
