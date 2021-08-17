@@ -1,6 +1,5 @@
 package pl.llp.aircasting.lib
 
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,20 +9,13 @@ class DateConverter {
         var mSettings: Settings? = null
 
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
-        private val DATE_FORMAT_24 = "HH:mm"
-        private val DATE_FORMAT_12 = "hh:mm a"
+        private val DATE_FORMAT = "MM/dd/yy"
+        private val HOUR_FORMAT_24 = "HH:mm"
+        private val HOUR_FORMAT_12 = "hh:mm a"
 
         fun setup(settings: Settings) {
             if (singleton == null) DateConverter()
             mSettings = settings
-        }
-
-        fun createToDateString(date: Date, timeZone: TimeZone = TimeZone.getDefault(), dateFormat: String = DEFAULT_DATE_FORMAT): String {
-            if (mSettings?.isUsing24HourFormat() == true) {
-                return toDateString(date, timeZone, DATE_FORMAT_24)
-            } else {
-                return toDateString(date, timeZone, DATE_FORMAT_12)
-            }
         }
 
         fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
@@ -40,6 +32,23 @@ class DateConverter {
             val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
             formatter.timeZone = timeZone
             return formatter.format(date)
+        }
+
+        fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
+            val dateFormat = SimpleDateFormat("yyyyMMdd")
+            return dateFormat.format(startTime) == dateFormat.format(endTime)
+        }
+
+        fun toTimeStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
+            if (mSettings?.isUsing24HourFormat() == true) {
+                return toDateString(date, timeZone, HOUR_FORMAT_24)
+            } else {
+                return toDateString(date, timeZone, HOUR_FORMAT_12)
+            }
+        }
+
+        fun toDateStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
+            return toDateString(date, timeZone, DATE_FORMAT)
         }
     }
 }

@@ -21,7 +21,7 @@ import pl.llp.aircasting.screens.session_view.measurement_table_container.Measur
 import pl.llp.aircasting.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
-import pl.llp.aircasting.lib.DateHelper
+import pl.llp.aircasting.lib.DurationStringHelper
 
 
 abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc, HLUDialogListener {
@@ -146,7 +146,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         val session = mSessionPresenter?.session
         session ?: return
         
-        mSessionDateTextView?.text = DateHelper.createDurationString(session!!)
+        mSessionDateTextView?.text = DurationStringHelper.durationString(session!!)
 
         mSessionNameTextView?.text = session.name
         bindSessionMeasurementsDescription()
