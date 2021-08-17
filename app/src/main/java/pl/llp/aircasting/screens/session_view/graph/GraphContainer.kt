@@ -120,8 +120,11 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.first(), mMeasurementsSample.last()))
-    }
+        if (mMeasurementsSample.isNotEmpty()) {
+            return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.first(), mMeasurementsSample.last()))
+        } else {
+            return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber)
+        }    }
 
     private fun drawData(entries: List<Entry>) {
         val combinedData = CombinedData()

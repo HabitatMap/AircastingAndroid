@@ -31,7 +31,7 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         val sessionBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("session", GzippedParams.get(sessionParams, SessionParams::class.java))
-            .addFormDataPart("compression", "true")
+            .addFormDataPart("compression", true.toString())
 
         val sessionBodyWithPhotos = attachPhotos(session, sessionBody) //this one should be some sort of list
         val sessionBodyBuilt = sessionBodyWithPhotos.build()
@@ -66,8 +66,9 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         if (session.notes.isNotEmpty()) file = File(session.notes.first().photoPath)
         for (note in session.notes) {
             if (note.photoPath?.isNotBlank() == true && note.photoPath.isNotEmpty()) {
-                photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context))
-                multipartBody.addFormDataPart("photos[]", note.photoPath, RequestBody.create(MediaType.parse("image/jpeg"), photos.last().data))
+                file = File(note.photoPath)
+                photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context)) // todo: it seems I dont have problem with empty "photos[]", the problem is here with correct FormData definition
+                multipartBody.addFormDataPart("photos[]", photos.last().filename, RequestBody.create(MediaType.parse("image/jpg"), photos.last().data))
             }
         }
 //        if (photos.isNotEmpty()) Log.i("PHOTO", photos.first().toString())
