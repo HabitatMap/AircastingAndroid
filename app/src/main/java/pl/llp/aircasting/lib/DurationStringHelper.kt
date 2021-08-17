@@ -8,16 +8,16 @@ class DurationStringHelper {
 
     companion object {
 
-        fun durationString(session: Session): String {
+        fun durationString(startTime: Date?, endTime: Date?): String {
 
-            var durationString = "${DateConverter.toDateStringForDisplay(session.startTime)} ${DateConverter.toTimeStringForDisplay(session.startTime)}"
+            var durationString = "${DateConverter.toDateStringForDisplay(startTime!!)} ${DateConverter.toTimeStringForDisplay(startTime)}"
 
-            if (session.endTime == null) return durationString
+            if (endTime == null) return durationString
 
-            if (DateConverter.isTheSameDay(session.startTime, session.endTime!!)) {
-                durationString += "-${DateConverter.toTimeStringForDisplay(session.endTime!!)}"
+            if (DateConverter.isTheSameDay(startTime, endTime)) {
+                durationString += "-${DateConverter.toTimeStringForDisplay(endTime)}"
             } else {
-                durationString += " - ${DateConverter.toDateStringForDisplay(session.endTime!!)} ${DateConverter.toTimeStringForDisplay(session.endTime!!)}"
+                durationString += " - ${DateConverter.toDateStringForDisplay(endTime)} ${DateConverter.toTimeStringForDisplay(endTime)}"
             }
 
             return durationString

@@ -146,7 +146,7 @@ abstract class SessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsVi
         val session = mSessionPresenter?.session
         session ?: return
         
-        mSessionDateTextView?.text = DurationStringHelper.durationString(session!!)
+        mSessionDateTextView?.text = DurationStringHelper.durationString(session.startTime, session.endTime!!)
 
         mSessionNameTextView?.text = session.name
         bindSessionMeasurementsDescription()
