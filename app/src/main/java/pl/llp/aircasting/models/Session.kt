@@ -181,10 +181,6 @@ class Session(
         }
     }
 
-    private val DATE_FORMAT = "MM/dd/yy"
-    private val HOUR_FORMAT_24 = "HH:mm"
-    private val HOUR_FORMAT_12 = "hh:mm a"
-
     val type get() = mType
     var name get() = mName
         set(value) {mName = value}
@@ -302,45 +298,6 @@ class Session(
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {
         return streams.sortedWith(compareBy({ it.sensorNameOrder() }, { it.detailedType }))
-    }
-
-    fun durationString(): String {
-        val dateFormatter = dateTimeFormatter(DATE_FORMAT)
-        val hourFormatter = dateTimeFormatter(HOUR_FORMAT_24)
-
-        var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
-
-        if (endTime == null) return durationString
-
-        if (isTheSameDay(startTime, endTime!!)) {
-            durationString += "-${hourFormatter.format(endTime)}"
-        } else {
-            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
-        }
-
-        return durationString
-    }
-
-    fun durationString12HourFormat(): String {
-        val dateFormatter = dateTimeFormatter(DATE_FORMAT)
-        val hourFormatter = dateTimeFormatter(HOUR_FORMAT_12)
-
-        var durationString = "${dateFormatter.format(mStartTime)} ${hourFormatter.format(mStartTime)}"
-
-        if (endTime == null) return durationString
-
-        if (isTheSameDay(startTime, endTime!!)) {
-            durationString += "-${hourFormatter.format(endTime)}"
-        } else {
-            durationString += " - ${dateFormatter.format(endTime)} ${hourFormatter.format(endTime)}"
-        }
-
-        return durationString
-    }
-
-    fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
-        val dateFormat = SimpleDateFormat("yyyyMMdd")
-        return dateFormat.format(startTime) == dateFormat.format(endTime)
     }
 
     fun infoString(): String {
