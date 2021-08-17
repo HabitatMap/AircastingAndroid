@@ -62,13 +62,14 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         }
 
         val photos = mutableListOf<Photo>()
-        var file: File = File("")
-        if (session.notes.isNotEmpty()) file = File(session.notes.first().photoPath)
+        //var file: File = File("")
+        //if (session.notes.isNotEmpty()) file = File(session.notes.first().photoPath)
         for (note in session.notes) {
             if (note.photoPath?.isNotBlank() == true && note.photoPath.isNotEmpty()) {
-                file = File(note.photoPath)
-                photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context)) // todo: it seems I dont have problem with empty "photos[]", the problem is here with correct FormData definition
-                multipartBody.addFormDataPart("photos[]", photos.last().filename, RequestBody.create(MediaType.parse("image/jpg"), photos.last().data))
+                //file = File(note.photoPath)
+//                photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context)) // todo: it seems I dont have problem with empty "photos[]", the problem is here with correct FormData definition
+                val photo = BitmapTransformer.readScaledBitmap(note.photoPath, context)
+                multipartBody.addFormDataPart("photos[]", photo.filename, RequestBody.create(MediaType.parse("image/*"), photo.data))
             }
         }
 //        if (photos.isNotEmpty()) Log.i("PHOTO", photos.first().toString())
