@@ -22,14 +22,21 @@ import java.io.File
 class MobileSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler, private val context: Context) {
     fun upload(session: Session, successCallback: (response: Response<UploadSessionResponse>) -> Unit) {
         val sessionParams = SessionParams(session)
-        val photos = attachPhotos(session) //this one should be some sort of list
-        val sessionBody = CreateSessionBody(
-            GzippedParams.get(sessionParams, SessionParams::class.java),
-            compression = true,
-            photos = photos // there might be a few photos, we need to have variable number of arguments here
-        )
 
-        val call = apiService.createMobileSession(sessionBody)
+//        val sessionBody = CreateSessionBody(
+//            GzippedParams.get(sessionParams, SessionParams::class.java),
+//            compression = true,
+//            photos = photos // there might be a few photos, we need to have variable number of arguments here
+//        )
+        val sessionBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("session", GzippedParams.get(sessionParams, SessionParams::class.java))
+            .addFormDataPart("compression", "true")
+
+        val sessionBodyWithPhotos = attachPhotos(session, sessionBody) //this one should be some sort of list
+        val sessionBodyBuilt = sessionBodyWithPhotos.build()
+
+        val call = apiService.createMobileSession(sessionBodyBuilt)
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {
@@ -48,21 +55,41 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
         })
     }
 
-    fun attachPhotos(session: Session): MultipartBody.Part {
+    fun attachPhotos(session: Session, multipartBody: MultipartBody.Builder): MultipartBody.Builder { // todo: return type must be Multipart.Body, MultipartBody as argument too
+        if (session.notes.isEmpty()) {
+            multipartBody.addFormDataPart("photos[]", "")
+            return multipartBody
+        }
+
         val photos = mutableListOf<Photo>()
         var file: File = File("")
         if (session.notes.isNotEmpty()) file = File(session.notes.first().photoPath)
         for (note in session.notes) {
             if (note.photoPath?.isNotBlank() == true && note.photoPath.isNotEmpty()) {
                 photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context))
+                multipartBody.addFormDataPart("photos[]", note.photoPath, RequestBody.create(MediaType.parse("image/jpeg"), photos.last().data))
             }
         }
-        if (photos.isNotEmpty()) Log.i("PHOTO", photos.first().toString())
-        if (photos.isEmpty()) Log.i("PHOTO", "photos: empty")
-        return MultipartBody.Part.createFormData(
-            "jpeg",
-            file.name,
-            RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        )
+//        if (photos.isNotEmpty()) Log.i("PHOTO", photos.first().toString())
+//        if (photos.isEmpty()) Log.i("PHOTO", "photos: empty")
+        return multipartBody
     }
+
+//    fun attachPhotos(session: Session): MultipartBody.Part {
+//        val photos = mutableListOf<Photo>()
+//        var file: File = File("")
+//        if (session.notes.isNotEmpty()) file = File(session.notes.first().photoPath)
+//        for (note in session.notes) {
+//            if (note.photoPath?.isNotBlank() == true && note.photoPath.isNotEmpty()) {
+//                photos.add(BitmapTransformer.readScaledBitmap(note.photoPath, context))
+//            }
+//        }
+//        if (photos.isNotEmpty()) Log.i("PHOTO", photos.first().toString())
+//        if (photos.isEmpty()) Log.i("PHOTO", "photos: empty")
+//        return MultipartBody.Part.createFormData(
+//            "jpeg",
+//            file.name,
+//            RequestBody.create(MediaType.parse("multipart/form-data"), file)
+//        )
+//    }
 }

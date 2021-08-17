@@ -15,9 +15,9 @@ import java.util.concurrent.TimeUnit
 
 
 interface ApiService {
-    @Multipart
+
     @POST("/api/sessions")
-    fun createMobileSession(@Body session: CreateSessionBody): Call<UploadSessionResponse>
+    fun createMobileSession(@Body createSessionBody: MultipartBody): Call<UploadSessionResponse>
 
     @POST("/api/realtime/sessions.json")
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
