@@ -54,6 +54,7 @@ class GraphController(
     override fun onSessionDisconnectClicked(session: Session) {
         EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
         airBeamReconnector.disconnect(session)
+        rootActivity.finish()
     }
 
     override fun addNotePressed(session: Session, note: Note) {
