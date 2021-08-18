@@ -15,6 +15,7 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.dashboard.SessionsTab
+import pl.llp.aircasting.sensor.AirBeamReconnector
 import javax.inject.Inject
 
 class MapActivity: AppCompatActivity() {
@@ -28,6 +29,9 @@ class MapActivity: AppCompatActivity() {
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
+    lateinit var airbeamReconnector: AirBeamReconnector
 
     companion object {
         val SENSOR_NAME_KEY = "SENSOR_NAME"
@@ -66,7 +70,7 @@ class MapActivity: AppCompatActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory)
+        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory, airbeamReconnector)
 
         controller?.onCreate()
 

@@ -13,6 +13,8 @@ import pl.llp.aircasting.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.events.StandaloneModeEvent
+import pl.llp.aircasting.sensor.AirBeamReconnector
 
 
 class GraphController(
@@ -23,7 +25,8 @@ class GraphController(
     sensorName: String?,
     fragmentManager: FragmentManager,
     mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
+    mApiServiceFactory: ApiServiceFactory,
+    private val airBeamReconnector: AirBeamReconnector
 ): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
     SessionDetailsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
@@ -46,6 +49,11 @@ class GraphController(
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
         rootActivity.finish()
+    }
+
+    override fun onSessionDisconnectClicked(session: Session) {
+        EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
+        airBeamReconnector.disconnect(session)
     }
 
     override fun addNotePressed(session: Session, note: Note) {

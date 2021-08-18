@@ -15,6 +15,7 @@ import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.sensor.AirBeamReconnector
 
 
 class MapController(
@@ -25,7 +26,8 @@ class MapController(
     sensorName: String?,
     fragmentManager: FragmentManager,
     mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
+    mApiServiceFactory: ApiServiceFactory,
+    private val airBeamReconnector: AirBeamReconnector
 ): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
     SessionDetailsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
@@ -75,6 +77,11 @@ class MapController(
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
         rootActivity.finish()
+    }
+
+    override fun onSessionDisconnectClicked(session: Session) {
+        EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
+        airBeamReconnector.disconnect(session)
     }
 
     override fun addNotePressed(session: Session, note: Note) {
