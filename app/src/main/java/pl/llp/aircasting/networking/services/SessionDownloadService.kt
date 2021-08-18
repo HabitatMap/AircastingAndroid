@@ -47,7 +47,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
     }
 
     fun sessionFromResponse(sessionResponse: SessionResponse): Session? {
-        val startTime = DateConverter.fromString(sessionResponse.start_time) ?: return null
+        val startTime = DateConverter.get().fromString(sessionResponse.start_time) ?: return null
 
         val streams = sessionResponse.streams.values.map { stream ->
             MeasurementStream(stream)
@@ -62,7 +62,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
             startTime,
-            DateConverter.fromString(sessionResponse.end_time),
+            DateConverter.get().fromString(sessionResponse.end_time),
             sessionResponse.version,
             sessionResponse.deleted,
             null,

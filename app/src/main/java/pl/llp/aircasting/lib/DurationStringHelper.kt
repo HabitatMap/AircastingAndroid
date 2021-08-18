@@ -3,15 +3,15 @@ package pl.llp.aircasting.lib
 import java.util.*
 
 class DurationStringHelper {
-        fun durationString(startTime: Date?, endTime: Date?): String {
-            var durationString = "${DateConverter.toDateStringForDisplay(startTime!!)} ${DateConverter.toTimeStringForDisplay(startTime)}"
+        fun durationString(startTime: Date, endTime: Date?): String {
+            var durationString = "${DateConverter.get()?.toDateStringForDisplay(startTime)} ${DateConverter.get()?.toTimeStringForDisplay(startTime)}"
 
             if (endTime == null) return durationString
 
-            if (DateConverter.isTheSameDay(startTime, endTime)) {
-                durationString += "-${DateConverter.toTimeStringForDisplay(endTime)}"
+            if (DateConverter.get()?.isTheSameDay(startTime, endTime) == true) {
+                durationString += "-${DateConverter.get()?.toTimeStringForDisplay(endTime)}"
             } else {
-                durationString += " - ${DateConverter.toDateStringForDisplay(endTime)} ${DateConverter.toTimeStringForDisplay(endTime)}"
+                durationString += " - ${DateConverter.get()?.toDateStringForDisplay(endTime)} ${DateConverter.get()?.toTimeStringForDisplay(endTime)}"
             }
 
             return durationString

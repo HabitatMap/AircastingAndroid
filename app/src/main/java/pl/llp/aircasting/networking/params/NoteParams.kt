@@ -5,7 +5,7 @@ import pl.llp.aircasting.models.Note
 
 class NoteParams {
     constructor(note: Note) {
-        this.date = DateConverter.toDateString(note.date)
+        this.date = DateConverter.get().toDateString(note.date)
         this.text = note.text
         this.latitude = note.latitude
         this.longitude = note.longitude

@@ -19,8 +19,8 @@ class SessionParams {
 
         this.contribute = session.contribute
         this.title = session.name
-        this.start_time = DateConverter.toDateString(session.startTime)
-        this.end_time = DateConverter.toDateString(session.endTime!!)
+        this.start_time = DateConverter.get().toDateString(session.startTime)
+        this.end_time = DateConverter.get().toDateString(session.endTime!!)
 
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version

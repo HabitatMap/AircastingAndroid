@@ -35,7 +35,7 @@ class Measurement(
 
     constructor(measurementResponse: MeasurementResponse): this(
         measurementResponse.value,
-        DateConverter.fromString(measurementResponse.time) ?: Date(),
+        DateConverter.get()?.fromString(measurementResponse.time) ?: Date(),
         measurementResponse.latitude,
         measurementResponse.longitude
     )
