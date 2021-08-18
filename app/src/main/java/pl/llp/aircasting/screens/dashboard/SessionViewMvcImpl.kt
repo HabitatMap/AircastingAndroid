@@ -190,7 +190,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected fun bindSessionDetails() {
         val session = mSessionPresenter?.session
 
-        mDateTextView.text = DurationStringHelper.durationString(session?.startTime, session?.endTime)
+        mDateTextView.text = DurationStringHelper().durationString(session?.startTime, session?.endTime)
         mNameTextView.text = session?.name
         mInfoTextView.text = session?.infoString()
     }

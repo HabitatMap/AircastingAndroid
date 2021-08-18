@@ -3,9 +3,6 @@ package pl.llp.aircasting.lib
 import java.util.*
 
 class DurationStringHelper {
-
-    companion object {
-
         fun durationString(startTime: Date?, endTime: Date?): String {
             var durationString = "${DateConverter.toDateStringForDisplay(startTime!!)} ${DateConverter.toTimeStringForDisplay(startTime)}"
 
@@ -20,5 +17,4 @@ class DurationStringHelper {
             return durationString
         }
 
-    }
 }
