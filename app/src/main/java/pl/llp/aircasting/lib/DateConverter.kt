@@ -5,7 +5,6 @@ import java.util.*
 
 class DateConverter {
     companion object {
-        val singleton: DateConverter? = null
         var mSettings: Settings? = null
 
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
@@ -14,7 +13,6 @@ class DateConverter {
         private val HOUR_FORMAT_12 = "hh:mm a"
 
         fun setup(settings: Settings) {
-            if (singleton == null) DateConverter()
             mSettings = settings
         }
 
