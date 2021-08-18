@@ -3,6 +3,7 @@ package pl.llp.aircasting.sensor.airbeam3
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import no.nordicsemi.android.ble.*
 import pl.llp.aircasting.exceptions.AirBeam3ConfiguringFailed
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.lib.DateConverter
@@ -10,9 +11,6 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.sensor.HexMessagesBuilder
 import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader
-import no.nordicsemi.android.ble.BleManager
-import no.nordicsemi.android.ble.RequestQueue
-import no.nordicsemi.android.ble.WriteRequest
 import java.util.*
 
 class AirBeam3Configurator(
@@ -23,6 +21,7 @@ class AirBeam3Configurator(
     companion object {
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
         val MAX_MTU = 517
+        val LOW_MTU = 125
         val DATE_FORMAT = "dd/MM/yy-HH:mm:ss"
     }
 
@@ -95,10 +94,18 @@ class AirBeam3Configurator(
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
-            .add(requestMtu(MAX_MTU))
+            .add(requestMtu(getSDDownloadMTU()))
             .add(sleep(500))
             .add(downloadFromSDCardModeRequest())
             .enqueue()
+    }
+
+    private fun getSDDownloadMTU(): Int {
+        return if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
+            LOW_MTU
+        } else {
+            MAX_MTU
+        }
     }
 
     fun clearSDCard() {
@@ -250,6 +257,10 @@ class AirBeam3Configurator(
             configurationCharacteristic = null
             downloadFromSDCardCharacteristic = null
             downloadMetaDataFromSDCardCharacteristic = null
+        }
+
+        override fun onServicesInvalidated() {
+            // do nothing
         }
     }
 

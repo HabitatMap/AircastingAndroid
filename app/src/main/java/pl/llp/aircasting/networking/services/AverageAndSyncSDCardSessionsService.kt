@@ -41,14 +41,22 @@ class AverageAndSyncSDCardSessionsService(
         }
 
         private fun averageMeasurements() {
-            sessionsIds.forEach { sessionId ->
-                val averagingService = AveragingService.get(sessionId)
-                averagingService?.averagePreviousMeasurements()
-                averagingService?.perform(true)
+            // We do not perform averaging on Android 7 or below
+            // because we already can download only 25% of data from SD card
+            if (isAndroid7orAbove()) {
+                sessionsIds.forEach { sessionId ->
+                    val averagingService = AveragingService.get(sessionId)
+                    averagingService?.averagePreviousMeasurements()
+                    averagingService?.perform(true)
+                }
             }
         }
         private fun syncSessions() {
             sessionsSyncService.sync()
+        }
+
+        private fun isAndroid7orAbove(): Boolean {
+            return android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.N
         }
     }
 }

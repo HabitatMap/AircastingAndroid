@@ -68,6 +68,7 @@ class SDCardMobileSessionsProcessor(
         // filtering measurements to save only the once we don't already have
         val filteredCSVMeasurements = filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
         val measurements = filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
+
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 

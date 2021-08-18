@@ -108,6 +108,8 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
             return line[header.value].toDouble()
         } catch(e: NumberFormatException) {
             return null
+        } catch(e: ArrayIndexOutOfBoundsException) {
+            return null
         }
     }
 }

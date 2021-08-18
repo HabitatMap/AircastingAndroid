@@ -86,5 +86,4 @@ class MeasurementsRepository {
     fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {
         return mDatabase.measurements().getByStreamId(streamId)
     }
-
 }

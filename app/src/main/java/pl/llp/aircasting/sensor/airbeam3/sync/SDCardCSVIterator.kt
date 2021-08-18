@@ -18,32 +18,33 @@ class SDCardCSVIterator(
 
             do {
                 val line = reader.readNext()
-
-                if (line == null) {
-                    if (currentSession != null) {
-                        yield(currentSession)
-                    }
-                    break
-                }
-
-                val currentSessionUUID =
-                    CSVSession.uuidFrom(
-                        line
-                    )
-
-                if (currentSessionUUID != previousSessionUUID) {
-                    if (currentSession != null) {
-                        yield(currentSession)
+                    if (line == null) {
+                        if (currentSession != null) {
+                            yield(currentSession)
+                        }
+                        break
                     }
 
-                    currentSession =
-                        CSVSession(
-                            currentSessionUUID!!
+                if (line.size == SDCardCSVFileChecker.EXPECTED_FIELDS_COUNT) {
+                    val currentSessionUUID =
+                        CSVSession.uuidFrom(
+                            line
                         )
-                    previousSessionUUID = currentSessionUUID
-                }
 
-                currentSession?.addMeasurements(line)
+                    if (currentSessionUUID != previousSessionUUID) {
+                        if (currentSession != null) {
+                            yield(currentSession)
+                        }
+
+                        currentSession =
+                            CSVSession(
+                                currentSessionUUID!!
+                            )
+                        previousSessionUUID = currentSessionUUID
+                    }
+
+                    currentSession?.addMeasurements(line)
+                }
             } while(line != null)
         } catch (e: IOException) {
             mErrorHandler.handle(SDCardMeasurementsParsingError(e))

@@ -7,8 +7,12 @@ import java.io.FileReader
 class SDCardCSVFileChecker(
     private val mCSVFileFactory: SDCardCSVFileFactory
 ) {
-    private val EXPECTED_FIELDS_COUNT = 13
+    companion object {
+        val EXPECTED_FIELDS_COUNT = 13
+    }
+
     private val ACCEPTANCE_THRESHOLD = 0.8
+    private val ACCEPTANCE_THRESHOLD_LOW_MTU = 0.2
 
     class Stats(val allCount: Int, val corruptedCount: Int)
 
@@ -63,13 +67,20 @@ class SDCardCSVFileChecker(
 
     private fun validateAcceptedCorruption(stats: Stats, expectedCount: Int): Boolean {
         if (expectedCount == 0) return true
-
-        val countThreshold = expectedCount * ACCEPTANCE_THRESHOLD
-        val corruptionThreshold = expectedCount * (1 - ACCEPTANCE_THRESHOLD)
+        val countThreshold = expectedCount * getAcceptanceThreshold()
+        val corruptionThreshold = expectedCount * (1 - getAcceptanceThreshold())
 
         // checks if downloaded file has at least 80% of expected lines
         // and if there is at most 20% of corrupted lines
         return stats.allCount >= countThreshold && stats.corruptedCount < corruptionThreshold
+    }
+
+    private fun getAcceptanceThreshold(): Double {
+        return if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
+            ACCEPTANCE_THRESHOLD_LOW_MTU
+        } else {
+            ACCEPTANCE_THRESHOLD
+        }
     }
 
     private fun getStep(steps: List<Step>, stepType: SDCardReader.StepType): Step? {
