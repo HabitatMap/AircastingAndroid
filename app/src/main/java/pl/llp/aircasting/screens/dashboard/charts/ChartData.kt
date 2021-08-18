@@ -63,12 +63,12 @@ class ChartData(
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
         calendar.add(averageFrequency(), -mMaxEntriesCount)
-        val startString = DateConverter.toDateString(calendar.time, TimeZone.getDefault(), "HH:mm")
+        val startString = DateConverter.toTimeStringForDisplay(calendar.time, TimeZone.getDefault())
         return startString
     }
 
     private fun endTimeString(): String {
-        val endString = DateConverter.toDateString(mEndTime, TimeZone.getDefault(), "HH:mm")
+        val endString = DateConverter.toTimeStringForDisplay(mEndTime, TimeZone.getDefault())
         return endString
     }
 
