@@ -6,6 +6,7 @@ import java.util.*
 class DateConverter {
     companion object {
         private var singleton: DateConverter? = null
+        val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
         fun setup(settings: Settings) {
             if (singleton == null) singleton = DateConverter(settings)
@@ -14,10 +15,19 @@ class DateConverter {
         fun get(): DateConverter? {
             return singleton
         }
+
+        fun toDateString(
+            date: Date,
+            timeZone: TimeZone = TimeZone.getDefault(),
+            dateFormat: String = DEFAULT_DATE_FORMAT
+        ): String {
+            val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+            formatter.timeZone = timeZone
+            return formatter.format(date)
+        }
     }
 
     private var mSettings: Settings? = null
-    val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private val DATE_FORMAT = "MM/dd/yy"
     private val HOUR_FORMAT_24 = "HH:mm"
     private val HOUR_FORMAT_12 = "hh:mm a"
@@ -30,16 +40,6 @@ class DateConverter {
         val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
         parser.timeZone = TimeZone.getDefault()
         return parser.parse(dateString)
-    }
-
-    fun toDateString(
-        date: Date,
-        timeZone: TimeZone = TimeZone.getDefault(),
-        dateFormat: String = DEFAULT_DATE_FORMAT
-    ): String {
-        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
-        formatter.timeZone = timeZone
-        return formatter.format(date)
     }
 
     fun isTheSameDay(startTime: Date, endTime: Date): Boolean {

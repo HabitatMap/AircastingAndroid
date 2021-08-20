@@ -73,7 +73,7 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
     private fun lastMeasurementTimeString(sessionId: Long, session: Session): String {
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime = LastMeasurementSyncCalculator.calculate(session.endTime, lastMeasurementTime)
-        return DateConverter.get().toDateString(lastMeasurementSyncTime)
+        return DateConverter.toDateString(lastMeasurementSyncTime)
     }
 }
 

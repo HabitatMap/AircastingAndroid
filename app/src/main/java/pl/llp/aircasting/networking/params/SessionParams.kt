@@ -16,12 +16,11 @@ class SessionParams {
             Session.Type.FIXED -> FIXED_SESSION_TYPE
             Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
-        val dateConverter = DateConverter.get()
 
         this.contribute = session.contribute
         this.title = session.name
-        this.start_time = dateConverter.toDateString(session.startTime)
-        this.end_time = dateConverter.toDateString(session.endTime!!)
+        this.start_time = DateConverter.toDateString(session.startTime)
+        this.end_time = DateConverter.toDateString(session.endTime!!)
 
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version

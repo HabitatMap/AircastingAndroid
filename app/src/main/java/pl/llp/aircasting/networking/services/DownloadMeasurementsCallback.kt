@@ -88,7 +88,7 @@ class DownloadMeasurementsCallback(
     }
 
     private fun updateSessionEndTime(endTimeString: String?) {
-        if(endTimeString != null) session.endTime = DateConverter.get().fromString(endTimeString)
+        if(endTimeString != null) session.endTime = DateConverter.get()?.fromString(endTimeString)
         sessionsRepository.update(session)
     }
 

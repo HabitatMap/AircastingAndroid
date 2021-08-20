@@ -178,7 +178,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun dateString(date: Date): String {
-        return DateConverter.get().toTimeStringForDisplay(date, TimeZone.getDefault())
+        return DateConverter.get()?.toTimeStringForDisplay(date, TimeZone.getDefault()) ?: ""
     }
 
     private fun midnightPointLine(limit: Float): LimitLine {

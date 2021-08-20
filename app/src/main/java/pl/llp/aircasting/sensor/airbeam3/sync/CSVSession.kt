@@ -40,7 +40,8 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
         val latitude = getValueFor(line, Header.LATITUDE)
         val longitude = getValueFor(line, Header.LONGITUDE)
         val dateString = "${line[Header.DATE.value]} ${line[SDCardCSVFileFactory.Header.TIME.value]}"
-        val time = DateConverter.get().fromString(dateString,
+        val time = DateConverter.get()?.fromString(
+            dateString,
             DATE_FORMAT
         )
 
