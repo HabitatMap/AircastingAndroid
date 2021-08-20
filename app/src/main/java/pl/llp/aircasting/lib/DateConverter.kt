@@ -11,8 +11,8 @@ class DateConverter {
             if (singleton == null) singleton = DateConverter(settings)
         }
 
-        fun get(): DateConverter {
-            return singleton!!
+        fun get(): DateConverter? {
+            return singleton
         }
     }
 
@@ -48,7 +48,7 @@ class DateConverter {
     }
 
     fun toTimeStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
-        if (singleton?.mSettings?.isUsing24HourFormat() == true) {
+        if (mSettings?.isUsing24HourFormat() == true) {
             return toDateString(date, timeZone, HOUR_FORMAT_24)
         } else {
             return toDateString(date, timeZone, HOUR_FORMAT_12)

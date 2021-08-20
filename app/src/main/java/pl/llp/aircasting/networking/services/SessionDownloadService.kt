@@ -62,7 +62,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
             startTime,
-            DateConverter.get().fromString(sessionResponse.end_time),
+            DateConverter.get()?.fromString(sessionResponse.end_time),
             sessionResponse.version,
             sessionResponse.deleted,
             null,
