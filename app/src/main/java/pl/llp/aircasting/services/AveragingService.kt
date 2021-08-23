@@ -101,8 +101,12 @@ class AveragingService {
             }
         }
 
-        fun getAveragingThreshold(firstMeasurement: Measurement, lastMeasurement: Measurement): Int {
-            val sessionDuration = lastMeasurement.time.time - firstMeasurement.time.time
+        fun getAveragingThreshold(firstMeasurement: Measurement?, lastMeasurement: Measurement?): Int {
+            val sessionDuration = firstMeasurement?.time?.time?.let {
+                lastMeasurement?.time?.time?.minus(it)
+            }
+            if (sessionDuration == null) return 0
+
             when {
                 sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
                 (sessionDuration > FIRST_TRESHOLD_TIME)  &&  (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
