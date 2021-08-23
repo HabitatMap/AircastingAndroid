@@ -12,6 +12,7 @@ import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
+import pl.llp.aircasting.sensor.AirBeamReconnector
 import javax.inject.Inject
 
 class GraphActivity: AppCompatActivity() {
@@ -24,6 +25,9 @@ class GraphActivity: AppCompatActivity() {
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
+    lateinit var airbeamReconnector: AirBeamReconnector
 
     companion object {
         val SESSION_UUID_KEY = "SESSION_UUID"
@@ -57,7 +61,7 @@ class GraphActivity: AppCompatActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory)
+        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory, airbeamReconnector)
 
         controller?.onCreate()
 

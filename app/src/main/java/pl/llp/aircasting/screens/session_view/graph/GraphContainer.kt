@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.services.AveragingService
+import java.lang.Math.abs
 import java.util.*
 
 
@@ -119,7 +120,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.first(), mMeasurementsSample.last()))
+        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.firstOrNull(), mMeasurementsSample.lastOrNull()))
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -261,7 +262,7 @@ class GraphContainer: OnChartGestureListener {
                     // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
                     var tempDistance = Long.MAX_VALUE
                     for (range in tempRanges) {
-                        val rangeDistance = entry?.x?.toLong()?.minus((range.endInclusive - range.start) / 2) ?: Long.MAX_VALUE
+                        val rangeDistance = abs(entry?.x?.toLong()?.minus(range.start + ((range.endInclusive - range.start) / 2)) ?: Long.MAX_VALUE)
                         if (rangeDistance < tempDistance ) {
                             tempDistance = rangeDistance
                             noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1

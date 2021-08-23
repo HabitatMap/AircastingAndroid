@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.lib.DurationStringHelper
 
+
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType> {
     protected val mLayoutInflater: LayoutInflater
@@ -197,11 +198,16 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.expanded) {
+        if (sessionPresenter.session?.status == Session.Status.DISCONNECTED) {
+            mMeasurementsDescription?.visibility = View.GONE
+        } else if (sessionPresenter.expanded) {
+            mMeasurementsDescription?.visibility = View.VISIBLE
             bindExpandedMeasurementsDesctription()
         } else {
+            mMeasurementsDescription?.visibility = View.VISIBLE
             bindCollapsedMeasurementsDesctription()
         }
+
     }
 
     protected open fun bindMeasurementsTable() {

@@ -12,6 +12,7 @@ import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.session_view.SelectedSensorBorder
 import kotlinx.android.synthetic.main.session_card.view.*
+import pl.llp.aircasting.models.Session
 
 
 abstract class MeasurementsTableContainer {
@@ -96,6 +97,12 @@ abstract class MeasurementsTableContainer {
             resetMeasurementsView()
             bindMeasurements()
             stretchTableLayout()
+        }
+
+        if (session?.status == Session.Status.DISCONNECTED) {
+            mMeasurementsTable?.visibility = View.GONE
+        } else {
+            mMeasurementsTable?.visibility = View.VISIBLE
         }
     }
 

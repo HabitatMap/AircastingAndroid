@@ -39,6 +39,6 @@ class AirbeamSyncingViewMvcImpl: BaseViewMvc, AirbeamSyncingViewMvc {
     override fun updateProgress(step: SDCardReader.Step, linesRead: Int) {
         val title = context.getString(R.string.airbeam_syncing_header)
         val stepTitle = stepTitles[step.type]
-        header?.text = "${title} ${stepTitle}: ${linesRead}/${step.measurementsCount}"
+        header?.text = "${title} ${stepTitle}: \n ${linesRead}/${step.measurementsCount}"
     }
 }
