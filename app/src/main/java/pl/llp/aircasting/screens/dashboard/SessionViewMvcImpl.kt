@@ -20,6 +20,7 @@ import pl.llp.aircasting.screens.dashboard.charts.Chart
 import pl.llp.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
+import pl.llp.aircasting.models.Session
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType> {
@@ -194,11 +195,16 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.expanded) {
+        if (sessionPresenter.session?.status == Session.Status.DISCONNECTED) {
+            mMeasurementsDescription?.visibility = View.GONE
+        } else if (sessionPresenter.expanded) {
+            mMeasurementsDescription?.visibility = View.VISIBLE
             bindExpandedMeasurementsDesctription()
         } else {
+            mMeasurementsDescription?.visibility = View.VISIBLE
             bindCollapsedMeasurementsDesctription()
         }
+
     }
 
     protected open fun bindMeasurementsTable() {
