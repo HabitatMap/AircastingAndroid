@@ -28,6 +28,7 @@ import pl.llp.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardCl
 import pl.llp.aircasting.sensor.AirBeamClearCardService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
 
 class ClearSDCardController(
@@ -182,14 +183,14 @@ class ClearSDCardController(
         }
     }
 
-    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
+    override fun onTurnOffLocationServicesOkClicked(session: Session?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         ContextCompat.startActivity(mContextActivity, intent, null)
 
         mContextActivity.finish()
     }
 
-    override fun onSkipClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
+    override fun onSkipClicked(session: Session?) {
         mContextActivity.finish()
     }
 }

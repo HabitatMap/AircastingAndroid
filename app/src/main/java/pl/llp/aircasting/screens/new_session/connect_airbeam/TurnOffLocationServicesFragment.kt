@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseFragment
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 
 class TurnOffLocationServicesFragment:  BaseFragment<TurnOffLocationServicesViewMvcImpl, TurnOffLocationServicesController>() {
     var listener: TurnOffLocationServicesViewMvc.Listener? = null
-    var deviceItem: DeviceItem? = null
-    var sessionUUID: String? = null
+    var session: Session? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,8 +21,7 @@ class TurnOffLocationServicesFragment:  BaseFragment<TurnOffLocationServicesView
             TurnOffLocationServicesViewMvcImpl(
                 layoutInflater,
                 null,
-                deviceItem,
-                sessionUUID
+                session
             )
         controller =
             TurnOffLocationServicesController(

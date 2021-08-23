@@ -118,15 +118,15 @@ class NewSessionController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
+    override fun onTurnOffLocationServicesOkClicked(session: Session?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(mContextActivity, intent, null)
 
-        goToSessionDetails(sessionUUID, deviceItem)
+        wizardNavigator.goToConfirmation(session, this)
     }
 
-    override fun onSkipClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
-        goToSessionDetails(sessionUUID, deviceItem)
+    override fun onSkipClicked(session: Session?) {
+        wizardNavigator.goToConfirmation(session, this)
     }
 
     private fun requestBluetoothEnable() {
@@ -262,11 +262,7 @@ class NewSessionController(
     }
 
     override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
-        if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
-            wizardNavigator.goToTurnOffLocationServices(deviceItem, sessionUUID, this)
-        } else {
-            goToSessionDetails(sessionUUID, deviceItem)
-        }
+        goToSessionDetails(sessionUUID, deviceItem)
     }
 
     override fun validationFailed(errorMessage: String) {
@@ -303,8 +299,9 @@ class NewSessionController(
 
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
-
-        if (sessionType == Session.Type.MOBILE || indoor == true) {
+        if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
+            wizardNavigator.goToTurnOffLocationServices(session, this)
+        } else if (sessionType == Session.Type.MOBILE || indoor == true) {
             wizardNavigator.goToConfirmation(session, this)
         } else {
             wizardNavigator.goToChooseLocation(session, this, errorHandler)

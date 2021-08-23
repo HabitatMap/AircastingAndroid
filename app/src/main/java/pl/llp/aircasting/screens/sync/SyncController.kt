@@ -35,6 +35,7 @@ import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -198,14 +199,14 @@ class SyncController(
         }
     }
 
-    override fun onTurnOffLocationServicesOkClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
+    override fun onTurnOffLocationServicesOkClicked(session: Session?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         ContextCompat.startActivity(mContextActivity, intent, null)
 
         mContextActivity.finish()
     }
 
-    override fun onSkipClicked(sessionUUID: String?, deviceItem: DeviceItem?) {
+    override fun onSkipClicked(session: Session?) {
         mContextActivity.finish()
     }
 
