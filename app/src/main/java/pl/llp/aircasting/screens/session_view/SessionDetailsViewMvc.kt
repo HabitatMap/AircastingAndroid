@@ -23,6 +23,7 @@ interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listene
         fun addNoteClicked(session: Session)
         fun noteMarkerClicked(session: Session?, noteNumber: Int)
         fun onFinishSessionConfirmed(session: Session)
+        fun onSessionDisconnectClicked(session: Session)
         fun refreshSession()
     }
 }

@@ -62,7 +62,11 @@ class MapViewMobileActiveMvcImpl: MapViewMvcImpl,
     }
 
     override fun disconnectSessionPressed() {
-        // do nothing
+        val session = mSessionPresenter?.session ?: return
+        for (listener in listeners) {
+            listener.onSessionDisconnectClicked(session)
+        }
+        dismissBottomSheet()
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
