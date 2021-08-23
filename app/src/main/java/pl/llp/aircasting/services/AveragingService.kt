@@ -106,7 +106,6 @@ class AveragingService {
                 lastMeasurement?.time?.time?.minus(it)
             }
             if (sessionDuration == null) return 0
-
             when {
                 sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
                 (sessionDuration > FIRST_TRESHOLD_TIME)  &&  (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
