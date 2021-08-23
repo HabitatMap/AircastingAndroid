@@ -20,6 +20,7 @@ import pl.llp.aircasting.screens.dashboard.charts.Chart
 import pl.llp.aircasting.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.lib.DurationStringHelper
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
