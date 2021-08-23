@@ -28,6 +28,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onMicrophoneSettingsClicked()
         }
 
+        val use24HourFormatSwitch = rootView?.use_24_hour_format_switch
+        use24HourFormatSwitch?.isChecked = mSettings.isUsing24HourFormat()
+        use24HourFormatSwitch?.setOnCheckedChangeListener { _, _ ->
+            onToggleUse24HourFormatEnabled()
+        }
+
         val contributeToCrowdMapSwitch = rootView?.crowd_map_settings_switch
         contributeToCrowdMapSwitch?.isChecked = mSettings.isCrowdMapEnabled()
         contributeToCrowdMapSwitch?.setOnCheckedChangeListener { _, _ ->
@@ -60,6 +66,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
 
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME
+    }
+
+    private fun onToggleUse24HourFormatEnabled() {
+        for (listener in listeners) {
+            listener.onToggle24hourFormatEnabled()
+        }
     }
 
     private fun onMicrophoneSettingsClicked() {

@@ -37,7 +37,6 @@ import java.util.*
 class GraphContainer: OnChartGestureListener {
     private val MOBILE_SESSION_MEASUREMENT_FREQUENCY = 1000
     private val FIXED_SESSION_MEASUREMENT_FREQUENCY = 60 * 1000
-    private val DATE_FORMAT = "HH:mm"
     private var mVisibleEntriesNumber: Int = 60
 
     private var mContext: Context?
@@ -180,7 +179,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun dateString(date: Date): String {
-        return DateConverter.toDateString(date, TimeZone.getDefault(), DATE_FORMAT)
+        return DateConverter.get()?.toTimeStringForDisplay(date, TimeZone.getDefault()) ?: ""
     }
 
     private fun midnightPointLine(limit: Float): LimitLine {

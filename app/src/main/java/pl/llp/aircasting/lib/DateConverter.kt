@@ -1,17 +1,19 @@
 package pl.llp.aircasting.lib
 
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DateConverter {
     companion object {
+        private var singleton: DateConverter? = null
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
-        fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
-            val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
-            parser.timeZone = TimeZone.getDefault()
-            return parser.parse(dateString)
+        fun setup(settings: Settings) {
+            if (singleton == null) singleton = DateConverter(settings)
+        }
+
+        fun get(): DateConverter? {
+            return singleton
         }
 
         fun toDateString(
@@ -24,4 +26,37 @@ class DateConverter {
             return formatter.format(date)
         }
     }
+
+    private var mSettings: Settings? = null
+    private val DATE_FORMAT = "MM/dd/yy"
+    private val HOUR_FORMAT_24 = "HH:mm"
+    private val HOUR_FORMAT_12 = "hh:mm a"
+
+    private constructor(settings: Settings) {
+        this.mSettings = settings
+    }
+
+    fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
+        val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
+        parser.timeZone = TimeZone.getDefault()
+        return parser.parse(dateString)
+    }
+
+    fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
+        val dateFormat = SimpleDateFormat("yyyyMMdd")
+        return dateFormat.format(startTime) == dateFormat.format(endTime)
+    }
+
+    fun toTimeStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
+        if (mSettings?.isUsing24HourFormat() == true) {
+            return toDateString(date, timeZone, HOUR_FORMAT_24)
+        } else {
+            return toDateString(date, timeZone, HOUR_FORMAT_12)
+        }
+    }
+
+    fun toDateStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
+        return toDateString(date, timeZone, DATE_FORMAT)
+    }
+
 }

@@ -21,6 +21,8 @@ import pl.llp.aircasting.screens.session_view.measurement_table_container.Measur
 import pl.llp.aircasting.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.models.Session
+import pl.llp.aircasting.lib.DurationStringHelper
+
 
 abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerType>,
     SessionViewMvc<ListenerType> {
@@ -52,6 +54,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mSessionPresenter: SessionPresenter? = null
     protected var expandCardCallback: (() -> Unit?)? = null
     protected var onExpandSessionCardClickedCallback: (() -> Unit?)? = null
+    private var using24HourFormat: Boolean? = true
 
     constructor(
         inflater: LayoutInflater,
@@ -189,7 +192,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected fun bindSessionDetails() {
         val session = mSessionPresenter?.session
 
-        mDateTextView.text = session?.durationString()
+        mDateTextView.text = DurationStringHelper().durationString(session?.startTime!!, session?.endTime)
         mNameTextView.text = session?.name
         mInfoTextView.text = session?.infoString()
     }

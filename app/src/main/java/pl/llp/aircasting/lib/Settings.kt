@@ -3,16 +3,14 @@ package pl.llp.aircasting.lib
 import android.app.Application
 import android.content.SharedPreferences
 import com.jakewharton.processphoenix.ProcessPhoenix
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.LogoutService
-import pl.llp.aircasting.events.LogoutEvent
-import pl.llp.aircasting.networking.services.SessionsSyncService
 
 open class Settings(private val mApplication: Application) {
     private val PRIVATE_MODE = 0
     protected val PREFERENCES_NAME = "preferences"
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
+    protected val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
     protected val CALIBRATION_KEY = "calibration"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
@@ -28,6 +26,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_DELETE_SESSION_IN_PROGRESS = false
     private val DEFAULT_SESSIONS_TO_REMOVE = false
     private val DEFAULT_CALIBRATION_VALUE = 100
+    private val DEFAULT_USE_24_HOUR_FORMAT = true
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
@@ -52,6 +51,10 @@ open class Settings(private val mApplication: Application) {
 
     fun getCalibrationValue(): Int {
         return getIntFromSettings(CALIBRATION_KEY, DEFAULT_CALIBRATION_VALUE)
+    }
+
+    fun isUsing24HourFormat(): Boolean {
+        return getBooleanFromSettings(USE_24_HOUR_FORMAT_KEY, DEFAULT_USE_24_HOUR_FORMAT)
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -88,6 +91,11 @@ open class Settings(private val mApplication: Application) {
 
     fun getAreThereSessionsToRemove(): Boolean? {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
+    }
+
+    fun toggleUse24HourFormatEnabled() {
+        val enabled = !isUsing24HourFormat()
+        saveToSettings(USE_24_HOUR_FORMAT_KEY, enabled)
     }
 
     fun toggleMapSettingsEnabled(){
