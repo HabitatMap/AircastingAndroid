@@ -70,7 +70,7 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
             .setOnClickListener(object : View.OnClickListener {
                 override fun onClick(view: View) {
                     autocompleteFragment.setText("")
-                    //view.setVisibility(View.GONE)
+                    view.setVisibility(View.GONE)
                     resetMapToDefaults()
                 }
             })
