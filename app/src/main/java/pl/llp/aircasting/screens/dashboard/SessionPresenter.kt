@@ -34,7 +34,12 @@ class SessionPresenter() {
         if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.chartData = ChartData(session)
         }
-        this.shouldHideMap = session.indoor
+        if (session.tab == SessionsTab.MOBILE_ACTIVE || session.tab == SessionsTab.MOBILE_DORMANT) {
+            this.shouldHideMap = session.locationless
+        }
+        if (session.tab == SessionsTab.FIXED || session.tab == SessionsTab.FOLLOWING) {
+            this.shouldHideMap = session.indoor
+        }
 
         if (session.tab == SessionsTab.MOBILE_ACTIVE) {
             this.loading = true
