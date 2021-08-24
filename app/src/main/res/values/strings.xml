@@ -265,6 +265,9 @@
     <string name="application_version">Application version:</string>
     <string name="version">version</string>
     <string name="your_privacy_link">https://www.habitatmap.org/aircasting-app-privacy-policy</string>
+    <string name="use_24_hour_format">Use 24-hour format</string>
+    <string name="clear_sd_card">Clear SD card</string>
+    <string name="your_privacy">Your privacy</string>
 
     <!-- Clearing SD Card -->
     <string name="restart_airbeam_header">Restart your AirBeam</string>
