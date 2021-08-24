@@ -122,8 +122,8 @@ class GraphDataGenerator(
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
                     AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY)) hasNote = true
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY)) hasNote = true
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.FIRST_THRESHOLD_FREQUENCY) hasNote = true
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.SECOND_THRESHOLD_FREQUENCY) hasNote = true
                 }
             }
         }
