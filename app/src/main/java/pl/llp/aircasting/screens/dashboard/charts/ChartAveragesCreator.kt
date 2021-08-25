@@ -4,6 +4,7 @@ import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
+import pl.llp.aircasting.services.AveragingService
 import java.util.*
 
 class ChartAveragesCreator {
@@ -12,12 +13,15 @@ class ChartAveragesCreator {
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private val MAX_X_VALUE = 8
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
-
+        private val MILISECONDS_IN_9_HOURS = 32400000
     }
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
+        if (stream.measurements.last().time.time - stream.measurements.first().time.time > MILISECONDS_IN_9_HOURS) {
+            return getMobileEntriesForOver9HourSession(stream)
+        }
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
@@ -66,6 +70,23 @@ class ChartAveragesCreator {
             return entries
         }
         oldEntries = entries
+        return entries
+    }
+
+    fun getMobileEntriesForOver9HourSession(stream: MeasurementStream): MutableList<Entry> { //TODO: !!!i have to take only measurements with averaging frequency == AveragingService.SECOND_THRESHOLD_FREQUENCY!!!!
+        val entries: MutableList<Entry> = mutableListOf()
+        val lastMeasurements = stream.lastMeasurementsWithGivenAveragingFrequency(9, AveragingService.SECOND_THRESHOLD_FREQUENCY) // todo: add new function that searches for last measurements with given averaging frequency
+        var xValue = 0
+        for (measurement in lastMeasurements) {
+            entries.add(
+                Entry(
+                    xValue.toFloat(),
+                    measurement.value.toFloat()
+                )
+            )
+            xValue++
+        }
+
         return entries
     }
 
