@@ -341,6 +341,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.update(sessionId, event.note)
                 }
             }
+            //TODO: below code should only be executed if the session is finished!!! (dormant)
+            val reloadedSession = sessionsRespository.loadSessionForUpload(event.session!!.uuid)
+            if (reloadedSession != null && reloadedSession.status == Session.Status.FINISHED) {
+                sessionUpdateService.update(reloadedSession) {
+                    //todo: add some nice callback here
+                }
+            }
         }
     }
 
@@ -350,6 +357,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.delete(sessionId, event.note)
+                }
+            }
+            //TODO: below code should only be executed if the session is finished!!! (dormant)
+            val reloadedSession = sessionsRespository.loadSessionForUpload(event.session!!.uuid)
+            if (reloadedSession != null && reloadedSession.status == Session.Status.FINISHED) {
+                sessionUpdateService.update(reloadedSession) {
+                    //todo: add some nice callback here
                 }
             }
         }
