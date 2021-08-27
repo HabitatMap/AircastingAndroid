@@ -13,15 +13,15 @@ class ChartAveragesCreator {
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private val MAX_X_VALUE = 8
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
-        private val MILISECONDS_IN_9_HOURS = 32400000
+        //private val MILISECONDS_IN_9_HOURS = 32400000
     }
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
-        if (stream.measurements.last().time.time - stream.measurements.first().time.time > MILISECONDS_IN_9_HOURS) {
-            return getMobileEntriesForOver9HourSession(stream)
-        }
+//        if (stream.measurements.last().time.time - stream.measurements.first().time.time > AveragingService.SECOND_TRESHOLD_TIME) {
+//            return getMobileEntriesForOver9HourSession(stream)
+//        }
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
