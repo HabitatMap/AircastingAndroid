@@ -77,10 +77,12 @@ class MeasurementsRepository {
 
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
+        mDatabase.activeSessionsMeasurements().deleteInTransaction(streamId, measurementsIds)
     }
 
     fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {
         mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency)
+        mDatabase.activeSessionsMeasurements().averageMeasurement(measurementId, value, averagingFrequency)
     }
 
     fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {

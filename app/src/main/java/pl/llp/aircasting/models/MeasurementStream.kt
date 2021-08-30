@@ -205,11 +205,11 @@ class MeasurementStream(
 
     fun lastMeasurementsWithGivenAveragingFrequency(amount: Int, threshold: Int): List<Measurement> {
         val filteredMeasurements = measurements.filter { measurement ->  measurement.averagingFrequency == threshold}
-//        val measurementsSize = filteredMeasurements.size
-//
-//        if (amount >= measurementsSize) return filteredMeasurements
+        val measurementsSize = filteredMeasurements.size
 
-        return filteredMeasurements//.subList(measurementsSize - amount, measurementsSize)
+        if (amount >= measurementsSize) return filteredMeasurements
+
+        return filteredMeasurements.subList(measurementsSize - amount, measurementsSize)
     }
 
     fun lastMeasurement(): Measurement {

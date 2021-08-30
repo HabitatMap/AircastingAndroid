@@ -30,7 +30,8 @@ data class ActiveSessionMeasurementDBObject(
     @ColumnInfo(name = "value") val value: Double,
     @ColumnInfo(name = "time") val time: Date,
     @ColumnInfo(name = "latitude") val latitude: Double?,
-    @ColumnInfo(name = "longitude") val longitude: Double?
+    @ColumnInfo(name = "longitude") val longitude: Double?,
+    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -51,6 +52,9 @@ interface ActiveSessionMeasurementDao {
     @Query("UPDATE active_sessions_measurements SET value=:value, time=:time, latitude=:latitude, longitude=:longitude WHERE id=:id")
     fun update(id: Int, value: Double, time: Date, latitude: Double?, longitude: Double?)
 
+    @Query("UPDATE active_sessions_measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")
+    fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int)
+
     @Query("DELETE FROM active_sessions_measurements WHERE id=:id")
     fun deleteActiveSessionMeasurement(id: Int)
 
@@ -62,5 +66,13 @@ interface ActiveSessionMeasurementDao {
         val id = getOldestMeasurementId(measurement.sessionId, measurement.streamId)
         deleteActiveSessionMeasurement(id)
         insert(measurement)
+    }
+
+    @Query("DELETE FROM active_sessions_measurements WHERE stream_id=:streamId AND id IN (:measurementsIds)")
+    fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>)
+
+    @Transaction
+    fun deleteInTransaction(streamId: Long, measurementsIds: List<Long>) {
+        deleteMeasurements(streamId, measurementsIds)
     }
 }

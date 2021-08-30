@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 27,
-    "identityHash": "04a9e31bf5c80cb1f1783864cc6030e2",
+    "identityHash": "0ce3791f49deff2dbeae9bb0e86d27c4",
     "entities": [
       {
         "tableName": "sessions",
@@ -501,7 +501,7 @@
       },
       {
         "tableName": "active_sessions_measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -544,6 +544,12 @@
             "columnName": "longitude",
             "affinity": "REAL",
             "notNull": false
+          },
+          {
+            "fieldPath": "averaging_frequency",
+            "columnName": "averaging_frequency",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -598,7 +604,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"04a9e31bf5c80cb1f1783864cc6030e2\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0ce3791f49deff2dbeae9bb0e86d27c4\")"
     ]
   }
 }
