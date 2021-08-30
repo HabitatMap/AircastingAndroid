@@ -73,9 +73,9 @@ class ChartAveragesCreator {
         return entries
     }
 
-    fun getMobileEntriesForOver9HourSession(stream: MeasurementStream): MutableList<Entry> { //TODO: !!!i have to take only measurements with averaging frequency == AveragingService.SECOND_THRESHOLD_FREQUENCY!!!!
+    fun getMobileEntriesForOver9HourSession(stream: MeasurementStream): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
-        val lastMeasurements = stream.lastMeasurementsWithGivenAveragingFrequency(9, AveragingService.SECOND_THRESHOLD_FREQUENCY).reversed() // todo: add new function that searches for last measurements with given averaging frequency
+        val lastMeasurements = stream.lastMeasurementsWithGivenAveragingFrequency(9, AveragingService.SECOND_THRESHOLD_FREQUENCY).reversed()
         var xValue = MAX_X_VALUE.toDouble()
         for (measurement in lastMeasurements) {
             entries.add(
