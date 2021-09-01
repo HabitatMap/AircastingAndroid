@@ -209,7 +209,7 @@ class MeasurementStream(
 
         if (amount >= measurementsSize) return filteredMeasurements
 
-        return filteredMeasurements.subList(measurementsSize - amount, measurementsSize)
+        return filteredMeasurements.takeLast(amount)
     }
 
     fun lastMeasurement(): Measurement {
