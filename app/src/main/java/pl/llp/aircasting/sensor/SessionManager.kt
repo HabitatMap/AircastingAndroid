@@ -317,6 +317,16 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
+    private fun updateSessionWithNotes(session: Session) {
+        val reloadedSession = sessionsRespository.loadSessionForUpload(session.uuid)
+
+        if (reloadedSession != null) {
+            sessionUpdateService.update(reloadedSession) {
+                deleteMarkedForRemoval()
+            }
+        }
+    }
+
     private fun deleteMarkedForRemoval() {
         DatabaseProvider.runQuery {
             measurementStreamsRepository.deleteMarkedForRemoval()
@@ -341,7 +351,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.update(sessionId, event.note)
                 }
             }
-            event.session?.let { session -> updateSession(session) }
+            if (event.session?.endTime != null) event.session.let { session -> updateSessionWithNotes(session) }
         }
     }
 
@@ -353,7 +363,9 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.delete(sessionId, event.note)
                 }
             }
-            event.session?.let { session -> updateSession(session) }
+            if (event.session?.endTime != null) event.session.let {
+                    session -> updateSessionWithNotes(session)
+            }
         }
     }
 }
