@@ -13,14 +13,13 @@ class ChartAveragesCreator {
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private val MAX_X_VALUE = 8
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
-        //private val MILISECONDS_IN_9_HOURS = 32400000
     }
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
         if ((stream.measurements.last().time.time - stream.measurements.first().time.time) > AveragingService.SECOND_TRESHOLD_TIME) { //todo: btw this is not a good way to check session length with "last measurements" taken from db
-            return getMobileEntriesForOver9HourSession(stream)
+            return getMobileEntriesForSessionOverSecondThreshold(stream)
         }
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
@@ -73,9 +72,9 @@ class ChartAveragesCreator {
         return entries
     }
 
-    fun getMobileEntriesForOver9HourSession(stream: MeasurementStream): MutableList<Entry> {
+    fun getMobileEntriesForSessionOverSecondThreshold(stream: MeasurementStream): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
-        val lastMeasurements = stream.lastMeasurementsWithGivenAveragingFrequency(9, AveragingService.SECOND_THRESHOLD_FREQUENCY).reversed()
+        val lastMeasurements = stream.lastMeasurementsByAveragingFrequency(MAX_X_VALUE+1, AveragingService.SECOND_THRESHOLD_FREQUENCY).reversed()
         var xValue = MAX_X_VALUE.toDouble()
         for (measurement in lastMeasurements) {
             entries.add(
