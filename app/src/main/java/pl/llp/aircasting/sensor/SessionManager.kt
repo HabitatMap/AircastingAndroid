@@ -309,15 +309,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun updateSession(session: Session) {
-        val reloadedSession = sessionsRespository.loadSessionAndMeasurementsByUUID(session.uuid)
-        if (reloadedSession != null) {
-            sessionUpdateService.update(reloadedSession) {
-                deleteMarkedForRemoval()
-            }
-        }
-    }
-
-    private fun updateSessionWithNotes(session: Session) {
         val reloadedSession = sessionsRespository.loadSessionForUpload(session.uuid)
 
         if (reloadedSession != null) {
@@ -351,7 +342,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.update(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let { session -> updateSessionWithNotes(session) }
+            if (event.session?.endTime != null) event.session.let { session -> updateSession(session) }
         }
     }
 
@@ -364,7 +355,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                 }
             }
             if (event.session?.endTime != null) event.session.let {
-                    session -> updateSessionWithNotes(session)
+                    session -> updateSession(session)
             }
         }
     }
