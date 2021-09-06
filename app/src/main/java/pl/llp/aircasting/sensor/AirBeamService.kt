@@ -80,7 +80,7 @@ abstract class AirBeamService: SensorService(),
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
                 sessionDBObject?.let { sessionDBObject ->
                     val session = Session(sessionDBObject)
-                    if (session.type == Session.Type.MOBILE && session.status == Session.Status.DISCONNECTED) {
+                    if (session.type == Session.Type.MOBILE) {
                         airbeamReconnector.initReconnectionTries(session, event.device)
                     }
                 }
