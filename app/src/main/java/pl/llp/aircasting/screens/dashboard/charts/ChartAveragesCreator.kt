@@ -76,8 +76,8 @@ class ChartAveragesCreator {
         val entries: MutableList<Entry> = mutableListOf()
         val lastMeasurements = stream.lastMeasurementsByAveragingFrequency(MAX_X_VALUE+1, AveragingService.SECOND_THRESHOLD_FREQUENCY).reversed()
         var xValue = MAX_X_VALUE.toDouble()
-        for (measurement in lastMeasurements) {
-            entries.add(
+        for (measurement in lastMeasurements) { // sprawdzic co jest w lastMeasurementsach, czy sa jakies outliery, jesli tak to co jest w streamie przekazanym jako argument
+            entries.add(    // jesli w streamie przekazanym jako argument sa outliery to sprawdzic co sie dzieje przed wywolaniem tej metody
                 Entry(
                     xValue.toFloat(),
                     measurement.value.toFloat()

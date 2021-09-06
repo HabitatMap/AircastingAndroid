@@ -83,7 +83,7 @@ class ChartData(
     private fun calculateAverages() {
         for (stream in mMeasurementStreams) {
             val entries: MutableList<Entry>? = createEntries(stream)
-            val entriesSize = entries?.size ?: 0
+            val entriesSize = entries?.size ?: 0 // TODO: HERE SOME MEASUREMENTS IN STREAM ARE MISSPLACED ALREADY!!!! have to check initStreams() and whats happening there
             if(entriesSize > mMaxEntriesCount) {
                 mMaxEntriesCount = entries?.size ?: 0
             }
@@ -92,6 +92,7 @@ class ChartData(
                 streamKey(stream),
                 Lists.reverse(entries)
             )
+            //Log.i("ENTRIES", entries.)
         }
     }
 
