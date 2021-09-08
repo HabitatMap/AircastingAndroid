@@ -339,7 +339,7 @@ class AveragingService {
             previousWindowSize = THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
             averagingFrequency = currentAveragingThreshold().windowSize
             windowSize = averagingFrequency / previousWindowSize
-            mActiveMeasurementsRepository.deleteBySessionId(sessionId)
+            //mActiveMeasurementsRepository.deleteBySessionId(sessionId)
         }
 
 

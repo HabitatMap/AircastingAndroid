@@ -18,7 +18,8 @@ class ChartAveragesCreator {
     private var usePreviousEntry = false
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
-        if ((stream.measurements.last().time.time - stream.measurements.first().time.time) > AveragingService.SECOND_TRESHOLD_TIME) { //todo: btw this is not a good way to check session length with "last measurements" taken from db
+        if (stream.measurements.isEmpty()) return emptyList<Entry>().toMutableList()
+        if ((stream.measurements.last().time.time - stream.measurements.first().time.time) > AveragingService.SECOND_TRESHOLD_TIME ) { //todo: btw this is not a good way to check session length with "last measurements" taken from db
             return getMobileEntriesForSessionOverSecondThreshold(stream)
         }
         val periodData: MutableList<List<Measurement>?>
