@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
+import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
@@ -63,12 +64,18 @@ class ChartData(
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
         calendar.add(averageFrequency(), -mMaxEntriesCount)
-        val startString = DateConverter.get()?.toTimeStringForDisplay(calendar.time, TimeZone.getDefault()) ?: ""
+        val startString = when(mSession.type) {
+            Session.Type.FIXED -> DateConverter.get()?.toTimeStringForDisplay(DateUtils.truncate(calendar.time, Calendar.HOUR), TimeZone.getDefault()) ?: ""
+            Session.Type.MOBILE -> DateConverter.get()?.toTimeStringForDisplay(calendar.time, TimeZone.getDefault()) ?: ""
+        }
         return startString
     }
 
     private fun endTimeString(): String {
-        val endString = DateConverter.get()?.toTimeStringForDisplay(mEndTime, TimeZone.getDefault())
+        val endString = when(mSession.type){
+            Session.Type.FIXED -> DateConverter.get()?.toTimeStringForDisplay(DateUtils.truncate(mEndTime, Calendar.HOUR), TimeZone.getDefault())
+            Session.Type.MOBILE -> DateConverter.get()?.toTimeStringForDisplay(mEndTime, TimeZone.getDefault())
+        }
         return endString ?: ""
     }
 
