@@ -46,8 +46,14 @@ interface ActiveSessionMeasurementDao {
     @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT 1")
     fun getOldestMeasurementId(sessionId: Long, streamId: Long): Int
 
+    @Query("SELECT stream_id FROM active_sessions_measurements WHERE session_id=:sessionId AND value=:value AND time=:time")
+    fun getStreamId(sessionId: Long?, value: Double?, time: Date?): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(measurement: ActiveSessionMeasurementDBObject): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(measurements: List<ActiveSessionMeasurementDBObject>): List<Long>
 
     @Query("UPDATE active_sessions_measurements SET value=:value, time=:time, latitude=:latitude, longitude=:longitude WHERE id=:id")
     fun update(id: Int, value: Double, time: Date, latitude: Double?, longitude: Double?)
@@ -60,6 +66,9 @@ interface ActiveSessionMeasurementDao {
 
     @Query("DELETE FROM active_sessions_measurements WHERE session_id=:sessionId")
     fun deleteActiveSessionMeasurementsBySession(sessionId: Long)
+
+    @Query("SELECT * FROM active_sessions_measurements WHERE averaging_frequency < :averagingFrequency AND stream_id=:streamId AND time >:thresholdCrossingTime")
+    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<ActiveSessionMeasurementDBObject>
 
     @Transaction
     fun deleteAndInsertInTransaction(measurement: ActiveSessionMeasurementDBObject) {
