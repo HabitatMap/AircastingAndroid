@@ -120,6 +120,7 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
+        mMeasurementsSample.forEach { measurement ->  measurement.averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.firstOrNull(), mMeasurementsSample.lastOrNull()) }
         return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.firstOrNull(), mMeasurementsSample.lastOrNull()))
     }
 
