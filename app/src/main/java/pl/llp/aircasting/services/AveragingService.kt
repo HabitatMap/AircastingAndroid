@@ -173,7 +173,7 @@ class AveragingService {
         }
     }
 
-    private fun getCurrentActiveMeasurementsToAverage(streamId: Long):  List<ActiveSessionMeasurementDBObject>? {
+    private fun getCurrentActiveMeasurementsToAverage(streamId: Long):  List<ActiveSessionMeasurementDBObject>? { //TODO: the streamId will not work for me, have to find streamId from active_measurements table
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
             currentAveragingThreshold().let { currentAveragingThreshold ->
                 mActiveMeasurementsRepository.getNonAveragedCurrentMeasurements(
@@ -256,6 +256,7 @@ class AveragingService {
                 removeTrailingMeasurements(measurementsInWindow, streamId, isFinal, !isCurrent)
             }
         }
+        //mActiveMeasurementsRepository.deleteBySessionId(sessionId)
         val lastMeasurementsDbObjects = mMeasurementsRepository.getLastMeasurementsForStream(streamId, 540)
         val lastMeasurements: ArrayList<Measurement?> = arrayListOf()
         for (lastMeasurementDbObject in lastMeasurementsDbObjects) {

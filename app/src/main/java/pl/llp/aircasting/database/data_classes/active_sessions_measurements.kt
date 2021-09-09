@@ -52,8 +52,8 @@ interface ActiveSessionMeasurementDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(measurement: ActiveSessionMeasurementDBObject): Long
 
-    @Update
-    fun insertAll(measurements: List<ActiveSessionMeasurementDBObject>): Int
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(measurements: List<ActiveSessionMeasurementDBObject>): List<Long>
 
     @Query("UPDATE active_sessions_measurements SET value=:value, time=:time, latitude=:latitude, longitude=:longitude WHERE id=:id")
     fun update(id: Int, value: Double, time: Date, latitude: Double?, longitude: Double?)

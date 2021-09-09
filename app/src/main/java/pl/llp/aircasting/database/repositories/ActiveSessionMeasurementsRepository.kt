@@ -10,7 +10,7 @@ class ActiveSessionMeasurementsRepository {
     private val ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER = 60 * 9 //we only need 9 mins of measurements. TODO: we should calculate that number based on time
     private val mDatabase = DatabaseProvider.get()
 
-    fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: ArrayList<Measurement?>) {
+    fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement?>) {
         val activeMeasurementDbObjects = measurements.map { measurement ->
             ActiveSessionMeasurementDBObject(
                 measurementStreamId,
