@@ -23,7 +23,7 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun handle(exception: BaseException) {
         exception.cause?.printStackTrace()
-        exception.messageToDisplay?.let {  if (exception.messageToDisplay is String) Log.e(TAG, exception.messageToDisplay!!) }  // https://stackoverflow.com/questions/41086296/smartcast-is-impossible-because-property-has-open-or-custom-getter
+        exception.messageToDisplay?.let {  if (exception.messageToDisplay is String) Log.e(TAG, exception.messageToDisplay!!) }
 
         if (!BuildConfig.DEBUG) {
             exception.messageToDisplay?.let {
