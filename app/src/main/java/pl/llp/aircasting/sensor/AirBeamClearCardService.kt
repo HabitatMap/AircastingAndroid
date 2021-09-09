@@ -37,7 +37,7 @@ class AirBeamClearCardService: AirBeamService() {
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
-        val deviceItem = intent.getParcelableExtra(AirBeamRecordSessionService.DEVICE_ITEM_KEY) as DeviceItem
+        val deviceItem = DeviceItem(intent.getParcelableExtra(AirBeamRecordSessionService.DEVICE_ITEM_KEY))
 
         connect(deviceItem)
     }
