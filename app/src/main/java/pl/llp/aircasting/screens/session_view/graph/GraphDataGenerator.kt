@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.session_view.graph
 
 import android.content.Context
+import android.util.Range
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
 import pl.llp.aircasting.R
@@ -9,7 +10,9 @@ import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.services.AveragingService
 import java.util.*
+import java.util.EnumSet.range
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class GraphDataGenerator(
     private val mContext: Context
@@ -19,6 +22,8 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
     private var hasNote = false
+    private var noteCount = 0
+    private var notesPerEntry: ArrayList<Int> = arrayListOf()
     private var averagingGeneratorFrequency = 0
 
     private val DEFAULT_LIMIT = 1000
@@ -74,8 +79,16 @@ class GraphDataGenerator(
 
         val range = (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
         for (entry in entries) {
+            var noteIndex = 0
             if (entry.icon != null) {
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
+                if (notesPerEntry[noteIndex] > 1) {
+                    for (number in 1..notesPerEntry[noteIndex]) {
+                        noteRanges.add((0.toLong()..0.toLong())) //TODO: add correct range for 1 note and 1 empty range for each note included in this entry
+
+                    }
+                    noteIndex += 1
+                }
             }
         }
 
@@ -97,8 +110,8 @@ class GraphDataGenerator(
     private fun buildAverageEntry(date: Date, hasNote: Boolean = false): Entry {
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
-
         if (hasNote) {
+            notesPerEntry.add(noteCount)
             return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
         } else {
             return Entry(time, value)
@@ -121,9 +134,18 @@ class GraphDataGenerator(
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
-                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.FIRST_THRESHOLD_FREQUENCY) hasNote = true
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.SECOND_THRESHOLD_FREQUENCY) hasNote = true
+                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) {
+                        hasNote = true
+                        noteCount += 1
+                    }
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.FIRST_THRESHOLD_FREQUENCY) {
+                        hasNote = true
+                        noteCount += 1
+                    }
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.SECOND_THRESHOLD_FREQUENCY) {
+                        hasNote = true
+                        noteCount += 1
+                    }
                 }
             }
         }
@@ -134,6 +156,8 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
+        //if (noteCount != 0) notesPerEntry.add(noteCount)
+        noteCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {

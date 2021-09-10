@@ -18,6 +18,7 @@ import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsRespo
 import pl.llp.aircasting.networking.responses.SessionWithMeasurementsResponse
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.services.AveragingService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,7 @@ class DownloadMeasurementsCallback(
 
 ): Callback<SessionWithMeasurementsResponse> {
     val callCanceled = AtomicBoolean(false)
+    val averagingService = AveragingService.get(sessionId)
 
     init {
         EventBus.getDefault().safeRegister(this)
@@ -78,7 +80,8 @@ class DownloadMeasurementsCallback(
     }
 
     private fun saveStreamData(streamResponse: SessionStreamWithMeasurementsResponse) {
-        val stream = MeasurementStream(streamResponse)
+        val stream = averagingService?.setCorrectAveragingFrequency(MeasurementStream(streamResponse)) ?: MeasurementStream(streamResponse)
+
         val streamId = measurementStreamsRepository.getIdOrInsert(
             sessionId,
             stream

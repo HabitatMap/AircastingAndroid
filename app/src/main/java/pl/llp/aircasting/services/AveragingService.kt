@@ -7,6 +7,7 @@ import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.models.Measurement
+import pl.llp.aircasting.models.MeasurementStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.HashMap
@@ -349,6 +350,15 @@ class AveragingService {
             lastMeasurementTime.time > mFirstThresholdTime -> 1
             else -> 0
         }
+    }
+
+    fun setCorrectAveragingFrequency(stream: MeasurementStream): MeasurementStream {
+        if (stream.measurements.isEmpty()) return stream
+        val sessionLength = stream.measurements.last().time.time - stream.measurements.first().time.time
+        if (sessionLength < FIRST_TRESHOLD_TIME) return stream
+        if (sessionLength in FIRST_TRESHOLD_TIME until SECOND_TRESHOLD_TIME) stream.measurements.forEach { measurement -> measurement.averagingFrequency =  FIRST_THRESHOLD_FREQUENCY }
+        if (sessionLength >= SECOND_TRESHOLD_TIME) stream.measurements.forEach { measurement -> measurement.averagingFrequency =  SECOND_THRESHOLD_FREQUENCY }
+        return stream
     }
 }
 
