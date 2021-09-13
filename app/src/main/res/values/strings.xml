@@ -294,6 +294,9 @@
     <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app.\nThe SD card was cleared.</string>
     <string name="sync_error_header">Something went wrong</string>
     <string name="sync_unknown_error">Unexpected error happen. Please contact support.</string>
+    <string name="sync_unavailable_dialog_header">SD card sync unavailable</string>
+    <string name="sync_unavailable_dialog_description">Android 7 (or below) devices cannot sync the AirBeam3\'s SD card.\nUpgrade your OS to Android 8 or\nhigher to use the AirBeam3 in\nstandalone mode and sync the SD card.</string>
+    <string name="sync_unavailable_dialog_continue_button">Continue</string>
 
     <!-- My account -->
     <string name="my_account_sign_out">Sign out</string>

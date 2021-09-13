@@ -7,6 +7,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.screens.common.BaseController
+import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.sync.SyncActivity
 
@@ -45,7 +46,15 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        SyncActivity.start(mRootActivity)
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
+            mRootActivity?.supportFragmentManager?.let { fragmentManager ->
+                SyncUnavailableDialog(
+                    fragmentManager
+                ).show()
+            }
+        } else {
+            SyncActivity.start(mRootActivity)
+        }
     }
 
     override fun onMoreInfoClicked() {
