@@ -120,6 +120,9 @@ class Session(
         this.mStreams = sessionWithStreamsAndLastMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
+        this.mNotes = sessionWithStreamsAndLastMeasurementsDBObject.notes.map { noteDBObject ->
+            Note(noteDBObject)
+        }.toMutableList()
     }
 
     companion object {
