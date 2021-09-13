@@ -22,8 +22,6 @@ class GraphDataGenerator(
     private var count = 0
     private var startTime = Date()
     private var hasNote = false
-    private var noteCount = 0
-    private var notesPerEntry: ArrayList<Int> = arrayListOf()
     private var averagingGeneratorFrequency = 0
 
     private val DEFAULT_LIMIT = 1000
@@ -33,7 +31,6 @@ class GraphDataGenerator(
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
     fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int = 1): Result {
         reset()
-        notesPerEntry.clear()
 
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
@@ -80,15 +77,8 @@ class GraphDataGenerator(
 
         val range = (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
         for (entry in entries) {
-            var noteIndex = 0
             if (entry.icon != null) {
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
-                if (notesPerEntry[noteIndex] > 1) {
-                    for (number in 1..notesPerEntry[noteIndex]) {
-                        noteRanges.add((0.toLong()..1.toLong())) //TODO: add correct range for 1 note and 1 empty range for each note included in this entry
-                    }
-                    noteIndex += 1
-                }
             }
         }
 
@@ -111,9 +101,6 @@ class GraphDataGenerator(
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
         if (hasNote) {
-            if (noteCount > 0) {
-                notesPerEntry.add(noteCount)
-            }
             return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
         } else {
             return Entry(time, value)
@@ -136,18 +123,9 @@ class GraphDataGenerator(
         if (hasNote != true && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
-                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) {
-                        hasNote = true
-                        noteCount += 1
-                    }
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.FIRST_THRESHOLD_FREQUENCY) {
-                        hasNote = true
-                        noteCount += 1
-                    }
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.SECOND_THRESHOLD_FREQUENCY) {
-                        hasNote = true
-                        noteCount += 1
-                    }
+                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
+                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.FIRST_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.FIRST_THRESHOLD_FREQUENCY) hasNote = true
+                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(note, measurementDate, AveragingService.SECOND_THRESHOLD_FREQUENCY) && measurement.averagingFrequency == AveragingService.SECOND_THRESHOLD_FREQUENCY) hasNote = true
                 }
             }
         }
@@ -158,8 +136,6 @@ class GraphDataGenerator(
         cumulativeTime = count.toLong()
         cumulativeValue = cumulativeTime.toDouble()
         hasNote = false
-        //if (noteCount != 0) notesPerEntry.add(noteCount)
-        noteCount = 0
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {

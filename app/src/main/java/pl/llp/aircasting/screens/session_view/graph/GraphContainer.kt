@@ -120,7 +120,6 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        mMeasurementsSample.forEach { measurement ->  measurement.averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.firstOrNull(), mMeasurementsSample.lastOrNull()) }
         return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.firstOrNull(), mMeasurementsSample.lastOrNull()))
     }
 
@@ -282,7 +281,7 @@ class GraphContainer: OnChartGestureListener {
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
         updateGraphOnGesture()
-        //drawSession()
+        drawSession()
     }
     override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
     override fun onChartLongPressed(me: MotionEvent?) {}

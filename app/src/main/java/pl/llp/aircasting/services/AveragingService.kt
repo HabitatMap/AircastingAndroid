@@ -360,6 +360,15 @@ class AveragingService {
         if (sessionLength >= SECOND_TRESHOLD_TIME) stream.measurements.forEach { measurement -> measurement.averagingFrequency =  SECOND_THRESHOLD_FREQUENCY }
         return stream
     }
+
+    fun setCorrectAveragingFrequency(measurements: List<Measurement>): List<Measurement> {
+        if (measurements.isEmpty()) return measurements
+        val sessionLength = measurements.last().time.time - measurements.first().time.time
+        if (sessionLength < FIRST_TRESHOLD_TIME) return measurements
+        if (sessionLength in FIRST_TRESHOLD_TIME until SECOND_TRESHOLD_TIME) measurements.forEach { measurement -> measurement.averagingFrequency =  FIRST_THRESHOLD_FREQUENCY }
+        if (sessionLength >= SECOND_TRESHOLD_TIME) measurements.forEach { measurement -> measurement.averagingFrequency =  SECOND_THRESHOLD_FREQUENCY }
+        return measurements
+    }
 }
 
 class AveragingThreshold(val windowSize: Int, val time: Int)
