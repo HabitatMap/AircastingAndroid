@@ -33,6 +33,7 @@ class GraphDataGenerator(
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
     fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int = 1): Result {
         reset()
+        notesPerEntry.clear()
 
         val entries = ArrayList<Entry>()
         val midnightPoints = ArrayList<Float>()
@@ -84,8 +85,7 @@ class GraphDataGenerator(
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
                 if (notesPerEntry[noteIndex] > 1) {
                     for (number in 1..notesPerEntry[noteIndex]) {
-                        noteRanges.add((0.toLong()..0.toLong())) //TODO: add correct range for 1 note and 1 empty range for each note included in this entry
-
+                        noteRanges.add((0.toLong()..1.toLong())) //TODO: add correct range for 1 note and 1 empty range for each note included in this entry
                     }
                     noteIndex += 1
                 }
@@ -111,7 +111,9 @@ class GraphDataGenerator(
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
         if (hasNote) {
-            notesPerEntry.add(noteCount)
+            if (noteCount > 0) {
+                notesPerEntry.add(noteCount)
+            }
             return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
         } else {
             return Entry(time, value)
