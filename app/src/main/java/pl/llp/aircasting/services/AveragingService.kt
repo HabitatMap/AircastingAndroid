@@ -238,6 +238,7 @@ class AveragingService {
             } else {
                 removeTrailingMeasurements(measurementsInWindow, streamId, isFinal, !isCurrent)
             }
+
         }
     }
 
