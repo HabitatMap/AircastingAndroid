@@ -74,8 +74,8 @@ class ChartAveragesCreator {
     fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
         var xValue = MAX_X_VALUE.toDouble()
-        for (measurement in lastMeasurements.reversed()) { // sprawdzic co jest w lastMeasurementsach, czy sa jakies outliery, jesli tak to co jest w streamie przekazanym jako argument
-            entries.add(    // jesli w streamie przekazanym jako argument sa outliery to sprawdzic co sie dzieje przed wywolaniem tej metody
+        for (measurement in lastMeasurements.reversed()) {
+            entries.add(
                 Entry(
                     xValue.toFloat(),
                     measurement.value.toFloat()

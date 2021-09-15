@@ -52,6 +52,10 @@ class MeasurementsRepository {
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
+    fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?> {
+        return mDatabase.measurements().getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
+    }
+
     fun deleteMeasurementsOlderThan(
         streamId: Long,
         lastExpectedMeasurementTime: Date
@@ -77,12 +81,10 @@ class MeasurementsRepository {
 
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
-        //TODO not needed: mDatabase.activeSessionsMeasurements().deleteInTransaction(streamId, measurementsIds)
     }
 
     fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {
         mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency)
-        // TODO not needed: mDatabase.activeSessionsMeasurements().averageMeasurement(measurementId, value, averagingFrequency)
     }
 
     fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {

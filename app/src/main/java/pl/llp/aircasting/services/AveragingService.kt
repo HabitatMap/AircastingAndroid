@@ -1,10 +1,8 @@
 package pl.llp.aircasting.services
 
 import android.util.Log
-import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.database.data_classes.SessionDBObject
-import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
@@ -46,7 +44,6 @@ class AveragingService {
     private val mMeasurementsRepository = MeasurementsRepository()
     private val mMeasurementStreamsRepository = MeasurementStreamsRepository()
     private val mSessionsRepository = SessionsRepository()
-    private val mActiveMeasurementsRepository = ActiveSessionMeasurementsRepository()
 
     private val mFirstThresholdTime: Long
     private val mSecondThresholdTime: Long
@@ -138,7 +135,6 @@ class AveragingService {
      */
     fun perform(isFinal: Boolean = false) {
         var measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
-        var activeMeasurementsToAverage: HashMap<Long, List<ActiveSessionMeasurementDBObject>?> = hashMapOf()
 
         // When while checking we find out the threshold has changed since last time checked
         // we will 1) update session averaging frequency in DB
@@ -147,7 +143,6 @@ class AveragingService {
 
         streamIds()?.forEach { streamId ->
             measurementsToAverage[streamId] = getCurrentMeasurementsToAverage(streamId)
-            activeMeasurementsToAverage[streamId] = getCurrentActiveMeasurementsToAverage(streamId)
         }
 
         if (currentAveragingThreshold().windowSize > 1) {
@@ -165,18 +160,6 @@ class AveragingService {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
             currentAveragingThreshold().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedCurrentMeasurements(
-                    streamId,
-                    currentAveragingThreshold.windowSize,
-                    Date(crossingLastThresholdTime)
-                )
-            }
-        }
-    }
-
-    private fun getCurrentActiveMeasurementsToAverage(streamId: Long):  List<ActiveSessionMeasurementDBObject>? { //TODO: the streamId will not work for me, have to find streamId from active_measurements table
-        return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-            currentAveragingThreshold().let { currentAveragingThreshold ->
-                mActiveMeasurementsRepository.getNonAveragedCurrentMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
                     Date(crossingLastThresholdTime)
@@ -256,15 +239,6 @@ class AveragingService {
                 removeTrailingMeasurements(measurementsInWindow, streamId, isFinal, !isCurrent)
             }
         }
-        //mActiveMeasurementsRepository.deleteBySessionId(sessionId)
-//        val lastMeasurementsDbObjects = mMeasurementsRepository.getLastMeasurementsForStream(streamId, 540)
-//        val lastMeasurements: ArrayList<Measurement?> = arrayListOf()
-//        for (lastMeasurementDbObject in lastMeasurementsDbObjects) {
-//            val measurement = lastMeasurementDbObject?.let { Measurement(it) }
-//            lastMeasurements.add(measurement)
-//        }
-//        val activeStreamId = mActiveMeasurementsRepository.getStreamId(sessionId, lastMeasurements.first()?.time, lastMeasurements.first()?.value)
-//        mActiveMeasurementsRepository.insertAll(activeStreamId, sessionId, lastMeasurements)
     }
 
     private fun removeTrailingMeasurements(trailingMeasurements: List<MeasurementDBObject>, streamId: Long, isFinalAveraging: Boolean, isPreviousMeasurementsAveraging: Boolean) {
@@ -273,18 +247,6 @@ class AveragingService {
         if (isFinalAveraging || isPreviousMeasurementsAveraging) {
             val trailingMeasurementsIds = trailingMeasurements.map { it.id }
             mMeasurementsRepository.deleteMeasurements(
-                streamId,
-                trailingMeasurementsIds
-            )
-        }
-    }
-
-    private fun removeTrailingActiveMeasurements(trailingMeasurements: List<ActiveSessionMeasurementDBObject>, streamId: Long, isFinalAveraging: Boolean, isPreviousMeasurementsAveraging: Boolean) {
-        // if this is final averaging after the session has finished OR it is averaging previous measurements
-        // we want to delete remaining measurements instead of averaging smaller amount
-        if (isFinalAveraging || isPreviousMeasurementsAveraging) {
-            val trailingMeasurementsIds = trailingMeasurements.map { it.id }
-            mActiveMeasurementsRepository.deleteMeasurements(
                 streamId,
                 trailingMeasurementsIds
             )
@@ -340,7 +302,6 @@ class AveragingService {
             previousWindowSize = THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
             averagingFrequency = currentAveragingThreshold().windowSize
             windowSize = averagingFrequency / previousWindowSize
-            //mActiveMeasurementsRepository.deleteBySessionId(sessionId)
         }
 
 

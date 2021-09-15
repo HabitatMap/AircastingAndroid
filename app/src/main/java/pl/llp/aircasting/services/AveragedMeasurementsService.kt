@@ -29,7 +29,7 @@ class AveragedMeasurementsService {
                 val streams = streamRepository.getStreamsIdsBySessionId(sessionId!!)
 
                 if (streams.isNotEmpty()) {
-                    val measurementsDbObject = measurementsRepository.getLastMeasurementsForStream(streams.first(), 9)
+                    val measurementsDbObject = measurementsRepository.getLastMeasurementsWithGivenAveragingFrequency(streams.first(), 9, 60)
                     measurements = measurementsDbObject.map { measurementDbObject ->
                         Measurement(measurementDbObject!!)
                     }

@@ -67,9 +67,6 @@ interface ActiveSessionMeasurementDao {
     @Query("DELETE FROM active_sessions_measurements WHERE session_id=:sessionId")
     fun deleteActiveSessionMeasurementsBySession(sessionId: Long)
 
-    @Query("SELECT * FROM active_sessions_measurements WHERE averaging_frequency < :averagingFrequency AND stream_id=:streamId AND time >:thresholdCrossingTime")
-    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<ActiveSessionMeasurementDBObject>
-
     @Transaction
     fun deleteAndInsertInTransaction(measurement: ActiveSessionMeasurementDBObject) {
         val id = getOldestMeasurementId(measurement.sessionId, measurement.streamId)
@@ -77,11 +74,4 @@ interface ActiveSessionMeasurementDao {
         insert(measurement)
     }
 
-    @Query("DELETE FROM active_sessions_measurements WHERE stream_id=:streamId AND id IN (:measurementsIds)")
-    fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>)
-
-    @Transaction
-    fun deleteInTransaction(streamId: Long, measurementsIds: List<Long>) {
-        deleteMeasurements(streamId, measurementsIds)
-    }
 }
