@@ -46,20 +46,11 @@ interface ActiveSessionMeasurementDao {
     @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT 1")
     fun getOldestMeasurementId(sessionId: Long, streamId: Long): Int
 
-    @Query("SELECT stream_id FROM active_sessions_measurements WHERE session_id=:sessionId AND value=:value AND time=:time")
-    fun getStreamId(sessionId: Long?, value: Double?, time: Date?): Long
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(measurement: ActiveSessionMeasurementDBObject): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(measurements: List<ActiveSessionMeasurementDBObject>): List<Long>
-
     @Query("UPDATE active_sessions_measurements SET value=:value, time=:time, latitude=:latitude, longitude=:longitude WHERE id=:id")
     fun update(id: Int, value: Double, time: Date, latitude: Double?, longitude: Double?)
-
-    @Query("UPDATE active_sessions_measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")
-    fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int)
 
     @Query("DELETE FROM active_sessions_measurements WHERE id=:id")
     fun deleteActiveSessionMeasurement(id: Int)
