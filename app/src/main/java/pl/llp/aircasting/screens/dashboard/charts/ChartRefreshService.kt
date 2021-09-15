@@ -5,7 +5,7 @@ import pl.llp.aircasting.models.Session
 
 class ChartRefreshService {
     private val MINUTE_IN_MILLISECONDS = 60 * 1000
-    private val HOUR_IN_MILLISECONDS = 60  * 1000 //* 60
+    private val HOUR_IN_MILLISECONDS = 60 * 60 * 1000
 
     private var mLastRefreshTime: Long? = null
     private var mRefreshFrequency: Int
