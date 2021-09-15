@@ -257,14 +257,14 @@ class AveragingService {
             }
         }
         //mActiveMeasurementsRepository.deleteBySessionId(sessionId)
-        val lastMeasurementsDbObjects = mMeasurementsRepository.getLastMeasurementsForStream(streamId, 540)
-        val lastMeasurements: ArrayList<Measurement?> = arrayListOf()
-        for (lastMeasurementDbObject in lastMeasurementsDbObjects) {
-            val measurement = lastMeasurementDbObject?.let { Measurement(it) }
-            lastMeasurements.add(measurement)
-        }
-        val activeStreamId = mActiveMeasurementsRepository.getStreamId(sessionId, lastMeasurements.first()?.time, lastMeasurements.first()?.value)
-        mActiveMeasurementsRepository.insertAll(activeStreamId, sessionId, lastMeasurements)
+//        val lastMeasurementsDbObjects = mMeasurementsRepository.getLastMeasurementsForStream(streamId, 540)
+//        val lastMeasurements: ArrayList<Measurement?> = arrayListOf()
+//        for (lastMeasurementDbObject in lastMeasurementsDbObjects) {
+//            val measurement = lastMeasurementDbObject?.let { Measurement(it) }
+//            lastMeasurements.add(measurement)
+//        }
+//        val activeStreamId = mActiveMeasurementsRepository.getStreamId(sessionId, lastMeasurements.first()?.time, lastMeasurements.first()?.value)
+//        mActiveMeasurementsRepository.insertAll(activeStreamId, sessionId, lastMeasurements)
     }
 
     private fun removeTrailingMeasurements(trailingMeasurements: List<MeasurementDBObject>, streamId: Long, isFinalAveraging: Boolean, isPreviousMeasurementsAveraging: Boolean) {

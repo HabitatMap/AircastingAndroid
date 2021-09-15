@@ -19,9 +19,7 @@ class ChartAveragesCreator {
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
         if (stream.measurements.isEmpty()) return emptyList<Entry>().toMutableList()
-        if ((stream.measurements.last().time.time - stream.measurements.first().time.time) > AveragingService.SECOND_TRESHOLD_TIME ) { //todo: btw this is not a good way to check session length with "last measurements" taken from db
-            return getMobileEntriesForSessionOverSecondThreshold(stream)
-        }
+
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
@@ -73,11 +71,10 @@ class ChartAveragesCreator {
         return entries
     }
 
-    fun getMobileEntriesForSessionOverSecondThreshold(stream: MeasurementStream): MutableList<Entry> {
+    fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
-        val lastMeasurements = stream.lastMeasurementsByAveragingFrequency(MAX_X_VALUE+1, AveragingService.SECOND_THRESHOLD_FREQUENCY).reversed()
         var xValue = MAX_X_VALUE.toDouble()
-        for (measurement in lastMeasurements) { // sprawdzic co jest w lastMeasurementsach, czy sa jakies outliery, jesli tak to co jest w streamie przekazanym jako argument
+        for (measurement in lastMeasurements.reversed()) { // sprawdzic co jest w lastMeasurementsach, czy sa jakies outliery, jesli tak to co jest w streamie przekazanym jako argument
             entries.add(    // jesli w streamie przekazanym jako argument sa outliery to sprawdzic co sie dzieje przed wywolaniem tej metody
                 Entry(
                     xValue.toFloat(),

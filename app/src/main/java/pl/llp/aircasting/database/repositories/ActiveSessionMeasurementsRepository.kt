@@ -78,8 +78,4 @@ class ActiveSessionMeasurementsRepository {
          mDatabase.activeSessionsMeasurements().deleteInTransaction(streamId, measurementsIds)
     }
 
-    fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {
-         mDatabase.activeSessionsMeasurements().averageMeasurement(measurementId, value, averagingFrequency)
-    }
-
 }

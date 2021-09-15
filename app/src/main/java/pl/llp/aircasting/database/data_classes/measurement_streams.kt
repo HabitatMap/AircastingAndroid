@@ -66,6 +66,9 @@ interface MeasurementStreamDao {
     @Query("SELECT id FROM measurement_streams WHERE session_id in (:sessionIds)")
     fun getStreamsIdsBySessionIds(sessionIds: List<Long>): List<Long>
 
+    @Query("SELECT id FROM measurement_streams WHERE session_id=:sessionId")
+    fun getStreamsIdsBySessionId(sessionId: Long): List<Long>
+
     @Query("DELETE FROM measurement_streams")
     fun deleteAll()
 
@@ -74,4 +77,5 @@ interface MeasurementStreamDao {
 
     @Query("DELETE FROM measurement_streams WHERE deleted=1")
     fun deleteMarkedForRemoval()
+
 }
