@@ -15,9 +15,6 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.models.observers.MobileActiveSessionsObserver
 import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
-import pl.llp.aircasting.screens.dashboard.SessionsController
-import pl.llp.aircasting.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.sensor.AirBeamReconnector
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +24,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.events.StandaloneModeEvent
+import pl.llp.aircasting.screens.dashboard.*
+import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
@@ -88,8 +87,13 @@ class MobileActiveController(
     }
 
     override fun onDisconnectSessionClicked(session: Session) {
-        EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
-        airBeamReconnector.disconnect(session)
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
+            SyncUnavailableDialog(this.fragmentManager)
+                .show()
+        } else {
+            EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
+            airBeamReconnector.disconnect(session)
+        }
     }
 
     override fun addNoteClicked(session: Session) {
