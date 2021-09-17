@@ -30,8 +30,7 @@ data class ActiveSessionMeasurementDBObject(
     @ColumnInfo(name = "value") val value: Double,
     @ColumnInfo(name = "time") val time: Date,
     @ColumnInfo(name = "latitude") val latitude: Double?,
-    @ColumnInfo(name = "longitude") val longitude: Double?,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
+    @ColumnInfo(name = "longitude") val longitude: Double?
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0

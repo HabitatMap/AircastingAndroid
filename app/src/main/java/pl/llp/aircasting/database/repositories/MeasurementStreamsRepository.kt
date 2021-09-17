@@ -49,8 +49,4 @@ class MeasurementStreamsRepository {
     fun getStreamsIdsBySessionIds(sessionsIds: List<Long>): List<Long> {
         return mDatabase.measurementStreams().getStreamsIdsBySessionIds(sessionsIds)
     }
-
-    fun getStreamsIdsBySessionId(sessionsId: Long): List<Long> {
-        return mDatabase.measurementStreams().getStreamsIdsBySessionId(sessionsId)
-    }
 }

@@ -103,7 +103,7 @@ class ChartData(
             entries =  when (mSession.type) {
                 Session.Type.MOBILE -> { //TODO: debug this part !!!
                     val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
-                    val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold()
+                    val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
                     if (measurementsOverSecondThreshold.isNullOrEmpty()) {
                         ChartAveragesCreator().getMobileEntries(stream)
                     } else {

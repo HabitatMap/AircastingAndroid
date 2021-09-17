@@ -62,9 +62,9 @@ class AveragingService {
 
     companion object {
         val DEFAULT_FREQUENCY = 1
-        val FIRST_TRESHOLD_TIME = 2 * 60 * 1000 // 2 hours* 60
+        val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
         val FIRST_THRESHOLD_FREQUENCY = 5
-        val SECOND_TRESHOLD_TIME = 9 * 60 * 1000 // 9 hours* 60
+        val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
         val SECOND_THRESHOLD_FREQUENCY = 60
 
         private val THRESHOLDS = arrayOf(

@@ -18,8 +18,6 @@ class ChartAveragesCreator {
     private var usePreviousEntry = false
 
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
-        if (stream.measurements.isEmpty()) return emptyList<Entry>().toMutableList()
-
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()

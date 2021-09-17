@@ -30,8 +30,7 @@ class Measurement(
         activeSessionMeasurementDBObject.value,
         activeSessionMeasurementDBObject.time,
         activeSessionMeasurementDBObject.latitude,
-        activeSessionMeasurementDBObject.longitude,
-        activeSessionMeasurementDBObject.averaging_frequency
+        activeSessionMeasurementDBObject.longitude
     )
 
     constructor(measurementResponse: MeasurementResponse): this(
