@@ -101,7 +101,7 @@ class ChartData(
 
         stream?.let { stream ->
             entries =  when (mSession.type) {
-                Session.Type.MOBILE -> { //TODO: debug this part !!!
+                Session.Type.MOBILE -> {
                     val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
                     val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
                     if (measurementsOverSecondThreshold.isNullOrEmpty()) {
