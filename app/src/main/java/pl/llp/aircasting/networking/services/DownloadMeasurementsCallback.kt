@@ -86,7 +86,8 @@ class DownloadMeasurementsCallback(
             sessionId,
             stream
         )
-        val measurements = averagingService?.setCorrectAveragingFrequency(streamResponse.measurements.map { response -> Measurement(response) }) ?: streamResponse.measurements.map { response -> Measurement(response) }
+        val measurements = streamResponse.measurements.map { response -> Measurement(response) }
+        averagingService?.checkAveragingFrequency()
         measurementsRepository.insertAll(streamId, sessionId, measurements)
     }
 

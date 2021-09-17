@@ -185,7 +185,7 @@ class AveragingService {
         }
     }
 
-    private fun checkAveragingFrequency() {
+    fun checkAveragingFrequency() {
         mDBSession = mSessionsRepository.getSessionById(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
             if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
@@ -352,23 +352,6 @@ class AveragingService {
         }
     }
 
-    fun setCorrectAveragingFrequency(stream: MeasurementStream): MeasurementStream {
-        if (stream.measurements.isEmpty()) return stream
-        val sessionLength = stream.measurements.last().time.time - stream.measurements.first().time.time
-        if (sessionLength < FIRST_TRESHOLD_TIME) return stream
-        if (sessionLength in FIRST_TRESHOLD_TIME until SECOND_TRESHOLD_TIME) stream.measurements.forEach { measurement -> measurement.averagingFrequency =  FIRST_THRESHOLD_FREQUENCY }
-        if (sessionLength >= SECOND_TRESHOLD_TIME) stream.measurements.forEach { measurement -> measurement.averagingFrequency =  SECOND_THRESHOLD_FREQUENCY }
-        return stream
-    }
-
-    fun setCorrectAveragingFrequency(measurements: List<Measurement>): List<Measurement> {
-        if (measurements.isEmpty()) return measurements
-        val sessionLength = measurements.last().time.time - measurements.first().time.time
-        if (sessionLength < FIRST_TRESHOLD_TIME) return measurements
-        if (sessionLength in FIRST_TRESHOLD_TIME until SECOND_TRESHOLD_TIME) measurements.forEach { measurement -> measurement.averagingFrequency =  FIRST_THRESHOLD_FREQUENCY }
-        if (sessionLength >= SECOND_TRESHOLD_TIME) measurements.forEach { measurement -> measurement.averagingFrequency =  SECOND_THRESHOLD_FREQUENCY }
-        return measurements
-    }
 }
 
 class AveragingThreshold(val windowSize: Int, val time: Int)
