@@ -64,21 +64,24 @@ class ChartData(
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
         calendar.add(averageFrequency(), -mMaxEntriesCount)
-        val startString = when(mSession.type) {
-            Session.Type.FIXED -> DateConverter.get()?.toTimeStringForDisplay(DateUtils.truncate(calendar.time, Calendar.HOUR), TimeZone.getDefault()) ?: ""
-            Session.Type.MOBILE -> DateConverter.get()?.toTimeStringForDisplay(calendar.time, TimeZone.getDefault()) ?: ""
-        }
-        return startString
+        val startString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(calendar.time), TimeZone.getDefault())
+
+        return startString ?: ""
     }
 
     private fun endTimeString(): String {
-        val endString = when(mSession.type){
-            Session.Type.FIXED -> DateConverter.get()?.toTimeStringForDisplay(DateUtils.truncate(mEndTime, Calendar.HOUR), TimeZone.getDefault())
-            Session.Type.MOBILE -> DateConverter.get()?.toTimeStringForDisplay(mEndTime, TimeZone.getDefault())
-        }
+        val endString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(mEndTime), TimeZone.getDefault())
+
         return endString ?: ""
     }
 
+    private fun timeToDisplay(time: Date): Date {
+        return when(mSession.type) {
+            Session.Type.FIXED -> DateUtils.truncate(time, Calendar.HOUR)
+            Session.Type.MOBILE -> time
+        }
+    }
+    
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
         mSession.streamsSortedByDetailedType().forEach { stream ->
