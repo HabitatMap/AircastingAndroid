@@ -5,11 +5,14 @@ import pl.llp.aircasting.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.events.sdcard.SDCardReadStepStartedEvent
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.exceptions.SDCardSyncError
 
-class SDCardReader {
+class SDCardReader(errorHandler: ErrorHandler) {
     private val DOWNLOAD_FINISHED = "SD_SYNC_FINISH"
     private val CLEAR_FINISHED = "SD_DELETE_FINISH"
     private val COUNTER_STEP_PATTERN = "Count"
+    private val mErrorHandler = errorHandler
 
     private var stepType: StepType? =
         StepType.MOBILE
@@ -32,6 +35,7 @@ class SDCardReader {
         data ?: return
         val valueString = String(data)
 
+        mErrorHandler.handle(SDCardSyncError("SDCardReader,onMetaDataDownloaded, valueString: ${valueString} "))
         val measurementsInStepCountString = valueString.split(":").lastOrNull()?.trim()
 
         if (isCounterStep(valueString)) {
@@ -46,8 +50,10 @@ class SDCardReader {
         }
 
         if (valueString == DOWNLOAD_FINISHED) {
+            mErrorHandler.handle(SDCardSyncError("SDCardReader,onMetaDataDownloaded,DOWNLOAD_FINISHED! "))
             EventBus.getDefault().post(SDCardReadFinished())
         } else if (valueString == CLEAR_FINISHED) {
+            mErrorHandler.handle(SDCardSyncError("SDCardReader,onMetaDataDownloaded,CLEAR_FINISHED! "))
             EventBus.getDefault().post(SDCardClearFinished())
         }
     }
