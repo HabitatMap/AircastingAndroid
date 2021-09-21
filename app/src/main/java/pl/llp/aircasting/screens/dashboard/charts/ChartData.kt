@@ -59,11 +59,17 @@ class ChartData(
             Session.Type.FIXED -> Calendar.HOUR
         }
     }
+    private fun averagesCount(): Int {
+        return when (mSession.type) {
+            Session.Type.MOBILE -> -mMaxEntriesCount
+            Session.Type.FIXED -> -mMaxEntriesCount + 1
+        }
+    }
 
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
-        calendar.add(averageFrequency(), -mMaxEntriesCount)
+        calendar.add(averageFrequency(), averagesCount())
         val startString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(calendar.time), TimeZone.getDefault())
 
         return startString ?: ""
