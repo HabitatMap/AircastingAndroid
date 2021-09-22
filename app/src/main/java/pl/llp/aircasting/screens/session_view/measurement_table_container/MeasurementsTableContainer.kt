@@ -99,7 +99,7 @@ abstract class MeasurementsTableContainer {
             stretchTableLayout()
         }
 
-        if (session?.status == Session.Status.DISCONNECTED) {
+        if (session?.status == Session.Status.DISCONNECTED && session?.type == Session.Type.MOBILE) {
             mMeasurementsTable?.visibility = View.GONE
         } else {
             mMeasurementsTable?.visibility = View.VISIBLE

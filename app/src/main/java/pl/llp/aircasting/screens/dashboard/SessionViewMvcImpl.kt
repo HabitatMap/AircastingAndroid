@@ -198,7 +198,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.session?.status == Session.Status.DISCONNECTED) {
+        if (sessionPresenter.session?.status == Session.Status.DISCONNECTED && !sessionPresenter.isFixed()) {
             mMeasurementsDescription?.visibility = View.GONE
         } else if (sessionPresenter.expanded) {
             mMeasurementsDescription?.visibility = View.VISIBLE
