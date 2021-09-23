@@ -8,6 +8,7 @@ import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.networking.responses.SessionStreamResponse
 import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
+import pl.llp.aircasting.services.AveragingService
 import java.util.*
 
 class MeasurementStream(
@@ -200,6 +201,15 @@ class MeasurementStream(
         } else {
             allMeasurements
         }
+    }
+
+    fun lastMeasurementsByAveragingFrequency(amount: Int, threshold: Int): List<Measurement> {
+        val filteredMeasurements = measurements.filter { measurement ->  measurement.averagingFrequency == threshold}
+        val measurementsSize = filteredMeasurements.size
+
+        if (amount >= measurementsSize) return filteredMeasurements
+
+        return filteredMeasurements.takeLast(amount)
     }
 
     fun lastMeasurement(): Measurement {

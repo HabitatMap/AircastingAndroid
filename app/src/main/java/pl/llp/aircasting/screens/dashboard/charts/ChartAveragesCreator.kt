@@ -4,6 +4,7 @@ import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
+import pl.llp.aircasting.services.AveragingService
 import java.util.*
 
 class ChartAveragesCreator {
@@ -12,7 +13,6 @@ class ChartAveragesCreator {
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private val MAX_X_VALUE = 8
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
-
     }
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
@@ -66,6 +66,22 @@ class ChartAveragesCreator {
             return entries
         }
         oldEntries = entries
+        return entries
+    }
+
+    fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
+        val entries: MutableList<Entry> = mutableListOf()
+        var xValue = MAX_X_VALUE.toDouble()
+        for (measurement in lastMeasurements.reversed()) {
+            entries.add(
+                Entry(
+                    xValue.toFloat(),
+                    measurement.value.toFloat()
+                )
+            )
+            xValue--
+        }
+
         return entries
     }
 

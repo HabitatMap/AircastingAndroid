@@ -6,6 +6,7 @@ import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
+import pl.llp.aircasting.services.AveragedMeasurementsService
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -116,7 +117,15 @@ class ChartData(
 
         stream?.let { stream ->
             entries =  when (mSession.type) {
-                Session.Type.MOBILE -> ChartAveragesCreator().getMobileEntries(stream)
+                Session.Type.MOBILE -> {
+                    val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
+                    val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
+                    if (measurementsOverSecondThreshold.isNullOrEmpty()) {
+                        ChartAveragesCreator().getMobileEntries(stream)
+                    } else {
+                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(measurementsOverSecondThreshold)
+                    }
+                }
                 Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
             }
         }
