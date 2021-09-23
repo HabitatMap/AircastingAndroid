@@ -74,5 +74,4 @@ interface MeasurementStreamDao {
 
     @Query("DELETE FROM measurement_streams WHERE deleted=1")
     fun deleteMarkedForRemoval()
-
 }

@@ -10,7 +10,6 @@ import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.screens.dashboard.charts.ChartAveragesCreator
 
 class AveragedMeasurementsService {
-
         var averagingService: AveragingService? = null
         val sessionsRepository = SessionsRepository()
         var sessionId : Long? = 0

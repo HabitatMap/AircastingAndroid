@@ -63,5 +63,4 @@ interface ActiveSessionMeasurementDao {
         deleteActiveSessionMeasurement(id)
         insert(measurement)
     }
-
 }
