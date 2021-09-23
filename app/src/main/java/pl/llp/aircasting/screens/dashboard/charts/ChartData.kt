@@ -61,7 +61,11 @@ class ChartData(
     }
     private fun averagesCount(): Int {
         return when (mSession.type) {
-            Session.Type.MOBILE -> -mMaxEntriesCount
+            Session.Type.MOBILE -> if (mMaxEntriesCount > 0) {
+                return -mMaxEntriesCount + 1
+            } else {
+                return -mMaxEntriesCount
+            }
             Session.Type.FIXED -> -mMaxEntriesCount + 1
         }
     }
