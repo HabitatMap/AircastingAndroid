@@ -20,8 +20,8 @@ class AveragedMeasurementsService {
             DatabaseProvider.runQuery {
                 sessionId = sessionsRepository.getSessionIdByUUID(sessionUUID)
                 if (sessionId != null) averagingService = AveragingService.get(sessionId!!)
-                }
             }
+        }
 
         fun getMeasurementsOverSecondThreshold(stream: MeasurementStream):  List<Measurement>?{
             if (sessionId == null) return emptyList()
