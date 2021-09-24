@@ -173,7 +173,7 @@ class SDCardSyncService(
         mErrorHandler.handle(SDCardSyncError("finish()"))
         mSDCardDownloadService.deleteFiles()
         mDeviceItem?.let { deviceItem ->
-            mAirBeamConnector?.onDisconnected(deviceItem)
+            mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()
         }
 

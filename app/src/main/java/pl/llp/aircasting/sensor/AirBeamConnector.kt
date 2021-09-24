@@ -97,8 +97,8 @@ abstract class AirBeamConnector {
         }
     }
 
-    fun onDisconnected(device: DeviceItem) {
-        EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
+    fun onDisconnected(device: DeviceItem, postDisconnectedEvent: Boolean = true) {
+        if (postDisconnectedEvent) EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
         mListener?.onDisconnect(device.id)
     }
 
