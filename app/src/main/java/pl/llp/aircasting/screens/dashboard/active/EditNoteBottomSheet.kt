@@ -89,10 +89,10 @@ class EditNoteBottomSheet(
         intent.action = Intent.ACTION_VIEW
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         Log.i("PHOTO", mNote?.photoPath.toString())
-        val uri = Uri.fromFile(File(mNote?.photoPath))
+        val uri = mNote?.photoPath
         //val inputStream = context.contentResolver. ..
-        intent.setDataAndType(Uri.parse(uri.path), "image/*") //FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".fileprovider", File(mNote!!.photoPath))
-        Log.i("PHOTO", "uri: " + Uri.parse(uri.path).toString())
+        intent.setDataAndType(Uri.parse(uri), "image/*") //FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".fileprovider", File(mNote!!.photoPath))
+        Log.i("PHOTO", "uri: " + uri)
         startActivity(intent)
     }
 

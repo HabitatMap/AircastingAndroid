@@ -1,6 +1,7 @@
 package pl.llp.aircasting.networking.services
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -25,9 +26,9 @@ class MobileSessionUploadService(private val apiService: ApiService, private val
 
         val session = GzippedParams.get(sessionParams, SessionParams::class.java)
         val compression = true
-        val photo = if(photoPath != null) File(photoPath!!) else File("")
+        val photo = if(photoPath != null) Uri.parse(photoPath!!) else Uri.parse("")
 
-        val call = apiService.createMobileSession(session, compression, MultipartBody.Part.createFormData("file.name", photo?.name, RequestBody.create(MediaType.parse("image/*"), photo))) // TODO: i have to pass these parameters in a different way now
+        val call = apiService.createMobileSession(session, compression, MultipartBody.Part.createFormData("file.name", photo.toString(), RequestBody.create(MediaType.parse("image/*"), photo.toString()))) // TODO: i have to pass these parameters in a different way now
         call.enqueue(object : Callback<UploadSessionResponse> {
             override fun onResponse(call: Call<UploadSessionResponse>, response: Response<UploadSessionResponse>) {
                 if (response.isSuccessful) {
