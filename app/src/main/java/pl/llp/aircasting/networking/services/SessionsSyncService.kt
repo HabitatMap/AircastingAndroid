@@ -25,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
+import pl.llp.aircasting.models.Note
 
 class SessionsSyncService {
     private val apiService: ApiService
@@ -151,6 +152,8 @@ class SessionsSyncService {
     private fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
             val session = sessionRepository.loadSessionForUpload(uuid)
+            val notesList = noteRepository.loadNotesBySessionId(sessionRepository.getSessionIdByUUID(uuid)) //TODO: this is temporary just to check if I can upload 1 note
+            val note = if (!notesList.isEmpty()) Note(notesList!!.first()!!) else null
             if (session != null && isUploadable(session)) {
                 val onUploadSuccess = { response: Response<UploadSessionResponse> ->
                     DatabaseProvider.runQuery {
@@ -162,7 +165,7 @@ class SessionsSyncService {
                     }
                     // TODO: handle update notes - adding photoPath
                 }
-                uploadService.upload(session, onUploadSuccess)
+                uploadService.upload(session, note?.photoPath, onUploadSuccess)
             }
         }
     }

@@ -76,7 +76,7 @@ class AddNoteBottomSheet(
 
         val attachPhotoButton = contentView?.add_picture_button
         attachPhotoButton?.setOnClickListener {
-            attachPhoto()
+            dispatchTakePictureIntent()
         }
 
         notePhotoImageView = contentView?.note_photo_image_view
@@ -101,41 +101,13 @@ class AddNoteBottomSheet(
         mListener.addNotePressed(mSession, note)
     }
 
-    private fun attachPhoto() {
-//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//
-//        try {
-//            startActivityForResult(intent, CAMERA_REQUEST_CODE)
-//        } catch (e: ActivityNotFoundException) {
-//            Log.e("ATTACH_PHOTO", "Cant take picture")
-//        }
-        dispatchTakePictureIntent()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            // TODO: set the image view with bitmap which is result of this intent, now it does not work
             val inputStream = context?.contentResolver?.openInputStream(Uri.parse(photoPath))
             val imageBitmap = BitmapFactory.decodeStream(inputStream)
             Log.i("PHOTO", "onActivityResult, imageBitmap: " + imageBitmap.toString())
             notePhotoImageView?.setImageBitmap(imageBitmap)
         }
-//        if (requestCode === CAMERA_REQUEST_CODE && resultCode === Activity.RESULT_OK) { // NOWA WERSJA TU NIE WCHODZI RACZEJ (TA Z CREATEIMAGEFILE()
-//            val imageBitmap = data?.extras?.get("data") as Bitmap
-            //imageEncoded = PhotoHelper.getBase64String(imageBitmap)
-
-            // ZE STAREJ APPKI:
-//            val picturesDir = createImageFile() //File(activity?.filesDir, "pictures")
-//            val target = File(picturesDir, "")  //System.currentTimeMillis().toString() + ".jpg"
-            // - ZE STAREJ APPKI
-//            imageEncoded = target.toString() // todo: just a trial what happens
-
-//            val tempUri = getImageUri(mContext!!, imageBitmap)
-//            val finalFile = File(getRealPathFromURI(tempUri))
-//            imageEncoded = finalFile.path
-//            notePhotoImageView?.setImageBitmap(imageBitmap) // show taken photo on image view below attach photo button
-//
-//        }
     }
 
     @Throws(IOException::class)
@@ -181,30 +153,4 @@ class AddNoteBottomSheet(
         }
     }
 
-//    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-//        val bytes = ByteArrayOutputStream()
-//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-//        val values = ContentValues()
-//        values.put(MediaStore.Images.Media.TITLE, "Title")
-//        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
-//        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//           //todo: ActivityCompat.requestPermissions(mContext., {android.Manifest.permission.WRITE_EXTERNAL_STORAGE},1)
-//        }
-//
-//        return mContext.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-//    }
-//
-//    fun getRealPathFromURI(uri: Uri?): String? {
-//        var path = ""
-//        if (mContext?.contentResolver != null) {
-//            val cursor: Cursor? = mContext.contentResolver?.query(uri!!, null, null, null, null) //todo: null assertions to remove??
-//            if (cursor != null) {
-//                cursor.moveToFirst()
-//                val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-//                path = cursor.getString(idx)
-//                cursor.close()
-//            }
-//        }
-//        return path
-//    }
 }

@@ -14,6 +14,10 @@ class NoteRepository {
         mDatabase.notes().insert(noteDBObject)
     }
 
+    fun loadNotesBySessionId(sessionId: Long?): List<NoteDBObject?> {
+        return mDatabase.notes().loadNotesBySessionId(sessionId)
+    }
+
     fun update(sessionId: Long, note: Note) {
         mDatabase.notes().update(sessionId, note.number, note.text)
     }

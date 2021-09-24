@@ -20,9 +20,7 @@ class FixedSessionUploadService(private val apiService: ApiService, private val 
         val sessionParams = SessionParams(session)
 
         val sessionBody = CreateSessionBody(
-            GzippedParams.get(sessionParams, SessionParams::class.java),
-            compression = true,
-            photos = MultipartBody.Part.createFormData("", "") //TODO: this is random at this moment
+            GzippedParams.get(sessionParams, SessionParams::class.java)
         )
         val call = apiService.createFixedSession(sessionBody)
         call.enqueue(object : Callback<UploadSessionResponse> {
