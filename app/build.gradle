@@ -13,8 +13,8 @@ android {
         applicationId "pl.llp.aircasting"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 140
-        versionName "2.0.20"
+        versionCode 143
+        versionName "2.0.21"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
