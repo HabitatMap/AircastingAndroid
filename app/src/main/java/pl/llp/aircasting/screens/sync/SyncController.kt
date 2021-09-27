@@ -36,6 +36,7 @@ import pl.llp.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
+import pl.llp.aircasting.exceptions.SDCardSyncError
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import java.util.concurrent.atomic.AtomicBoolean
@@ -189,13 +190,15 @@ class SyncController(
     // Sync is finished when data is downloaded from SD card successfully and SD card is cleared
     @Subscribe
     fun onMessageEvent(event: SDCardClearFinished) {
-        mWizardNavigator.goToAirbeamSynced(this)
+        mErrorHandler.handle(SDCardSyncError("got SDCardClearFinished, normally we'd go to synced finished but disabling it for test purposes"))
+//        mWizardNavigator.goToAirbeamSynced(this)
     }
 
     // Sync is finished - this event is posted just in case card cleared meta data was not received
     // 20 seconds after we finish syncing
     @Subscribe
     fun onMessageEvent(event: SDCardSyncFinished) {
+        mErrorHandler.handle(SDCardSyncError("got SDCardSyncFinished, mWizardNavigator ${mWizardNavigator}, this ${this}"))
         mWizardNavigator.goToAirbeamSynced(this)
     }
 
