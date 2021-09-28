@@ -15,6 +15,7 @@ import pl.llp.aircasting.screens.sync.refreshing.RefreshingSessionsFragment
 import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedFragment
 import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingFragment
+import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingViewMvc
 
 class SyncWizardNavigator(
     context: Context,
@@ -68,9 +69,10 @@ class SyncWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToAirbeamSyncing() {
+    fun goToAirbeamSyncing(listener: AirbeamSyncingViewMvc.Listener) {
         incrementStepProgress()
         val fragment = AirbeamSyncingFragment(mFragmentManager)
+        fragment.listener = listener
         registerBackPressed(fragment)
         goToFragment(fragment)
     }
