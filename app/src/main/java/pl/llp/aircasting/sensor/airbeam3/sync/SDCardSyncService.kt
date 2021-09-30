@@ -129,11 +129,7 @@ class SDCardSyncService(
         if (mSessionsSyncStarted.get()) {
             mSessionsSyncStarted.set(false)
             sendFixedMeasurementsToBackend()
-            mErrorHandler.handle(SDCardSyncError(" scheduling posting finishing event after 20 seconds} "))
-            val timerTask = timerTask {
-                EventBus.getDefault().post(SDCardSyncFinished())
-            }
-            Timer().schedule(timerTask, 20000)
+
         }
     }
 
@@ -178,6 +174,8 @@ class SDCardSyncService(
         }
 
         cleanup()
+        mErrorHandler.handle(SDCardSyncError(" posting finishing event} "))
+        EventBus.getDefault().post(SDCardSyncFinished())
         Log.d(TAG, "Sync finished")
     }
 
