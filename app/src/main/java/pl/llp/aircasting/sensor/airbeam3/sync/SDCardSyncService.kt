@@ -12,6 +12,7 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.networking.services.AverageAndSyncSDCardSessionsService
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -153,11 +154,12 @@ class SDCardSyncService(
     private fun finish() {
         mSDCardDownloadService.deleteFiles()
         mDeviceItem?.let { deviceItem ->
-            mAirBeamConnector?.onDisconnected(deviceItem)
+            mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()
         }
 
         cleanup()
+        EventBus.getDefault().post(SDCardSyncFinished())
         Log.d(TAG, "Sync finished")
     }
 

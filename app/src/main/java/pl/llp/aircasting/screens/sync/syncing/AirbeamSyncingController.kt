@@ -7,11 +7,17 @@ import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.screens.common.BaseController
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
+import pl.llp.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 
 class AirbeamSyncingController(
     viewMvc: AirbeamSyncingViewMvcImpl?,
     private val mFragmentManager: FragmentManager
 ) : BaseController<AirbeamSyncingViewMvcImpl>(viewMvc) {
+    fun registerListener(listener: AirbeamSyncingViewMvc.Listener) {
+        mViewMvc?.registerListener(listener)
+    }
+
     fun onBackPressed() {
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
         mFragmentManager.popBackStack()
@@ -30,5 +36,10 @@ class AirbeamSyncingController(
     fun onMessageEvent(event: SDCardLinesReadEvent) {
         val step = event.step
         mViewMvc?.updateProgress(step, event.linesRead)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: SDCardSyncFinished) {
+        mViewMvc?.finishSync()
     }
 }
