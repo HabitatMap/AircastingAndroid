@@ -54,7 +54,6 @@ class SDCardSyncService(
         mDeviceItem = deviceItem
 
         airBeamConnector.triggerSDCardDownload()
-        mErrorHandler.handle(SDCardSyncError(" run() after  triggerSDCardDownload"))
 
         mSDCardDownloadService.run(
             onLinesDownloaded = { step, linesCount ->
@@ -66,7 +65,6 @@ class SDCardSyncService(
     }
 
     private fun checkDownloadedFiles(steps: List<SDCardReader.Step>) {
-        mErrorHandler.handle(SDCardSyncError(" onDownloadFinished, checkDownloadedFiles,  mAirBeamConnector ${mAirBeamConnector}"))
         val airBeamConnector = mAirBeamConnector ?: return
 
         Log.d(TAG, "Checking downloaded files")
@@ -86,11 +84,9 @@ class SDCardSyncService(
     }
 
     private fun saveMobileMeasurementsLocally() {
-        mErrorHandler.handle(SDCardSyncError("saveMobileMeasurementsLocally, mDeviceItem ${mDeviceItem}"))
         val deviceItem = mDeviceItem ?: return
 
         Log.d(TAG, "Processing mobile sessions")
-        mErrorHandler.handle(SDCardSyncError("Processing mobile sessions"))
 
         mSDCardMobileSessionsProcessor.run(deviceItem.id,
             onFinishCallback = { processedSessionsIds ->
@@ -100,7 +96,6 @@ class SDCardSyncService(
     }
 
     private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
-        mErrorHandler.handle(SDCardSyncError("sendMobileMeasurementsToBackend"))
         val sessionsSyncService = mSessionsSyncService
 
 
@@ -119,13 +114,11 @@ class SDCardSyncService(
 
         // We leave this screen hanging for 2 sec so the user knows the sync upload was initiated
         Thread.sleep(2000)
-        mErrorHandler.handle(SDCardSyncError("sending SessionsSyncSuccessEvent"))
         EventBus.getDefault().post(SessionsSyncSuccessEvent())
     }
 
     @Subscribe
     fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        mErrorHandler.handle(SDCardSyncError(" onMessageEvent(event: SessionsSyncSuccessEvent) mSessionsSyncStarted.get() ${mSessionsSyncStarted.get()} "))
         if (mSessionsSyncStarted.get()) {
             mSessionsSyncStarted.set(false)
             sendFixedMeasurementsToBackend()
@@ -140,7 +133,6 @@ class SDCardSyncService(
     }
 
     private fun sendFixedMeasurementsToBackend() {
-        mErrorHandler.handle(SDCardSyncError("sendFixedMeasurementsToBackend, mDeviceItem ${mDeviceItem}"))
         val deviceItem = mDeviceItem ?: return
 
         val uploadFixedMeasurementsService = mSDCardUploadFixedMeasurementsService
@@ -153,7 +145,6 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Sending fixed measurements to backend")
-        mErrorHandler.handle(SDCardSyncError("uploadFixedMeasurementsService.run"))
         uploadFixedMeasurementsService.run(deviceItem.id,
             onFinishCallback = { finish() }
         )
@@ -161,12 +152,10 @@ class SDCardSyncService(
 
     private fun clearSDCard(airBeamConnector: AirBeamConnector) {
         Log.d(TAG, "Clearing SD card")
-        mErrorHandler.handle(SDCardSyncError("clearSDCard"))
         airBeamConnector.clearSDCard()
     }
 
     private fun finish() {
-        mErrorHandler.handle(SDCardSyncError("finish()"))
         mSDCardDownloadService.deleteFiles()
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
@@ -174,13 +163,11 @@ class SDCardSyncService(
         }
 
         cleanup()
-        mErrorHandler.handle(SDCardSyncError(" posting finishing event} "))
         EventBus.getDefault().post(SDCardSyncFinished())
         Log.d(TAG, "Sync finished")
     }
 
     private fun cleanup() {
-        mErrorHandler.handle(SDCardSyncError("cleanup()"))
         EventBus.getDefault().unregister(this)
         mDeviceItem = null
         mAirBeamConnector = null

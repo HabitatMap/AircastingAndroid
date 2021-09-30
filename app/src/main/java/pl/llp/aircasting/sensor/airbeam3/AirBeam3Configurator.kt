@@ -51,7 +51,7 @@ class AirBeam3Configurator(
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
     val sdCardReader =
-        SDCardReader(mErrorHandler)
+        SDCardReader()
 
     fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT

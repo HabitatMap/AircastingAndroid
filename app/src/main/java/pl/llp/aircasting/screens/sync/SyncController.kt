@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
@@ -35,8 +34,6 @@ import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
-import pl.llp.aircasting.exceptions.SDCardSyncError
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingViewMvc
@@ -87,7 +84,6 @@ class SyncController(
     }
 
     fun onStop() {
-        mErrorHandler.handle(SDCardSyncError("SyncController, onStop() - for some reason this controller is stopping now"))
         EventBus.getDefault().unregister(this)
     }
 
@@ -190,21 +186,6 @@ class SyncController(
         mWizardNavigator.goToAirbeamSyncing(this)
     }
 
-    // Sync is finished when data is downloaded from SD card successfully and SD card is cleared
-    @Subscribe
-    fun onMessageEvent(event: SDCardClearFinished) {
-        mErrorHandler.handle(SDCardSyncError("got SDCardClearFinished, normally we'd go to synced finished but disabling it for test purposes"))
-//        mWizardNavigator.goToAirbeamSynced(this)
-    }
-
-    // Sync is finished - this event is posted just in case card cleared meta data was not received
-    // 20 seconds after we finish syncing
-//    @Subscribe
-//    fun onMessageEvent(event: SDCardSyncFinished) {
-//        mErrorHandler.handle(SDCardSyncError("got SDCardSyncFinished, mWizardNavigator ${mWizardNavigator}, this ${this}"))
-//        mWizardNavigator.goToAirbeamSynced(this)
-//    }
-
     override fun onAirbeamSyncedContinueClicked() {
         if (mSettings.areMapsDisabled()) {
             mWizardNavigator.goToTurnOffLocationServices(this)
@@ -266,7 +247,6 @@ class SyncController(
     }
 
     override fun syncFinished() {
-        mErrorHandler.handle(SDCardSyncError("syncFinished called from listener"))
         mWizardNavigator.goToAirbeamSynced(this)
     }
 }
