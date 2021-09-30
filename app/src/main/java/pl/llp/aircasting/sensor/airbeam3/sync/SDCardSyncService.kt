@@ -12,12 +12,9 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.networking.services.AverageAndSyncSDCardSessionsService
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.concurrent.timerTask
 
 class SDCardSyncService(
     private val mSDCardDownloadService: SDCardDownloadService,
@@ -122,7 +119,6 @@ class SDCardSyncService(
         if (mSessionsSyncStarted.get()) {
             mSessionsSyncStarted.set(false)
             sendFixedMeasurementsToBackend()
-
         }
     }
 
