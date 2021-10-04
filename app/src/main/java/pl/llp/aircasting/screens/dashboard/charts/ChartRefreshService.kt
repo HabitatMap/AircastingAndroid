@@ -1,6 +1,8 @@
 package pl.llp.aircasting.screens.dashboard.charts
 
 import pl.llp.aircasting.models.Session
+import java.util.*
+import kotlin.time.minutes
 
 
 class ChartRefreshService {
@@ -23,7 +25,11 @@ class ChartRefreshService {
     }
 
     fun shouldBeRefreshed(): Boolean {
-        return mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
+        return when(mSession?.type) {
+            Session.Type.MOBILE -> mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
+            Session.Type.FIXED -> Date().minutes == 0
+            else -> mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
+        }
     }
 
     private fun timeFromLastRefresh(): Long {

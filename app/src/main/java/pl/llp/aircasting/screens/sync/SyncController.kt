@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
@@ -37,6 +36,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
+import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingViewMvc
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncController(
@@ -55,6 +55,7 @@ class SyncController(
     TurnOnLocationServicesViewMvc.Listener,
     AirbeamSyncedViewMvc.Listener,
     TurnOffLocationServicesViewMvc.Listener,
+    AirbeamSyncingViewMvc.Listener,
     ErrorViewMvc.Listener {
 
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
@@ -182,13 +183,7 @@ class SyncController(
 
     private fun syncAirbeam(deviceItem: DeviceItem) {
         AirBeamSyncService.startService(mContextActivity, deviceItem)
-        mWizardNavigator.goToAirbeamSyncing()
-    }
-
-    // Sync is finished when data is downloaded from SD card successfully and SD card is cleared
-    @Subscribe
-    fun onMessageEvent(event: SDCardClearFinished) {
-        mWizardNavigator.goToAirbeamSynced(this)
+        mWizardNavigator.goToAirbeamSyncing(this)
     }
 
     override fun onAirbeamSyncedContinueClicked() {
@@ -249,5 +244,9 @@ class SyncController(
                 // Ignore all other requests.
             }
         }
+    }
+
+    override fun syncFinished() {
+        mWizardNavigator.goToAirbeamSynced(this)
     }
 }

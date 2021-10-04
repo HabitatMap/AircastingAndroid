@@ -169,6 +169,13 @@ class SessionWithStreamsAndLastMeasurementsDBObject {
         entity = MeasurementStreamDBObject::class
     )
     lateinit var streams: List<StreamWithLastMeasurementsDBObject>
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = NoteDBObject::class
+    )
+    lateinit var notes: MutableList<NoteDBObject>
 }
 
 

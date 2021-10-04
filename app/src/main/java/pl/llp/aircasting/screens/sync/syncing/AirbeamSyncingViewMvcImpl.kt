@@ -9,8 +9,10 @@ import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseViewMvc
 import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader
 import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
+import pl.llp.aircasting.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.screens.sync.refreshed.RefreshedSessionsViewMvc
 
-class AirbeamSyncingViewMvcImpl: BaseViewMvc, AirbeamSyncingViewMvc {
+class AirbeamSyncingViewMvcImpl: BaseObservableViewMvc<AirbeamSyncingViewMvc.Listener>, AirbeamSyncingViewMvc {
     private val header: TextView?
     private val stepTitles = hashMapOf(
         SDCardReader.StepType.MOBILE to "Mobile",
@@ -29,6 +31,12 @@ class AirbeamSyncingViewMvcImpl: BaseViewMvc, AirbeamSyncingViewMvc {
         header?.text = "${title}..."
 
         startLoader()
+    }
+
+    fun finishSync() {
+        for (listener in listeners) {
+            listener.syncFinished()
+        }
     }
 
     private fun startLoader() {

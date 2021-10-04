@@ -50,6 +50,7 @@ class AveragingService {
 
     private var mNewAveragingThreshold = AtomicBoolean(false)
     private var mStreamIds: List<Long>? = null
+    private var mPreviousAveragingFrequency: Int? = null
 
     private constructor(sessionId: Long) {
         this.sessionId = sessionId
@@ -188,6 +189,7 @@ class AveragingService {
         mDBSession = mSessionsRepository.getSessionById(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
             if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
+                mPreviousAveragingFrequency = dbAveragingFrequency
                 mNewAveragingThreshold.set(true)
                 updateCurrentAveragingFrequency()
             }
@@ -303,7 +305,7 @@ class AveragingService {
 
         if (nonAveragedMeasurementsCount ?: 0 > 0) {
             thresholdTime = currentAveragingThreshold().time
-            previousWindowSize = THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
+            previousWindowSize = mPreviousAveragingFrequency ?: THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
             averagingFrequency = currentAveragingThreshold().windowSize
             windowSize = averagingFrequency / previousWindowSize
         }
