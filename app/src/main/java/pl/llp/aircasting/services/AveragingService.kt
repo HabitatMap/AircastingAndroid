@@ -185,7 +185,7 @@ class AveragingService {
         }
     }
 
-    fun checkAveragingFrequency() {
+    private fun checkAveragingFrequency() {
         mDBSession = mSessionsRepository.getSessionById(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
             if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
