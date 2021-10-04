@@ -351,7 +351,6 @@ class AveragingService {
             else -> 0
         }
     }
-
 }
 
 class AveragingThreshold(val windowSize: Int, val time: Int)
