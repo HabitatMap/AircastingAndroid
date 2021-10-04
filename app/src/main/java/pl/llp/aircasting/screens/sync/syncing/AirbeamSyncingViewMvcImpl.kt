@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.sync.syncing
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,6 +10,8 @@ import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseViewMvc
 import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader
 import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.exceptions.SDCardSyncError
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 import pl.llp.aircasting.screens.sync.refreshed.RefreshedSessionsViewMvc
 
@@ -34,6 +37,7 @@ class AirbeamSyncingViewMvcImpl: BaseObservableViewMvc<AirbeamSyncingViewMvc.Lis
     }
 
     fun finishSync() {
+        ErrorHandler(context).handle(SDCardSyncError("finishSync, calling listener"))
         for (listener in listeners) {
             listener.syncFinished()
         }
@@ -48,5 +52,8 @@ class AirbeamSyncingViewMvcImpl: BaseObservableViewMvc<AirbeamSyncingViewMvc.Lis
         val title = context.getString(R.string.airbeam_syncing_header)
         val stepTitle = stepTitles[step.type]
         header?.text = "${title} ${stepTitle}: \n ${linesRead}/${step.measurementsCount}"
+        if (linesRead == step.measurementsCount) {
+            header?.text = getString(R.string.airbeam_syncing_finilizing)
+        }
     }
 }

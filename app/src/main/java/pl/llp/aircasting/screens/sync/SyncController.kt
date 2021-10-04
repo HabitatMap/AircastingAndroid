@@ -34,6 +34,7 @@ import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.sensor.AirBeamSyncService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.exceptions.SDCardSyncError
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingViewMvc
@@ -247,6 +248,7 @@ class SyncController(
     }
 
     override fun syncFinished() {
+        mErrorHandler.handle(SDCardSyncError("syncFinished in syncController"))
         mWizardNavigator.goToAirbeamSynced(this)
     }
 }

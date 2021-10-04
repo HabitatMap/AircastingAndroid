@@ -86,3 +86,6 @@ class SensorDisconnectedError(additionalMessage: String?):
 
 class ParseDateError(cause: Exception? = null):
         BaseException(cause, "There was a problem when parsing a date")
+
+class SDCardSyncError(additionalMessage: String?):
+    BaseException(null, "SD CARD SYNC LOGS: ${additionalMessage}")

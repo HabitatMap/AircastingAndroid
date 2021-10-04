@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.sync
 import android.content.Context
 import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
+import org.xml.sax.ErrorHandler
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.ProgressBarCounter
 import pl.llp.aircasting.lib.Settings
@@ -71,7 +72,7 @@ class SyncWizardNavigator(
 
     fun goToAirbeamSyncing(listener: AirbeamSyncingViewMvc.Listener) {
         incrementStepProgress()
-        val fragment = AirbeamSyncingFragment(mFragmentManager)
+        val fragment = AirbeamSyncingFragment(mFragmentManager, pl.llp.aircasting.exceptions.ErrorHandler(mContext))
         fragment.listener = listener
         registerBackPressed(fragment)
         goToFragment(fragment)
