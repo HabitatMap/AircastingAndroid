@@ -109,8 +109,6 @@ class SDCardSyncService(
         val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
         averageAndSyncSDCardSessionsService.start()
 
-        // We leave this screen hanging for 2 sec so the user knows the sync upload was initiated
-        Thread.sleep(2000)
         EventBus.getDefault().post(SessionsSyncSuccessEvent())
     }
 
@@ -159,6 +157,7 @@ class SDCardSyncService(
         }
 
         cleanup()
+        mErrorHandler.handle(SDCardSyncError("finish(), posting SDCardSyncFinished"))
         EventBus.getDefault().post(SDCardSyncFinished())
         Log.d(TAG, "Sync finished")
     }
