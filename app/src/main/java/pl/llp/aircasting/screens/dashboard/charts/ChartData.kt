@@ -60,11 +60,13 @@ class ChartData(
             Session.Type.FIXED -> Calendar.HOUR
         }
     }
+
     private fun averagesCount(): Int {
-        return when (mSession.type) {
-            Session.Type.MOBILE -> -mMaxEntriesCount
-            Session.Type.FIXED -> -mMaxEntriesCount + 1
-        }
+        if (mMaxEntriesCount > 0) {
+                return -mMaxEntriesCount + 1
+            } else {
+                return -mMaxEntriesCount
+            }
     }
 
     private fun startTimeString(): String {
