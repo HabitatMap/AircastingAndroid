@@ -97,7 +97,6 @@ class GraphDataGenerator(
     private fun buildAverageEntry(date: Date, hasNote: Boolean = false): Entry {
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
-
         if (hasNote) {
             return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
         } else {
