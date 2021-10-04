@@ -40,6 +40,14 @@ class Measurement(
         measurementResponse.longitude
     )
 
+    constructor(measurementResponse: MeasurementResponse, averagingFrequency: Int): this(
+        measurementResponse.value,
+        DateConverter.get()?.fromString(measurementResponse.time) ?: Date(),
+        measurementResponse.latitude,
+        measurementResponse.longitude,
+        averagingFrequency
+    )
+
     enum class Level(val value: Int) {
         EXTREMELY_LOW(-1),
         LOW(0),
