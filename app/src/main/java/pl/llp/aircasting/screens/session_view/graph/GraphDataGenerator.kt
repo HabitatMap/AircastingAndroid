@@ -1,7 +1,6 @@
 package pl.llp.aircasting.screens.session_view.graph
 
 import android.content.Context
-import android.util.Range
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
 import pl.llp.aircasting.R
@@ -10,9 +9,7 @@ import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.services.AveragingService
 import java.util.*
-import java.util.EnumSet.range
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class GraphDataGenerator(
     private val mContext: Context
