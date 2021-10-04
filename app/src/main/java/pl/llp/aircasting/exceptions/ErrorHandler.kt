@@ -23,7 +23,7 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun handle(exception: BaseException) {
         exception.cause?.printStackTrace()
-        exception.messageToDisplay?.let { Log.e(TAG, exception.messageToDisplay) }
+        exception.messageToDisplay?.let { message -> if (exception.messageToDisplay is String) Log.e(TAG, message) }
 
         if (!BuildConfig.DEBUG) {
             exception.messageToDisplay?.let {
