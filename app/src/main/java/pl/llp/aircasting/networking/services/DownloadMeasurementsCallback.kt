@@ -81,7 +81,6 @@ class DownloadMeasurementsCallback(
 
     private fun saveStreamData(streamResponse: SessionStreamWithMeasurementsResponse) {
         val stream = MeasurementStream(streamResponse)
-
         val streamId = measurementStreamsRepository.getIdOrInsert(
             sessionId,
             stream
