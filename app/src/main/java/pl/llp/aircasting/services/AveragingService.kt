@@ -63,9 +63,9 @@ class AveragingService {
 
     companion object {
         val DEFAULT_FREQUENCY = 1
-        val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+        val FIRST_TRESHOLD_TIME = 2 * 60 * 1000 // 2 hours* 60
         val FIRST_THRESHOLD_FREQUENCY = 5
-        val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
+        val SECOND_TRESHOLD_TIME = 9 * 60 * 1000 // 9 hours * 60
         val SECOND_THRESHOLD_FREQUENCY = 60
 
         private val THRESHOLDS = arrayOf(
@@ -350,6 +350,15 @@ class AveragingService {
             lastMeasurementTime.time > mFirstThresholdTime -> 1
             else -> 0
         }
+    }
+
+    fun setCorrectAveragingFrequency(measurements: List<Measurement>): List<Measurement> {
+        if (measurements.isEmpty()) return measurements
+        val sessionLength = measurements.last().time.time - measurements.first().time.time
+        if (sessionLength < FIRST_TRESHOLD_TIME) return measurements
+        if (sessionLength in FIRST_TRESHOLD_TIME until SECOND_TRESHOLD_TIME) measurements.forEach { measurement -> measurement.averagingFrequency =  FIRST_THRESHOLD_FREQUENCY }
+        if (sessionLength >= SECOND_TRESHOLD_TIME) measurements.forEach { measurement -> measurement.averagingFrequency =  SECOND_THRESHOLD_FREQUENCY }
+        return measurements
     }
 
 }

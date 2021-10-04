@@ -80,14 +80,14 @@ class DownloadMeasurementsCallback(
     }
 
     private fun saveStreamData(streamResponse: SessionStreamWithMeasurementsResponse) {
-        val stream = averagingService?.setCorrectAveragingFrequency(MeasurementStream(streamResponse)) ?: MeasurementStream(streamResponse)
+        val stream = MeasurementStream(streamResponse)
 
         val streamId = measurementStreamsRepository.getIdOrInsert(
             sessionId,
             stream
         )
-        val measurements = streamResponse.measurements.map { response -> Measurement(response) }
-        averagingService?.checkAveragingFrequency()
+        val measurements = averagingService?.setCorrectAveragingFrequency(streamResponse.measurements.map { response -> Measurement(response) }) ?: streamResponse.measurements.map { response -> Measurement(response) }
+        //averagingService?.checkAveragingFrequency()
         measurementsRepository.insertAll(streamId, sessionId, measurements)
     }
 
