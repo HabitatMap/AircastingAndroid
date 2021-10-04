@@ -16,10 +16,19 @@ class AppBar {
             mTopAppBar?.setNavigationOnClickListener {
                 rootActivity.onBackPressed()
             }
+            mTopAppBar?.inflateMenu(R.menu.app_bar_menu)
         }
 
         fun destroy() {
             mTopAppBar = null
+        }
+
+        fun adjustMenuVisibility(isFollowingTab: Boolean) {
+            if (isFollowingTab) {
+                mTopAppBar?.menu?.setGroupVisible(0, true)
+            } else {
+                mTopAppBar?.menu?.setGroupVisible(0, false)
+            }
         }
     }
 }

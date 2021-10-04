@@ -9,10 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
+        app:menu="@menu/app_bar_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
         android:paddingTop="@dimen/keyline_4" />
+
 </com.google.android.material.appbar.AppBarLayout>
