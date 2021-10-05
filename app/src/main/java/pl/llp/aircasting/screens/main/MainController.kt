@@ -1,8 +1,11 @@
 package pl.llp.aircasting.screens.main
 
 import android.content.IntentFilter
+import android.view.Menu
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_main.*
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
@@ -16,14 +19,16 @@ import pl.llp.aircasting.screens.new_session.LoginActivity
 import pl.llp.aircasting.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.R
+import pl.llp.aircasting.screens.dashboard.DashboardFragment
 
 class MainController(
     private val rootActivity: AppCompatActivity,
-    private val mViewMvc: MainViewMvc,
+    private val mViewMvc: MainViewMvcImpl, // TODO: changed from MainViewMvc, is it ok?!?!?
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory,
     private val fragmentManager: FragmentManager
-) : ReorderSessionsBottomSheet.Listener {
+) : ReorderSessionsBottomSheet.Listener, MainViewMvc.Listener { //TODO: changed from MainViewMvc, is it ok????
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
@@ -41,10 +46,26 @@ class MainController(
         mSessionManager?.onStart()
     }
 
+    fun onStart(){
+        mViewMvc.registerListener(this)
+    }
+
+    fun onStop(){
+        mViewMvc.unregisterListener(this)
+    }
+
     fun onDestroy() {
         unregisterConnectivityManager()
         mSessionManager?.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
+    }
+
+    fun registerListener(listener: MainViewMvc.Listener) {
+        mViewMvc?.registerListener(listener)
+    }
+
+    fun unregisterListener(listener: MainViewMvc.Listener) {
+        mViewMvc?.unregisterListener(listener)
     }
 
     private fun showLoginScreen() {
@@ -104,6 +125,16 @@ class MainController(
     }
 
     override fun onReorderSessionsClicked() {
-        //TODO("Not yet implemented")
+        //TODO("Not yet implemented") FOR SOME REASON THIS DRAWS NEW FRAGMENT ON TOP OF THE OLD ONE!!!!
+        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, DashboardFragment(true)).commit()
+        //TODO: mViewMvc.hideAppBarMenu()
+        mViewMvc.showReorderingFinishedButton()
+    }
+
+    override fun onFinishedReorderingButtonClicked() {
+        Toast.makeText(rootActivity, "begin transaction entered", Toast.LENGTH_LONG).show()
+        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, DashboardFragment()).commit()
+        // TODO: mViewMvc.showAppBarMenu()
+        mViewMvc.hideReorderingFinishedButton()
     }
 }

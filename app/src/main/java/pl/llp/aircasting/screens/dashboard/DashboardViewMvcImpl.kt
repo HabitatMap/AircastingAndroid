@@ -7,18 +7,26 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseViewMvc
+import pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardPagerAdapter
 
 class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
     private val mPager: ViewPager?
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?,
-        fragmentManager: FragmentManager?
+        fragmentManager: FragmentManager?,
+        isReordering: Boolean
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
         mPager = rootView?.findViewById(R.id.pager)
-        mPager?.offscreenPageLimit = DashboardPagerAdapter.TABS_COUNT
-        fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
+        if (isReordering) {
+            mPager?.offscreenPageLimit = ReorderingDashboardPagerAdapter.TABS_COUNT
+            fragmentManager?.let { mPager?.adapter = ReorderingDashboardPagerAdapter(context, it) }
+        } else {
+            mPager?.offscreenPageLimit = DashboardPagerAdapter.TABS_COUNT
+            fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
+        }
+
         setTabsMargins()
     }
 
