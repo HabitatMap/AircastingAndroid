@@ -89,3 +89,6 @@ class ParseDateError(cause: Exception? = null):
 
 class SDCardSyncError(additionalMessage: String?):
     BaseException(null, "SD CARD SYNC LOGS: ${additionalMessage}")
+
+class AirbeamServiceError(additionalMessage: String?):
+    BaseException(null, "AirBeam service error: ${additionalMessage}")
