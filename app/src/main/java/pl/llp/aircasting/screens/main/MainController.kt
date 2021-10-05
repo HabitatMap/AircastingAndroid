@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.main
 
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
@@ -20,11 +21,13 @@ class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
-    private val mApiServiceFactory: ApiServiceFactory
-) {
+    private val mApiServiceFactory: ApiServiceFactory,
+    private val fragmentManager: FragmentManager
+) : ReorderSessionsBottomSheet.Listener {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
+    private var mReorderSessionsBottomSheet: ReorderSessionsBottomSheet? = null
 
     fun onCreate() {
         if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {
@@ -93,5 +96,14 @@ class MainController(
 
     private fun unregisterConnectivityManager() {
         mConnectivityManager?.let { rootActivity.unregisterReceiver(it) }
+    }
+
+    fun onMenuOpened() {
+        mReorderSessionsBottomSheet = ReorderSessionsBottomSheet(this)
+        mReorderSessionsBottomSheet?.show(fragmentManager)
+    }
+
+    override fun onReorderSessionsClicked() {
+        //TODO("Not yet implemented")
     }
 }

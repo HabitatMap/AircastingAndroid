@@ -3,7 +3,12 @@ package pl.llp.aircasting.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.google.android.libraries.places.api.Places
@@ -51,7 +56,7 @@ class MainActivity: AppCompatActivity() {
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings, apiServiceFactory)
+        controller = MainController(this, view, settings, apiServiceFactory, supportFragmentManager)
 
         controller?.onCreate()
 
@@ -81,6 +86,12 @@ class MainActivity: AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.app_bar_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
+        // TODO: this menu which is opened below should be hidden though
+        controller?.onMenuOpened()
+        return super.onMenuOpened(featureId, menu)
     }
 
 }
