@@ -8,11 +8,14 @@ import pl.llp.aircasting.screens.common.BaseController
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.exceptions.SDCardSyncError
 import pl.llp.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 
 class AirbeamSyncingController(
     viewMvc: AirbeamSyncingViewMvcImpl?,
-    private val mFragmentManager: FragmentManager
+    private val mFragmentManager: FragmentManager,
+    private val mErrorHandler: ErrorHandler
 ) : BaseController<AirbeamSyncingViewMvcImpl>(viewMvc) {
     fun registerListener(listener: AirbeamSyncingViewMvc.Listener) {
         mViewMvc?.registerListener(listener)
@@ -40,6 +43,7 @@ class AirbeamSyncingController(
 
     @Subscribe
     fun onMessageEvent(event: SDCardSyncFinished) {
+        mErrorHandler.handle(SDCardSyncError("finishSync, calling listener"))
         mViewMvc?.finishSync()
     }
 }

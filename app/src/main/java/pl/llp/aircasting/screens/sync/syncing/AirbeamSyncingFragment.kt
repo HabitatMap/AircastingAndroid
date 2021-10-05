@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.screens.common.BaseFragment
 import pl.llp.aircasting.screens.common.BaseWizardNavigator
 import pl.llp.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedViewMvc
 
 class AirbeamSyncingFragment(
-    private val mFragmentManager: FragmentManager
+    private val mFragmentManager: FragmentManager,
+    private val mErrorHandler: ErrorHandler
 ) : BaseFragment<AirbeamSyncingViewMvcImpl, AirbeamSyncingController>(), BaseWizardNavigator.BackPressedListener {
     var listener: AirbeamSyncingViewMvc.Listener? = null
 
@@ -25,7 +27,7 @@ class AirbeamSyncingFragment(
             .appComponent.inject(this)
 
         view = AirbeamSyncingViewMvcImpl(layoutInflater, null)
-        controller = AirbeamSyncingController(view, mFragmentManager)
+        controller = AirbeamSyncingController(view, mFragmentManager, mErrorHandler)
 
         controller?.onCreate()
 
