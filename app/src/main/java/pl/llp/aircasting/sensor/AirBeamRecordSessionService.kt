@@ -31,7 +31,7 @@ open class AirBeamRecordSessionService: AirBeamService() {
         appComponent.inject(this)
 
         mIntent = intent
-        mDeviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as DeviceItem?
+        mDeviceItem = DeviceItem(mIntent?.getParcelableExtra(DEVICE_ITEM_KEY))
 
         return super.onStartCommand(mIntent, flags, startId)
     }
