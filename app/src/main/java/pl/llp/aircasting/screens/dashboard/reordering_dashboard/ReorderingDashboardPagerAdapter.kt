@@ -20,7 +20,7 @@ class ReorderingDashboardPagerAdapter(private val mContext: Context, private val
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     val fragment = hashMapOf(
-        DashboardPagerAdapter.FOLLOWING_TAB_INDEX to FollowingFragment()
+        DashboardPagerAdapter.FOLLOWING_TAB_INDEX to FollowingFragment.newInstance(true)
     )
 
     companion object {

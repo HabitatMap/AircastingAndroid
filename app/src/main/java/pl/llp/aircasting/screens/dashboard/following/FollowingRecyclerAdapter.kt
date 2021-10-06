@@ -1,14 +1,17 @@
 package pl.llp.aircasting.screens.dashboard.following
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import pl.llp.aircasting.lib.ItemTouchHelperAdapter
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionsRecyclerAdapter
+import java.util.*
 
 
-class FollowingRecyclerAdapter(
+open class FollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
     private val mListener: SessionCardListener,
     supportFragmentManager: FragmentManager
@@ -29,4 +32,5 @@ class FollowingRecyclerAdapter(
         // We only have to reload measurements for fixed tab for expanded sessions. Followed sessions have measurements fetched anyway
         return session
     }
+
 }

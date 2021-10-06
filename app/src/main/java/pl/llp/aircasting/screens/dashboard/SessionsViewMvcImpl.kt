@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.FollowingSessionReorderingTouchHelperCallback
+import pl.llp.aircasting.lib.ItemTouchHelperAdapter
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
@@ -18,7 +21,7 @@ import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
 
-    private var mRecyclerSessions: RecyclerView? = null
+    var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     private val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
@@ -46,7 +49,14 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
+
         mRecyclerSessions?.setAdapter(mAdapter)
+
+        if (mAdapter is ItemTouchHelperAdapter) {
+            val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
+            val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+            itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
+        }
 
         setupSwipeToRefreshLayout()
     }

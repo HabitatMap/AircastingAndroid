@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.main
 
 import android.content.IntentFilter
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -126,15 +127,21 @@ class MainController(
 
     override fun onReorderSessionsClicked() {
         //TODO("Not yet implemented") FOR SOME REASON THIS DRAWS NEW FRAGMENT ON TOP OF THE OLD ONE!!!!
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, DashboardFragment(true)).commit()
+        Log.i("SETT", "main " + mSettings.isReordering().toString())
+        mSettings.setIsReordering(true)
+        Log.i("SETT", "main " + mSettings.isReordering().toString())
+        fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment()).commit()
+//        fragmentManager.beginTransaction().detach(DashboardFragment()).attach(DashboardFragment()).commit()
         //TODO: mViewMvc.hideAppBarMenu()
         mViewMvc.showReorderingFinishedButton()
     }
 
     override fun onFinishedReorderingButtonClicked() {
-        Toast.makeText(rootActivity, "begin transaction entered", Toast.LENGTH_LONG).show()
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, DashboardFragment()).commit()
+        mSettings.setIsReordering(false)
+        fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment()).commit()
         // TODO: mViewMvc.showAppBarMenu()
         mViewMvc.hideReorderingFinishedButton()
+        Log.i("SETT", "main " + mSettings.isReordering().toString())
+        Log.i("SETT", "main " + mSettings.isReordering().toString())
     }
 }

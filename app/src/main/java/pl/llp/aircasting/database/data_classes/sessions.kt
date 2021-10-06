@@ -31,7 +31,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
+    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
+    @ColumnInfo(name = "sessionOrder") val order: Int = -1
 
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -205,7 +206,7 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY followed_at DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY sessionOrder ASC")
     fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
@@ -256,6 +257,9 @@ interface SessionDao {
     @Query("UPDATE sessions SET followed_at=:followedAt WHERE uuid=:uuid")
     fun updateFollowedAt(uuid: String, followedAt: Date?)
 
+    @Query("UPDATE sessions SET sessionOrder=:sessionOrder WHERE uuid=:uuid")
+    fun updateOrder(uuid: String, sessionOrder: Int)
+
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
     fun updateStatus(uuid: String, status: Session.Status)
 
@@ -288,4 +292,7 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
+
+    @Query("SELECT COUNT(followed_at) FROM sessions WHERE followed_at IS NOT NULL")
+    fun getFollowingSessionNumber(): Int
 }

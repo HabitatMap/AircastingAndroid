@@ -92,4 +92,8 @@ class SessionsViewModel(): ViewModel() {
     fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
+
+    fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
+        mDatabase.sessions().updateOrder(sessionUUID, followingSessionsNumber)
+    }
 }

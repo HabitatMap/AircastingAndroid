@@ -3,6 +3,7 @@ package pl.llp.aircasting
 import dagger.Component
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.screens.create_account.CreateAccountActivity
+import pl.llp.aircasting.screens.dashboard.DashboardFragment
 import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
@@ -61,6 +62,7 @@ interface AppComponent {
     fun inject(fragment: SessionDetailsFragment)
     fun inject(activity: MapActivity)
     fun inject(activity: GraphActivity)
+    fun inject(fragment: DashboardFragment)
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)

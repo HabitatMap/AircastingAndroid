@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.dashboard.following
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,16 @@ class FollowingFragment : Fragment() {
 
     private var sessionsRequested = false
 
+    companion object {
+        fun newInstance(isReordering: Boolean): FollowingFragment {
+            val args: Bundle = Bundle()
+            args.putBoolean("isReordering", isReordering)
+            val newFragment = FollowingFragment()
+            newFragment.arguments = args
+            return newFragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,10 +46,13 @@ class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
+        var isReordering = settings.isReordering()
+        Log.i("SETT", "following " + settings.isReordering().toString())
         view = FollowingViewMvcImpl(
             layoutInflater,
             null,
-            childFragmentManager
+            childFragmentManager,
+            isReordering
         )
 
         controller = FollowingController(

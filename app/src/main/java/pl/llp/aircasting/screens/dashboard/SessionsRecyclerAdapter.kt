@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +20,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         val view: SessionViewMvc<ListenerType> get() = mViewMvc
     }
 
-    private var mSessionUUIDS: List<String> = emptyList()
-    private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    var mSessionUUIDS: MutableList<String> = mutableListOf()
+    var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
     abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -32,17 +33,20 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     override fun getItemCount(): Int {
-        return mSessionPresenters.size
+        return mSessionUUIDS.size // todo: changed from mSessionPresenters
     }
 
-    private fun removeObsoleteSessions() {
+    protected open fun removeObsoleteSessions() {
         mSessionPresenters.keys
             .filter { uuid -> !mSessionUUIDS.contains(uuid) }
-            .forEach { uuid -> mSessionPresenters.remove(uuid) }
+            .forEach { uuid ->
+                mSessionPresenters.remove(uuid)
+            }
     }
 
     fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
-        mSessionUUIDS = sessions.map { session -> session.uuid }
+        Log.i("LIST", "session binded")
+        mSessionUUIDS = sessions.map { session -> session.uuid }.toMutableList()
         removeObsoleteSessions()
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
