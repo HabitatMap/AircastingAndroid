@@ -292,7 +292,7 @@
     <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync.</string>
     <string name="airbeam_syncing_finalizing">Finalizing...</string>
     <string name="airbeam_syncing_finished_header">Sync complete</string>
-    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app.\nThe SD card was cleared.</string>
+    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.</string>
     <string name="sync_error_header">Something went wrong</string>
     <string name="sync_unknown_error">Unexpected error happen. Please contact support.</string>
     <string name="sync_unavailable_dialog_header">SD card sync unavailable</string>
