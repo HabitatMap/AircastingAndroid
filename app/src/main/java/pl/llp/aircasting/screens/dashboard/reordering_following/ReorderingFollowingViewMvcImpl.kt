@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.dashboard.following
+package pl.llp.aircasting.screens.dashboard.reordering_following
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,19 +7,21 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.screens.dashboard.SessionsViewMvcImpl
+import pl.llp.aircasting.screens.dashboard.following.FollowingRecyclerAdapter
+import pl.llp.aircasting.screens.dashboard.following.FollowingViewMvcImpl
 
-open class FollowingViewMvcImpl(
+class ReorderingFollowingViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
-): SessionsViewMvcImpl<SessionCardListener>(inflater, parent, supportFragmentManager),
+): FollowingViewMvcImpl(inflater, parent, supportFragmentManager),
     SessionCardListener {
 
     override fun buildAdapter(
         inflater: LayoutInflater,
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<SessionCardListener> {
-        return FollowingRecyclerAdapter(
+        return ReorderingFollowingRecyclerAdapter(
             inflater,
             this,
             supportFragmentManager

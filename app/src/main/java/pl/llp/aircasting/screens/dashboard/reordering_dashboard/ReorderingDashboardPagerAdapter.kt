@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
+import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollowingFragment
 
 enum class SessionsTab(val value: Int){
     FOLLOWING(0);
@@ -20,7 +21,7 @@ class ReorderingDashboardPagerAdapter(private val mContext: Context, private val
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     val fragment = hashMapOf(
-        DashboardPagerAdapter.FOLLOWING_TAB_INDEX to FollowingFragment.newInstance(true)
+        DashboardPagerAdapter.FOLLOWING_TAB_INDEX to ReorderingFollowingFragment()
     )
 
     companion object {

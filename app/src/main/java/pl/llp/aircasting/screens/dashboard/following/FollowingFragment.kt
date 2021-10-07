@@ -15,10 +15,10 @@ import pl.llp.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
 
 
-class FollowingFragment : Fragment() {
-    private var controller: FollowingController? = null
-    private val sessionsViewModel by activityViewModels<SessionsViewModel>()
-    private var view: FollowingViewMvcImpl? = null
+open class FollowingFragment : Fragment() {
+    var controller: FollowingController? = null
+    val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    var view: FollowingViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -26,17 +26,7 @@ class FollowingFragment : Fragment() {
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
 
-    private var sessionsRequested = false
-
-    companion object {
-        fun newInstance(isReordering: Boolean): FollowingFragment {
-            val args: Bundle = Bundle()
-            args.putBoolean("isReordering", isReordering)
-            val newFragment = FollowingFragment()
-            newFragment.arguments = args
-            return newFragment
-        }
-    }
+    var sessionsRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,13 +36,11 @@ class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        var isReordering = settings.isReordering()
         Log.i("SETT", "following " + settings.isReordering().toString())
         view = FollowingViewMvcImpl(
             layoutInflater,
             null,
-            childFragmentManager,
-            isReordering
+            childFragmentManager
         )
 
         controller = FollowingController(

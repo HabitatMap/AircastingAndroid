@@ -1,16 +1,13 @@
-package pl.llp.aircasting.screens.dashboard.reordering_dashboard
+package pl.llp.aircasting.screens.dashboard.reordering_following
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.room.Database
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
-import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
-import pl.llp.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.screens.dashboard.following.FollowingRecyclerAdapter
 import pl.llp.aircasting.screens.dashboard.following.FollowingSessionViewMvcImpl
 import java.util.*
