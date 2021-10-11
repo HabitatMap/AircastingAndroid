@@ -28,13 +28,11 @@ class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvcImpl, // TODO: changed from MainViewMvc, is it ok?!?!?
     private val mSettings: Settings,
-    private val mApiServiceFactory: ApiServiceFactory,
-    private val fragmentManager: FragmentManager
-) : ReorderSessionsBottomSheet.Listener, MainViewMvc.Listener { //TODO: changed from MainViewMvc, is it ok????
+    private val mApiServiceFactory: ApiServiceFactory
+) : MainViewMvc.Listener { //TODO: changed from MainViewMvc, is it ok????
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
-    private var mReorderSessionsBottomSheet: ReorderSessionsBottomSheet? = null
 
     fun onCreate() {
         if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {
@@ -121,30 +119,13 @@ class MainController(
         mConnectivityManager?.let { rootActivity.unregisterReceiver(it) }
     }
 
-    fun onMenuOpened() {
-        mReorderSessionsBottomSheet = ReorderSessionsBottomSheet(this)
-        mReorderSessionsBottomSheet?.show(fragmentManager)
-    }
-
-    override fun onReorderSessionsClicked() {
-        //TODO("Not yet implemented") FOR SOME REASON THIS DRAWS NEW FRAGMENT ON TOP OF THE OLD ONE!!!!
-        Log.i("SETT", "main " + mSettings.isReordering().toString())
-        mSettings.setIsReordering(true)
-        Log.i("SETT", "main " + mSettings.isReordering().toString())
-        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
-//        fragmentManager.beginTransaction().detach(DashboardFragment()).attach(DashboardFragment()).commit()
-        //TODO: mViewMvc.hideAppBarMenu()
-        mViewMvc.showReorderingFinishedButton()
-        NavigationController.goToReorderingDashboard()
-    }
-
     override fun onFinishedReorderingButtonClicked() {
-        mSettings.setIsReordering(false)
-        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
-        // TODO: mViewMvc.showAppBarMenu()
-        mViewMvc.hideReorderingFinishedButton()
-        Log.i("SETT", "main " + mSettings.isReordering().toString())
-        Log.i("SETT", "main " + mSettings.isReordering().toString())
-        NavigationController.goToDashboard(0)
+//        mSettings.setIsReordering(false)
+//        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
+//        // TODO: mViewMvc.showAppBarMenu()
+//        mViewMvc.hideReorderingFinishedButton()
+//        Log.i("SETT", "main " + mSettings.isReordering().toString())
+//        Log.i("SETT", "main " + mSettings.isReordering().toString())
+//        NavigationController.goToDashboard(0)
     }
 }

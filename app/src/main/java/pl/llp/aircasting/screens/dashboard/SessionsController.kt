@@ -14,10 +14,6 @@ import pl.llp.aircasting.events.ExportSessionEvent
 import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.lib.CSVHelper
-import pl.llp.aircasting.lib.NavigationController
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.lib.ShareHelper
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -26,6 +22,7 @@ import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.screens.session_view.map.MapActivity
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.lib.*
 
 
 abstract class SessionsController(
@@ -60,6 +57,9 @@ abstract class SessionsController(
         mViewMvc?.showLoader()
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
+        DatabaseProvider.runQuery {
+            AppBar.adjustMenuVisibility(false, mSessionRepository.getFollowingSessionsNumber())
+        }
     }
 
     open fun onPause() {

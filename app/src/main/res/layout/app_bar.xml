@@ -9,11 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
-        app:menu="@menu/app_bar_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
-        android:paddingTop="@dimen/keyline_4"  />
+        android:paddingTop="@dimen/keyline_4">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:layout_height="match_parent">
+
+            <ImageView
+                style="@style/Widget.AppCompat.ActionButton"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/aircasting_white"
+                app:srcCompat="@drawable/ic_draggable_icon_25_jpg"
+                android:tint="@color/aircasting_grey_700" />
+
+        </LinearLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
 </com.google.android.material.appbar.AppBarLayout>

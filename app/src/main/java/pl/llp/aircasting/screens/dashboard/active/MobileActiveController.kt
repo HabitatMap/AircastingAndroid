@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.events.StandaloneModeEvent
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.screens.dashboard.*
 import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 

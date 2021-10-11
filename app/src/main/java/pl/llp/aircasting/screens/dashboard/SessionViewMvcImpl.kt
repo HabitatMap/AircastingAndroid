@@ -41,6 +41,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mExpandedSessionView: View
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
+    protected var mReorderSessionButton: ImageView
     protected val mChart: Chart
     protected val mChartView: ConstraintLayout?
     protected val mMeasurementsDescription: TextView?
@@ -104,6 +105,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             onCollapseSessionCardClicked()
             collapseSessionCard()
         }
+        mReorderSessionButton = findViewById(R.id.reorder_session_button)
 
         mFollowButton = findViewById(R.id.follow_button)
         mFollowButton.setOnClickListener {
@@ -261,12 +263,18 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected fun setExpandCollapseButton() {
-        if (mSessionPresenter?.expanded == true) {
+        if (mSessionPresenter?.session?.followedAt != null) {   //TODO: this condition is not enough as following session in Fixed tab would have wrong button? but maybe it is enough though
+            mExpandSessionButton.visibility = View.INVISIBLE
+            mCollapseSessionButton.visibility = View.INVISIBLE
+            mReorderSessionButton.visibility = View.VISIBLE
+        } else if (mSessionPresenter?.expanded == true) {
             mExpandSessionButton.visibility = View.INVISIBLE
             mCollapseSessionButton.visibility = View.VISIBLE
+            mReorderSessionButton.visibility = View.INVISIBLE
         } else {
             mExpandSessionButton.visibility = View.VISIBLE
             mCollapseSessionButton.visibility = View.INVISIBLE
+            mReorderSessionButton.visibility = View.INVISIBLE
         }
     }
 

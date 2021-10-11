@@ -69,7 +69,6 @@ open class FollowingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         controller?.onResume()
-        AppBar.adjustMenuVisibility(true)
     }
 
     override fun onPause() {

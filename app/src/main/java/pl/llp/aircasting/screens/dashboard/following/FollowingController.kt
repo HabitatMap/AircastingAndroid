@@ -3,6 +3,8 @@ package pl.llp.aircasting.screens.dashboard.following
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
@@ -24,6 +26,13 @@ class FollowingController(
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun onResume() {
+        super.onResume()
+        DatabaseProvider.runQuery {
+            AppBar.adjustMenuVisibility(true, mSessionRepository.getFollowingSessionsNumber())
+        }
+    }
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())

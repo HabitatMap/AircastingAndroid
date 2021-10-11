@@ -56,7 +56,7 @@ class MainActivity: AppCompatActivity() {
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings, apiServiceFactory, supportFragmentManager)
+        controller = MainController(this, view, settings, apiServiceFactory)
 
         controller?.onCreate()
 
@@ -91,19 +91,6 @@ class MainActivity: AppCompatActivity() {
                                             permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.app_bar_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
-        // TODO: this menu which is opened below should be hidden though
-        controller?.onMenuOpened()
-//        super.onMenuOpened(featureId, menu)
-//        super.onOptionsMenuClosed(menu)
-        return false
     }
 
 }
