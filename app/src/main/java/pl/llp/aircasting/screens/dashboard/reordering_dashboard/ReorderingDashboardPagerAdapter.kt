@@ -36,7 +36,7 @@ class ReorderingDashboardPagerAdapter(private val mContext: Context, private val
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            FOLLOWING_TAB_INDEX -> "Following Reordering"
+            FOLLOWING_TAB_INDEX -> "Following"
             else -> ""
         }
     }
