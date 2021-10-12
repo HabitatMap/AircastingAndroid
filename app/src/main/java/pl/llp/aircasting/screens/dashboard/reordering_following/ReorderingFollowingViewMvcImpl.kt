@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.dashboard.reordering_following
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -28,7 +29,12 @@ class ReorderingFollowingViewMvcImpl(
         )
     }
 
-    override fun layoutId(): Int {
+    override fun sessionCardMoveInProgress() {
+        Log.i("CARD_MOVED", "Session card move is in progress")
+//        mRecyclerSessions.adapter.     ????
+    }
+
+    override fun layoutId(): Int { // TODO: these 3 below methods are not needed i guess
         return R.id.empty_dashboard
     }
 

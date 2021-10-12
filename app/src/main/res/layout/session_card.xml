@@ -88,7 +88,21 @@
             android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_chevron_up"
+            android:src="@drawable/ic_draggable_icon_25_jpg"
+            android:tint="@color/aircasting_dark_blue"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
+            app:layout_constraintStart_toEndOf="@+id/session_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/reorder_inprogress_session_button"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_draggable_icon_with_halo"
             android:tint="@color/aircasting_dark_blue"
             android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/session_actions_button"

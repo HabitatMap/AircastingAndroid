@@ -2,8 +2,12 @@ package pl.llp.aircasting.screens.dashboard.reordering_following
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import kotlinx.android.synthetic.main.fragment_sessions_tab.view.*
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
 import pl.llp.aircasting.models.Session
@@ -16,17 +20,20 @@ class ReorderingFollowingRecyclerAdapter (
     private val mInflater: LayoutInflater,
     private val mListener: SessionCardListener,
     supportFragmentManager: FragmentManager
-): FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager),
+):  FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager),
     ItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc =
-            FollowingSessionViewMvcImpl(
+            ReorderingFollowingSessionViewMvcImpl(
                 mInflater,
                 parent,
                 supportFragmentManager
             )
+
         viewMvc.registerListener(mListener)
+//        parent. ... ???
+
         return MyViewHolder(viewMvc)
     }
 
@@ -36,6 +43,7 @@ class ReorderingFollowingRecyclerAdapter (
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) { // TODO: somehow i have to pass mSessionUUIDS list back to SessionsRecyclerADapter or somewhere?!?!
+        mListener.sessionCardMoveInProgress()
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(mSessionUUIDS, i, i + 1)
@@ -53,7 +61,6 @@ class ReorderingFollowingRecyclerAdapter (
                 }
             }
         }
-
         notifyItemMoved(fromPosition, toPosition)
     }
 
@@ -85,5 +92,6 @@ class ReorderingFollowingRecyclerAdapter (
                 mSessionPresenters.remove(uuid)
             }
     }
+
 
 }

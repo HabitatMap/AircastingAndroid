@@ -11,7 +11,7 @@ import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.SessionViewMvcImpl
 
-class FollowingSessionViewMvcImpl:
+open class FollowingSessionViewMvcImpl:
     SessionViewMvcImpl<SessionCardListener>,
     FollowingSessionViewMvc {
 
@@ -76,4 +76,6 @@ class FollowingSessionViewMvcImpl:
         noMeasurementsLabels?.visibility = View.GONE
         setExpandCollapseButton()
     }
+
+    //TODO: add bindReorderingButton() or something?? look how these above methods are used in SessionViewMvcImpl
 }

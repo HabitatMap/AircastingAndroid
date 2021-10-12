@@ -1,10 +1,13 @@
 package pl.llp.aircasting.lib
 
+import android.view.MotionEvent
+import android.view.View
+import android.widget.ImageView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-
-
+import kotlinx.android.synthetic.main.session_card.view.*
+import pl.llp.aircasting.R
 
 
 class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: ItemTouchHelperAdapter) :
@@ -31,7 +34,29 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         target: ViewHolder
     ): Boolean {
         mAdapter?.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
+
         return true
+    }
+
+    override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
+        super.clearView(recyclerView, viewHolder)
+
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
+    }
+
+    override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
+        super.onSelectedChanged(viewHolder, actionState)
+
+        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.INVISIBLE
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.VISIBLE
+        }
+
+        if (actionState == ItemTouchHelper.ACTION_STATE_IDLE) {
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
+        }
     }
 
     override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
@@ -42,3 +67,4 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         mAdapter = itemTouchHelperAdapter
     }
 }
+
