@@ -43,4 +43,18 @@ class ReorderingFollowingFragment: FollowingFragment() {
 
         return view?.rootView
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view = null
+        controller?.onDestroy()
+        controller = null
+    }
 }

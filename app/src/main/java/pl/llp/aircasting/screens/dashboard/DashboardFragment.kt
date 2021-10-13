@@ -15,16 +15,6 @@ class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardControll
     @Inject
     lateinit var settings: Settings
 
-    companion object {
-        fun newInstance(): DashboardFragment {
-//            val args: Bundle = Bundle()
-//            args.putBoolean("isReordering", isReordering)
-            val newFragment = DashboardFragment()
-//            newFragment.arguments = args
-            return newFragment
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

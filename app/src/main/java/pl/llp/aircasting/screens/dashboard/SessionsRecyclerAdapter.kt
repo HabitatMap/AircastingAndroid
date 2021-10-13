@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.dashboard
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
@@ -15,13 +16,15 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
     protected val mSessionsViewModel = SessionsViewModel()
 
-    inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
+    open inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) : // TODO: i need to implement some onTouchListener here, or define MyViewHolder in ReorderingFollowingSessionRecyclerAdapter <??>
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
         val view: SessionViewMvc<ListenerType> get() = mViewMvc
+
     }
 
     var mSessionUUIDS: MutableList<String> = mutableListOf()
     var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    lateinit var mItemTouchHelper: ItemTouchHelper
     abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

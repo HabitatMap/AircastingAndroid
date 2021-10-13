@@ -3,15 +3,21 @@ package pl.llp.aircasting.screens.dashboard.reordering_following
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_sessions_tab.view.*
+import kotlinx.android.synthetic.main.session_card.view.*
+import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
+import pl.llp.aircasting.screens.dashboard.SessionViewMvc
 import pl.llp.aircasting.screens.dashboard.following.FollowingRecyclerAdapter
 import pl.llp.aircasting.screens.dashboard.following.FollowingSessionViewMvcImpl
 import java.util.*
@@ -32,9 +38,16 @@ class ReorderingFollowingRecyclerAdapter (
             )
 
         viewMvc.registerListener(mListener)
-//        parent. ... ???
+        val myReorderingViewHolder = MyViewHolder(viewMvc)
+        myReorderingViewHolder.itemView.findViewById<ImageView>(R.id.reorder_session_button).setOnTouchListener { v, event ->
+            Log.i("ACTION", "Touch event now")
+            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_DOWN)
+            mItemTouchHelper.startDrag(myReorderingViewHolder)
+            true
 
-        return MyViewHolder(viewMvc)
+        }
+
+        return myReorderingViewHolder
     }
 
     override fun prepareSession(session: Session, expanded: Boolean): Session {
@@ -42,7 +55,7 @@ class ReorderingFollowingRecyclerAdapter (
         return session
     }
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int) { // TODO: somehow i have to pass mSessionUUIDS list back to SessionsRecyclerADapter or somewhere?!?!
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
         mListener.sessionCardMoveInProgress()
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
@@ -68,7 +81,7 @@ class ReorderingFollowingRecyclerAdapter (
         Log.i("LIST", "list size: " + mSessionUUIDS.size.toString())
         mSessionUUIDS.removeAt(position)
         Log.i("LIST", "list size: " + mSessionUUIDS.size.toString())
-        //TODO: i have to update order of all sessions below removed one too!!!!
+
         for (session in mSessionUUIDS) {
             DatabaseProvider.runQuery {
                 mSessionsViewModel.updateOrder(session, mSessionUUIDS.indexOf(session)) //todo: not sure if thats correct

@@ -55,6 +55,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         if (mAdapter is ItemTouchHelperAdapter) {
             val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
             val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+            mAdapter.mItemTouchHelper = itemTouchHelper
             itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
         }
 
