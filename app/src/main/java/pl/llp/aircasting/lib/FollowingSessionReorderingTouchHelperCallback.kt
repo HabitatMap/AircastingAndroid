@@ -16,7 +16,7 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
     private var mAdapter: ItemTouchHelperAdapter? = itemTouchHelperAdapter
 
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {
@@ -41,20 +41,20 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
     override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
-        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE //TODO: add method responsible for this in interface and implement it together with "onItemDismiss" (??)
         viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
     }
 
     override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
 
-        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) { //TODO: add method responsible for this in interface and implement it together with "onItemDismiss" (??)
             viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.INVISIBLE
             viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.VISIBLE
         }
 
         if (actionState == ItemTouchHelper.ACTION_STATE_IDLE) {
-            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE // TODO: this if is to be removed i guess, it doesnt do anything now
             viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
         }
     }
@@ -66,5 +66,6 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
     init {
         mAdapter = itemTouchHelperAdapter
     }
+
 }
 

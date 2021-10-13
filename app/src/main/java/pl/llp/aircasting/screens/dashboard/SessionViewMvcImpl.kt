@@ -261,12 +261,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     }
 
     protected open fun setExpandCollapseButton() {
-//        if (mSessionPresenter?.session?.followedAt != null) {   //TODO: this condition is not enough as following session in Fixed tab would have wrong button? but maybe it is enough though
-//            mExpandSessionButton.visibility = View.INVISIBLE
-//            mCollapseSessionButton.visibility = View.INVISIBLE
-//            mReorderSessionButton.visibility = View.VISIBLE
-//        } else
-            if (mSessionPresenter?.expanded == true) {
+        if (mSessionPresenter?.expanded == true) {
             mExpandSessionButton.visibility = View.INVISIBLE
             mCollapseSessionButton.visibility = View.VISIBLE
         } else {
