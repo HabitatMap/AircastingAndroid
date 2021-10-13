@@ -29,21 +29,4 @@ class ReorderingFollowingViewMvcImpl(
         )
     }
 
-    override fun sessionCardMoveInProgress() {
-        Log.i("CARD_MOVED", "Session card move is in progress")
-//        mRecyclerSessions.adapter.     ????
-    }
-
-    override fun layoutId(): Int { // TODO: these 3 below methods are not needed i guess
-        return R.id.empty_dashboard
-    }
-
-    override fun showDidYouKnowBox(): Boolean {
-        return false
-    }
-
-    override fun recordNewSessionButtonId(): Int {
-        return R.id.dashboard_record_new_session_button
-    }
-
 }

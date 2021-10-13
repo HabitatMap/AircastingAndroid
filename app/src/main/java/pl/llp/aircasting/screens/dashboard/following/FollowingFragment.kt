@@ -1,14 +1,12 @@
 package pl.llp.aircasting.screens.dashboard.following
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
@@ -16,9 +14,9 @@ import javax.inject.Inject
 
 
 open class FollowingFragment : Fragment() {
-    var controller: FollowingController? = null
-    val sessionsViewModel by activityViewModels<SessionsViewModel>()
-    var view: FollowingViewMvcImpl? = null
+    protected var controller: FollowingController? = null
+    protected val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    protected var view: FollowingViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -26,7 +24,7 @@ open class FollowingFragment : Fragment() {
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
 
-    var sessionsRequested = false
+    protected var sessionsRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +34,6 @@ open class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        Log.i("SETT", "following " + settings.isReordering().toString())
         view = FollowingViewMvcImpl(
             layoutInflater,
             null,

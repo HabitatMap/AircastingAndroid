@@ -69,16 +69,6 @@ class MainActivity: AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        controller?.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        controller?.onStop()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
 

@@ -16,7 +16,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 ): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
     protected val mSessionsViewModel = SessionsViewModel()
 
-    open inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) : // TODO: i need to implement some onTouchListener here, or define MyViewHolder in ReorderingFollowingSessionRecyclerAdapter <??>
+    inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
         val view: SessionViewMvc<ListenerType> get() = mViewMvc
 
@@ -48,7 +48,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
-        Log.i("LIST", "session binded")
         mSessionUUIDS = sessions.map { session -> session.uuid }.toMutableList()
         removeObsoleteSessions()
         sessions.forEach { session ->

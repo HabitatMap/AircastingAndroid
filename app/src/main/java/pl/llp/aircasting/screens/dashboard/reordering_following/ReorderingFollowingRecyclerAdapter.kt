@@ -40,11 +40,9 @@ class ReorderingFollowingRecyclerAdapter (
         viewMvc.registerListener(mListener)
         val myReorderingViewHolder = MyViewHolder(viewMvc)
         myReorderingViewHolder.itemView.findViewById<ImageView>(R.id.reorder_session_button).setOnTouchListener { v, event ->
-            Log.i("ACTION", "Touch event now")
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_DOWN)
             mItemTouchHelper.startDrag(myReorderingViewHolder)
             true
-
         }
 
         return myReorderingViewHolder
@@ -56,7 +54,6 @@ class ReorderingFollowingRecyclerAdapter (
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        mListener.sessionCardMoveInProgress()
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(mSessionUUIDS, i, i + 1)
@@ -78,9 +75,7 @@ class ReorderingFollowingRecyclerAdapter (
     }
 
     override fun onItemDismiss(position: Int) {
-        Log.i("LIST", "list size: " + mSessionUUIDS.size.toString())
         mSessionUUIDS.removeAt(position)
-        Log.i("LIST", "list size: " + mSessionUUIDS.size.toString())
 
         for (session in mSessionUUIDS) {
             DatabaseProvider.runQuery {
@@ -105,6 +100,5 @@ class ReorderingFollowingRecyclerAdapter (
                 mSessionPresenters.remove(uuid)
             }
     }
-
 
 }

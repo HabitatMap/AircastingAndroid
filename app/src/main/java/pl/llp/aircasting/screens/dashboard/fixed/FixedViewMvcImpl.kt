@@ -57,7 +57,4 @@ class FixedViewMvcImpl(
         return R.id.dashboard_record_new_session_button
     }
 
-    override fun sessionCardMoveInProgress() {
-        // nothing here
-    }
 }

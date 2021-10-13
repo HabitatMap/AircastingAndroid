@@ -53,10 +53,6 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
             viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.VISIBLE
         }
 
-        if (actionState == ItemTouchHelper.ACTION_STATE_IDLE) {
-            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE // TODO: this if is to be removed i guess, it doesnt do anything now
-            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
-        }
     }
 
     override fun onSwiped(viewHolder: ViewHolder, direction: Int) {

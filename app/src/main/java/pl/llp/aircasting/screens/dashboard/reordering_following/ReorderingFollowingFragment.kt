@@ -19,7 +19,6 @@ class ReorderingFollowingFragment: FollowingFragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        Log.i("SETT", "following " + settings.isReordering().toString())
         view = ReorderingFollowingViewMvcImpl(
             layoutInflater,
             null,

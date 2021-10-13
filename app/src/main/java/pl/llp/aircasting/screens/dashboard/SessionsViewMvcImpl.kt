@@ -21,7 +21,7 @@ import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
 
-    var mRecyclerSessions: RecyclerView? = null
+    private var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     private val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
@@ -49,7 +49,6 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
-
         mRecyclerSessions?.setAdapter(mAdapter)
 
         if (mAdapter is ItemTouchHelperAdapter) {

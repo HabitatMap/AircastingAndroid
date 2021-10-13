@@ -76,6 +76,4 @@ open class FollowingSessionViewMvcImpl:
         noMeasurementsLabels?.visibility = View.GONE
         setExpandCollapseButton()
     }
-
-    //TODO: add bindReorderingButton() or something?? look how these above methods are used in SessionViewMvcImpl
 }

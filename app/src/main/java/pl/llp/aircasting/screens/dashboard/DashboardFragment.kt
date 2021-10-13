@@ -12,9 +12,6 @@ import javax.inject.Inject
 
 class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
 
-    @Inject
-    lateinit var settings: Settings
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +20,7 @@ class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardControll
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = DashboardViewMvcImpl(inflater, container, childFragmentManager, settings.isReordering())
+        view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
         controller = DashboardController(view)
 
         val tabId = arguments?.get("tabId") as Int?

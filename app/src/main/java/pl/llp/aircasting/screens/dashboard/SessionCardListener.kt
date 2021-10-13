@@ -9,5 +9,4 @@ interface SessionCardListener {
     fun onUnfollowButtonClicked(session: Session)
     fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?)
     fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?)
-    fun sessionCardMoveInProgress()
 }

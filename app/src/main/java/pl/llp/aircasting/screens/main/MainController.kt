@@ -1,12 +1,7 @@
 package pl.llp.aircasting.screens.main
 
 import android.content.IntentFilter
-import android.util.Log
-import android.view.Menu
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_main.*
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
@@ -20,16 +15,13 @@ import pl.llp.aircasting.screens.new_session.LoginActivity
 import pl.llp.aircasting.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.sensor.SessionManager
 import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.NavigationController
-import pl.llp.aircasting.screens.dashboard.DashboardFragment
 
 class MainController(
     private val rootActivity: AppCompatActivity,
-    private val mViewMvc: MainViewMvcImpl, // TODO: changed from MainViewMvc, is it ok?!?!?
+    private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory
-) : MainViewMvc.Listener { //TODO: changed from MainViewMvc, is it ok????
+) {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
@@ -46,26 +38,10 @@ class MainController(
         mSessionManager?.onStart()
     }
 
-    fun onStart(){
-        mViewMvc.registerListener(this)
-    }
-
-    fun onStop(){
-        mViewMvc.unregisterListener(this)
-    }
-
     fun onDestroy() {
         unregisterConnectivityManager()
         mSessionManager?.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
-    }
-
-    fun registerListener(listener: MainViewMvc.Listener) {
-        mViewMvc?.registerListener(listener)
-    }
-
-    fun unregisterListener(listener: MainViewMvc.Listener) {
-        mViewMvc?.unregisterListener(listener)
     }
 
     private fun showLoginScreen() {
@@ -117,15 +93,5 @@ class MainController(
 
     private fun unregisterConnectivityManager() {
         mConnectivityManager?.let { rootActivity.unregisterReceiver(it) }
-    }
-
-    override fun onFinishedReorderingButtonClicked() {
-//        mSettings.setIsReordering(false)
-//        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
-//        // TODO: mViewMvc.showAppBarMenu()
-//        mViewMvc.hideReorderingFinishedButton()
-//        Log.i("SETT", "main " + mSettings.isReordering().toString())
-//        Log.i("SETT", "main " + mSettings.isReordering().toString())
-//        NavigationController.goToDashboard(0)
     }
 }

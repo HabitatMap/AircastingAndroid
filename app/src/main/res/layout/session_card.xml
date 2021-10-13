@@ -88,7 +88,7 @@
             android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_draggable_icon_25_jpg"
+            android:src="@drawable/ic_draggable_icon"
             android:tint="@color/aircasting_dark_blue"
             android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
