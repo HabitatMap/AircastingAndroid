@@ -37,5 +37,4 @@ open class FollowingViewMvcImpl(
     override fun recordNewSessionButtonId(): Int {
         return R.id.dashboard_record_new_session_button
     }
-
 }

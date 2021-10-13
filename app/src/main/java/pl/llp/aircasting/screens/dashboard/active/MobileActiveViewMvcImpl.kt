@@ -69,5 +69,4 @@ class MobileActiveViewMvcImpl(
     override fun recordNewSessionButtonId(): Int {
         return R.id.dashboard_mobile_record_new_session_button
     }
-
 }

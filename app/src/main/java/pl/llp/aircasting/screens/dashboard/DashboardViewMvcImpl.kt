@@ -17,10 +17,8 @@ class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
         mPager = rootView?.findViewById(R.id.pager)
-
         mPager?.offscreenPageLimit = DashboardPagerAdapter.TABS_COUNT
         fragmentManager?.let { mPager?.adapter = DashboardPagerAdapter(context, it) }
-
         setTabsMargins()
     }
 

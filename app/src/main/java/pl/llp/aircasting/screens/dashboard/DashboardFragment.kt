@@ -10,16 +10,13 @@ import pl.llp.aircasting.screens.common.BaseFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 import javax.inject.Inject
 
-class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
+class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
-
         view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
         controller = DashboardController(view)
 

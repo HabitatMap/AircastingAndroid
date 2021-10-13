@@ -64,8 +64,6 @@ interface AppComponent {
     fun inject(fragment: SessionDetailsFragment)
     fun inject(activity: MapActivity)
     fun inject(activity: GraphActivity)
-    fun inject(fragment: DashboardFragment)
-    fun inject(fragment: ReorderingDashboardFragment)
     fun inject(fragment: ReorderingFollowingFragment)
 
     fun inject(fragment: SettingsFragment)

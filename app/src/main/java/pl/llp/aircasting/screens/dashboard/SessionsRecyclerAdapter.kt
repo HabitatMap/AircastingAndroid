@@ -1,6 +1,5 @@
 package pl.llp.aircasting.screens.dashboard
 
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
