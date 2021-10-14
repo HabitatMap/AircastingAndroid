@@ -96,7 +96,7 @@ abstract class SessionsController(
     private fun updateFollowedAt(session: Session) {
         DatabaseProvider.runQuery {
             mSessionsViewModel.updateFollowedAt(session)
-            mSessionsViewModel.updateOrder(session.uuid, mSessionRepository.getFollowingSessionsNumber() -1) //TODO: do i need to set order number for object??!??!
+            mSessionsViewModel.updateOrder(session.uuid, mSessionRepository.getFollowingSessionsNumber() -1)
         }
     }
 
