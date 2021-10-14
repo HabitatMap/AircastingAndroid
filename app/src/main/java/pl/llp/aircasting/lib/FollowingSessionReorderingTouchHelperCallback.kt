@@ -1,12 +1,10 @@
 package pl.llp.aircasting.lib
 
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
 
 
@@ -41,16 +39,14 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
     override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
-        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE //TODO: add method responsible for this in interface and implement it together with "onItemDismiss" (??)
-        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
+        hideReorderInProgressIcon(viewHolder)
     }
 
     override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
 
-        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) { //TODO: add method responsible for this in interface and implement it together with "onItemDismiss" (??)
-            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.INVISIBLE
-            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.VISIBLE
+        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            showReorderInProgressIcon(viewHolder)
         }
 
     }
@@ -59,9 +55,18 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         mAdapter?.onItemDismiss(viewHolder.adapterPosition)
     }
 
+    private fun showReorderInProgressIcon(viewHolder: ViewHolder?) {
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.INVISIBLE
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.VISIBLE
+    }
+
+    private fun hideReorderInProgressIcon(viewHolder: ViewHolder) {
+        viewHolder.itemView.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE
+        viewHolder.itemView.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
+    }
+
     init {
         mAdapter = itemTouchHelperAdapter
     }
-
 }
 

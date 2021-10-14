@@ -3,12 +3,6 @@ package pl.llp.aircasting.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.google.android.libraries.places.api.Places
@@ -66,7 +60,6 @@ class MainActivity: AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)
         view.setupBottomNavigationBar(navController)
-
     }
 
     override fun onDestroy() {
@@ -82,5 +75,4 @@ class MainActivity: AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
-
 }

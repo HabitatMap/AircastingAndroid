@@ -4,6 +4,7 @@ import android.content.Context
 import pl.llp.aircasting.exceptions.ErrorHandler
 import androidx.fragment.app.FragmentActivity
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.screens.common.BaseController
@@ -21,6 +22,10 @@ class LetsStartController(
 
     fun onCreate() {
         mViewMvc?.registerListener(this)
+    }
+
+    fun onResume() {
+        AppBar.adjustMenuVisibility(false)
     }
 
     override fun onDestroy() {

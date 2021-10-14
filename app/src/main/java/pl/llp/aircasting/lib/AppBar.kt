@@ -1,6 +1,5 @@
 package pl.llp.aircasting.lib
 
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -39,23 +38,31 @@ class AppBar {
             mTopAppBar = null
         }
 
-        fun adjustMenuVisibility(isFollowingTab: Boolean, followingSessionsNumber: Int = 0) { // TODO: beyond "isFollowingTab" i should check if its "Dashboard" screen and if we got more than ONE followed sessions!!!
-            if (isFollowingTab && followingSessionsNumber > 1) { // todo: sessionsRepository, getFollowingSessionsNumber > 1
+        fun adjustMenuVisibility(isFollowingTab: Boolean, followingSessionsNumber: Int = 0) {
+            if (isFollowingTab && followingSessionsNumber > 1) {
                 mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.VISIBLE
             } else {
                 mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.INVISIBLE
             }
         }
 
-        fun onReorderSessionButtonClicked() {
+        private fun onReorderSessionButtonClicked() {
             NavigationController.goToReorderingDashboard()
-            mFinishedReorderingSessionsButton?.visibility = View.VISIBLE // Todo: extract to new function <?>
-            mReorderSessionsButton?.visibility = View.INVISIBLE
+            showReorderSessionsButton()
         }
 
         private fun onFinishedReorderingSessionsButtonClicked() {
             NavigationController.goToDashboard(0)
-            mFinishedReorderingSessionsButton?.visibility = View.INVISIBLE // Todo: extract to new function <?>
+            showFinishedReorderingSessionsButtonClicked()
+        }
+
+        private fun showReorderSessionsButton() {
+            mFinishedReorderingSessionsButton?.visibility = View.VISIBLE
+            mReorderSessionsButton?.visibility = View.INVISIBLE
+        }
+
+        private fun showFinishedReorderingSessionsButtonClicked() {
+            mFinishedReorderingSessionsButton?.visibility = View.INVISIBLE
             mReorderSessionsButton?.visibility = View.VISIBLE
         }
     }

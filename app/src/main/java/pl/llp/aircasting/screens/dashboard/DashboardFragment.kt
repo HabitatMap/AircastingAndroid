@@ -11,7 +11,6 @@ import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 import javax.inject.Inject
 
 class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -19,7 +18,6 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     ): View? {
         view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
         controller = DashboardController(view)
-
         val tabId = arguments?.get("tabId") as Int?
         controller?.onCreate(tabId)
 

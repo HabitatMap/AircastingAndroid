@@ -40,6 +40,6 @@ class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController
 
     override fun onResume() {
         super.onResume()
-        AppBar.adjustMenuVisibility(false)
+        controller?.onResume()
     }
 }

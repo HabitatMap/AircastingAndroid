@@ -88,7 +88,7 @@
             android:name="pl.llp.aircasting.screens.session_view.graph.GraphActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
-            android:name="pl.llp.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity"
+            android:name="pl.llp.aircasting.screens.settings.my_account.MyAccountActivity"
             android:screenOrientation="portrait" />
         <activity android:label=""
             android:name="pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity"

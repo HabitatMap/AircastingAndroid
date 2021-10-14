@@ -1,9 +1,10 @@
-package pl.llp.aircasting.screens.settings.clear_sd_card.my_account
+package pl.llp.aircasting.screens.settings.my_account
 
 import android.content.Context
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.new_session.LoginActivity
 import pl.llp.aircasting.database.LogoutService
+import pl.llp.aircasting.lib.AppBar
 
 class MyAccountController(
     private val mContext: Context,
@@ -15,6 +16,10 @@ class MyAccountController(
     fun onStart(){
         mViewMvc.registerListener(this)
         mViewMvc.bindAccountDetail(mSettings.getEmail())
+    }
+
+    fun onResume() {
+        AppBar.adjustMenuVisibility(false)
     }
 
     fun onStop(){

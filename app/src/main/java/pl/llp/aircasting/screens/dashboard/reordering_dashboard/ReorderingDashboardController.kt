@@ -1,8 +1,5 @@
 package pl.llp.aircasting.screens.dashboard.reordering_dashboard
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.screens.common.BaseController
 

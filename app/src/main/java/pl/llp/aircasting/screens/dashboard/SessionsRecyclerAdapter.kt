@@ -21,8 +21,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     }
 
-    var mSessionUUIDS: MutableList<String> = mutableListOf()
-    var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    protected var mSessionUUIDS: MutableList<String> = mutableListOf()
+    protected var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
     lateinit var mItemTouchHelper: ItemTouchHelper
     abstract fun prepareSession(session: Session, expanded: Boolean): Session
 

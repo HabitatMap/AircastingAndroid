@@ -1,25 +1,15 @@
 package pl.llp.aircasting.screens.dashboard.reordering_following
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.MotionEvent.ACTION_UP
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_sessions_tab.view.*
-import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
-import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
-import pl.llp.aircasting.screens.dashboard.SessionViewMvc
 import pl.llp.aircasting.screens.dashboard.following.FollowingRecyclerAdapter
-import pl.llp.aircasting.screens.dashboard.following.FollowingSessionViewMvcImpl
 import java.util.*
 
 class ReorderingFollowingRecyclerAdapter (
@@ -48,11 +38,6 @@ class ReorderingFollowingRecyclerAdapter (
         return myReorderingViewHolder
     }
 
-    override fun prepareSession(session: Session, expanded: Boolean): Session {
-        // We only have to reload measurements for fixed tab for expanded sessions. Followed sessions have measurements fetched anyway
-        return session
-    }
-
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
@@ -79,7 +64,7 @@ class ReorderingFollowingRecyclerAdapter (
 
         for (session in mSessionUUIDS) {
             DatabaseProvider.runQuery {
-                mSessionsViewModel.updateOrder(session, mSessionUUIDS.indexOf(session)) //todo: not sure if thats correct
+                mSessionsViewModel.updateOrder(session, mSessionUUIDS.indexOf(session))
             }
         }
         removeObsoleteSessions()
