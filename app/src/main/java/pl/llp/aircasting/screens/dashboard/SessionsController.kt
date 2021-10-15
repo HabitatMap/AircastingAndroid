@@ -57,9 +57,6 @@ abstract class SessionsController(
         mViewMvc?.showLoader()
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
-        DatabaseProvider.runQuery {
-            AppBar.adjustMenuVisibility(false, mSessionRepository.getFollowingSessionsNumber())
-        }
     }
 
     open fun onPause() {

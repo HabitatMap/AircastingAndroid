@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -27,6 +28,10 @@ class MobileDormantController(
 
     private var mSessionsObserver = MobileDormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
+    override fun onResume() {
+        super.onResume()
+        AppBar.adjustMenuVisibility(false)
+    }
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurementsAndNotes())
