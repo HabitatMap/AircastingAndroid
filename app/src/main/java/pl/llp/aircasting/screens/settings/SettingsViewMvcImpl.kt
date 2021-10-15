@@ -52,11 +52,9 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         }
 
         val clearSDCardButton = rootView?.findViewById<Button>(R.id.clear_sd_card_button)
-        if (mSettings.airbeam3Connected()) {
-            clearSDCardButton?.visibility = View.VISIBLE
-            clearSDCardButton?.setOnClickListener {
-                onClearSDCardClicked()
-            }
+        clearSDCardButton?.visibility = View.VISIBLE
+        clearSDCardButton?.setOnClickListener {
+            onClearSDCardClicked()
         }
 
         val yourPrivacyButton = rootView?.findViewById<Button>(R.id.your_privacy_button)
