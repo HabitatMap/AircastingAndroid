@@ -15,6 +15,7 @@ import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.sensor.AirBeamReconnector
 
 
@@ -45,6 +46,7 @@ class MapController(
     override fun onResume() {
         super.onResume()
         mViewMvc?.registerListener(this)
+        AppBar.adjustMenuVisibility(false)
     }
 
     open fun onPause() {

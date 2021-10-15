@@ -14,6 +14,7 @@ import pl.llp.aircasting.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.events.StandaloneModeEvent
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.sensor.AirBeamReconnector
 
 
@@ -35,6 +36,7 @@ class GraphController(
     override fun onResume() {
         super.onResume()
         mViewMvc?.registerListener(this)
+        AppBar.adjustMenuVisibility(false)
     }
 
     open fun onPause() {
