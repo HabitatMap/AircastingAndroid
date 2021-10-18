@@ -67,7 +67,7 @@
             android:id="@+id/did_you_know_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/didyouknowimage"
+            android:src="@drawable/didyouknowimage_new"
             android:paddingStart="@dimen/keyline_4"
             android:paddingEnd="@dimen/keyline_4"
             android:paddingTop="@dimen/keyline_2"

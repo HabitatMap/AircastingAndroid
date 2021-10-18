@@ -16,7 +16,7 @@
         android:id="@+id/onboarding_get_started_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/airbeam_with_tablet"
+        android:src="@drawable/onboarding_picture_1"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
         app:layout_constraintStart_toStartOf="parent"

@@ -16,7 +16,7 @@
         android:id="@+id/connected_image"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:src="@drawable/airbeam"
+        android:src="@drawable/airbeam34"
         android:contentDescription="@string/airbeam_connected_image_desc"
         android:layout_marginTop="@dimen/keyline_10"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"

@@ -16,7 +16,7 @@
                 android:id="@+id/turn_on_airbeam_image"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/sync_step3"
+                android:src="@drawable/sync_step_3_new"
                 android:contentDescription="@string/power_on_bluetooth_device_image_desc"
                 android:layout_marginTop="@dimen/keyline_10"
                 app:layout_constraintTop_toBottomOf="@id/guidelineTop"
