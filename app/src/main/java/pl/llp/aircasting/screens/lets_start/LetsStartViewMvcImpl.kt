@@ -41,7 +41,7 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         val orLabel = rootView?.or
         val syncCard = rootView?.sync_card
 
-        if (mSettings.airbeam3Connected()) {
+        if (!mSettings.airbeam3Connected()) {
             syncCard?.visibility = View.VISIBLE
             syncCard?.setOnClickListener {
                 onSyncSelected()
