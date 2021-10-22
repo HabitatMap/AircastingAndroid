@@ -19,6 +19,7 @@ open class Settings(private val mApplication: Application) {
     protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
+    protected val KEEP_SCREEN_ON_KEY = "keep_screen_on"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -34,6 +35,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_AIRBEAM3_CONNECTED = false
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
     private val DEFAULT_APP_RESTARTED = false
+    private val DEFAULT_KEEP_SCREEN_ON = false
 
     private val sharedPreferences: SharedPreferences
 
@@ -89,6 +91,10 @@ open class Settings(private val mApplication: Application) {
         return getBooleanFromSettings(DELETE_SESSION_IN_PROGERSS_KEY, DEFAULT_DELETE_SESSION_IN_PROGRESS)
     }
 
+    fun isKeepScreenOnEnabled(): Boolean {
+        return getBooleanFromSettings(KEEP_SCREEN_ON_KEY, DEFAULT_KEEP_SCREEN_ON)
+    }
+
     fun getAreThereSessionsToRemove(): Boolean? {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
     }
@@ -106,6 +112,11 @@ open class Settings(private val mApplication: Application) {
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
+    }
+
+    fun toggleKeepScreenOn() {
+        val enabled = !isKeepScreenOnEnabled()
+        saveToSettings(KEEP_SCREEN_ON_KEY, enabled)
     }
 
     fun setAirbeam3Connected() {

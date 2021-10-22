@@ -62,6 +62,11 @@ class MainActivity: AppCompatActivity() {
         view.setupBottomNavigationBar(navController)
     }
 
+    override fun onResume() {
+        super.onResume()
+        controller?.onResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
