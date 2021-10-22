@@ -204,9 +204,6 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
         session.startRecording()
-        if (session.isAirBeam3()) {
-            settings.setAirbeam3Connected()
-        }
 
         if (session.isFixed()) {
             session.follow()
