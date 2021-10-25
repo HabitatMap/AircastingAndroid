@@ -41,16 +41,11 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         val orLabel = rootView?.or
         val syncCard = rootView?.sync_card
 
-        if (!mSettings.airbeam3Connected()) {
-            syncCard?.visibility = View.VISIBLE
-            syncCard?.setOnClickListener {
+        syncCard?.visibility = View.VISIBLE
+        syncCard?.setOnClickListener {
                 onSyncSelected()
-            }
-            orLabel?.visibility = View.VISIBLE
-        } else {
-            syncCard?.visibility = View.GONE
-            orLabel?.visibility = View.GONE
         }
+        orLabel?.visibility = View.VISIBLE
     }
 
     override fun showMoreInfoDialog() {
