@@ -36,7 +36,6 @@ class GraphController(
     override fun onResume() {
         super.onResume()
         mViewMvc?.registerListener(this)
-        AppBar.adjustMenuVisibility(false)
     }
 
     open fun onPause() {

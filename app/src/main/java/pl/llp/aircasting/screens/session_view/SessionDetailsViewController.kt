@@ -27,6 +27,7 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.lib.AppBar
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -75,6 +76,7 @@ abstract class SessionDetailsViewController(
 
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
+        AppBar.adjustMenuVisibility(false)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {

@@ -35,15 +35,13 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     override fun getItemCount(): Int {
-        return mSessionUUIDS.size // todo: changed from mSessionPresenters
+        return mSessionUUIDS.size
     }
 
     protected open fun removeObsoleteSessions() {
         mSessionPresenters.keys
             .filter { uuid -> !mSessionUUIDS.contains(uuid) }
-            .forEach { uuid ->
-                mSessionPresenters.remove(uuid)
-            }
+            .forEach { uuid -> mSessionPresenters.remove(uuid) }
     }
 
     fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
