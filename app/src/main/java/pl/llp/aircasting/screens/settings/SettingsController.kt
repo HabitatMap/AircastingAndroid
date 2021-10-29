@@ -29,10 +29,6 @@ class SettingsController(
         mViewMvc?.registerListener(this)
     }
 
-    fun onResume() {
-        AppBar.adjustMenuVisibility(false)
-    }
-
     fun onStop(){
         mViewMvc?.unregisterListener(this)
     }

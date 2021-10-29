@@ -57,6 +57,7 @@ abstract class SessionsController(
         mViewMvc?.showLoader()
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
+        AppBar.adjustMenuVisibility(false)
     }
 
     open fun onPause() {
@@ -93,7 +94,7 @@ abstract class SessionsController(
     private fun updateFollowedAt(session: Session) {
         DatabaseProvider.runQuery {
             mSessionsViewModel.updateFollowedAt(session)
-            mSessionsViewModel.updateOrder(session.uuid, mSessionRepository.getFollowingSessionsNumber() -1)
+            mSessionsViewModel.updateOrder(session.uuid, mSessionRepository.getMaxSessionOrder() + 1)
         }
     }
 

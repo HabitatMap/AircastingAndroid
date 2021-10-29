@@ -41,22 +41,22 @@ class ReorderingFollowingRecyclerAdapter (
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(mSessionUUIDS, i, i + 1)
-                DatabaseProvider.runQuery {
-                    mSessionsViewModel.updateOrder(mSessionUUIDS[i+1], i+1)
-                    mSessionsViewModel.updateOrder(mSessionUUIDS[i], i)
-                }
+                updateSessionsOrder(i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(mSessionUUIDS, i, i - 1)
-                DatabaseProvider.runQuery {
-                    mSessionsViewModel.updateOrder(mSessionUUIDS[i-1], i-1)
-                    mSessionsViewModel.updateOrder(mSessionUUIDS[i], i)
-                }
+                updateSessionsOrder(i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)
+    }
+
+    private fun updateSessionsOrder(firstPosition: Int, secondPosition: Int) {
+        Collections.swap(mSessionUUIDS, firstPosition, secondPosition)
+        DatabaseProvider.runQuery {
+            mSessionsViewModel.updateOrder(mSessionUUIDS[secondPosition], secondPosition)
+            mSessionsViewModel.updateOrder(mSessionUUIDS[firstPosition], firstPosition)
+        }
     }
 
     override fun onItemDismiss(position: Int) {

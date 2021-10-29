@@ -60,7 +60,6 @@ class MobileActiveController(
     override fun onResume() {
         super.onResume()
         EventBus.getDefault().safeRegister(this)
-        AppBar.adjustMenuVisibility(false)
     }
 
     override fun onPause() {

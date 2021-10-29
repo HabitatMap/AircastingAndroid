@@ -150,4 +150,8 @@ class SessionsRepository {
     fun getFollowingSessionsNumber(): Int {
         return mDatabase.sessions().getFollowingSessionNumber()
     }
+
+    fun getMaxSessionOrder(): Int {
+        return mDatabase.sessions().getMaxSessionOrder()
+    }
 }

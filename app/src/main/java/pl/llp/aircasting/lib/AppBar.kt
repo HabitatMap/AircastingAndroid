@@ -39,11 +39,13 @@ class AppBar {
         }
 
         fun adjustMenuVisibility(isFollowingTab: Boolean, followingSessionsNumber: Int = 0) {
-            if (isFollowingTab && followingSessionsNumber > 1) {
-                mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.VISIBLE
+            val visibility = if (isFollowingTab && followingSessionsNumber > 1) {
+               View.VISIBLE
             } else {
-                mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.INVISIBLE
+                View.INVISIBLE
             }
+
+            mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = visibility
         }
 
         private fun onReorderSessionButtonClicked() {

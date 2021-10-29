@@ -28,11 +28,6 @@ class MobileDormantController(
 
     private var mSessionsObserver = MobileDormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
-    override fun onResume() {
-        super.onResume()
-        AppBar.adjustMenuVisibility(false)
-    }
-
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurementsAndNotes())
     }

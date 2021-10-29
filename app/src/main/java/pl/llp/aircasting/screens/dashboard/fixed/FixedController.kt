@@ -29,11 +29,6 @@ class FixedController(
 
     private var mSessionsObserver = FixedSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
-    override fun onResume() {
-        super.onResume()
-        AppBar.adjustMenuVisibility(false)
-    }
-
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFixedSessionsWithMeasurements())
     }

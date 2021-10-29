@@ -21,9 +21,9 @@ import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
 
-    private var mRecyclerSessions: RecyclerView? = null
+    protected var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
-    private val mAdapter: SessionsRecyclerAdapter<ListenerType>
+    protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var mDidYouKnowBox: ConstraintLayout? = null
 
@@ -50,13 +50,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.setAdapter(mAdapter)
-
-        if (mAdapter is ItemTouchHelperAdapter) {
-            val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
-            val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
-            mAdapter.mItemTouchHelper = itemTouchHelper
-            itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
-        }
+        addTouchHelperToRecyclerView()
 
         setupSwipeToRefreshLayout()
     }
@@ -64,6 +58,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     abstract fun layoutId(): Int
     abstract fun showDidYouKnowBox(): Boolean
     abstract fun recordNewSessionButtonId(): Int
+    abstract fun addTouchHelperToRecyclerView()
 
     abstract fun buildAdapter(
         inflater: LayoutInflater,
