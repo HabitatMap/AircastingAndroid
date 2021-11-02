@@ -87,11 +87,6 @@ class NewSessionActivity : AppCompatActivity() {
         controller?.onStop()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AppBar.destroy()
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
         controller?.onBackPressed()

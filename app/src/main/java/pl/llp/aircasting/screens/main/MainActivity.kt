@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 class MainActivity: AppCompatActivity() {
     private var controller: MainController? = null
+    private var view: MainViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -49,17 +50,22 @@ class MainActivity: AppCompatActivity() {
         DateConverter.setup(settings)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
-        val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings, apiServiceFactory)
+        view = MainViewMvcImpl(layoutInflater, null, this)
+        controller = MainController(this, view!!, settings, apiServiceFactory)
 
         controller?.onCreate()
 
-        setContentView(view.rootView)
-        AppBar.setup(view.rootView, this)
+        setContentView(view?.rootView)
+        AppBar.setup(view?.rootView, this)
 
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)
-        view.setupBottomNavigationBar(navController)
+        view?.setupBottomNavigationBar(navController)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppBar.setup(view?.rootView, this)
     }
 
     override fun onDestroy() {
