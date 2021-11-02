@@ -88,6 +88,10 @@ class NewSessionController(
         wizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), settings.areMapsDisabled(), !bluetoothManager.isBluetoothEnabled())
     }
 
+    fun onResume() {
+        AppBar.adjustMenuVisibility(false)
+    }
+
     fun onStop() {
         EventBus.getDefault().unregister(this)
     }
