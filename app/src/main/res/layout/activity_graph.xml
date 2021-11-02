@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <include android:id="@+id/app_bar_layout"
-        layout="@layout/app_bar"
+        layout="@layout/prominent_app_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

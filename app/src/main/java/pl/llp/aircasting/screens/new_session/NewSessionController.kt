@@ -17,10 +17,6 @@ import pl.llp.aircasting.events.SendSessionAuth
 import pl.llp.aircasting.events.StartRecordingEvent
 import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.ResultCodes
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.lib.areLocationServicesOn
-import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
@@ -42,6 +38,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.lib.*
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import java.util.*
 
@@ -88,6 +85,10 @@ class NewSessionController(
 
     private fun setupProgressMax() {
         wizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), settings.areMapsDisabled(), !bluetoothManager.isBluetoothEnabled())
+    }
+
+    fun onResume() {
+        AppBar.adjustMenuVisibility(false)
     }
 
     fun onStop() {
