@@ -30,7 +30,10 @@ class FollowingController(
     override fun onResume() {
         super.onResume()
         DatabaseProvider.runQuery {
-            AppBar.adjustMenuVisibility(true, mSessionRepository.getFollowingSessionsNumber())
+            val followingSessionsNumber = mSessionRepository.getFollowingSessionsNumber()
+            DatabaseProvider.backToUIThread(it) {
+                AppBar.adjustMenuVisibility(true, followingSessionsNumber)
+            }
         }
     }
 
