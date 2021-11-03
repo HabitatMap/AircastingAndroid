@@ -7,17 +7,15 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
 /**
  * Created by Maria Turnau on 02/09/2020.
  */
 
-class CreateAccountActivity: AppCompatActivity() {
+class CreateAccountActivity: BaseActivity() {
     private var controller: CreateAccountController? = null
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory

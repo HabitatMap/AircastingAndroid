@@ -7,14 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
-class MyAccountActivity : AppCompatActivity() {
+class MyAccountActivity : BaseActivity() {
 
     private var controller: MyAccountController? = null
-
-    @Inject
-    lateinit var settings: Settings
 
     companion object{
         fun start(context: Context?) {

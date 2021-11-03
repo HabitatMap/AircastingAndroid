@@ -76,7 +76,6 @@ abstract class SessionDetailsViewController(
 
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
-        if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {

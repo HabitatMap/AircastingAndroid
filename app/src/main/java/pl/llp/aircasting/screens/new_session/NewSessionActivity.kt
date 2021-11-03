@@ -13,18 +13,16 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.PermissionsManager
+import pl.llp.aircasting.screens.common.BaseActivity
 import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
 import javax.inject.Inject
 
-class NewSessionActivity : AppCompatActivity() {
+class NewSessionActivity : BaseActivity() {
 
     private var controller: NewSessionController? = null
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
@@ -75,11 +73,6 @@ class NewSessionActivity : AppCompatActivity() {
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        controller?.onResume()
     }
 
     override fun onStop() {
