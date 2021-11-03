@@ -19,7 +19,7 @@ class FollowingController(
     mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val mContext: Context?
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
@@ -29,12 +29,9 @@ class FollowingController(
 
     override fun onResume() {
         super.onResume()
-        DatabaseProvider.runQuery {
-            val followingSessionsNumber = mSessionRepository.getFollowingSessionsNumber()
-            DatabaseProvider.backToUIThread(it) {
-                AppBar.adjustMenuVisibility(true, followingSessionsNumber)
-            }
-        }
+
+        val followingSessionsNumber = mSettings.getFollowedSessionsNumber()
+        AppBar.adjustMenuVisibility(true, followingSessionsNumber)
     }
 
     override fun registerSessionsObserver() {

@@ -40,4 +40,5 @@ class ReorderingFollowingFragment: FollowingFragment() {
 
         return view?.rootView
     }
+
 }

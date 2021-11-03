@@ -19,6 +19,7 @@ open class Settings(private val mApplication: Application) {
     protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
+    protected val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -34,6 +35,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_AIRBEAM3_CONNECTED = false
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
     private val DEFAULT_APP_RESTARTED = false
+    private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
 
     private val sharedPreferences: SharedPreferences
 
@@ -91,6 +93,10 @@ open class Settings(private val mApplication: Application) {
 
     fun getAreThereSessionsToRemove(): Boolean? {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
+    }
+
+    fun getFollowedSessionsNumber(): Int {
+        return getIntFromSettings(FOLLOWED_SESSIONS_NUMBER_KEY, DEFAULT_FOLLOWED_SESSIONS_NUMBER)
     }
 
     fun toggleUse24HourFormatEnabled() {
@@ -154,6 +160,14 @@ open class Settings(private val mApplication: Application) {
     fun login(email: String, authToken: String) {
         saveToSettings(EMAIL_KEY, email)
         saveToSettings(AUTH_TOKEN_KEY, authToken)
+    }
+
+    fun increaseFollowedSessionsNumber() {
+        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() + 1)
+    }
+
+    fun decreaseFollowedSessionsNumber() {
+        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() - 1)
     }
 
     open fun logout(){

@@ -293,9 +293,6 @@ interface SessionDao {
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
 
-    @Query("SELECT COUNT(followed_at) FROM sessions WHERE followed_at IS NOT NULL")
-    fun getFollowingSessionNumber(): Int
-
     @Query("SELECT MAX(session_order) FROM sessions WHERE followed_at IS NOT NULL")
     fun getMaxSessionOrder(): Int
 }

@@ -12,7 +12,6 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
         android:paddingTop="@dimen/keyline_4">
 
