@@ -7,7 +7,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.lib.Settings
 import javax.inject.Inject
 
-open class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var settings: Settings
 
@@ -20,6 +20,6 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (settings.isKeepScreenOnEnabled()) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 }

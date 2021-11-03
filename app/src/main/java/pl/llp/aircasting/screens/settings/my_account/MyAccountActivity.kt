@@ -26,9 +26,6 @@ class MyAccountActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (application as AircastingApplication)
-            .appComponent.inject(this)
-
         val view = MyAccountViewMvcImpl(this, layoutInflater, null)
         controller = MyAccountController(this, view, settings)
 
