@@ -13,7 +13,7 @@ class MapViewMobileDormantMvcImpl(
 ): MapViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {
-        mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description_long)
+        mSessionMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
     }
 
     override fun shouldShowStatisticsContainer(): Boolean {
