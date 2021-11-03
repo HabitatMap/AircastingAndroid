@@ -49,7 +49,6 @@ class MainController(
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this)
-        rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         unregisterConnectivityManager()
         mSessionManager?.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())

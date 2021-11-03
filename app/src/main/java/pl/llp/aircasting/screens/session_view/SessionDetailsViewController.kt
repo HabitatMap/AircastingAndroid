@@ -114,7 +114,6 @@ abstract class SessionDetailsViewController(
     }
 
     fun onDestroy() {
-        rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         EventBus.getDefault().unregister(this);
         mViewMvc?.unregisterListener(this)
         mViewMvc = null
