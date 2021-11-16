@@ -37,9 +37,7 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
             onMoreInfoClicked()
         }
 
-        val orLabel = rootView?.or
         val syncCard = rootView?.sync_card
-
         syncCard?.visibility = View.VISIBLE
         syncCard?.setOnClickListener {
             onSyncSelected()
