@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:navigationIcon="@drawable/chevron_left"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/Widget.Aircasting.AppBar"

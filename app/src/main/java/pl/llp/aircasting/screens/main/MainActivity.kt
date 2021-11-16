@@ -81,4 +81,9 @@ class MainActivity: AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        AppBar.onFinishedReorderingSessionsButtonClicked()
+    }
 }

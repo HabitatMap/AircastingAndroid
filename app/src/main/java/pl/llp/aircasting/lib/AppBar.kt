@@ -20,7 +20,7 @@ class AppBar {
             rootActivity.setSupportActionBar(mTopAppBar)
 
             mTopAppBar?.setNavigationOnClickListener {
-                rootActivity.onBackPressed()
+                    rootActivity.onBackPressed()
             }
 
             mReorderSessionsButton = view?.findViewById<ImageView>(R.id.reorder_sessions_button)
@@ -53,7 +53,7 @@ class AppBar {
             showReorderSessionsButton()
         }
 
-        private fun onFinishedReorderingSessionsButtonClicked() {
+        fun onFinishedReorderingSessionsButtonClicked() {
             NavigationController.goToDashboard(0)
             showFinishedReorderingSessionsButtonClicked()
         }
