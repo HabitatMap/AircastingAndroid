@@ -16,7 +16,6 @@ open class Settings(private val mApplication: Application) {
     protected val MAPS_DISABLED_KEY = "maps_disabled"
     protected val BACKEND_URL_KEY = "backend_url"
     protected val BACKEND_PORT_KEY = "backend_port"
-    protected val AIRBEAM3_CONNECTED_KEY = "airbeam3_connected" // this flag is used to check if airbeam3 was connected to the phone in the past
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
     protected val KEEP_SCREEN_ON_KEY = "keep_screen_on"
@@ -32,7 +31,6 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
     protected val DEFAULT_BACKEND_PORT = "80"
-    private val DEFAULT_AIRBEAM3_CONNECTED = false
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
     private val DEFAULT_APP_RESTARTED = false
     private val DEFAULT_KEEP_SCREEN_ON = false
@@ -65,10 +63,6 @@ open class Settings(private val mApplication: Application) {
 
     fun areMapsDisabled(): Boolean {
         return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
-    }
-
-    fun airbeam3Connected(): Boolean {
-        return getBooleanFromSettings(AIRBEAM3_CONNECTED_KEY, DEFAULT_AIRBEAM3_CONNECTED)
     }
 
     fun appRestarted(): Boolean {
@@ -117,10 +111,6 @@ open class Settings(private val mApplication: Application) {
     fun toggleKeepScreenOn() {
         val enabled = !isKeepScreenOnEnabled()
         saveToSettings(KEEP_SCREEN_ON_KEY, enabled)
-    }
-
-    fun setAirbeam3Connected() {
-        saveToSettings(AIRBEAM3_CONNECTED_KEY, true)
     }
 
     open fun onboardingAccepted() {
