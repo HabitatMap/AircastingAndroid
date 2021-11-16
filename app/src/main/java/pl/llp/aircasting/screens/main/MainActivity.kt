@@ -14,13 +14,11 @@ import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import pl.llp.aircasting.lib.*
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
-class MainActivity: AppCompatActivity() {
+class MainActivity: BaseActivity() {
     private var controller: MainController? = null
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -60,6 +58,11 @@ class MainActivity: AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)
         view.setupBottomNavigationBar(navController)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        controller?.onResume()
     }
 
     override fun onDestroy() {
