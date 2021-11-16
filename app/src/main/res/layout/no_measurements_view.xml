@@ -6,7 +6,7 @@
         android:id="@+id/session_no_measurements_icon"
         android:layout_width="@dimen/keyline_10"
         android:layout_height="@dimen/keyline_10"
-        android:src="@drawable/ic_airbeam"
+        android:src="@drawable/ic_airbeam3"
         android:layout_marginTop="@dimen/keyline_3"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/session_info"
