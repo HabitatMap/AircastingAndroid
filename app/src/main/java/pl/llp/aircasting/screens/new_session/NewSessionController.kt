@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity

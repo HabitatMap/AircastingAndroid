@@ -6,7 +6,9 @@ import android.net.Uri
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
+import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
@@ -38,6 +40,11 @@ class SettingsController(
 
     override fun onBackendSettingsClicked() {
         startBackendSettingsDialog()
+    }
+
+    override fun onToggleKeepScreenOnEnabled() {
+        mSettings.toggleKeepScreenOn()
+        EventBus.getDefault().post(KeepScreenOnToggledEvent())
     }
 
     override fun onToggle24hourFormatEnabled() {

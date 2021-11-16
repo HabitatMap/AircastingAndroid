@@ -17,8 +17,7 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager,
-        mSettings: Settings
+        supportFragmentManager: FragmentManager
     ): super() {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
         mSupportFragmentManager = supportFragmentManager
@@ -39,9 +38,12 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         }
 
         val syncCard = rootView?.sync_card
+        syncCard?.visibility = View.VISIBLE
         syncCard?.setOnClickListener {
-                onSyncSelected()
+            onSyncSelected()
         }
+        orLabel?.visibility = View.VISIBLE
+
     }
 
     override fun showMoreInfoDialog() {

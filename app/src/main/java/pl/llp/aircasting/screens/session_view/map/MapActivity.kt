@@ -14,18 +14,16 @@ import pl.llp.aircasting.lib.ResultCodes
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.screens.common.BaseActivity
 import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.sensor.AirBeamReconnector
 import javax.inject.Inject
 
-class MapActivity: AppCompatActivity() {
+class MapActivity: BaseActivity() {
     private var controller: MapController? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
     private val errorHandler = ErrorHandler(this)
     private var view: MapViewMvcImpl? = null
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -56,9 +54,6 @@ class MapActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        (application as AircastingApplication)
-            .appComponent.inject(this)
 
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String

@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.session_view
 
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.database.DatabaseProvider

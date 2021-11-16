@@ -73,6 +73,35 @@
                 app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/keep_screen_on_button"/>
+
+            <TextView
+                android:id="@+id/keep_screen_on_button"
+                style="@style/Widget.Aircasting.SettingsButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Keep screen on"
+                app:layout_constraintTop_toTopOf="@id/separator"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/separator1" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/keep_screen_on_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/keep_screen_on_button"
+                app:layout_constraintEnd_toEndOf="@+id/keep_screen_on_button"
+                app:layout_constraintTop_toTopOf="@+id/keep_screen_on_button"/>
+
+            <View
+                android:id="@+id/separator1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/aircasting_grey_100"
+                app:layout_constraintTop_toBottomOf="@id/keep_screen_on_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/use_24_hour_format_button"/>
 
             <TextView
@@ -81,10 +110,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/use_24_hour_format"
-                app:layout_constraintTop_toTopOf="@id/separator"
+                app:layout_constraintTop_toTopOf="@id/separator1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/separator1" />
+                app:layout_constraintBottom_toTopOf="@id/separator2" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/use_24_hour_format_switch"
@@ -95,11 +124,11 @@
                 app:layout_constraintTop_toTopOf="@+id/use_24_hour_format_button"/>
 
             <View
-                android:id="@+id/separator1"
+                android:id="@+id/separator2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
-                app:layout_constraintTop_toBottomOf="@id/map_enable_description"
+                app:layout_constraintTop_toBottomOf="@id/use_24_hour_format_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/crowd_map_settings_button"/>
@@ -110,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_contribute_to_crowdmap"
-                app:layout_constraintTop_toTopOf="@id/separator1"
+                app:layout_constraintTop_toTopOf="@id/separator2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/crowd_map_description" />
@@ -129,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/settings_contribute_to_crowdmap_description"
                 android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                app:layout_constraintBottom_toTopOf="@+id/separator2"
+                app:layout_constraintBottom_toTopOf="@+id/separator3"
                 app:layout_constraintEnd_toEndOf="@id/description_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/crowd_map_settings_button" />
@@ -143,7 +172,7 @@
                 app:layout_constraintTop_toTopOf="@+id/crowd_map_settings_button" />
 
             <View
-                android:id="@+id/separator2"
+                android:id="@+id/separator3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
@@ -158,7 +187,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/disable_mapping"
-                app:layout_constraintTop_toTopOf="@id/separator2"
+                app:layout_constraintTop_toTopOf="@id/separator3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/map_enable_description" />
@@ -173,7 +202,7 @@
                 app:layout_constraintTop_toBottomOf="@id/map_settings_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/description_guideline"
-                app:layout_constraintBottom_toTopOf="@id/separator3"
+                app:layout_constraintBottom_toTopOf="@id/separator4"
                 />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -185,7 +214,7 @@
                 app:layout_constraintTop_toTopOf="@+id/map_settings_button"/>
 
             <View
-                android:id="@+id/separator3"
+                android:id="@+id/separator4"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
@@ -202,12 +231,12 @@
                 android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                 android:text="@string/settings_backend_settings"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/separator3"
+                app:layout_constraintTop_toBottomOf="@id/separator4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/separator4"/>
+                app:layout_constraintBottom_toTopOf="@id/separator5"/>
 
             <View
-                android:id="@+id/separator4"
+                android:id="@+id/separator5"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
@@ -225,12 +254,12 @@
                 android:text="@string/clear_sd_card"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/separator4"
+                app:layout_constraintTop_toBottomOf="@id/separator5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/separator5"/>
+                app:layout_constraintBottom_toTopOf="@id/separator6"/>
 
             <View
-                android:id="@+id/separator5"
+                android:id="@+id/separator6"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
@@ -245,8 +274,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/application_version"
                 style="@style/Widget.Aircasting.SettingsButtons"
-                app:layout_constraintTop_toBottomOf="@id/separator5"
-                app:layout_constraintBottom_toTopOf="@id/separator6"
+                app:layout_constraintTop_toBottomOf="@id/separator6"
+                app:layout_constraintBottom_toTopOf="@id/separator7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/description_guideline" />
 
@@ -256,13 +285,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/version"
                 style="@style/Widget.Aircasting.SettingsButtons"
-                app:layout_constraintTop_toBottomOf="@id/separator5"
-                app:layout_constraintBottom_toTopOf="@id/separator6"
+                app:layout_constraintTop_toBottomOf="@id/separator6"
+                app:layout_constraintBottom_toTopOf="@id/separator7"
                 app:layout_constraintStart_toStartOf="@id/description_guideline"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <View
-                android:id="@+id/separator6"
+                android:id="@+id/separator7"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"
@@ -279,12 +308,12 @@
                 android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                 android:text="@string/your_privacy"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/separator6"
+                app:layout_constraintTop_toBottomOf="@id/separator7"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/separator7"/>
+                app:layout_constraintBottom_toTopOf="@id/separator8"/>
 
             <View
-                android:id="@+id/separator7"
+                android:id="@+id/separator8"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/aircasting_grey_100"

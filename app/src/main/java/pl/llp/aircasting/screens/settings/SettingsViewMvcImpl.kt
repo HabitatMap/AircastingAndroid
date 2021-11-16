@@ -28,6 +28,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onMicrophoneSettingsClicked()
         }
 
+        val keepScreenOnSwitch = rootView?.keep_screen_on_switch
+        keepScreenOnSwitch?.isChecked = mSettings.isKeepScreenOnEnabled()
+        keepScreenOnSwitch?.setOnCheckedChangeListener { _, _ ->
+            onToggleKeepScreenOnEnabled()
+        }
+
         val use24HourFormatSwitch = rootView?.use_24_hour_format_switch
         use24HourFormatSwitch?.isChecked = mSettings.isUsing24HourFormat()
         use24HourFormatSwitch?.setOnCheckedChangeListener { _, _ ->
@@ -52,11 +58,9 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         }
 
         val clearSDCardButton = rootView?.findViewById<Button>(R.id.clear_sd_card_button)
-        if (mSettings.airbeam3Connected()) {
-            clearSDCardButton?.visibility = View.VISIBLE
-            clearSDCardButton?.setOnClickListener {
-                onClearSDCardClicked()
-            }
+        clearSDCardButton?.visibility = View.VISIBLE
+        clearSDCardButton?.setOnClickListener {
+            onClearSDCardClicked()
         }
 
         val yourPrivacyButton = rootView?.findViewById<Button>(R.id.your_privacy_button)
@@ -66,6 +70,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
 
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME
+    }
+
+    private fun onToggleKeepScreenOnEnabled() {
+        for (listener in listeners) {
+            listener.onToggleKeepScreenOnEnabled()
+        }
     }
 
     private fun onToggleUse24HourFormatEnabled() {

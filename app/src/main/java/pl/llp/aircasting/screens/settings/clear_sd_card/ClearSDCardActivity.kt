@@ -9,9 +9,10 @@ import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.permissions.PermissionsManager
+import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
-class ClearSDCardActivity : AppCompatActivity() {
+class ClearSDCardActivity : BaseActivity() {
     private var controller: ClearSDCardController? = null
 
     @Inject
@@ -19,9 +20,6 @@ class ClearSDCardActivity : AppCompatActivity() {
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
-
-    @Inject
-    lateinit var settings: Settings
 
     companion object{
         fun start(rootActivity: FragmentActivity?) {
