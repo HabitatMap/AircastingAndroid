@@ -21,6 +21,7 @@ open class Settings(private val mApplication: Application) {
     protected val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
     protected val KEEP_SCREEN_ON_KEY = "keep_screen_on"
     protected val IS_REORDERING_KEY = "is_reordering"
+    protected val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -38,6 +39,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
     private val DEFAULT_KEEP_SCREEN_ON = false
     private val DEFAULT_IS_REORDERING = false
+    private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
 
     private val sharedPreferences: SharedPreferences
 

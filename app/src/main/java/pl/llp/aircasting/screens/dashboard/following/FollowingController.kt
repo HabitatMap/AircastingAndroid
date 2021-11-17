@@ -29,6 +29,7 @@ class FollowingController(
 
     override fun onResume() {
         super.onResume()
+
         val followingSessionsNumber = mSettings.getFollowedSessionsNumber()
         AppBar.adjustMenuVisibility(true, followingSessionsNumber)
     }
