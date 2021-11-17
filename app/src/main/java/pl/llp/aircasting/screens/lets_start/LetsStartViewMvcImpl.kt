@@ -40,6 +40,7 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         val syncCard = rootView?.sync_card
         syncCard?.setOnClickListener {
             onSyncSelected()
+
         }
     }
 
