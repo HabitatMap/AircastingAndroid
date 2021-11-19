@@ -42,7 +42,6 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         syncCard?.setOnClickListener {
             onSyncSelected()
         }
-        orLabel?.visibility = View.VISIBLE
 
     }
 
