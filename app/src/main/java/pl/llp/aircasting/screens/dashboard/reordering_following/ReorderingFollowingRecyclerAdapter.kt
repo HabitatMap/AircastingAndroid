@@ -60,7 +60,6 @@ class ReorderingFollowingRecyclerAdapter (
 
     override fun onItemDismiss(position: Int) {
         mSessionUUIDS.removeAt(position)
-
         for (session in mSessionUUIDS) {
             DatabaseProvider.runQuery {
                 mSessionsViewModel.updateOrder(session, mSessionUUIDS.indexOf(session))
@@ -76,6 +75,7 @@ class ReorderingFollowingRecyclerAdapter (
             .forEach { uuid ->
                 val sessionPresenter = mSessionPresenters[uuid]
                 sessionPresenter?.session?.unfollow()
+                sessionPresenter?.session?.let { mListener.onUnfollowButtonClicked(it) }
                 if (sessionPresenter?.session != null) {
                     DatabaseProvider.runQuery {
                         mSessionsViewModel.updateFollowedAt(sessionPresenter.session!!)

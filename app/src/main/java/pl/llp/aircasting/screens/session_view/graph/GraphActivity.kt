@@ -46,6 +46,9 @@ class GraphActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        (application as AircastingApplication)
+            .appComponent.inject(this)
+
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
         val sessionTab: Int = intent.extras?.getInt(SESSION_TAB_KEY) as Int
