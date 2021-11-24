@@ -9,7 +9,8 @@ import java.util.*
 @Entity(
     tableName = "sessions",
     indices = [
-        Index("device_id")
+        Index("device_id"),
+        Index("session_order")
     ]
 )
 data class SessionDBObject(
