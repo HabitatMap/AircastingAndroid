@@ -21,7 +21,7 @@ open class AirBeam2Connector(
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     private var mThread: ConnectThread? = null
-    private val ESTIMATED_CONNECTING_TIME_SECONDS = 3000L
+    private val ESTIMATED_CONNECTING_TIME_SECONDS = 5000L
 
     override fun start(deviceItem: DeviceItem) {
         mThread = ConnectThread(deviceItem)
@@ -55,7 +55,7 @@ open class AirBeam2Connector(
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
-            device?.createRfcommSocketToServiceRecord(SPP_SERIAL)
+            device?.createInsecureRfcommSocketToServiceRecord(SPP_SERIAL)
         }
 
         private lateinit var mOutputStream: OutputStream
@@ -68,7 +68,6 @@ open class AirBeam2Connector(
                     socket.connect()
                     // wait until connection is finished before sending anything to AirBeam
                     sleep(ESTIMATED_CONNECTING_TIME_SECONDS)
-
                     mOutputStream = socket.outputStream
 
                     onConnectionSuccessful(deviceItem)
