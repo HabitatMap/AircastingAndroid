@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:text="@string/onboarding_page3_header"
         android:textAlignment="viewStart"
+        android:layout_marginTop="@dimen/keyline_4"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:textColor="@color/aircasting_green"
