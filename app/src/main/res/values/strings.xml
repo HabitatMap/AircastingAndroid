@@ -332,7 +332,7 @@
 
     <!-- Did you know box -->
     <string name="did_you_know">Did you know?</string>
-    <string name="did_you_know_box_tip_1">AirBeam2 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
+    <string name="did_you_know_box_tip_1">AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>
