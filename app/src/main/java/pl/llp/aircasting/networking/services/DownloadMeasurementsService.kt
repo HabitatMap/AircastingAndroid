@@ -2,6 +2,7 @@ package pl.llp.aircasting.networking.services
 
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
@@ -14,6 +15,7 @@ import retrofit2.Call
 class DownloadMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     private val sessionsRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
+    private val activeMeasurementsRepository = ActiveSessionMeasurementsRepository()
     private val measurementsRepository = MeasurementsRepository()
 
     fun downloadMeasurements(session: Session, finallyCallback: (() -> Unit)? = null) {
@@ -43,7 +45,7 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         val sessionId = dbSessionWithMeasurements.session.id
 
         call.enqueue(DownloadMeasurementsCallback(
-            sessionId, session, sessionsRepository, measurementStreamsRepository,
+            sessionId, session, sessionsRepository, measurementStreamsRepository, activeMeasurementsRepository,
             measurementsRepository, errorHandler, finallyCallback))
 
         return call
@@ -64,7 +66,7 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
             apiService.downloadFixedMeasurements(session.uuid, lastMeasurementSyncTimeString)
 
         call.enqueue(DownloadMeasurementsCallback(
-            sessionId, session, sessionsRepository, measurementStreamsRepository,
+            sessionId, session, sessionsRepository, measurementStreamsRepository, activeMeasurementsRepository,
             measurementsRepository, errorHandler, finallyCallback))
 
         return call
