@@ -1,7 +1,9 @@
 package pl.llp.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothProfile
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -24,6 +26,7 @@ open class AirBeam3Connector(
     private val mErrorHandler: ErrorHandler
 ): AirBeamConnector(), ConnectionObserver {
     private var airBeam3Configurator = AirBeam3Configurator(mContext, mErrorHandler, mSettinngs)
+    private var lastDisconnectedTime: Long = 0
 
     override fun start(deviceItem: DeviceItem) {
         if (bleNotSupported()) {
@@ -91,7 +94,15 @@ open class AirBeam3Connector(
     override fun onDeviceDisconnecting(device: BluetoothDevice) {}
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
-        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))
+        var timeFromLastDisconnect = 0L
+        val now = System.currentTimeMillis()
+        if (lastDisconnectedTime > 0) {
+            timeFromLastDisconnect = now - lastDisconnectedTime
+        }
+        lastDisconnectedTime = now
+
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason} time from last disconnect ${timeFromLastDisconnect}"))
         onDisconnected(deviceItem)
+        disconnect()
     }
 }
