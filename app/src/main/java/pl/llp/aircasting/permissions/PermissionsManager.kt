@@ -4,12 +4,16 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.lib.ResultCodes
 
 open class PermissionsManager {
-    val LOCATION_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    val LOCATION_PERMISSIONS = if (Build.VERSION.SDK_INT >= 29) arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            else
+        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+
     val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
@@ -46,6 +50,8 @@ open class PermissionsManager {
             ContextCompat.checkSelfPermission(context, it)
         }
 
-        return permissions.all { it == PackageManager.PERMISSION_GRANTED }
+        return permissions.all {
+            it == PackageManager.PERMISSION_GRANTED
+        }
     }
 }
