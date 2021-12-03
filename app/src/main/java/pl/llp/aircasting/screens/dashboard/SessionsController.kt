@@ -26,6 +26,11 @@ import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.screens.session_view.map.MapActivity
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.database.data_classes.MeasurementDBObject
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.database.repositories.MeasurementsRepository
+import pl.llp.aircasting.models.Measurement
 
 
 abstract class SessionsController(
@@ -44,6 +49,9 @@ abstract class SessionsController(
     protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
+    protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
+    protected val mMeasurementsRepository = MeasurementsRepository()
+    protected val mMeasurementStreamsRepository = MeasurementStreamsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
@@ -87,10 +95,29 @@ abstract class SessionsController(
 
     override fun onFollowButtonClicked(session: Session) {
         updateFollowedAt(session)
+        var measurements: HashMap<String, List<Measurement>> = hashMapOf()
+        DatabaseProvider.runQuery {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+
+            sessionId?.let { measurements = loadMeasurementsForStreams(it, session.streams) }
+            measurements.forEach { (streamId, measurements) ->
+                session.streams.forEach { stream ->
+                    if (sessionId != null) {
+                    mMeasurementStreamsRepository.getId(sessionId, stream)?.let { it1 ->
+                            mActiveSessionsRepository.insertAll(it1, sessionId, measurements)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         updateFollowedAt(session)
+        DatabaseProvider.runQuery {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            mActiveSessionsRepository.deleteBySessionId(sessionId)
+        }
     }
 
     private fun updateFollowedAt(session: Session) {
@@ -255,4 +282,37 @@ abstract class SessionsController(
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
     }
+
+    private fun measurementsList(measurements: List<MeasurementDBObject?>): List<Measurement> {
+        return measurements.mapNotNull { measurementDBObject ->
+            measurementDBObject?.let { measurement ->
+                Measurement(measurement)
+            }
+        }
+    }
+
+    private fun loadMeasurementsForStreams(
+        sessionId: Long,
+        measurementStreams: List<MeasurementStream>?
+    ): HashMap<String, List<Measurement>> {
+        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
+
+        measurementStreams?.forEach { measurementStream ->
+            val streamId =
+                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+
+            streamId?.let { streamId ->
+                measurements[measurementStream.sensorName] =
+                        measurementsList(
+                            mMeasurementsRepository.getLastMeasurementsForStream(
+                                streamId,
+                                540
+                            )
+                        )
+                    }
+            }
+
+        return measurements
+    }
+
 }
