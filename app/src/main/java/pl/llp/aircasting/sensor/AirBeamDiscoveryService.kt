@@ -45,6 +45,11 @@ open class AirBeamDiscoveryService(
         }
     }
 
+    fun reset() {
+        mDeviceSelector = null
+        mOnDiscoverySuccessful = null
+        mOnDiscoveryFailed = null
+    }
 
     private fun failAfterTimeout() {
         Timer().schedule(timerTask {
