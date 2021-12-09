@@ -92,17 +92,17 @@ class DownloadMeasurementsCallback(
             Measurement(response, averagingFrequency)
         }
         measurementsRepository.insertAll(streamId, sessionId, measurements)
-//        if (session.isFixed() && session.followedAt != null) { //todo: and followedAt != null ?
+        if (session.isFixed() && session.followedAt != null) { //todo: and followedAt != null ?
             // #TODO we do not need to pass activeSessionMeasurementsRepository for mobiel sessions, i should be an optional argument // troche tego nie łapię...
-            //activeSessionMeasurementsRepository.createOrReplaceMultipleRows(streamId, sessionId, measurements)
-//            measurements.forEach { measurement ->
-//                activeSessionMeasurementsRepository.createOrReplace(
-//                    sessionId,
-//                    streamId,
-//                    measurement
-//                )
-//            }
-//        }
+            activeSessionMeasurementsRepository.createOrReplaceMultipleRows(streamId, sessionId, measurements)
+            measurements.forEach { measurement ->
+                activeSessionMeasurementsRepository.createOrReplace(
+                    sessionId,
+                    streamId,
+                    measurement
+                )
+            }
+        }
     }
 
     private fun updateSessionEndTime(endTimeString: String?) {

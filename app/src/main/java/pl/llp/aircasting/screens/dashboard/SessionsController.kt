@@ -98,16 +98,12 @@ abstract class SessionsController(
         DatabaseProvider.runQuery {
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
 
-            sessionId?.let { measurements = loadMeasurementsForStreams(it, session.streams) }
-            measurements.forEach { (streamId, measurements) ->
-                session.streams.forEach { stream ->
-                    if (sessionId != null) {
-                    mMeasurementStreamsRepository.getId(sessionId, stream)?.let { it1 ->
-                            mActiveSessionsRepository.insertAll(it1, sessionId, measurements)
-                        }
-                    }
-                }
-            }
+            sessionId?.let { loadMeasurementsForStreams(it, session.streams) }
+//            measurements.forEach { (streamId, measurements) ->
+//                    if (sessionId != null) {
+//                        //mActiveSessionsRepository.insertAll(streamId, sessionId, measurements.subList(0,540)) // TODO: subList(0, 540) quite a random code!!
+//                    }
+//                }
         }
     }
 
@@ -295,25 +291,24 @@ abstract class SessionsController(
     private fun loadMeasurementsForStreams(
         sessionId: Long,
         measurementStreams: List<MeasurementStream>?
-    ): HashMap<String, List<Measurement>> {
-        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
+    ) {
+        var measurements:  List<Measurement> = mutableListOf()
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =
                 MeasurementStreamsRepository().getId(sessionId, measurementStream)
 
             streamId?.let { streamId ->
-                measurements[measurementStream.sensorName] =
+                measurements =
                         measurementsList(
                             mMeasurementsRepository.getLastMeasurementsForStream(
                                 streamId,
                                 540
                             )
                         )
+                mActiveSessionsRepository.insertAll(streamId, sessionId, measurements)
                     }
             }
-
-        return measurements
     }
 
 }
