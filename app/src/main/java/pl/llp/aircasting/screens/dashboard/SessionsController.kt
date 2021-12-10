@@ -95,22 +95,16 @@ abstract class SessionsController(
 
     override fun onFollowButtonClicked(session: Session) {
         updateFollowedAt(session)
-        var measurements: HashMap<String, List<Measurement>> = hashMapOf()
-        DatabaseProvider.runQuery {
+        DatabaseProvider.runQuery { // TODO: extract to a function maybe
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
 
             sessionId?.let { loadMeasurementsForStreams(it, session.streams) }
-//            measurements.forEach { (streamId, measurements) ->
-//                    if (sessionId != null) {
-//                        //mActiveSessionsRepository.insertAll(streamId, sessionId, measurements.subList(0,540)) // TODO: subList(0, 540) quite a random code!!
-//                    }
-//                }
         }
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         updateFollowedAt(session)
-        DatabaseProvider.runQuery {
+        DatabaseProvider.runQuery { // TODO: extract to a function maybe
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
             mActiveSessionsRepository.deleteBySessionId(sessionId)
         }
@@ -306,8 +300,8 @@ abstract class SessionsController(
                             )
                         )
                 mActiveSessionsRepository.insertAll(streamId, sessionId, measurements)
-                    }
             }
+        }
     }
 
 }

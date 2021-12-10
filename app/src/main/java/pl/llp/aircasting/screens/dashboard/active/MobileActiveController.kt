@@ -13,7 +13,7 @@ import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
-import pl.llp.aircasting.models.observers.MobileActiveSessionsObserver
+import pl.llp.aircasting.models.observers.ActiveSessionsObserver
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.sensor.AirBeamReconnector
@@ -41,7 +41,7 @@ class MobileActiveController(
     AddNoteBottomSheet.Listener,
     AirBeamReconnector.Listener {
 
-    private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onCreate() {
         super.onCreate()
