@@ -212,12 +212,13 @@ abstract class SessionDetailsViewController(
             val streamId =
                 MeasurementStreamsRepository().getId(sessionId, measurementStream)
 
+            val session = mSessionRepository.getSessionById(sessionId)
             streamId?.let { streamId ->
                 measurements[measurementStream.sensorName] =
-                    if (measurementStream == selectedStream) { // todo: check if the session is dormant so we dont do it for mobile dormant sessions
-                        measurementsList(mMeasurementsRepository.getAllByStreamId(streamId)) // TODO: in this exact moment there is the problem
+                    if (measurementStream == selectedStream || (session?.type == Session.Type.MOBILE && session.status == Session.Status.FINISHED)) {
+                        measurementsList(mMeasurementsRepository.getAllByStreamId(streamId))
                     } else {
-                        measurementsList( // todo: having only one measurement for <not-chosen> stream we got wrong avg value
+                        measurementsList(
                             mMeasurementsRepository.getLastMeasurementsForStream(
                                 streamId,
                                 1
