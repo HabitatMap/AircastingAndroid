@@ -214,7 +214,7 @@ abstract class SessionDetailsViewController(
 
             streamId?.let { streamId ->
                 measurements[measurementStream.sensorName] =
-                    if (measurementStream == selectedStream) {
+                    if (measurementStream == selectedStream) { // todo: check if the session is dormant so we dont do it for mobile dormant sessions
                         measurementsList(mMeasurementsRepository.getAllByStreamId(streamId)) // TODO: in this exact moment there is the problem
                     } else {
                         measurementsList( // todo: having only one measurement for <not-chosen> stream we got wrong avg value
