@@ -1,13 +1,7 @@
 package pl.llp.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
-import android.bluetooth.BluetoothProfile
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import pl.llp.aircasting.exceptions.BLENotSupported
