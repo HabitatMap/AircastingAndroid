@@ -215,9 +215,9 @@ abstract class SessionDetailsViewController(
             streamId?.let { streamId ->
                 measurements[measurementStream.sensorName] =
                     if (measurementStream == selectedStream) {
-                        measurementsList(mMeasurementsRepository.getAllByStreamId(streamId))
+                        measurementsList(mMeasurementsRepository.getAllByStreamId(streamId)) // TODO: in this exact moment there is the problem
                     } else {
-                        measurementsList(
+                        measurementsList( // todo: having only one measurement for <not-chosen> stream we got wrong avg value
                             mMeasurementsRepository.getLastMeasurementsForStream(
                                 streamId,
                                 1
