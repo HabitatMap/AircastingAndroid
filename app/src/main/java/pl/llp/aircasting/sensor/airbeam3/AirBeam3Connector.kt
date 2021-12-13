@@ -20,7 +20,6 @@ open class AirBeam3Connector(
     private val mErrorHandler: ErrorHandler
 ): AirBeamConnector(), ConnectionObserver {
     private var airBeam3Configurator = AirBeam3Configurator(mContext, mErrorHandler, mSettinngs)
-    private var lastDisconnectedTime: Long = 0
 
     override fun start(deviceItem: DeviceItem) {
         if (bleNotSupported()) {
@@ -91,14 +90,8 @@ open class AirBeam3Connector(
     }
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
-        var timeFromLastDisconnect = 0L
-        val now = System.currentTimeMillis()
-        if (lastDisconnectedTime > 0) {
-            timeFromLastDisconnect = now - lastDisconnectedTime
-        }
-        lastDisconnectedTime = now
 
-        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason} time from last disconnect ${timeFromLastDisconnect}"))
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))
         onDisconnected(deviceItem)
         disconnect()
     }
