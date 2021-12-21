@@ -74,11 +74,26 @@ class ActiveSessionMeasurementsRepository {
         // todo: maybe i should just search for oldest measurement index and replace measurement.size indexów od najstarszego measurementu?
         // TODO: what if we got 60 measurements to add and 500 already in the list? this case needs to be handle
         // maybe i might add this '60 measurements' and delete a group of oldest measurements so its 540?
+        val measurementsToBeReplaced = mutableListOf<ActiveSessionMeasurementDBObject>()
 
-        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
-            // todo: list of active measurement db objects
-//            insertAll(measurementStreamId, sessionId, measurements.subList(0, measurementsToBeInserted))
-            val measurementsToBeReplaced = mutableListOf<ActiveSessionMeasurementDBObject>()
+        if(measurements.size > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
+            measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER).forEach { measurement ->
+                measurementsToBeReplaced.add(
+                    ActiveSessionMeasurementDBObject(
+                        measurementStreamId,
+                        sessionId,
+                        measurement.value,
+                        measurement.time,
+                        measurement.longitude,
+                        measurement.latitude
+                    )
+                )
+            }
+            deleteAndInsertMultipleRows(measurementsToBeReplaced)
+            return
+        }
+
+        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) { //todo: this might insert/replace too much measurements to the table <?>
             measurements.forEach { measurement ->
                 measurementsToBeReplaced.add(
                     ActiveSessionMeasurementDBObject(
@@ -95,7 +110,6 @@ class ActiveSessionMeasurementsRepository {
         } else {
             insertAll(measurementStreamId, sessionId, measurements)
         }
-
     }
 
 }
