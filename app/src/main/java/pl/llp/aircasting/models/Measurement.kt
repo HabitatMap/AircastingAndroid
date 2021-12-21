@@ -8,8 +8,8 @@ import pl.llp.aircasting.networking.responses.MeasurementResponse
 import java.util.*
 
 class Measurement(
-    val value: Double,
-    val time: Date,
+    val value: Double = 0.0,
+    val time: Date = Date(),
     val latitude: Double? = null,
     val longitude: Double? = null,
     var averagingFrequency: Int = 1
