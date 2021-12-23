@@ -76,7 +76,7 @@ interface ActiveSessionMeasurementDao {
     @Transaction
     fun deleteAndInsertMultipleMeasurementsInTransaction(measurements: List<ActiveSessionMeasurementDBObject>) {
         if (measurements.isEmpty()) return
-        val ids = getOldestMeasurementsId(measurements[0].sessionId, measurements[0].streamId, measurements.size)
+        val ids = getOldestMeasurementsId(measurements.first().sessionId, measurements.first().streamId, measurements.size)
 
         deleteActiveSessionMeasurements(ids)
         insertAll(measurements)

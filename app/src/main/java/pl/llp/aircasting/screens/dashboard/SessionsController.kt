@@ -51,7 +51,6 @@ abstract class SessionsController(
     protected val mSessionRepository = SessionsRepository()
     protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
     protected val mMeasurementsRepository = MeasurementsRepository()
-    protected val mMeasurementStreamsRepository = MeasurementStreamsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
@@ -95,19 +94,12 @@ abstract class SessionsController(
 
     override fun onFollowButtonClicked(session: Session) {
         updateFollowedAt(session)
-        DatabaseProvider.runQuery { // TODO: extract to a function maybe
-            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-
-            sessionId?.let { loadMeasurementsForStreams(it, session.streams) }
-        }
+        addFollowedSessionMeasurementsToActiveTable(session)
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         updateFollowedAt(session)
-        DatabaseProvider.runQuery { // TODO: extract to a function maybe
-            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-            mActiveSessionsRepository.deleteBySessionId(sessionId)
-        }
+        clearUnfollowedSessionMeasurementsFromActiveTable(session)
     }
 
     private fun updateFollowedAt(session: Session) {
@@ -278,6 +270,20 @@ abstract class SessionsController(
             measurementDBObject?.let { measurement ->
                 Measurement(measurement)
             }
+        }
+    }
+
+    private fun addFollowedSessionMeasurementsToActiveTable(session: Session) {
+        DatabaseProvider.runQuery {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            sessionId?.let { loadMeasurementsForStreams(it, session.streams) }
+        }
+    }
+
+    private fun clearUnfollowedSessionMeasurementsFromActiveTable(session: Session) {
+        DatabaseProvider.runQuery {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            mActiveSessionsRepository.deleteBySessionId(sessionId)
         }
     }
 

@@ -69,11 +69,8 @@ class ActiveSessionMeasurementsRepository {
         }
     }
 
-    fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) { // todo: measurements is a list of few measurements often, the algorithm may not be proper
+    fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
         val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, measurementStreamId)
-        // todo: maybe i should just search for oldest measurement index and replace measurement.size indexów od najstarszego measurementu?
-        // TODO: what if we got 60 measurements to add and 500 already in the list? this case needs to be handle
-        // maybe i might add this '60 measurements' and delete a group of oldest measurements so its 540?
         val measurementsToBeReplaced = mutableListOf<ActiveSessionMeasurementDBObject>()
 
         if(measurements.size > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
@@ -93,7 +90,7 @@ class ActiveSessionMeasurementsRepository {
             return
         }
 
-        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) { //todo: this might insert/replace too much measurements to the table <?>
+        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
             measurements.forEach { measurement ->
                 measurementsToBeReplaced.add(
                     ActiveSessionMeasurementDBObject(
