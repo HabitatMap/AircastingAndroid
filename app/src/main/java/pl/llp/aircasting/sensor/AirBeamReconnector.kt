@@ -119,6 +119,7 @@ class AirBeamReconnector(
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
         resetTriesNumberWithDelay()
+        mAirBeamDiscoveryService.reset()
 
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
@@ -155,6 +156,7 @@ class AirBeamReconnector(
     }
 
     private fun finalizeReconnection() {
+        mAirBeamDiscoveryService.reset()
         mErrorCallback?.invoke()
         mFinallyCallback?.invoke()
         unregisterFromEventBus()

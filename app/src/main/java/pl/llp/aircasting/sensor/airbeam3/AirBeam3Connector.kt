@@ -1,11 +1,7 @@
 package pl.llp.aircasting.sensor.airbeam3
 
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattCallback
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import pl.llp.aircasting.exceptions.BLENotSupported
@@ -84,14 +80,19 @@ open class AirBeam3Connector(
     override fun onDeviceConnecting(device: BluetoothDevice) {}
     override fun onDeviceConnected(device: BluetoothDevice) {}
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceFailedToConnect"))
         val deviceItem = DeviceItem(device)
         onConnectionFailed(deviceItem)
     }
     override fun onDeviceReady(device: BluetoothDevice) {}
-    override fun onDeviceDisconnecting(device: BluetoothDevice) {}
+    override fun onDeviceDisconnecting(device: BluetoothDevice) {
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnecting"))
+    }
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
+
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))
         onDisconnected(deviceItem)
+        disconnect()
     }
 }
