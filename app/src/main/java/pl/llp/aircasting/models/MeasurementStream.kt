@@ -214,7 +214,7 @@ class MeasurementStream(
 
     fun lastMeasurement(): Measurement {
         if (measurements.isNotEmpty())
-        return measurements.last()
+            return measurements.last()
         else
             return Measurement()
     }

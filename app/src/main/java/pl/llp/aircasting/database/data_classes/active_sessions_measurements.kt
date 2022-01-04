@@ -46,7 +46,7 @@ interface ActiveSessionMeasurementDao {
     fun getOldestMeasurementId(sessionId: Long, streamId: Long): Int
 
     @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT :limit")
-    fun getOldestMeasurementsId(sessionId: Long, streamId: Long, limit: Int): List<Int>
+    fun getOldestMeasurementsIds(sessionId: Long, streamId: Long, limit: Int): List<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(measurement: ActiveSessionMeasurementDBObject): Long
@@ -76,7 +76,7 @@ interface ActiveSessionMeasurementDao {
     @Transaction
     fun deleteAndInsertMultipleMeasurementsInTransaction(measurements: List<ActiveSessionMeasurementDBObject>) {
         if (measurements.isEmpty()) return
-        val ids = getOldestMeasurementsId(measurements.first().sessionId, measurements.first().streamId, measurements.size)
+        val ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
 
         deleteActiveSessionMeasurements(ids)
         insertAll(measurements)

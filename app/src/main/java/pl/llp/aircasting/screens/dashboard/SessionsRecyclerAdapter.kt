@@ -49,7 +49,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         removeObsoleteSessions()
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
-                val sessionPresenter = mSessionPresenters[session.uuid] //todo: czy w tym ifie mamy napewno najnowsze measurementy dla naszej following sesji
+                val sessionPresenter = mSessionPresenters[session.uuid]
                 sessionPresenter!!.session = prepareSession(session, sessionPresenter.expanded)
                 sessionPresenter.chartData?.refresh(session)
             } else {
