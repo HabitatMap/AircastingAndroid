@@ -50,7 +50,7 @@ class AddNoteBottomSheet(
 
     private fun addNote(mSession: Session) {
         val lastMeasurement = mSession.lastMeasurement()
-        if (lastMeasurement.latitude == null || lastMeasurement.longitude == null) {
+        if (lastMeasurement?.latitude == null || lastMeasurement.longitude == null) {
             mErrorHandler.handleAndDisplay(NotesNoLocationError())
             return
         }

@@ -212,10 +212,7 @@ class MeasurementStream(
         return filteredMeasurements.takeLast(amount)
     }
 
-    fun lastMeasurement(): Measurement {
-        if (measurements.isNotEmpty())
-            return measurements.last()
-        else
-            return Measurement()
+    fun lastMeasurement(): Measurement? {
+        return measurements.last()
     }
 }

@@ -73,39 +73,29 @@ class ActiveSessionMeasurementsRepository {
 
     fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
         val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, measurementStreamId)
-        var measurementsToBeReplaced = mutableListOf<ActiveSessionMeasurementDBObject>()
+        var measurementsToBeReplaced = listOf<Measurement>()
 
         if(measurements.size > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
-             measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER).map { measurement ->
-                 ActiveSessionMeasurementDBObject(
-                     measurementStreamId,
-                     sessionId,
-                     measurement.value,
-                     measurement.time,
-                     measurement.longitude,
-                     measurement.latitude
-                 )
-             }
-
-            deleteAndInsertMultipleRows(measurementsToBeReplaced)
-            return
+             measurementsToBeReplaced = measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER)
         }
 
         if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
-            measurements.map { measurement ->
-                    ActiveSessionMeasurementDBObject(
-                        measurementStreamId,
-                        sessionId,
-                        measurement.value,
-                        measurement.time,
-                        measurement.latitude,
-                        measurement.longitude
-                    )
-            }
-            deleteAndInsertMultipleRows(measurementsToBeReplaced)
+            measurementsToBeReplaced = measurements
         } else {
             insertAll(measurementStreamId, sessionId, measurements)
         }
+
+        val measurementsDbObjectsToBeReplaced = measurementsToBeReplaced.map { measurement ->
+            ActiveSessionMeasurementDBObject(
+                measurementStreamId,
+                sessionId,
+                measurement.value,
+                measurement.time,
+                measurement.longitude,
+                measurement.latitude
+            )
+        }
+        deleteAndInsertMultipleRows(measurementsDbObjectsToBeReplaced)
     }
 
     fun loadMeasurementsForStreams(
