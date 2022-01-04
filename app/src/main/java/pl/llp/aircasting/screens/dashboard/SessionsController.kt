@@ -26,6 +26,11 @@ import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.screens.session_view.map.MapActivity
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.database.data_classes.MeasurementDBObject
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.database.repositories.MeasurementsRepository
+import pl.llp.aircasting.models.Measurement
 
 
 abstract class SessionsController(
@@ -44,6 +49,8 @@ abstract class SessionsController(
     protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
+    protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
+    protected val mMeasurementsRepository = MeasurementsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
@@ -87,10 +94,12 @@ abstract class SessionsController(
 
     override fun onFollowButtonClicked(session: Session) {
         updateFollowedAt(session)
+        addFollowedSessionMeasurementsToActiveTable(session)
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         updateFollowedAt(session)
+        clearUnfollowedSessionMeasurementsFromActiveTable(session)
     }
 
     private fun updateFollowedAt(session: Session) {
@@ -255,4 +264,21 @@ abstract class SessionsController(
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
     }
+
+    private fun addFollowedSessionMeasurementsToActiveTable(session: Session) {
+        DatabaseProvider.runQuery {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            sessionId?.let {
+                mActiveSessionsRepository.loadMeasurementsForStreams(it, session.streams, 540)
+            }
+        }
+    }
+
+    private fun clearUnfollowedSessionMeasurementsFromActiveTable(session: Session) {
+        DatabaseProvider.runQuery {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            mActiveSessionsRepository.deleteBySessionId(sessionId)
+        }
+    }
+
 }

@@ -1,8 +1,11 @@
 package pl.llp.aircasting.database.repositories
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
+import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.models.Measurement
+import pl.llp.aircasting.models.MeasurementStream
 
 class ActiveSessionMeasurementsRepository {
     private val ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER = 60 * 9 //we only need 9 mins of measurements. TODO: we should calculate that number based on time
@@ -21,8 +24,27 @@ class ActiveSessionMeasurementsRepository {
         return mDatabase.activeSessionsMeasurements().insert(activeSessionMeasurementDBObject)
     }
 
+    fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+        val measurementDBObjects = measurements.map { measurement ->
+            ActiveSessionMeasurementDBObject(
+                measurementStreamId,
+                sessionId,
+                measurement.value,
+                measurement.time,
+                measurement.latitude,
+                measurement.longitude
+            )
+        }
+
+        mDatabase.activeSessionsMeasurements().insertAll(measurementDBObjects)
+    }
+
     private fun deleteAndInsert(measurement: ActiveSessionMeasurementDBObject) {
         mDatabase.activeSessionsMeasurements().deleteAndInsertInTransaction(measurement)
+    }
+
+    private fun deleteAndInsertMultipleRows(measurements: List<ActiveSessionMeasurementDBObject>) {
+        mDatabase.activeSessionsMeasurements().deleteAndInsertMultipleMeasurementsInTransaction(measurements)
     }
 
     fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
@@ -46,6 +68,65 @@ class ActiveSessionMeasurementsRepository {
     fun deleteBySessionId(sessionId: Long?) {
         sessionId?.let {
             mDatabase.activeSessionsMeasurements().deleteActiveSessionMeasurementsBySession(sessionId)
+        }
+    }
+
+    fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+        val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, measurementStreamId)
+        var measurementsToBeReplaced = listOf<Measurement>()
+
+        if(measurements.size > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
+             measurementsToBeReplaced = measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER)
+        }
+
+        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
+            measurementsToBeReplaced = measurements
+        } else {
+            insertAll(measurementStreamId, sessionId, measurements)
+        }
+
+        val measurementsDbObjectsToBeReplaced = measurementsToBeReplaced.map { measurement ->
+            ActiveSessionMeasurementDBObject(
+                measurementStreamId,
+                sessionId,
+                measurement.value,
+                measurement.time,
+                measurement.longitude,
+                measurement.latitude
+            )
+        }
+        deleteAndInsertMultipleRows(measurementsDbObjectsToBeReplaced)
+    }
+
+    fun loadMeasurementsForStreams(
+        sessionId: Long,
+        measurementStreams: List<MeasurementStream>?,
+        limit: Int
+    ) {
+        var measurements:  List<Measurement> = mutableListOf()
+
+        measurementStreams?.forEach { measurementStream ->
+            val streamId =
+                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+
+            streamId?.let { streamId ->
+                measurements =
+                   measurementsList(
+                        MeasurementsRepository().getLastMeasurementsForStream(
+                            streamId,
+                            limit
+                        )
+                    )
+                insertAll(streamId, sessionId, measurements)
+            }
+        }
+    }
+
+    private fun measurementsList(measurements: List<MeasurementDBObject?>): List<Measurement> {
+        return measurements.mapNotNull { measurementDBObject ->
+            measurementDBObject?.let { measurement ->
+                Measurement(measurement)
+            }
         }
     }
 

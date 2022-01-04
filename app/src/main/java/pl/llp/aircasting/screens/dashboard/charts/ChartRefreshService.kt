@@ -27,7 +27,7 @@ class ChartRefreshService {
     fun shouldBeRefreshed(): Boolean {
         return when(mSession?.type) {
             Session.Type.MOBILE -> mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
-            Session.Type.FIXED -> Date().minutes == 0
+            Session.Type.FIXED -> Date().minutes == 0 || (timeFromLastRefresh() >= mRefreshFrequency)
             else -> mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
         }
     }
