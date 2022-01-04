@@ -73,28 +73,26 @@ class ActiveSessionMeasurementsRepository {
 
     fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
         val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, measurementStreamId)
-        val measurementsToBeReplaced = mutableListOf<ActiveSessionMeasurementDBObject>()
+        var measurementsToBeReplaced = mutableListOf<ActiveSessionMeasurementDBObject>()
 
         if(measurements.size > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
-            measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER).forEach { measurement ->
-                measurementsToBeReplaced.add(
-                    ActiveSessionMeasurementDBObject(
-                        measurementStreamId,
-                        sessionId,
-                        measurement.value,
-                        measurement.time,
-                        measurement.longitude,
-                        measurement.latitude
-                    )
-                )
-            }
+             measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER).map { measurement ->
+                 ActiveSessionMeasurementDBObject(
+                     measurementStreamId,
+                     sessionId,
+                     measurement.value,
+                     measurement.time,
+                     measurement.longitude,
+                     measurement.latitude
+                 )
+             }
+
             deleteAndInsertMultipleRows(measurementsToBeReplaced)
             return
         }
 
         if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
-            measurements.forEach { measurement ->
-                measurementsToBeReplaced.add(
+            measurements.map { measurement ->
                     ActiveSessionMeasurementDBObject(
                         measurementStreamId,
                         sessionId,
@@ -103,7 +101,6 @@ class ActiveSessionMeasurementsRepository {
                         measurement.latitude,
                         measurement.longitude
                     )
-                )
             }
             deleteAndInsertMultipleRows(measurementsToBeReplaced)
         } else {
