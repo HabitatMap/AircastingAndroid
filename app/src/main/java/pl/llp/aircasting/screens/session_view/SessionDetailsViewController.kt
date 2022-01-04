@@ -190,7 +190,7 @@ abstract class SessionDetailsViewController(
         sessionDBObject?.let { session ->
             mSessionPresenter.selectedStream?.let { selectedStream ->
                 val isSessionDormant = (session?.type == Session.Type.MOBILE && session.status == Session.Status.FINISHED)
-                measurements = loadMeasurementsForStreams(session.id,  mSessionPresenter.session?.streams, isSessionDormant)
+                measurements = loadMeasurementsForStreams(session.id,  mSessionPresenter.session?.streams, selectedStream, isSessionDormant)
             }
         }
 
@@ -208,6 +208,7 @@ abstract class SessionDetailsViewController(
     private fun loadMeasurementsForStreams(
         sessionId: Long,
         measurementStreams: List<MeasurementStream>?,
+        selectedStream: MeasurementStream,
         isSessionDormant: Boolean
     ): HashMap<String, List<Measurement>> {
         var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
@@ -218,7 +219,7 @@ abstract class SessionDetailsViewController(
 
             streamId?.let { streamId ->
                 measurements[measurementStream.sensorName] =
-                    if (isSessionDormant) {
+                    if (measurementStream == selectedStream || isSessionDormant) {
                         measurementsList(mMeasurementsRepository.getAllByStreamId(streamId))
                     } else {
                         measurementsList(
