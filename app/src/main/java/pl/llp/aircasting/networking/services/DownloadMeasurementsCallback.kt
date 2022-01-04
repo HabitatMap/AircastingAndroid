@@ -92,6 +92,10 @@ class DownloadMeasurementsCallback(
             Measurement(response, averagingFrequency)
         }
         measurementsRepository.insertAll(streamId, sessionId, measurements)
+
+        // We are using active_session_measurements table for following sessions to optimize the app's performance
+        // Because of that when we launch the app after some time of inactivity we have to insert all
+        // new measurements for following session to active_measurements_table apart from the basic measurements db table
         if (session.isFixed() && session.followedAt != null) {
             activeSessionMeasurementsRepository.createOrReplaceMultipleRows(streamId, sessionId, measurements)
         }
