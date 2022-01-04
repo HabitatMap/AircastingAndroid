@@ -296,7 +296,7 @@ class Session(
                 session.status != status ||
                 session.endTime != endTime ||
                 session.notes.size != notes.size ||
-                (session.measurementsCount() > 0 && session.lastMeasurement().time != lastMeasurement().time)
+                (session.measurementsCount() > 0 && session.lastMeasurement()?.time != lastMeasurement()?.time)
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {
@@ -332,7 +332,7 @@ class Session(
         }
     }
 
-    fun lastMeasurement(): Measurement {
+    fun lastMeasurement(): Measurement? {
         return streams.first().lastMeasurement()
     }
 
