@@ -1,6 +1,7 @@
 package pl.llp.aircasting.database.data_classes
 
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import java.util.*
 
 @Entity(

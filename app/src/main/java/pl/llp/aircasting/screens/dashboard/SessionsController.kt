@@ -266,18 +266,12 @@ abstract class SessionsController(
         context?.startActivity(chooser)
     }
 
-    private fun measurementsList(measurements: List<MeasurementDBObject?>): List<Measurement> {
-        return measurements.mapNotNull { measurementDBObject ->
-            measurementDBObject?.let { measurement ->
-                Measurement(measurement)
-            }
-        }
-    }
-
     private fun addFollowedSessionMeasurementsToActiveTable(session: Session) {
         DatabaseProvider.runQuery {
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-            sessionId?.let { loadMeasurementsForStreams(it, session.streams) }
+            sessionId?.let {
+                mActiveSessionsRepository.loadMeasurementsForStreams(it, session.streams, 540)
+            }
         }
     }
 
@@ -285,29 +279,6 @@ abstract class SessionsController(
         DatabaseProvider.runQuery {
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
             mActiveSessionsRepository.deleteBySessionId(sessionId)
-        }
-    }
-
-    private fun loadMeasurementsForStreams(
-        sessionId: Long,
-        measurementStreams: List<MeasurementStream>?
-    ) {
-        var measurements:  List<Measurement> = mutableListOf()
-
-        measurementStreams?.forEach { measurementStream ->
-            val streamId =
-                MeasurementStreamsRepository().getId(sessionId, measurementStream)
-
-            streamId?.let { streamId ->
-                measurements =
-                        measurementsList(
-                            mMeasurementsRepository.getLastMeasurementsForStream(
-                                streamId,
-                                540
-                            )
-                        )
-                mActiveSessionsRepository.insertAll(streamId, sessionId, measurements)
-            }
         }
     }
 

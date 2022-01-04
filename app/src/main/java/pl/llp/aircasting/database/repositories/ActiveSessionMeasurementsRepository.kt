@@ -1,9 +1,11 @@
 package pl.llp.aircasting.database.repositories
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.models.Measurement
+import pl.llp.aircasting.models.MeasurementStream
 
 class ActiveSessionMeasurementsRepository {
     private val ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER = 60 * 9 //we only need 9 mins of measurements. TODO: we should calculate that number based on time
@@ -106,6 +108,38 @@ class ActiveSessionMeasurementsRepository {
             deleteAndInsertMultipleRows(measurementsToBeReplaced)
         } else {
             insertAll(measurementStreamId, sessionId, measurements)
+        }
+    }
+
+    fun loadMeasurementsForStreams(
+        sessionId: Long,
+        measurementStreams: List<MeasurementStream>?,
+        limit: Int
+    ) {
+        var measurements:  List<Measurement> = mutableListOf()
+
+        measurementStreams?.forEach { measurementStream ->
+            val streamId =
+                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+
+            streamId?.let { streamId ->
+                measurements =
+                   measurementsList(
+                        MeasurementsRepository().getLastMeasurementsForStream(
+                            streamId,
+                            limit
+                        )
+                    )
+                insertAll(streamId, sessionId, measurements)
+            }
+        }
+    }
+
+    private fun measurementsList(measurements: List<MeasurementDBObject?>): List<Measurement> {
+        return measurements.mapNotNull { measurementDBObject ->
+            measurementDBObject?.let { measurement ->
+                Measurement(measurement)
+            }
         }
     }
 
