@@ -264,7 +264,6 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
 
     protected open fun setExpandCollapseButton() {
         if (mSessionPresenter?.expanded == true) {
-
             mExpandSessionButton.visibility = View.INVISIBLE
             mCollapseSessionButton.visibility = View.VISIBLE
             mReorderSessionButton.visibility = View.INVISIBLE
