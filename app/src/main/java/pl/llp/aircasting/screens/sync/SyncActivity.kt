@@ -73,11 +73,6 @@ class SyncActivity: BaseActivity() {
         AppBar.setup(view.rootView, this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        controller?.onResume()
-    }
-
     override fun onStop() {
         super.onStop()
         controller?.onStop()
