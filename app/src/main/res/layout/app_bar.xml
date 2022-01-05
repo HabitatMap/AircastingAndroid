@@ -15,8 +15,7 @@
         app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
         android:paddingTop="@dimen/keyline_4">
-<<<<<<< HEAD
-=======
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_gravity="right"
@@ -33,6 +32,5 @@
                 android:tint="@color/aircasting_grey_700" />
 
         </LinearLayout>
->>>>>>> 7a2ed2e8 (rebase 5)
     </com.google.android.material.appbar.MaterialToolbar>
 </com.google.android.material.appbar.AppBarLayout>

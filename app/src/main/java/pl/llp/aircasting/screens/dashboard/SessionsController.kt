@@ -95,12 +95,14 @@ abstract class SessionsController(
         updateFollowedAt(session)
         mSettings.increaseFollowedSessionsNumber()
         addFollowedSessionMeasurementsToActiveTable(session)
+        mSettings.increaseFollowedSessionsNumber()
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         updateFollowedAt(session)
         mSettings.decreaseFollowedSessionsNumber()
         clearUnfollowedSessionMeasurementsFromActiveTable(session)
+        mSettings.decreaseFollowedSessionsNumber()
     }
 
     private fun updateFollowedAt(session: Session) {

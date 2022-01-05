@@ -89,7 +89,7 @@ class NewSessionController(
     }
 
     fun onResume() {
-        AppBar.adjustMenuVisibility(false)
+        //AppBar.adjustMenuVisibility(false)
     }
 
     fun onStop() {

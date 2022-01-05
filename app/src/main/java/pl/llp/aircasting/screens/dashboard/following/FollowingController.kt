@@ -32,7 +32,6 @@ class FollowingController(
 
         val followingSessionsNumber = mSettings.getFollowedSessionsNumber()
         AppBar.adjustMenuVisibility(true, followingSessionsNumber)
-
     }
 
     override fun registerSessionsObserver() {
