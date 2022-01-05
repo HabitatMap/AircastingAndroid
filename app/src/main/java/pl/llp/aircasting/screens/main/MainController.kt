@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.main
 import android.content.IntentFilter
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
@@ -24,11 +25,13 @@ class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
-    private val mApiServiceFactory: ApiServiceFactory
-) {
+    private val mApiServiceFactory: ApiServiceFactory,
+    private val fragmentManager: FragmentManager
+) : ReorderSessionsBottomSheet.Listener {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
+    private var mReorderSessionsBottomSheet: ReorderSessionsBottomSheet? = null
 
     fun onCreate() {
         if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {
@@ -109,5 +112,14 @@ class MainController(
     fun onMessageEvent(event: KeepScreenOnToggledEvent) {
         if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    fun onMenuOpened() {
+        mReorderSessionsBottomSheet = ReorderSessionsBottomSheet(this)
+        mReorderSessionsBottomSheet?.show(fragmentManager)
+    }
+
+    override fun onReorderSessionsClicked() {
+        //TODO("Not yet implemented")
     }
 }

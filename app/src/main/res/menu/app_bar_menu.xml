@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/more_button"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title=""/>
+        android:icon="@drawable/ic_more_vertical_2"
+        android:title=" ">
+    </item>
 </menu>
