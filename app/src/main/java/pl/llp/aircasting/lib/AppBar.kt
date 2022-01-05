@@ -32,6 +32,7 @@ class AppBar {
             mFinishedReorderingSessionsButton?.setOnClickListener {
                 onFinishedReorderingSessionsButtonClicked()
             }
+            mTopAppBar?.inflateMenu(R.menu.app_bar_menu)
         }
 
         fun destroy() {
