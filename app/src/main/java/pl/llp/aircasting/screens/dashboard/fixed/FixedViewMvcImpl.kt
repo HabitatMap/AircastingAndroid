@@ -60,8 +60,4 @@ class FixedViewMvcImpl(
     override fun addTouchHelperToRecyclerView() {
         // Do nothing here
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> e73675a7 (rebase 7)
 }

@@ -65,10 +65,6 @@ open class Settings(private val mApplication: Application) {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
 
-    fun isReordering(): Boolean {
-        return getBooleanFromSettings(IS_REORDERING_KEY, DEFAULT_IS_REORDERING)
-    }
-
     fun areMapsDisabled(): Boolean {
         return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
     }
@@ -179,10 +175,6 @@ open class Settings(private val mApplication: Application) {
 
     open fun logout(){
         deleteFromSettings()
-    }
-
-    fun setIsReordering(isReordering: Boolean) {
-        saveToSettings(IS_REORDERING_KEY, isReordering)
     }
 
     open fun getStringFromSettings(key: String, default: String? = null): String? {

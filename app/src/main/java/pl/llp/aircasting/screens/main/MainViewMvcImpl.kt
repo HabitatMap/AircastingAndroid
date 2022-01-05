@@ -18,10 +18,9 @@ import pl.llp.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.activity_main.view.*
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class MainViewMvcImpl: BaseObservableViewMvc<MainViewMvc.Listener>, MainViewMvc {
+class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
     private val rootActivity: AppCompatActivity
     private val loader: ImageView?
-    private val finishedReorderingButton: Button?
 
     constructor(
         inflater: LayoutInflater,
@@ -31,10 +30,6 @@ class MainViewMvcImpl: BaseObservableViewMvc<MainViewMvc.Listener>, MainViewMvc 
         this.rootActivity = rootActivity
 
         this.loader = rootView?.loader
-        this.finishedReorderingButton = rootView?.finished_reordering_session_button
-        this.finishedReorderingButton?.setOnClickListener {
-            onFinishReorderingSessionsClicked()
-        }
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
@@ -60,25 +55,4 @@ class MainViewMvcImpl: BaseObservableViewMvc<MainViewMvc.Listener>, MainViewMvc 
         loader?.visibility = View.GONE
     }
 
-    override fun showAppBarMenu() {
-        TODO("Not yet implemented")
-    }
-
-    override fun hideAppBarMenu() {
-        TODO("Not yet implemented")
-    }
-
-    override fun showReorderingFinishedButton() {
-        this.finishedReorderingButton?.visibility = View.VISIBLE
-    }
-
-    override fun hideReorderingFinishedButton() {
-        this.finishedReorderingButton?.visibility = View.GONE
-    }
-
-    private fun onFinishReorderingSessionsClicked() {
-        for (listener in listeners) {
-            listener.onFinishedReorderingButtonClicked()
-        }
-    }
 }

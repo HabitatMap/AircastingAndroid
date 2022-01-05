@@ -21,7 +21,11 @@ import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
 
+<<<<<<< HEAD
     protected var mRecyclerSessions: RecyclerView? = null
+=======
+    private var mRecyclerSessions: RecyclerView? = null
+>>>>>>> d182b82e (rebase 5)
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
@@ -49,7 +53,6 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
-
         mRecyclerSessions?.setAdapter(mAdapter)
         addTouchHelperToRecyclerView()
 

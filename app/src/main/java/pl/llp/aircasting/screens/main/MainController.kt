@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_main.*
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
@@ -30,10 +28,10 @@ import pl.llp.aircasting.screens.dashboard.DashboardFragment
 
 class MainController(
     private val rootActivity: AppCompatActivity,
-    private val mViewMvc: MainViewMvcImpl, // TODO: changed from MainViewMvc, is it ok?!?!?
+    private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory
-) : MainViewMvc.Listener { //TODO: changed from MainViewMvc, is it ok????
+) {
     private var mSessionManager: SessionManager? = null
     private var mConnectivityManager: ConnectivityManager? = null
     private val mErrorHandler = ErrorHandler(rootActivity)
@@ -68,14 +66,6 @@ class MainController(
         unregisterConnectivityManager()
         mSessionManager?.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
-    }
-
-    fun registerListener(listener: MainViewMvc.Listener) {
-        mViewMvc?.registerListener(listener)
-    }
-
-    fun unregisterListener(listener: MainViewMvc.Listener) {
-        mViewMvc?.unregisterListener(listener)
     }
 
     private fun showLoginScreen() {
@@ -152,7 +142,7 @@ class MainController(
         NavigationController.goToReorderingDashboard()
     }
 
-    override fun onFinishedReorderingButtonClicked() {
+    fun onFinishedReorderingButtonClicked() {
 //        mSettings.setIsReordering(false)
 //        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
 //        // TODO: mViewMvc.showAppBarMenu()
