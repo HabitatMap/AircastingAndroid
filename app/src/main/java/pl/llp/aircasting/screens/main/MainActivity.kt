@@ -48,8 +48,8 @@ class MainActivity: BaseActivity() {
         DateConverter.setup(settings)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
-        val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings, apiServiceFactory)
+        view = MainViewMvcImpl(layoutInflater, null, this)
+        controller = MainController(this, view!!, settings, apiServiceFactory)
 
         controller?.onCreate()
 
