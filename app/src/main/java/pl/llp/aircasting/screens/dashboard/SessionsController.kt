@@ -99,11 +99,6 @@ abstract class SessionsController(
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
 
             sessionId?.let { loadMeasurementsForStreams(it, session.streams) }
-//            measurements.forEach { (streamId, measurements) ->
-//                    if (sessionId != null) {
-//                        //mActiveSessionsRepository.insertAll(streamId, sessionId, measurements.subList(0,540)) // TODO: subList(0, 540) quite a random code!!
-//                    }
-//                }
         }
     }
 
@@ -307,8 +302,8 @@ abstract class SessionsController(
                             )
                         )
                 mActiveSessionsRepository.insertAll(streamId, sessionId, measurements)
-                    }
             }
+        }
     }
 
 }
