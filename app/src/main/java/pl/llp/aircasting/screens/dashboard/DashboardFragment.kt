@@ -23,7 +23,11 @@ class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardControll
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
+        val pagerAdapter = context?.let { DashboardPagerAdapter(it, childFragmentManager) }
+        view = pagerAdapter?.let {
+            DashboardViewMvcImpl(inflater, container, childFragmentManager,
+                it, DashboardPagerAdapter.TABS_COUNT)
+        }
         controller = DashboardController(view)
         val tabId = arguments?.get("tabId") as Int?
         controller?.onCreate(tabId)

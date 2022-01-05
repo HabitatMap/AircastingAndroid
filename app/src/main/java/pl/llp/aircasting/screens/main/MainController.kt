@@ -52,14 +52,6 @@ class MainController(
         EventBus.getDefault().safeRegister(this)
     }
 
-    fun onStart(){
-        mViewMvc.registerListener(this)
-    }
-
-    fun onStop(){
-        mViewMvc.unregisterListener(this)
-    }
-
     fun onDestroy() {
         EventBus.getDefault().unregister(this)
         rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -125,30 +117,4 @@ class MainController(
         else rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    fun onMenuOpened() {
-        mReorderSessionsBottomSheet = ReorderSessionsBottomSheet(this)
-        mReorderSessionsBottomSheet?.show(fragmentManager)
-    }
-
-    fun onReorderSessionsClicked() {
-        //TODO("Not yet implemented") FOR SOME REASON THIS DRAWS NEW FRAGMENT ON TOP OF THE OLD ONE!!!!
-        Log.i("SETT", "main " + mSettings.isReordering().toString())
-        mSettings.setIsReordering(true)
-        Log.i("SETT", "main " + mSettings.isReordering().toString())
-        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
-//        fragmentManager.beginTransaction().detach(DashboardFragment()).attach(DashboardFragment()).commit()
-        //TODO: mViewMvc.hideAppBarMenu()
-        mViewMvc.showReorderingFinishedButton()
-        NavigationController.goToReorderingDashboard()
-    }
-
-    fun onFinishedReorderingButtonClicked() {
-//        mSettings.setIsReordering(false)
-//        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
-//        // TODO: mViewMvc.showAppBarMenu()
-//        mViewMvc.hideReorderingFinishedButton()
-//        Log.i("SETT", "main " + mSettings.isReordering().toString())
-//        Log.i("SETT", "main " + mSettings.isReordering().toString())
-//        NavigationController.goToDashboard(0)
-    }
 }

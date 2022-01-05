@@ -60,7 +60,13 @@ class MainActivity: BaseActivity() {
         NavigationController.setup(navController)
         view?.setupBottomNavigationBar(navController)
     }
-    
+
+    override fun onResume() {
+        super.onResume()
+        AppBar.setup(view?.rootView, this)
+        controller?.onResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 

@@ -66,7 +66,6 @@ abstract class SessionsController(
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
         AppBar.adjustMenuVisibility(false)
-
     }
 
     open fun onPause() {

@@ -9,8 +9,6 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.dashboard.following.FollowingSessionViewMvcImpl
 
 class ReorderingFollowingSessionViewMvcImpl: FollowingSessionViewMvcImpl {
-    private val mReorderSessionButton: ImageView
-    private val mReorderSessionInProgressButton: ImageView
 
     constructor(
         inflater: LayoutInflater,
@@ -18,7 +16,6 @@ class ReorderingFollowingSessionViewMvcImpl: FollowingSessionViewMvcImpl {
         supportFragmentManager: FragmentManager
     ): super(inflater, parent, supportFragmentManager) {
         mReorderSessionButton = findViewById(R.id.reorder_session_button)
-        mReorderSessionInProgressButton = findViewById(R.id.reorder_inprogress_session_button)
     }
 
     override fun setExpandCollapseButton() {

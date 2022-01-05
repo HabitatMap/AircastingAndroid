@@ -11,7 +11,6 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.events.KeepScreenOnToggledEvent
-import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
@@ -31,10 +30,6 @@ class SettingsController(
 
     fun onStart(){
         mViewMvc?.registerListener(this)
-    }
-
-    fun onResume() {
-        AppBar.adjustMenuVisibility(false)
     }
 
     fun onStop(){
