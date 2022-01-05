@@ -10,6 +10,7 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.models.observers.ActiveSessionsObserver
+import pl.llp.aircasting.models.observers.MobileActiveSessionsObserver
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.dashboard.SessionsController
 import pl.llp.aircasting.screens.dashboard.SessionsViewMvc
@@ -25,7 +26,7 @@ class FollowingController(
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 
-    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver = MobileActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onResume() {
         super.onResume()

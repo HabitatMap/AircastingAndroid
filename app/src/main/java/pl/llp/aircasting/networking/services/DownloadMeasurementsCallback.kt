@@ -18,6 +18,7 @@ import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsRespo
 import pl.llp.aircasting.networking.responses.SessionWithMeasurementsResponse
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.services.AveragingService
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,6 +30,7 @@ class DownloadMeasurementsCallback(
     private val session: Session,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementsRepository: MeasurementsRepository,
     private val errorHandler: ErrorHandler,
     private val finallyCallback: (() -> Unit)? = null
@@ -90,6 +92,16 @@ class DownloadMeasurementsCallback(
             Measurement(response, averagingFrequency)
         }
         measurementsRepository.insertAll(streamId, sessionId, measurements)
+        if (session.isFixed()) {
+            // #TODO we do not need to pass activeSessionMeasurementsRepository for mobiel sessions, i should be an optional argument
+            measurements.forEach { measurement ->
+                activeSessionMeasurementsRepository.createOrReplace(
+                    sessionId,
+                    streamId,
+                    measurement
+                )
+            }
+        }
     }
 
     private fun updateSessionEndTime(endTimeString: String?) {
