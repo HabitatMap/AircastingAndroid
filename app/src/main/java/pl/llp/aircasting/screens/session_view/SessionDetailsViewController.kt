@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.session_view
 
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.database.DatabaseProvider
@@ -77,6 +78,7 @@ abstract class SessionDetailsViewController(
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
         AppBar.adjustMenuVisibility(false)
+        if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
@@ -112,6 +114,7 @@ abstract class SessionDetailsViewController(
     }
 
     fun onDestroy() {
+        rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         EventBus.getDefault().unregister(this);
         mViewMvc?.unregisterListener(this)
         mViewMvc = null

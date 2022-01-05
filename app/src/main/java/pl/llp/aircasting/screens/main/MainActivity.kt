@@ -68,6 +68,11 @@ class MainActivity: AppCompatActivity() {
         AppBar.setup(view?.rootView, this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        controller?.onResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 

@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.settings.clear_sd_card
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -71,6 +72,10 @@ class ClearSDCardController(
 
     private fun setupProgressBarMax() {
         mWizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), mSettings.areMapsDisabled(), !mBluetoothManager.isBluetoothEnabled())
+    }
+
+    fun onResume() {
+        if (mSettings.isKeepScreenOnEnabled()) mContextActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     fun onStop() {

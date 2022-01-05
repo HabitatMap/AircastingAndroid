@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.settings.my_account
 
 import android.content.Context
+import android.view.WindowManager
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.new_session.LoginActivity
 import pl.llp.aircasting.database.LogoutService
