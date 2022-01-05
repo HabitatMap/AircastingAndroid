@@ -7,12 +7,23 @@ import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseFragment
+import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 import javax.inject.Inject
 
 class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
 
     @Inject
     lateinit var settings: Settings
+
+    companion object {
+        fun newInstance(): DashboardFragment {
+//            val args: Bundle = Bundle()
+//            args.putBoolean("isReordering", isReordering)
+            val newFragment = DashboardFragment()
+//            newFragment.arguments = args
+            return newFragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

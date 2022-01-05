@@ -8,6 +8,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.screens.dashboard.following.FollowingController
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 
+
 class ReorderingFollowingFragment: FollowingFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,

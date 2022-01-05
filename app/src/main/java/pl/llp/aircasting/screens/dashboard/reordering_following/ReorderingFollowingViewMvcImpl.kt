@@ -8,6 +8,7 @@ import pl.llp.aircasting.lib.FollowingSessionReorderingTouchHelperCallback
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionsRecyclerAdapter
+
 import pl.llp.aircasting.screens.dashboard.following.FollowingViewMvcImpl
 
 class ReorderingFollowingViewMvcImpl(
@@ -36,4 +37,5 @@ class ReorderingFollowingViewMvcImpl(
             itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
         }
     }
+
 }

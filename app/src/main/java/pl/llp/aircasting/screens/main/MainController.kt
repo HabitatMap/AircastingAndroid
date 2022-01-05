@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.screens.dashboard.DashboardFragment
 
 class MainController(
@@ -145,18 +146,20 @@ class MainController(
         Log.i("SETT", "main " + mSettings.isReordering().toString())
         mSettings.setIsReordering(true)
         Log.i("SETT", "main " + mSettings.isReordering().toString())
-        fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment()).commit()
+        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
 //        fragmentManager.beginTransaction().detach(DashboardFragment()).attach(DashboardFragment()).commit()
         //TODO: mViewMvc.hideAppBarMenu()
         mViewMvc.showReorderingFinishedButton()
+        NavigationController.goToReorderingDashboard()
     }
 
     override fun onFinishedReorderingButtonClicked() {
         mSettings.setIsReordering(false)
-        fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment()).commit()
+        //fragmentManager.beginTransaction().replace(R.id.dashboard, DashboardFragment.newInstance()).commit()
         // TODO: mViewMvc.showAppBarMenu()
         mViewMvc.hideReorderingFinishedButton()
         Log.i("SETT", "main " + mSettings.isReordering().toString())
         Log.i("SETT", "main " + mSettings.isReordering().toString())
+        NavigationController.goToDashboard(0)
     }
 }

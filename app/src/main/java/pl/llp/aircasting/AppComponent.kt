@@ -9,6 +9,7 @@ import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
+import pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardFragment
 import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollowingFragment
 import pl.llp.aircasting.screens.lets_start.LetsStartFragment
 import pl.llp.aircasting.screens.main.MainActivity
@@ -65,7 +66,6 @@ interface AppComponent {
     fun inject(activity: MapActivity)
     fun inject(activity: GraphActivity)
     fun inject(fragment: ReorderingFollowingFragment)
-
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)

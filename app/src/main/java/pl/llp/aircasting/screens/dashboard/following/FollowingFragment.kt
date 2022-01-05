@@ -20,6 +20,7 @@ open class FollowingFragment : Fragment() {
     protected val sessionsViewModel by activityViewModels<SessionsViewModel>()
     protected var view: FollowingViewMvcImpl? = null
 
+
     @Inject
     lateinit var settings: Settings
 
@@ -46,13 +47,11 @@ open class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        var isReordering = settings.isReordering()
         Log.i("SETT", "following " + settings.isReordering().toString())
         view = FollowingViewMvcImpl(
             layoutInflater,
             null,
-            childFragmentManager,
-            isReordering
+            childFragmentManager
         )
 
         controller = FollowingController(
