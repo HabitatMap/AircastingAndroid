@@ -4,9 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseFragment
+import javax.inject.Inject
 
-class DashboardFragment(val isReordering: Boolean = false) : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
+class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
+
+    @Inject
+    lateinit var settings: Settings
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

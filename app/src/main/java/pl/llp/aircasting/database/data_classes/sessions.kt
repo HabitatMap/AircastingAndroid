@@ -33,7 +33,6 @@ data class SessionDBObject(
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
     @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
     @ColumnInfo(name = "session_order") val session_order: Int? = null
-
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -295,4 +294,5 @@ interface SessionDao {
 
     @Query("SELECT MAX(session_order) FROM sessions WHERE followed_at IS NOT NULL")
     fun getMaxSessionOrder(): Int
+
 }

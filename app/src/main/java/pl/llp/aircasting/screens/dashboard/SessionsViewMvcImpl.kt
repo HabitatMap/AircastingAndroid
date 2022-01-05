@@ -22,6 +22,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     private var mRecordSessionButton: Button? = null
 
     protected var mRecyclerSessions: RecyclerView? = null
+
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
@@ -49,8 +50,15 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
+
         mRecyclerSessions?.setAdapter(mAdapter)
         addTouchHelperToRecyclerView()
+
+        if (mAdapter is ItemTouchHelperAdapter) {
+            val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
+            val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+            itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
+        }
 
         setupSwipeToRefreshLayout()
     }

@@ -12,7 +12,13 @@ import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollow
 class ReorderingDashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)
     : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
+<<<<<<< HEAD
     val fragment = ReorderingFollowingFragment()
+=======
+    val fragment = hashMapOf(
+        DashboardPagerAdapter.FOLLOWING_TAB_INDEX to FollowingFragment.newInstance(true)
+    )
+>>>>>>> 921b2413 (rebase 3)
 
     companion object {
         val TABS_COUNT = 1

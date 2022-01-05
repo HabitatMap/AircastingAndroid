@@ -104,7 +104,9 @@ class MainActivity: BaseActivity() {
     override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         // TODO: this menu which is opened below should be hidden though
         controller?.onMenuOpened()
-        return super.onMenuOpened(featureId, menu)
+//        super.onMenuOpened(featureId, menu)
+//        super.onOptionsMenuClosed(menu)
+        return false
     }
 
 }

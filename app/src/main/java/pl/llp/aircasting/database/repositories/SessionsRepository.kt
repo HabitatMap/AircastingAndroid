@@ -149,5 +149,6 @@ class SessionsRepository {
 
     fun getMaxSessionOrder(): Int {
         return mDatabase.sessions().getMaxSessionOrder()
+
     }
 }

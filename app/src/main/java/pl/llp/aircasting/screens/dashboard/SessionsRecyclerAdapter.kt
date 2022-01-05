@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,6 +25,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     protected var mSessionUUIDS: MutableList<String> = mutableListOf()
     protected var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
     lateinit var mItemTouchHelper: ItemTouchHelper
+
     abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -41,7 +43,9 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     protected open fun removeObsoleteSessions() {
         mSessionPresenters.keys
             .filter { uuid -> !mSessionUUIDS.contains(uuid) }
-            .forEach { uuid -> mSessionPresenters.remove(uuid) }
+            .forEach { uuid ->
+                mSessionPresenters.remove(uuid)
+            }
     }
 
     fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
