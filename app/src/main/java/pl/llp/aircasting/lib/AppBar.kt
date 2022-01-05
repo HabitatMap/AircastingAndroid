@@ -1,5 +1,6 @@
 package pl.llp.aircasting.lib
 
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -33,6 +34,16 @@ class AppBar {
                 onFinishedReorderingSessionsButtonClicked()
             }
             mTopAppBar?.inflateMenu(R.menu.app_bar_menu)
+
+            mReorderSessionsButton = view?.findViewById<ImageView>(R.id.reorder_sessions_button)
+            mReorderSessionsButton?.setOnClickListener {
+                onReorderSessionButtonClicked()
+            }
+
+            mFinishedReorderingSessionsButton = view?.findViewById(R.id.finished_reordering_session_button)
+            mFinishedReorderingSessionsButton?.setOnClickListener {
+                onFinishedReorderingSessionsButtonClicked()
+            }
         }
 
         fun destroy() {
@@ -68,5 +79,6 @@ class AppBar {
             mFinishedReorderingSessionsButton?.visibility = View.INVISIBLE
             mReorderSessionsButton?.visibility = View.VISIBLE
         }
+
     }
 }

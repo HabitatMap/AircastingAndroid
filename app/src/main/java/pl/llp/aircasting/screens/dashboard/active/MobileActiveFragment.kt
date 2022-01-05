@@ -71,7 +71,6 @@ class MobileActiveFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         controller?.onResume()
-        AppBar.adjustMenuVisibility(false)
     }
 
     override fun onPause() {
