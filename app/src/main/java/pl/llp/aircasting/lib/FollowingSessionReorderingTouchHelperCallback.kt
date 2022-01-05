@@ -70,4 +70,3 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         mAdapter = itemTouchHelperAdapter
     }
 }
-

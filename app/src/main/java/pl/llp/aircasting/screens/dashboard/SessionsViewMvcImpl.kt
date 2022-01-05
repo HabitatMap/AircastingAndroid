@@ -49,6 +49,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
         }
 
         mAdapter = buildAdapter(inflater, supportFragmentManager)
+
         mRecyclerSessions?.setAdapter(mAdapter)
         addTouchHelperToRecyclerView()
 

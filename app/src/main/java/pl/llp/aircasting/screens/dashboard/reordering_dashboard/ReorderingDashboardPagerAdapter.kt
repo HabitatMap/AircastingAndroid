@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import pl.llp.aircasting.R
-import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
-import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollowingFragment
 
 

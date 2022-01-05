@@ -20,6 +20,7 @@ open class Settings(private val mApplication: Application) {
     protected val APP_RESTARTED = "app_restarted"
     protected val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
     protected val KEEP_SCREEN_ON_KEY = "keep_screen_on"
+    protected val IS_REORDERING_KEY = "is_reordering"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -36,6 +37,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_APP_RESTARTED = false
     private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
     private val DEFAULT_KEEP_SCREEN_ON = false
+    private val DEFAULT_IS_REORDERING = false
 
     private val sharedPreferences: SharedPreferences
 
@@ -61,6 +63,10 @@ open class Settings(private val mApplication: Application) {
 
     fun isCrowdMapEnabled(): Boolean {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
+    }
+
+    fun isReordering(): Boolean {
+        return getBooleanFromSettings(IS_REORDERING_KEY, DEFAULT_IS_REORDERING)
     }
 
     fun areMapsDisabled(): Boolean {
@@ -173,6 +179,10 @@ open class Settings(private val mApplication: Application) {
 
     open fun logout(){
         deleteFromSettings()
+    }
+
+    fun setIsReordering(isReordering: Boolean) {
+        saveToSettings(IS_REORDERING_KEY, isReordering)
     }
 
     open fun getStringFromSettings(key: String, default: String? = null): String? {

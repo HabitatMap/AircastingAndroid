@@ -84,5 +84,5 @@ class MainActivity: BaseActivity() {
         super.onBackPressed()
         AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and I want it to behave same as "Finished" button in Reordering mode
     }
-    
+
 }
