@@ -3,7 +3,12 @@ package pl.llp.aircasting.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.google.android.libraries.places.api.Places
@@ -50,7 +55,7 @@ class MainActivity: BaseActivity() {
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view!!, settings, apiServiceFactory)
+        controller = MainController(this, view!!, settings, apiServiceFactory, supportFragmentManager)
 
         controller?.onCreate()
 
@@ -84,6 +89,12 @@ class MainActivity: BaseActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and I want it to behave same as "Finished" button in Reordering mode
+    }
+
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
+        // TODO: this menu which is opened below should be hidden though
+        controller?.onMenuOpened()
+        return super.onMenuOpened(featureId, menu)
     }
 
 }
