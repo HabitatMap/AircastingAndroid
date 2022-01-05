@@ -65,7 +65,7 @@ class MainActivity: BaseActivity() {
         NavigationController.setup(navController)
         view?.setupBottomNavigationBar(navController)
     }
-
+    
     override fun onDestroy() {
         super.onDestroy()
 
