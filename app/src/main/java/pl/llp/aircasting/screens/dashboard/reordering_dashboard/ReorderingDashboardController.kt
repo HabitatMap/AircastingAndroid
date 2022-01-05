@@ -1,18 +1,14 @@
 package pl.llp.aircasting.screens.dashboard.reordering_dashboard
 
-import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.screens.common.BaseController
+import pl.llp.aircasting.screens.dashboard.DashboardViewMvcImpl
 
 class ReorderingDashboardController(
-    private val viewMvc: ReorderingDashboardViewMvcImpl?
-) : BaseController<ReorderingDashboardViewMvcImpl>(viewMvc) {
+    private val viewMvc: DashboardViewMvcImpl?
+) : BaseController<DashboardViewMvcImpl>(viewMvc) {
 
     fun onCreate(tabId: Int?) {
-        DatabaseProvider.runQuery { scope ->
-            DatabaseProvider.backToUIThread(scope) {
-                viewMvc?.goToTab(tabId ?: 0)
-            }
-        }
+        viewMvc?.goToTab(tabId ?: 0)
     }
 }
 

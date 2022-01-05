@@ -24,10 +24,6 @@ class LetsStartController(
         mViewMvc?.registerListener(this)
     }
 
-    fun onResume() {
-        AppBar.adjustMenuVisibility(false)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         mViewMvc?.unregisterListener(this)

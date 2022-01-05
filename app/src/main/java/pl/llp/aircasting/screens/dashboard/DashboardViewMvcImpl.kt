@@ -9,8 +9,8 @@ import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseViewMvc
 
-class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
-    private val mPager: ViewPager?
+class DashboardViewMvcImpl : BaseViewMvc, DashboardViewMvc {
+    protected val mPager: ViewPager?
 
     constructor(
         inflater: LayoutInflater, parent: ViewGroup?,
