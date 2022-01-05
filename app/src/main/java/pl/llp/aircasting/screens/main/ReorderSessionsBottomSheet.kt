@@ -19,6 +19,7 @@ class ReorderSessionsBottomSheet(
         val reorderSessionsButton = contentView?.reorder_sessions_button
         reorderSessionsButton?.setOnClickListener {
             listener.onReorderSessionsClicked()
+            dismiss()
         }
 
         val cancelButton = contentView?.cancel_button

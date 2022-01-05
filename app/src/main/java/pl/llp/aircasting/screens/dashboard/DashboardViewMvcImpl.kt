@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseViewMvc
+import pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardPagerAdapter
 
 class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
     private val mPager: ViewPager?
@@ -23,7 +24,6 @@ class DashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
 
         mPager?.offscreenPageLimit = tabsCount
         fragmentManager?.let { mPager?.adapter = adapter }
-
         setTabsMargins()
     }
 
