@@ -10,6 +10,7 @@ import pl.llp.aircasting.AircastingApplication
 
 
 class ReorderingDashboardFragment : BaseFragment<DashboardViewMvcImpl, ReorderingDashboardController>() {
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -24,12 +24,7 @@ class ReorderingFollowingRecyclerAdapter (
     ItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val viewMvc =
-            ReorderingFollowingSessionViewMvcImpl(
-                mInflater,
-                parent,
-                supportFragmentManager
-            )
+        val viewMvc = ReorderingFollowingSessionViewMvcImpl(mInflater, parent, supportFragmentManager)
 
         viewMvc.registerListener(mListener)
         val myReorderingViewHolder = MyViewHolder(viewMvc)
@@ -69,6 +64,7 @@ class ReorderingFollowingRecyclerAdapter (
         for (session in mSessionUUIDS) {
             DatabaseProvider.runQuery {
                 mSessionsViewModel.updateOrder(session, mSessionUUIDS.indexOf(session))
+
             }
         }
         removeObsoleteSessions()

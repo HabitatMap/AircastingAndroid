@@ -20,23 +20,14 @@ open class FollowingFragment : Fragment() {
     protected val sessionsViewModel by activityViewModels<SessionsViewModel>()
     protected var view: FollowingViewMvcImpl? = null
 
+
     @Inject
     lateinit var settings: Settings
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
 
-    protected var sessionsRequested = false
-
-    companion object {
-        fun newInstance(isReordering: Boolean): FollowingFragment {
-            val args: Bundle = Bundle()
-            args.putBoolean("isReordering", isReordering)
-            val newFragment = FollowingFragment()
-            newFragment.arguments = args
-            return newFragment
-        }
-    }
+    var sessionsRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,13 +37,11 @@ open class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        var isReordering = settings.isReordering()
         Log.i("SETT", "following " + settings.isReordering().toString())
         view = FollowingViewMvcImpl(
             layoutInflater,
             null,
-            childFragmentManager,
-            isReordering
+            childFragmentManager
         )
 
         controller = FollowingController(
