@@ -48,8 +48,8 @@ class MainActivity: BaseActivity() {
         DateConverter.setup(settings)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
-        val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings, apiServiceFactory)
+        view = MainViewMvcImpl(layoutInflater, null, this)
+        controller = MainController(this, view!!, settings, apiServiceFactory)
 
         controller?.onCreate()
 
@@ -59,21 +59,6 @@ class MainActivity: BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)
         view?.setupBottomNavigationBar(navController)
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        controller?.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        controller?.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        controller?.onStop()
     }
 
     override fun onDestroy() {
@@ -94,13 +79,5 @@ class MainActivity: BaseActivity() {
         super.onBackPressed()
         AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and I want it to behave same as "Finished" button in Reordering mode
     }
-
-    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
-        // TODO: this menu which is opened below should be hidden though
-        controller?.onMenuOpened()
-//        super.onMenuOpened(featureId, menu)
-//        super.onOptionsMenuClosed(menu)
-        return false
-    }
-
+    
 }
