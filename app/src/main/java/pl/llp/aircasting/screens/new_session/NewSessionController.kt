@@ -90,9 +90,11 @@ class NewSessionController(
 
     fun onResume() {
         //AppBar.adjustMenuVisibility(false)
+        if (settings.isKeepScreenOnEnabled()) mContextActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     fun onStop() {
+        mContextActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         EventBus.getDefault().unregister(this)
     }
     

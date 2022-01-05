@@ -85,6 +85,10 @@ class SyncController(
         mWizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), mSettings.areMapsDisabled(), !mBluetoothManager.isBluetoothEnabled())
     }
 
+    fun onResume() {
+        if (mSettings.isKeepScreenOnEnabled()) mContextActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
     fun onStop() {
         EventBus.getDefault().unregister(this)
     }
