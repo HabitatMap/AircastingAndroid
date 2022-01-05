@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
@@ -67,6 +68,7 @@ class MobileDormantFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         controller?.onResume()
+        AppBar.adjustMenuVisibility(false)
     }
 
     override fun onPause() {

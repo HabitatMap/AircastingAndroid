@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.google.android.libraries.places.api.Places
@@ -79,5 +80,5 @@ class MainActivity: BaseActivity() {
         super.onBackPressed()
         AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and I want it to behave same as "Finished" button in Reordering mode
     }
-    
+
 }
