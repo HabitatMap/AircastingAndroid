@@ -73,4 +73,5 @@ class MobileActiveViewMvcImpl(
     override fun addTouchHelperToRecyclerView() {
         // Do nothing here
     }
+
 }

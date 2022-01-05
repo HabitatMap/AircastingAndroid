@@ -33,7 +33,6 @@ class AppBar {
             mFinishedReorderingSessionsButton?.setOnClickListener {
                 onFinishedReorderingSessionsButtonClicked()
             }
-            mTopAppBar?.inflateMenu(R.menu.app_bar_menu)
 
             mReorderSessionsButton = view?.findViewById<ImageView>(R.id.reorder_sessions_button)
             mReorderSessionsButton?.setOnClickListener {

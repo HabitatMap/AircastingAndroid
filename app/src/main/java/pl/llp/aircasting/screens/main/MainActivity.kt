@@ -67,6 +67,7 @@ class MainActivity: BaseActivity() {
         view?.setupBottomNavigationBar(navController)
     }
     
+<<<<<<< HEAD
     override fun onResume() {
         super.onResume()
         controller?.onResume()
@@ -82,6 +83,8 @@ class MainActivity: BaseActivity() {
         controller?.onStop()
     }
 
+=======
+>>>>>>> 7a2ed2e8 (rebase 5)
     override fun onDestroy() {
         super.onDestroy()
 

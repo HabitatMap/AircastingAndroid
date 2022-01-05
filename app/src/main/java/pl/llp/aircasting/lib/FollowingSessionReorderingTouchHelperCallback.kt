@@ -1,19 +1,12 @@
 package pl.llp.aircasting.lib
 
-<<<<<<< HEAD
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import pl.llp.aircasting.R
-=======
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-
->>>>>>> 921b2413 (rebase 3)
 
 
 class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: ItemTouchHelperAdapter) :
@@ -22,11 +15,7 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
     private var mAdapter: ItemTouchHelperAdapter? = itemTouchHelperAdapter
 
     override fun isLongPressDragEnabled(): Boolean {
-<<<<<<< HEAD
         return false
-=======
-        return true
->>>>>>> 921b2413 (rebase 3)
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {
@@ -44,11 +33,25 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         target: ViewHolder
     ): Boolean {
         mAdapter?.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
-<<<<<<< HEAD
-
-=======
->>>>>>> 921b2413 (rebase 3)
         return true
+    }
+
+
+    override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
+        super.clearView(recyclerView, viewHolder)
+
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.VISIBLE //TODO: add method responsible for this in interface and implement it together with "onItemDismiss" (??)
+        viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.INVISIBLE
+    }
+
+    override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
+        super.onSelectedChanged(viewHolder, actionState)
+
+        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) { //TODO: add method responsible for this in interface and implement it together with "onItemDismiss" (??)
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_session_button)?.visibility = View.INVISIBLE
+            viewHolder?.itemView?.findViewById<ImageView>(R.id.reorder_inprogress_session_button)?.visibility = View.VISIBLE
+        }
+
     }
 
     override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
@@ -59,7 +62,4 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         mAdapter = itemTouchHelperAdapter
     }
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 921b2413 (rebase 3)

@@ -60,4 +60,5 @@ class FixedViewMvcImpl(
     override fun addTouchHelperToRecyclerView() {
         // Do nothing here
     }
+
 }
