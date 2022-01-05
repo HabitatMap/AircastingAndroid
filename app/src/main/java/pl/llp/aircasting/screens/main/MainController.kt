@@ -44,7 +44,6 @@ class MainController(
 
     fun onResume() {
         EventBus.getDefault().safeRegister(this)
-        if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     fun onDestroy() {

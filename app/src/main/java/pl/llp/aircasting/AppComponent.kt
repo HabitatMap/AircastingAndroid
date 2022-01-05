@@ -2,6 +2,7 @@ package pl.llp.aircasting
 
 import dagger.Component
 import pl.llp.aircasting.di.*
+import pl.llp.aircasting.screens.common.BaseActivity
 import pl.llp.aircasting.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
@@ -44,6 +45,7 @@ import javax.inject.Singleton
 )
 interface AppComponent {
     fun inject(app: AircastingApplication)
+    fun inject(activity: BaseActivity)
     fun inject(activity: OnboardingActivity)
     fun inject(activity: LoginActivity)
     fun inject(activity: CreateAccountActivity)

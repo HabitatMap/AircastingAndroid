@@ -5,13 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
-class OnboardingActivity: AppCompatActivity() {
+class OnboardingActivity: BaseActivity() {
     private var controller: OnboardingController? = null
-
-    @Inject
-    lateinit var settings: Settings
 
     companion object {
         fun start(contextActivity: AppCompatActivity?) {

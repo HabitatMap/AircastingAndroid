@@ -10,18 +10,16 @@ import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.screens.common.BaseActivity
 import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.sensor.AirBeamReconnector
 import javax.inject.Inject
 
-class GraphActivity: AppCompatActivity() {
+class GraphActivity: BaseActivity() {
     private var controller: GraphController? = null
     private var view: SessionDetailsViewMvc? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory

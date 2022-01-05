@@ -12,9 +12,10 @@ import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.permissions.PermissionsManager
+import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
-class SyncActivity: AppCompatActivity() {
+class SyncActivity: BaseActivity() {
     private var controller: SyncController? = null
 
     @Inject
@@ -25,9 +26,6 @@ class SyncActivity: AppCompatActivity() {
 
     @Inject
     lateinit var errorHandler: ErrorHandler
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
@@ -73,11 +71,6 @@ class SyncActivity: AppCompatActivity() {
 
         setContentView(view.rootView)
         AppBar.setup(view.rootView, this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        controller?.onResume()
     }
 
     override fun onStop() {
