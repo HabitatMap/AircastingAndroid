@@ -90,4 +90,5 @@ interface MeasurementDao {
 
     @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")
     fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int)
+
 }

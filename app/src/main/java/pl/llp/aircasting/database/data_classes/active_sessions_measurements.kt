@@ -45,8 +45,14 @@ interface ActiveSessionMeasurementDao {
     @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT 1")
     fun getOldestMeasurementId(sessionId: Long, streamId: Long): Int
 
+    @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT :limit")
+    fun getOldestMeasurementsId(sessionId: Long, streamId: Long, limit: Int): List<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(measurement: ActiveSessionMeasurementDBObject): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(measurements: List<ActiveSessionMeasurementDBObject>): List<Long>
 
     @Query("UPDATE active_sessions_measurements SET value=:value, time=:time, latitude=:latitude, longitude=:longitude WHERE id=:id")
     fun update(id: Int, value: Double, time: Date, latitude: Double?, longitude: Double?)
@@ -57,10 +63,21 @@ interface ActiveSessionMeasurementDao {
     @Query("DELETE FROM active_sessions_measurements WHERE session_id=:sessionId")
     fun deleteActiveSessionMeasurementsBySession(sessionId: Long)
 
+    @Query("DELETE FROM active_sessions_measurements WHERE id in (:ids)")
+    fun deleteActiveSessionMeasurements(ids: List<Int>)
+
     @Transaction
     fun deleteAndInsertInTransaction(measurement: ActiveSessionMeasurementDBObject) {
         val id = getOldestMeasurementId(measurement.sessionId, measurement.streamId)
         deleteActiveSessionMeasurement(id)
         insert(measurement)
+    }
+
+    @Transaction
+    fun deleteAndInsertMultipleMeasurementsInTransaction(measurements: List<ActiveSessionMeasurementDBObject>) {
+        val ids = getOldestMeasurementsId(measurements[0].sessionId, measurements[0].streamId, measurements.size)
+
+        deleteActiveSessionMeasurements(ids)
+        insertAll(measurements)
     }
 }
