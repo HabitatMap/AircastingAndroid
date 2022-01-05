@@ -20,9 +20,6 @@ class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController
     @Inject
     lateinit var errorHandler: ErrorHandler
 
-    @Inject
-    lateinit var settings: Settings
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,7 +28,7 @@ class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager, settings)
+        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
         controller = LetsStartController(activity, view, context, errorHandler)
         controller?.onCreate()
 
