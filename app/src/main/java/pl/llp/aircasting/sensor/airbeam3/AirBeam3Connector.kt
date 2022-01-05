@@ -87,11 +87,14 @@ open class AirBeam3Connector(
     override fun onDeviceConnecting(device: BluetoothDevice) {}
     override fun onDeviceConnected(device: BluetoothDevice) {}
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceFailedToConnect"))
         val deviceItem = DeviceItem(device)
         onConnectionFailed(deviceItem)
     }
     override fun onDeviceReady(device: BluetoothDevice) {}
-    override fun onDeviceDisconnecting(device: BluetoothDevice) {}
+    override fun onDeviceDisconnecting(device: BluetoothDevice) {
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnecting"))
+    }
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
         var timeFromLastDisconnect = 0L
