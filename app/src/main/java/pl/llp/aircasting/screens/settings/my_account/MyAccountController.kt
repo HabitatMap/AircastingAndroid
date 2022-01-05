@@ -21,10 +21,6 @@ class MyAccountController(
         mViewMvc?.bindAccountDetail(mSettings.getEmail())
     }
 
-    fun onResume() {
-        AppBar.adjustMenuVisibility(false)
-    }
-
     fun onStop(){
         mViewMvc?.unregisterListener(this)
     }
