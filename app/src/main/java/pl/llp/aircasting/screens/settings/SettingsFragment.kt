@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseFragment
 import javax.inject.Inject
@@ -37,7 +36,10 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
     override fun onResume() {
         super.onResume()
         controller?.onResume()
+<<<<<<< HEAD
         AppBar.adjustMenuVisibility(false)
+=======
+>>>>>>> ed7f3f27 (rebase 6)
     }
 
     override fun onStop() {

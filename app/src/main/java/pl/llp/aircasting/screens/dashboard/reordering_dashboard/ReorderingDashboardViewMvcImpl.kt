@@ -7,8 +7,9 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseViewMvc
+import pl.llp.aircasting.screens.dashboard.DashboardViewMvc
 
-class ReorderingDashboardViewMvcImpl: BaseViewMvc, ReorderingDashboardViewMvc {
+class ReorderingDashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
 
     private val mPager: ViewPager?
 

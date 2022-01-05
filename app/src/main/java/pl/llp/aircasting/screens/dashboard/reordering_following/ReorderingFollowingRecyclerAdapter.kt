@@ -10,7 +10,10 @@ import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
 import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.following.FollowingRecyclerAdapter
+<<<<<<< HEAD
 
+=======
+>>>>>>> ed7f3f27 (rebase 6)
 import java.util.*
 
 class ReorderingFollowingRecyclerAdapter (

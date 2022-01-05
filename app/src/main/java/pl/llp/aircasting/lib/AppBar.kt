@@ -1,6 +1,5 @@
 package pl.llp.aircasting.lib
 
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
