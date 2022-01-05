@@ -19,10 +19,7 @@ import javax.inject.Inject
 
 class MainActivity: BaseActivity() {
     private var controller: MainController? = null
-<<<<<<< HEAD
-=======
     private var view: MainViewMvcImpl? = null
->>>>>>> following-reorder-clear-sessions
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -67,11 +64,6 @@ class MainActivity: BaseActivity() {
     override fun onResume() {
         super.onResume()
         AppBar.setup(view?.rootView, this)
-        controller?.onResume()
-    }
-
-    override fun onResume() {
-        super.onResume()
         controller?.onResume()
     }
 

@@ -2,12 +2,7 @@ package pl.llp.aircasting.screens.main
 
 import android.content.IntentFilter
 import android.view.WindowManager
-<<<<<<< HEAD
-=======
-import android.util.Log
-import android.view.Menu
-import android.widget.Toast
->>>>>>> following-reorder-clear-sessions
+
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
@@ -25,12 +20,9 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.lib.safeRegister
-<<<<<<< HEAD
-=======
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.screens.dashboard.DashboardFragment
->>>>>>> following-reorder-clear-sessions
 
 class MainController(
     private val rootActivity: AppCompatActivity,
@@ -60,10 +52,6 @@ class MainController(
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this)
-<<<<<<< HEAD
-=======
-        rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
->>>>>>> following-reorder-clear-sessions
         unregisterConnectivityManager()
         mSessionManager?.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
@@ -125,8 +113,4 @@ class MainController(
         if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> following-reorder-clear-sessions
 }

@@ -18,10 +18,7 @@ open class Settings(private val mApplication: Application) {
     protected val BACKEND_PORT_KEY = "backend_port"
     protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
     protected val APP_RESTARTED = "app_restarted"
-<<<<<<< HEAD
-=======
     protected val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
->>>>>>> following-reorder-clear-sessions
     protected val KEEP_SCREEN_ON_KEY = "keep_screen_on"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
@@ -37,11 +34,8 @@ open class Settings(private val mApplication: Application) {
     protected val DEFAULT_BACKEND_PORT = "80"
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
     private val DEFAULT_APP_RESTARTED = false
-<<<<<<< HEAD
-=======
-    private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
->>>>>>> following-reorder-clear-sessions
     private val DEFAULT_KEEP_SCREEN_ON = false
+    private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
 
     private val sharedPreferences: SharedPreferences
 

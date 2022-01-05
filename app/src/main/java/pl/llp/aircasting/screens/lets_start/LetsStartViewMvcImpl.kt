@@ -38,15 +38,9 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         }
 
         val syncCard = rootView?.sync_card
-<<<<<<< HEAD
         syncCard?.visibility = View.VISIBLE
         syncCard?.setOnClickListener {
             onSyncSelected()
-=======
-        syncCard?.setOnClickListener {
-            onSyncSelected()
-
->>>>>>> following-reorder-clear-sessions
         }
 
     }

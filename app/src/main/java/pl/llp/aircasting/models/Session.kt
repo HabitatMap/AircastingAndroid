@@ -29,7 +29,7 @@ class Session(
     var urlLocation: String? = null,
     private var mNotes: MutableList<Note> = mutableListOf(),
     var averagingFrequency: Int = 1,
-    var order: Int = -1
+    var order: Int? = null
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,
@@ -258,6 +258,7 @@ class Session(
 
     fun unfollow() {
         followedAt = null
+        order = null
     }
 
     fun follow() {
