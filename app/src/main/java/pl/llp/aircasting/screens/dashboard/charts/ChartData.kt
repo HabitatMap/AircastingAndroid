@@ -36,11 +36,12 @@ class ChartData(
     }
 
     fun refresh(session: Session) {
+        var hourChanged = mSession.endTime?.hours != session.endTime?.hours
         mSession = session
         mEndTime = mSession.endTime ?: Date()
         calculateTimes()
 
-        if(mChartRefreshService.shouldBeRefreshed()) {
+        if(mChartRefreshService.shouldBeRefreshed() || hourChanged) {
             initData()
             calculateAverages()
             mChartRefreshService.setLastRefreshTime()
