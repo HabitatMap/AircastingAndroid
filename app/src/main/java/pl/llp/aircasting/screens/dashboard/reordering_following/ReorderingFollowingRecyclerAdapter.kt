@@ -64,7 +64,6 @@ class ReorderingFollowingRecyclerAdapter (
         for (session in mSessionUUIDS) {
             DatabaseProvider.runQuery {
                 mSessionsViewModel.updateOrder(session, mSessionUUIDS.indexOf(session))
-
             }
         }
         removeObsoleteSessions()

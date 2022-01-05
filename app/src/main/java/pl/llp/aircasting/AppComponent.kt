@@ -4,12 +4,10 @@ import dagger.Component
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.screens.common.BaseActivity
 import pl.llp.aircasting.screens.create_account.CreateAccountActivity
-import pl.llp.aircasting.screens.dashboard.DashboardFragment
 import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
-import pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardFragment
 import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollowingFragment
 import pl.llp.aircasting.screens.lets_start.LetsStartFragment
 import pl.llp.aircasting.screens.main.MainActivity

@@ -25,7 +25,6 @@ class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardControll
 
         view = DashboardViewMvcImpl(inflater, container, childFragmentManager)
         controller = DashboardController(view)
-
         val tabId = arguments?.get("tabId") as Int?
         controller?.onCreate(tabId)
 

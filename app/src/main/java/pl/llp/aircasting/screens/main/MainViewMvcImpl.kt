@@ -3,9 +3,7 @@ package pl.llp.aircasting.screens.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,7 +14,6 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.activity_main.view.*
-import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
 class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
     private val rootActivity: AppCompatActivity
@@ -54,5 +51,4 @@ class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
     override fun hideLoader() {
         loader?.visibility = View.GONE
     }
-
 }
