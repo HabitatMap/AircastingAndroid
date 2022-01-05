@@ -38,12 +38,9 @@ class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
         }
 
         val syncCard = rootView?.sync_card
-
-        syncCard?.visibility = View.VISIBLE
         syncCard?.setOnClickListener {
             onSyncSelected()
         }
-
     }
 
     override fun showMoreInfoDialog() {
