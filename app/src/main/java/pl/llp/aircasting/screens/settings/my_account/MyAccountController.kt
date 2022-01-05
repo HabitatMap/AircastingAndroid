@@ -1,25 +1,28 @@
-package pl.llp.aircasting.screens.settings.clear_sd_card.my_account
+package pl.llp.aircasting.screens.settings.my_account
 
 import android.content.Context
 import android.view.WindowManager
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.new_session.LoginActivity
 import pl.llp.aircasting.database.LogoutService
+import pl.llp.aircasting.lib.AppBar
+import pl.llp.aircasting.screens.common.BaseController
+
 
 class MyAccountController(
     private val mContext: Context,
-    private val mViewMvc: MyAccountViewMvc,
+    mViewMvc: MyAccountViewMvcImpl,
     private val mSettings: Settings
-) : MyAccountViewMvc.Listener {
+) : BaseController<MyAccountViewMvcImpl>(mViewMvc), MyAccountViewMvc.Listener {
     private val logoutService = LogoutService(mSettings)
 
     fun onStart(){
-        mViewMvc.registerListener(this)
-        mViewMvc.bindAccountDetail(mSettings.getEmail())
+        mViewMvc?.registerListener(this)
+        mViewMvc?.bindAccountDetail(mSettings.getEmail())
     }
 
     fun onStop(){
-        mViewMvc.unregisterListener(this)
+        mViewMvc?.unregisterListener(this)
     }
 
     override fun onSignOutClicked() {

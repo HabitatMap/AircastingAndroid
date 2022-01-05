@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.settings.clear_sd_card.my_account
+package pl.llp.aircasting.screens.settings.my_account
 
 import android.content.Context
 import android.view.LayoutInflater

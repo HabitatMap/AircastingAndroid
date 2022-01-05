@@ -4,10 +4,13 @@ import dagger.Component
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.screens.common.BaseActivity
 import pl.llp.aircasting.screens.create_account.CreateAccountActivity
+import pl.llp.aircasting.screens.dashboard.DashboardFragment
 import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
+import pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardFragment
+import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollowingFragment
 import pl.llp.aircasting.screens.lets_start.LetsStartFragment
 import pl.llp.aircasting.screens.main.MainActivity
 import pl.llp.aircasting.screens.new_session.LoginActivity
@@ -20,13 +23,12 @@ import pl.llp.aircasting.screens.session_view.map.MapActivity
 import pl.llp.aircasting.screens.settings.SettingsFragment
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardFragment
-import pl.llp.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
+import pl.llp.aircasting.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
 import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.screens.sync.synced.AirbeamSyncedFragment
 import pl.llp.aircasting.screens.sync.syncing.AirbeamSyncingFragment
 import pl.llp.aircasting.sensor.AirBeamClearCardService
-import pl.llp.aircasting.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.sensor.AirBeamSyncService
 import pl.llp.aircasting.sensor.microphone.MicrophoneService
@@ -63,6 +65,9 @@ interface AppComponent {
     fun inject(fragment: SessionDetailsFragment)
     fun inject(activity: MapActivity)
     fun inject(activity: GraphActivity)
+    fun inject(fragment: ReorderingFollowingFragment)
+    fun inject(fragment: DashboardFragment)
+    fun inject(fragment: ReorderingDashboardFragment)
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)

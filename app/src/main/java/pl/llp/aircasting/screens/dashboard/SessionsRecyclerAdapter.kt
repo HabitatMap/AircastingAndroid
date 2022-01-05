@@ -1,7 +1,9 @@
 package pl.llp.aircasting.screens.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
@@ -17,10 +19,13 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
         val view: SessionViewMvc<ListenerType> get() = mViewMvc
+
     }
 
-    private var mSessionUUIDS: List<String> = emptyList()
-    private var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    protected var mSessionUUIDS: MutableList<String> = mutableListOf()
+    protected var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
+    lateinit var mItemTouchHelper: ItemTouchHelper
+
     abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -32,17 +37,19 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     override fun getItemCount(): Int {
-        return mSessionPresenters.size
+        return mSessionUUIDS.size
     }
 
-    private fun removeObsoleteSessions() {
+    protected open fun removeObsoleteSessions() {
         mSessionPresenters.keys
             .filter { uuid -> !mSessionUUIDS.contains(uuid) }
-            .forEach { uuid -> mSessionPresenters.remove(uuid) }
+            .forEach { uuid ->
+                mSessionPresenters.remove(uuid)
+            }
     }
 
     fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
-        mSessionUUIDS = sessions.map { session -> session.uuid }
+        mSessionUUIDS = sessions.map { session -> session.uuid }.toMutableList()
         removeObsoleteSessions()
         sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {

@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.settings.clear_sd_card.my_account
+package pl.llp.aircasting.screens.settings.my_account
 
 import android.content.Context
 import android.content.Intent
@@ -37,6 +37,11 @@ class MyAccountActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         controller?.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        controller?.onResume()
     }
 
     override fun onStop() {

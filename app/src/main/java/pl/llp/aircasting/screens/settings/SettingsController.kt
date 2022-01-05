@@ -12,7 +12,7 @@ import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity
-import pl.llp.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
+import pl.llp.aircasting.screens.settings.my_account.MyAccountActivity
 
 
 class SettingsController(
@@ -27,11 +27,11 @@ class SettingsController(
     BaseController<SettingsViewMvcImpl>(viewMvc) {
 
     fun onStart(){
-        mViewMvc?.registerListener(this)
+        viewMvc?.registerListener(this)
     }
 
     fun onStop(){
-        mViewMvc?.unregisterListener(this)
+        viewMvc?.unregisterListener(this)
     }
 
     override fun onMyAccountClicked() {

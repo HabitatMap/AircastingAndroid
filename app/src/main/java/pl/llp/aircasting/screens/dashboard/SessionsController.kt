@@ -14,10 +14,6 @@ import pl.llp.aircasting.events.ExportSessionEvent
 import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.lib.CSVHelper
-import pl.llp.aircasting.lib.NavigationController
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.lib.ShareHelper
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -26,11 +22,19 @@ import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.screens.session_view.map.MapActivity
 import org.greenrobot.eventbus.EventBus
+<<<<<<< HEAD
+=======
+import pl.llp.aircasting.lib.*
+>>>>>>> following-reorder-clear-sessions
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.models.Measurement
+<<<<<<< HEAD
+=======
+import pl.llp.aircasting.lib.*
+>>>>>>> following-reorder-clear-sessions
 
 
 abstract class SessionsController(
@@ -67,6 +71,7 @@ abstract class SessionsController(
         mViewMvc?.showLoader()
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
+        AppBar.adjustMenuVisibility(false)
     }
 
     open fun onPause() {
@@ -94,17 +99,30 @@ abstract class SessionsController(
 
     override fun onFollowButtonClicked(session: Session) {
         updateFollowedAt(session)
+<<<<<<< HEAD
         addFollowedSessionMeasurementsToActiveTable(session)
+=======
+        mSettings.increaseFollowedSessionsNumber()
+        addFollowedSessionMeasurementsToActiveTable(session)
+        mSettings.increaseFollowedSessionsNumber()
+>>>>>>> following-reorder-clear-sessions
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         updateFollowedAt(session)
+<<<<<<< HEAD
         clearUnfollowedSessionMeasurementsFromActiveTable(session)
+=======
+        mSettings.decreaseFollowedSessionsNumber()
+        clearUnfollowedSessionMeasurementsFromActiveTable(session)
+        mSettings.decreaseFollowedSessionsNumber()
+>>>>>>> following-reorder-clear-sessions
     }
 
     private fun updateFollowedAt(session: Session) {
         DatabaseProvider.runQuery {
             mSessionsViewModel.updateFollowedAt(session)
+            mSessionsViewModel.updateOrder(session.uuid, mSessionRepository.getMaxSessionOrder() + 1)
         }
     }
 

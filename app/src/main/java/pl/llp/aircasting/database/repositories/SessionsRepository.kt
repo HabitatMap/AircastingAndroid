@@ -146,4 +146,9 @@ class SessionsRepository {
     fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
         mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
     }
+
+    fun getMaxSessionOrder(): Int {
+        return mDatabase.sessions().getMaxSessionOrder()
+    }
+
 }

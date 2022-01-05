@@ -3,6 +3,8 @@ package pl.llp.aircasting.screens.dashboard.following
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
@@ -17,13 +19,20 @@ class FollowingController(
     mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val mContext: Context?
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun onResume() {
+        super.onResume()
+
+        val followingSessionsNumber = mSettings.getFollowedSessionsNumber()
+        AppBar.adjustMenuVisibility(true, followingSessionsNumber)
+    }
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())

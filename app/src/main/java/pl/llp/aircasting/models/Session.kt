@@ -28,7 +28,8 @@ class Session(
     private var mStreams: List<MeasurementStream> = listOf(),
     var urlLocation: String? = null,
     private var mNotes: MutableList<Note> = mutableListOf(),
-    var averagingFrequency: Int = 1
+    var averagingFrequency: Int = 1,
+    var order: Int = -1
 ) {
     constructor(sessionDBObject: SessionDBObject): this(
         sessionDBObject.uuid,

@@ -28,6 +28,7 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.lib.AppBar
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -76,6 +77,8 @@ abstract class SessionDetailsViewController(
 
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
+        AppBar.adjustMenuVisibility(false)
+        if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
@@ -111,6 +114,7 @@ abstract class SessionDetailsViewController(
     }
 
     fun onDestroy() {
+        rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         EventBus.getDefault().unregister(this);
         mViewMvc?.unregisterListener(this)
         mViewMvc = null

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.observers.FixedSessionsObserver

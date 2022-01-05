@@ -19,6 +19,10 @@ import javax.inject.Inject
 
 class MainActivity: BaseActivity() {
     private var controller: MainController? = null
+<<<<<<< HEAD
+=======
+    private var view: MainViewMvcImpl? = null
+>>>>>>> following-reorder-clear-sessions
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -47,17 +51,23 @@ class MainActivity: BaseActivity() {
         DateConverter.setup(settings)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
-        val view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view, settings, apiServiceFactory)
+        view = MainViewMvcImpl(layoutInflater, null, this)
+        controller = MainController(this, view!!, settings, apiServiceFactory)
 
         controller?.onCreate()
 
-        setContentView(view.rootView)
-        AppBar.setup(view.rootView, this)
+        setContentView(view?.rootView)
+        AppBar.setup(view?.rootView, this)
 
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationController.setup(navController)
-        view.setupBottomNavigationBar(navController)
+        view?.setupBottomNavigationBar(navController)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppBar.setup(view?.rootView, this)
+        controller?.onResume()
     }
 
     override fun onResume() {
@@ -78,4 +88,10 @@ class MainActivity: BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and I want it to behave same as "Finished" button in Reordering mode
+    }
+
 }

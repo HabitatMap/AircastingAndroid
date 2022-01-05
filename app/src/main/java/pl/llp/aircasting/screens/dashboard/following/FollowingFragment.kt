@@ -13,10 +13,10 @@ import pl.llp.aircasting.networking.services.ApiServiceFactory
 import javax.inject.Inject
 
 
-class FollowingFragment : Fragment() {
-    private var controller: FollowingController? = null
-    private val sessionsViewModel by activityViewModels<SessionsViewModel>()
-    private var view: FollowingViewMvcImpl? = null
+open class FollowingFragment : Fragment() {
+    protected var controller: FollowingController? = null
+    protected val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    protected var view: FollowingViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -24,7 +24,7 @@ class FollowingFragment : Fragment() {
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
 
-    private var sessionsRequested = false
+    protected var sessionsRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,

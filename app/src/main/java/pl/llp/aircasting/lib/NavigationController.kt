@@ -20,5 +20,9 @@ class NavigationController {
         fun goToLetsStart() {
             mNavController.navigate(R.id.navigation_lets_start)
         }
+
+        fun goToReorderingDashboard() {
+            mNavController.navigate(R.id.navigation_reordering_dashboard)
+        }
     }
 }

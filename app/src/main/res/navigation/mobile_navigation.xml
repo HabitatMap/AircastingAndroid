@@ -14,6 +14,12 @@
     </action>
 
     <fragment
+        android:id="@+id/navigation_reordering_dashboard"
+        android:name="pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardFragment"
+        android:label="     "
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
         android:id="@+id/navigation_dashboard"
         android:name="pl.llp.aircasting.screens.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"

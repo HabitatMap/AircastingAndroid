@@ -11,7 +11,7 @@ import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.SessionViewMvcImpl
 
-class FollowingSessionViewMvcImpl:
+open class FollowingSessionViewMvcImpl:
     SessionViewMvcImpl<SessionCardListener>,
     FollowingSessionViewMvc {
 

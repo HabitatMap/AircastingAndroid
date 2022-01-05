@@ -33,6 +33,11 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
         controller?.onStart()
     }
 
+    override fun onResume() {
+        super.onResume()
+        controller?.onResume()
+    }
+
     override fun onStop() {
         super.onStop()
         controller?.onStop()

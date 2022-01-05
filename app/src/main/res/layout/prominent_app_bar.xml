@@ -10,9 +10,44 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:navigationIcon="@drawable/chevron_left"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:navigationIcon="@drawable/chevron_left"
         style="@style/Widget.Aircasting.AppBar"
-        android:paddingTop="@dimen/keyline_4" />
+        android:paddingTop="@dimen/keyline_4">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reorder_buttons_group"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/reorder_sessions_button"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/aircasting_white"
+            app:srcCompat="@drawable/ic_draggable_icon"
+            android:tint="@color/aircasting_grey_700"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <Button
+                android:id="@+id/finished_reordering_session_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finished"
+                android:visibility="gone"
+                style="@style/Widget.Aircasting.ExpandedCardButtons"
+                android:textColor="@color/aircasting_blue_400"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
 </com.google.android.material.appbar.AppBarLayout>

@@ -9,7 +9,8 @@ import java.util.*
 @Entity(
     tableName = "sessions",
     indices = [
-        Index("device_id")
+        Index("device_id"),
+        Index("session_order")
     ]
 )
 data class SessionDBObject(
@@ -31,8 +32,8 @@ data class SessionDBObject(
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
-
+    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
+    @ColumnInfo(name = "session_order") val session_order: Int? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -256,6 +257,9 @@ interface SessionDao {
     @Query("UPDATE sessions SET followed_at=:followedAt WHERE uuid=:uuid")
     fun updateFollowedAt(uuid: String, followedAt: Date?)
 
+    @Query("UPDATE sessions SET session_order=:sessionOrder WHERE uuid=:uuid")
+    fun updateOrder(uuid: String, sessionOrder: Int)
+
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
     fun updateStatus(uuid: String, status: Session.Status)
 
@@ -288,4 +292,8 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
+
+    @Query("SELECT MAX(session_order) FROM sessions WHERE followed_at IS NOT NULL")
+    fun getMaxSessionOrder(): Int
+
 }

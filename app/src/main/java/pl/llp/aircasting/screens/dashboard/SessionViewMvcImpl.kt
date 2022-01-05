@@ -41,6 +41,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     protected var mExpandedSessionView: View
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
+    protected var mReorderSessionButton: ImageView
     protected val mChart: Chart
     protected val mChartView: ConstraintLayout?
     protected val mMeasurementsDescription: TextView?
@@ -104,6 +105,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
             onCollapseSessionCardClicked()
             collapseSessionCard()
         }
+        mReorderSessionButton = findViewById(R.id.reorder_session_button)
 
         mFollowButton = findViewById(R.id.follow_button)
         mFollowButton.setOnClickListener {
@@ -260,13 +262,15 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         adjustSessionCardPadding()
     }
 
-    protected fun setExpandCollapseButton() {
+    protected open fun setExpandCollapseButton() {
         if (mSessionPresenter?.expanded == true) {
             mExpandSessionButton.visibility = View.INVISIBLE
             mCollapseSessionButton.visibility = View.VISIBLE
+            mReorderSessionButton.visibility = View.INVISIBLE
         } else {
             mExpandSessionButton.visibility = View.VISIBLE
             mCollapseSessionButton.visibility = View.INVISIBLE
+            mReorderSessionButton.visibility = View.INVISIBLE
         }
     }
 

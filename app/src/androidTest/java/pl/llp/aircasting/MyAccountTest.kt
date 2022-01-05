@@ -22,7 +22,7 @@ import pl.llp.aircasting.helpers.getMockWebServerFrom
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.new_session.LoginActivity
-import pl.llp.aircasting.screens.settings.clear_sd_card.my_account.MyAccountActivity
+import pl.llp.aircasting.screens.settings.my_account.MyAccountActivity
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import org.junit.After

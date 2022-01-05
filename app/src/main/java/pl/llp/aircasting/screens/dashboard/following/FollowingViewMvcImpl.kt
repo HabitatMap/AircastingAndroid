@@ -8,7 +8,7 @@ import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.screens.dashboard.SessionsViewMvcImpl
 
-class FollowingViewMvcImpl(
+open class FollowingViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
@@ -36,5 +36,9 @@ class FollowingViewMvcImpl(
 
     override fun recordNewSessionButtonId(): Int {
         return R.id.dashboard_record_new_session_button
+    }
+
+    override fun addTouchHelperToRecyclerView() {
+        // Do nothing here
     }
 }
