@@ -88,12 +88,5 @@ class AppBar {
             mReorderSessionsButton?.visibility = View.VISIBLE
         }
 
-//        fun adjustMenuVisibility(isFollowingTab: Boolean) {
-//            if (isFollowingTab) {
-//                mTopAppBar?.menu?.setGroupVisible(0, true)
-//            } else {
-//                mTopAppBar?.menu?.setGroupVisible(0, false)
-//            }
-//        }
     }
 }

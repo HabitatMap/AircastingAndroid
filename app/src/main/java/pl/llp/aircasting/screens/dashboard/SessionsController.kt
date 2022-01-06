@@ -47,7 +47,6 @@ abstract class SessionsController(
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
     protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
-    protected val mMeasurementsRepository = MeasurementsRepository()
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
