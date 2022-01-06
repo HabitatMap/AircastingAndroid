@@ -82,7 +82,6 @@ class GraphActivity: BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        AppBar.destroy()
         view?.onDestroy()
         controller?.onDestroy()
         controller = null

@@ -104,7 +104,6 @@ class MapActivity: BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        AppBar.destroy()
         view?.onDestroy()
         controller?.onDestroy()
     }

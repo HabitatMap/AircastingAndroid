@@ -78,10 +78,6 @@ class SyncActivity: BaseActivity() {
         controller?.onStop()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AppBar.destroy()
-    }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

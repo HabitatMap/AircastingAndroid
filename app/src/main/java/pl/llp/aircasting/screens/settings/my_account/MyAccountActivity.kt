@@ -49,8 +49,4 @@ class MyAccountActivity : BaseActivity() {
         controller?.onStop()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AppBar.destroy()
-    }
 }

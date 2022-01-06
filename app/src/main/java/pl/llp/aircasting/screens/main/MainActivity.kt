@@ -70,7 +70,6 @@ class MainActivity: BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        AppBar.destroy()
         controller?.onDestroy()
         LocationHelper.stop()
     }
