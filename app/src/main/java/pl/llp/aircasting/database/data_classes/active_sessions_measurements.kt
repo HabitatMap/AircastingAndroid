@@ -64,7 +64,7 @@ interface ActiveSessionMeasurementDao {
     @Query("DELETE FROM active_sessions_measurements WHERE session_id=:sessionId")
     fun deleteActiveSessionMeasurementsBySession(sessionId: Long)
 
-    @Query("DELETE FROM active_sessions_measurements WHERE id in (:ids)")
+    @Query("DELETE FROM active_sessions_measurements WHERE id in (:ids)") //TODO:
     fun deleteActiveSessionMeasurements(ids: List<Int>)
 
     @Transaction
@@ -77,9 +77,18 @@ interface ActiveSessionMeasurementDao {
     @Transaction
     fun deleteAndInsertMultipleMeasurementsInTransaction(measurements: List<ActiveSessionMeasurementDBObject>) {
         if (measurements.isEmpty()) return
-        val ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
+        var ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
 
-        deleteActiveSessionMeasurements(ids)
+        if (ids.size < 999) {  // 999 is the limit of rows that we can call in one query
+            deleteActiveSessionMeasurements(ids)
+        } else {
+            while (ids.size >= 999) {
+                deleteActiveSessionMeasurements(ids.take(998))
+                ids = ids.drop(998)
+            }
+            deleteActiveSessionMeasurements(ids)
+        }
+
         insertAll(measurements)
     }
 }

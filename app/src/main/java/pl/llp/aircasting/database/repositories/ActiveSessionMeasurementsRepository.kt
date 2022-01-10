@@ -8,7 +8,7 @@ import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 
 class ActiveSessionMeasurementsRepository {
-    private val ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER = 60 * 9 //we only need 9 mins of measurements. TODO: we should calculate that number based on time
+    private val ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER = 60 * 9 // we only need 9 mins of measurements. TODO: we should calculate that number based on time
     private val mDatabase = DatabaseProvider.get()
 
     fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
