@@ -65,7 +65,7 @@ interface ActiveSessionMeasurementDao {
     @Query("DELETE FROM active_sessions_measurements WHERE session_id=:sessionId")
     fun deleteActiveSessionMeasurementsBySession(sessionId: Long)
 
-    @Query("DELETE FROM active_sessions_measurements WHERE id in (:ids)") //TODO:
+    @Query("DELETE FROM active_sessions_measurements WHERE id in (:ids)")
     fun deleteActiveSessionMeasurements(ids: List<Int>)
 
     @Transaction
