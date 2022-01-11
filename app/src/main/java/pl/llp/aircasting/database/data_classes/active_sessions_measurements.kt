@@ -1,7 +1,6 @@
 package pl.llp.aircasting.database.data_classes
 
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteQuery
 import java.util.*
 
 @Entity(
@@ -74,9 +73,11 @@ interface ActiveSessionMeasurementDao {
         insert(measurement)
     }
 
+    // Below transaction is not supposed to take more than 540 measurements at any time !!!
+    // If it takes more then 999 measurements (because of SQLite row operation limits) the app would probably crash so we prevent it by adding "if (measurements.size > 998) -> return "
     @Transaction
     fun deleteAndInsertMultipleMeasurementsInTransaction(measurements: List<ActiveSessionMeasurementDBObject>) {
-        if (measurements.isEmpty()) return
+        if (measurements.isEmpty() || measurements.size > 998) return
         val ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
 
         deleteActiveSessionMeasurements(ids)
