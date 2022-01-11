@@ -1,8 +1,6 @@
 package pl.llp.aircasting.database.data_classes
 
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteQuery
-import pl.llp.aircasting.database.DatabaseProvider
 import java.util.*
 
 @Entity(
@@ -75,21 +73,14 @@ interface ActiveSessionMeasurementDao {
         insert(measurement)
     }
 
+    // Below transaction is not supposed to take more than 540 measurements at any time !!!
+    // If it takes more then 999 measurements (because of SQLite row operation limits) the app would probably crash so we prevent it by adding "if (measurements.size > 998) -> return "
     @Transaction
     fun deleteAndInsertMultipleMeasurementsInTransaction(measurements: List<ActiveSessionMeasurementDBObject>) {
-        if (measurements.isEmpty()) return
-        var ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
+        if (measurements.isEmpty() || measurements.size > 998) return
+        val ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
 
-        if (ids.size < DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY) {  // 999 is the limit of rows that we can call in one query
-            deleteActiveSessionMeasurements(ids)
-        } else {
-            while (ids.size >= DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY) {
-                deleteActiveSessionMeasurements(ids.take(DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY - 1))
-                ids = ids.drop(DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY - 1)
-            }
-            deleteActiveSessionMeasurements(ids)
-        }
-
+        deleteActiveSessionMeasurements(ids)
         insertAll(measurements)
     }
 }
