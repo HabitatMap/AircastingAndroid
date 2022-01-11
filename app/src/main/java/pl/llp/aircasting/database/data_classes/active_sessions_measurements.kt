@@ -2,6 +2,7 @@ package pl.llp.aircasting.database.data_classes
 
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
+import pl.llp.aircasting.database.DatabaseProvider
 import java.util.*
 
 @Entity(
@@ -79,12 +80,12 @@ interface ActiveSessionMeasurementDao {
         if (measurements.isEmpty()) return
         var ids = getOldestMeasurementsIds(measurements.first().sessionId, measurements.first().streamId, measurements.size)
 
-        if (ids.size < 999) {  // 999 is the limit of rows that we can call in one query
+        if (ids.size < DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY) {  // 999 is the limit of rows that we can call in one query
             deleteActiveSessionMeasurements(ids)
         } else {
-            while (ids.size >= 999) {
-                deleteActiveSessionMeasurements(ids.take(998))
-                ids = ids.drop(998)
+            while (ids.size >= DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY) {
+                deleteActiveSessionMeasurements(ids.take(DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY - 1))
+                ids = ids.drop(DatabaseProvider.MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY - 1)
             }
             deleteActiveSessionMeasurements(ids)
         }

@@ -45,6 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
 class DatabaseProvider {
     companion object {
         private val DB_NAME = "aircasting"
+        val MAXIMUM_NUMBER_OF_ROWS_CHANGED_DURING_ONE_QUERY = 999
 
         private lateinit var mContext: Context
         var mAppDatabase: AppDatabase? = null
