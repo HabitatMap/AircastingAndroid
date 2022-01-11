@@ -20,7 +20,7 @@ abstract class AirBeamConnector {
     }
 
     private var mListener: Listener? = null
-    private val CONNECTION_TIMEOUT = 20000L
+    private val CONNECTION_TIMEOUT = 30000L
 
     protected val connectionStarted = AtomicBoolean(false)
     protected val cancelStarted = AtomicBoolean(false)
