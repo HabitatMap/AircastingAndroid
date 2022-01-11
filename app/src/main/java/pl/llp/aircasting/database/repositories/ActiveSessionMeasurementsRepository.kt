@@ -79,10 +79,8 @@ class ActiveSessionMeasurementsRepository {
              measurementsToBeReplaced = measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER)
         }
 
-        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
+        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER && measurements.size <= ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
             measurementsToBeReplaced = measurements
-        } else {
-            insertAll(measurementStreamId, sessionId, measurements)
         }
 
         val measurementsDbObjectsToBeReplaced = measurementsToBeReplaced.map { measurement ->
