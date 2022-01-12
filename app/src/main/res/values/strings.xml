@@ -323,6 +323,8 @@
     <string name="microphone_settings_title">Phone Microphone Calibration</string>
     <string name="microphone_settings_description">Adjust via trial &amp; error until the measurements in the app match your reference sound level meter. For most phones it\'s between 80 and 100.</string>
     <string name="microphone_settings">Microphone settings</string>
+
+
     <string name="reset_email_sent">An email with further instructions has been sent</string>
     <string name="unknown_error">Unknown error</string>
     <string name="fixed_session_no_internet_connection_header">No internet connection</string>
@@ -462,5 +464,11 @@
     <string name="use_your_location">Use your location</string>
     <string name="when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements">When recording a mobile session, AirCasting will track your location even when the app is closed or not in use. Allow AirCasting to use your location all the time to map your mobile measurements.</string>
     <string name="okay">Okay</string>
+
+    <!-- Notes -->
+    <string name="add_note">Add note</string>
+    <string name="note">Note</string>
+    <string name="tap_to_add_picture">Tap to add picture</string>
+    <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Your note will be timestamped and displayed on the AirCasting map</string>
 
 </resources>
