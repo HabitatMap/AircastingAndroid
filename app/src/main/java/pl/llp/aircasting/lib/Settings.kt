@@ -11,6 +11,7 @@ open class Settings(private val mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
+    protected val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
     protected val CALIBRATION_KEY = "calibration"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
@@ -28,6 +29,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_SESSIONS_TO_REMOVE = false
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_USE_24_HOUR_FORMAT = true
+    private val DEFAULT_USE_CELSIUS_SCALE = false
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
@@ -57,6 +59,10 @@ open class Settings(private val mApplication: Application) {
 
     fun isUsing24HourFormat(): Boolean {
         return getBooleanFromSettings(USE_24_HOUR_FORMAT_KEY, DEFAULT_USE_24_HOUR_FORMAT)
+    }
+
+    fun isCelsiusScaleEnabled(): Boolean {
+        return getBooleanFromSettings(USE_CELSIUS_SCALE_KEY, DEFAULT_USE_CELSIUS_SCALE)
     }
 
     fun isCrowdMapEnabled(): Boolean {
@@ -102,6 +108,11 @@ open class Settings(private val mApplication: Application) {
     fun toggleUse24HourFormatEnabled() {
         val enabled = !isUsing24HourFormat()
         saveToSettings(USE_24_HOUR_FORMAT_KEY, enabled)
+    }
+
+    fun toggleUseCelsiusScaleEnabled() {
+        val enabled = !isCelsiusScaleEnabled()
+        saveToSettings(USE_CELSIUS_SCALE_KEY, enabled)
     }
 
     fun toggleMapSettingsEnabled(){
