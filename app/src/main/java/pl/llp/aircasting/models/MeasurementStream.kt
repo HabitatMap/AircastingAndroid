@@ -94,7 +94,7 @@ class MeasurementStream(
         }
     }
 
-    val detailedType: String?
+    var detailedType: String?
     val measurements get() = mMeasurements
 
     init {

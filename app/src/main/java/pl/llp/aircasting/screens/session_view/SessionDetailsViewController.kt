@@ -29,6 +29,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.lib.AppBar
+import pl.llp.aircasting.lib.TemperatureConverter
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -171,6 +172,12 @@ abstract class SessionDetailsViewController(
 
     private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
         mSessionPresenter?.session?.streams?.forEach { stream ->
+            if (stream.detailedType == "F" && mSettings.isCelsiusScaleEnabled()) {
+                stream.detailedType = "C"
+                measurements[stream.sensorName]?.forEach { measurement ->
+                    measurement.value = TemperatureConverter.temperaturefromFehreinheitToCelcius(measurement.value)
+                }
+            }
             measurements[stream.sensorName]?.let { streamMeasurements ->
                 stream.setMeasurements(streamMeasurements)
             }
@@ -193,6 +200,10 @@ abstract class SessionDetailsViewController(
                 val isSessionDormant = (session?.type == Session.Type.MOBILE && session.status == Session.Status.FINISHED)
                 measurements = loadMeasurementsForStreams(session.id,  mSessionPresenter.session?.streams, selectedStream, isSessionDormant)
             }
+        }
+
+        if (mSettings.isCelsiusScaleEnabled()) {
+
         }
 
         return measurements
