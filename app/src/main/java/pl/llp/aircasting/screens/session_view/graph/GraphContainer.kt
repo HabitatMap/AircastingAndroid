@@ -246,6 +246,10 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.onChartGestureListener = this
 
         mGraph?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            // Chart library works the way that we can only click Entries of the graph- we cannot set onClickListener for entry's icon view (note icon in our case)
+            // We have a lot (thousands) of entries drawn on the graph for 1-2 hours sessions which means clicking on 1 particular graph entry is not really possible
+            // To handle clicking on note somehow, we have to check if user clicked on entry that has attached note icon OR if any graph entry 'close' to entry clicked by user got such icon
+            // If yes, we want to launch "noteMarkerClicked" method
             override fun onValueSelected(entry: Entry?, h: Highlight?) {
                 var noteNumber = -1
                 val tempRanges = mutableListOf<ClosedRange<Long>>()
