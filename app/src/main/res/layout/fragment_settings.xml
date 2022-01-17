@@ -96,7 +96,7 @@
                 style="@style/Widget.Aircasting.SettingsButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Keep screen on"
+                android:text="@string/keep_screen_on"
                 app:layout_constraintTop_toTopOf="@id/separator"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -5,6 +5,7 @@
     <string name="title_settings">Configuración</string>
     <string name="dashboard_empty_header">¿Listo para empezar?</string>
     <string name="dashboard_empty_text">Grabar una nueva sesión para monitorear su salud y medio ambiente </string>
+    <string name="dashboard_tabs_following">Siguiendo</string>
     <string name="dashboard_tabs_mobile_active">Móvil activo</string>
     <string name="dashboard_tabs_mobile_dormant">Móvil inactivo</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
@@ -232,6 +233,7 @@
     <string name="settings_my_account">Mi cuenta</string>
     <string name="settings_contribute_to_crowdmap">Contribuir a “CrowdMap”</string>
     <string name="settings_contribute_to_crowdmap_description">Los datos contribuidos al “CrowdMap” están disponibles públicamente en “aircasting.org”</string>
+    <string name="keep_screen_on">Mantenga la pantalla encendida</string>
     <string name="settings_backend_settings">Configuración de back-end</string>
     <string name="settings_backend_url">Url</string>
     <string name="settings_backend_port">Port</string>
@@ -324,6 +326,7 @@
 
     <!-- Notes -->
     <string name="add_note">Agrega una nota</string>
+    <string name="add_a_note">Agrega una nota</string>
     <string name="note">Nota</string>
     <string name="tap_to_add_picture">Tap to add picture</string>
     <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">u nota tendrá una marca de tiempo y se mostrará en el mapa de AirCasting</string>

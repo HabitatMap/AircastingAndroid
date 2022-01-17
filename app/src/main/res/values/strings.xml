@@ -31,6 +31,7 @@
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty_header">Ready to get started?</string>
     <string name="dashboard_empty_text">Record a new session to monitor your health &amp; environment.</string>
+    <string name="dashboard_tabs_following">Following</string>
     <string name="dashboard_tabs_mobile_active">Mobile active</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
     <string name="dashboard_tabs_fixed">Fixed</string>
@@ -255,6 +256,7 @@
     <!-- Settings -->
     <string name="settings_my_account">My account</string>
     <string name="settings_contribute_to_crowdmap">Contribute to crowd map</string>
+    <string name="keep_screen_on">Keep screen on</string>
     <string name="settings_contribute_to_crowdmap_description">Data contributed to the CrowdMap is publicly available at aircasting.org</string>
     <string name="settings_backend_settings">Backend settings</string>
     <string name="settings_backend_url">Url</string>
@@ -467,8 +469,10 @@
 
     <!-- Notes -->
     <string name="add_note">Add note</string>
+    <string name="add_a_note">Add note</string>
     <string name="note">Note</string>
     <string name="tap_to_add_picture">Tap to add picture</string>
     <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Your note will be timestamped and displayed on the AirCasting map</string>
+
 
 </resources>

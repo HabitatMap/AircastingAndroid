@@ -16,6 +16,7 @@ android {
         versionCode 173
         versionName "2.0.34"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs "en", "es"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
         def secureProps = new Properties()
