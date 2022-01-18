@@ -8,7 +8,8 @@ import pl.llp.aircasting.screens.common.BaseFragment
 import pl.llp.aircasting.screens.dashboard.DashboardViewMvcImpl
 import pl.llp.aircasting.AircastingApplication
 
-
+// Reordering dashboard is the screen we enter after pressing "Reorder" button
+// It's needed because we want to be able to turn on/ turn off Reorder feature and we need to change number of visible cards depending on it
 class ReorderingDashboardFragment : BaseFragment<DashboardViewMvcImpl, ReorderingDashboardController>() {
 
     override fun onCreateView(

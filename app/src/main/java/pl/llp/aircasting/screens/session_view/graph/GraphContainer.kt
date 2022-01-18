@@ -240,8 +240,8 @@ class GraphContainer: OnChartGestureListener {
         mGraph?.xAxis?.setDrawGridLines(false)
         mGraph?.setDrawGridBackground(false)
         mGraph?.isDragDecelerationEnabled = false
-        mGraph?.setMaxVisibleValueCount(100000) //todo: this allows us to display icon on graph, value may be changed if icons would not display during tests
-        if (android.os.Build.VERSION.SDK_INT < 24 ) mGraph?.setHardwareAccelerationEnabled(false)
+        mGraph?.setMaxVisibleValueCount(100000) //todo: this allows us to display icons on graph, value may be changed if icons would not display during tests
+        if (android.os.Build.VERSION.SDK_INT < 24 ) mGraph?.setHardwareAccelerationEnabled(false) // graph wasn't drawn properly for older android versions without this line
 
         mGraph?.onChartGestureListener = this
 

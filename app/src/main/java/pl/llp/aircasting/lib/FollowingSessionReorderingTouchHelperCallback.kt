@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 
-
+// We need this class in order to handle gestures on recycler view (swiping/dragging etc)
 class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: ItemTouchHelperAdapter) :
     ItemTouchHelper.Callback() {
 
@@ -19,6 +19,7 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         return true
     }
 
+    // Here we define gestures we want to handle:
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
         val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
