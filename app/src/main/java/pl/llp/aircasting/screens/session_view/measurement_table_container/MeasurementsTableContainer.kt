@@ -12,6 +12,7 @@ import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.session_view.SelectedSensorBorder
 import kotlinx.android.synthetic.main.session_card.view.*
+import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.models.Session
 
 
@@ -122,8 +123,8 @@ abstract class MeasurementsTableContainer {
     private fun bindMeasurements() {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
-            bindStream(stream)
-            bindMeasurement(stream)
+            TemperatureConverter.get()?.convertStream(stream)?.let { bindStream(it) }
+            TemperatureConverter.get()?.convertStream(stream)?.let { bindMeasurement(it) }
         }
     }
 

@@ -40,8 +40,9 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onToggleUse24HourFormatEnabled()
         }
 
-        val useCelsiusScale = rootView?.use_celcius_scale_switch
-        useCelsiusScale?.setOnCheckedChangeListener { _, _ ->
+        val useCelsiusScaleSwitch = rootView?.use_celcius_scale_switch
+        useCelsiusScaleSwitch?.isChecked = mSettings.isCelsiusScaleEnabled()
+        useCelsiusScaleSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleCelsiusScaleEnabled()
         }
 

@@ -172,12 +172,6 @@ abstract class SessionDetailsViewController(
 
     private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
         mSessionPresenter?.session?.streams?.forEach { stream ->
-            if (stream.detailedType == "F" && mSettings.isCelsiusScaleEnabled()) {
-                stream.detailedType = "C"
-                measurements[stream.sensorName]?.forEach { measurement ->
-                    measurement.value = TemperatureConverter.temperaturefromFehreinheitToCelcius(measurement.value)
-                }
-            }
             measurements[stream.sensorName]?.let { streamMeasurements ->
                 stream.setMeasurements(streamMeasurements)
             }
