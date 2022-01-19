@@ -12,7 +12,7 @@
     <string name="record_new_session">Grabar nueva sesión</string>
     <string name="disconnect_session">Enter standalone mode</string>
     <string name="reconnect_session">Reconnect session</string>
-    <string name="stop_session">Finish recording session</string>
+    <string name="stop_session">Terminar la sesión de grabación</string>
     <string name="delete_session">Delete session</string>
     <string name="ok">Aprobar</string>
     <string name="cancel">Cancelar</string>
@@ -33,7 +33,7 @@
     <string name="tags_bottom_sheet_input">Tags:</string>
     <string name="session_name_bottom_sheet_input">Session name</string>
     <string name="edit_data">Edit data</string>
-    <string name="share_title">View my AirCasting session</string>
+    <string name="share_title">Ver mi sesión de AirCasting</string>
 
     <!--  Delete streams and sessions -->
     <string name="delete_session_data">Delete this session</string>
@@ -45,7 +45,7 @@
     <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
     <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
     <string name="disconnected_view_airbeam3_sync_button">Terminar de grabar &amp; sync</string>
-    <string name="disconnected_view_airbeam3_finish_button">Finish recording &amp; don\'t sync</string>
+    <string name="disconnected_view_airbeam3_finish_button">Terminar de grabar &amp; no sync</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Enciende WIFI</string>
@@ -155,7 +155,7 @@
     <string name="session_details_network_password_hint">Password</string>
 
     <!-- New session step 9 - Confirmation / Choose location -->
-    <string name="session_confirmation_header">Are you ready?</string>
+    <string name="session_confirmation_header">¿Estás listo?</string>
     <string name="session_confirmation_description_part1">Su</string>
     <string name="session_confirmation_description_part2">sesión</string>
     <string name="session_confirmation_description_part3">está lista para comenzar a recopilar datos.</string>
@@ -184,16 +184,16 @@
     <string name="hlu_dialog_reset_button">Reset to default</string>
 
     <!-- Errors -->
-    <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
-    <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
-    <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
-    <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
-    <string name="errors_audio_required">Audio permissions are required to continue</string>
-    <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
-    <string name="errors_network_forgot_password">You need to have internet connection to reset your password</string>
-    <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
-    <string name="errors_network_required_delete_streams">You need to have internet connection to delete session</string>
-    <string name="errors_airbeam_connection_failed">AirBeam connection failed. Please try again.</string>
+    <string name="errors_location_services_required">Sin permisos de ubicación no podrás grabar sesiones de bluetooth.</string>
+    <string name="errors_location_services_required_to_sync">Sin permisos de ubicación, no puede continuar con la sincronización.</string>
+    <string name="errors_location_services_required_to_locate">Se necesitan servicios de ubicación para centrar el mapa en su ubicación.</string>
+    <string name="errors_bluetooth_required">Se requiere Bluetooth para continuar</string>
+    <string name="errors_audio_required">Se requieren permisos de audio para continuar</string>
+    <string name="errors_network_required_edit">Necesitas tener conexión a internet para editar los datos de la sesión</string>
+    <string name="errors_network_forgot_password">Necesitas tener conexión a internet para restablecer tu contraseña</string>
+    <string name="errors_edit_failure">Algo salió mal durante la sesión de edición. Inténtalo de nuevo.</string>
+    <string name="errors_network_required_delete_streams">Necesitas tener conexión a internet para borrar la sesión</string>
+    <string name="errors_airbeam_connection_failed">La conexión AirBeam falló. Inténtalo de nuevo.</string>
 
     <string name="parameters">Parameters:</string>
     <string name="session_measurements_description">Most recent measurement:</string>
@@ -202,10 +202,10 @@
     <string name="session_avg_measurements_description">Promedio:</string>
     <string name="session_no_measurements_label1">Tu AirBeam está recopilando datos.</string>
     <string name="session_no_measurements_label2">Las medidas aparecerán en 3 minutos.</string>
-    <string name="session_name_required">Session name can\'t be blank.</string>
-    <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
-    <string name="active_session_already_exists">Active session already exists for this device.</string>
-    <string name="hlu_thresholds_error">All values needs to be present and fit the range (min &lt; low &lt; medium &lt; high &lt; max).</string>
+    <string name="session_name_required">El nombre de la sesión no puede estar en blanco.</string>
+    <string name="session_wifi_credentials_required">Se requieren credenciales de Wi-Fi.</string>
+    <string name="active_session_already_exists">Ya existe una sesión activa para este dispositivo.</string>
+    <string name="hlu_thresholds_error">Todos los valores deben estar presentes y ajustarse al rango (mínimo &lt; bajo &lt; medio &lt; alto &lt; máximo).</string>
 
     <!-- Finish session dialog -->
     <string name="dialog_finish_recording_header_part1">Terminar de grabar</string>
@@ -247,33 +247,33 @@
     <string name="your_privacy">Privacidad</string>
 
     <!-- Clearing SD Card -->
-    <string name="restart_airbeam_header">Restart your AirBeam</string>
-    <string name="restart_airbeam_description">Turn your AirBeam off and then back on.</string>
-    <string name="sd_card_clear_select_device_header">Select the device you\'d like to clear</string>
-    <string name="sd_card_clearing_header">Clearing SD card</string>
-    <string name="sd_card_clearing_description">This should take less than 10 seconds.</string>
-    <string name="sd_card_cleared_header">SD card cleared</string>
-    <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
+    <string name="restart_airbeam_header">Reinicie su AirBeam</string>
+    <string name="restart_airbeam_description">Apague su AirBeam y vuelva a encenderlo.</string>
+    <string name="sd_card_clear_select_device_header">Seleccione el dispositivo que desea borrar</string>
+    <string name="sd_card_clearing_header">Borrado de la tarjeta SD</string>
+    <string name="sd_card_clearing_description">Esto debería tomar menos de 10 segundos.</string>
+    <string name="sd_card_cleared_header">Tarjeta SD borrada</string>
+    <string name="sd_card_cleared_description">La tarjeta SD dentro de su AirBeam3 se borró con éxito.</string>
     <string name="sd_card_cleared_continue_button">Continuar</string>
 
     <!-- Sync -->
-    <string name="refreshing_sessions_header">Updating sessions</string>
-    <string name="refreshing_sessions_description">Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet.</string>
-    <string name="refreshed_sessions_header_successful">Success</string>
-    <string name="refreshed_sessions_description_successful">Sessions were updated successfully.</string>
-    <string name="refreshed_sessions_header_error">Something went wrong</string>
-    <string name="refreshed_sessions_description_error">There was a problem while refreshing sessions. Please check your internet connection and try again.</string>
-    <string name="refreshed_sessions_retry">Try again</string>
-    <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
-    <string name="airbeam_syncing_header">Syncing</string>
-    <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync.</string>
-    <string name="airbeam_syncing_finalizing">Finalizing...</string>
-    <string name="airbeam_syncing_finished_header">Sync complete</string>
-    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.</string>
-    <string name="sync_error_header">Something went wrong</string>
-    <string name="sync_unknown_error">Unexpected error happen. Please contact support.</string>
-    <string name="sync_unavailable_dialog_header">SD card sync unavailable</string>
-    <string name="sync_unavailable_dialog_description">To use the AirBeam3 in standalone mode and sync the SD card,\nAndroid 8 or higher + Bluetooth 5 are required</string>
+    <string name="refreshing_sessions_header">Sesiones de actualización</string>
+    <string name="refreshing_sessions_description">Las sesiones deben actualizarse antes de sincronizar la tarjeta SD. Asegúrese de que su dispositivo esté conectado a Internet.</string>
+    <string name="refreshed_sessions_header_successful">Éxito</string>
+    <string name="refreshed_sessions_description_successful">Las sesiones se actualizaron con éxito.</string>
+    <string name="refreshed_sessions_header_error">Algo salió mal</string>
+    <string name="refreshed_sessions_description_error">Hubo un problema al actualizar las sesiones. Comprueba tu conexión a Internet e inténtalo de nuevo.</string>
+    <string name="refreshed_sessions_retry">Intentar otra vez</string>
+    <string name="airbeam_sync_select_device_header">Seleccione el dispositivo que desea sincronizar</string>
+    <string name="airbeam_syncing_header">Sincronización</string>
+    <string name="airbeam_syncing_description">Mantenga su AirBeam cerca de su Android. Conecte su AirBeam para acelerar la sincronización.</string>
+    <string name="airbeam_syncing_finalizing">Finalizando...</string>
+    <string name="airbeam_syncing_finished_header">Sincronización completa</string>
+    <string name="airbeam_syncing_finished_description">Los datos de su AirBeam3 se sincronizaron correctamente con la aplicación. Se borró la tarjeta SD.</string>
+    <string name="sync_error_header">Algo salió mal</string>
+    <string name="sync_unknown_error">Ocurrió un error inesperado. Póngase en contacto con el soporte técnico.</string>
+    <string name="sync_unavailable_dialog_header">Sincronización de tarjeta SD no disponible</string>
+    <string name="sync_unavailable_dialog_description">Para usar AirBeam3 en modo independiente y sincronizar la tarjeta SD, se requiere Android 8 o superior + Bluetooth 5</string>
     <string name="sync_unavailable_dialog_continue_button">Continuar</string>
 
     <!-- My account -->
@@ -281,10 +281,10 @@
     <string name="my_account_info">Estás conectado como \n%1$s</string>
 
     <!--  Sensor services -->
-    <string name="service_notification_title">AirCasting is recording a session</string>
-    <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
-    <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
-    <string name="ab_sync_service_notification_message">AirBeam is syncing data and Location Services are active</string>
+    <string name="service_notification_title">AirCasting está grabando una sesión</string>
+    <string name="mic_service_notification_message">El micrófono está grabando y los servicios de ubicación están activos</string>
+    <string name="ab_service_notification_message">AirBeam está grabando y los servicios de ubicación están activos</string>
+    <string name="ab_sync_service_notification_message">AirBeam está sincronizando datos y los servicios de ubicación están activos</string>
 
     <!-- Share session -->
     <string name="share_file">O envíe por correo electrónico un archivo csv con los datos de su sesión</string>
@@ -292,9 +292,9 @@
     <string name="select_a_stream_to_share">Select a stream to share</string>
     <string name="share_link">Compartir enlace</string>
     <string name="sensor_param">sensor_name</string>
-    <string name="share_text">View my AirCasting session: \n</string>
-    <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
-    <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
+    <string name="share_text">Ver mi sesión de AirCasting: \n</string>
+    <string name="exported_session_service_success">Las sesiones exportadas se enviarán por correo electrónico en cuestión de minutos. El correo electrónico puede terminar en su carpeta de correo no deseado.</string>
+    <string name="session_upload_pending">Carga de sesión pendiente: espere un par de minutos y vuelva a intentarlo.</string>
     <string name="share_session_email_hint">Correo electrónico</string>
     <string name="generate_csv_file_without_share_link">Envíe por correo electrónico un archivo csv con los datos de su sesión</string>
 
@@ -304,11 +304,11 @@
     <string name="microphone_settings">Configuración de micrófono</string>
 
 
-    <string name="reset_email_sent">An email with further instructions has been sent</string>
-    <string name="unknown_error">Unknown error</string>
-    <string name="fixed_session_no_internet_connection_header">No internet connection</string>
-    <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
-    <string name="provided_email_is_not_correct">Provided email is not correct</string>
+    <string name="reset_email_sent">Se ha enviado un correo electrónico con más instrucciones.</string>
+    <string name="unknown_error">Error desconocido</string>
+    <string name="fixed_session_no_internet_connection_header">Sin conexión a Internet</string>
+    <string name="fixed_session_no_internet_connection">Para iniciar una sesión fija, conecta tu Android a internet.</string>
+    <string name="provided_email_is_not_correct">El correo electrónico proporcionado no es correcto</string>
 
 
     <!-- Did you know box -->
