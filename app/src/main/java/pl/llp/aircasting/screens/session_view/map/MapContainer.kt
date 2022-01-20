@@ -25,6 +25,7 @@ import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import kotlinx.android.synthetic.main.activity_map.view.*
+import pl.llp.aircasting.lib.TemperatureConverter
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -132,7 +133,11 @@ class MapContainer: OnMapReadyCallback {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
+        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream?.let {
+            TemperatureConverter.get()?.convertStream(
+                it
+            )
+        })
         mNotes = mSessionPresenter?.session?.notes!!
 
         if (mSessionPresenter?.isFixed() == true) {

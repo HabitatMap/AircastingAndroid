@@ -11,6 +11,7 @@ import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
+import pl.llp.aircasting.lib.TemperatureConverter
 import java.util.*
 
 class StatisticsContainer {
@@ -49,7 +50,11 @@ class StatisticsContainer {
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
-        val stream = sessionPresenter?.selectedStream
+        val stream = sessionPresenter?.selectedStream?.let {
+            TemperatureConverter.get()?.convertStream(
+                it
+            )
+        }
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
         mVisibleTimeSpan = sessionPresenter?.visibleTimeSpan
 
@@ -64,7 +69,11 @@ class StatisticsContainer {
     }
 
     private fun bindLastMeasurement(sessionPresenter: SessionPresenter?) {
-        val stream = sessionPresenter?.selectedStream
+        val stream = sessionPresenter?.selectedStream?.let {
+            TemperatureConverter.get()?.convertStream(
+                it
+            )
+        }
 
         mNow = getNowValue(stream)
 
@@ -152,7 +161,7 @@ class StatisticsContainer {
 
     private fun setMeasurementsValues(stream: MeasurementStream?) {
         if (mMeasurementsValues == null) {
-            mMeasurementsValues = measurementsValues(stream)
+            mMeasurementsValues =  measurementsValues(stream)
         }
     }
 

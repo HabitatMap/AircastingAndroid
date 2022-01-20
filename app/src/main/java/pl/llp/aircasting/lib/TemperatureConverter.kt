@@ -1,5 +1,6 @@
 package pl.llp.aircasting.lib
 
+import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 
 class TemperatureConverter {
@@ -27,17 +28,31 @@ class TemperatureConverter {
         var measurementStream: MeasurementStream = stream
 
         if (stream.detailedType == "F" && mSettings?.isCelsiusScaleEnabled() == true) {
-            measurementStream.detailedType = "C"
-            stream.measurements.forEach { measurement ->
-                measurement.value = temperaturefromFehreinheitToCelcius(measurement.value)
-            }
-        }
+            measurementStream = MeasurementStream(
+                measurementStream.sensorPackageName,
+                measurementStream.sensorName,
+                measurementStream.measurementType,
+                measurementStream.measurementShortType,
+                measurementStream.unitName,
+                measurementStream.unitSymbol,
+                measurementStream.thresholdVeryLow,
+                measurementStream.thresholdLow,
+                measurementStream.thresholdMedium,
+                measurementStream.thresholdHigh,
+                measurementStream.thresholdVeryHigh,
+                measurementStream.deleted,
+                stream.measurements.map { measurement ->
+                    Measurement(
+                        temperaturefromFehreinheitToCelcius(measurement.value),
+                        measurement.time,
+                        measurement.latitude,
+                        measurement.longitude,
+                        measurement.averagingFrequency
+                    )
 
-        if (stream.detailedType == "C" && mSettings?.isCelsiusScaleEnabled() == false) {
-            measurementStream.detailedType = "F"
-            stream.measurements.forEach { measurement ->
-                measurement.value = temperatureFromCelsiusToFehrenheit(measurement.value)
-            }
+                }
+            )
+            measurementStream.detailedType = "C"
         }
 
         return measurementStream
