@@ -37,7 +37,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_add_note"
-                android:text="Add a note"
+                android:text="@string/add_a_note"
                 style="@style/Widget.Aircasting.IconButton"
                 app:layout_constraintTop_toBottomOf="@id/stop_session_button"
                 app:layout_constraintBottom_toTopOf="@id/disconnect_session_button"
