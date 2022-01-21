@@ -29,6 +29,7 @@ class ReorderingFollowingViewMvcImpl(
         )
     }
 
+    // Below method attaches touch helper to our Reordering Recycler View
     override fun addTouchHelperToRecyclerView() {
         if (mAdapter is ItemTouchHelperAdapter) {
             val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)

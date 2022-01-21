@@ -50,6 +50,9 @@ class GraphDataGenerator(
             add(measurement, notes)
             fill += fillFactor
 
+            // We use below if to decrease number of entries that are displayed on the graph
+            // At the moment we exceed 'limit' (maximum number of entries displayed on the graph) we start to show less points on graph the we have measurements
+            // In order to show the graph properly even though we can't display all measurements on the graph we average measurements 'adjacent' to each other depending on fillFactor
             if (fill > 1) {
                 fill = 0.0
                 val date = getAverageDate()
