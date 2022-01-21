@@ -278,12 +278,12 @@ class MapContainer: OnMapReadyCallback {
         centerMap(position)
     }
 
-    private fun centerMap(location: Session.Location) {
-        val position = LatLng(location.latitude, location.longitude)
+    private fun centerMap(location: Session.Location?) {
+        val position = location?.longitude?.let { LatLng(location?.latitude, it) }
         centerMap(position)
     }
 
-    private fun centerMap(position: LatLng, zoom: Float = DEFAULT_ZOOM) {
+    private fun centerMap(position: LatLng?, zoom: Float = DEFAULT_ZOOM) {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom))
     }
 
@@ -330,7 +330,12 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun locate() {
-        mListener?.locateRequested()
+        if (mSessionPresenter?.isMobileActive() == true) {
+            mListener?.locateRequested()
+        } else {
+            centerMap(mSessionPresenter?.session?.location)
+        }
+
     }
 
     private fun clearMap() {
