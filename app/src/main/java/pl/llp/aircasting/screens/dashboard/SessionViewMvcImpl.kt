@@ -197,6 +197,7 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
         mDateTextView.text = DurationStringHelper().durationString(session?.startTime!!, session?.endTime)
         mNameTextView.text = session?.name
         mInfoTextView.text = session?.infoString()
+
     }
 
     private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
