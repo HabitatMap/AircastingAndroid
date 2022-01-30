@@ -207,9 +207,26 @@ class Session(
     val followed get() = followedAt != null
     val activeStreams get() = mStreams.filter { stream -> !stream.deleted }
 
-    val displayedType get() = when(type) {
-        Type.MOBILE -> "mobile"
-        Type.FIXED -> "fixed"
+    // TODO: this was changed quite quick to add spanish translation to displayedType, maybe it should be written in cleaner way
+    val displayedType get() = when (Locale.getDefault().language) {
+        "en" -> {
+            when(type) {
+                Type.MOBILE -> "mobile"
+                Type.FIXED -> "fixed"
+            }
+        }
+        "es" -> {
+            when(type) {
+                Type.MOBILE -> "móvil"
+                Type.FIXED -> "fijo"
+            }
+        }
+        else -> {
+            when (type) {
+                Type.MOBILE -> "mobile"
+                Type.FIXED -> "fixed"
+            }
+        }
     }
 
     val tab get() = run {
