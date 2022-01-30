@@ -113,7 +113,7 @@
                         android:id="@+id/email_csv_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Or email a CSV file with your session data"
+                        android:text="@string/or_email_a_csv_file_with_your_session_data"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextView.Description2"
                         android:textColor="@color/aircasting_grey_700"
                         app:layout_constraintTop_toBottomOf="@id/share_link_button"

@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sign in -->
+    <string name="invalid_credentials_message">Incorrecto nombre de perfil o contraseña.</string>
+    <string name="login_header">Inicie sesión</string>
+    <string name="login_description">para registrar y mapear su entorno</string>
+    <string name="profile_name_hint">Nombre de perfil</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="title_dashboard">Tablero</string>
+    <string name="create_account_prompt">¿Primera vez aquí? </string>
+    <string name="create_account_text_button">Crea una cuenta</string>
+    <string name="forgot_your_password">¿Olvidaste tu contraseña?</string>
+    <string name="forgot_password">Has olvidado tu contraseña</string>
+
+    <!-- Create account -->
+    <string name="create_account_header">Crea una cuenta</string>
+    <string name="create_account_description">para registrar y mapear tu entorno</string>
+    <string name="create_account_button">Crea una cuenta</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="login_prompt">¿Ya tienes una cuenta?</string>
+    <string name="login_text_button">iniciar sesión</string>
+    <string name="send_emails">Enviarme correos electrónicos de AirCasting</string>
+    <string name="create_account_errors_message">There are errors in the form. Please fix them before continuing.</string>
+
+    <!-- Forgot password -->
+    <string name="profile_name_email_hint">Nombre de perfil o correo electrónico</string>
+
+    <!--  Dashboard -->
+    <string name="title_settings">Configuración</string>
+    <string name="dashboard_empty_header">¿Listo para empezar?</string>
+    <string name="dashboard_empty_text">Grabar una nueva sesión para monitorear su salud y medio ambiente </string>
+    <string name="dashboard_tabs_following">Siguiendo</string>
+    <string name="dashboard_tabs_mobile_active">Móvil activo</string>
+    <string name="dashboard_tabs_mobile_dormant">Móvil inactivo</string>
+    <string name="dashboard_tabs_fixed">Fijo</string>
+    <string name="record_new_session">Grabar nueva sesión</string>
+    <string name="disconnect_session">Enter standalone mode</string>
+    <string name="reconnect_session">Reconectar</string>
+    <string name="stop_session">Terminar la sesión de grabación</string>
+    <string name="delete_session">Eliminar sesión</string>
+    <string name="ok">Aprobar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="follow_button">seguir</string>
+    <string name="unfollow_button">dejar de seguir</string>
+    <string name="map_button">Mapa</string>
+    <string name="graph_button">Grafico</string>
+    <string name="dashboard_empty_mobile_active_header">Empezar a grabar una sesión móvil</string>
+    <string name="dashboard_empty_mobile_active_text">Si planea moverse mientras registra las mediciones.</string>
+    <string name="record_mobile_session">Grabar sesión móvil</string>
+
+    <string name="disconnected_view_bluetooth_device_header">Dispositivo de medición\ndesconectado</string>
+    <string name="disconnected_view_bluetooth_device_description">Su dispositivo de medición ya no está conectado a la aplicación AirCasting. Asegúrese de que Bluetooth esté activado y que su dispositivo de medición esté cerca.</string>
+    <string name="disconnected_view_bluetooth_device_reconnect_button">Reconectar</string>
+    <string name="disconnected_view_bluetooth_device_finish_button">Terminar de grabar</string>
+    <string name="edit_session">Editar sesión</string>
+    <string name="edit_session_data">Editar fecha de sesión</string>
+    <string name="tags_bottom_sheet_input">Etiquetas:</string>
+    <string name="session_name_bottom_sheet_input">Nombre de la sesión</string>
+    <string name="edit_data">Editar fecha</string>
+    <string name="share_title">Ver mi sesión de AirCasting</string>
+
+    <!--  Delete streams and sessions -->
+    <string name="delete_session_data">Eliminar esta sesión</string>
+    <string name="delete_streams">Eliminar transmisiones</string>
+    <string name="delete_all_data_from_session">Todo de esta sesión</string>
+    <string name="delete_streams_subtitle">¿Qué transmisiones le gustaría eliminar?</string>
+    <string name="are_you_sure">¿Está seguro?</string>
+
+    <string name="disconnected_view_airbeam3_header">Su AirBeam3 está ahora en modo independiente</string>
+    <string name="disconnected_view_airbeam3_description">AirBeam3 ahora está grabando usando su tarjeta SD. Las medidas se mostrarán aquí después de la sincronización.</string>
+    <string name="disconnected_view_airbeam3_sync_button">Terminar de grabar &amp; sync</string>
+    <string name="disconnected_view_airbeam3_finish_button">Terminar de grabar &amp; no sync</string>
+
+    <!--  Dialogs -->
+    <string name="turn_on_wifi_dialog_header">Enciende WIFI</string>
+    <string name="turn_on_wifi_dialog_description">To see available networks list you need to turn on WIFI.</string>
+    <string name="turn_on_wifi_dialog_ok_button">Enciende</string>
+
+    <!-- Let's begin (new session start) -->
+    <string name="title_lets_start">Vamos a empezar</string>
+    <string name="record_new_session_title">Grabar una nueva sesión</string>
+    <string name="select_session_type_header">¿Cómo le gustaría agregar su sesión?</string>
+    <string name="new_session_more_info"><u>Más información</u></string>
+    <string name="fixed_session_start_title">Sesión fija</string>
+    <string name="fixed_session_start_desc">para medir en un solo lugar</string>
+    <string name="mobile_session_start_title">Sesión móvil</string>
+    <string name="mobile_session_start_desc">para moverse</string>
+    <string name="or">O</string>
+    <string name="sync_title">Sincronice datos de \nAirBeam3</string>
+    <string name="sync_description">de usted grabado con AirBeam3</string>
+    <string name="clear_card_title">Borrar tarjeta SD</string>
+    <string name="clear_card_description">This is temporary button for the testing purposes</string>
+
+    <!-- more info modal -->
+    <string name="more_info_title">Tipos de sesión</string>
+    <string name="more_info_text_part1">Si planea moverse con el AirBeam mientras registra las mediciones de la calidad del aire, configure el AirBeam para grabar una sesión</string>
+    <string name="more_info_text_part2">móvil.</string>
+    <string name="more_info_text_part3">Al grabar una sesión de AirCasting móvil, las mediciones se crean con marca de tiempo y geolocalización una vez por segundo. Después de registrar durante más de 2 horas, sus medidas se integrarán en promedios de 5 segundos. Después de registrar durante más de 9 horas, sus mediciones se integrarán en promedios de 1 minuto. \n\nSi planea dejar el AirBeam en el interior o colgarlo en el exterior, configúrelo para grabar una sesión</string>
+    <string name="more_info_text_part4">fija.</string>
+    <string name="more_info_text_part5">Al grabar sesiones de AirCasting fijas, las mediciones se crean y se marcan con una marca de tiempo una vez por minuto y las coordenadas geográficas se fijan en una ubicación establecida.</string>
+    <string name="more_info_cancel_button_text">CLOSE</string>
+
+    <!-- New session Step 1 -->
+    <string name="turn_on_location_services_image_desc">Activar los servicios de ubicación</string>
+    <string name="turn_on_location_services_header">Activar los servicios de ubicación</string>
+    <string name="turn_on_location_services_description">Para mapear sus medidas, active los servicios de ubicación.</string>
+    <string name="turn_on_location_services_ok_button">Encender</string>
+    <string name="locations_services_must_be_turned_on_part1">Los servicios de ubicación deben estar activados para habilitar el escaneo de Bluetooth.</string>
+    <string name="locations_services_must_be_turned_on_part2">Se le pedirá que desactive los servicios de ubicación después de que haya seleccionado el dispositivo Bluetooth con el que grabará.</string>
+
+    <!-- New session Step 2 -->
+    <string name="turn_on_bluetooth_image_desc">Enciende bluetooth</string>
+    <string name="turn_on_bluetooth_header">Enciende bluetooth</string>
+    <string name="turn_on_bluetooth_description">Encienda Bluetooth para permitir que su teléfono se conecte al AirBeam.</string>
+    <string name="turn_on_bluetooth_ok_button">Continuar</string>
+
+    <!-- New session Step 3 -->
+    <!-- Mobile -->
+    <string name="power_on_bluetooth_device_header">Enciende tu dispositivo bluetooth</string>
+    <string name="power_on_bluetooth_device_desc">Si usa Airbeam 2, espere a que el indicador de conexión cambie de rojo a verde antes de continuar.</string>
+    <string name="power_on_bluetooth_device_ready_button">Continuar</string>
+    <string name="power_on_bluetooth_device_image_desc">Enciende tu AirBeam</string>
+
+    <!-- Fixed -->
+    <string name="turn_on_airbeam_header">Enciende tu AirBeam</string>
+    <string name="turn_on_airbeam_description">Si usa Airbeam 2, espere a que el indicador de conexión cambie de rojo a verde antes de continuar.</string>
+    <string name="turn_on_airbeam_ready_button">Continuar</string>
+    <string name="turn_on_airbeam_image_desc">Enciende tu AirBeam</string>
+
+    <!-- New session Step 4 -->
+    <string name="select_device_type_header">Elige el dispositivo con el que te gustaría grabar</string>
+    <string name="bluetooth_device_card_header">Dispositivo bluetooth</string>
+    <string name="bluetooth_device_card_body">Por ejemplo AirBeam</string>
+    <string name="microphone_device_card_header">Micrófono de teléfono</string>
+    <string name="microphone_device_card_body">para medir los niveles de sonido</string>
+    <string name="select_device_type_button">Escojer</string>
+
+    <!-- New session Step 5 -->
+    <string name="select_device_header">Elige el dispositivo con el que te gustaría grabar</string>
+    <string name="select_device_airbeams_label">AirBeams</string>
+    <string name="select_device_others_label">Otros</string>
+    <string name="select_device_connect_button">Conectar</string>
+    <string name="select_device_refresh_button"><u>¿No ves un dispositivo? actualizar escaneo</u></string>
+
+    <!--  New session Step 6 - Connecting -->
+    <string name="connecting_airbeam_header">Conectando</string>
+    <string name="connecting_image_desc">Conectando</string>
+    <string name="connecting_airbeam_description">Esto debería tomar menos de 10 segundos</string>
+    <string name="airbeam2">AirBeam2</string>
+
+    <!--  New session Step 7 - Connected -->
+    <string name="airbeam_connected_header">Airbeam conectado</string>
+    <string name="airbeam_connected_image_desc">Airbeam conectado</string>
+    <string name="airbeam_connected_description">Su AirBeam está conectado a su teléfono y listo para tomar medidas.</string>
+    <string name="airbeam_connected_continue_button">Continuar</string>
+
+    <!-- Turn off location services -->
+    <string name="turn_off">Desactivar</string>
+    <string name="turn_off_location_description_text">Puedes desactivar los servicios de ubicación </string>
+    <string name="turn_off_location_services">Desactivar los servicios de ubicación</string>
+    <string name="turn_off_location_services_image_desc">Desactivar los servicios de ubicación</string>
+    <string name="skip">Saltar</string>
+
+    <!-- New session step 8 - Session details -->
+    <string name="fixed_session_details_header">Detalles de la nueva sesión</string>
+    <string name="mobile_session_details_header">Detalles de la nueva sesión</string>
+    <string name="session_details_session_name_hint">Nombre de la sesión</string>
+    <string name="session_details_session_tags_hint">Etiquetas</string>
+    <string name="session_details_continue_button">Continuar</string>
+    <string name="fixed_session_details_indoor_toggle_header">¿Dónde colocará su Air Beam?</string>
+    <string name="fixed_session_details_indoor">Adentro</string>
+    <string name="fixed_session_details_outdoor">Afuera</string>
+    <string name="fixed_session_details_streaming_method_header">Transmisión de datos:</string>
+    <string name="fixed_session_details_cellular">Datos celulares</string>
+    <string name="fixed_session_details_wifi">WiFi</string>
+    <string name="fixed_session_details_networks_list_header">Redes 2.4 GHz disponibles:</string>
+    <string name="fixed_session_details_refresh_networks_list_button"><u>Actualizar</u></string>
+    <string name="fixed_session_details_wifi_password_dialog_header">Proporcione la contraseña para la red \"%1$s\"</string>
+    <string name="session_details_network_password_hint">Contraseña</string>
+
+    <!-- New session step 9 - Confirmation / Choose location -->
+    <string name="session_confirmation_header">¿Estás listo?</string>
+    <string name="session_confirmation_description_part1">Su</string>
+    <string name="session_confirmation_description_part2">sesión</string>
+    <string name="session_confirmation_description_part3">está lista para comenzar a recopilar datos.</string>
+    <string name="session_confirmation_start_recording_button">Iniciar la grabación</string>
+    <string name="mobile_session_confirmation_instructions">Muévase a su ubicación inicial, confirme que su ubicación sea precisa en el mapa, luego presione el botón de inicio de grabación.</string>
+    <string name="mobile_session_confirmation_start_recording_button">Iniciar la grabación</string>
+    <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
+    <string name="fixed_session_choose_location_continue_button">Continuar</string>
+    <string name="fixed_session_confirmation_instructions">Cuelgue su AirBeam en una posición segura, luego presione el botón de inicio de grabación a continuación.</string>
+
+
+    <!-- Map view -->
+    <string name="avg_label">Promedio</string>
+    <string name="now_label">Ahora</string>
+    <string name="peak_label">Pico</string>
+
+    <!-- HLU dialog -->
+    <string name="hlu_dialog_header">Configuración del mapa de calor</string>
+    <string name="hlu_dialog_description">Los valores más allá del mínimo y máximo no se mostrarán.</string>
+    <string name="hlu_dialog_min">Mínimo</string>
+    <string name="hlu_dialog_low">Bajo</string>
+    <string name="hlu_dialog_medium">Medio</string>
+    <string name="hlu_dialog_high">Alto</string>
+    <string name="hlu_dialog_max">Máximo</string>
+    <string name="hlu_dialog_save_button">Guardar cambios</string>
+    <string name="hlu_dialog_reset_button">Restablecen a los predeterminados</string>
+
+    <!-- Errors -->
+    <string name="errors_location_services_required">Sin permisos de ubicación no podrás grabar sesiones de bluetooth.</string>
+    <string name="errors_location_services_required_to_sync">Sin permisos de ubicación, no puede continuar con la sincronización.</string>
+    <string name="errors_location_services_required_to_locate">Se necesitan servicios de ubicación para centrar el mapa en su ubicación.</string>
+    <string name="errors_bluetooth_required">Se requiere Bluetooth para continuar</string>
+    <string name="errors_audio_required">Se requieren permisos de audio para continuar</string>
+    <string name="errors_network_required_edit">Necesitas tener conexión a internet para editar los datos de la sesión</string>
+    <string name="errors_network_forgot_password">Necesitas tener conexión a internet para restablecer tu contraseña</string>
+    <string name="errors_edit_failure">Algo salió mal durante la sesión de edición. Inténtalo de nuevo.</string>
+    <string name="errors_network_required_delete_streams">Necesitas tener conexión a internet para borrar la sesión</string>
+    <string name="errors_airbeam_connection_failed">La conexión AirBeam falló. Inténtalo de nuevo.</string>
+
+    <string name="parameters">Parámetros:</string>
+    <string name="session_measurements_description">Most recent measurement:</string>
+    <string name="session_last_min_measurements_description">Medida del último minuto:</string>
+    <string name="session_last_sec_measurements_description">Medida del último segundo:</string>
+    <string name="session_avg_measurements_description">Promedio:</string>
+    <string name="session_no_measurements_label1">Tu AirBeam está recopilando datos.</string>
+    <string name="session_no_measurements_label2">Las medidas aparecerán en 3 minutos.</string>
+    <string name="session_name_required">El nombre de la sesión no puede estar en blanco.</string>
+    <string name="session_wifi_credentials_required">Se requieren credenciales de Wi-Fi.</string>
+    <string name="active_session_already_exists">Ya existe una sesión activa para este dispositivo.</string>
+    <string name="hlu_thresholds_error">Todos los valores deben estar presentes y ajustarse al rango (mínimo &lt; bajo &lt; medio &lt; alto &lt; máximo).</string>
+
+    <!-- Finish session dialog -->
+    <string name="dialog_finish_recording_header_part1">Terminar de grabar</string>
+    <string name="dialog_finish_recording_header_part3">\?</string>
+    <string name="dialog_finish_recording_text_part1">La sesión se moverá a la pestaña</string>
+    <string name="dialog_finish_recording_text_part2">Móvil inactivo</string>
+    <string name="dialog_finish_recording_text_part3">y no podrá agregarle nuevas mediciones.</string>
+    <string name="finish_recording">Terminar de grabar</string>
+
+
+    <!-- Finish and sync session dialog -->
+    <string name="dialog_finish_and_sync_recording_header_part1">Terminar de grabar</string>
+    <string name="dialog_finish_and_sync_recording_header_part3">and sync from SD card?</string>
+    <string name="dialog_finish_and_sync_recording_text_part1">La sesión se moverá a la pestaña</string>
+    <string name="dialog_finish_and_sync_recording_text_part2">Móvil inactivo</string>
+    <string name="dialog_finish_and_sync_recording_text_part3">y no podrá agregarle nuevas mediciones.</string>
+    <string name="dialog_finish_and_sync_recording_text_part4">SD card will be cleared afterwards.</string>
+    <string name="finish_recording_and_sync">Terminar de grabar &amp; sync</string>
+
+    <!-- Chart -->
+    <string name="fixed_session_units_label">1 hr prom</string>
+    <string name="mobile_session_units_label">1 min prom</string>
+
+    <!-- Settings -->
+    <string name="settings_my_account">Mi cuenta</string>
+    <string name="settings_contribute_to_crowdmap">Contribuir a “CrowdMap”</string>
+    <string name="settings_contribute_to_crowdmap_description">Los datos contribuidos al “CrowdMap” están disponibles públicamente en “aircasting.org”</string>
+    <string name="keep_screen_on">Mantenga la pantalla encendida</string>
+    <string name="settings_backend_settings">Configuración de back-end</string>
+    <string name="settings_backend_url">Url</string>
+    <string name="settings_backend_port">Port</string>
+    <string name="map_enable_description">Desactiva el rastreo por GPS y la sincronización de sesiones / Utilice "Compartir archivo" para recuperar sus medidas por correo electrónico. </string>
+    <string name="disable_mapping">Desactivar el mapeo</string>
+    <string name="application_version">Versión de la aplicación:</string>
+    <string name="version">Versión</string>
+    <string name="your_privacy_link">https://www.habitatmap.org/aircasting-app-privacy-policy</string>
+    <string name="use_24_hour_format">Usar el formato de 24 horas</string>
+    <string name="clear_sd_card">Borrar tarjeta SD</string>
+    <string name="your_privacy">Privacidad</string>
+
+    <!-- Clearing SD Card -->
+    <string name="restart_airbeam_header">Reinicie su AirBeam</string>
+    <string name="restart_airbeam_description">Apague su AirBeam y vuelva a encenderlo.</string>
+    <string name="sd_card_clear_select_device_header">Seleccione el dispositivo que desea borrar</string>
+    <string name="sd_card_clearing_header">Borrado de la tarjeta SD</string>
+    <string name="sd_card_clearing_description">Esto debería tomar menos de 10 segundos.</string>
+    <string name="sd_card_cleared_header">Tarjeta SD borrada</string>
+    <string name="sd_card_cleared_description">La tarjeta SD dentro de su AirBeam3 se borró con éxito.</string>
+    <string name="sd_card_cleared_continue_button">Continuar</string>
+
+    <!-- Sync -->
+    <string name="refreshing_sessions_header">Sesiones de actualización</string>
+    <string name="refreshing_sessions_description">Las sesiones deben actualizarse antes de sincronizar la tarjeta SD. Asegúrese de que su dispositivo esté conectado a Internet.</string>
+    <string name="refreshed_sessions_header_successful">Éxito</string>
+    <string name="refreshed_sessions_description_successful">Las sesiones se actualizaron con éxito.</string>
+    <string name="refreshed_sessions_header_error">Algo salió mal</string>
+    <string name="refreshed_sessions_description_error">Hubo un problema al actualizar las sesiones. Comprueba tu conexión a Internet e inténtalo de nuevo.</string>
+    <string name="refreshed_sessions_retry">Intentar otra vez</string>
+    <string name="airbeam_sync_select_device_header">Seleccione el dispositivo que desea sincronizar</string>
+    <string name="airbeam_syncing_header">Sincronización</string>
+    <string name="airbeam_syncing_description">Mantenga su AirBeam cerca de su Android. Conecte su AirBeam para acelerar la sincronización.</string>
+    <string name="airbeam_syncing_finalizing">Finalizando...</string>
+    <string name="airbeam_syncing_finished_header">Sincronización completa</string>
+    <string name="airbeam_syncing_finished_description">Los datos de su AirBeam3 se sincronizaron correctamente con la aplicación. Se borró la tarjeta SD.</string>
+    <string name="sync_error_header">Algo salió mal</string>
+    <string name="sync_unknown_error">Ocurrió un error inesperado. Póngase en contacto con el soporte técnico.</string>
+    <string name="sync_unavailable_dialog_header">Sincronización de tarjeta SD no disponible</string>
+    <string name="sync_unavailable_dialog_description">Para usar AirBeam3 en modo independiente y sincronizar la tarjeta SD, se requiere Android 8 o superior + Bluetooth 5</string>
+    <string name="sync_unavailable_dialog_continue_button">Continuar</string>
+
+    <!-- My account -->
+    <string name="my_account_sign_out">Cerrar sesión</string>
+    <string name="my_account_info">Estás conectado como \n%1$s</string>
+
+    <!--  Sensor services -->
+    <string name="service_notification_title">AirCasting está grabando una sesión</string>
+    <string name="mic_service_notification_message">El micrófono está grabando y los servicios de ubicación están activos</string>
+    <string name="ab_service_notification_message">AirBeam está grabando y los servicios de ubicación están activos</string>
+    <string name="ab_sync_service_notification_message">AirBeam está sincronizando datos y los servicios de ubicación están activos</string>
+
+    <!-- Share session -->
+    <string name="share_file">Compartir archivo</string>
+    <string name="share_session">Compartir sesión</string>
+    <string name="select_a_stream_to_share">Seleccione transmisiones para compartir</string>
+    <string name="share_link">Compartir enlace</string>
+    <string name="sensor_param">sensor_name</string>
+    <string name="or_email_a_csv_file_with_your_session_data">O envíe por correo electrónico un archivo csv con los datos de su sesión</string>
+    <string name="share_text">Ver mi sesión de AirCasting: \n</string>
+    <string name="exported_session_service_success">Las sesiones exportadas se enviarán por correo electrónico en cuestión de minutos. El correo electrónico puede terminar en su carpeta de correo no deseado.</string>
+    <string name="session_upload_pending">Carga de sesión pendiente: espere un par de minutos y vuelva a intentarlo.</string>
+    <string name="share_session_email_hint">Correo electrónico</string>
+    <string name="generate_csv_file_without_share_link">Envíe por correo electrónico un archivo csv con los datos de su sesión</string>
+
+    <!-- Microphone settings -->
+    <string name="microphone_settings_title">Calibración del micrófono del teléfono</string>
+    <string name="microphone_settings_description">Ajuste hasta que las medidas en la aplicación sean iguales a su sonómetro de referencia.</string>
+    <string name="microphone_settings">Configuración de micrófono</string>
+
+
+    <string name="reset_email_sent">Se ha enviado un correo electrónico con más instrucciones.</string>
+    <string name="unknown_error">Error desconocido</string>
+    <string name="fixed_session_no_internet_connection_header">Sin conexión a Internet</string>
+    <string name="fixed_session_no_internet_connection">Para iniciar una sesión fija, conecta tu Android a internet.</string>
+    <string name="provided_email_is_not_correct">El correo electrónico proporcionado no es correcto</string>
+
+    <!-- Did you know box -->
+    <string name="did_you_know">¿Sabías?</string>
+    <string name="did_you_know_box_tip_1">AirBeam3 es resistente al clima. Para controlar la calidad del aire exterior todos los días a todas horas, cuelgue uno fuera de su casa y grabe una sesión fija.</string>
+
+    <string name="bluetooth_failed_connection_alert_header">La conexión AirBeam falló.</string>
+    <string name="bluetooth_failed_connection_alert_description">La conexión AirBeam falló. \nInténtalo de nuevo.</string>
+    <string name="you_cant_start_2_microphone_sessions_at_once">Ya se está grabando una sesión de micrófono del teléfono y se muestra en la pestaña activa móvil</string>
+
+    <!-- Location disclosure -->
+    <string name="use_your_location">Usar tu ubicación</string>
+    <string name="when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements">Al grabar una sesión móvil, AirCasting rastreará su ubicación incluso cuando la aplicación esté cerrada o no esté en uso. Permita que AirCasting utilice su ubicación todo el tiempo para mapear las medidas de el dispositivo móvil/cellular en uso</string>
+    <string name="okay">Aprobar</string>
+
+    <!-- Notes -->
+    <string name="add_note">Agrega una nota</string>
+    <string name="add_a_note">Agrega una nota</string>
+    <string name="note">Nota</string>
+    <string name="tap_to_add_picture">Toca para agregar una imagen</string>
+    <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">una nota tendrá una marca de tiempo y se mostrará en el mapa de AirCasting</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_page1_header">AirCasting</string>
+    <string name="onboarding_page1_description">Registre y mapee mediciones de los dispositivos de monitoreo ambiental y de salud</string>
+    <string name="get_started">Empezar</string>
+    <string name="onboarding_page2_header">¿Cómo está el aire cerca de ti?</string>
+    <string name="onboarding_page2_description">Encuentre y siga un monitor de calidad del aire fijo cerca de usted y sepa qué tan limpio o contaminado está su aire en este momento.</string>
+    <string name="continue_button_onboarding">Continuar</string>
+    <string name="onboarding_page3_header">Mida y mapee contaminacion del aire</string>
+    <string name="onboarding_page3_description">Conecte AirBeam para medir la calidad del aire, la humedad y la temperatura.</string>
+    <string name="learn_more_button_onboarding">Aprende más</string>
+    <string name="onboarding_bottomsheet_page3_header">¿Cómo funciona AirBeam?</string>
+    <string name="onboarding_bottomsheet_page3_description1">En modo móvil, The AirBeam captura exposiciones personales.</string>
+    <string name="onboarding_bottomsheet_page3_description2">En modo fijo, se puede instalar en interiores o exteriores para controlar los niveles de contaminación en su hogar, oficina, patio trasero o vecindario todos los días a todas horas</string>
+    <string name="onboarding_page4_header">Tu privacidad</string>
+    <string name="onboarding_page4_description">Revisa nuestro compromiso de preservar tu privacidad y acepta nuestra política de privacidad</string>
+    <string name="accept_button_onboarding">Acceptar</string>
+
+</resources>
