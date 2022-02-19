@@ -41,7 +41,7 @@ class MainActivity: BaseActivity() {
             .appComponent.inject(this)
 
         // subscribing to custom uncaught exception handler to handle crash
-        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings));
+        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings))
 
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
