@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.new_session
+package pl.llp.aircasting.screens.login
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +9,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.activity_login.view.*
+import pl.llp.aircasting.screens.login.LoginViewMvc
 
 class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {
     constructor(
