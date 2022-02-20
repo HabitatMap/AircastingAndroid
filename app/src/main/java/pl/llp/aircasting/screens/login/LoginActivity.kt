@@ -8,8 +8,6 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
-import pl.llp.aircasting.screens.new_session.LoginController
-import pl.llp.aircasting.screens.new_session.LoginViewMvcImpl
 import javax.inject.Inject
 
 class LoginActivity : BaseActivity() {
