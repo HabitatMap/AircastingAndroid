@@ -197,12 +197,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_loader"
-            android:tint="@color/aircasting_blue_400"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_8"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
-            app:layout_constraintBottom_toTopOf="@+id/continue_button" />
+            app:layout_constraintBottom_toTopOf="@+id/continue_button"
+            app:tint="@color/aircasting_blue_400" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/networks_list"

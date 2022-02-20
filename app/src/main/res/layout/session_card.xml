@@ -35,10 +35,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_more_horizontal"
-            android:tint="@color/aircasting_grey_700"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/session_date"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/aircasting_grey_700" />
 
         <TextView
             android:id="@+id/session_name"
@@ -62,10 +62,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_chevron_down"
-            android:tint="@color/aircasting_dark_blue"
             app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:layout_constraintStart_toEndOf="@+id/session_name"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/aircasting_dark_blue" />
 
         <ImageView
             android:id="@+id/collapse_session_button"
@@ -75,11 +75,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_chevron_up"
-            android:tint="@color/aircasting_dark_blue"
             android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:layout_constraintStart_toEndOf="@+id/session_name"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/aircasting_dark_blue" />
 
         <ImageView
             android:id="@+id/reorder_session_button"
@@ -89,11 +89,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_draggable_icon"
-            android:tint="@color/aircasting_dark_blue"
             android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:layout_constraintStart_toEndOf="@+id/session_name"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/aircasting_dark_blue" />
 
         <TextView
             android:id="@+id/session_info"
@@ -138,11 +138,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_loader"
-            android:tint="@color/aircasting_blue_400"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_8"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/session_measurements_description" />
+            app:layout_constraintTop_toBottomOf="@+id/session_measurements_description"
+            app:tint="@color/aircasting_blue_400" />
 
         <include
             android:id="@+id/expanded_session_view"
