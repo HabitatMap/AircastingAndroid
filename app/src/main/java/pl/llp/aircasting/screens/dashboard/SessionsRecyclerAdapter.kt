@@ -1,6 +1,5 @@
 package pl.llp.aircasting.screens.dashboard
 
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
-
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,

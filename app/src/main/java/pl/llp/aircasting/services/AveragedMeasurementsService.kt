@@ -1,6 +1,5 @@
 package pl.llp.aircasting.services
 
-import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
