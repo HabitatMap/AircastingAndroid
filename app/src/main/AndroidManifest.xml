@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="pl.llp.aircasting.screens.new_session.LoginActivity"
+            android:name="pl.llp.aircasting.screens.login.LoginActivity"
             android:screenOrientation="portrait"
             android:noHistory="true"
             android:excludeFromRecents="true">
