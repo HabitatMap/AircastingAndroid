@@ -59,7 +59,7 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            FOLLOWING_TAB_INDEX -> "Following"
+            FOLLOWING_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_following)
             MOBILE_ACTIVE_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_mobile_active)
             MOBILE_DORMANT_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_mobile_dormant)
             FIXED_TAB_INDEX -> mContext.getString(R.string.dashboard_tabs_fixed)

@@ -40,7 +40,7 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:textColor="@color/aircasting_green"
-        android:textSize="@dimen/text_size_xxl"
+        android:textSize="@dimen/text_size_xl"
         style="@style/TextAppearance.Aircasting.OnboardingMapAndMeasure.Headline1"
         app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_image"
         app:layout_constraintStart_toStartOf="parent"

@@ -4,10 +4,6 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Mohsen/Desktop/Android/AircastingAndroid/app/src/main/res/layout/fragment_settings.xml" value="0.20555555555555555" />
-        <entry key="app/src/main/res/layout/measurement_table_container_layout.xml" value="0.2128623188405797" />
-        <entry key="app/src/main/res/layout/measurement_value.xml" value="0.2128623188405797" />
-        <entry key="app/src/main/res/layout/measurements_table.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/session_card.xml" value="0.2128623188405797" />
       </map>
     </option>
   </component>

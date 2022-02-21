@@ -41,7 +41,7 @@ class MainActivity: BaseActivity() {
             .appComponent.inject(this)
 
         // subscribing to custom uncaught exception handler to handle crash
-        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings));
+        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings))
 
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
@@ -83,7 +83,7 @@ class MainActivity: BaseActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and I want it to behave same as "Finished" button in Reordering mode
+        AppBar.onFinishedReorderingSessionsButtonClicked() // pressing back button on MainActivity is possible only on ReorderingDashboardFragment and we want it to behave same as "Finished" button in Reordering mode
     }
 
 }
