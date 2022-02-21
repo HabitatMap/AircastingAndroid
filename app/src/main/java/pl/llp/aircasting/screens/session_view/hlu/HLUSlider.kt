@@ -74,6 +74,8 @@ class HLUSlider {
         bindSensorThreshold(sensorThreshold)
     }
 
+    // TODO: slider threshold values are set
+    // Probably a place to change values from fahrenheit to celsius
     private fun valuesFromThreshold(sensorThreshold: SensorThreshold): List<Float> {
         return arrayListOf(
             sensorThreshold.thresholdLow.toFloat(),
@@ -82,6 +84,7 @@ class HLUSlider {
         )
     }
 
+    // Here the values can be updated by user. They are also changed on chart
     private fun updateSensorThreshold() {
         mSensorThreshold ?: return
         val values = mSlider?.values ?: return
