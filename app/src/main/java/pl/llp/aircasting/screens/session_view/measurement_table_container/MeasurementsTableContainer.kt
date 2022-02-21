@@ -197,6 +197,7 @@ abstract class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
+    // TODO this is where the value gets bound
     private fun bindMeasurement(stream: MeasurementStream) {
         val measurementValue = getMeasurementValue(stream) ?: return
 
@@ -214,6 +215,7 @@ abstract class MeasurementsTableContainer {
 
     }
 
+    // TODO this is where the value comes from
     private fun getMeasurementValue(stream: MeasurementStream): Double? {
         return if (mDisplayAvarages) {
             stream.getAvgMeasurement()
@@ -236,6 +238,7 @@ abstract class MeasurementsTableContainer {
             valueTextView.text = "-"
             circleView.visibility = View.GONE
         } else {
+            // TODO this is code for setting value in textView
             valueTextView.text = Measurement.formatValue(measurementValue)
             circleView.visibility = View.VISIBLE
             circleView.setColorFilter(color)

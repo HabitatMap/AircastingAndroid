@@ -58,11 +58,11 @@ class TemperatureConverter {
         return measurementStream
     }
 
-    private fun temperaturefromFehreinheitToCelcius(fahrenheitTemperature: Double): Double {
+    fun temperaturefromFehreinheitToCelcius(fahrenheitTemperature: Double): Double {
         return ((fahrenheitTemperature - 32) * 5) / 9
     }
 
-    private fun temperatureFromCelsiusToFehrenheit(celsiusTemperature: Double): Double {
+    fun temperatureFromCelsiusToFehrenheit(celsiusTemperature: Double): Double {
         return ((celsiusTemperature / 5) * 9) + 32
     }
 }
