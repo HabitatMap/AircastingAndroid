@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/hlu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toBottomOf="parent">
 
-    <ImageView android:id="@+id/more_button"
+    <ImageView
+        android:id="@+id/more_button"
         style="@style/Widget.AppCompat.ActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/keyline_2"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/ic_more_horizontal"
-        android:tint="@color/aircasting_grey_700"
         android:paddingStart="@dimen/keyline_4"
         android:paddingEnd="@dimen/keyline_4"
-        android:layout_marginBottom="@dimen/keyline_2"
+        android:src="@drawable/ic_more_horizontal"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/track"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/aircasting_grey_700" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/track"
@@ -30,55 +30,56 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_4"
         android:layout_marginEnd="@dimen/keyline_4"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
+
         <View
             android:id="@+id/low_segment"
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
-            android:visibility="invisible"
-            android:background="@color/session_color_indicator_low" />
+            android:background="@color/session_color_indicator_low"
+            android:visibility="invisible" />
 
         <View
             android:id="@+id/medium_segment"
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
-            android:visibility="invisible"
-            android:background="@color/session_color_indicator_medium" />
+            android:background="@color/session_color_indicator_medium"
+            android:visibility="invisible" />
 
         <View
             android:id="@+id/high_segment"
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
-            android:visibility="invisible"
-            android:background="@color/session_color_indicator_high" />
+            android:background="@color/session_color_indicator_high"
+            android:visibility="invisible" />
 
         <View
             android:id="@+id/very_high_segment"
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="0.25"
-            android:visibility="invisible"
-            android:background="@color/session_color_indicator_very_high" />
+            android:background="@color/session_color_indicator_very_high"
+            android:visibility="invisible" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
         android:id="@+id/very_low_label"
-        android:text="0"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/keyline_2"
         android:layout_marginStart="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@id/track"
+        android:layout_marginTop="@dimen/keyline_2"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/track"
+        tools:text="0" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/labels"
@@ -86,76 +87,77 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_4"
         android:layout_marginEnd="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@id/track"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/track">
 
 
         <TextView
             android:id="@+id/low_label"
-            android:text="25"
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2" />
+            android:layout_marginTop="@dimen/keyline_2"
+            android:visibility="invisible"
+            tools:text="25" />
 
         <TextView
             android:id="@+id/medium_label"
-            android:text="50"
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2" />
+            android:layout_marginTop="@dimen/keyline_2"
+            android:visibility="invisible"
+            tools:text="50" />
 
         <TextView
             android:id="@+id/high_label"
-            android:text="75"
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2" />
+            android:layout_marginTop="@dimen/keyline_2"
+            android:visibility="invisible"
+            tools:text="75" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
         android:id="@+id/very_high_label"
-        android:text="100"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_2"
         android:layout_marginEnd="@dimen/keyline_4"
-        app:layout_constraintTop_toBottomOf="@id/track"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/track"
+        tools:text="100" />
 
     <Button
         android:id="@+id/more_invisible_button"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/labels"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/transparent"
         android:clickable="true"
-        android:enabled="true"/>
+        android:enabled="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/labels" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/slider"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:trackColorActive="@color/transparent"
-        app:trackColorInactive="@color/transparent"
         android:layout_marginStart="@dimen/keyline_4"
         android:layout_marginEnd="@dimen/keyline_4"
-        app:thumbElevation="3dp"
-        app:thumbColor="@color/aircasting_white"
+        android:visibility="invisible"
         app:labelBehavior="gone"
-        app:thumbRadius="@dimen/hlu_slider_thumb_radius"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:thumbColor="@color/aircasting_white"
+        app:thumbElevation="3dp"
+        app:thumbRadius="@dimen/hlu_slider_thumb_radius"
+        app:trackColorActive="@color/transparent"
+        app:trackColorInactive="@color/transparent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
