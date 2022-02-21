@@ -3,7 +3,7 @@ package pl.llp.aircasting.lib
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 
-class TemperatureConverter {
+class TemperatureConverter private constructor(settings: Settings) {
     companion object {
 
         private var singleton: TemperatureConverter? = null
@@ -18,11 +18,7 @@ class TemperatureConverter {
 
     }
 
-    private var mSettings: Settings? = null
-
-    private constructor(settings: Settings) {
-        this.mSettings = settings
-    }
+    private var mSettings: Settings? = settings
 
     fun convertStream(stream: MeasurementStream): MeasurementStream {
         var measurementStream: MeasurementStream = stream
@@ -43,7 +39,7 @@ class TemperatureConverter {
                 measurementStream.deleted,
                 stream.measurements.map { measurement ->
                     Measurement(
-                        temperaturefromFehreinheitToCelcius(measurement.value),
+                        temperatureFromFahrenheitToCelsius(measurement.value),
                         measurement.time,
                         measurement.latitude,
                         measurement.longitude,
@@ -58,11 +54,4 @@ class TemperatureConverter {
         return measurementStream
     }
 
-    fun temperaturefromFehreinheitToCelcius(fahrenheitTemperature: Double): Double {
-        return ((fahrenheitTemperature - 32) * 5) / 9
-    }
-
-    fun temperatureFromCelsiusToFehrenheit(celsiusTemperature: Double): Double {
-        return ((celsiusTemperature / 5) * 9) + 32
-    }
 }

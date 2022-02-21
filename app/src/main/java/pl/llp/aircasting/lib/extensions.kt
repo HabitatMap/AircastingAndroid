@@ -14,3 +14,11 @@ fun Context.areLocationServicesOn(): Boolean {
     val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
     return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
+
+fun temperatureFromFahrenheitToCelsius(fahrenheitTemperature: Double): Double {
+    return ((fahrenheitTemperature - 32) * 5) / 9
+}
+
+fun temperatureFromFahrenheitToCelsius(fahrenheitTemperature: Float): Float {
+    return ((fahrenheitTemperature - 32) * 5) / 9
+}
