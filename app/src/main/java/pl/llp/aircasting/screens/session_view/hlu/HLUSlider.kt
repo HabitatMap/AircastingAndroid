@@ -74,8 +74,6 @@ class HLUSlider {
         bindSensorThreshold(sensorThreshold)
     }
 
-    // TODO: slider threshold values are set
-    // Probably a place to change values from fahrenheit to celsius
     private fun valuesFromThreshold(sensorThreshold: SensorThreshold): List<Float> {
         return arrayListOf(
             sensorThreshold.thresholdLow.toFloat(),
@@ -99,13 +97,12 @@ class HLUSlider {
         mOnThresholdChanged.invoke(mSensorThreshold!!)
     }
 
-    inner class SegmentProperty {
+    inner class SegmentProperty(adjacentProperty: SegmentProperty?, aValue: Float) {
         val xPosition: Float
         val width: Int
-        val value: Float
+        val value: Float = aValue
 
-        constructor(adjacentProperty: SegmentProperty?, aValue: Float) {
-            value = aValue
+        init {
             width = calculateWidth(adjacentProperty, value)
             xPosition = calculateXPosition(adjacentProperty)
         }
@@ -141,6 +138,12 @@ class HLUSlider {
         mSlider?.visibility = View.VISIBLE
     }
 
+
+    /*
+    This is the function for drawing the slider and setting values
+    from threshold_very_low to threshold_very_high.
+    */
+
     private fun draw() {
         mSensorThreshold ?: return
         val values = mSlider?.values ?: return
@@ -162,7 +165,7 @@ class HLUSlider {
     }
 
     private fun updateSegmentSize(segment: View?, width: Int) {
-        var params = LinearLayoutCompat.LayoutParams(segment?.layoutParams)
+        val params = LinearLayoutCompat.LayoutParams(segment?.layoutParams)
         params.width = width
         segment?.layoutParams = params
     }
