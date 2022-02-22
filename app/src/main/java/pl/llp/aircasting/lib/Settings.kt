@@ -89,15 +89,18 @@ open class Settings(private val mApplication: Application) {
         return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)
     }
 
-    fun getIsDeleteSessionInProgress(): Boolean? {
-        return getBooleanFromSettings(DELETE_SESSION_IN_PROGERSS_KEY, DEFAULT_DELETE_SESSION_IN_PROGRESS)
+    fun getIsDeleteSessionInProgress(): Boolean {
+        return getBooleanFromSettings(
+            DELETE_SESSION_IN_PROGERSS_KEY,
+            DEFAULT_DELETE_SESSION_IN_PROGRESS
+        )
     }
 
     fun isKeepScreenOnEnabled(): Boolean {
         return getBooleanFromSettings(KEEP_SCREEN_ON_KEY, DEFAULT_KEEP_SCREEN_ON)
     }
 
-    fun getAreThereSessionsToRemove(): Boolean? {
+    fun getAreThereSessionsToRemove(): Boolean {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
     }
 
@@ -115,7 +118,7 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(USE_CELSIUS_SCALE_KEY, enabled)
     }
 
-    fun toggleMapSettingsEnabled(){
+    fun toggleMapSettingsEnabled() {
         val enabled = !areMapsDisabled()
         saveToSettings(MAPS_DISABLED_KEY, enabled)
     }
@@ -138,7 +141,7 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(ONBOARDING_DISPLAYED_KEY, false)
     }
 
-    fun microphoneSettingsChanged(calibration: Int){
+    fun microphoneSettingsChanged(calibration: Int) {
         saveToSettings(CALIBRATION_KEY, calibration)
     }
 
@@ -182,7 +185,7 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() - 1)
     }
 
-    open fun logout(){
+    open fun logout() {
         deleteFromSettings()
     }
 
@@ -201,22 +204,22 @@ open class Settings(private val mApplication: Application) {
     protected open fun saveToSettings(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
-        editor.commit()
+        editor.apply()
     }
 
     protected open fun saveToSettings(key: String, value: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, value)
-        editor.commit()
+        editor.apply()
     }
 
-    protected open fun saveToSettings(key: String, value: Int){
+    protected open fun saveToSettings(key: String, value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
-        editor.commit()
+        editor.apply()
     }
 
-    private fun deleteFromSettings(){
+    private fun deleteFromSettings() {
         val keys = sharedPreferences.all.keys
         val editor = sharedPreferences.edit()
         for (key in keys) {
