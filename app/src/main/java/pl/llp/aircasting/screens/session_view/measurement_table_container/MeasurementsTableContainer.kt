@@ -199,7 +199,11 @@ abstract class MeasurementsTableContainer {
 
     // TODO: this is where the value gets bound
     private fun bindMeasurement(stream: MeasurementStream) {
-        val measurementValue = getMeasurementValue(stream) ?: return
+        var measurementValue = getMeasurementValue(stream) ?: return
+
+        if (stream.measurementType == "Temperature") {
+            measurementValue = TemperatureConverter.convertIfNecessary(measurementValue)
+        }
 
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         mLastMeasurementColors[stream.sensorName] = color
@@ -215,7 +219,6 @@ abstract class MeasurementsTableContainer {
 
     }
 
-    // TODO: this is where the value comes from
     private fun getMeasurementValue(stream: MeasurementStream): Double? {
         return if (mDisplayAvarages) {
             stream.getAvgMeasurement()
@@ -238,7 +241,6 @@ abstract class MeasurementsTableContainer {
             valueTextView.text = "-"
             circleView.visibility = View.GONE
         } else {
-            // TODO: this is code for setting value in textView
             valueTextView.text = Measurement.formatValue(measurementValue)
             circleView.visibility = View.VISIBLE
             circleView.setColorFilter(color)
