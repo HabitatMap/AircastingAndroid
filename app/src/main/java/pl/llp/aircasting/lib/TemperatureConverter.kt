@@ -15,6 +15,11 @@ class TemperatureConverter private constructor(settings: Settings) {
             return singleton
         }
 
+        fun convertIfNecessary(temperature: Double): Double {
+            return if (singleton!!.mSettings!!.isCelsiusScaleEnabled())
+                temperatureFromFahrenheitToCelsius(temperature)
+            else temperature
+        }
     }
 
     private var mSettings: Settings? = settings
