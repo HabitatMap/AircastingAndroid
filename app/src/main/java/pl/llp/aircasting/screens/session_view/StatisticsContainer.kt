@@ -103,6 +103,9 @@ class StatisticsContainer {
             val sum = calculateSum(stream)
 
             avg = sum / calculateMeasurementsSize(stream)
+
+            if (stream.measurementType == "Temperature")
+                avg = TemperatureConverter.getAppropriateTemperatureValue(avg)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
