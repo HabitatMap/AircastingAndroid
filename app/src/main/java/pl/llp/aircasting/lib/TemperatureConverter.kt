@@ -16,50 +16,29 @@ class TemperatureConverter private constructor(settings: Settings) {
         }
 
         fun getAppropriateTemperatureValue(temperature: Double): Double {
-            return if (singleton!!.mSettings!!.isCelsiusScaleEnabled()) {
-                temperatureFromFahrenheitToCelsius(temperature)
-            } else temperature
+            return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) temperatureFromFahrenheitToCelsius(
+                temperature
+            ) else temperature
         }
 
         fun setAppropriateDetailedType(stream: MeasurementStream) {
-            if (singleton!!.mSettings!!.isCelsiusScaleEnabled()) {
-                stream.detailedType = "C"
-            }
+            if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) stream.detailedType = "C"
+        }
+
+        fun convertText(values: Float): String {
+            val myValues: Float?
+
+            return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) {
+                myValues = temperatureFromFahrenheitToCelsius(values)
+                "%d".format(myValues.toInt())
+
+            } else "%d".format(values.toInt())
         }
     }
 
     private var mSettings: Settings? = settings
 
     fun convertStream(stream: MeasurementStream): MeasurementStream {
-        var measurementStream: MeasurementStream = stream
-
-//        if (stream.detailedType == "F" && mSettings?.isCelsiusScaleEnabled() == true) {
-//            measurementStream = MeasurementStream(
-//                measurementStream.sensorPackageName,
-//                measurementStream.sensorName,
-//                measurementStream.measurementType,
-//                measurementStream.measurementShortType,
-//                measurementStream.unitName,
-//                measurementStream.unitSymbol,
-//                measurementStream.thresholdVeryLow,
-//                measurementStream.thresholdLow,
-//                measurementStream.thresholdMedium,
-//                measurementStream.thresholdHigh,
-//                measurementStream.thresholdVeryHigh,
-//                measurementStream.deleted,
-//                stream.measurements.map { measurement ->
-//                    Measurement(
-//                        temperatureFromFahrenheitToCelsius(measurement.value),
-//                        measurement.time,
-//                        measurement.latitude,
-//                        measurement.longitude,
-//                        measurement.averagingFrequency
-//                    )
-//
-//                }
-//            )
-//            measurementStream.detailedType = "C"
-//        }
         // set back to measurementStream
         return stream
     }
