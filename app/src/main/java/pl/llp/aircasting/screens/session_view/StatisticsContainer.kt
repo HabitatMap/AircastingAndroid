@@ -121,7 +121,11 @@ class StatisticsContainer {
     private fun bindNowStatistics(stream: MeasurementStream?) {
         if (mNow == null && stream != null) {
             mNow = getNowValue(stream)
+
         }
+        if (stream?.measurementType == "Temperature")
+            mNow = mNow?.let { TemperatureConverter.getAppropriateTemperatureValue(it) }
+
         bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator, StatisticsValueBackground.RADIUS_BIG)
     }
 
