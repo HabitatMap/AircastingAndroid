@@ -25,14 +25,14 @@ class TemperatureConverter private constructor(settings: Settings) {
             if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) stream.detailedType = "C"
         }
 
-        fun convertText(values: Float): String {
+        fun convertToText(values: Float): String {
             val myValues: Float?
 
             return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) {
                 myValues = temperatureFromFahrenheitToCelsius(values)
-                "%d".format(myValues.toInt())
+                labelFormat(myValues)
 
-            } else "%d".format(values.toInt())
+            } else labelFormat(values)
         }
     }
 

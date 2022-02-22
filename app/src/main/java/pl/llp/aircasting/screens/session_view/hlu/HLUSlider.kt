@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.session_view.hlu
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.TextView
@@ -10,6 +11,7 @@ import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.labelFormat
 import pl.llp.aircasting.models.SensorThreshold
 
+@SuppressLint("RestrictedApi")
 class HLUSlider
     (
     rootView: View?,
@@ -42,7 +44,8 @@ class HLUSlider
         toLabel = rootView?.findViewById(R.id.very_high_label)
         mLabels = listOf(lowLabel, mediumLabel, highLabel)
         mSlider = rootView?.findViewById(R.id.slider)
-        mThumbRadiusInPixels = mContext.resources.getDimension(R.dimen.hlu_slider_thumb_radius).toInt()
+        mThumbRadiusInPixels =
+            mContext.resources.getDimension(R.dimen.hlu_slider_thumb_radius).toInt()
         mSlider?.addOnChangeListener { _, _, _ ->
             draw()
         }
@@ -119,7 +122,8 @@ class HLUSlider
             if (mSlider == null || mSensorThreshold == null) return 0
 
             val adjacentValue = adjacentValue(adjacentProperty)
-            val percentage = (value - adjacentValue) / (mSensorThreshold!!.to - mSensorThreshold!!.from)
+            val percentage =
+                (value - adjacentValue) / (mSensorThreshold!!.to - mSensorThreshold!!.from)
             return (percentage * mSlider.trackWidth).toInt()
         }
 
@@ -155,8 +159,8 @@ class HLUSlider
             segmentProperty
         }
 
-        fromLabel?.text = TemperatureConverter.convertText(mSensorThreshold!!.from)
-        toLabel?.text = TemperatureConverter.convertText(mSensorThreshold!!.to)
+        fromLabel?.text = TemperatureConverter.convertToText(mSensorThreshold!!.from)
+        toLabel?.text = TemperatureConverter.convertToText(mSensorThreshold!!.to)
         mLabels.forEachIndexed { index, _ ->
             updateLabel(mLabels.getOrNull(index), segmentProperties.getOrNull(index))
         }
