@@ -50,14 +50,12 @@ class StatisticsContainer {
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
-        val stream = sessionPresenter?.selectedStream?.let {
-            if (it.measurementType == "Temperature") {
-                TemperatureConverter.setAppropriateDetailedType(it)
-            }
-            TemperatureConverter.get()?.convertStream(
-                it
-            )
+        val stream = sessionPresenter?.selectedStream
+
+        if (stream?.measurementType == "Temperature") {
+            TemperatureConverter.setAppropriateDetailedType(stream)
         }
+
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()
         mVisibleTimeSpan = sessionPresenter?.visibleTimeSpan
 
@@ -72,11 +70,7 @@ class StatisticsContainer {
     }
 
     private fun bindLastMeasurement(sessionPresenter: SessionPresenter?) {
-        val stream = sessionPresenter?.selectedStream?.let {
-            TemperatureConverter.get()?.convertStream(
-                it
-            )
-        }
+        val stream = sessionPresenter?.selectedStream
 
         mNow = getNowValue(stream)
 

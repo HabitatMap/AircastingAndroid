@@ -126,8 +126,8 @@ abstract class MeasurementsTableContainer {
             if (stream.measurementType == "Temperature")
                 TemperatureConverter.setAppropriateDetailedType(stream)
 
-            TemperatureConverter.get()?.convertStream(stream)?.let { bindStream(it) }
-            TemperatureConverter.get()?.convertStream(stream)?.let { bindMeasurement(it) }
+            bindStream(stream)
+            bindMeasurement(stream)
         }
     }
 

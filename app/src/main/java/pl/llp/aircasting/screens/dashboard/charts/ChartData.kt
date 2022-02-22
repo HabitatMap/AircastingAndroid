@@ -95,9 +95,8 @@ class ChartData(
     
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
-        mSession.streamsSortedByDetailedType().forEach { stream ->
-            TemperatureConverter.get()?.convertStream(stream)?.let { streams.add(it) }
-        }
+        mSession.streamsSortedByDetailedType()
+
         return streams
     }
 

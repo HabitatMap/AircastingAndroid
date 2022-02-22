@@ -37,10 +37,4 @@ class TemperatureConverter private constructor(settings: Settings) {
     }
 
     private var mSettings: Settings? = settings
-
-    fun convertStream(stream: MeasurementStream): MeasurementStream {
-        // set back to measurementStream
-        return stream
-    }
-
 }

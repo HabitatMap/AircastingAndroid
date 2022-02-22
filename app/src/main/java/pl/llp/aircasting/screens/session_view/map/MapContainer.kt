@@ -133,11 +133,7 @@ class MapContainer: OnMapReadyCallback {
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
-        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream?.let {
-            TemperatureConverter.get()?.convertStream(
-                it
-            )
-        })
+        mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
         mNotes = mSessionPresenter?.session?.notes!!
 
         if (mSessionPresenter?.isFixed() == true) {
