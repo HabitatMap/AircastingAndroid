@@ -100,7 +100,7 @@ abstract class MeasurementsTableContainer {
             stretchTableLayout()
         }
 
-        if (session?.status == Session.Status.DISCONNECTED && session?.type == Session.Type.MOBILE) {
+        if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE) {
             mMeasurementsTable?.visibility = View.GONE
         } else {
             mMeasurementsTable?.visibility = View.VISIBLE
@@ -168,6 +168,7 @@ abstract class MeasurementsTableContainer {
         mMeasurementValues?.forEach { resetValueViewBorder(it as LinearLayout) }
     }
 
+    //TODO - setTextAppearance is deprecated
     private fun resetMeasurementHeader(headerView: View) {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
         headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeader)
@@ -184,6 +185,7 @@ abstract class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
+    //TODO - setTextAppearance is deprecated
     private fun markMeasurementHeaderAsSelected(headerTextView: TextView) {
         headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeaderSelected)
     }
@@ -253,9 +255,9 @@ abstract class MeasurementsTableContainer {
 
         val inflater: LayoutInflater = LayoutInflater.from(mContext)
         var containerLayout: LinearLayout = inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
-        containerLayout.setOnClickListener(View.OnClickListener {
+        containerLayout.setOnClickListener {
             changeSelectedStream(stream)
-        })
+        }
         containerLayout.addView(valueView)
 
         return containerLayout
