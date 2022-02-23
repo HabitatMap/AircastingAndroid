@@ -200,7 +200,7 @@ abstract class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    // TODO: this is where the value gets bound
+    // this is where the values gets bound
     private fun bindMeasurement(stream: MeasurementStream) {
         var measurementValue = getMeasurementValue(stream) ?: return
 
