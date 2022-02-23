@@ -35,10 +35,9 @@ import kotlin.collections.HashMap
  *
  */
 
-class AveragingService {
+class AveragingService private constructor(private val sessionId: Long) {
     private val LOG_TAG = "AveragingService"
 
-    private val sessionId: Long
     private var mDBSession: SessionDBObject?
 
     private val mMeasurementsRepository = MeasurementsRepository()
@@ -52,11 +51,9 @@ class AveragingService {
     private var mStreamIds: List<Long>? = null
     private var mPreviousAveragingFrequency: Int? = null
 
-    private constructor(sessionId: Long) {
-        this.sessionId = sessionId
+    init {
         this.mDBSession = mSessionsRepository.getSessionById(sessionId)
         this.mStreamIds = getStreamIds()
-
         this.mFirstThresholdTime = (mDBSession?.startTime ?: Date()).time + FIRST_TRESHOLD_TIME
         this.mSecondThresholdTime = (mDBSession?.startTime ?: Date()).time + SECOND_TRESHOLD_TIME
     }
@@ -124,7 +121,7 @@ class AveragingService {
         return mStreamIds
     }
 
-    private fun getStreamIds() : List<Long>? {
+    private fun getStreamIds() : List<Long> {
         return mMeasurementStreamsRepository.getStreamsIdsBySessionIds(listOf(sessionId))
     }
 
@@ -138,7 +135,7 @@ class AveragingService {
      * @param isFinal False by default. If true, if will delete the remaining measurements not falling into exact window
      */
     fun perform(isFinal: Boolean = false) {
-        var measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
+        val measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
 
         // When while checking we find out the threshold has changed since last time checked
         // we will 1) update session averaging frequency in DB
@@ -260,9 +257,9 @@ class AveragingService {
     }
 
     private fun averageMeasurementsInWindow(measurementsInWindow: List<MeasurementDBObject>, averagingFrequency: Int, streamId: Long) {
-        var measurementsToDeleteIds: List<Long>
+        val measurementsToDeleteIds: List<Long>
 
-        var averagedMeasurements = measurementsInWindow.toMutableList()
+        val averagedMeasurements = measurementsInWindow.toMutableList()
         val middleIndex = measurementsInWindow.size / 2
         val middle = averagedMeasurements.removeAt(middleIndex)
         val average =
@@ -288,7 +285,7 @@ class AveragingService {
         var previousWindowSize: Int? = null
         var averagingFrequency: Int? = 1
         var thresholdTime: Int? = null
-        var measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
+        val measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
 
         streamIds()?.forEach { streamId ->
             measurementsToAverage[streamId] = getPreviousMeasurementsToAverage(streamId)
