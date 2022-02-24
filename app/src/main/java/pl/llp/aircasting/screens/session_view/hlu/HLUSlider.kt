@@ -109,7 +109,7 @@ class HLUSlider
         var thresholdMedium = values.getOrNull(1)?.toInt()
         var thresholdHigh = values.getOrNull(2)?.toInt()
 
-        if (mStream != null && mStream!!.measurementType == "Temperature") {
+        if (mStream != null && mStream!!.measurementType == "Temperature" && mStream!!.detailedType == "C") {
             thresholdLow = temperatureFromCelsiusToFahrenheit(thresholdLow!!)
             thresholdMedium = temperatureFromCelsiusToFahrenheit(thresholdMedium!!)
             thresholdHigh = temperatureFromCelsiusToFahrenheit(thresholdHigh!!)
