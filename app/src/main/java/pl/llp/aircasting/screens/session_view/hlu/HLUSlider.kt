@@ -176,8 +176,8 @@ class HLUSlider
             segmentProperty
         }
 
-        fromLabel?.text = TemperatureConverter.convertToText(mSensorThreshold!!.from)
-        toLabel?.text = TemperatureConverter.convertToText(mSensorThreshold!!.to)
+        fromLabel?.text = labelFormat(mSlider.valueFrom)
+        toLabel?.text = labelFormat(mSlider.valueTo)
         mLabels.forEachIndexed { index, _ ->
             updateLabel(mLabels.getOrNull(index), segmentProperties.getOrNull(index))
         }
