@@ -9,6 +9,8 @@ import com.google.android.material.slider.RangeSlider
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.labelFormat
+import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
+import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 
@@ -29,6 +31,7 @@ class HLUSlider
     private val mSlider: RangeSlider?
     private val mThumbRadiusInPixels: Int
 
+    private var mStream: MeasurementStream? = null
     private var mSensorThreshold: SensorThreshold? = null
     private var mOnThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit = onThresholdChanged
 
@@ -64,15 +67,16 @@ class HLUSlider
     fun bindSensorThreshold(sensorThreshold: SensorThreshold?, stream: MeasurementStream? = null) {
         sensorThreshold ?: return
 
+        mStream = stream
         mSensorThreshold = sensorThreshold
 
-        setValuesForSliderBasedOnSelectedMeasurementStream(stream)
+        setValuesForSliderBasedOnSelectedMeasurementStream()
 
         draw()
     }
 
-    private fun setValuesForSliderBasedOnSelectedMeasurementStream(stream: MeasurementStream?) {
-        if (stream != null && stream.measurementType == "Temperature") {
+    private fun setValuesForSliderBasedOnSelectedMeasurementStream() {
+        if (mStream != null && mStream!!.measurementType == "Temperature") {
             // TODO: Values from AirBeam2 and 3 are coming from DB and they are reversed for VeryLow and Low -> error
             mSlider?.valueFrom = TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.from)
             mSlider?.valueTo = TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.to)
@@ -107,9 +111,7 @@ class HLUSlider
 
         val thresholdLow = values.getOrNull(0)?.toInt()
         thresholdLow?.let { mSensorThreshold!!.thresholdLow = thresholdLow }
-        val thresholdMedium = values.getOrNull(1)?.toInt()
         thresholdMedium?.let { mSensorThreshold!!.thresholdMedium = thresholdMedium }
-        val thresholdHigh = values.getOrNull(2)?.toInt()
         thresholdHigh?.let { mSensorThreshold!!.thresholdHigh = thresholdHigh }
 
         mOnThresholdChanged.invoke(mSensorThreshold!!)
