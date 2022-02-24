@@ -10,7 +10,6 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.labelFormat
 import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
-import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 
@@ -77,22 +76,23 @@ class HLUSlider
 
     private fun setValuesForSliderBasedOnSelectedMeasurementStream() {
         if (mStream != null && mStream!!.measurementType == "Temperature") {
-            mSlider?.valueFrom = TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.from)
-            mSlider?.valueTo = TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.to)
+            mSlider?.valueFrom =
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.from)
+            mSlider?.valueTo =
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.to)
 
             mSlider?.values = arrayListOf(
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdLow.toFloat()),
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdMedium.toFloat()),
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdHigh.toFloat())
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdLow!!.toFloat()),
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdMedium!!.toFloat()),
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdHigh!!.toFloat())
             )
-        }
-        else {
+        } else {
             mSlider?.valueFrom = mSensorThreshold!!.from
             mSlider?.valueTo = mSensorThreshold!!.to
             mSlider?.values = arrayListOf(
-                mSensorThreshold!!.thresholdLow.toFloat(),
-                mSensorThreshold!!.thresholdMedium.toFloat(),
-                mSensorThreshold!!.thresholdHigh.toFloat()
+                mSensorThreshold?.thresholdLow?.toFloat(),
+                mSensorThreshold?.thresholdMedium?.toFloat(),
+                mSensorThreshold?.thresholdHigh?.toFloat()
             )
         }
     }
@@ -109,15 +109,15 @@ class HLUSlider
         var thresholdMedium = values.getOrNull(1)?.toInt()
         var thresholdHigh = values.getOrNull(2)?.toInt()
 
-        if (mStream != null && mStream!!.measurementType == "Temperature" && mStream!!.detailedType == "C") {
+        if (mStream != null && mStream?.measurementType == "Temperature" && mStream?.detailedType == "C") {
             thresholdLow = temperatureFromCelsiusToFahrenheit(thresholdLow!!)
             thresholdMedium = temperatureFromCelsiusToFahrenheit(thresholdMedium!!)
             thresholdHigh = temperatureFromCelsiusToFahrenheit(thresholdHigh!!)
         }
 
-        thresholdLow?.let { mSensorThreshold!!.thresholdLow = thresholdLow }
-        thresholdMedium?.let { mSensorThreshold!!.thresholdMedium = thresholdMedium }
-        thresholdHigh?.let { mSensorThreshold!!.thresholdHigh = thresholdHigh }
+        thresholdLow?.let { mSensorThreshold?.thresholdLow = thresholdLow }
+        thresholdMedium?.let { mSensorThreshold?.thresholdMedium = thresholdMedium }
+        thresholdHigh?.let { mSensorThreshold?.thresholdHigh = thresholdHigh }
 
         mOnThresholdChanged.invoke(mSensorThreshold!!)
     }
@@ -163,7 +163,6 @@ class HLUSlider
         toLabel?.visibility = View.VISIBLE
         mSlider?.visibility = View.VISIBLE
     }
-
 
     /*
     This is the function for drawing the slider and setting values
