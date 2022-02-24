@@ -12,6 +12,7 @@ import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
 import java.util.*
 
 class StatisticsContainer {
@@ -141,9 +142,12 @@ class StatisticsContainer {
     }
 
     private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?, radius: Float = StatisticsValueBackground.CORNER_RADIUS) {
+        var mValue = value
         valueView?.text = Measurement.formatValue(value)
-
-        val color = MeasurementColor.forMap(mContext, value, mSensorThreshold)
+        if (stream?.measurementType == "Temperature" && stream.detailedType == "C") {
+            mValue = temperatureFromCelsiusToFahrenheit(value!!)
+        }
+        val color = MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color, radius)
         circleIndicator?.setColorFilter(color)
     }
