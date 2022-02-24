@@ -77,12 +77,8 @@ class HLUSlider
 
     private fun setValuesForSliderBasedOnSelectedMeasurementStream() {
         if (mStream != null && mStream!!.measurementType == "Temperature") {
-            // TODO: Values from AirBeam2 and 3 are coming from DB and they are reversed for VeryLow and Low -> error
             mSlider?.valueFrom = TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.from)
             mSlider?.valueTo = TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.to)
-
-//            mSlider?.valueFrom = TemperatureConverter.getAppropriateTemperatureValue(9f)
-//            mSlider?.valueTo = TemperatureConverter.getAppropriateTemperatureValue(150f)
 
             mSlider?.values = arrayListOf(
                 TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdLow.toFloat()),
