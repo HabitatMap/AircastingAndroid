@@ -106,7 +106,7 @@ abstract class SessionDetailsViewMvcImpl(
             )
 
             bindStatisticsContainer()
-            mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold())
+            mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold(), sessionPresenter?.selectedStream)
             mSessionMeasurementsDescription?.visibility = View.VISIBLE
         }
     }
