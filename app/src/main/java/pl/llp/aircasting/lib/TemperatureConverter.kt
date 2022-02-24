@@ -30,16 +30,6 @@ class TemperatureConverter private constructor(settings: Settings) {
         fun setAppropriateDetailedType(stream: MeasurementStream) {
             if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) stream.detailedType = "C"
         }
-
-        fun convertToText(values: Float): String {
-            val myValues: Float?
-
-            return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) {
-                myValues = temperatureFromFahrenheitToCelsius(values)
-                labelFormat(myValues)
-
-            } else labelFormat(values)
-        }
     }
 
     private var mSettings: Settings? = settings
