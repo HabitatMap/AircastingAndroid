@@ -65,10 +65,26 @@ class HLUSlider
         sensorThreshold ?: return
 
         mSensorThreshold = sensorThreshold
-        mSlider?.valueFrom = sensorThreshold.from
-        mSlider?.valueTo = sensorThreshold.to
-        mSlider?.values = valuesFromThreshold(sensorThreshold)
 
+        if (stream != null && stream.measurementType == "Temperature") {
+            // TODO: Values from AirBeam2 and 3 are coming from DB and they are reversed for VeryLow and Low -> error
+            mSlider?.valueFrom = TemperatureConverter.getAppropriateTemperatureValue(9f)
+            mSlider?.valueTo = TemperatureConverter.getAppropriateTemperatureValue(150f)
+            mSlider?.values = arrayListOf(
+                TemperatureConverter.getAppropriateTemperatureValue(sensorThreshold.thresholdLow.toFloat()),
+                TemperatureConverter.getAppropriateTemperatureValue(sensorThreshold.thresholdMedium.toFloat()),
+                TemperatureConverter.getAppropriateTemperatureValue(sensorThreshold.thresholdHigh.toFloat())
+            )
+        }
+        else {
+            mSlider?.valueFrom = sensorThreshold.from
+            mSlider?.valueTo = sensorThreshold.to
+            mSlider?.values = arrayListOf(
+                sensorThreshold.thresholdLow.toFloat(),
+                sensorThreshold.thresholdMedium.toFloat(),
+                sensorThreshold.thresholdHigh.toFloat()
+            )
+        }
         draw()
     }
 
