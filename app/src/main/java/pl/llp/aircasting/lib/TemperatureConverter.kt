@@ -21,6 +21,12 @@ class TemperatureConverter private constructor(settings: Settings) {
             ) else temperature
         }
 
+        fun getAppropriateTemperatureValue(temperature: Float): Float {
+            return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) temperatureFromFahrenheitToCelsius(
+                temperature
+            ) else temperature
+        }
+
         fun setAppropriateDetailedType(stream: MeasurementStream) {
             if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) stream.detailedType = "C"
         }
