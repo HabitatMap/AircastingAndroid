@@ -66,41 +66,37 @@ class HLUSlider
 
         mSensorThreshold = sensorThreshold
 
+        setValuesForSliderBasedOnSelectedMeasurementStream(stream)
+
+        draw()
+    }
+
+    private fun setValuesForSliderBasedOnSelectedMeasurementStream(stream: MeasurementStream?) {
         if (stream != null && stream.measurementType == "Temperature") {
             // TODO: Values from AirBeam2 and 3 are coming from DB and they are reversed for VeryLow and Low -> error
             mSlider?.valueFrom = TemperatureConverter.getAppropriateTemperatureValue(9f)
             mSlider?.valueTo = TemperatureConverter.getAppropriateTemperatureValue(150f)
             mSlider?.values = arrayListOf(
-                TemperatureConverter.getAppropriateTemperatureValue(sensorThreshold.thresholdLow.toFloat()),
-                TemperatureConverter.getAppropriateTemperatureValue(sensorThreshold.thresholdMedium.toFloat()),
-                TemperatureConverter.getAppropriateTemperatureValue(sensorThreshold.thresholdHigh.toFloat())
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdLow.toFloat()),
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdMedium.toFloat()),
+                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.thresholdHigh.toFloat())
             )
         }
         else {
-            mSlider?.valueFrom = sensorThreshold.from
-            mSlider?.valueTo = sensorThreshold.to
+            mSlider?.valueFrom = mSensorThreshold!!.from
+            mSlider?.valueTo = mSensorThreshold!!.to
             mSlider?.values = arrayListOf(
-                sensorThreshold.thresholdLow.toFloat(),
-                sensorThreshold.thresholdMedium.toFloat(),
-                sensorThreshold.thresholdHigh.toFloat()
+                mSensorThreshold!!.thresholdLow.toFloat(),
+                mSensorThreshold!!.thresholdMedium.toFloat(),
+                mSensorThreshold!!.thresholdHigh.toFloat()
             )
         }
-        draw()
     }
 
     fun refresh(sensorThreshold: SensorThreshold?) {
         bindSensorThreshold(sensorThreshold)
     }
 
-    private fun valuesFromThreshold(sensorThreshold: SensorThreshold): List<Float> {
-        return arrayListOf(
-            sensorThreshold.thresholdLow.toFloat(),
-            sensorThreshold.thresholdMedium.toFloat(),
-            sensorThreshold.thresholdHigh.toFloat()
-        )
-    }
-
-    // Here the values can be updated by user. They are also changed on chart
     private fun updateSensorThreshold() {
         mSensorThreshold ?: return
         val values = mSlider?.values ?: return
