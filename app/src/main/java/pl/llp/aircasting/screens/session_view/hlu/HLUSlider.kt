@@ -109,7 +109,16 @@ class HLUSlider
         mSensorThreshold ?: return
         val values = mSlider?.values ?: return
 
-        val thresholdLow = values.getOrNull(0)?.toInt()
+        var thresholdLow = values.getOrNull(0)?.toInt()
+        var thresholdMedium = values.getOrNull(1)?.toInt()
+        var thresholdHigh = values.getOrNull(2)?.toInt()
+
+        if (mStream != null && mStream!!.measurementType == "Temperature") {
+            thresholdLow = temperatureFromCelsiusToFahrenheit(thresholdLow!!)
+            thresholdMedium = temperatureFromCelsiusToFahrenheit(thresholdMedium!!)
+            thresholdHigh = temperatureFromCelsiusToFahrenheit(thresholdHigh!!)
+        }
+
         thresholdLow?.let { mSensorThreshold!!.thresholdLow = thresholdLow }
         thresholdMedium?.let { mSensorThreshold!!.thresholdMedium = thresholdMedium }
         thresholdHigh?.let { mSensorThreshold!!.thresholdHigh = thresholdHigh }
