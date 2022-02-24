@@ -9,6 +9,7 @@ import com.google.android.material.slider.RangeSlider
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.labelFormat
+import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 
 @SuppressLint("RestrictedApi")
@@ -60,7 +61,7 @@ class HLUSlider
         })
     }
 
-    fun bindSensorThreshold(sensorThreshold: SensorThreshold?) {
+    fun bindSensorThreshold(sensorThreshold: SensorThreshold?, stream: MeasurementStream? = null) {
         sensorThreshold ?: return
 
         mSensorThreshold = sensorThreshold
