@@ -202,16 +202,15 @@ abstract class MeasurementsTableContainer {
         } catch(e: IndexOutOfBoundsException) {}
     }
 
-    // this is where the values gets bound
     private fun bindMeasurement(stream: MeasurementStream) {
         var measurementValue = getMeasurementValue(stream) ?: return
+
+        val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
+        mLastMeasurementColors[stream.sensorName] = color
 
         if (stream.measurementType == "Temperature") {
             measurementValue = TemperatureConverter.getAppropriateTemperatureValue(measurementValue)
         }
-
-        val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
-        mLastMeasurementColors[stream.sensorName] = color
 
         val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)

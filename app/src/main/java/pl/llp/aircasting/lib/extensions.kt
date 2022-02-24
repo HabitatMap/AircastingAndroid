@@ -23,6 +23,14 @@ fun temperatureFromFahrenheitToCelsius(fahrenheitTemperature: Float): Float {
     return ((fahrenheitTemperature - 32) * 5) / 9
 }
 
+fun temperatureFromCelsiusToFahrenheit(fahrenheitTemperature: Int): Int {
+    return fahrenheitTemperature * 9 / 5 + 32
+}
+
+fun temperatureFromCelsiusToFahrenheit(fahrenheitTemperature: Double): Double {
+    return fahrenheitTemperature * 9 / 5 + 32
+}
+
 fun labelFormat(value: Float?): String {
     return "%d".format(value?.toInt())
 }
