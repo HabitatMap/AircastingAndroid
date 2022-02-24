@@ -140,12 +140,12 @@ class HLUSlider
 
             val adjacentValue = adjacentValue(adjacentProperty)
             val percentage =
-                (value - adjacentValue) / (mSensorThreshold!!.to - mSensorThreshold!!.from)
+                (value - adjacentValue) / (mSlider.valueTo - mSlider.valueFrom)
             return (percentage * mSlider.trackWidth).toInt()
         }
 
         private fun adjacentValue(adjacentProperty: SegmentProperty?): Float {
-            return adjacentProperty?.value ?: mSensorThreshold?.from ?: 0f
+            return adjacentProperty?.value ?: mSlider?.valueFrom ?: 0f
         }
     }
 
