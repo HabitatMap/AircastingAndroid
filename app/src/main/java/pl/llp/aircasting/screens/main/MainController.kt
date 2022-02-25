@@ -22,7 +22,9 @@ import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.NavigationController
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.DashboardFragment
+import pl.llp.aircasting.screens.new_session.NewSessionActivity
 
 class MainController(
     private val rootActivity: AppCompatActivity,
@@ -42,6 +44,9 @@ class MainController(
         } else {
             setupDashboard()
         }
+
+        NewSessionActivity.register(rootActivity, Session.Type.FIXED)
+        NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
 
         mSessionManager?.onStart()
     }
