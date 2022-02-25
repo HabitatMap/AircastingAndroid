@@ -95,8 +95,9 @@ class ChartData(
     
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
-        mSession.streamsSortedByDetailedType()
-
+        mSession.streamsSortedByDetailedType().forEach { stream ->
+            streams.add(stream)
+        }
         return streams
     }
 
