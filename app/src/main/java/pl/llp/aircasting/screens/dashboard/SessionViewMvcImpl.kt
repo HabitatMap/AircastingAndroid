@@ -187,16 +187,16 @@ abstract class SessionViewMvcImpl<ListenerType>: BaseObservableViewMvc<ListenerT
     private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
         mSessionPresenter = sessionPresenter
         if (mSessionPresenter != null && sessionPresenter.selectedStream == null) {
-            mSessionPresenter!!.setDefaultStream()
+            mSessionPresenter?.setDefaultStream()
         }
     }
 
-    protected fun bindSessionDetails() {
+    private fun bindSessionDetails() {
         val session = mSessionPresenter?.session
 
-        mDateTextView.text = DurationStringHelper().durationString(session?.startTime!!, session?.endTime)
-        mNameTextView.text = session?.name
-        mInfoTextView.text = session?.infoString()
+        mDateTextView.text = DurationStringHelper().durationString(session?.startTime!!, session.endTime)
+        mNameTextView.text = session.name
+        mInfoTextView.text = session.infoString()
 
     }
 

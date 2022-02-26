@@ -32,14 +32,23 @@ import kotlinx.coroutines.launch
 import pl.llp.aircasting.services.AveragingService
 import java.lang.Math.abs
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 
-class GraphContainer: OnChartGestureListener {
+class GraphContainer(
+    rootView: View?,
+    context: Context,
+    defaultZoomSpan: Int?,
+    onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit,
+    getMeasurementsSample: () -> List<Measurement>,
+    notes: List<Note>?
+) : OnChartGestureListener {
     private val MOBILE_SESSION_MEASUREMENT_FREQUENCY = 1000
     private val FIXED_SESSION_MEASUREMENT_FREQUENCY = 60 * 1000
     private var mVisibleEntriesNumber: Int = 60
 
-    private var mContext: Context?
+    private var mContext: Context? = context
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private var mSessionPresenter: SessionPresenter? = null
@@ -49,27 +58,20 @@ class GraphContainer: OnChartGestureListener {
 
     private var mGraphDataGenerator: GraphDataGenerator
 
-    private val mDefaultZoomSpan: Int?
+    private val mDefaultZoomSpan: Int? = defaultZoomSpan
     private var shouldZoomToDefault = true
-    private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit
-    private var mGetMeasurementsSample: () -> List<Measurement>
+    private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit = onTimeSpanChanged
+    private var mGetMeasurementsSample: () -> List<Measurement> = getMeasurementsSample
     private var mMeasurementsSample: List<Measurement> = listOf()
-    private var mNotes: List<Note>? = listOf()
+    private var mNotes: List<Note>? = notes
 
     private var mNoteValueRanges: List<ClosedRange<Long>> = listOf() // When generating entries for graph I check which entries got their note icon, I keep here "Ranges" of values which I want to react graph click (ChartValueSelectedListener)
 
-    constructor(rootView: View?, context: Context, defaultZoomSpan: Int?, onTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit, getMeasurementsSample: () -> List<Measurement>, notes: List<Note>?) {
-        mContext = context
+    init {
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
         mToLabel = rootView?.to_label
-        mDefaultZoomSpan = defaultZoomSpan
-        mOnTimeSpanChanged = onTimeSpanChanged
-        mGetMeasurementsSample = getMeasurementsSample
-        mNotes = notes
-
         mGraphDataGenerator = GraphDataGenerator(mContext!!)
-
         hideGraph()
         setupGraph()
     }
@@ -101,7 +103,7 @@ class GraphContainer: OnChartGestureListener {
         // A "hacky" way to fix a memory leak in MPAndroidChart lib
         // https://github.com/PhilJay/MPAndroidChart/issues/2238
         // it's possible they'll fix it in the future so we must review it
-        MoveViewJob.getInstance(null, 0f, 0f, null, null);
+        MoveViewJob.getInstance(null, 0f, 0f, null, null)
         mGraph = null
     }
 
@@ -140,13 +142,13 @@ class GraphContainer: OnChartGestureListener {
         val span = last.x - first.x
         val zoomSpan: Float = mDefaultZoomSpan?.toFloat() ?: span
         val zoom = span / zoomSpan
-        val centerX = last.x - Math.min(zoomSpan, span)/2
+        val centerX = last.x - min(zoomSpan, span) /2
         val centerY = (last.y - first.y) / 2
 
         mGraph?.zoom(zoom, 1f, centerX, centerY)
-        mGraph?.moveViewToX(last.x - Math.min(zoomSpan, span))
+        mGraph?.moveViewToX(last.x - min(zoomSpan, span))
 
-        val from = Math.max(last.x - zoomSpan, first.x)
+        val from = max(last.x - zoomSpan, first.x)
         val to = last.x
         drawLabels(from, to)
 
@@ -258,18 +260,26 @@ class GraphContainer: OnChartGestureListener {
                         tempRanges.add(range)
                     }
                 }
-                if (tempRanges.size == 0) {
-                    return
-                } else if (tempRanges.size == 1) {
-                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
-                } else {
-                    // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
-                    var tempDistance = Long.MAX_VALUE
-                    for (range in tempRanges) {
-                        val rangeDistance = abs(entry?.x?.toLong()?.minus(range.start + ((range.endInclusive - range.start) / 2)) ?: Long.MAX_VALUE)
-                        if (rangeDistance < tempDistance ) {
-                            tempDistance = rangeDistance
-                            noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                when (tempRanges.size) {
+                    0 -> {
+                        return
+                    }
+                    1 -> {
+                        noteNumber = mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
+                    }
+                    else -> {
+                        // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
+                        var tempDistance = Long.MAX_VALUE
+                        for (range in tempRanges) {
+                            val rangeDistance = kotlin.math.abs(
+                                entry?.x?.toLong()
+                                    ?.minus(range.start + ((range.endInclusive - range.start) / 2))
+                                    ?: Long.MAX_VALUE
+                            )
+                            if (rangeDistance < tempDistance ) {
+                                tempDistance = rangeDistance
+                                noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                            }
                         }
                     }
                 }
@@ -331,13 +341,13 @@ class GraphContainer: OnChartGestureListener {
             val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
 
             // TODO: below code is not universal for all types of sensors, we should somehow count "measurement frequency" later on
-            if (!graph.isFullyZoomedOut) {
+            mVisibleEntriesNumber = if (!graph.isFullyZoomedOut) {
                 val fromDate = Date(from.toLong())
                 val toDate = Date(to.toLong())
                 val diff = (toDate.time - fromDate.time) / sessionMeasurementsFrequency() // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
-                mVisibleEntriesNumber = diff.toInt()
+                diff.toInt()
             } else {
-                mVisibleEntriesNumber = mMeasurementsSample.size
+                mMeasurementsSample.size
             }
 
             mOnTimeSpanChanged.invoke(timeSpan)
@@ -357,9 +367,9 @@ class GraphContainer: OnChartGestureListener {
     }
 
     private fun sessionMeasurementsFrequency(): Int {
-        if (mSessionPresenter?.session?.type == Session.Type.MOBILE)
-            return MOBILE_SESSION_MEASUREMENT_FREQUENCY
+        return if (mSessionPresenter?.session?.type == Session.Type.MOBILE)
+            MOBILE_SESSION_MEASUREMENT_FREQUENCY
         else
-            return FIXED_SESSION_MEASUREMENT_FREQUENCY
+            FIXED_SESSION_MEASUREMENT_FREQUENCY
     }
 }
