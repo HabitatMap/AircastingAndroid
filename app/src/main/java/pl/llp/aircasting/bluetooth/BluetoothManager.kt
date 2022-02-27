@@ -1,11 +1,14 @@
 package pl.llp.aircasting.bluetooth
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 
+@SuppressLint("MissingPermission")
+// TODO: Add permission check
 open class BluetoothManager {
-    val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     open fun pairedDeviceItems(): List<DeviceItem> {
         val devices = adapter?.bondedDevices?: setOf()

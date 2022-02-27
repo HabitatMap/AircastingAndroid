@@ -137,7 +137,7 @@ class StatisticsContainer {
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         val values = streamMeasurementsValues(stream)
-        return values?.max() ?: 0.0
+        return values?.maxOrNull() ?: 0.0
     }
 
     private fun streamMeasurementsValues(stream: MeasurementStream): List<Double>? {
