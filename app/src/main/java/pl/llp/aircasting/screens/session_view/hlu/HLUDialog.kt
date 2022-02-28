@@ -7,7 +7,7 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.TemperatureConverter
-import pl.llp.aircasting.lib.labelFormat
+import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.common.BaseDialog
@@ -41,46 +41,7 @@ class HLUDialog(
     }
 
     private fun setupView() {
-
-        if (mMeasurementStream?.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled())
-            mView.apply {
-                hlu_dialog_min.setText(
-                    labelFormat(
-                        TemperatureConverter.getAppropriateTemperatureValue(
-                            mSensorThreshold?.thresholdVeryLow!!.toFloat()
-                        )
-                    )
-                )
-                hlu_dialog_low.setText(
-                    labelFormat(
-                        TemperatureConverter.getAppropriateTemperatureValue(
-                            mSensorThreshold?.thresholdLow!!.toFloat()
-                        )
-                    )
-                )
-                hlu_dialog_medium.setText(
-                    labelFormat(
-                        TemperatureConverter.getAppropriateTemperatureValue(
-                            mSensorThreshold?.thresholdMedium!!.toFloat()
-                        )
-                    )
-                )
-                hlu_dialog_high.setText(
-                    labelFormat(
-                        TemperatureConverter.getAppropriateTemperatureValue(
-                            mSensorThreshold?.thresholdHigh!!.toFloat()
-                        )
-                    )
-                )
-                hlu_dialog_max.setText(
-                    labelFormat(
-                        TemperatureConverter.getAppropriateTemperatureValue(
-                            mSensorThreshold?.thresholdVeryHigh!!.toFloat()
-                        )
-                    )
-
-                )
-            } else mView.apply {
+        mView.apply {
             hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
             hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
             hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
@@ -121,15 +82,30 @@ class HLUDialog(
     private fun resetToDefaultsClicked() {
         if (mSensorThreshold == null || mMeasurementStream == null) return
 
-        //TODO: Need to take care of this.
-        mSensorThreshold?.apply {
-            thresholdVeryLow = mMeasurementStream.thresholdVeryLow
-            thresholdLow = mMeasurementStream.thresholdLow
-            thresholdMedium = mMeasurementStream.thresholdMedium
-            thresholdHigh = mMeasurementStream.thresholdHigh
-            thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
+        if (mMeasurementStream.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled()) {
+            mSensorThreshold?.apply {
+                thresholdVeryLow =
+                    temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdVeryLow)
+                thresholdLow = temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdLow)
+                thresholdMedium =
+                    temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdMedium)
+                thresholdHigh = temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdHigh)
+                thresholdVeryHigh =
+                    temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdVeryHigh)
+            }
+
+            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+
+        } else {
+            mSensorThreshold?.apply {
+                thresholdVeryLow = mMeasurementStream.thresholdVeryLow
+                thresholdLow = mMeasurementStream.thresholdLow
+                thresholdMedium = mMeasurementStream.thresholdMedium
+                thresholdHigh = mMeasurementStream.thresholdHigh
+                thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
+            }
+            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
         }
-        listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
 
         dismiss()
     }
