@@ -76,24 +76,31 @@ class HLUSlider
 
     private fun setValuesForSliderBasedOnSelectedMeasurementStream() {
         if (mStream != null && mStream!!.measurementType == "Temperature") {
-            mSlider?.valueFrom =
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.from)
-            mSlider?.valueTo =
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.to)
 
-            mSlider?.values = arrayListOf(
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdLow!!.toFloat()),
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdMedium!!.toFloat()),
-                TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdHigh!!.toFloat())
-            )
+            mSlider?.apply {
+                valueFrom =
+                    TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.from)
+                valueTo =
+                    TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold!!.to)
+
+                values = arrayListOf(
+                    TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdLow!!.toFloat()),
+                    TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdMedium!!.toFloat()),
+                    TemperatureConverter.getAppropriateTemperatureValue(mSensorThreshold?.thresholdHigh!!.toFloat())
+                )
+            }
+
         } else {
-            mSlider?.valueFrom = mSensorThreshold!!.from
-            mSlider?.valueTo = mSensorThreshold!!.to
-            mSlider?.values = arrayListOf(
-                mSensorThreshold?.thresholdLow?.toFloat(),
-                mSensorThreshold?.thresholdMedium?.toFloat(),
-                mSensorThreshold?.thresholdHigh?.toFloat()
-            )
+            mSlider?.apply {
+                valueFrom = mSensorThreshold!!.from
+                valueTo = mSensorThreshold!!.to
+                values = arrayListOf(
+                    mSensorThreshold?.thresholdLow?.toFloat(),
+                    mSensorThreshold?.thresholdMedium?.toFloat(),
+                    mSensorThreshold?.thresholdHigh?.toFloat()
+                )
+            }
+
         }
     }
 
