@@ -163,7 +163,6 @@ abstract class SessionDetailsViewMvcImpl(
         mSessionPresenter?.selectedStream = measurementStream
         mStatisticsContainer?.refresh(mSessionPresenter)
         bindSession(mSessionPresenter)
-        mHLUSlider.refresh(mSessionPresenter?.selectedSensorThreshold())
     }
 
     protected open fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
