@@ -125,13 +125,15 @@ class HLUDialog(
     private fun resetToDefaultsClicked() {
         if (mSensorThreshold == null || mMeasurementStream == null) return
 
-        mSensorThreshold?.thresholdVeryLow = mMeasurementStream.thresholdVeryLow
-        mSensorThreshold?.thresholdLow = mMeasurementStream.thresholdLow
-        mSensorThreshold?.thresholdMedium = mMeasurementStream.thresholdMedium
-        mSensorThreshold?.thresholdHigh = mMeasurementStream.thresholdHigh
-        mSensorThreshold?.thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
-
-        listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+        //TODO: Need to take care of this.
+        mSensorThreshold?.apply {
+            thresholdVeryLow = mMeasurementStream.thresholdVeryLow
+            thresholdLow = mMeasurementStream.thresholdLow
+            thresholdMedium = mMeasurementStream.thresholdMedium
+            thresholdHigh = mMeasurementStream.thresholdHigh
+            thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
+            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+        }
 
         dismiss()
     }
