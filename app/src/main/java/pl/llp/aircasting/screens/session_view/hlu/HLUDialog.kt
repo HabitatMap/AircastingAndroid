@@ -42,7 +42,7 @@ class HLUDialog(
 
     private fun setupView() {
 
-        if (mMeasurementStream?.measurementType == "Temperature") {
+        if (mMeasurementStream?.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled())
             mView.apply {
                 hlu_dialog_min.setText(
                     labelFormat(
@@ -80,16 +80,12 @@ class HLUDialog(
                     )
 
                 )
-            }
-
-        } else {
-            mView.apply {
-                hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
-                hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
-                hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
-                hlu_dialog_high.setText(mSensorThreshold?.thresholdHigh.toString())
-                hlu_dialog_max.setText(mSensorThreshold?.thresholdVeryHigh.toString())
-            }
+            } else mView.apply {
+            hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
+            hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
+            hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
+            hlu_dialog_high.setText(mSensorThreshold?.thresholdHigh.toString())
+            hlu_dialog_max.setText(mSensorThreshold?.thresholdVeryHigh.toString())
         }
     }
 
@@ -132,8 +128,8 @@ class HLUDialog(
             thresholdMedium = mMeasurementStream.thresholdMedium
             thresholdHigh = mMeasurementStream.thresholdHigh
             thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
-            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
         }
+        listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
 
         dismiss()
     }
