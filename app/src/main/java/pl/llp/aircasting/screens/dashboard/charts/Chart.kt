@@ -13,6 +13,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
+import pl.llp.aircasting.lib.TemperatureConverter
 
 
 class Chart {
@@ -127,7 +128,13 @@ class Chart {
         if (mEntries == null || mEntries.isEmpty()) {
             return LineDataSet(listOf(), "")
         }
-        val dataSet = LineDataSet(mEntries, "")
+
+        val dataSet: LineDataSet = if (mSessionPresenter?.selectedStream?.measurementType == "Temperature") {
+            val celsiusEntries: List<Entry> = mEntries.map { entry ->
+                Entry(entry.x, TemperatureConverter.getAppropriateTemperatureValue(entry.y))
+            }
+            LineDataSet(celsiusEntries, "")
+        } else LineDataSet(mEntries, "")
 
         // Making the line a curve, not a polyline
         dataSet.mode = LineDataSet.Mode.LINEAR
