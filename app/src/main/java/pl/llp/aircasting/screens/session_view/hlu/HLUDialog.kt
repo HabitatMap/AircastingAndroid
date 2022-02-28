@@ -4,18 +4,20 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.android.synthetic.main.hlu_dialog.view.*
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.labelFormat
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.common.BaseDialog
-import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(
     private var mSensorThreshold: SensorThreshold?,
     private val mMeasurementStream: MeasurementStream?,
     mFragmentManager: FragmentManager,
     private val listener: HLUDialogListener
-): BaseDialog(mFragmentManager) {
+) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
@@ -39,11 +41,56 @@ class HLUDialog(
     }
 
     private fun setupView() {
-        mView.hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
-        mView.hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
-        mView.hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
-        mView.hlu_dialog_high.setText(mSensorThreshold?.thresholdHigh.toString())
-        mView.hlu_dialog_max.setText(mSensorThreshold?.thresholdVeryHigh.toString())
+
+        if (mMeasurementStream?.measurementType == "Temperature") {
+            mView.apply {
+                hlu_dialog_min.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mSensorThreshold?.thresholdVeryLow!!.toFloat()
+                        )
+                    )
+                )
+                hlu_dialog_low.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mSensorThreshold?.thresholdLow!!.toFloat()
+                        )
+                    )
+                )
+                hlu_dialog_medium.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mSensorThreshold?.thresholdMedium!!.toFloat()
+                        )
+                    )
+                )
+                hlu_dialog_high.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mSensorThreshold?.thresholdHigh!!.toFloat()
+                        )
+                    )
+                )
+                hlu_dialog_max.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mSensorThreshold?.thresholdVeryHigh!!.toFloat()
+                        )
+                    )
+
+                )
+            }
+
+        } else {
+            mView.apply {
+                hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
+                hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
+                hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
+                hlu_dialog_high.setText(mSensorThreshold?.thresholdHigh.toString())
+                hlu_dialog_max.setText(mSensorThreshold?.thresholdVeryHigh.toString())
+            }
+        }
     }
 
     private fun okButtonClicked() {
@@ -91,7 +138,7 @@ class HLUDialog(
 
     private fun getValue(input: TextInputEditText): Int? {
         val stringValue = input.text.toString().trim()
-        
+
         if (stringValue.isEmpty()) return null
 
         return stringValue.toInt()
