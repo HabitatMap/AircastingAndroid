@@ -182,7 +182,7 @@ abstract class SessionDetailsViewMvcImpl(
 
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {
         onSensorThresholdChanged(sensorThreshold)
-        mHLUSlider.refresh(sensorThreshold)
+        mHLUSlider.refresh(sensorThreshold, mSessionPresenter?.selectedStream)
     }
 
     override fun onValidationFailed() {
