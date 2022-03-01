@@ -137,9 +137,11 @@ class HLUDialog(
 
     private fun getValue(input: TextInputEditText): Int? {
         val stringValue = input.text.toString().trim()
-
         if (stringValue.isEmpty()) return null
 
-        return stringValue.toInt()
+        val value = stringValue.toInt()
+        return if (mMeasurementStream?.measurementType == "Temperature" && mMeasurementStream.detailedType == "C")
+            temperatureFromCelsiusToFahrenheit(value)
+        else value
     }
 }
