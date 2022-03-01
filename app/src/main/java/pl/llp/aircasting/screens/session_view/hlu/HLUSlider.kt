@@ -104,8 +104,8 @@ class HLUSlider
         }
     }
 
-    fun refresh(sensorThreshold: SensorThreshold?) {
-        bindSensorThreshold(sensorThreshold)
+    fun refresh(sensorThreshold: SensorThreshold?, stream: MeasurementStream? = null) {
+        bindSensorThreshold(sensorThreshold, stream)
     }
 
     private fun updateSensorThreshold() {
