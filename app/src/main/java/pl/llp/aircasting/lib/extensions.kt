@@ -22,11 +22,11 @@ fun Context.areLocationServicesOn(): Boolean {
  */
 
 fun temperatureFromFahrenheitToCelsius(fahrenheitTemperature: Double): Double {
-    return ((fahrenheitTemperature - 32) * 5) / 9
+    return (Math.round(((fahrenheitTemperature - 32) * 5) / 9)).toDouble()
 }
 
 fun temperatureFromFahrenheitToCelsius(fahrenheitTemperature: Float): Float {
-    return ((fahrenheitTemperature - 32) * 5) / 9
+    return (Math.round(((fahrenheitTemperature - 32) * 5) / 9)).toFloat()
 }
 
 fun temperatureFromFahrenheitToCelsius(fahrenheitTemperature: Int): Int {
@@ -38,7 +38,7 @@ fun temperatureFromCelsiusToFahrenheit(fahrenheitTemperature: Int): Int {
 }
 
 fun temperatureFromCelsiusToFahrenheit(fahrenheitTemperature: Double): Double {
-    return fahrenheitTemperature * 9 / 5 + 32
+    return (Math.round(fahrenheitTemperature * 9 / 5 + 32)).toDouble()
 }
 
 fun labelFormat(value: Float?): String {
