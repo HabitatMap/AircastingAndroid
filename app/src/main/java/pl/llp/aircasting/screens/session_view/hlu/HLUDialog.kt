@@ -122,30 +122,15 @@ class HLUDialog(
     private fun resetToDefaultsClicked() {
         if (mSensorThreshold == null || mMeasurementStream == null) return
 
-        if (mMeasurementStream.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled()) {
-            mSensorThreshold?.apply {
-                thresholdVeryLow =
-                    temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdVeryLow)
-                thresholdLow = temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdLow)
-                thresholdMedium =
-                    temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdMedium)
-                thresholdHigh = temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdHigh)
-                thresholdVeryHigh =
-                    temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdVeryHigh)
-            }
-
-            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
-
-        } else {
-            mSensorThreshold?.apply {
-                thresholdVeryLow = mMeasurementStream.thresholdVeryLow
-                thresholdLow = mMeasurementStream.thresholdLow
-                thresholdMedium = mMeasurementStream.thresholdMedium
-                thresholdHigh = mMeasurementStream.thresholdHigh
-                thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
-            }
-            listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
+        mSensorThreshold?.apply {
+            thresholdVeryLow = mMeasurementStream.thresholdVeryLow
+            thresholdLow = mMeasurementStream.thresholdLow
+            thresholdMedium = mMeasurementStream.thresholdMedium
+            thresholdHigh = mMeasurementStream.thresholdHigh
+            thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
         }
+
+        listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
 
         dismiss()
     }
