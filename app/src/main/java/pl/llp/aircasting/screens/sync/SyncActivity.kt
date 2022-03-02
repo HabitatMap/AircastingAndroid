@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.sync
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -31,20 +32,24 @@ class SyncActivity: BaseActivity() {
     lateinit var bluetoothManager: BluetoothManager
 
     companion object {
-        fun start(rootActivity: FragmentActivity?, onFinish: (() -> Unit)? = null) {
+        private var launcher: ActivityResultLauncher<Intent>? = null
+
+        fun register(rootActivity: FragmentActivity?, onFinish: (() -> Unit)? = null) {
+            rootActivity?.let {
+                launcher = it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    if (onFinish != null) {
+                        onFinish.invoke()
+                    }
+                }
+            }
+        }
+
+        fun start(rootActivity: FragmentActivity?) {
             rootActivity ?: return
 
             val intent = Intent(rootActivity, SyncActivity::class.java)
 
-            if (onFinish != null) {
-                val startForResult =
-                    rootActivity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                        onFinish.invoke()
-                    }
-                startForResult.launch(intent)
-            } else {
-                rootActivity.startActivity(intent)
-            }
+            launcher?.launch(intent)
         }
     }
 

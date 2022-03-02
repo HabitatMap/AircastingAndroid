@@ -9,6 +9,7 @@ import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.ResultCodes
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
@@ -17,9 +18,11 @@ import pl.llp.aircasting.networking.services.ApiService
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.networking.services.SessionsSyncService
+import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.onboarding.OnboardingActivity
+import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.sensor.SessionManager
 
 class MainController(
@@ -43,6 +46,7 @@ class MainController(
 
         NewSessionActivity.register(rootActivity, Session.Type.FIXED)
         NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
+        SyncActivity.register(rootActivity, onFinish = { goToDormantTab() })
 
         mSessionManager?.onStart()
     }
@@ -88,6 +92,14 @@ class MainController(
             onStartCallback = { mViewMvc.showLoader() },
             finallyCallback = { mViewMvc.hideLoader() }
         )
+    }
+
+    private fun goToDormantTab() {
+        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
+        )
+        NavigationController.goToDashboard(tabId)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
