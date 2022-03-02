@@ -10,11 +10,20 @@ import androidx.core.content.ContextCompat
 import pl.llp.aircasting.lib.ResultCodes
 
 open class PermissionsManager {
-    val LOCATION_PERMISSIONS = if (Build.VERSION.SDK_INT >= 29) arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            else
-        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+    private val LOCATION_PERMISSIONS = if (Build.VERSION.SDK_INT >= 29) arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN
+    )
+    else
+        arrayOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
-    val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
+    private val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -32,14 +41,16 @@ open class PermissionsManager {
     }
 
     open fun requestLocationPermissions(activity: Activity) {
-        ActivityCompat.requestPermissions(activity,
+        ActivityCompat.requestPermissions(
+            activity,
             LOCATION_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION
         )
     }
 
     fun requestAudioPermissions(activity: Activity) {
-        ActivityCompat.requestPermissions(activity,
+        ActivityCompat.requestPermissions(
+            activity,
             AUDIO_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO
         )
