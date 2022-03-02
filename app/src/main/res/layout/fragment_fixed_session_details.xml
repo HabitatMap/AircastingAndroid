@@ -4,232 +4,235 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
-        android:background="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
         <TextView
             android:id="@+id/session_details_header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-            android:text="@string/mobile_session_details_header"
-            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/mobile_session_details_header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/session_name"
+            style="@style/Widget.Aircasting.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/session_details_session_name_hint"
-            app:hintEnabled="false"
-            style="@style/Widget.Aircasting.TextInputLayout"
-            app:errorEnabled="true"
-            android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/session_details_header"
+            android:hint="@string/session_details_session_name_hint"
+            app:errorEnabled="true"
+            app:hintEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/session_details_header">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/session_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:hint="@string/session_details_session_name_hint"
+                android:minHeight="60dp"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+                android:textColor="@color/aircasting_grey_700" />
 
         </com.google.android.material.textfield.TextInputLayout>
-        
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/session_info"
+            style="@style/Widget.Aircasting.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintEnabled="false"
-            style="@style/Widget.Aircasting.TextInputLayout"
-            android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/session_name"
+            app:hintEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/session_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/session_tags_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:hint="@string/session_details_session_tags_hint"
+                android:minHeight="60dp"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+                android:textColor="@color/aircasting_grey_700" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/indoor_toggle_header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
-            android:text="@string/fixed_session_details_indoor_toggle_header"
-            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@+id/session_info"
+            android:text="@string/fixed_session_details_indoor_toggle_header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/session_info" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/indoor_toggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_2"
             android:layout_marginEnd="@dimen/keyline_8"
             android:minHeight="60dp"
-            app:singleSelection="true"
-            app:selectionRequired="true"
             app:checkedButton="@id/indoor_button"
-            app:layout_constraintTop_toBottomOf="@id/indoor_toggle_header"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/indoor_toggle_header"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
             <Button
                 android:id="@+id/indoor_button"
+                style="@style/Widget.Aircasting.ToggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:layout_weight="1"
-                android:text="@string/fixed_session_details_indoor"
-                style="@style/Widget.Aircasting.ToggleButton" />
+                android:minHeight="60dp"
+                android:text="@string/fixed_session_details_indoor" />
+
             <Button
                 android:id="@+id/outdoor_button"
+                style="@style/Widget.Aircasting.ToggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:layout_weight="1"
-                android:text="@string/fixed_session_details_outdoor"
-                style="@style/Widget.Aircasting.ToggleButton" />
+                android:minHeight="60dp"
+                android:text="@string/fixed_session_details_outdoor" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:id="@+id/streaming_method_toggle_header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
-            android:text="@string/fixed_session_details_streaming_method_header"
-            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@+id/indoor_toggle"
+            android:text="@string/fixed_session_details_streaming_method_header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/indoor_toggle" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/streaming_method_toggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_2"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:singleSelection="true"
-            app:selectionRequired="true"
             app:checkedButton="@id/wifi_button"
-            app:layout_constraintTop_toBottomOf="@id/streaming_method_toggle_header"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/streaming_method_toggle_header"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
             <Button
                 android:id="@+id/wifi_button"
+                style="@style/Widget.Aircasting.ToggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:layout_weight="1"
-                android:text="@string/fixed_session_details_wifi"
-                style="@style/Widget.Aircasting.ToggleButton" />
+                android:minHeight="60dp"
+                android:text="@string/fixed_session_details_wifi" />
+
             <Button
                 android:id="@+id/cellular_button"
+                style="@style/Widget.Aircasting.ToggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:layout_weight="1"
-                android:text="@string/fixed_session_details_cellular"
-                style="@style/Widget.Aircasting.ToggleButton" />
+                android:minHeight="60dp"
+                android:text="@string/fixed_session_details_cellular" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:id="@+id/networks_list_header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
-            android:textSize="@dimen/text_size_xs"
-            android:text="@string/fixed_session_details_networks_list_header"
-            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
+            android:text="@string/fixed_session_details_networks_list_header"
+            android:textSize="@dimen/text_size_xs"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/streaming_method_toggle"
+            app:layout_constraintEnd_toStartOf="@+id/refresh_network_list_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/refresh_network_list_button" />
+            app:layout_constraintTop_toBottomOf="@+id/streaming_method_toggle" />
 
         <Button
             android:id="@+id/refresh_network_list_button"
             style="@style/Widget.Aircasting.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/fixed_session_details_refresh_networks_list_button"
-            android:textSize="@dimen/text_size_xxs"
             android:layout_marginEnd="@dimen/keyline_8"
+            android:text="@string/fixed_session_details_refresh_networks_list_button"
             android:textAlignment="textEnd"
+            android:textSize="@dimen/text_size_xxs"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/networks_list"/>
+            app:layout_constraintBottom_toTopOf="@+id/networks_list"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/networks_list_loader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_loader"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_8"
+            android:src="@drawable/ic_loader"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
             app:layout_constraintBottom_toTopOf="@+id/continue_button"
+            app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
             app:tint="@color/aircasting_blue_400" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/networks_list"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginTop="@dimen/keyline_4"
-            android:layout_marginBottom="@dimen/keyline_4"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_4"
             android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_4"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
-            app:layout_constraintBottom_toTopOf="@+id/continue_button" />
+            app:layout_constraintBottom_toTopOf="@+id/continue_button"
+            app:layout_constraintTop_toBottomOf="@+id/networks_list_header" />
 
         <Button
             android:id="@+id/continue_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/session_details_continue_button"
-            app:layout_constraintTop_toBottomOf="@+id/networks_list"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/networks_list" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
