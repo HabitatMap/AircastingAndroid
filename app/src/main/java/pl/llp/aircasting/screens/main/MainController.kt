@@ -19,6 +19,9 @@ import pl.llp.aircasting.networking.services.SessionsSyncService
 import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.sensor.SessionManager
+import pl.llp.aircasting.models.Session
+import pl.llp.aircasting.screens.new_session.NewSessionActivity
+
 
 class MainController(
     private val rootActivity: AppCompatActivity,
@@ -38,6 +41,9 @@ class MainController(
         } else {
             setupDashboard()
         }
+
+        NewSessionActivity.register(rootActivity, Session.Type.FIXED)
+        NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
 
         mSessionManager?.onStart()
     }
