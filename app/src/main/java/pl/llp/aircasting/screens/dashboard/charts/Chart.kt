@@ -118,7 +118,8 @@ class Chart(context: Context, rootView: View?) {
         }
 
         val dataSet: LineDataSet =
-            if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true) {
+            if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true
+                && TemperatureConverter.isCelsiusToggleEnabled()) {
                 val celsiusEntries: List<Entry> = mEntries.map { entry ->
                     Entry(entry.x, TemperatureConverter.fahrenheitToCelsius(entry.y))
                 }
