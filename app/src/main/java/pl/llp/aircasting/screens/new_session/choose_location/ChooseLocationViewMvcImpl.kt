@@ -18,7 +18,8 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
 
-class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Listener>, ChooseLocationViewMvc,
+class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Listener>,
+    ChooseLocationViewMvc,
     OnMapReadyCallback {
 
     private val session: Session
@@ -40,19 +41,26 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
         supportFragmentManager: FragmentManager?,
         session: Session,
         errorHandler: ErrorHandler
-    ): super() {
+    ) : super() {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
         this.session = session
         this.mSupportFragmentManager = supportFragmentManager
 
         mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
-        mDefaultLongitude = session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
+        mDefaultLongitude =
+            session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
 
         val autocompleteFragment =
             supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
                     as AutocompleteSupportFragment
 
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(
+            listOf(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.LAT_LNG
+            )
+        )
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
@@ -66,18 +74,17 @@ class ChooseLocationViewMvcImpl: BaseObservableViewMvc<ChooseLocationViewMvc.Lis
             }
         })
 
-        autocompleteFragment.requireView().findViewById<View>(com.google.android.libraries.places.R.id.places_autocomplete_clear_button)
-            .setOnClickListener(object : View.OnClickListener {
-                override fun onClick(view: View) {
-                    autocompleteFragment.setText("")
-                    view.setVisibility(View.GONE)
-                    resetMapToDefaults()
-                }
-            })
+        autocompleteFragment.requireView()
+            .findViewById<View>(R.id.places_autocomplete_clear_button)
+            .setOnClickListener { view ->
+                autocompleteFragment.setText("")
+                view.visibility = View.GONE
+                resetMapToDefaults()
+            }
 
         mMapFragment = SupportMapFragment.newInstance(mapOptions())
         mMapFragment?.let {
-            supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+            supportFragmentManager.beginTransaction().replace(R.id.map, it).commit()
         }
         mMapFragment?.getMapAsync(this)
 

@@ -83,7 +83,7 @@ open class Settings(private val mApplication: Application) {
         return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)
     }
 
-    fun getIsDeleteSessionInProgress(): Boolean? {
+    fun getIsDeleteSessionInProgress(): Boolean {
         return getBooleanFromSettings(DELETE_SESSION_IN_PROGERSS_KEY, DEFAULT_DELETE_SESSION_IN_PROGRESS)
     }
 
@@ -91,7 +91,7 @@ open class Settings(private val mApplication: Application) {
         return getBooleanFromSettings(KEEP_SCREEN_ON_KEY, DEFAULT_KEEP_SCREEN_ON)
     }
 
-    fun getAreThereSessionsToRemove(): Boolean? {
+    fun getAreThereSessionsToRemove(): Boolean {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
     }
 
@@ -190,19 +190,19 @@ open class Settings(private val mApplication: Application) {
     protected open fun saveToSettings(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
-        editor.commit()
+        editor.apply()
     }
 
     protected open fun saveToSettings(key: String, value: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, value)
-        editor.commit()
+        editor.apply()
     }
 
     protected open fun saveToSettings(key: String, value: Int){
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
-        editor.commit()
+        editor.apply()
     }
 
     private fun deleteFromSettings(){

@@ -10,7 +10,7 @@ import pl.llp.aircasting.screens.common.BaseFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 import javax.inject.Inject
 
-class DashboardFragment() : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
+class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
 
     @Inject
     lateinit var settings: Settings

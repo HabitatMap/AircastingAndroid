@@ -25,12 +25,12 @@
                     android:src="@drawable/ic_x"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:tint="@color/aircasting_blue_400"
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_your_privacy_header"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:tint="@color/aircasting_blue_400" />
 
                 <TextView
                     android:id="@+id/learn_more_onboarding_your_privacy_header"
