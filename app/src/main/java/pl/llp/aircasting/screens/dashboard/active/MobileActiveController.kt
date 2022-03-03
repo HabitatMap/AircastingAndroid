@@ -120,7 +120,7 @@ class MobileActiveController(
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        SyncActivity.start(mRootActivity, onFinish = { goToDormantTab() })
+        SyncActivity.start(mRootActivity)
     }
 
     override fun addNotePressed(session: Session, note: Note) {

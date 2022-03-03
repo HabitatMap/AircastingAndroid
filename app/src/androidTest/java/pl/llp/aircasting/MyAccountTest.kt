@@ -21,7 +21,7 @@ import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.helpers.getMockWebServerFrom
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.screens.new_session.LoginActivity
+import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.settings.my_account.MyAccountActivity
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
@@ -42,14 +42,14 @@ class MyAccountTest {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     @get:Rule
-    val testRule : ActivityTestRule<MyAccountActivity>
-            = ActivityTestRule(MyAccountActivity::class.java, false, false)
+    val testRule: ActivityTestRule<MyAccountActivity> =
+        ActivityTestRule(MyAccountActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
-    lateinit var db : AppDatabase
+    lateinit var db: AppDatabase
 
-    private fun setupDagger(){
+    private fun setupDagger() {
         val permissionsModule = PermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
@@ -61,26 +61,26 @@ class MyAccountTest {
         testAppComponent.inject(this)
     }
 
-    private fun setupDatabase(){
+    private fun setupDatabase() {
         DatabaseProvider.setup(app)
         db = DatabaseProvider.get()
     }
 
     @Before
-    fun setup(){
+    fun setup() {
         setupDagger()
         setupDatabase()
         getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
-    fun cleanup(){
+    fun cleanup() {
         testRule.finishActivity()
         getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
     @Test
-    fun MyAccountTest(){
+    fun MyAccountTest() {
         Intents.init()
         settings.login("michal@lunarlogic.io", "XYZ123FAKETOKEN")
 

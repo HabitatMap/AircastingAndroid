@@ -36,6 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_gravity="left"/>
+        android:layout_gravity="start"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

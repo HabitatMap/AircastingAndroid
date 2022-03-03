@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.new_session
+package pl.llp.aircasting.screens.login
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,8 +9,6 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.networking.services.ForgotPasswordService
 import pl.llp.aircasting.screens.create_account.CreateAccountActivity
-import pl.llp.aircasting.screens.login.ForgotPasswordDialog
-import pl.llp.aircasting.screens.login.LoginService
 import pl.llp.aircasting.screens.main.MainActivity
 
 class  LoginController(

@@ -7,8 +7,8 @@ import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.responses.CreateAccountErrorResponse
 import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.main.MainActivity
-import pl.llp.aircasting.screens.new_session.LoginActivity
 
 class CreateAccountController(
     private val mContextActivity: AppCompatActivity,

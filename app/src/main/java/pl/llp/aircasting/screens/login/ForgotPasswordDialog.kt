@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseDialog
-import pl.llp.aircasting.screens.new_session.LoginViewMvc
 import kotlinx.android.synthetic.main.forgot_password_dialog.view.*
 
 class ForgotPasswordDialog(

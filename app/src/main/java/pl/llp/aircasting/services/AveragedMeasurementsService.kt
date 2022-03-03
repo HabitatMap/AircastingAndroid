@@ -1,6 +1,5 @@
 package pl.llp.aircasting.services
 
-import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
@@ -9,21 +8,21 @@ import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.screens.dashboard.charts.ChartAveragesCreator
 
-class AveragedMeasurementsService {
+class AveragedMeasurementsService(sessionUUID: String) {
         var averagingService: AveragingService? = null
         val sessionsRepository = SessionsRepository()
         var sessionId : Long? = 0
         val measurementsRepository = MeasurementsRepository()
         val streamRepository = MeasurementStreamsRepository()
 
-        constructor(sessionUUID: String) {
-            DatabaseProvider.runQuery {
-                sessionId = sessionsRepository.getSessionIdByUUID(sessionUUID)
-                if (sessionId != null) averagingService = AveragingService.get(sessionId!!)
-            }
+    init {
+        DatabaseProvider.runQuery {
+            sessionId = sessionsRepository.getSessionIdByUUID(sessionUUID)
+            if (sessionId != null) averagingService = AveragingService.get(sessionId!!)
         }
+    }
 
-        fun getMeasurementsOverSecondThreshold(stream: MeasurementStream):  List<Measurement>?{
+        fun getMeasurementsOverSecondThreshold(stream: MeasurementStream): List<Measurement> {
             if (sessionId == null) return emptyList()
             var measurements = listOf<Measurement>()
             DatabaseProvider.runQuery {

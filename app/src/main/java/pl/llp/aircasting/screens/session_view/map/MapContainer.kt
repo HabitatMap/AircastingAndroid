@@ -92,6 +92,8 @@ class MapContainer: OnMapReadyCallback {
         googleMap ?: return
         mMap = googleMap
 
+        styleMap()
+
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {
             setup()
@@ -99,6 +101,12 @@ class MapContainer: OnMapReadyCallback {
         status.set(Status.MAP_LOADED.value)
 
         setCustomCompassLocation()
+    }
+
+    private fun styleMap() {
+        mMap?.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                mContext, R.raw.map_style))
     }
 
     fun setup() {
