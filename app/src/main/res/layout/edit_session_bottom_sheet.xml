@@ -26,11 +26,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_loader"
-                    android:tint="@color/aircasting_blue_400"
                     android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginBottom="@dimen/keyline_8"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@+id/title" />
+                    app:layout_constraintBottom_toTopOf="@+id/title"
+                    app:tint="@color/aircasting_blue_400" />
 
                 <ImageView
                     android:id="@+id/close_button"

@@ -45,7 +45,7 @@ class AveragingBackgroundService(val averagingService: AveragingService) {
 
         private fun currentInterval(averagingTime: Long): Long {
             var interval = DEFAULT_INTERVAL
-            averagingService.currentAveragingThreshold()?.windowSize?.let {
+            averagingService.currentAveragingThreshold().windowSize.let {
                 if (it > 1) interval = it * 1000L
             }
 

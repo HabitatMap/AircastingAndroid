@@ -26,10 +26,10 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/keyline_4"
                 android:paddingBottom="@dimen/keyline_4"
-                android:tint="@color/aircasting_blue_400"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/title"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@color/aircasting_blue_400" />
 
 
             <TextView

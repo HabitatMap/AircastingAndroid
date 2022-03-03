@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/dashboard_background"
     android:fillViewport="true"
-    android:background="@drawable/dashboard_background">
+    tools:ignore="RtlSymmetry">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/progress_bar_frame"
             android:layout_width="0dp"
             android:layout_height="8dp"
-            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:background="@drawable/progress_bar_background"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ProgressBar
@@ -30,13 +32,13 @@
                 android:layout_height="8dp"
                 android:layout_margin="0dp"
                 android:indeterminate="false"
-                android:progressDrawable="@drawable/curved_progress_bar"
-                android:progress="85"
                 android:max="100"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:progress="85"
+                android:progressDrawable="@drawable/curved_progress_bar"
+                app:layout_constraintBottom_toTopOf="@id/header"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/header"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </FrameLayout>
 
@@ -44,83 +46,82 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline1"
-            android:text="@string/login_header"
             android:layout_marginStart="0dp"
             android:layout_marginTop="@dimen/create_account_sign_in_padding_top"
-            android:paddingLeft="@dimen/keyline_10"
-            android:paddingBottom="@dimen/keyline_6"
+            android:paddingStart="@dimen/keyline_10"
             android:paddingTop="@dimen/keyline_1"
-            app:layout_goneMarginTop="@dimen/create_account_sign_in_padding_top_gone"
-            app:layout_constraintTop_toBottomOf="@id/progress_bar_frame"
+            android:paddingBottom="@dimen/keyline_6"
+            android:text="@string/login_header"
+            android:textAppearance="?attr/textAppearanceHeadline1"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_bar_frame"
+            app:layout_goneMarginTop="@dimen/create_account_sign_in_padding_top_gone" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/keyline_10"
+            android:paddingTop="@dimen/keyline_2"
+            android:paddingRight="@dimen/keyline_10"
+            android:paddingBottom="@dimen/keyline_6"
             android:text="@string/login_description"
             android:textAppearance="?attr/textAppearanceHeadline4"
-            android:paddingBottom="@dimen/keyline_6"
-            android:paddingTop="@dimen/keyline_2"
-            android:paddingLeft="@dimen/keyline_10"
-            android:paddingRight="@dimen/keyline_10"
-            app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username"
+            style="@style/Widget.Aircasting.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/profile_name_hint"
-            app:hintEnabled="false"
-            app:errorEnabled="true"
-            style="@style/Widget.Aircasting.TextInputLayout"
-            android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_6"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/description"
+            android:hint="@string/profile_name_hint"
+            app:errorEnabled="true"
+            app:hintEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/profile_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:hint="@string/profile_name_hint"
                 android:inputType="textNoSuggestions"
+                android:minHeight="60dp"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+                android:textColor="@color/aircasting_grey_700" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password"
+            style="@style/Widget.Aircasting.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password_hint"
-            app:hintEnabled="false"
-            app:errorEnabled="true"
-            app:passwordToggleEnabled="true"
-            style="@style/Widget.Aircasting.TextInputLayout"
-            android:layout_marginTop="@dimen/keyline_3"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_3"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/username"
+            android:hint="@string/password_hint"
+            app:errorEnabled="true"
+            app:hintEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="60dp"
                 android:hint="@string/password_hint"
                 android:inputType="textPassword"
+                android:minHeight="60dp"
                 android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                 android:textColor="@color/aircasting_grey_700" />
 
@@ -131,52 +132,52 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_2"
             android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
-            android:layout_marginTop="@dimen/keyline_2"
             android:text="@string/login_button"
-            app:layout_constraintTop_toBottomOf="@id/password"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/password" />
 
         <Button
             android:id="@+id/forgot_password_button"
+            style="@style/Widget.Aircasting.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_4"
+            android:layout_marginEnd="@dimen/keyline_8"
             android:text="@string/forgot_your_password"
-            style="@style/Widget.Aircasting.TextButton"
             android:textAppearance="@style/TextAppearance.Aircasting.Login.ForgotPasswordTextButton"
-            app:layout_constraintTop_toBottomOf="@id/login_button"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/login_button" />
 
         <TextView
             android:id="@+id/create_account_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/keyline_8"
+            android:paddingTop="@dimen/keyline_8"
+            android:paddingBottom="@dimen/keyline_6"
             android:text="@string/create_account_prompt"
             android:textAppearance="?attr/textAppearanceHeadline4"
             android:textSize="@dimen/text_size_s"
-            android:paddingBottom="@dimen/keyline_6"
-            android:paddingTop="@dimen/keyline_8"
-            android:paddingLeft="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/forgot_password_button"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/forgot_password_button" />
+
         <Button
             android:id="@+id/create_account_button"
             style="@style/Widget.Aircasting.TextButton"
-            android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_account_text_button"
+            android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
             android:textSize="@dimen/text_size_s"
-            app:rippleColor="@null"
+            app:layout_constraintBaseline_toBaselineOf="@id/create_account_prompt"
             app:layout_constraintStart_toEndOf="@id/create_account_prompt"
-            app:layout_constraintBaseline_toBaselineOf="@id/create_account_prompt"/>
-
+            app:rippleColor="@null" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

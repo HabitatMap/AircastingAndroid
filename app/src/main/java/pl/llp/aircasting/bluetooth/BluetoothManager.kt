@@ -6,8 +6,6 @@ import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 
 @SuppressLint("MissingPermission")
-// TODO: Add check for permission.
-
 open class BluetoothManager {
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
