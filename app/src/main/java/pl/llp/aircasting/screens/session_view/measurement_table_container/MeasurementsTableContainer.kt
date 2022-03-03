@@ -273,7 +273,7 @@ abstract class MeasurementsTableContainer {
         valueView.background = null
 
         var containerLayout: LinearLayout =
-            inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
+            mLayoutInflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
         containerLayout.setOnClickListener {
             changeSelectedStream(stream)
         }
