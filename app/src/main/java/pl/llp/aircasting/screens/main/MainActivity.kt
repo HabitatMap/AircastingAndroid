@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
@@ -41,7 +43,7 @@ class MainActivity: BaseActivity() {
             .appComponent.inject(this)
 
         // subscribing to custom uncaught exception handler to handle crash
-        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings));
+        Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings))
 
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
@@ -56,7 +58,9 @@ class MainActivity: BaseActivity() {
         setContentView(view?.rootView)
         AppBar.setup(view?.rootView, this)
 
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController: NavController = navHostFragment.navController
         NavigationController.setup(navController)
         view?.setupBottomNavigationBar(navController)
     }

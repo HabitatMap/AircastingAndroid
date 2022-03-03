@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.new_session
+package pl.llp.aircasting.screens.login
 
 import pl.llp.aircasting.screens.common.ObservableViewMvc
 

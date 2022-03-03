@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/keyline_4"
             android:layout_gravity="end"
-            android:tint="@color/aircasting_dark_blue" />
+            app:tint="@color/aircasting_dark_blue" />
 
         <TextView
             android:id="@+id/hlu_dialog_header"
