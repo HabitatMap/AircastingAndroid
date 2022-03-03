@@ -53,7 +53,7 @@ class StatisticsContainer {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
 
-        if (stream?.measurementType == "Temperature") {
+        if (stream?.isMeasurementTypeTemperature() == true) {
             TemperatureConverter.setAppropriateDetailedType(stream)
         }
 
@@ -99,7 +99,7 @@ class StatisticsContainer {
 
             avg = sum / calculateMeasurementsSize(stream)
 
-            if (stream.measurementType == "Temperature")
+            if (stream.isMeasurementTypeTemperature())
                 avg = TemperatureConverter.getAppropriateTemperatureValue(avg)
         }
 
@@ -118,7 +118,7 @@ class StatisticsContainer {
             mNow = getNowValue(stream)
 
         }
-        if (stream?.measurementType == "Temperature")
+        if (stream?.isMeasurementTypeTemperature() == true)
             mNow = mNow?.let { TemperatureConverter.getAppropriateTemperatureValue(it) }
 
         bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator, StatisticsValueBackground.RADIUS_BIG)
@@ -135,7 +135,7 @@ class StatisticsContainer {
             stream?.let { calculatePeak(it) }
         }
 
-        if (stream?.measurementType == "Temperature")
+        if (stream?.isMeasurementTypeTemperature() == true)
             peak = peak?.let { TemperatureConverter.getAppropriateTemperatureValue(it) }
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
@@ -144,7 +144,7 @@ class StatisticsContainer {
     private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?, radius: Float = StatisticsValueBackground.CORNER_RADIUS) {
         var mValue = value
         valueView?.text = Measurement.formatValue(value)
-        if (stream?.measurementType == "Temperature" && stream.detailedType == "C") {
+        if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
             mValue = temperatureFromCelsiusToFahrenheit(value!!)
         }
         val color = MeasurementColor.forMap(mContext, mValue, mSensorThreshold)

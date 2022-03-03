@@ -118,7 +118,7 @@ class Chart(context: Context, rootView: View?) {
         }
 
         val dataSet: LineDataSet =
-            if (mSessionPresenter?.selectedStream?.measurementType == "Temperature") {
+            if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true) {
                 val celsiusEntries: List<Entry> = mEntries.map { entry ->
                     Entry(entry.x, TemperatureConverter.getAppropriateTemperatureValue(entry.y))
                 }
@@ -166,7 +166,7 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun chartUnitText(): String {
-        if (mSessionPresenter?.selectedStream?.measurementType == "Temperature")
+        if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true)
             return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.detailedType}"
 
         return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"

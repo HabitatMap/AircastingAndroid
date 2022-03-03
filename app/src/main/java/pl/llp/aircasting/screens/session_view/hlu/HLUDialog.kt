@@ -43,45 +43,45 @@ class HLUDialog(
 
     private fun setupView() {
 
-        if (mMeasurementStream?.measurementType == "Temperature")
+        if (mMeasurementStream?.isMeasurementTypeTemperature() == true)
             mView.apply {
-            hlu_dialog_min.setText(
-                labelFormat(
-                    TemperatureConverter.getAppropriateTemperatureValue(
-                        mMeasurementStream.thresholdVeryLow.toFloat()
+                hlu_dialog_min.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mMeasurementStream.thresholdVeryLow.toFloat()
+                        )
                     )
                 )
-            )
-            hlu_dialog_low.setText(
-                labelFormat(
-                    TemperatureConverter.getAppropriateTemperatureValue(
-                        mMeasurementStream.thresholdLow.toFloat()
+                hlu_dialog_low.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mMeasurementStream.thresholdLow.toFloat()
+                        )
                     )
                 )
-            )
-            hlu_dialog_medium.setText(
-                labelFormat(
-                    TemperatureConverter.getAppropriateTemperatureValue(
-                        mMeasurementStream.thresholdMedium.toFloat()
+                hlu_dialog_medium.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mMeasurementStream.thresholdMedium.toFloat()
+                        )
                     )
                 )
-            )
-            hlu_dialog_high.setText(
-                labelFormat(
-                    TemperatureConverter.getAppropriateTemperatureValue(
-                        mMeasurementStream.thresholdHigh.toFloat()
+                hlu_dialog_high.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mMeasurementStream.thresholdHigh.toFloat()
+                        )
                     )
                 )
-            )
-            hlu_dialog_max.setText(
-                labelFormat(
-                    TemperatureConverter.getAppropriateTemperatureValue(
-                        mMeasurementStream.thresholdVeryHigh.toFloat()
+                hlu_dialog_max.setText(
+                    labelFormat(
+                        TemperatureConverter.getAppropriateTemperatureValue(
+                            mMeasurementStream.thresholdVeryHigh.toFloat()
+                        )
                     )
-                )
 
-            )
-        } else mView.apply {
+                )
+            } else mView.apply {
             hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
             hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
             hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
@@ -140,7 +140,9 @@ class HLUDialog(
         if (stringValue.isEmpty()) return null
 
         val value = stringValue.toInt()
-        return if (mMeasurementStream?.measurementType == "Temperature" && mMeasurementStream.detailedType == "C")
+        return if (mMeasurementStream?.isMeasurementTypeTemperature() == true
+            && mMeasurementStream.isDetailedTypeCelsius()
+        )
             temperatureFromCelsiusToFahrenheit(value)
         else value
     }

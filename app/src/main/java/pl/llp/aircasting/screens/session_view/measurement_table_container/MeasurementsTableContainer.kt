@@ -123,7 +123,7 @@ abstract class MeasurementsTableContainer {
     private fun bindMeasurements() {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
-            if (stream.measurementType == "Temperature")
+            if (stream.isMeasurementTypeTemperature())
                 TemperatureConverter.setAppropriateDetailedType(stream)
 
             bindStream(stream)
@@ -208,7 +208,7 @@ abstract class MeasurementsTableContainer {
         val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
         mLastMeasurementColors[stream.sensorName] = color
 
-        if (stream.measurementType == "Temperature") {
+        if (stream.isMeasurementTypeTemperature()) {
             measurementValue = TemperatureConverter.getAppropriateTemperatureValue(measurementValue)
         }
 

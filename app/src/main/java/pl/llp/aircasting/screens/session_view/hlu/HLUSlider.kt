@@ -78,7 +78,8 @@ class HLUSlider
     private fun setValuesForSliderBasedOnSelectedMeasurementStream() {
         mStream ?: return
 
-        if (mStream?.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled()) mSlider?.apply {
+        if (mStream!!.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled())
+            mSlider?.apply {
             valueFrom =
                 temperatureFromFahrenheitToCelsius(mSensorThreshold!!.from)
             valueTo =
@@ -113,7 +114,7 @@ class HLUSlider
         var thresholdHigh = values.getOrNull(2)?.toInt()
 
         mStream ?: return
-        if (mStream?.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled()) {
+        if (mStream!!.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) {
             thresholdLow = temperatureFromCelsiusToFahrenheit(thresholdLow!!)
             thresholdMedium = temperatureFromCelsiusToFahrenheit(thresholdMedium!!)
             thresholdHigh = temperatureFromCelsiusToFahrenheit(thresholdHigh!!)
