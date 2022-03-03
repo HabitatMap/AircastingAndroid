@@ -312,7 +312,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
-        mMeasurementsLine?.setPoints(mMeasurementPoints)
+        mMeasurementsLine?.points = mMeasurementPoints
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
 
@@ -337,28 +337,11 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     private fun locate() {
-        val latitude = mSessionPresenter?.session?.location?.latitude
-        val longitude = mSessionPresenter?.session?.location?.longitude
-
-        if (latitude != 0.0 || longitude != 0.0) {
-
+        if (mSessionPresenter?.session?.location?.latitude != 0.0 || mSessionPresenter?.session?.location?.longitude != 0.0) {
             if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else centerMap(
                 mSessionPresenter?.session?.location
             )
-
-        } else {
-
-            var lati: Double? = 0.0
-            var long: Double? = 0.0
-
-            for (measurement in mMeasurements) {
-                lati = measurement.latitude
-                long = measurement.longitude
-            }
-
-            centerMap(Session.Location(lati!!, long!!))
-        }
-
+        } else mMeasurements.apply { centerMap(Session.Location(first().latitude!!, first().longitude!!)) }
     }
 
     private fun clearMap() {
