@@ -15,18 +15,6 @@ class TemperatureConverter private constructor(settings: Settings) {
             return singleton
         }
 
-        fun getAppropriateTemperatureValue(temperature: Double): Double {
-            return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) temperatureFromFahrenheitToCelsius(
-                temperature
-            ) else temperature
-        }
-
-        fun getAppropriateTemperatureValue(temperature: Float): Float {
-            return if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) temperatureFromFahrenheitToCelsius(
-                temperature
-            ) else temperature
-        }
-
         fun setAppropriateDetailedType(stream: MeasurementStream) {
             if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) stream.detailedType = "C"
         }

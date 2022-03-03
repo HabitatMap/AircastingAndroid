@@ -4,15 +4,16 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_map.view.*
+import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import pl.llp.aircasting.lib.MeasurementColor
+import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
+import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
-import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
-import pl.llp.aircasting.lib.TemperatureConverter
-import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
 import java.util.*
 
 class StatisticsContainer {
@@ -53,7 +54,7 @@ class StatisticsContainer {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
 
-        if (stream?.isMeasurementTypeTemperature() == true) {
+        if (stream?.measurementType == "Temperature") {
             TemperatureConverter.setAppropriateDetailedType(stream)
         }
 
@@ -99,8 +100,10 @@ class StatisticsContainer {
 
             avg = sum / calculateMeasurementsSize(stream)
 
-            if (stream.isMeasurementTypeTemperature())
-                avg = TemperatureConverter.getAppropriateTemperatureValue(avg)
+            if (stream.isMeasurementTypeTemperature()
+                && TemperatureConverter.isCelsiusToggleEnabled()
+            )
+                avg = temperatureFromFahrenheitToCelsius(avg)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
@@ -118,10 +121,18 @@ class StatisticsContainer {
             mNow = getNowValue(stream)
 
         }
-        if (stream?.isMeasurementTypeTemperature() == true)
-            mNow = mNow?.let { TemperatureConverter.getAppropriateTemperatureValue(it) }
+        if (stream?.isMeasurementTypeTemperature() == true
+            && TemperatureConverter.isCelsiusToggleEnabled()
+        )
+            mNow = mNow?.let { temperatureFromFahrenheitToCelsius(it) }
 
-        bindStatisticValues(stream, mNow, mNowValue, mNowCircleIndicator, StatisticsValueBackground.RADIUS_BIG)
+        bindStatisticValues(
+            stream,
+            mNow,
+            mNowValue,
+            mNowCircleIndicator,
+            StatisticsValueBackground.RADIUS_BIG
+        )
     }
 
     private fun bindPeakStatistics(stream: MeasurementStream?) {
@@ -135,13 +146,21 @@ class StatisticsContainer {
             stream?.let { calculatePeak(it) }
         }
 
-        if (stream?.isMeasurementTypeTemperature() == true)
-            peak = peak?.let { TemperatureConverter.getAppropriateTemperatureValue(it) }
+        if (stream?.isMeasurementTypeTemperature() == true
+            && TemperatureConverter.isCelsiusToggleEnabled()
+        )
+            peak = peak?.let { temperatureFromFahrenheitToCelsius(it) }
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
 
-    private fun bindStatisticValues(stream: MeasurementStream?, value: Double?, valueView: TextView?, circleIndicator: ImageView?, radius: Float = StatisticsValueBackground.CORNER_RADIUS) {
+    private fun bindStatisticValues(
+        stream: MeasurementStream?,
+        value: Double?,
+        valueView: TextView?,
+        circleIndicator: ImageView?,
+        radius: Float = StatisticsValueBackground.CORNER_RADIUS
+    ) {
         var mValue = value
         valueView?.text = Measurement.formatValue(value)
         if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
@@ -173,7 +192,7 @@ class StatisticsContainer {
 
     private fun setMeasurementsValues(stream: MeasurementStream?) {
         if (mMeasurementsValues == null) {
-            mMeasurementsValues =  measurementsValues(stream)
+            mMeasurementsValues = measurementsValues(stream)
         }
     }
 
@@ -183,7 +202,10 @@ class StatisticsContainer {
         return stream.measurements.map { it.value }.toMutableList()
     }
 
-    private fun measurementsValuesForSpan(stream: MeasurementStream?, visibleTimeSpan: ClosedRange<Date>): List<Double> {
+    private fun measurementsValuesForSpan(
+        stream: MeasurementStream?,
+        visibleTimeSpan: ClosedRange<Date>
+    ): List<Double> {
         if (stream == null) return listOf()
 
         return stream.getMeasurementsForTimeSpan(visibleTimeSpan).map { it.value }
