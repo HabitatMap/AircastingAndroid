@@ -16,7 +16,7 @@ class TemperatureConverter private constructor(settings: Settings) {
         }
 
         fun setAppropriateDetailedType(stream: MeasurementStream) {
-            if (singleton?.mSettings?.isCelsiusScaleEnabled() == true) stream.detailedType = "C"
+            if (isCelsiusToggleEnabled()) stream.detailedType = "C"
         }
 
         fun isCelsiusToggleEnabled(): Boolean {
