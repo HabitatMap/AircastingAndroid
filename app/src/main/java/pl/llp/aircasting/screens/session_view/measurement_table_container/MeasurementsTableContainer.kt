@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.TemperatureConverter
-import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
@@ -225,8 +224,8 @@ abstract class MeasurementsTableContainer {
         )
         mLastMeasurementColors[stream.sensorName] = color
 
-        if (stream.isMeasurementTypeTemperature()) {
-            measurementValue = TemperatureConverter.getAppropriateTemperatureValue(measurementValue)
+        if (stream.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) {
+            measurementValue = TemperatureConverter.fahrenheitToCelsius(measurementValue)
         }
 
         val valueViewContainer = renderValueView(measurementValue, color, stream)

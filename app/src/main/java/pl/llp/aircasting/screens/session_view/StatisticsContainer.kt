@@ -8,8 +8,6 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.TemperatureConverter
-import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
-import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
@@ -103,7 +101,7 @@ class StatisticsContainer {
             if (stream.isMeasurementTypeTemperature()
                 && TemperatureConverter.isCelsiusToggleEnabled()
             )
-                avg = temperatureFromFahrenheitToCelsius(avg)
+                avg = TemperatureConverter.fahrenheitToCelsius(avg)
         }
 
         bindStatisticValues(stream, avg, mAvgValue, mAvgCircleIndicator)
@@ -124,7 +122,7 @@ class StatisticsContainer {
         if (stream?.isMeasurementTypeTemperature() == true
             && TemperatureConverter.isCelsiusToggleEnabled()
         )
-            mNow = mNow?.let { temperatureFromFahrenheitToCelsius(it) }
+            mNow = mNow?.let { TemperatureConverter.fahrenheitToCelsius(it) }
 
         bindStatisticValues(
             stream,
@@ -149,7 +147,7 @@ class StatisticsContainer {
         if (stream?.isMeasurementTypeTemperature() == true
             && TemperatureConverter.isCelsiusToggleEnabled()
         )
-            peak = peak?.let { temperatureFromFahrenheitToCelsius(it) }
+            peak = peak?.let { TemperatureConverter.fahrenheitToCelsius(it) }
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
@@ -164,7 +162,7 @@ class StatisticsContainer {
         var mValue = value
         valueView?.text = Measurement.formatValue(value)
         if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
-            mValue = temperatureFromCelsiusToFahrenheit(value!!)
+            mValue = TemperatureConverter.celsiusToFahrenheit(value!!)
         }
         val color = MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
         valueView?.background = StatisticsValueBackground(color, radius)

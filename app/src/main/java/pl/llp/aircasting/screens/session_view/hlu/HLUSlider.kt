@@ -9,8 +9,6 @@ import com.google.android.material.slider.RangeSlider
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.labelFormat
-import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
-import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 
@@ -80,17 +78,17 @@ class HLUSlider
 
         if (mStream!!.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled())
             mSlider?.apply {
-            valueFrom =
-                temperatureFromFahrenheitToCelsius(mSensorThreshold!!.from)
-            valueTo =
-                temperatureFromFahrenheitToCelsius(mSensorThreshold!!.to)
+                valueFrom =
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold!!.from)
+                valueTo =
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold!!.to)
 
-            values = arrayListOf(
-                temperatureFromFahrenheitToCelsius(mSensorThreshold?.thresholdLow!!.toFloat()),
-                temperatureFromFahrenheitToCelsius(mSensorThreshold?.thresholdMedium!!.toFloat()),
-                temperatureFromFahrenheitToCelsius(mSensorThreshold?.thresholdHigh!!.toFloat())
-            )
-        } else mSlider?.apply {
+                values = arrayListOf(
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold?.thresholdLow!!.toFloat()),
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold?.thresholdMedium!!.toFloat()),
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold?.thresholdHigh!!.toFloat())
+                )
+            } else mSlider?.apply {
             valueFrom = mSensorThreshold!!.from
             valueTo = mSensorThreshold!!.to
             values = arrayListOf(
@@ -115,9 +113,9 @@ class HLUSlider
 
         mStream ?: return
         if (mStream!!.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) {
-            thresholdLow = temperatureFromCelsiusToFahrenheit(thresholdLow!!)
-            thresholdMedium = temperatureFromCelsiusToFahrenheit(thresholdMedium!!)
-            thresholdHigh = temperatureFromCelsiusToFahrenheit(thresholdHigh!!)
+            thresholdLow = TemperatureConverter.celsiusToFahrenheit(thresholdLow!!)
+            thresholdMedium = TemperatureConverter.celsiusToFahrenheit(thresholdMedium!!)
+            thresholdHigh = TemperatureConverter.celsiusToFahrenheit(thresholdHigh!!)
         }
 
         thresholdLow?.let { mSensorThreshold?.thresholdLow = thresholdLow }

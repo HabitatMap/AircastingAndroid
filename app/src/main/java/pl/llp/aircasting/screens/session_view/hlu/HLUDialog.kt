@@ -2,14 +2,13 @@ package pl.llp.aircasting.screens.session_view.hlu
 
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.labelFormat
-import pl.llp.aircasting.lib.temperatureFromCelsiusToFahrenheit
-import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.common.BaseDialog
@@ -43,35 +42,28 @@ class HLUDialog(
     }
 
     private fun setupView() {
+        mView.apply {
+            setThresholdText(hlu_dialog_min, mMeasurementStream?.thresholdVeryLow)
+            setThresholdText(hlu_dialog_low, mMeasurementStream?.thresholdLow)
+            setThresholdText(hlu_dialog_medium, mMeasurementStream?.thresholdMedium)
+            setThresholdText(hlu_dialog_high, mMeasurementStream?.thresholdHigh)
+            setThresholdText(hlu_dialog_max, mMeasurementStream?.thresholdVeryHigh)
+        }
+    }
 
-        if (mMeasurementStream?.isMeasurementTypeTemperature() == true
-            && TemperatureConverter.isCelsiusToggleEnabled())
-            mView.apply {
-                hlu_dialog_min.setText(
+    private fun setThresholdText(label: TextView, threshold: Int?) {
+        if (threshold != null) {
+            label.text =
+                if (mMeasurementStream?.isMeasurementTypeTemperature() == true
+                    && TemperatureConverter.isCelsiusToggleEnabled()
+                )
                     labelFormat(
-                        temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdVeryLow.toFloat())
+                        TemperatureConverter.fahrenheitToCelsius(
+                            threshold.toFloat()
+                        )
                     )
-                )
-                hlu_dialog_low.setText(
-                    labelFormat(temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdLow.toFloat()))
-                )
-                hlu_dialog_medium.setText(
-                    labelFormat(temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdMedium.toFloat()))
-                )
-                hlu_dialog_high.setText(
-                    labelFormat(temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdHigh.toFloat()))
-                )
-                hlu_dialog_max.setText(
-                    labelFormat(
-                        temperatureFromFahrenheitToCelsius(mMeasurementStream.thresholdVeryHigh.toFloat())
-                    )
-                )
-            } else mView.apply {
-            hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
-            hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
-            hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
-            hlu_dialog_high.setText(mSensorThreshold?.thresholdHigh.toString())
-            hlu_dialog_max.setText(mSensorThreshold?.thresholdVeryHigh.toString())
+                else
+                    threshold.toString()
         }
     }
 
@@ -128,7 +120,7 @@ class HLUDialog(
         return if (mMeasurementStream?.isMeasurementTypeTemperature() == true
             && mMeasurementStream.isDetailedTypeCelsius()
         )
-            temperatureFromCelsiusToFahrenheit(value)
+            TemperatureConverter.celsiusToFahrenheit(value)
         else value
     }
 }
