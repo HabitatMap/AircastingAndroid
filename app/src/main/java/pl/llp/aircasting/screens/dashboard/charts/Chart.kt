@@ -166,10 +166,7 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun chartUnitText(): String {
-        if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true)
-            return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.detailedType}"
-
-        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
+        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.detailedType}"
     }
 
     private fun chartUnitLabelId(): Int {
