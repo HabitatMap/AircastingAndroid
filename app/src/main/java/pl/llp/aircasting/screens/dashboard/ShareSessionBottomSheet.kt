@@ -10,12 +10,12 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.ValidationHelper
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BottomSheet
-import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 
 class ShareSessionBottomSheet(
     private val mListener: Listener,
@@ -44,7 +44,7 @@ class ShareSessionBottomSheet(
 
     override fun setup() {
         expandBottomSheet()
-        
+
         emailInputLayout = contentView?.email_text_input_layout
         emailInput = contentView?.email_input
         radioGroup = contentView?.stream_choose_radio_group
@@ -115,8 +115,8 @@ class ShareSessionBottomSheet(
         currentSessionStreams.forEach { stream ->
             setRadioButtonProperties(stream)
         }
-        radioGroup?.check(fieldValues.keys.min() ?: 0)
-        chosenSensor = fieldValues[fieldValues.keys.min()]?.sensorName.toString()
+        radioGroup?.check(fieldValues.keys.minOrNull() ?: 0)
+        chosenSensor = fieldValues[fieldValues.keys.minOrNull()]?.sensorName.toString()
     }
 
     private fun setRadioButtonProperties(stream: MeasurementStream){

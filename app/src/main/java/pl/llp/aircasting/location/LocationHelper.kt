@@ -1,18 +1,19 @@
 package pl.llp.aircasting.location
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.IntentSender
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.events.LocationChanged
 import pl.llp.aircasting.lib.ResultCodes
-import org.greenrobot.eventbus.EventBus
 
-
-class LocationHelper(private val mContext: Context) {
+class LocationHelper(mContext: Context) {
     companion object {
         private var singleton: LocationHelper? = null
         private var started = false
@@ -69,33 +70,41 @@ class LocationHelper(private val mContext: Context) {
         task.addOnFailureListener { e ->
             if (e is ResolvableApiException) {
                 try {
-                    e.startResolutionForResult(activity,
-                        ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE)
-                } catch (sendEx: IntentSender.SendIntentException) { }
+                    e.startResolutionForResult(
+                        activity,
+                        ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Log.d("TAG", sendEx.message.toString())
+                }
             }
         }
     }
 
+    @SuppressLint("MissingPermission")
     fun start() {
-        locationCallback = object: LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     mLastLocation = location
                 }
 
-                EventBus.getDefault().post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
+                EventBus.getDefault()
+                    .post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
             }
         }
 
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+            locationCallback as LocationCallback, Looper.getMainLooper())
+
     }
 
     fun stop() {
         started = false
 
         if (locationCallback != null) {
-            fusedLocationClient.removeLocationUpdates(locationCallback)
+            fusedLocationClient.removeLocationUpdates(locationCallback!!)
         }
     }
 

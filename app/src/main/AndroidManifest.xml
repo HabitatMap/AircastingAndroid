@@ -58,7 +58,8 @@
         <activity
             android:name="pl.llp.aircasting.screens.main.MainActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
