@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 
 
@@ -118,9 +119,9 @@ class Chart(context: Context, rootView: View?) {
         }
 
         val dataSet: LineDataSet =
-            if (mSessionPresenter?.selectedStream?.measurementType == "Temperature") {
+            if (mSessionPresenter?.selectedStream?.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled()) {
                 val celsiusEntries: List<Entry> = mEntries.map { entry ->
-                    Entry(entry.x, TemperatureConverter.getAppropriateTemperatureValue(entry.y))
+                    Entry(entry.x, temperatureFromFahrenheitToCelsius(entry.y))
                 }
                 LineDataSet(celsiusEntries, "")
             } else LineDataSet(mEntries, "")

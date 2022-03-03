@@ -1,19 +1,21 @@
 package pl.llp.aircasting.screens.session_view.measurement_table_container
 
 import android.content.Context
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.core.view.forEach
 import androidx.core.view.get
+import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
+import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.temperatureFromFahrenheitToCelsius
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.session_view.SelectedSensorBorder
-import kotlinx.android.synthetic.main.session_card.view.*
-import pl.llp.aircasting.lib.TemperatureConverter
-import pl.llp.aircasting.models.Session
 
 
 abstract class MeasurementsTableContainer {
@@ -77,7 +79,7 @@ abstract class MeasurementsTableContainer {
         mCollapsed = true
 
         mDisplayValues = displayValues
-         if (!displayValues && mCollapsed) mMeasurementValues = null
+        if (!displayValues && mCollapsed) mMeasurementValues = null
         refresh()
     }
 
@@ -107,7 +109,10 @@ abstract class MeasurementsTableContainer {
         }
     }
 
-    fun bindExpandCardCallbacks(expandCardCallback: (() -> Unit?)?, onExpandSessionCardClickedCallback: (() -> Unit?)?) {
+    fun bindExpandCardCallbacks(
+        expandCardCallback: (() -> Unit?)?,
+        onExpandSessionCardClickedCallback: (() -> Unit?)?
+    ) {
         expandCard = expandCardCallback
         onExpandSessionCard = onExpandSessionCardClickedCallback
         mCollapsed = false
@@ -171,7 +176,10 @@ abstract class MeasurementsTableContainer {
     //TODO - setTextAppearance is deprecated
     private fun resetMeasurementHeader(headerView: View) {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
-        headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeader)
+        headerTextView.setTextAppearance(
+            mContext,
+            R.style.TextAppearance_Aircasting_MeasurementsTableHeader
+        )
     }
 
     private fun markMeasurementHeaderAsSelected(stream: MeasurementStream) {
@@ -182,12 +190,16 @@ abstract class MeasurementsTableContainer {
             val headerView = mMeasurementHeaders?.get(index)
             val headerTextView = headerView?.findViewById<TextView>(R.id.measurement_header)
             headerTextView?.let { markMeasurementHeaderAsSelected(headerTextView) }
-        } catch(e: IndexOutOfBoundsException) {}
+        } catch (e: IndexOutOfBoundsException) {
+        }
     }
 
     //TODO - setTextAppearance is deprecated
     private fun markMeasurementHeaderAsSelected(headerTextView: TextView) {
-        headerTextView.setTextAppearance(mContext, R.style.TextAppearance_Aircasting_MeasurementsTableHeaderSelected)
+        headerTextView.setTextAppearance(
+            mContext,
+            R.style.TextAppearance_Aircasting_MeasurementsTableHeaderSelected
+        )
     }
 
     private fun markMeasurementValueAsSelected(stream: MeasurementStream) {
@@ -199,18 +211,22 @@ abstract class MeasurementsTableContainer {
             if (valueViewContainer != null && color != null) {
                 setValueViewBorder(valueViewContainer, color)
             }
-        } catch(e: IndexOutOfBoundsException) {}
+        } catch (e: IndexOutOfBoundsException) {
+        }
     }
 
     private fun bindMeasurement(stream: MeasurementStream) {
         var measurementValue = getMeasurementValue(stream) ?: return
 
-        val color = MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(stream))
+        val color = MeasurementColor.forMap(
+            mContext,
+            measurementValue,
+            mSessionPresenter?.sensorThresholdFor(stream)
+        )
         mLastMeasurementColors[stream.sensorName] = color
 
-        if (stream.measurementType == "Temperature") {
-            measurementValue = TemperatureConverter.getAppropriateTemperatureValue(measurementValue)
-        }
+        if (stream.measurementType == "Temperature" && TemperatureConverter.isCelsiusToggleEnabled()) measurementValue =
+            temperatureFromFahrenheitToCelsius(measurementValue)
 
         val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)
@@ -235,7 +251,11 @@ abstract class MeasurementsTableContainer {
         return mSessionPresenter?.isFixed() == false && mSessionPresenter?.isDisconnected() == true
     }
 
-    private fun renderValueView(measurementValue: Double, color: Int, stream: MeasurementStream): LinearLayout {
+    private fun renderValueView(
+        measurementValue: Double,
+        color: Int,
+        stream: MeasurementStream
+    ): LinearLayout {
         val valueView = mLayoutInflater.inflate(R.layout.measurement_value, null, false)
 
         val circleView = valueView.findViewById<ImageView>(R.id.circle_indicator)
@@ -253,7 +273,8 @@ abstract class MeasurementsTableContainer {
         valueView.background = null
 
         val inflater: LayoutInflater = LayoutInflater.from(mContext)
-        var containerLayout: LinearLayout = inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
+        var containerLayout: LinearLayout =
+            inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
         containerLayout.setOnClickListener {
             changeSelectedStream(stream)
         }
