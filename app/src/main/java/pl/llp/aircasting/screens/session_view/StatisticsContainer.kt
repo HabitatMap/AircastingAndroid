@@ -54,7 +54,7 @@ class StatisticsContainer {
     fun bindSession(sessionPresenter: SessionPresenter?) {
         val stream = sessionPresenter?.selectedStream
 
-        if (stream?.measurementType == "Temperature") {
+        if (stream?.isMeasurementTypeTemperature() == true) {
             TemperatureConverter.setAppropriateDetailedType(stream)
         }
 
