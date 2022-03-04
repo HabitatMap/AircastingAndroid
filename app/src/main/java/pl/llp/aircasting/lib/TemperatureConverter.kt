@@ -23,21 +23,22 @@ class TemperatureConverter private constructor(settings: Settings) {
             return singleton?.mSettings?.isCelsiusScaleEnabled() == true
         }
 
-        fun fahrenheitToCelsius(fahrenheitTemperature: Double): Double {
-            return (Math.round(((fahrenheitTemperature - 32) * 5) / 9)).toDouble()
+        fun fahrenheitToCelsius(fahrenheit: Double): Double {
+            return (Math.round(((fahrenheit - 32) * 5) / 9)).toDouble()
         }
 
-        fun fahrenheitToCelsius(fahrenheitTemperature: Float): Float {
-            return (Math.round(((fahrenheitTemperature - 32) * 5) / 9)).toFloat()
+        fun fahrenheitToCelsius(fahrenheit: Float): Float {
+            return fahrenheitToCelsius(fahrenheit.toDouble()).toFloat()
         }
 
-        fun celsiusToFahrenheit(fahrenheitTemperature: Int): Int {
-            return fahrenheitTemperature * 9 / 5 + 32
+        fun celsiusToFahrenheit(celsius: Double): Double {
+            return (Math.round(celsius * 9 / 5 + 32)).toDouble()
         }
 
-        fun celsiusToFahrenheit(fahrenheitTemperature: Double): Double {
-            return (Math.round(fahrenheitTemperature * 9 / 5 + 32)).toDouble()
+        fun celsiusToFahrenheit(celsius: Int): Int {
+            return celsiusToFahrenheit(celsius.toDouble()).toInt()
         }
+
     }
 
     private var mSettings: Settings? = settings
