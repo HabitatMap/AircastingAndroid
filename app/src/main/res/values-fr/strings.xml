@@ -1,0 +1,480 @@
+<resources>
+    <string name="app_name">AirCasting</string>
+
+    <!-- Sign in -->
+    <string name="invalid_credentials_message">Incorrect profile name or password.</string>
+    <string name="login_header">Se connecter</string>
+    <string name="login_description">to record and map your environment</string>
+    <string name="profile_name_hint">Profile name</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Sign in</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="create_account_prompt">First time here? </string>
+    <string name="create_account_text_button">Create an account</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="forgot_password">Forgot password</string>
+
+    <!-- Create account -->
+    <string name="create_account_header">Create account</string>
+    <string name="create_account_description">to record and map your environment</string>
+    <string name="create_account_button">Create account</string>
+    <string name="email_hint">Email</string>
+    <string name="login_prompt">Already have an account?</string>
+    <string name="login_text_button">Sign in</string>
+    <string name="send_emails">Send me emails from AirCasting</string>
+    <string name="create_account_errors_message">There are errors in the form. Please fix them before continuing.</string>
+
+    <!-- Forgot password -->
+    <string name="profile_name_email_hint">Profile name or email</string>
+
+    <!--  Dashboard -->
+    <string name="title_settings">Settings</string>
+    <string name="dashboard_empty_header">Ready to get started?</string>
+    <string name="dashboard_empty_text">Record a new session to monitor your health &amp; environment.</string>
+    <string name="dashboard_tabs_following">Following</string>
+    <string name="dashboard_tabs_mobile_active">Mobile active</string>
+    <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
+    <string name="dashboard_tabs_fixed">Fixed</string>
+    <string name="record_new_session">Record new session</string>
+    <string name="disconnect_session">Enter standalone mode</string>
+    <string name="reconnect_session">Reconnect session</string>
+    <string name="stop_session">Finish recording session</string>
+    <string name="delete_session">Delete session</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="follow_button">follow</string>
+    <string name="unfollow_button">unfollow</string>
+    <string name="map_button">map</string>
+    <string name="graph_button">graph</string>
+    <string name="dashboard_empty_mobile_active_header">Start recording a mobile session</string>
+    <string name="dashboard_empty_mobile_active_text">If you plan on moving around while recording measurements.</string>
+    <string name="record_mobile_session">Record mobile session</string>
+
+    <string name="disconnected_view_bluetooth_device_header">Measurement device\ndisconnected</string>
+    <string name="disconnected_view_bluetooth_device_description">Your measurement device is no longer connected to the AirCasting app. Make sure Bluetooth is on and your measurement device is nearby.</string>
+    <string name="disconnected_view_bluetooth_device_reconnect_button">Reconnect</string>
+    <string name="disconnected_view_bluetooth_device_finish_button">Finish session</string>
+    <string name="edit_session">Edit session</string>
+    <string name="edit_session_data">Edit session data</string>
+    <string name="tags_bottom_sheet_input">Tags:</string>
+    <string name="session_name_bottom_sheet_input">Session name</string>
+    <string name="edit_data">Edit data</string>
+    <string name="share_title">View my AirCasting session</string>
+
+    <!--  Delete streams and sessions -->
+    <string name="delete_session_data">Delete this session</string>
+    <string name="delete_streams">Delete streams</string>
+    <string name="delete_all_data_from_session">All from this session</string>
+    <string name="delete_streams_subtitle">Which streams would you like to delete?</string>
+    <string name="are_you_sure">Are you sure?</string>
+
+    <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
+    <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
+    <string name="disconnected_view_airbeam3_sync_button">Finish recording &amp; sync</string>
+    <string name="disconnected_view_airbeam3_finish_button">Finish recording &amp; don\'t sync</string>
+
+    <!--  Dialogs -->
+    <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
+    <string name="turn_on_wifi_dialog_description">To see available networks list you need to turn on WIFI.</string>
+    <string name="turn_on_wifi_dialog_ok_button">Turn on</string>
+
+    <!-- Let's begin (new session start) -->
+    <string name="title_lets_start">Let\'s begin</string>
+    <string name="record_new_session_title">Record a new session</string>
+    <string name="select_session_type_header">How would you like to add your session?</string>
+    <string name="new_session_more_info"><u>more info</u></string>
+    <string name="fixed_session_start_title">Fixed session</string>
+    <string name="fixed_session_start_desc">for measuring in one place</string>
+    <string name="mobile_session_start_title">Mobile session</string>
+    <string name="mobile_session_start_desc">for moving around</string>
+    <string name="or">or</string>
+    <string name="sync_title">Sync data from\nAirBeam3</string>
+    <string name="sync_description">if you recorded with AirBeam3</string>
+    <string name="clear_card_title">Clear SD card</string>
+    <string name="clear_card_description">This is temporary button for the testing purposes</string>
+
+    <!-- more info modal -->
+    <string name="more_info_title">Session types</string>
+    <string name="more_info_text_part1">If you plan on moving around with the AirBeam while recording air quality measurements, configure the AirBeam to record a</string>
+    <string name="more_info_text_part2">mobile</string>
+    <string name="more_info_text_part3">session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second. After recording for >2 hours, your measurements will be integrated into 5-second averages. After recording for >9 hours, your measurements will be integrated into 1-minute averages. \n\nIf you plan to leave the AirBeam indoors or hang it outside then configure it to record a</string>
+    <string name="more_info_text_part4">fixed</string>
+    <string name="more_info_text_part5">session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute and geocoordinates are fixed to a set location.</string>
+    <string name="more_info_cancel_button_text">CLOSE</string>
+
+    <!-- New session Step 1 -->
+    <string name="turn_on_location_services_image_desc">Turn on location services</string>
+    <string name="turn_on_location_services_header">Turn on location services</string>
+    <string name="turn_on_location_services_description">To map your measurements, turn on location services.</string>
+    <string name="turn_on_location_services_ok_button">Turn on</string>
+    <string name="locations_services_must_be_turned_on_part1">Location services must be turned on to enable Bluetooth scanning.</string>
+    <string name="locations_services_must_be_turned_on_part2">You\'ll be prompted to turn off location services after you\'ve selected the Bluetooth device you\'ll be recording with.</string>
+
+    <!-- New session Step 2 -->
+    <string name="turn_on_bluetooth_image_desc">Turn on Bluetooth</string>
+    <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
+    <string name="turn_on_bluetooth_description">Turn on Bluetooth to enable your phone to connect to the AirBeam.</string>
+    <string name="turn_on_bluetooth_ok_button">Continue</string>
+
+    <!-- New session Step 3 -->
+    <!-- Mobile -->
+    <string name="power_on_bluetooth_device_header">Power on your Bluetooth device</string>
+    <string name="power_on_bluetooth_device_desc">If using AirBeam2, wait for the connection indicator to change from red to green before continuing.</string>
+    <string name="power_on_bluetooth_device_ready_button">Continue</string>
+    <string name="power_on_bluetooth_device_image_desc">Power on your AirBeam</string>
+    <!-- Fixed -->
+    <string name="turn_on_airbeam_header">Power on your AirBeam</string>
+    <string name="turn_on_airbeam_description">If using AirBeam2, wait for the connection indicator to change from red to green before continuing.</string>
+    <string name="turn_on_airbeam_ready_button">Continue</string>
+    <string name="turn_on_airbeam_image_desc">Power on your AirBeam</string>
+
+    <!-- New session Step 4 -->
+    <string name="select_device_type_header">What device are you using to record this session?</string>
+    <string name="bluetooth_device_card_header">Bluetooth device</string>
+    <string name="bluetooth_device_card_body">for example AirBeam</string>
+    <string name="microphone_device_card_header">Phone microphone</string>
+    <string name="microphone_device_card_body">to measure sound level</string>
+    <string name="select_device_type_button">Choose</string>
+
+    <!-- New session Step 5 -->
+    <string name="select_device_header">Choose the device you\'d like to record with.</string>
+    <string name="select_device_airbeams_label">AirBeams</string>
+    <string name="select_device_others_label">Others</string>
+    <string name="select_device_connect_button">Connect</string>
+    <string name="select_device_refresh_button"><u>Don\'t see a device? Refresh scanning.</u></string>
+
+    <!--  New session Step 6 - Connecting -->
+    <string name="connecting_airbeam_header">Connecting</string>
+    <string name="connecting_image_desc">Connecting</string>
+    <string name="connecting_airbeam_description">This should take less than 10 seconds.</string>
+    <string name="airbeam2">AirBeam2</string>
+
+    <!--  New session Step 7 - Connected -->
+    <string name="airbeam_connected_header">AirBeam connected</string>
+    <string name="airbeam_connected_image_desc">AirBeam connected</string>
+    <string name="airbeam_connected_description">Your AirBeam is connected to your phone and ready to take some measurements.</string>
+    <string name="airbeam_connected_continue_button">Continue</string>
+
+    <!-- Turn off location services -->
+    <string name="turn_off">Turn off</string>
+    <string name="turn_off_location_description_text">You can turn off location services now</string>
+    <string name="turn_off_location_services">Turn off location services</string>
+    <string name="turn_off_location_services_image_desc">Turn off location services</string>
+    <string name="skip">Skip</string>
+
+    <!-- New session step 8 - Session details -->
+    <string name="fixed_session_details_header">New session details</string>
+    <string name="mobile_session_details_header">New session details</string>
+    <string name="session_details_session_name_hint">Session name</string>
+    <string name="session_details_session_tags_hint">Tags</string>
+    <string name="session_details_continue_button">Continue</string>
+    <string name="fixed_session_details_indoor_toggle_header">Where will you place your AirBeam?</string>
+    <string name="fixed_session_details_indoor">Indoor</string>
+    <string name="fixed_session_details_outdoor">Outdoor</string>
+    <string name="fixed_session_details_streaming_method_header">Data transmission:</string>
+    <string name="fixed_session_details_cellular">Cellular</string>
+    <string name="fixed_session_details_wifi">WiFi</string>
+    <string name="fixed_session_details_networks_list_header">Available 2.4 GHz networks:</string>
+    <string name="fixed_session_details_refresh_networks_list_button"><u>Refresh</u></string>
+    <string name="fixed_session_details_wifi_password_dialog_header">Provide password for \"%1$s\" network</string>
+    <string name="session_details_network_password_hint">Password</string>
+
+    <!-- New session step 9 - Confirmation / Choose location -->
+    <string name="session_confirmation_header">Are you ready?</string>
+    <string name="session_confirmation_description_part1">Your</string>
+    <string name="session_confirmation_description_part2">session</string>
+    <string name="session_confirmation_description_part3">is ready to start gathering data.</string>
+    <string name="session_confirmation_start_recording_button">Start recording</string>
+    <string name="mobile_session_confirmation_instructions">Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.</string>
+    <string name="mobile_session_confirmation_start_recording_button">Start recording</string>
+    <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
+    <string name="fixed_session_choose_location_continue_button">Continue</string>
+    <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
+
+    <!-- Map view -->
+    <string name="avg_label">Avg</string>
+    <string name="now_label">Now</string>
+    <string name="peak_label">Peak</string>
+
+    <!-- HLU dialog -->
+    <string name="hlu_dialog_header">Heatmap settings</string>
+    <string name="hlu_dialog_description">Values beyond Min and Max will not be displayed.</string>
+    <string name="hlu_dialog_min">Min</string>
+    <string name="hlu_dialog_low">Low</string>
+    <string name="hlu_dialog_medium">Medium</string>
+    <string name="hlu_dialog_high">High</string>
+    <string name="hlu_dialog_max">Max</string>
+    <string name="hlu_dialog_save_button">Save changes</string>
+    <string name="hlu_dialog_reset_button">Reset to default</string>
+
+    <!-- Errors -->
+    <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
+    <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
+    <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
+    <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
+    <string name="errors_audio_required">Audio permissions are required to continue</string>
+    <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
+    <string name="errors_network_forgot_password">You need to have internet connection to reset your password</string>
+    <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
+    <string name="errors_network_required_delete_streams">You need to have internet connection to delete session</string>
+    <string name="errors_airbeam_connection_failed">AirBeam connection failed. Please try again.</string>
+
+    <string name="parameters">Parameters:</string>
+    <string name="session_measurements_description">Most recent measurement:</string>
+    <string name="session_last_min_measurements_description">Last minute measurement:</string>
+    <string name="session_last_sec_measurements_description">Last second measurement:</string>
+    <string name="session_avg_measurements_description">Avg value:</string>
+    <string name="session_no_measurements_label1">Your AirBeam is gathering data.</string>
+    <string name="session_no_measurements_label2">Measurements will appear in 3 minutes.</string>
+    <string name="session_name_required">Session name can\'t be blank.</string>
+    <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
+    <string name="active_session_already_exists">Active session already exists for this device.</string>
+    <string name="hlu_thresholds_error">All values needs to be present and fit the range (min &lt; low &lt; medium &lt; high &lt; max).</string>
+
+    <!-- Finish session dialog -->
+    <string name="dialog_finish_recording_header_part1">Finish recording</string>
+    <string name="dialog_finish_recording_header_part3">\?</string>
+    <string name="dialog_finish_recording_text_part1">The session will be moved to</string>
+    <string name="dialog_finish_recording_text_part2">Mobile Dormant</string>
+    <string name="dialog_finish_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
+    <string name="finish_recording">Finish recording</string>
+
+
+    <!-- Finish and sync session dialog -->
+    <string name="dialog_finish_and_sync_recording_header_part1">Finish recording</string>
+    <string name="dialog_finish_and_sync_recording_header_part3">and sync from SD card?</string>
+    <string name="dialog_finish_and_sync_recording_text_part1">The session will be moved to</string>
+    <string name="dialog_finish_and_sync_recording_text_part2">Mobile Dormant</string>
+    <string name="dialog_finish_and_sync_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
+    <string name="dialog_finish_and_sync_recording_text_part4">SD card will be cleared afterwards.</string>
+    <string name="finish_recording_and_sync">Finish recording &amp; sync</string>
+
+    <!-- Chart -->
+    <string name="fixed_session_units_label">1 hr avg</string>
+    <string name="mobile_session_units_label">1 min avg</string>
+
+    <!-- Settings -->
+    <string name="settings_my_account">My account</string>
+    <string name="settings_contribute_to_crowdmap">Contribute to crowd map</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="settings_contribute_to_crowdmap_description">Data contributed to the CrowdMap is publicly available at aircasting.org</string>
+    <string name="settings_backend_settings">Backend settings</string>
+    <string name="settings_backend_url">Url</string>
+    <string name="settings_backend_port">Port</string>
+    <string name="map_enable_description">Turns off GPS tracking &amp; session syncing. Use \'Share file\' to retrieve your measurements via email.</string>
+    <string name="disable_mapping">Disable mapping</string>
+    <string name="application_version">Application version:</string>
+    <string name="version">version</string>
+    <string name="your_privacy_link">https://www.habitatmap.org/aircasting-app-privacy-policy</string>
+    <string name="use_24_hour_format">Use 24-hour format</string>
+    <string name="clear_sd_card">Clear SD card</string>
+    <string name="your_privacy">Your privacy</string>
+
+    <!-- Clearing SD Card -->
+    <string name="restart_airbeam_header">Restart your AirBeam</string>
+    <string name="restart_airbeam_description">Turn your AirBeam off and then back on.</string>
+    <string name="sd_card_clear_select_device_header">Select the device you\'d like to clear</string>
+    <string name="sd_card_clearing_header">Clearing SD card</string>
+    <string name="sd_card_clearing_description">This should take less than 10 seconds.</string>
+    <string name="sd_card_cleared_header">SD card cleared</string>
+    <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
+    <string name="sd_card_cleared_continue_button">Continue</string>
+
+    <!-- Sync -->
+    <string name="refreshing_sessions_header">Updating sessions</string>
+    <string name="refreshing_sessions_description">Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet.</string>
+    <string name="refreshed_sessions_header_successful">Success</string>
+    <string name="refreshed_sessions_description_successful">Sessions were updated successfully.</string>
+    <string name="refreshed_sessions_header_error">Something went wrong</string>
+    <string name="refreshed_sessions_description_error">There was a problem while refreshing sessions. Please check your internet connection and try again.</string>
+    <string name="refreshed_sessions_retry">Try again</string>
+    <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
+    <string name="airbeam_syncing_header">Syncing</string>
+    <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync.</string>
+    <string name="airbeam_syncing_finalizing">Finalizing...</string>
+    <string name="airbeam_syncing_finished_header">Sync complete</string>
+    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.</string>
+    <string name="sync_error_header">Something went wrong</string>
+    <string name="sync_unknown_error">Unexpected error happen. Please contact support.</string>
+    <string name="sync_unavailable_dialog_header">SD card sync unavailable</string>
+    <string name="sync_unavailable_dialog_description">To use the AirBeam3 in standalone mode and sync the SD card,\nAndroid 8 or higher + Bluetooth 5 are required</string>
+    <string name="sync_unavailable_dialog_continue_button">Continue</string>
+
+    <!-- My account -->
+    <string name="my_account_sign_out">Sign out</string>
+    <string name="my_account_info">You are currently logged in as\n%1$s</string>
+
+    <!--  Sensor services -->
+    <string name="service_notification_title">AirCasting is recording a session</string>
+    <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
+    <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
+    <string name="ab_sync_service_notification_message">AirBeam is syncing data and Location Services are active</string>
+
+    <!-- Share session -->
+    <string name="share_file">Share file</string>
+    <string name="share_session">Share session</string>
+    <string name="select_a_stream_to_share">Select a stream to share</string>
+    <string name="share_link">Share link</string>
+    <string name="sensor_param">sensor_name</string>
+    <string name="share_text">View my AirCasting session: \n</string>
+    <string name="or_email_a_csv_file_with_your_session_data">Or email a CSV file with your session data</string>
+    <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
+    <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
+    <string name="share_session_email_hint">Email</string>
+
+    <!-- Microphone settings -->
+    <string name="microphone_settings_title">Phone Microphone Calibration</string>
+    <string name="microphone_settings_description">Adjust via trial &amp; error until the measurements in the app match your reference sound level meter. For most phones it\'s between 80 and 100.</string>
+    <string name="microphone_settings">Microphone settings</string>
+
+
+    <string name="reset_email_sent">An email with further instructions has been sent</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="fixed_session_no_internet_connection_header">No internet connection</string>
+    <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
+    <string name="provided_email_is_not_correct">Provided email is not correct</string>
+    <string name="generate_csv_file_without_share_link">Generate a CSV file with your session data</string>
+
+    <!-- Did you know box -->
+    <string name="did_you_know">Did you know?</string>
+    <string name="did_you_know_box_tip_1">AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_page1_header">AirCasting</string>
+    <string name="onboarding_page1_description">record and map measurements from health and environmental monitoring devices</string>
+    <string name="get_started">Get started</string>
+    <string name="onboarding_page2_header">How\'s the air near you?</string>
+    <string name="onboarding_page2_description">Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.</string>
+    <string name="continue_button_onboarding">Continue</string>
+    <string name="onboarding_page3_header">Measure and map your exposure to air pollution</string>
+    <string name="onboarding_page3_description">Connect AirBeam to measure air quality, humidity, and temperature.</string>
+    <string name="learn_more_button_onboarding">Learn more</string>
+    <string name="onboarding_bottomsheet_page3_header">How AirBeam works?</string>
+    <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
+    <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
+    <string name="onboarding_page4_header">Your privacy</string>
+    <string name="onboarding_page4_description">Review our commitment to preserving your privacy and accept our privacy policy.</string>
+    <string name="accept_button_onboarding">Accept</string>
+    <string name="onboarding_bottomsheet_page4_header">Our privacy policy</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_header">HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
+        This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
+    </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_1">Personal Data Controller</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_2">Contact Details of the Personal Data Controller</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_3">Categories of Personal Data </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_4">Purposes &amp; Legal Basis for the Processing of Personal Data </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_5">How HabitatMap collects your personal data? </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_6">Tracking Tools and Automated Decision-making </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_7">Categories of the Recipients of Personal Data</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_8">Recipients of Personal Data Outside the European Economic Area</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_9">Period of Personal Data Storage</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_10">Rights of the Data Subject</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_11">Miscellaneous</string>
+
+    <string name="onboarding_bottomsheet_page4_description_1">The controller of your personal data is HabitatMap Incorporated, with its registered office located at 34A St Marks Avenue, Brooklyn, NY 11217 USA</string>
+    <string name="onboarding_bottomsheet_page4_description_2">You can contact the data controller:
+        \n\u2022 postal address: 34A St Marks Avenue, Brooklyn, NY 11217 USA
+        \n\u2022 e-mail address: info@habitatmap.org </string>
+    <string name="onboarding_bottomsheet_page4_description_3">
+        1. Data Obtained Directly from Users of the AirCasting App \n\n
+            HabitatMap controls the personal data that you provide when using the AirCasting mobile app, including the following types of data:
+            \n\u2022 E-mail address;
+            \n\u2022 Information regarding your request to receive email newsletters;
+            \n\u2022 Any data you provide when communicating with HabitatMap via email;
+            \n\u2022 Location data;
+
+            Providing the above mentioned data is voluntary. In addition, you can modify your location sharing settings and withdraw the consent to receive email newsletters at any time.
+            HabitatMap’s AirCasting app and AirCasting website neither request any personally identifiable information nor require any personally identifiable information. Before using the AirCasting app, you must create a profile name and provide an email address. Neither your profile name nor email address need to include information that identifies you personally. In addition, we do not verify email addresses, so the email address provided need not be valid. Though it should be noted, an invalid email address will prevent you from recovering your account in the event you forget your password. \n
+            Location: The AirCasting app collects location data to enable geolocation of your health and environmental monitoring measurements. When recording a mobile session, the app will track your location even when the app is closed or not in use. The AirCasting app has several features that enable location data to remain private. AirCasters can “disable maps” in the app settings, which turns off GPS tracking. When AirCasters record data with the GPS disabled, the data never leaves the Android device and is never synced to our servers. AirCasters can elect to save their data to the AirCasting server but not contribute it to the “CrowdMap”. This means the data can only be viewed on the website via a link that you generate inside the app when signed in. AirCasters can also elect to send the data from the app directly to their own server, entirely bypassing the AirCasting server. In addition, when recording fixed indoor sessions, GPS coordinates are never logged. \n
+            Microphone: To record sound level measurements, the AirCasting app requests permission to access your microphone. The raw audio captured by AirCasters’ microphones is never recorded; rather the audio signal is immediately converted to a sound level measurement before it is stored on the phone and communicated to the AirCasting server. \n
+            Phone Status: To record sound level measurements, the AirCasting app requests permission to read your phone’s state. Knowing the state of an AirCaster’s phone allows the app to temporarily suspend the recording of sound level measurements during phone calls. \n
+            USB Storage: To attach photos to notes, the AirCasting app requests permission to read the contents of your USB storage. \n\n
+
+            2. Data Received by HabitatMap from Third Parties
+            HabitatMap may also be considered as the controller of the personal data you provide to the operators of the systems you use that are integrated into the AirCasting app, e.g. Android (Google LLC). This may include data such as your IP address or your device identifier. Despite being considered as the data controller, HabitatMap has no direct access to this data, meaning the data are not visible to HabitatMap. However, the processing of this data is necessary to enable the proper functioning of the HabitatMap AirCasting mobile app.
+            HabitatMap may also have access to data that may (but not necessarily) be considered personal data. In order to maintain, improve, and develop the app, and to customize some of the app content to your preferences, HabitatMap uses information received through or provided by third party tools, with similar functions to cookies. This may include information such as the identifiers of the mobile devices you use, the language of the device, the time the app is opened, and other data you have provided to the entity that owns such a tool (see below for more details about tracking tools).
+            Providing this data is voluntary and does not affect your ability to use the AirCasting mobile application. The rules for sharing the concerned data are defined by the entities that own such tools (see below for more details on tracking tools).
+            /n/n/n
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_4">Your personal data may be processed for the purpose of: \n
+
+        1. Performing a contract, or taking an action at your request prior to the conclusion of a contract, and for the purpose of pursuing claims under the contract (Article 6(1)(b) and (f) GDPR).
+            HabitatMap processes your personal data to enable you to fully enjoy all the features of the AirCasting mobile app. Information, such as the fact of downloading the application and providing you with relevant content, may also be processed after the contract expiration (uninstallation of the app), among others, in the event of HabitatMap being accused of incorrect performance of its obligations.
+        \n\n
+        2. Providing you, upon your request, with information about the state of air quality at your location, which is in the exercise of HabitatMap’s legitimate interest (Article 6(1)(f) GDPR).
+            At your request, HabitatMap processes geolocation data to allow you to see the status of air quality at your location in the AirCasting app.
+            At your request, HabitatMap may also send you PUSH notifications about the air quality status at your location.
+            Sending notifications and access to geolocation data is voluntary and takes place with your consent, which can be withdrawn at any time, without prejudice to the use of other application functions.
+        \n\n
+        3. Contacting you, at your request, and responding to your questions, which are in the exercise of HabitatMap’s legitimate interest (Article 6(1)(f) GDPR).
+            HabitatMap allows you to send inquiries and suggestions for improvements to the app via email and will process the email address you provide for this purpose.
+        \n\n
+        4. Maintaining, improving, and developing the application, and customizing some of the app content to your preferences, which are in the exercise of HabitatMap’s legitimate interest (Article 6(1)(f) GDPR).
+        \n\n
+        HabitatMap processes information that may (but not necessarily) be considered personal data, using third-party-provided tools that perform similar functions to cookies to maintain, improve, and develop the app and to customize some of the content to your preferences.
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_5">HabitatMap has direct access only to the personal data you have provided.
+        Some of the information about you that may (but not necessarily) be considered personal data is processed by HabitatMap through the use of tools that perform similar functions to cookies, provided to HabitatMap by third-party providers (referred to below).
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_6">HabitatMap uses the Firebase Analytics tool provided by Google LLC, which performs similar functions to cookies. In order to maintain, improve, and develop the app, and to customize some of the app content to your preferences, HabitatMap uses information provided by Firebase Analytics. This information may include the identifiers of the mobile devices you use, the language of the device, the time the app is opened, and other data you have provided to Google.
+        HabitatMap is not able to recognize your identity from the data provided by Firebase Analytics. Information about Firebase Analytics and how it works can be found here: https://policies.google.com/technologies/ads and https://firebase.google.com/terms/.
+        Data regarding your location may be used for the purpose of automated decision making, consisting in sending information regarding the current quality of air pollution in your location. Automated decision making for the purposes referred to above depends on your consent, which may be withdrawn at any time, without prejudice to the use of the other application functions.
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_7">For the purposes mentioned above and in particular to enable you to use the AirCasting mobile app, your data may be shared with HabitatMap’s trusted partners. HabitatMap will only share data that are necessary for the purposes of the processing indicated above and only for the fulfillment of these purposes. HabitatMap ensures that your data is shared with the third parties in compliance with the security rules provided by law (in particular the GDPR) as well as in accordance with the provisions of this Privacy Policy.
+        Your personal data may be processed by entities such as:
+        \n\u2022 HabitatMap’s employees and/or contractors;
+        \n\u2022 legal and/or accounting services providers;
+        \n\u2022 hosting and/or cloud computing services providers;
+        \n\u2022 e-mail service providers;
+        \n\u2022 software as a service providers enabling HabitatMap internal communication, project, and task management;
+        \n\u2022 providers of tools that perform similar functions to cookies.
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_8">In order to enable you to use the app, communicate with HabitatMap, send you notifications upon your request, and maintain, improve, and develop the app, and customize some of its content to your preferences, Google LLC, which is an entity located outside the European Economic Area (EEA), may be a recipient of your personal data.
+        HabitatMap transfers personal data to recipients outside the European Economic Area (so-called recipients from third countries) with the principles set out in Chapter V of the GDPR. In connection with the above, the transfer of your personal data to a third country may take place on the basis of the following legal mechanisms:
+        \n\u2022 standard contractual clauses – HabitatMap transfers personal data to entities outside the EEA that have committed to use standard contractual clauses and ensure an adequate level of security of the personal data received. There are currently three decisions by the European Commission on standard contractual clauses: (i) Decision 2001/497/EC; (ii) Decision 2004/915/EC; (iii) Decision 2010/87/EU. The content of all decisions is available in the Database of European Union legal acts at http://eur-lex.europa.eu;
+        \n\u2022 performance of the contract – in some exceptional cases, when the recipient of the data from the third country has not committed to the application of standard contractual clauses, your data may be transferred if it is necessary for the performance of the contract between you and HabitatMap or for the implementation of pre-contractual measures taken on your request;
+        \n\u2022 your consent – if none of the above grounds for transferring data to a recipient outside the EEA is applicable, HabitatMap will transfer your data to a third-country recipient only with your express consent. However, we would like to inform you that in this case there is a risk of not ensuring adequate protection of your personal data, in connection with their transfer to a recipient outside the EEA.
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_9">Your personal data will be processed:
+        \n\u2022 no longer then until the execution of the agreement (i.e. until you uninstall the AirCasting app), and after its execution until the expiry of the statute of limitations for claims related to the agreement (as a rule, a three-year statute of limitations);
+        \n\u2022 in case of processing of personal data for the marketing purposes, until such processing is objected to (Article 21(1) of the GDPR) or until the withdrawn of the consent to receive information of a marketing nature;
+        \n\u2022 where the processing of personal data is based on your consent or permission (e.g. processing of your geo-location data) - until it is withdrawn.
+    </string>
+    <string name="onboarding_bottomsheet_page4_description_10">You have the right to:
+        \n\u2022 access to personal data – you can obtain information on, inter alia, what personal data are processed by HabitatMap, for what purposes, to whom they are made available, for what period of time they are processed, etc;
+        \n\u2022 rectify and delete the personal – you may request your data to be corrected if they are found to be inaccurate. You may also request the erasure of your personal data, inter alia, if the purpose of the processing ceases to exist or you have withdrawn your consent to the processing;
+        \n\u2022 restrict personal data processing – in certain situations (e.g. where you have alleged that your data is inaccurate) you may request that HabitatMap restricts the processing of your personal data, in which case HabitatMap will no longer process your data for any purpose other than the data storage;
+        \n\u2022 object to processing – in certain situations (e.g. where processing is based on a legitimate interest of the controller) you may object to the processing of your personal data;
+        \n\u2022 transmission of personal data – you may request to receive your personal data in a structured, commonly used, machine-readable format and to have that data sent to another controller. The above applies when data are processed upon your consent (Article 6(1)(a) GDPR) and/or upon contract (Article 6(1)(b) GDPR) and the data are processed by automated means;
+        \n\u2022 lodge a complaint to the President of the Office for Personal Data Protection – in the event of a breach by HabitatMap of the processing of your personal data, you may lodge a complaint with the relevant authority.
+        You may contact HabitatMap with any request to exercise your rights by email or postal address shown at the beginning of this document or by other means of your choice. </string>
+    <string name="onboarding_bottomsheet_page4_description_11">This Privacy Policy may be subject to updates and changes. In such case, HabitatMap will take steps to inform you of any such updates or changes by, for example, sending you a notification. Notwithstanding the foregoing, HabitatMap recommends that you review this page as often as possible.
+        This Privacy Policy was last updated on July 5, 2021.
+    </string>
+
+    <string name="onboarding_page3_description1_part1">In</string>
+    <string name="onboarding_page3_description1_part2">mobile</string>
+    <string name="onboarding_page3_description1_part3">mode, the AirBeam captures personal exposures.</string>
+    <string name="onboarding_page3_description2_part1">In</string>
+    <string name="onboarding_page3_description2_part2">fixed</string>
+    <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
+
+    <string name="bluetooth_failed_connection_alert_header">Bluetooth connection failed</string>
+    <string name="bluetooth_failed_connection_alert_description">"Bluetooth connection failed. \n Please toggle the power on your device and try again."</string>
+    <string name="you_cant_start_2_microphone_sessions_at_once">A phone microphone session is already being recorded and displayed under the mobile active tab</string>
+
+    <!-- Location disclosure -->
+    <string name="use_your_location">Use your location</string>
+    <string name="when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements">When recording a mobile session, AirCasting will track your location even when the app is closed or not in use. Allow AirCasting to use your location all the time to map your mobile measurements.</string>
+    <string name="okay">Okay</string>
+
+    <!-- Notes -->
+    <string name="add_note">Add note</string>
+    <string name="add_a_note">Add note</string>
+    <string name="note">Note</string>
+    <string name="tap_to_add_picture">Tap to add picture</string>
+    <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Your note will be timestamped and displayed on the AirCasting map</string>
+
+
+
+</resources>
