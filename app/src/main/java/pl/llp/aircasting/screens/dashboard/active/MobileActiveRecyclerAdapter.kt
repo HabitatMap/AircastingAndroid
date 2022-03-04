@@ -24,7 +24,7 @@ class MobileActiveRecyclerAdapter(
     }
 
     override fun prepareSession(session: Session, expanded: Boolean): Session {
-        // We only have to reload measurements for fixed tab for expanded sessions. Mobile active sessions have measurements fetched anyway
+        // We only have to reload measurements for fixed tab for expanded sessions and following tab. Mobile active sessions have measurements fetched anyway
         return session
     }
 }

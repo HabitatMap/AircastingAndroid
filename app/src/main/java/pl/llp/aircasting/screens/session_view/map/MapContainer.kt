@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.location.Location
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.libraries.maps.*
 import com.google.android.libraries.maps.model.*
+import kotlinx.android.synthetic.main.activity_map.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
 import pl.llp.aircasting.lib.MeasurementColor
@@ -24,23 +24,21 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
-import kotlinx.android.synthetic.main.activity_map.view.*
-import pl.llp.aircasting.lib.TemperatureConverter
-import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
-class MapContainer: OnMapReadyCallback {
+class MapContainer(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) :
+    OnMapReadyCallback {
     private val DEFAULT_ZOOM = 16f
-    private var currentZoom : Float? = null
+    private var currentZoom: Float? = null
 
-    private var mContext: Context?
+    private var mContext: Context? = context
     private var mListener: SessionDetailsViewMvc.Listener? = null
     private var isCenteredToLastLocation = false
 
     private var mMap: GoogleMap? = null
     private val mLocateButton: ImageView?
     private var mMapFragment: SupportMapFragment?
-    private var mSupportFragmentManager: FragmentManager?
+    private var mSupportFragmentManager: FragmentManager? = supportFragmentManager
     private var mMarkers: HashMap<String?, Int?>? = hashMapOf()
 
     private var mSessionPresenter: SessionPresenter? = null
@@ -62,17 +60,13 @@ class MapContainer: OnMapReadyCallback {
         SESSION_LOADED(2)
     }
 
-    constructor(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) {
-        mContext = context
-        this.mSupportFragmentManager = supportFragmentManager
-
+    init {
         mMapFragment = SupportMapFragment.newInstance(mapOptions())
         mMapFragment?.let {
             mSupportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
         }
         mMapFragment?.getMapAsync(this)
         mMapFragment?.view?.visibility = View.GONE
-
         mLocateButton = rootView?.locate_button
         mLocateButton?.setOnClickListener {
             locate()
@@ -130,8 +124,8 @@ class MapContainer: OnMapReadyCallback {
         currentZoom = mMap?.cameraPosition?.zoom
 
         if (mSessionPresenter?.isRecording() == true) {
-            val lastLat = mMeasurements.let { it.last().latitude }
-            val lastLong = mMeasurements.let { it. last().longitude}
+            val lastLat = mMeasurements.last().latitude
+            val lastLong = mMeasurements.last().longitude
             centerMap(LatLng(lastLat!!, lastLong!!), currentZoom!!)
 
         }
@@ -155,7 +149,6 @@ class MapContainer: OnMapReadyCallback {
     }
 
 
-
     fun destroy() {
         mMap = null
         mContext = null
@@ -170,7 +163,8 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun measurementsWithLocations(stream: MeasurementStream?): List<Measurement> {
-        val measurements = stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
+        val measurements =
+            stream?.measurements?.filter { it.latitude !== null && it.longitude != null }
         return measurements ?: emptyList()
     }
 
@@ -183,7 +177,11 @@ class MapContainer: OnMapReadyCallback {
 
         var i = 0
         for (measurement in mMeasurements) {
-            latestColor = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
+            latestColor = MeasurementColor.forMap(
+                mContext,
+                measurement,
+                mSessionPresenter?.selectedSensorThreshold()
+            )
             latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
             mMeasurementPoints.add(latestPoint)
             i += 1
@@ -212,12 +210,13 @@ class MapContainer: OnMapReadyCallback {
 
         mMap?.let { map ->
             val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
-            sensorThreshold?.let { sensorThreshold ->
+            sensorThreshold?.let {
                 if (mAircastingHeatmap != null) {
                     mAircastingHeatmap?.remove()
                     mAircastingHeatmap = null
                 }
-                mAircastingHeatmap = AircastingHeatmap(mContext, map, sensorThreshold, mapWidth, mapHeight )
+                mAircastingHeatmap =
+                    AircastingHeatmap(mContext, map, it, mapWidth, mapHeight)
                 mAircastingHeatmap?.drawHeatMap(mMeasurements)
             }
         }
@@ -242,13 +241,16 @@ class MapContainer: OnMapReadyCallback {
         if (note.latitude == null || note.longitude == null) return
 
         val icon = BitmapHelper.bitmapFromVector(mContext, R.drawable.ic_note_icon)
-        val marker = mMap?.addMarker(MarkerOptions()
-            .position(LatLng(note.latitude, note.longitude))
-            .icon(icon))
-        marker?.zIndex = Float.MAX_VALUE // We set Z-index so the note marker are first to be 'clicked' when user press map
+        val marker = mMap?.addMarker(
+            MarkerOptions()
+                .position(LatLng(note.latitude, note.longitude))
+                .icon(icon)
+        )
+        marker?.zIndex =
+            Float.MAX_VALUE // We set Z-index so the note marker are first to be 'clicked' when user press map
         mMarkers?.set(marker?.id, note.number)
-        mMap?.setOnMarkerClickListener { marker ->
-            val noteNumber = mMarkers?.get(marker.id)
+        mMap?.setOnMarkerClickListener {
+            val noteNumber = mMarkers?.get(it.id)
             if (noteNumber != null) {
                 mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
             }
@@ -288,7 +290,7 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun centerMap(location: Session.Location?) {
-        val position = location?.longitude?.let { LatLng(location?.latitude, it) }
+        val position = location?.longitude?.let { LatLng(location.latitude, it) }
         centerMap(position)
     }
 
@@ -318,15 +320,19 @@ class MapContainer: OnMapReadyCallback {
             mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
         }
 
-        mMeasurementsLine?.setPoints(mMeasurementPoints)
+        mMeasurementsLine?.points = mMeasurementPoints
         drawLastMeasurementMarker(colorPoint.point, colorPoint.color)
     }
 
-    private fun measurementColorPoint(measurement: Measurement) : ColorPoint? {
+    private fun measurementColorPoint(measurement: Measurement): ColorPoint? {
         if (measurement.latitude == null || measurement.longitude == null) return null
 
         val point = LatLng(measurement.latitude, measurement.longitude)
-        val color = MeasurementColor.forMap(mContext, measurement, mSessionPresenter?.selectedSensorThreshold())
+        val color = MeasurementColor.forMap(
+            mContext,
+            measurement,
+            mSessionPresenter?.selectedSensorThreshold()
+        )
 
         return ColorPoint(point, color)
     }
@@ -339,12 +345,11 @@ class MapContainer: OnMapReadyCallback {
     }
 
     private fun locate() {
-        if (mSessionPresenter?.isMobileActive() == true) {
-            mListener?.locateRequested()
-        } else {
-            centerMap(mSessionPresenter?.session?.location)
-        }
-
+        if (mSessionPresenter?.session?.location?.latitude != 0.0 || mSessionPresenter?.session?.location?.longitude != 0.0) {
+            if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else centerMap(
+                mSessionPresenter?.session?.location
+            )
+        } else mMeasurements.apply { centerMap(Session.Location(first().latitude!!, first().longitude!!)) }
     }
 
     private fun clearMap() {

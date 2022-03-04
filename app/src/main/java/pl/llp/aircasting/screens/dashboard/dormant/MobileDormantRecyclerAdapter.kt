@@ -25,7 +25,7 @@ class MobileDormantRecyclerAdapter(
     }
 
     override fun prepareSession(session: Session, expanded: Boolean): Session {
-        // We only have to reload measurements for fixed tab for expanded sessions. Mobile dormant sessions are not reloaded anymore
+        // We only have to reload measurements for fixed tab for expanded sessions and following tab. Mobile dormant sessions are not reloaded anymore
         return session
     }
 }
