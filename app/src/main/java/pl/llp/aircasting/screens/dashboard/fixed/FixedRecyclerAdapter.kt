@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionsRecyclerAdapter
-import kotlinx.coroutines.*
 
 
 class FixedRecyclerAdapter(
@@ -30,18 +29,6 @@ class FixedRecyclerAdapter(
             return session
         }
 
-        var reloadedSession: Session? = null
-
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-                dbSessionWithMeasurements?.let {
-                    reloadedSession = Session(dbSessionWithMeasurements)
-                }
-            }
-            query.await()
-        }
-
-        return reloadedSession ?: session
+        return reloadSessionFromDB(session)
     }
 }
