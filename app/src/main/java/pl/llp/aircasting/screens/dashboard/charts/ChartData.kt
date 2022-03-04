@@ -8,7 +8,6 @@ import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.services.AveragedMeasurementsService
 import java.util.*
-import kotlin.collections.HashMap
 
 class ChartData(
     var session: Session
@@ -36,12 +35,12 @@ class ChartData(
     }
 
     fun refresh(session: Session) {
-        var hourChanged = mSession.endTime?.hours != session.endTime?.hours
+        val hourChanged = mSession.endTime?.hours != session.endTime?.hours
         mSession = session
         mEndTime = mSession.endTime ?: Date()
         calculateTimes()
 
-        if(mChartRefreshService.shouldBeRefreshed() || hourChanged) {
+        if (mChartRefreshService.shouldBeRefreshed() || hourChanged) {
             initData()
             calculateAverages()
             mChartRefreshService.setLastRefreshTime()
@@ -64,34 +63,36 @@ class ChartData(
 
     private fun averagesCount(): Int {
         if (mMaxEntriesCount > 0) {
-                return -mMaxEntriesCount + 1
-            } else {
-                return -mMaxEntriesCount
-            }
+            return -mMaxEntriesCount + 1
+        } else {
+            return -mMaxEntriesCount
+        }
     }
 
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
         calendar.add(averageFrequency(), averagesCount())
-        val startString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(calendar.time), TimeZone.getDefault())
+        val startString = DateConverter.get()
+            ?.toTimeStringForDisplay(timeToDisplay(calendar.time), TimeZone.getDefault())
 
         return startString ?: ""
     }
 
     private fun endTimeString(): String {
-        val endString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(mEndTime), TimeZone.getDefault())
+        val endString = DateConverter.get()
+            ?.toTimeStringForDisplay(timeToDisplay(mEndTime), TimeZone.getDefault())
 
         return endString ?: ""
     }
 
     private fun timeToDisplay(time: Date): Date {
-        return when(mSession.type) {
+        return when (mSession.type) {
             Session.Type.FIXED -> DateUtils.truncate(time, Calendar.HOUR)
             Session.Type.MOBILE -> time
         }
     }
-    
+
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
         mSession.streamsSortedByDetailedType().forEach { stream ->
@@ -104,29 +105,29 @@ class ChartData(
         for (stream in mMeasurementStreams) {
             val entries: MutableList<Entry>? = createEntries(stream)
             val entriesSize = entries?.size ?: 0
-            if(entriesSize > mMaxEntriesCount) {
+            if (entriesSize > mMaxEntriesCount) {
                 mMaxEntriesCount = entries?.size ?: 0
             }
 
-            mEntriesPerStream.put(
-                streamKey(stream),
-                Lists.reverse(entries)
-            )
+            mEntriesPerStream[streamKey(stream)] = Lists.reverse(entries)
         }
     }
 
-    private fun createEntries(stream: MeasurementStream?): MutableList<Entry>?{
+    private fun createEntries(stream: MeasurementStream?): MutableList<Entry>? {
         var entries: MutableList<Entry>? = null
 
         stream?.let { stream ->
-            entries =  when (mSession.type) {
+            entries = when (mSession.type) {
                 Session.Type.MOBILE -> {
                     val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
-                    val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
+                    val measurementsOverSecondThreshold =
+                        averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
                     if (measurementsOverSecondThreshold.isNullOrEmpty()) {
                         ChartAveragesCreator().getMobileEntries(stream)
                     } else {
-                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(measurementsOverSecondThreshold)
+                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
+                            measurementsOverSecondThreshold
+                        )
                     }
                 }
                 Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
