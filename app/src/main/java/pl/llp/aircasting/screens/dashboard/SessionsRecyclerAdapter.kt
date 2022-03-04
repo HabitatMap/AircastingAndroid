@@ -4,6 +4,10 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -103,5 +107,21 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         sessionPresenter?.session = session
 
         notifyDataSetChanged()
+    }
+
+    protected fun reloadSessionFromDB(session: Session): Session {
+        var reloadedSession: Session? = null
+
+        runBlocking {
+            val query = GlobalScope.async(Dispatchers.IO) {
+                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                dbSessionWithMeasurements?.let {
+                    reloadedSession = Session(dbSessionWithMeasurements)
+                }
+            }
+            query.await()
+        }
+
+        return reloadedSession ?: session
     }
 }
