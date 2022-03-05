@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.new_session.confirmation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.google.android.gms.maps.GoogleMap
 import pl.llp.aircasting.R
 import pl.llp.aircasting.models.Session
 
@@ -23,5 +24,9 @@ class MobileSessionConfirmationViewMvcImpl(
 
     override fun updateLocation(latitude: Double?, longitude: Double?) {
         updateMarkerPosition(latitude, longitude)
+    }
+
+    override fun onMapReady(p0: GoogleMap) {
+        // TODO: Check this later.
     }
 }

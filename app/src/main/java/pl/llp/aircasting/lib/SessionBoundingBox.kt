@@ -1,7 +1,7 @@
 package pl.llp.aircasting.lib
 
-import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import pl.llp.aircasting.models.Measurement
 
 class SessionBoundingBox {
