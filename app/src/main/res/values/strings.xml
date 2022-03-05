@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AirCasting</string>
+    <string name="app_name" translatable="false">AirCasting</string>
 
     <!-- Sign in -->
     <string name="invalid_credentials_message">Incorrect profile name or password.</string>
@@ -265,7 +265,7 @@
     <string name="disable_mapping">Disable mapping</string>
     <string name="application_version">Application version:</string>
     <string name="version">version</string>
-    <string name="your_privacy_link">https://www.habitatmap.org/aircasting-app-privacy-policy</string>
+    <string name="your_privacy_link" translatable="false">https://www.habitatmap.org/aircasting-app-privacy-policy</string>
     <string name="use_24_hour_format">Use 24-hour format</string>
     <string name="clear_sd_card">Clear SD card</string>
     <string name="your_privacy">Your privacy</string>
@@ -291,7 +291,7 @@
     <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
     <string name="airbeam_syncing_header">Syncing</string>
     <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync.</string>
-    <string name="airbeam_syncing_finalizing">Finalizing...</string>
+    <string name="airbeam_syncing_finalizing">Finalizing…</string>
     <string name="airbeam_syncing_finished_header">Sync complete</string>
     <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.</string>
     <string name="sync_error_header">Something went wrong</string>
@@ -355,27 +355,27 @@
     <string name="onboarding_page4_header">Your privacy</string>
     <string name="onboarding_page4_description">Review our commitment to preserving your privacy and accept our privacy policy.</string>
     <string name="accept_button_onboarding">Accept</string>
-    <string name="onboarding_bottomsheet_page4_header">Our privacy policy</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_header">HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
+    <string name="onboarding_bottomsheet_page4_header" translatable="false">Our privacy policy</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_header" translatable="false">HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
         This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
     </string>
-    <string name="onboarding_bottomsheet_page4_paragraph_1">Personal Data Controller</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_2">Contact Details of the Personal Data Controller</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_3">Categories of Personal Data </string>
-    <string name="onboarding_bottomsheet_page4_paragraph_4">Purposes &amp; Legal Basis for the Processing of Personal Data </string>
-    <string name="onboarding_bottomsheet_page4_paragraph_5">How HabitatMap collects your personal data? </string>
-    <string name="onboarding_bottomsheet_page4_paragraph_6">Tracking Tools and Automated Decision-making </string>
-    <string name="onboarding_bottomsheet_page4_paragraph_7">Categories of the Recipients of Personal Data</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_8">Recipients of Personal Data Outside the European Economic Area</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_9">Period of Personal Data Storage</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_10">Rights of the Data Subject</string>
-    <string name="onboarding_bottomsheet_page4_paragraph_11">Miscellaneous</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_1" translatable="false">Personal Data Controller</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_2" translatable="false">Contact Details of the Personal Data Controller</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_3" translatable="false">Categories of Personal Data </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_4" translatable="false">Purposes &amp; Legal Basis for the Processing of Personal Data </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_5" translatable="false">How HabitatMap collects your personal data? </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_6" translatable="false">Tracking Tools and Automated Decision-making </string>
+    <string name="onboarding_bottomsheet_page4_paragraph_7" translatable="false">Categories of the Recipients of Personal Data</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_8" translatable="false">Recipients of Personal Data Outside the European Economic Area</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_9" translatable="false">Period of Personal Data Storage</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_10" translatable="false">Rights of the Data Subject</string>
+    <string name="onboarding_bottomsheet_page4_paragraph_11" translatable="false">Miscellaneous</string>
 
-    <string name="onboarding_bottomsheet_page4_description_1">The controller of your personal data is HabitatMap Incorporated, with its registered office located at 34A St Marks Avenue, Brooklyn, NY 11217 USA</string>
-    <string name="onboarding_bottomsheet_page4_description_2">You can contact the data controller:
+    <string name="onboarding_bottomsheet_page4_description_1" translatable="false">The controller of your personal data is HabitatMap Incorporated, with its registered office located at 34A St Marks Avenue, Brooklyn, NY 11217 USA</string>
+    <string name="onboarding_bottomsheet_page4_description_2" translatable="false">You can contact the data controller:
         \n\u2022 postal address: 34A St Marks Avenue, Brooklyn, NY 11217 USA
         \n\u2022 e-mail address: info@habitatmap.org </string>
-    <string name="onboarding_bottomsheet_page4_description_3">
+    <string name="onboarding_bottomsheet_page4_description_3" translatable="false">
         1. Data Obtained Directly from Users of the AirCasting App \n\n
             HabitatMap controls the personal data that you provide when using the AirCasting mobile app, including the following types of data:
             \n\u2022 E-mail address;
@@ -396,7 +396,7 @@
             Providing this data is voluntary and does not affect your ability to use the AirCasting mobile application. The rules for sharing the concerned data are defined by the entities that own such tools (see below for more details on tracking tools).
             /n/n/n
     </string>
-    <string name="onboarding_bottomsheet_page4_description_4">Your personal data may be processed for the purpose of: \n
+    <string name="onboarding_bottomsheet_page4_description_4" translatable="false">Your personal data may be processed for the purpose of: \n
 
         1. Performing a contract, or taking an action at your request prior to the conclusion of a contract, and for the purpose of pursuing claims under the contract (Article 6(1)(b) and (f) GDPR).
             HabitatMap processes your personal data to enable you to fully enjoy all the features of the AirCasting mobile app. Information, such as the fact of downloading the application and providing you with relevant content, may also be processed after the contract expiration (uninstallation of the app), among others, in the event of HabitatMap being accused of incorrect performance of its obligations.
@@ -413,14 +413,14 @@
         \n\n
         HabitatMap processes information that may (but not necessarily) be considered personal data, using third-party-provided tools that perform similar functions to cookies to maintain, improve, and develop the app and to customize some of the content to your preferences.
     </string>
-    <string name="onboarding_bottomsheet_page4_description_5">HabitatMap has direct access only to the personal data you have provided.
+    <string name="onboarding_bottomsheet_page4_description_5" translatable="false">HabitatMap has direct access only to the personal data you have provided.
         Some of the information about you that may (but not necessarily) be considered personal data is processed by HabitatMap through the use of tools that perform similar functions to cookies, provided to HabitatMap by third-party providers (referred to below).
     </string>
-    <string name="onboarding_bottomsheet_page4_description_6">HabitatMap uses the Firebase Analytics tool provided by Google LLC, which performs similar functions to cookies. In order to maintain, improve, and develop the app, and to customize some of the app content to your preferences, HabitatMap uses information provided by Firebase Analytics. This information may include the identifiers of the mobile devices you use, the language of the device, the time the app is opened, and other data you have provided to Google.
+    <string name="onboarding_bottomsheet_page4_description_6" translatable="false">HabitatMap uses the Firebase Analytics tool provided by Google LLC, which performs similar functions to cookies. In order to maintain, improve, and develop the app, and to customize some of the app content to your preferences, HabitatMap uses information provided by Firebase Analytics. This information may include the identifiers of the mobile devices you use, the language of the device, the time the app is opened, and other data you have provided to Google.
         HabitatMap is not able to recognize your identity from the data provided by Firebase Analytics. Information about Firebase Analytics and how it works can be found here: https://policies.google.com/technologies/ads and https://firebase.google.com/terms/.
         Data regarding your location may be used for the purpose of automated decision making, consisting in sending information regarding the current quality of air pollution in your location. Automated decision making for the purposes referred to above depends on your consent, which may be withdrawn at any time, without prejudice to the use of the other application functions.
     </string>
-    <string name="onboarding_bottomsheet_page4_description_7">For the purposes mentioned above and in particular to enable you to use the AirCasting mobile app, your data may be shared with HabitatMap’s trusted partners. HabitatMap will only share data that are necessary for the purposes of the processing indicated above and only for the fulfillment of these purposes. HabitatMap ensures that your data is shared with the third parties in compliance with the security rules provided by law (in particular the GDPR) as well as in accordance with the provisions of this Privacy Policy.
+    <string name="onboarding_bottomsheet_page4_description_7" translatable="false">For the purposes mentioned above and in particular to enable you to use the AirCasting mobile app, your data may be shared with HabitatMap’s trusted partners. HabitatMap will only share data that are necessary for the purposes of the processing indicated above and only for the fulfillment of these purposes. HabitatMap ensures that your data is shared with the third parties in compliance with the security rules provided by law (in particular the GDPR) as well as in accordance with the provisions of this Privacy Policy.
         Your personal data may be processed by entities such as:
         \n\u2022 HabitatMap’s employees and/or contractors;
         \n\u2022 legal and/or accounting services providers;
@@ -429,18 +429,18 @@
         \n\u2022 software as a service providers enabling HabitatMap internal communication, project, and task management;
         \n\u2022 providers of tools that perform similar functions to cookies.
     </string>
-    <string name="onboarding_bottomsheet_page4_description_8">In order to enable you to use the app, communicate with HabitatMap, send you notifications upon your request, and maintain, improve, and develop the app, and customize some of its content to your preferences, Google LLC, which is an entity located outside the European Economic Area (EEA), may be a recipient of your personal data.
+    <string name="onboarding_bottomsheet_page4_description_8" translatable="false">In order to enable you to use the app, communicate with HabitatMap, send you notifications upon your request, and maintain, improve, and develop the app, and customize some of its content to your preferences, Google LLC, which is an entity located outside the European Economic Area (EEA), may be a recipient of your personal data.
         HabitatMap transfers personal data to recipients outside the European Economic Area (so-called recipients from third countries) with the principles set out in Chapter V of the GDPR. In connection with the above, the transfer of your personal data to a third country may take place on the basis of the following legal mechanisms:
         \n\u2022 standard contractual clauses – HabitatMap transfers personal data to entities outside the EEA that have committed to use standard contractual clauses and ensure an adequate level of security of the personal data received. There are currently three decisions by the European Commission on standard contractual clauses: (i) Decision 2001/497/EC; (ii) Decision 2004/915/EC; (iii) Decision 2010/87/EU. The content of all decisions is available in the Database of European Union legal acts at http://eur-lex.europa.eu;
         \n\u2022 performance of the contract – in some exceptional cases, when the recipient of the data from the third country has not committed to the application of standard contractual clauses, your data may be transferred if it is necessary for the performance of the contract between you and HabitatMap or for the implementation of pre-contractual measures taken on your request;
         \n\u2022 your consent – if none of the above grounds for transferring data to a recipient outside the EEA is applicable, HabitatMap will transfer your data to a third-country recipient only with your express consent. However, we would like to inform you that in this case there is a risk of not ensuring adequate protection of your personal data, in connection with their transfer to a recipient outside the EEA.
     </string>
-    <string name="onboarding_bottomsheet_page4_description_9">Your personal data will be processed:
+    <string name="onboarding_bottomsheet_page4_description_9" translatable="false">Your personal data will be processed:
         \n\u2022 no longer then until the execution of the agreement (i.e. until you uninstall the AirCasting app), and after its execution until the expiry of the statute of limitations for claims related to the agreement (as a rule, a three-year statute of limitations);
         \n\u2022 in case of processing of personal data for the marketing purposes, until such processing is objected to (Article 21(1) of the GDPR) or until the withdrawn of the consent to receive information of a marketing nature;
         \n\u2022 where the processing of personal data is based on your consent or permission (e.g. processing of your geo-location data) - until it is withdrawn.
     </string>
-    <string name="onboarding_bottomsheet_page4_description_10">You have the right to:
+    <string name="onboarding_bottomsheet_page4_description_10" translatable="false">You have the right to:
         \n\u2022 access to personal data – you can obtain information on, inter alia, what personal data are processed by HabitatMap, for what purposes, to whom they are made available, for what period of time they are processed, etc;
         \n\u2022 rectify and delete the personal – you may request your data to be corrected if they are found to be inaccurate. You may also request the erasure of your personal data, inter alia, if the purpose of the processing ceases to exist or you have withdrawn your consent to the processing;
         \n\u2022 restrict personal data processing – in certain situations (e.g. where you have alleged that your data is inaccurate) you may request that HabitatMap restricts the processing of your personal data, in which case HabitatMap will no longer process your data for any purpose other than the data storage;
@@ -448,16 +448,16 @@
         \n\u2022 transmission of personal data – you may request to receive your personal data in a structured, commonly used, machine-readable format and to have that data sent to another controller. The above applies when data are processed upon your consent (Article 6(1)(a) GDPR) and/or upon contract (Article 6(1)(b) GDPR) and the data are processed by automated means;
         \n\u2022 lodge a complaint to the President of the Office for Personal Data Protection – in the event of a breach by HabitatMap of the processing of your personal data, you may lodge a complaint with the relevant authority.
         You may contact HabitatMap with any request to exercise your rights by email or postal address shown at the beginning of this document or by other means of your choice. </string>
-    <string name="onboarding_bottomsheet_page4_description_11">This Privacy Policy may be subject to updates and changes. In such case, HabitatMap will take steps to inform you of any such updates or changes by, for example, sending you a notification. Notwithstanding the foregoing, HabitatMap recommends that you review this page as often as possible.
+    <string name="onboarding_bottomsheet_page4_description_11" translatable="false">This Privacy Policy may be subject to updates and changes. In such case, HabitatMap will take steps to inform you of any such updates or changes by, for example, sending you a notification. Notwithstanding the foregoing, HabitatMap recommends that you review this page as often as possible.
         This Privacy Policy was last updated on July 5, 2021.
     </string>
 
-    <string name="onboarding_page3_description1_part1">In</string>
-    <string name="onboarding_page3_description1_part2">mobile</string>
-    <string name="onboarding_page3_description1_part3">mode, the AirBeam captures personal exposures.</string>
-    <string name="onboarding_page3_description2_part1">In</string>
-    <string name="onboarding_page3_description2_part2">fixed</string>
-    <string name="onboarding_page3_description2_part3">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
+    <string name="onboarding_page3_description1_part1" translatable="false">In</string>
+    <string name="onboarding_page3_description1_part2" translatable="false">mobile</string>
+    <string name="onboarding_page3_description1_part3" translatable="false">mode, the AirBeam captures personal exposures.</string>
+    <string name="onboarding_page3_description2_part1" translatable="false">In</string>
+    <string name="onboarding_page3_description2_part2" translatable="false">fixed</string>
+    <string name="onboarding_page3_description2_part3" translatable="false">mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
 
     <string name="bluetooth_failed_connection_alert_header">Bluetooth connection failed</string>
     <string name="bluetooth_failed_connection_alert_description">"Bluetooth connection failed. \n Please toggle the power on your device and try again."</string>
