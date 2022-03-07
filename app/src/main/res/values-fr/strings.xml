@@ -196,179 +196,179 @@
     <string name="peak_label">Culminer</string>
 
     <!-- HLU dialog -->
-    <string name="hlu_dialog_header">Heatmap settings</string>
-    <string name="hlu_dialog_description">Values beyond Min and Max will not be displayed.</string>
-    <string name="hlu_dialog_min">Min</string>
-    <string name="hlu_dialog_low">Low</string>
-    <string name="hlu_dialog_medium">Medium</string>
-    <string name="hlu_dialog_high">High</string>
+    <string name="hlu_dialog_header">Paramètres de la carte thermique</string>
+    <string name="hlu_dialog_description">Les valeurs au-delà de Min et Max ne seront pas affichées.</string>
+    <string name="hlu_dialog_min">Le minimum</string>
+    <string name="hlu_dialog_low">Meugler</string>
+    <string name="hlu_dialog_medium">Moyen</string>
+    <string name="hlu_dialog_high">Haut</string>
     <string name="hlu_dialog_max">Max</string>
-    <string name="hlu_dialog_save_button">Save changes</string>
-    <string name="hlu_dialog_reset_button">Reset to default</string>
+    <string name="hlu_dialog_save_button">Sauvegarder les modifications</string>
+    <string name="hlu_dialog_reset_button">Réinitialiser par défaut</string>
 
     <!-- Errors -->
-    <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
-    <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
-    <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
-    <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
-    <string name="errors_audio_required">Audio permissions are required to continue</string>
-    <string name="errors_network_required_edit">You need to have internet connection to edit session data</string>
-    <string name="errors_network_forgot_password">You need to have internet connection to reset your password</string>
-    <string name="errors_edit_failure">Something went wrong while editing session. Please try again.</string>
-    <string name="errors_network_required_delete_streams">You need to have internet connection to delete session</string>
-    <string name="errors_airbeam_connection_failed">AirBeam connection failed. Please try again.</string>
+    <string name="errors_location_services_required">Sans autorisations de localisation, vous ne pourrez pas enregistrer de sessions Bluetooth.</string>
+    <string name="errors_location_services_required_to_sync">Sans autorisations de localisation, vous ne pouvez pas procéder à la synchronisation.</string>
+    <string name="errors_location_services_required_to_locate">Les services de localisation sont nécessaires pour centrer la carte sur votre emplacement.</string>
+    <string name="errors_bluetooth_required">Bluetooth est nécessaire pour continuer</string>
+    <string name="errors_audio_required">Des autorisations audio sont requises pour continuer</string>
+    <string name="errors_network_required_edit">Vous devez disposer d\'une connexion Internet pour modifier les données de session</string>
+    <string name="errors_network_forgot_password">Vous devez disposer d\'une connexion Internet pour réinitialiser votre mot de passe</string>
+    <string name="errors_edit_failure">Une erreur s\'est produite lors de la session d\'édition. Veuillez réessayer.</string>
+    <string name="errors_network_required_delete_streams">Vous devez disposer d\'une connexion Internet pour supprimer la session</string>
+    <string name="errors_airbeam_connection_failed">La connexion AirBeam a échoué. Veuillez réessayer.</string>
 
-    <string name="parameters">Parameters:</string>
-    <string name="session_measurements_description">Most recent measurement:</string>
-    <string name="session_last_min_measurements_description">Last minute measurement:</string>
-    <string name="session_last_sec_measurements_description">Last second measurement:</string>
-    <string name="session_avg_measurements_description">Avg value:</string>
-    <string name="session_no_measurements_label1">Your AirBeam is gathering data.</string>
-    <string name="session_no_measurements_label2">Measurements will appear in 3 minutes.</string>
-    <string name="session_name_required">Session name can\'t be blank.</string>
-    <string name="session_wifi_credentials_required">Wi-Fi credentials required.</string>
-    <string name="active_session_already_exists">Active session already exists for this device.</string>
-    <string name="hlu_thresholds_error">All values needs to be present and fit the range (min &lt; low &lt; medium &lt; high &lt; max).</string>
+    <string name="parameters">Paramètres:</string>
+    <string name="session_measurements_description">Mesure la plus récente:</string>
+    <string name="session_last_min_measurements_description">Mesure de dernière minute:</string>
+    <string name="session_last_sec_measurements_description">Mesure de la dernière seconde:</string>
+    <string name="session_avg_measurements_description">Valeur moyenne:</string>
+    <string name="session_no_measurements_label1">Votre AirBeam collecte des données.</string>
+    <string name="session_no_measurements_label2">Les mesures apparaîtront dans 3 minutes.</string>
+    <string name="session_name_required">Le nom de la session ne peut pas être vide.</string>
+    <string name="session_wifi_credentials_required">Identifiants Wi-Fi requis.</string>
+    <string name="active_session_already_exists">La session active existe déjà pour cet appareil.</string>
+    <string name="hlu_thresholds_error">Toutes les valeurs doivent être présentes et correspondre à la plage (min &lt; bas &lt; moyen &lt; haut &lt; max).</string>
 
     <!-- Finish session dialog -->
-    <string name="dialog_finish_recording_header_part1">Finish recording</string>
+    <string name="dialog_finish_recording_header_part1">Terminer l\'enregistrement</string>
     <string name="dialog_finish_recording_header_part3">\?</string>
-    <string name="dialog_finish_recording_text_part1">The session will be moved to</string>
+    <string name="dialog_finish_recording_text_part1">La séance sera déplacée à</string>
     <string name="dialog_finish_recording_text_part2">Mobile Dormant</string>
-    <string name="dialog_finish_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
-    <string name="finish_recording">Finish recording</string>
+    <string name="dialog_finish_recording_text_part3">et vous ne pourrez pas y ajouter de nouvelles mesures.</string>
+    <string name="finish_recording">Terminer l\'enregistrement</string>
 
 
     <!-- Finish and sync session dialog -->
-    <string name="dialog_finish_and_sync_recording_header_part1">Finish recording</string>
-    <string name="dialog_finish_and_sync_recording_header_part3">and sync from SD card?</string>
-    <string name="dialog_finish_and_sync_recording_text_part1">The session will be moved to</string>
+    <string name="dialog_finish_and_sync_recording_header_part1">Terminer l\'enregistrement</string>
+    <string name="dialog_finish_and_sync_recording_header_part3">et synchroniser depuis la carte SD ?</string>
+    <string name="dialog_finish_and_sync_recording_text_part1">La séance sera déplacée à</string>
     <string name="dialog_finish_and_sync_recording_text_part2">Mobile Dormant</string>
-    <string name="dialog_finish_and_sync_recording_text_part3">tab and you won\'t be able to add new measurements to it.</string>
-    <string name="dialog_finish_and_sync_recording_text_part4">SD card will be cleared afterwards.</string>
-    <string name="finish_recording_and_sync">Finish recording &amp; sync</string>
+    <string name="dialog_finish_and_sync_recording_text_part3">et vous ne pourrez pas y ajouter de nouvelles mesures.</string>
+    <string name="dialog_finish_and_sync_recording_text_part4">La carte SD sera ensuite effacée.</string>
+    <string name="finish_recording_and_sync">Terminer l\'enregistrement &amp; synchroniser</string>
 
     <!-- Chart -->
-    <string name="fixed_session_units_label">1 hr avg</string>
-    <string name="mobile_session_units_label">1 min avg</string>
+    <string name="fixed_session_units_label">1h en moyenne</string>
+    <string name="mobile_session_units_label">1 min en moyenne</string>
 
     <!-- Settings -->
-    <string name="settings_my_account">My account</string>
-    <string name="settings_contribute_to_crowdmap">Contribute to crowd map</string>
-    <string name="keep_screen_on">Keep screen on</string>
-    <string name="settings_contribute_to_crowdmap_description">Data contributed to the CrowdMap is publicly available at aircasting.org</string>
-    <string name="settings_backend_settings">Backend settings</string>
+    <string name="settings_my_account">Mon compte</string>
+    <string name="settings_contribute_to_crowdmap">Contribuer à la carte de la foule</string>
+    <string name="keep_screen_on">Gardez l\'écran allumé</string>
+    <string name="settings_contribute_to_crowdmap_description">Les données fournies au CrowdMap sont accessibles au public sur aircasting.org</string>
+    <string name="settings_backend_settings">Paramètres principaux</string>
     <string name="settings_backend_url">Url</string>
     <string name="settings_backend_port">Port</string>
-    <string name="map_enable_description">Turns off GPS tracking &amp; session syncing. Use \'Share file\' to retrieve your measurements via email.</string>
-    <string name="disable_mapping">Disable mapping</string>
-    <string name="application_version">Application version:</string>
+    <string name="map_enable_description">Désactive le suivi GPS et amp; synchronisation des sessions. Utilisez « Partager le fichier » pour récupérer vos mesures par e-mail.</string>
+    <string name="disable_mapping">Désactiver le mappage</string>
+    <string name="application_version">Version de l\'application:</string>
     <string name="version">version</string>
-    <string name="use_24_hour_format">Use 24-hour format</string>
-    <string name="clear_sd_card">Clear SD card</string>
-    <string name="your_privacy">Your privacy</string>
+    <string name="use_24_hour_format">Utiliser le format 24 heures</string>
+    <string name="clear_sd_card">Effacer la carte SD</string>
+    <string name="your_privacy">Votre vie privée</string>
 
     <!-- Clearing SD Card -->
-    <string name="restart_airbeam_header">Restart your AirBeam</string>
-    <string name="restart_airbeam_description">Turn your AirBeam off and then back on.</string>
-    <string name="sd_card_clear_select_device_header">Select the device you\'d like to clear</string>
-    <string name="sd_card_clearing_header">Clearing SD card</string>
-    <string name="sd_card_clearing_description">This should take less than 10 seconds.</string>
-    <string name="sd_card_cleared_header">SD card cleared</string>
-    <string name="sd_card_cleared_description">SD card inside your AirBeam3 was cleared successfully.</string>
-    <string name="sd_card_cleared_continue_button">Continue</string>
+    <string name="restart_airbeam_header">Redémarrez votre AirBeam</string>
+    <string name="restart_airbeam_description">Éteignez votre AirBeam puis rallumez-le.</string>
+    <string name="sd_card_clear_select_device_header">Sélectionnez l\'appareil que vous souhaitez effacer</string>
+    <string name="sd_card_clearing_header">Effacer la carte SD</string>
+    <string name="sd_card_clearing_description">Cela devrait prendre moins de 10 secondes.</string>
+    <string name="sd_card_cleared_header">Carte SD effacée</string>
+    <string name="sd_card_cleared_description">La carte SD à l\'intérieur de votre AirBeam3 a été effacée avec succès.</string>
+    <string name="sd_card_cleared_continue_button">Continuez</string>
 
     <!-- Sync -->
-    <string name="refreshing_sessions_header">Updating sessions</string>
-    <string name="refreshing_sessions_description">Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet.</string>
-    <string name="refreshed_sessions_header_successful">Success</string>
-    <string name="refreshed_sessions_description_successful">Sessions were updated successfully.</string>
-    <string name="refreshed_sessions_header_error">Something went wrong</string>
-    <string name="refreshed_sessions_description_error">There was a problem while refreshing sessions. Please check your internet connection and try again.</string>
-    <string name="refreshed_sessions_retry">Try again</string>
-    <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
-    <string name="airbeam_syncing_header">Syncing</string>
-    <string name="airbeam_syncing_description">Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync.</string>
-    <string name="airbeam_syncing_finalizing">Finalizing…</string>
-    <string name="airbeam_syncing_finished_header">Sync complete</string>
-    <string name="airbeam_syncing_finished_description">The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.</string>
-    <string name="sync_error_header">Something went wrong</string>
-    <string name="sync_unknown_error">Unexpected error happen. Please contact support.</string>
-    <string name="sync_unavailable_dialog_header">SD card sync unavailable</string>
-    <string name="sync_unavailable_dialog_description">To use the AirBeam3 in standalone mode and sync the SD card,\nAndroid 8 or higher + Bluetooth 5 are required</string>
-    <string name="sync_unavailable_dialog_continue_button">Continue</string>
+    <string name="refreshing_sessions_header">Séances de mise à jour</string>
+    <string name="refreshing_sessions_description">Les sessions doivent être mises à jour avant la synchronisation de la carte SD. Assurez-vous que votre appareil est connecté à Internet.</string>
+    <string name="refreshed_sessions_header_successful">Succès</string>
+    <string name="refreshed_sessions_description_successful">Les sessions ont été mises à jour avec succès.</string>
+    <string name="refreshed_sessions_header_error">Quelque chose s\'est mal passé</string>
+    <string name="refreshed_sessions_description_error">Un problème est survenu lors de l\'actualisation des sessions. S\'il vous plaît, vérifiez votre connexion à internet et réessayez.</string>
+    <string name="refreshed_sessions_retry">Réessayer</string>
+    <string name="airbeam_sync_select_device_header">Sélectionnez l\'appareil que vous souhaitez synchroniser</string>
+    <string name="airbeam_syncing_header">Synchronisation</string>
+    <string name="airbeam_syncing_description">Gardez votre AirBeam près de votre Android. Branchez votre AirBeam pour accélérer la synchronisation.</string>
+    <string name="airbeam_syncing_finalizing">Finalisation…</string>
+    <string name="airbeam_syncing_finished_header">Synchronisation terminée</string>
+    <string name="airbeam_syncing_finished_description">Les données de votre AirBeam3 ont été synchronisées avec succès avec l\'application. La carte SD a été effacée.</string>
+    <string name="sync_error_header">Quelque chose s\'est mal passé</string>
+    <string name="sync_unknown_error">Une erreur inattendue s\'est produite. Veuillez contacter l\'assistance.</string>
+    <string name="sync_unavailable_dialog_header">Synchronisation de la carte SD indisponible</string>
+    <string name="sync_unavailable_dialog_description">Pour utiliser l\'AirBeam3 en mode autonome et synchroniser la carte SD,\nAndroid 8 ou supérieur + Bluetooth 5 sont requis</string>
+    <string name="sync_unavailable_dialog_continue_button">Continuez</string>
 
     <!-- My account -->
-    <string name="my_account_sign_out">Sign out</string>
-    <string name="my_account_info">You are currently logged in as\n%1$s</string>
+    <string name="my_account_sign_out">Déconnexion</string>
+    <string name="my_account_info">Vous êtes actuellement connecté en tant que \n%1$s</string>
 
     <!--  Sensor services -->
-    <string name="service_notification_title">AirCasting is recording a session</string>
-    <string name="mic_service_notification_message">Microphone is recording and Location Services are active</string>
-    <string name="ab_service_notification_message">AirBeam is recording and Location Services are active</string>
-    <string name="ab_sync_service_notification_message">AirBeam is syncing data and Location Services are active</string>
+    <string name="service_notification_title">AirCasting enregistre une session</string>
+    <string name="mic_service_notification_message">Le microphone enregistre et les services de localisation sont actifs</string>
+    <string name="ab_service_notification_message">AirBeam enregistre et les services de localisation sont actifs</string>
+    <string name="ab_sync_service_notification_message">AirBeam synchronise les données et les services de localisation sont actifs</string>
 
     <!-- Share session -->
-    <string name="share_file">Share file</string>
-    <string name="share_session">Share session</string>
-    <string name="select_a_stream_to_share">Select a stream to share</string>
+    <string name="share_file">Partager le fichier</string>
+    <string name="share_session">Partager la session</string>
+    <string name="select_a_stream_to_share">Sélectionnez un flux à partager</string>
     <string name="share_link">Share link</string>
-    <string name="sensor_param">sensor_name</string>
-    <string name="share_text">View my AirCasting session: \n</string>
-    <string name="or_email_a_csv_file_with_your_session_data">Or email a CSV file with your session data</string>
-    <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
-    <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
+    <string name="sensor_param">nom_capteur</string>
+    <string name="share_text">Voir ma session AirCasting: \n</string>
+    <string name="or_email_a_csv_file_with_your_session_data">Ou envoyez un fichier CSV par e-mail avec vos données de session</string>
+    <string name="exported_session_service_success">Les sessions exportées seront envoyées par e-mail en quelques minutes. L\'e-mail peut se retrouver dans votre dossier spam.</string>
+    <string name="session_upload_pending">Téléchargement de session en attente - attendez quelques minutes et réessayez.</string>
     <string name="share_session_email_hint">Email</string>
 
     <!-- Microphone settings -->
-    <string name="microphone_settings_title">Phone Microphone Calibration</string>
-    <string name="microphone_settings_description">Adjust via trial &amp; error until the measurements in the app match your reference sound level meter. For most phones it\'s between 80 and 100.</string>
-    <string name="microphone_settings">Microphone settings</string>
+    <string name="microphone_settings_title">Étalonnage du microphone du téléphone</string>
+    <string name="microphone_settings_description">Ajustez par essai et amp; jusqu\'à ce que les mesures de l\'application correspondent à votre sonomètre de référence. Pour la plupart des téléphones, il se situe entre 80 et 100.</string>
+    <string name="microphone_settings">Paramètres du microphone</string>
 
 
-    <string name="reset_email_sent">An email with further instructions has been sent</string>
-    <string name="unknown_error">Unknown error</string>
-    <string name="fixed_session_no_internet_connection_header">No internet connection</string>
-    <string name="fixed_session_no_internet_connection">To start a fixed session, connect your Android to the internet.</string>
-    <string name="provided_email_is_not_correct">Provided email is not correct</string>
-    <string name="generate_csv_file_without_share_link">Generate a CSV file with your session data</string>
+    <string name="reset_email_sent">Un e-mail contenant des instructions supplémentaires a été envoyé</string>
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="fixed_session_no_internet_connection_header">Pas de connexion Internet</string>
+    <string name="fixed_session_no_internet_connection">Pour démarrer une session fixe, connectez votre Android à Internet.</string>
+    <string name="provided_email_is_not_correct">L\'e-mail fourni n\'est pas correct</string>
+    <string name="generate_csv_file_without_share_link">Générez un fichier CSV avec vos données de session</string>
 
     <!-- Did you know box -->
-    <string name="did_you_know">Did you know?</string>
-    <string name="did_you_know_box_tip_1">AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.</string>
+    <string name="did_you_know">Le saviez-vous?</string>
+    <string name="did_you_know_box_tip_1">AirBeam3 est résistant aux intempéries. Pour garder un œil sur la qualité de votre air extérieur 24 heures sur 24, 7 jours sur 7, accrochez-en un à l\'extérieur de votre maison et enregistrez une session fixe.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>
-    <string name="onboarding_page1_description">record and map measurements from health and environmental monitoring devices</string>
-    <string name="get_started">Get started</string>
-    <string name="onboarding_page2_header">How\'s the air near you?</string>
-    <string name="onboarding_page2_description">Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.</string>
-    <string name="continue_button_onboarding">Continue</string>
-    <string name="onboarding_page3_header">Measure and map your exposure to air pollution</string>
-    <string name="onboarding_page3_description">Connect AirBeam to measure air quality, humidity, and temperature.</string>
-    <string name="learn_more_button_onboarding">Learn more</string>
-    <string name="onboarding_bottomsheet_page3_header">How AirBeam works?</string>
-    <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
-    <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
-    <string name="onboarding_page4_header">Your privacy</string>
+    <string name="onboarding_page1_description">enregistrer et cartographier les mesures des dispositifs de surveillance de la santé et de l\'environnement</string>
+    <string name="get_started">Commencer</string>
+    <string name="onboarding_page2_header">Comment est l\'air près de chez vous ?</string>
+    <string name="onboarding_page2_description">Trouvez et suivez un moniteur de qualité de l\'air fixe près de chez vous et sachez à quel point votre air est propre ou pollué en ce moment.</string>
+    <string name="continue_button_onboarding">Continuez</string>
+    <string name="onboarding_page3_header">Mesurez et cartographiez votre exposition à la pollution atmosphérique</string>
+    <string name="onboarding_page3_description">Connectez AirBeam pour mesurer la qualité de l\'air, l\'humidité et la température.</string>
+    <string name="learn_more_button_onboarding">Apprendre encore plus</string>
+    <string name="onboarding_bottomsheet_page3_header">Comment fonctionne Air Beam?</string>
+    <string name="onboarding_bottomsheet_page3_description1">En mode mobile, l\'AirBeam capture les expositions personnelles.</string>
+    <string name="onboarding_bottomsheet_page3_description2">En mode fixe, il peut être installé à l\'intérieur ou à l\'extérieur pour garder un œil sur les niveaux de pollution dans votre maison, votre bureau, votre jardin ou votre quartier 24h/24 et 7j/7.</string>
+    <string name="onboarding_page4_header">Votre vie privée</string>
     <string name="onboarding_page4_description">Review our commitment to preserving your privacy and accept our privacy policy.</string>
-    <string name="accept_button_onboarding">Accept</string>
+    <string name="accept_button_onboarding">J\'accepte</string>
 
-    <string name="bluetooth_failed_connection_alert_header">Bluetooth connection failed</string>
-    <string name="bluetooth_failed_connection_alert_description">"Bluetooth connection failed. \n Please toggle the power on your device and try again."</string>
-    <string name="you_cant_start_2_microphone_sessions_at_once">A phone microphone session is already being recorded and displayed under the mobile active tab</string>
+    <string name="bluetooth_failed_connection_alert_header">La connexion Bluetooth a échoué</string>
+    <string name="bluetooth_failed_connection_alert_description">"La connexion Bluetooth a échoué. \n Veuillez éteindre votre appareil et réessayer."</string>
+    <string name="you_cant_start_2_microphone_sessions_at_once">Une session de microphone téléphonique est déjà en cours d\'enregistrement et affichée sous l\'onglet mobile actif</string>
 
     <!-- Location disclosure -->
-    <string name="use_your_location">Use your location</string>
-    <string name="when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements">When recording a mobile session, AirCasting will track your location even when the app is closed or not in use. Allow AirCasting to use your location all the time to map your mobile measurements.</string>
-    <string name="okay">Okay</string>
+    <string name="use_your_location">Utilisez votre emplacement</string>
+    <string name="when_recording_a_mobile_session_aircasting_will_track_your_location_even_when_the_app_is_closed_or_not_in_use_allow_aircasting_to_use_your_location_all_the_time_to_map_your_mobile_measurements">Lors de l\'enregistrement d\'une session mobile, AirCasting suivra votre position même lorsque l\'application est fermée ou non utilisée. Autorisez AirCasting à utiliser votre position tout le temps pour cartographier vos mesures mobiles.</string>
+    <string name="okay">D\'accord</string>
 
     <!-- Notes -->
-    <string name="add_note">Add note</string>
-    <string name="add_a_note">Add note</string>
-    <string name="note">Note</string>
-    <string name="tap_to_add_picture">Tap to add picture</string>
-    <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Your note will be timestamped and displayed on the AirCasting map</string>
+    <string name="add_note">Ajouter une note</string>
+    <string name="add_a_note">Ajouter une note</string>
+    <string name="note">Noter</string>
+    <string name="tap_to_add_picture">Appuyez pour ajouter une image</string>
+    <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Votre note sera horodatée et affichée sur la carte AirCasting</string>
 
 
 
