@@ -86,7 +86,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         googleMap ?: return
         mMap = googleMap
 
-        styleMap()
+        mContext?.let { styleGoogleMap(googleMap, it) }
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {
