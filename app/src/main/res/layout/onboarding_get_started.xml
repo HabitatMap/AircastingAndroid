@@ -39,12 +39,12 @@
 
     <ImageView
         android:id="@+id/arcasting_icon"
-        android:tint="@color/aircasting_blue_400"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_icon_aircasting_small"
         app:layout_constraintTop_toTopOf="@id/onboarding_get_started_header"
-        app:layout_constraintStart_toStartOf="@id/onboarding_get_started_header"/>
+        app:layout_constraintStart_toStartOf="@id/onboarding_get_started_header"
+        app:tint="@color/aircasting_blue_400" />
 
     <TextView
         android:id="@+id/onboarding_get_started_header"

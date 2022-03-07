@@ -4,13 +4,13 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_map.view.*
+import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
-import kotlinx.android.synthetic.main.activity_map.view.*
-import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
 import java.util.*
 
 class StatisticsContainer {

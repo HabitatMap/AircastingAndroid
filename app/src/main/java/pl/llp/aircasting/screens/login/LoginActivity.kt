@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.new_session
+package pl.llp.aircasting.screens.login
 
 import android.content.Context
 import android.content.Intent
@@ -6,12 +6,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
 
-class LoginActivity: BaseActivity() {
+class LoginActivity : BaseActivity() {
     private var controller: LoginController? = null
 
     @Inject
@@ -20,7 +19,11 @@ class LoginActivity: BaseActivity() {
     companion object {
         val FROM_ONBOARDING_KEY = "fromOnboarding"
 
-        fun start(contextActivity: AppCompatActivity?, animation: Boolean = false, fromOnboarding: Boolean? = false) {
+        fun start(
+            contextActivity: AppCompatActivity?,
+            animation: Boolean = false,
+            fromOnboarding: Boolean? = false
+        ) {
             contextActivity?.let {
                 val intent = Intent(it, LoginActivity::class.java)
                 intent.putExtra(FROM_ONBOARDING_KEY, fromOnboarding)
@@ -34,7 +37,8 @@ class LoginActivity: BaseActivity() {
         fun startAfterSignOut(context: Context?) {
             context?.let {
                 val intent = Intent(it, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 it.startActivity(intent)
             }
         }
@@ -49,7 +53,8 @@ class LoginActivity: BaseActivity() {
             .appComponent.inject(this)
 
         val view = LoginViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
-        controller = LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
+        controller =
+            LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
 
         setContentView(view.rootView)
     }

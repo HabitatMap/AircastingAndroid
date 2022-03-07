@@ -1,6 +1,6 @@
 package pl.llp.aircasting.screens.new_session
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
@@ -9,6 +9,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.database.repositories.SessionsRepository
@@ -18,9 +25,11 @@ import pl.llp.aircasting.events.SendSessionAuth
 import pl.llp.aircasting.events.StartRecordingEvent
 import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.*
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
+import pl.llp.aircasting.permissions.LocationPermissionPopUp
 import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
@@ -32,16 +41,6 @@ import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsViewM
 import pl.llp.aircasting.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.sensor.microphone.MicrophoneService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.lib.*
-import pl.llp.aircasting.permissions.LocationPermissionPopUp
-import java.util.*
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -85,7 +84,11 @@ class NewSessionController(
     }
 
     private fun setupProgressMax() {
-        wizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), settings.areMapsDisabled(), !bluetoothManager.isBluetoothEnabled())
+        wizardNavigator.setupProgressBarMax(
+            !mContextActivity.areLocationServicesOn(),
+            settings.areMapsDisabled(),
+            !bluetoothManager.isBluetoothEnabled()
+        )
     }
 
     fun onResume() {
@@ -97,7 +100,7 @@ class NewSessionController(
         mContextActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         EventBus.getDefault().unregister(this)
     }
-    
+
     private fun goToFirstStep() {
         if (mContextActivity.areLocationServicesOn()) {
             startNewSessionWizard()
@@ -133,12 +136,16 @@ class NewSessionController(
         wizardNavigator.goToConfirmation(session, this)
     }
 
+    @SuppressLint("MissingPermission")
     private fun requestBluetoothEnable() {
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
         // I know it's deprecated, but location services requires onActivityResult
         // so I wanted to be consistent
-        mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+        mContextActivity.startActivityForResult(
+            intent,
+            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE
+        )
     }
 
     override fun onBluetoothDeviceSelected() {
@@ -148,7 +155,7 @@ class NewSessionController(
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
             }
-        } catch(exception: BluetoothNotSupportedException) {
+        } catch (exception: BluetoothNotSupportedException) {
             errorHandler.showError(exception.messageToDisplay)
         }
 
@@ -171,7 +178,12 @@ class NewSessionController(
     }
 
     private fun goToCreateMicSession() {
-        wizardNavigator.goToSessionDetails(Session.generateUUID(), Session.Type.MOBILE, MicrophoneDeviceItem(), this)
+        wizardNavigator.goToSessionDetails(
+            Session.generateUUID(),
+            Session.Type.MOBILE,
+            MicrophoneDeviceItem(),
+            this
+        )
 
         if (permissionsManager.audioPermissionsGranted(mContextActivity)) {
             startMicrophoneSession()
@@ -220,23 +232,17 @@ class NewSessionController(
 
     fun onActivityResult(requestCode: Int, resultCode: Int) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    startNewSessionWizard()
-                } else {
-                    errorHandler.showError(R.string.errors_location_services_required)
-                }
-            }
-            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    wizardNavigator.goToTurnOnAirBeam(sessionType, this)
-                } else {
-                    errorHandler.showError(R.string.errors_bluetooth_required)
-                }
-            }
-            else -> {
-                // Ignore all other requests.
-            }
+            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> if (resultCode == RESULT_OK) startNewSessionWizard() else errorHandler.showError(
+                R.string.errors_location_services_required
+            )
+
+            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> if (resultCode == RESULT_OK) wizardNavigator.goToTurnOnAirBeam(
+                sessionType,
+                this
+            ) else errorHandler.showError(R.string.errors_bluetooth_required)
+
+            else -> {}
+            // Ignore all other requests.
         }
     }
 
@@ -248,7 +254,8 @@ class NewSessionController(
         GlobalScope.launch(Dispatchers.Main) {
             var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
-                existing = sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
+                existing =
+                    sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
             }
             query.await()
             if (existing) {
@@ -340,7 +347,8 @@ class NewSessionController(
         val deviceItem = event.deviceItem
         val sessionUUID = event.sessionUUID
 
-        sessionUUID ?: return // it should not happen in the new session wizard flow, but checking just for sure...
+        sessionUUID
+            ?: return // it should not happen in the new session wizard flow, but checking just for sure...
 
         wizardNavigator.goToAirBeamConnected(deviceItem, sessionUUID, this)
     }
@@ -348,8 +356,10 @@ class NewSessionController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-        val header = mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header)
-        val description = mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description)
+        val header =
+            mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header)
+        val description =
+            mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description)
         errorHandler.showErrorDialog(mFragmentManager, header, description)
     }
 }

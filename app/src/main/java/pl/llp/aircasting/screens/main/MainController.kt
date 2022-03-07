@@ -2,27 +2,28 @@ package pl.llp.aircasting.screens.main
 
 import android.content.IntentFilter
 import android.view.WindowManager
-
 import androidx.appcompat.app.AppCompatActivity
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
+import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.ResultCodes
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.safeRegister
+import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ApiService
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.networking.services.SessionsSyncService
-import pl.llp.aircasting.screens.new_session.LoginActivity
+import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
+import pl.llp.aircasting.screens.login.LoginActivity
+import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.onboarding.OnboardingActivity
+import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.sensor.SessionManager
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.events.KeepScreenOnToggledEvent
-import pl.llp.aircasting.lib.safeRegister
-import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.NavigationController
-import pl.llp.aircasting.screens.dashboard.DashboardFragment
 
 class MainController(
     private val rootActivity: AppCompatActivity,
@@ -42,6 +43,10 @@ class MainController(
         } else {
             setupDashboard()
         }
+
+        NewSessionActivity.register(rootActivity, Session.Type.FIXED)
+        NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
+        SyncActivity.register(rootActivity, onFinish = { goToDormantTab() })
 
         mSessionManager?.onStart()
     }
@@ -70,7 +75,7 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+        val apiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService, mSettings)
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)
@@ -80,12 +85,21 @@ class MainController(
     }
 
     private fun sync(apiService: ApiService) {
-        val mMobileSessionsSyncService = SessionsSyncService.get(apiService, mErrorHandler, mSettings)
+        val mMobileSessionsSyncService =
+            SessionsSyncService.get(apiService, mErrorHandler, mSettings)
 
         mMobileSessionsSyncService.sync(
             onStartCallback = { mViewMvc.showLoader() },
             finallyCallback = { mViewMvc.hideLoader() }
         )
+    }
+
+    private fun goToDormantTab() {
+        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
+        )
+        NavigationController.goToDashboard(tabId)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

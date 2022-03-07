@@ -99,7 +99,7 @@ abstract class MeasurementsTableContainer {
             stretchTableLayout()
         }
 
-        if (session?.status == Session.Status.DISCONNECTED && session?.type == Session.Type.MOBILE) {
+        if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE) {
             mMeasurementsTable?.visibility = View.GONE
         } else {
             mMeasurementsTable?.visibility = View.VISIBLE
@@ -243,10 +243,10 @@ abstract class MeasurementsTableContainer {
         valueView.background = null
 
         val inflater: LayoutInflater = LayoutInflater.from(mContext)
-        var containerLayout: LinearLayout = inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
-        containerLayout.setOnClickListener(View.OnClickListener {
+        val containerLayout: LinearLayout = inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
+        containerLayout.setOnClickListener {
             changeSelectedStream(stream)
-        })
+        }
         containerLayout.addView(valueView)
 
         return containerLayout

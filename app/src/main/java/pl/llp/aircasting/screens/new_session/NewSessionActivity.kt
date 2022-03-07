@@ -2,14 +2,13 @@ package pl.llp.aircasting.screens.new_session
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.NavigationController
-import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.PermissionsManager
@@ -32,19 +31,36 @@ class NewSessionActivity : BaseActivity() {
 
     companion object {
         val SESSION_TYPE_KEY = "sessionType"
+        private var fixedLauncher: ActivityResultLauncher<Intent>? = null
+        private var mobileLauncher: ActivityResultLauncher<Intent>? = null
+
+        fun register(rootActivity: FragmentActivity?, sessionType: Session.Type) {
+            rootActivity?.let {
+                val launcher =
+                    it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+                            sessionType,
+                            Session.Status.RECORDING
+                        )
+                        if (it.resultCode == RESULT_OK) {
+                            NavigationController.goToDashboard(tabId)
+                        }
+                    }
+                if (sessionType == Session.Type.FIXED) fixedLauncher =
+                    launcher else mobileLauncher = launcher
+
+            }
+        }
 
         fun start(rootActivity: FragmentActivity?, sessionType: Session.Type) {
-            rootActivity?.let{
-                val startForResult = it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    val tabId = DashboardPagerAdapter.tabIndexForSessionType(sessionType, Session.Status.RECORDING)
-                    if (it.resultCode == RESULT_OK) {
-                        NavigationController.goToDashboard(tabId)
-                    }
-                }
-
+            rootActivity?.let {
                 val intent = Intent(it, NewSessionActivity::class.java)
                 intent.putExtra(SESSION_TYPE_KEY, sessionType)
-                startForResult.launch(intent)
+
+                if (sessionType == Session.Type.FIXED) fixedLauncher?.launch(intent) else mobileLauncher?.launch(
+                    intent
+                )
+
             }
         }
     }
@@ -90,8 +106,10 @@ class NewSessionActivity : BaseActivity() {
         controller?.onBackPressed()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
