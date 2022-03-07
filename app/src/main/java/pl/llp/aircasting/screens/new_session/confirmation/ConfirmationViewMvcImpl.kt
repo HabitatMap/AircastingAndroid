@@ -16,6 +16,7 @@ import com.google.android.libraries.maps.model.Marker
 import com.google.android.libraries.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
@@ -95,6 +96,7 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         mMap = googleMap
+        styleGoogleMap(mMap!!, context)
         val sessionLocation = session?.location ?: return
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
