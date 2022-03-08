@@ -14,6 +14,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
@@ -92,6 +93,15 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
         continueButton?.setOnClickListener {
             onContinueClicked()
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        googleMap ?: return
+        mMap = googleMap
+
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+        setZoomPreferences()
+        resetMapToDefaults()
     }
 
     override fun onDestroy() {

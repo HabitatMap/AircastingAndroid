@@ -17,6 +17,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.SessionBoundingBox
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Note

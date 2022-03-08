@@ -14,6 +14,8 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.BitmapHelper
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
@@ -81,6 +83,20 @@ abstract class ConfirmationViewMvcImpl(
         val zoom = mMap?.cameraPosition?.zoom ?: DEFAULT_ZOOM
         mMarker?.position = location
         mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoom))
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        googleMap ?: return
+        mMap = googleMap
+        styleGoogleMap(mMap!!, context)
+        val sessionLocation = session?.location ?: return
+        val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
+        val marker = MarkerOptions()
+            .position(location)
+            .icon(icon)
+        mMarker = googleMap.addMarker(marker)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
 
     private fun onStartRecordingClicked() {
