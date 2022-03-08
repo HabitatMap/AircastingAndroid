@@ -7,7 +7,6 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseController
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class ConfirmationController(
@@ -15,7 +14,7 @@ class ConfirmationController(
     private val mSettings: Settings
 ): BaseController<ConfirmationViewMvcImpl>(viewMvc), ConfirmationViewMvc.Listener {
     fun registerToEventBus() {
-        EventBus.getDefault().safeRegister(this);
+        safeRegister(this);
     }
 
     fun registerListener(listener: ConfirmationViewMvc.Listener) {

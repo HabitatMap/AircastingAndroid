@@ -51,7 +51,7 @@ class AirBeamReconnector(
     }
 
     fun reconnect(session: Session, deviceItem: DeviceItem?, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
 
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->

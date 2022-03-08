@@ -10,7 +10,6 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SDCardSyncError
-import pl.llp.aircasting.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 
 class AirbeamSyncingController(
     viewMvc: AirbeamSyncingViewMvcImpl?,
@@ -27,7 +26,7 @@ class AirbeamSyncingController(
     }
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     override fun onDestroy() {

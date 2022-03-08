@@ -2,12 +2,12 @@ package pl.llp.aircasting.lib
 
 import android.content.Context
 import android.location.LocationManager
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.model.MapStyleOptions
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.MapStyleOptions
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 
-fun EventBus.safeRegister(subscriber: Any) {
+fun safeRegister(subscriber: Any) {
     if (!EventBus.getDefault().isRegistered(subscriber)) {
         EventBus.getDefault().register(subscriber)
     }
@@ -18,8 +18,10 @@ fun Context.areLocationServicesOn(): Boolean {
     return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
 
-fun styleGoogleMap(map: GoogleMap, context: Context) {
-    map.setMapStyle(
+fun styleGoogleMap(map: GoogleMap?, context: Context) {
+    map?.setMapStyle(
         MapStyleOptions.loadRawResourceStyle(
-            context, R.raw.map_style))
+            context, R.raw.map_style
+        )
+    )
 }

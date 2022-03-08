@@ -132,7 +132,7 @@ abstract class AirBeamConnector {
     }
 
     protected fun registerToEventBus() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     protected fun unregisterFromEventBus() {

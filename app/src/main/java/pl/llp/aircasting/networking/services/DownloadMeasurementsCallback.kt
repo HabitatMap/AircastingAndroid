@@ -16,7 +16,6 @@ import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.networking.responses.SessionWithMeasurementsResponse
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.services.AveragingService
@@ -40,7 +39,7 @@ class DownloadMeasurementsCallback(
     val averagingService = AveragingService.get(sessionId)
 
     init {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     override fun onResponse(

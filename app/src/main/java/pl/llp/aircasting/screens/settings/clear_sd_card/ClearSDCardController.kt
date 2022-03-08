@@ -55,7 +55,7 @@ class ClearSDCardController(
     private val mErrorHandler = ErrorHandler(mContextActivity)
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
 
         setupProgressBarMax()
 
