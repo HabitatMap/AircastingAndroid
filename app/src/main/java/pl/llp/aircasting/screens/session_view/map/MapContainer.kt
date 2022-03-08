@@ -17,6 +17,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.SessionBoundingBox
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Note
@@ -86,7 +87,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         googleMap ?: return
         mMap = googleMap
 
-        styleMap()
+        mContext?.let { styleGoogleMap(googleMap, it) }
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {
@@ -95,12 +96,6 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         status.set(Status.MAP_LOADED.value)
 
         setCustomCompassLocation()
-    }
-
-    private fun styleMap() {
-        mMap?.setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(
-                mContext, R.raw.map_style))
     }
 
     fun setup() {
