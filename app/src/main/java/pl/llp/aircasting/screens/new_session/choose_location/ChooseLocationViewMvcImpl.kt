@@ -95,15 +95,6 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMap ?: return
-        mMap = googleMap
-
-        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
-        setZoomPreferences()
-        resetMapToDefaults()
-    }
-
     override fun onDestroy() {
         mMap = null
         mMapFragment?.onDestroy()
@@ -151,6 +142,8 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        styleGoogleMap(mMap, context)
+
         mMap = googleMap
         setZoomPreferences()
         resetMapToDefaults()

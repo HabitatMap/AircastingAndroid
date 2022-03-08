@@ -83,12 +83,6 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         mListener = null
     }
 
-    private fun styleMap() {
-        mMap?.setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(
-                mContext!!, R.raw.map_style))
-    }
-
     fun setup() {
         clearMap()
 
@@ -256,8 +250,9 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         if (mMeasurements.isEmpty()) return
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
-        mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox!!, padding))
 
+        boundingBox?.let { CameraUpdateFactory.newLatLngBounds(it, padding) }
+            ?.let { mMap?.animateCamera(it) }
     }
 
     private fun animateCameraToFixedSession() {
@@ -275,13 +270,13 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         centerMap(position)
     }
 
-    private fun centerMap(location: Session.Location?) {
-        val position = location?.longitude?.let { LatLng(location.latitude, it) }
+    private fun centerMap(location: Session.Location) {
+        val position = LatLng(location.latitude, location.longitude)
         centerMap(position)
     }
 
-    private fun centerMap(position: LatLng?, zoom: Float = DEFAULT_ZOOM) {
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position!!, zoom))
+    private fun centerMap(position: LatLng, zoom: Float = DEFAULT_ZOOM) {
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom))
     }
 
     fun addMobileMeasurement(measurement: Measurement) {
@@ -332,10 +327,16 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     private fun locate() {
         if (mSessionPresenter?.session?.location?.latitude != 0.0 || mSessionPresenter?.session?.location?.longitude != 0.0) {
-            if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else centerMap(
-                mSessionPresenter?.session?.location
+            if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else
+                mSessionPresenter?.session?.location?.let { centerMap(it) }
+        } else mMeasurements.apply {
+            centerMap(
+                Session.Location(
+                    first().latitude!!,
+                    first().longitude!!
+                )
             )
-        } else mMeasurements.apply { centerMap(Session.Location(first().latitude!!, first().longitude!!)) }
+        }
     }
 
     private fun clearMap() {
@@ -400,9 +401,9 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        mMapFragment?.context?.let { styleGoogleMap(mMap, it) }
 
-        styleMap()
+        mMap = googleMap
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {
