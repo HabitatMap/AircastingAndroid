@@ -11,7 +11,7 @@ class SDCardClearService() {
     private val CLEAR_CARD_TAG = "CLEAR_CARD"
 
     fun run(airBeamConnector: AirBeamConnector) {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
 
         airBeamConnector.clearSDCard()
     }

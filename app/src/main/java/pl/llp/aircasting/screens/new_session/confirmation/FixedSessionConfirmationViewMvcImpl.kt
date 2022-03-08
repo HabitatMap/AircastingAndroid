@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 
 class FixedSessionConfirmationViewMvcImpl(
@@ -31,6 +32,8 @@ class FixedSessionConfirmationViewMvcImpl(
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        styleGoogleMap(mMap, context)
+
         mMap = googleMap
         val sessionLocation = session?.location ?: return
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)

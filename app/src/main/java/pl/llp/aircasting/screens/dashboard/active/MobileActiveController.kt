@@ -58,7 +58,7 @@ class MobileActiveController(
 
     override fun onResume() {
         super.onResume()
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     override fun onPause() {

@@ -8,7 +8,6 @@ import pl.llp.aircasting.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader.Step
 import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader.StepType
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.FileWriter
 
@@ -24,7 +23,7 @@ class SDCardDownloadService(mContext: Context) {
     private var mOnLinesDownloaded: ((step: Step, linesCount: Int) -> Unit)? = null
 
     init {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     fun run(

@@ -51,7 +51,7 @@ class MicrophoneReader(
     private var calibrationHelper = CalibrationHelper(mSettings)
 
     fun start() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
 
         // The AudioReader sleeps as much as it records
         val block = SAMPLE_RATE / 2

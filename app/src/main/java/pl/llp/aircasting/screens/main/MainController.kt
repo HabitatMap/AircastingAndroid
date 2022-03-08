@@ -52,7 +52,7 @@ class MainController(
     }
 
     fun onResume() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     fun onDestroy() {

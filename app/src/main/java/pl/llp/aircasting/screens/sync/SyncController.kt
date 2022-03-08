@@ -3,7 +3,6 @@ package pl.llp.aircasting.screens.sync
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -66,7 +65,7 @@ class SyncController(
     private var mSessionsSyncStarted = AtomicBoolean(false)
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
 
         setupProgressBarMax()
 

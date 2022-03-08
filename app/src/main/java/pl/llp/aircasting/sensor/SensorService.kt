@@ -99,7 +99,7 @@ abstract class SensorService : Service() {
     }
 
     protected fun registerToEventBus() {
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
     }
 
     protected fun unregisterFromEventBus() {

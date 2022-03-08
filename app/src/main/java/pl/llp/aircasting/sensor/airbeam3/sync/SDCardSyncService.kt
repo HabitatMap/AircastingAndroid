@@ -46,7 +46,7 @@ class SDCardSyncService(
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
-        EventBus.getDefault().safeRegister(this)
+        safeRegister(this)
         mAirBeamConnector = airBeamConnector
         mDeviceItem = deviceItem
 
