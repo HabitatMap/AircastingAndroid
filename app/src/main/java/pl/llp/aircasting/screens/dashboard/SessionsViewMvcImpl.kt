@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.FollowingSessionReorderingTouchHelperCallback
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
@@ -25,7 +26,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
-    var mDidYouKnowBox: ConstraintLayout? = null
+    var mDidYouKnowBox: MaterialCardView? = null
 
     constructor(
         inflater: LayoutInflater,

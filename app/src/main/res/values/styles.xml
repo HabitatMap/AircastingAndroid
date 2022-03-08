@@ -2,7 +2,7 @@
 
     <!-- Themes -->
 
-    <style name="Theme.Aircasting" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Aircasting" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/aircasting_blue_400</item>
         <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
