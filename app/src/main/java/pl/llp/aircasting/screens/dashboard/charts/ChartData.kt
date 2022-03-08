@@ -122,13 +122,12 @@ class ChartData(
                     val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
                     val measurementsOverSecondThreshold =
                         averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
-                    if (measurementsOverSecondThreshold.isNullOrEmpty()) {
-                        ChartAveragesCreator().getMobileEntries(stream)
-                    } else {
-                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
-                            measurementsOverSecondThreshold
-                        )
-                    }
+                    if (measurementsOverSecondThreshold.isNullOrEmpty()) ChartAveragesCreator().getMobileEntries(
+                        stream
+                    )
+                    else ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
+                        measurementsOverSecondThreshold
+                    )
                 }
                 Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
             }

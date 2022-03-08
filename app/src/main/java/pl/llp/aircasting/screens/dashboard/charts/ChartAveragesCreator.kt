@@ -4,7 +4,6 @@ import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
-import pl.llp.aircasting.services.AveragingService
 import java.util.*
 
 class ChartAveragesCreator {
@@ -14,10 +13,11 @@ class ChartAveragesCreator {
         private val MAX_X_VALUE = 8
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
     }
+
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
-    fun getMobileEntries(stream: MeasurementStream): MutableList<Entry>? {
+    fun getMobileEntries(stream: MeasurementStream): MutableList<Entry> {
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE.toDouble()
@@ -32,36 +32,36 @@ class ChartAveragesCreator {
         val reversedPeriodData: List<List<Measurement>?> =
             Lists.reverse<List<Measurement>?>(periodData)
 
-            if (periodData.size > 0) {
-                for (i in reversedPeriodData.indices) {
-                    var yValue: Double
-                    try {
-                        val dataChunk: List<Measurement> =
-                            Collections.synchronizedList(reversedPeriodData[i])
-                            if (dataChunk.size > measurementsInPeriod - getTolerance(
-                                    measurementsInPeriod.toDouble()
-                                )
-                            ) {
-                                yValue = getAverage(dataChunk).toDouble()
-                                if (usePreviousEntry && !entries.isEmpty()) {
-                                    yValue = entries[i - 1]!!.y.toDouble()
-                                } else if (usePreviousEntry && entries.isEmpty()) {
-                                    yValue = measurements?.get(0)?.value as Double
-                                }
-                                usePreviousEntry = false
-                                entries.add(
-                                    Entry(
-                                        xValue.toFloat(),
-                                        yValue.toFloat()
-                                    )
-                                )
-                                xValue--
-                            }
-                    } catch (e: ConcurrentModificationException) {
-                        return oldEntries
+        if (periodData.size > 0) {
+            for (i in reversedPeriodData.indices) {
+                var yValue: Double
+                try {
+                    val dataChunk: List<Measurement> =
+                        Collections.synchronizedList(reversedPeriodData[i])
+                    if (dataChunk.size > measurementsInPeriod - getTolerance(
+                            measurementsInPeriod.toDouble()
+                        )
+                    ) {
+                        yValue = getAverage(dataChunk).toDouble()
+                        if (usePreviousEntry && entries.isNotEmpty()) yValue =
+                            entries[i - 1].y.toDouble()
+                        else if (usePreviousEntry && entries.isEmpty()) {
+                            yValue = measurements?.get(0)?.value as Double
+                        }
+                        usePreviousEntry = false
+                        entries.add(
+                            Entry(
+                                xValue.toFloat(),
+                                yValue.toFloat()
+                            )
+                        )
+                        xValue--
                     }
+                } catch (e: ConcurrentModificationException) {
+                    return oldEntries
                 }
             }
+        }
         if (entries.size == 0) {
             return entries
         }
@@ -72,7 +72,7 @@ class ChartAveragesCreator {
     fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
         var xValue = MAX_X_VALUE.toDouble()
-        for (measurement in lastMeasurements.reversed()) {
+        for (measurement in lastMeasurements) {
             entries.add(
                 Entry(
                     xValue.toFloat(),
@@ -85,8 +85,8 @@ class ChartAveragesCreator {
         return entries
     }
 
-    fun getFixedEntries(stream: MeasurementStream): MutableList<Entry>? {
-        var measurements: MutableList<Measurement>?
+    fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
+        val measurements: MutableList<Measurement>?
         var xValue = MAX_X_VALUE.toDouble()
         val entries: MutableList<Entry> = mutableListOf()
         val periodData: MutableList<List<Measurement>?> = mutableListOf()
@@ -94,9 +94,7 @@ class ChartAveragesCreator {
 
         measurements = stream.getLastMeasurements(maxMeasurementsAmount)
 
-        if (measurements == null || measurements.isEmpty()) {
-            return entries
-        }
+        if (measurements == null || measurements.isEmpty()) return entries
 
         val calendar = Calendar.getInstance()
         calendar.time = measurements[0].time
@@ -106,9 +104,7 @@ class ChartAveragesCreator {
             val measurement: Measurement = measurements[i]
             calendar.time = measurement.time
             val measurementHour: Int = calendar[Calendar.HOUR_OF_DAY]
-            if (hour == measurementHour) {
-                measurementsInHour.add(measurement)
-            } else {
+            if (hour == measurementHour) measurementsInHour.add(measurement) else {
                 periodData.add(measurementsInHour)
                 hour = measurementHour
                 measurementsInHour = ArrayList<Measurement>()
@@ -116,18 +112,18 @@ class ChartAveragesCreator {
             }
         }
         if (periodData.size > 0) {
-            for (dataChunk in Lists.reverse<List<Measurement>?>(periodData)) {
+            for (dataChunk in periodData) {
                 if (xValue < 0) {
                     return entries
                 }
-                    val yValue = getAverage(dataChunk).toDouble()
-                    entries.add(
-                        Entry(
-                            xValue.toFloat(),
-                            yValue.toFloat()
-                        )
+                val yValue = getAverage(dataChunk).toDouble()
+                entries.add(
+                    Entry(
+                        xValue.toFloat(),
+                        yValue.toFloat()
                     )
-                    xValue--
+                )
+                xValue--
             }
         }
         return if (entries.size == 0) {
@@ -144,19 +140,18 @@ class ChartAveragesCreator {
         var lastIndex = 1
         val m: List<Measurement> = measurements ?: listOf()
         val size = m.size
-            try {
-                for (i in 0 until size) {
-                    lastIndex = i
-                    sum += m[i].value
-                }
-            } catch (e: ConcurrentModificationException) {
-                return if (lastIndex == 0) {
-                    usePreviousEntry = true
-                    sum.toInt()
-                } else {
-                    sum.toInt() / lastIndex
-                }
+        try {
+            for (i in 0 until size) {
+                lastIndex = i
+                sum += m[i].value
             }
+        } catch (e: ConcurrentModificationException) {
+            return if (lastIndex == 0) {
+                usePreviousEntry = true
+                sum.toInt()
+            } else sum.toInt() / lastIndex
+
+        }
         return (sum / size).toInt()
     }
 }
