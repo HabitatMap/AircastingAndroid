@@ -13,7 +13,10 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.BitmapHelper
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
@@ -114,5 +117,20 @@ abstract class ConfirmationViewMvcImpl(
         mapOptions.rotateGesturesEnabled(false)
 
         return mapOptions
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        val sessionLocation = session?.location ?: return
+
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+
+        val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
+        val marker = MarkerOptions()
+            .position(location)
+            .icon(icon)
+        mMarker = googleMap.addMarker(marker)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
 }
