@@ -1,19 +1,19 @@
 package pl.llp.aircasting.sensor.airbeam3.sync
 
 import android.util.Log
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.events.sdcard.SDCardSyncErrorEvent
+import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
 import pl.llp.aircasting.exceptions.*
 import pl.llp.aircasting.lib.safeRegister
+import pl.llp.aircasting.networking.services.AverageAndSyncSDCardSessionsService
 import pl.llp.aircasting.networking.services.SessionsSyncService
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.AirBeamConnector
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
-import pl.llp.aircasting.networking.services.AverageAndSyncSDCardSessionsService
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
@@ -46,7 +46,7 @@ class SDCardSyncService(
     fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
-        safeRegister(this)
+        EventBus.getDefault().safeRegister(this)
         mAirBeamConnector = airBeamConnector
         mDeviceItem = deviceItem
 

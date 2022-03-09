@@ -1,15 +1,15 @@
 package pl.llp.aircasting.screens.sync.syncing
 
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
-import pl.llp.aircasting.events.sdcard.SDCardLinesReadEvent
-import pl.llp.aircasting.lib.safeRegister
-import pl.llp.aircasting.screens.common.BaseController
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
+import pl.llp.aircasting.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SDCardSyncError
+import pl.llp.aircasting.lib.safeRegister
+import pl.llp.aircasting.screens.common.BaseController
 
 class AirbeamSyncingController(
     viewMvc: AirbeamSyncingViewMvcImpl?,
@@ -26,7 +26,7 @@ class AirbeamSyncingController(
     }
 
     fun onCreate() {
-        safeRegister(this)
+        EventBus.getDefault().safeRegister(this)
     }
 
     override fun onDestroy() {

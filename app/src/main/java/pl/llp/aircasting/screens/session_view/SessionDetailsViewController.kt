@@ -3,6 +3,10 @@ package pl.llp.aircasting.screens.session_view
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.database.data_classes.SessionDBObject
@@ -13,6 +17,7 @@ import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.events.NoteDeletedEvent
 import pl.llp.aircasting.events.NoteEditedEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.location.LocationHelper
@@ -24,11 +29,6 @@ import pl.llp.aircasting.networking.services.SessionDownloadService
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.screens.session_view.hlu.HLUValidationErrorToast
-import kotlinx.coroutines.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.lib.AppBar
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -69,7 +69,7 @@ abstract class SessionDetailsViewController(
     private var mShouldRefreshStatistics = AtomicBoolean(false)
 
     fun onCreate() {
-        safeRegister(this);
+        EventBus.getDefault().safeRegister(this)
         mViewMvc?.registerListener(this)
 
         mSessionObserver.observe()

@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 
-fun safeRegister(subscriber: Any) {
+fun EventBus.safeRegister(subscriber: Any) {
     if (!EventBus.getDefault().isRegistered(subscriber)) {
         EventBus.getDefault().register(subscriber)
     }

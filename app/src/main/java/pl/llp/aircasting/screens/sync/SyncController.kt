@@ -65,7 +65,7 @@ class SyncController(
     private var mSessionsSyncStarted = AtomicBoolean(false)
 
     fun onCreate() {
-        safeRegister(this)
+        EventBus.getDefault().safeRegister(this)
 
         setupProgressBarMax()
 

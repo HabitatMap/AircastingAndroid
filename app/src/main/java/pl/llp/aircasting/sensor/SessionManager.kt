@@ -147,7 +147,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun registerToEventBus() {
-        safeRegister(this);
+        EventBus.getDefault().safeRegister(this)
     }
 
     private fun unregisterFromEventBus() {
