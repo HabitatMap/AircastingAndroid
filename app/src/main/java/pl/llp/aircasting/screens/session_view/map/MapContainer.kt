@@ -401,9 +401,9 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMapFragment?.context?.let { styleGoogleMap(mMap, it) }
 
         mMap = googleMap
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {

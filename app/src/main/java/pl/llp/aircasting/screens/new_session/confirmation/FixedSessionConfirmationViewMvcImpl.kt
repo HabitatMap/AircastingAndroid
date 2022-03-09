@@ -32,10 +32,12 @@ class FixedSessionConfirmationViewMvcImpl(
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        styleGoogleMap(mMap, context)
 
         mMap = googleMap
         val sessionLocation = session?.location ?: return
+
+        styleGoogleMap(mMap!!, context)
+
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
         val marker = MarkerOptions()

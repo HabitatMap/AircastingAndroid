@@ -32,7 +32,7 @@ class MobileSessionConfirmationViewMvcImpl(
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        styleGoogleMap(mMap, context)
+        styleGoogleMap(mMap!!, context)
 
         mMap = googleMap
         val sessionLocation = session?.location ?: return

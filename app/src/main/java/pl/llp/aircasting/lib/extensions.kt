@@ -18,8 +18,8 @@ fun Context.areLocationServicesOn(): Boolean {
     return manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
 
-fun styleGoogleMap(map: GoogleMap?, context: Context) {
-    map?.setMapStyle(
+fun styleGoogleMap(map: GoogleMap, context: Context) {
+    map.setMapStyle(
         MapStyleOptions.loadRawResourceStyle(
             context, R.raw.map_style
         )

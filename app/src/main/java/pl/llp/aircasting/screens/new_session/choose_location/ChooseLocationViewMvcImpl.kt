@@ -142,7 +142,7 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        styleGoogleMap(mMap, context)
+        styleGoogleMap(mMap!!, context)
 
         mMap = googleMap
         setZoomPreferences()
