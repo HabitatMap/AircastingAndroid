@@ -19,7 +19,7 @@ android {
         versionName "2.0.37"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resConfigs "en", "es"
+        resConfigs "en", "es", "fr"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
         def secureProps = new Properties()
