@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.dashboard.charts
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -15,31 +16,18 @@ import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 
-class Chart {
-    private val mContext: Context
-    private val mRootView: View?
-    private val mChartStartTimeTextView: TextView?
-    private val mChartEndTimeTextView: TextView?
-    private val mChartUnitTextView: TextView?
+class Chart(context: Context, rootView: View?) {
+    private val mContext: Context = context
+    private val mRootView: View? = rootView
+    private val mChartStartTimeTextView: TextView? = mRootView?.chart_start_time
+    private val mChartEndTimeTextView: TextView? = mRootView?.chart_end_time
+    private val mChartUnitTextView: TextView? = mRootView?.chart_unit
 
     private var mEntries: List<Entry> = listOf()
 
-    private var mLineChart: LineChart?
+    private var mLineChart: LineChart? = mRootView?.chart_view
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
-
-    constructor(
-        context: Context,
-        rootView: View?
-
-    ) {
-        mContext = context
-        mRootView = rootView
-        mLineChart = mRootView?.chart_view
-        mChartStartTimeTextView = mRootView?.chart_start_time
-        mChartEndTimeTextView = mRootView?.chart_end_time
-        mChartUnitTextView = mRootView?.chart_unit
-    }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
@@ -48,8 +36,9 @@ class Chart {
         mSessionPresenter = sessionPresenter
 
             setEntries(sessionPresenter)
+        Log.d("ag", sessionPresenter?.sessionUUID.toString())
 
-            if (session != null && session?.streams.count() > 0) {
+            if (session != null && session.streams.count() > 0) {
                 resetChart()
                 mDataSet = prepareDataSet()
                 drawChart()
@@ -123,7 +112,7 @@ class Chart {
         mLineChart?.invalidate()
     }
 
-    private fun prepareDataSet(): LineDataSet? {
+    private fun prepareDataSet(): LineDataSet {
         if (mEntries == null || mEntries.isEmpty()) {
             return LineDataSet(listOf(), "")
         }
@@ -134,11 +123,11 @@ class Chart {
 
         // Circle colors
         dataSet.circleRadius = 3.5f
-        dataSet.setCircleColors(circleColors())
+        dataSet.circleColors = circleColors()
         dataSet.setDrawCircleHole(false)
 
         // Line color
-        dataSet.setColor(ContextCompat.getColor(mContext, R.color.aircasting_grey_300))
+        dataSet.color = ContextCompat.getColor(mContext, R.color.aircasting_grey_300)
         dataSet.lineWidth = 1f
 
         // Values size and color
@@ -148,9 +137,9 @@ class Chart {
         return dataSet
     }
 
-    private fun circleColors(): List<Int>? {
-        return mEntries?.map { entry ->
-            getColor(entry?.y)
+    private fun circleColors(): List<Int> {
+        return mEntries.map { entry ->
+            getColor(entry.y)
         }
     }
 

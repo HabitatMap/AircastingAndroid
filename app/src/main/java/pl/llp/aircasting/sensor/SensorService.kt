@@ -41,10 +41,19 @@ abstract class SensorService : Service() {
         startSensor(intent)
         createNotificationChannel()
         val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            PendingIntent.getActivity(
+                this,
+                0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        else PendingIntent.getActivity(
             this,
-            0, notificationIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(notificationMessage())
@@ -79,7 +88,7 @@ abstract class SensorService : Service() {
 
     abstract fun startSensor(intent: Intent?)
     abstract fun onStopService()
-    abstract fun notificationMessage() : String
+    abstract fun notificationMessage(): String
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -98,18 +107,18 @@ abstract class SensorService : Service() {
         stopSelf()
     }
 
-    protected fun registerToEventBus() {
-        safeRegister(this)
+    private fun registerToEventBus() {
+        EventBus.getDefault().safeRegister(this)
     }
 
-    protected fun unregisterFromEventBus() {
+    private fun unregisterFromEventBus() {
         EventBus.getDefault().unregister(this);
     }
 
     private fun setAppRestarted() {
         // After a crash or user killing the app we want to perform some action in MainActivity.onCreate()
         // so we are saving information about app restart in Settings
-        // we need to do this becuase MainActivity can be destroyed when the app is in the background
+        // we need to do this because MainActivity can be destroyed when the app is in the background
         // https://stackoverflow.com/questions/59648644/foreground-service-content-intent-not-resuming-the-app-but-relaunching-it
         if (!stoppedRecording.get()) {
             settings.setAppRestarted()

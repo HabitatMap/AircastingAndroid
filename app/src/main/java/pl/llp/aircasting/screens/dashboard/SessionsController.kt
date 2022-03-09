@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.dashboard
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager

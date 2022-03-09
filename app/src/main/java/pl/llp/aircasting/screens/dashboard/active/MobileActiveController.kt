@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.dashboard.active
 
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import pl.llp.aircasting.R
