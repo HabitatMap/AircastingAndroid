@@ -43,7 +43,7 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
         mMeasurementsDescription?.text = context.getString(R.string.session_last_sec_measurements_description)
     }
 
-    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
+    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
         return ActiveSessionActionsBottomSheet(this, sessionPresenter, mSupportFragmentManager)
     }
 
