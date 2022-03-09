@@ -30,7 +30,7 @@ class NewSessionActivity : BaseActivity() {
     lateinit var sessionBuilder: SessionBuilder
 
     companion object {
-        val SESSION_TYPE_KEY = "sessionType"
+        const val SESSION_TYPE_KEY = "sessionType"
         private var fixedLauncher: ActivityResultLauncher<Intent>? = null
         private var mobileLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -41,11 +41,11 @@ class NewSessionActivity : BaseActivity() {
                     if (it.resultCode == RESULT_OK) {
                         NavigationController.goToDashboard(tabId)
                     }
+
+                when (sessionType) {
+                    Session.Type.FIXED -> fixedLauncher = launcher
+                    Session.Type.MOBILE -> mobileLauncher = launcher
                 }
-                if (sessionType == Session.Type.FIXED)
-                    fixedLauncher = launcher
-                else if (sessionType == Session.Type.MOBILE)
-                    mobileLauncher = launcher
             }
         }
 
@@ -54,14 +54,11 @@ class NewSessionActivity : BaseActivity() {
                 val intent = Intent(it, NewSessionActivity::class.java)
                 intent.putExtra(SESSION_TYPE_KEY, sessionType)
 
-                if (sessionType == Session.Type.FIXED)
-                    fixedLauncher?.launch(intent)
-                else {
-                    if (sessionType == Session.Type.MOBILE) {
-                        mobileLauncher?.launch(intent)
-                    }
-                    else {}
+                when (sessionType) {
+                    Session.Type.FIXED -> fixedLauncher?.launch(intent)
+                    Session.Type.MOBILE -> mobileLauncher?.launch(intent)
                 }
+
             }
         }
     }
@@ -111,10 +108,5 @@ class NewSessionActivity : BaseActivity() {
                                             permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        controller?.onActivityResult(requestCode, resultCode)
     }
 }

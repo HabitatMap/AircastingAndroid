@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.dashboard.charts
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
