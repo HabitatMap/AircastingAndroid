@@ -329,13 +329,15 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         if (mSessionPresenter?.session?.location?.latitude != 0.0 || mSessionPresenter?.session?.location?.longitude != 0.0) {
             if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else
                 mSessionPresenter?.session?.location?.let { centerMap(it) }
-        } else mMeasurements.apply {
-            centerMap(
-                Session.Location(
-                    first().latitude!!,
-                    first().longitude!!
+        } else {
+            if (mMeasurements.isNotEmpty()) mMeasurements.apply {
+                centerMap(
+                    Session.Location(
+                        first().latitude!!,
+                        first().longitude!!
+                    )
                 )
-            )
+            }
         }
     }
 
