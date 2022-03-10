@@ -10,10 +10,11 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
+import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
-import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 
 class Chart(context: Context, rootView: View?) {
@@ -35,14 +36,13 @@ class Chart(context: Context, rootView: View?) {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
-            setEntries(sessionPresenter)
-        Log.d("ag", sessionPresenter?.sessionUUID.toString())
+        setEntries(sessionPresenter)
 
-            if (session != null && session.streams.count() > 0) {
-                resetChart()
-                mDataSet = prepareDataSet()
-                drawChart()
-            }
+        if (session != null && session.streams.isNotEmpty()) {
+            resetChart()
+            mDataSet = prepareDataSet()
+            drawChart()
+        }
         setTimesAndUnit()
     }
 
@@ -52,7 +52,8 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun setEntries(sessionPresenter: SessionPresenter?) {
-        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream)
+            ?: listOf()
     }
 
     private fun drawChart() {
@@ -97,7 +98,7 @@ class Chart(context: Context, rootView: View?) {
         mLineChart?.data = lineData
 
         // Removing the legend for colors
-        mLineChart?.legend?.isEnabled  = false
+        mLineChart?.legend?.isEnabled = false
 
         // Removing description on the down right
         mLineChart?.description?.isEnabled = false
@@ -116,7 +117,15 @@ class Chart(context: Context, rootView: View?) {
         if (mEntries == null || mEntries.isEmpty()) {
             return LineDataSet(listOf(), "")
         }
-        val dataSet = LineDataSet(mEntries, "")
+
+        val dataSet: LineDataSet =
+            if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true
+                && TemperatureConverter.isCelsiusToggleEnabled()) {
+                val celsiusEntries: List<Entry> = mEntries.map { entry ->
+                    Entry(entry.x, TemperatureConverter.fahrenheitToCelsius(entry.y))
+                }
+                LineDataSet(celsiusEntries, "")
+            } else LineDataSet(mEntries, "")
 
         // Making the line a curve, not a polyline
         dataSet.mode = LineDataSet.Mode.LINEAR
@@ -145,7 +154,11 @@ class Chart(context: Context, rootView: View?) {
 
     private fun getColor(value: Float?): Int {
         val measurementValue = value?.toDouble() ?: 0.0
-        return  MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream))
+        return MeasurementColor.forMap(
+            mContext,
+            measurementValue,
+            mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream)
+        )
     }
 
     private fun setTimesAndUnit() {
@@ -155,14 +168,14 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun chartUnitText(): String {
-        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
+        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.detailedType}"
     }
 
     private fun chartUnitLabelId(): Int {
-        if(mSessionPresenter?.isFixed()!!){
-            return R.string.fixed_session_units_label
+        return if (mSessionPresenter?.isFixed()!!) {
+            R.string.fixed_session_units_label
         } else {
-            return R.string.mobile_session_units_label
+            R.string.mobile_session_units_label
         }
     }
 }

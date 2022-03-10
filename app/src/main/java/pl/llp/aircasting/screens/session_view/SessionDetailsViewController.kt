@@ -3,6 +3,10 @@ package pl.llp.aircasting.screens.session_view
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.database.data_classes.SessionDBObject
@@ -13,6 +17,7 @@ import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.events.NoteDeletedEvent
 import pl.llp.aircasting.events.NoteEditedEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.location.LocationHelper
@@ -24,24 +29,18 @@ import pl.llp.aircasting.networking.services.SessionDownloadService
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.screens.session_view.hlu.HLUValidationErrorToast
-import kotlinx.coroutines.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.lib.AppBar
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 abstract class SessionDetailsViewController(
     protected val rootActivity: AppCompatActivity,
     protected val mSessionsViewModel: SessionsViewModel,
     protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
-    private var sensorName: String?,
+    sensorName: String?,
     val fragmentManager: FragmentManager,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory
-): SessionDetailsViewMvc.Listener,
+) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {
@@ -62,7 +61,7 @@ abstract class SessionDetailsViewController(
     protected var editNoteDialog: EditNoteBottomSheet? = null
 
     protected val mErrorHandler = ErrorHandler(rootActivity)
-    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
     private val mMeasurementsRepository = MeasurementsRepository()
@@ -93,9 +92,9 @@ abstract class SessionDetailsViewController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        if (event.sensorName == mSessionPresenter?.selectedStream?.sensorName) {
+        if (event.sensorName == mSessionPresenter.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
-            val measurement = Measurement(event, location?.latitude , location?.longitude)
+            val measurement = Measurement(event, location?.latitude, location?.longitude)
 
             mViewMvc?.bindSession(mSessionPresenter)
             mViewMvc?.addMeasurement(measurement)
@@ -170,7 +169,7 @@ abstract class SessionDetailsViewController(
     }
 
     private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
-        mSessionPresenter?.session?.streams?.forEach { stream ->
+        mSessionPresenter.session?.streams?.forEach { stream ->
             measurements[stream.sensorName]?.let { streamMeasurements ->
                 stream.setMeasurements(streamMeasurements)
             }
@@ -179,7 +178,7 @@ abstract class SessionDetailsViewController(
     }
 
     private fun loadMeasurements(): HashMap<String, List<Measurement>> {
-        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
+        var measurements: HashMap<String, List<Measurement>> = hashMapOf()
         val sessionUUID = mSessionPresenter.sessionUUID
         var sessionDBObject: SessionDBObject? = null
 
@@ -187,11 +186,16 @@ abstract class SessionDetailsViewController(
             sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
         }
 
-
         sessionDBObject?.let { session ->
             mSessionPresenter.selectedStream?.let { selectedStream ->
-                val isSessionDormant = (session?.type == Session.Type.MOBILE && session.status == Session.Status.FINISHED)
-                measurements = loadMeasurementsForStreams(session.id,  mSessionPresenter.session?.streams, selectedStream, isSessionDormant)
+                val isSessionDormant =
+                    (session.type == Session.Type.MOBILE && session.status == Session.Status.FINISHED)
+                measurements = loadMeasurementsForStreams(
+                    session.id,
+                    mSessionPresenter.session?.streams,
+                    selectedStream,
+                    isSessionDormant
+                )
             }
         }
 
@@ -212,7 +216,7 @@ abstract class SessionDetailsViewController(
         selectedStream: MeasurementStream,
         isSessionDormant: Boolean
     ): HashMap<String, List<Measurement>> {
-        var measurements:  HashMap<String, List<Measurement>> = hashMapOf()
+        val measurements: HashMap<String, List<Measurement>> = hashMapOf()
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =

@@ -181,7 +181,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
         mSessionPresenter = sessionPresenter
         if (mSessionPresenter != null && sessionPresenter.selectedStream == null) {
-            mSessionPresenter!!.setDefaultStream()
+            mSessionPresenter?.setDefaultStream()
         }
     }
 

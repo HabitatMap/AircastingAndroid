@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -143,10 +144,39 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
-                        app:layout_constraintBottom_toTopOf="@id/crowd_map_settings_button"
+                        app:layout_constraintBottom_toTopOf="@id/use_celcius_scale_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/use_24_hour_format_button" />
+
+                    <TextView
+                        android:id="@+id/use_celcius_scale_text"
+                        style="@style/Widget.Aircasting.SettingsButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Use Celsius scale"
+                        app:layout_constraintBottom_toTopOf="@id/separator3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/separator2" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/use_celcius_scale_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/use_celcius_scale_text"
+                        app:layout_constraintEnd_toEndOf="@+id/use_celcius_scale_text"
+                        app:layout_constraintTop_toTopOf="@+id/use_celcius_scale_text" />
+
+                    <View
+                        android:id="@+id/separator3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/aircasting_grey_100"
+                        app:layout_constraintBottom_toTopOf="@id/crowd_map_settings_button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/use_celcius_scale_text" />
 
                     <TextView
                         android:id="@+id/crowd_map_settings_button"
@@ -157,7 +187,7 @@
                         app:layout_constraintBottom_toTopOf="@id/crowd_map_description"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/separator2" />
+                        app:layout_constraintTop_toTopOf="@id/separator3" />
 
 
                     <TextView
@@ -167,7 +197,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/settings_contribute_to_crowdmap_description"
                         android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                        app:layout_constraintBottom_toTopOf="@+id/separator3"
+                        app:layout_constraintBottom_toTopOf="@+id/separator4"
                         app:layout_constraintEnd_toEndOf="@id/description_guideline"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/crowd_map_settings_button" />
@@ -181,7 +211,7 @@
                         app:layout_constraintTop_toTopOf="@+id/crowd_map_settings_button" />
 
                     <View
-                        android:id="@+id/separator3"
+                        android:id="@+id/separator4"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
@@ -199,7 +229,7 @@
                         app:layout_constraintBottom_toTopOf="@id/map_enable_description"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/separator3" />
+                        app:layout_constraintTop_toTopOf="@id/separator4" />
 
                     <TextView
                         android:id="@+id/map_enable_description"
@@ -208,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/map_enable_description"
                         android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                        app:layout_constraintBottom_toTopOf="@id/separator4"
+                        app:layout_constraintBottom_toTopOf="@id/separator5"
                         app:layout_constraintEnd_toEndOf="@id/description_guideline"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/map_settings_button" />
@@ -222,7 +252,7 @@
                         app:layout_constraintTop_toTopOf="@+id/map_settings_button" />
 
                     <View
-                        android:id="@+id/separator4"
+                        android:id="@+id/separator5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
@@ -249,13 +279,13 @@
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                         android:text="@string/settings_backend_settings"
-                        app:layout_constraintBottom_toTopOf="@id/separator5"
+                        app:layout_constraintBottom_toTopOf="@id/separator6"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <View
-                        android:id="@+id/separator5"
+                        android:id="@+id/separator6"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
@@ -272,13 +302,13 @@
                         android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                         android:text="@string/clear_sd_card"
                         android:visibility="gone"
-                        app:layout_constraintBottom_toTopOf="@id/separator6"
+                        app:layout_constraintBottom_toTopOf="@id/separator7"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/separator5" />
+                        app:layout_constraintTop_toBottomOf="@id/separator6" />
 
                     <View
-                        android:id="@+id/separator6"
+                        android:id="@+id/separator7"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
@@ -293,10 +323,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/application_version"
-                        app:layout_constraintBottom_toTopOf="@id/separator7"
+                        app:layout_constraintBottom_toTopOf="@id/separator8"
                         app:layout_constraintEnd_toStartOf="@id/app_version_value_text_view"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/separator6" />
+                        app:layout_constraintTop_toBottomOf="@id/separator7" />
 
                     <TextView
                         android:id="@+id/app_version_value_text_view"
@@ -304,13 +334,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/version"
-                        app:layout_constraintBottom_toTopOf="@id/separator7"
+                        app:layout_constraintBottom_toTopOf="@id/separator8"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/app_version_description_text_view"
-                        app:layout_constraintTop_toBottomOf="@id/separator6" />
+                        app:layout_constraintTop_toBottomOf="@id/separator7" />
 
                     <View
-                        android:id="@+id/separator7"
+                        android:id="@+id/separator8"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
@@ -326,13 +356,13 @@
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
                         android:text="@string/your_privacy"
-                        app:layout_constraintBottom_toTopOf="@id/separator8"
+                        app:layout_constraintBottom_toTopOf="@id/separator9"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/separator7" />
+                        app:layout_constraintTop_toBottomOf="@id/separator8" />
 
                     <View
-                        android:id="@+id/separator8"
+                        android:id="@+id/separator9"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"

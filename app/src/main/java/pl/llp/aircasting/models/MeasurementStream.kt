@@ -94,7 +94,7 @@ class MeasurementStream(
         }
     }
 
-    val detailedType: String?
+    var detailedType: String?
     val measurements get() = mMeasurements
 
     init {
@@ -214,5 +214,13 @@ class MeasurementStream(
 
     fun lastMeasurement(): Measurement? {
         return measurements.last()
+    }
+
+    fun isMeasurementTypeTemperature(): Boolean {
+        return measurementType == "Temperature"
+    }
+
+    fun isDetailedTypeCelsius(): Boolean {
+        return detailedType == "C"
     }
 }
