@@ -21,5 +21,11 @@ fun Context.areLocationServicesOn(): Boolean {
 fun styleGoogleMap(map: GoogleMap, context: Context) {
     map.setMapStyle(
         MapStyleOptions.loadRawResourceStyle(
-            context, R.raw.map_style))
+            context, R.raw.map_style
+        )
+    )
+}
+
+fun labelFormat(value: Float?): String {
+    return "%d".format(value?.toInt())
 }
