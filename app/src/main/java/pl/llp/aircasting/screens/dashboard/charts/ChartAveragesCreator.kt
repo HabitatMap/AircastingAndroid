@@ -116,7 +116,7 @@ class ChartAveragesCreator {
             }
         }
         if (periodData.size > 0) {
-            for (dataChunk in Lists.reverse<List<Measurement>?>(periodData)) {
+            for (dataChunk in periodData) {
                 if (xValue < 0) {
                     return entries
                 }
