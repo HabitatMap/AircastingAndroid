@@ -193,7 +193,7 @@ abstract class SessionsController(
     }
 
     override fun onShareSessionClicked(session: Session) {
-        var reloadedSession: Session? = null
+        var reloadedSession: Session?
         DatabaseProvider.runQuery { scope ->
             val dbSession = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSession?.let {

@@ -68,7 +68,7 @@ abstract class SessionDetailsViewController(
     private var mShouldRefreshStatistics = AtomicBoolean(false)
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this);
+        EventBus.getDefault().safeRegister(this)
         mViewMvc?.registerListener(this)
 
         mSessionObserver.observe()

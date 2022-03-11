@@ -1,11 +1,11 @@
 package pl.llp.aircasting.sensor.airbeam3.sync
 
 import android.util.Log
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.sensor.AirBeamConnector
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
 class SDCardClearService() {
     private val CLEAR_CARD_TAG = "CLEAR_CARD"

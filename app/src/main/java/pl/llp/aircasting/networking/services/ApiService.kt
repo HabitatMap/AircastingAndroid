@@ -1,15 +1,16 @@
 package pl.llp.aircasting.networking.services
 
 import android.util.Base64
-import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.params.*
-import pl.llp.aircasting.networking.responses.*
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.networking.params.*
+import pl.llp.aircasting.networking.responses.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -125,9 +126,9 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         var baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
 
         if (mSettings.getBackendUrl()?.last()?.equals(URL_SUFFIX) == true) {
-            return HttpUrl.get(baseUrl)
+            return baseUrl.toHttpUrl()
         } else {
-            return HttpUrl.get(baseUrl + URL_SUFFIX)
+            return (baseUrl + URL_SUFFIX).toHttpUrl()
         }
     }
 

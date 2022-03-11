@@ -1,17 +1,17 @@
 package pl.llp.aircasting.sensor
 
 import android.content.Context
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.events.AirBeamConnectionSuccessfulEvent
+import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
 import pl.llp.aircasting.events.SensorDisconnectedEvent
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
