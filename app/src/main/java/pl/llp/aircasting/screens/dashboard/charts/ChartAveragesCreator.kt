@@ -20,7 +20,7 @@ class ChartAveragesCreator {
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry> {
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
-        var xValue = MAX_X_VALUE.toDouble()
+        var xValue = MAX_X_VALUE
         val measurementsInPeriod = (MOBILE_INTERVAL_IN_SECONDS / streamFrequency).toInt()
         val entries: MutableList<Entry> = mutableListOf()
         val measurements: MutableList<Measurement>? =

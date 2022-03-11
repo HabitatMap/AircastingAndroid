@@ -9,7 +9,6 @@ import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.models.Measurement
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.collections.HashMap
 
 /**
  * Averaging for long mobile sessions
@@ -58,11 +57,17 @@ class AveragingService private constructor(private val sessionId: Long) {
         this.mSecondThresholdTime = (mDBSession?.startTime ?: Date()).time + SECOND_TRESHOLD_TIME
     }
 
+
+    /**
+     * Two hours: 60 * 60 * 2 = 7200
+     * Nine hours: 60 * 60 * 9 = 32400
+     */
+
     companion object {
         val DEFAULT_FREQUENCY = 1
-        val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+        val FIRST_TRESHOLD_TIME = 7200
         val FIRST_THRESHOLD_FREQUENCY = 5
-        val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
+        val SECOND_TRESHOLD_TIME = 32400
         val SECOND_THRESHOLD_FREQUENCY = 60
 
         private val THRESHOLDS = arrayOf(
@@ -102,8 +107,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         fun getAveragingThreshold(firstMeasurement: Measurement?, lastMeasurement: Measurement?): Int {
             val sessionDuration = firstMeasurement?.time?.time?.let {
                 lastMeasurement?.time?.time?.minus(it)
-            }
-            if (sessionDuration == null) return 0
+            } ?: return 0
             when {
                 sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
                 (sessionDuration > FIRST_TRESHOLD_TIME)  &&  (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
