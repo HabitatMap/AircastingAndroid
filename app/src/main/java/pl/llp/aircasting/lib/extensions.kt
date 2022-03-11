@@ -25,3 +25,7 @@ fun styleGoogleMap(map: GoogleMap, context: Context) {
         )
     )
 }
+
+fun labelFormat(value: Float?): String {
+    return "%d".format(value?.toInt())
+}

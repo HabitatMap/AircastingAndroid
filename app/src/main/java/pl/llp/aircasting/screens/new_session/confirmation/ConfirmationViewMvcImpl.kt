@@ -20,6 +20,7 @@ import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
+
 abstract class ConfirmationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
@@ -87,7 +88,7 @@ abstract class ConfirmationViewMvcImpl(
 
     private fun onStartRecordingClicked() {
         for (listener in listeners) {
-            listener.onStartRecordingClicked(session!!)
+            session?.let { listener.onStartRecordingClicked(it) }
         }
     }
 

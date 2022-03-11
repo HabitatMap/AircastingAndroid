@@ -35,11 +35,16 @@ class NewSessionActivity : BaseActivity() {
         private var mobileLauncher: ActivityResultLauncher<Intent>? = null
 
         fun register(rootActivity: FragmentActivity?, sessionType: Session.Type) {
-            rootActivity?.let{
-                val launcher = it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    val tabId = DashboardPagerAdapter.tabIndexForSessionType(sessionType, Session.Status.RECORDING)
-                    if (it.resultCode == RESULT_OK) {
-                        NavigationController.goToDashboard(tabId)
+            rootActivity?.let {
+                val launcher =
+                    it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
+                            sessionType,
+                            Session.Status.RECORDING
+                        )
+                        if (it.resultCode == RESULT_OK) {
+                            NavigationController.goToDashboard(tabId)
+                        }
                     }
 
                 when (sessionType) {
@@ -50,7 +55,7 @@ class NewSessionActivity : BaseActivity() {
         }
 
         fun start(rootActivity: FragmentActivity?, sessionType: Session.Type) {
-            rootActivity?.let{
+            rootActivity?.let {
                 val intent = Intent(it, NewSessionActivity::class.java)
                 intent.putExtra(SESSION_TYPE_KEY, sessionType)
 
@@ -104,9 +109,16 @@ class NewSessionActivity : BaseActivity() {
         controller?.onBackPressed()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        controller?.onActivityResult(requestCode, resultCode)
     }
 }
