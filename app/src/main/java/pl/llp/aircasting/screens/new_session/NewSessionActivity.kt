@@ -116,4 +116,9 @@ class NewSessionActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        controller?.onActivityResult(requestCode, resultCode)
+    }
 }
