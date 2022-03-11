@@ -21,35 +21,28 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
 
-abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
-    OnMapReadyCallback {
-    protected var session: Session? = null
+abstract class ConfirmationViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager?,
+    session: Session,
     protected val areMapsDisabled: Boolean
+) : BaseObservableViewMvc<ConfirmationViewMvc.Listener>(), ConfirmationViewMvc,
+    OnMapReadyCallback {
+    protected var session: Session? = session
 
     private val DEFAULT_ZOOM = 16f
 
     private var mMarker: Marker? = null
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
-    private var mSupportFragmentManager: FragmentManager?
+    private var mSupportFragmentManager: FragmentManager? = supportFragmentManager
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?,
-        session: Session,
-        areMapsDisabled: Boolean
-    ): super() {
+    init {
         this.rootView = inflater.inflate(layoutId(), parent, false)
-        this.session = session
-        this.mSupportFragmentManager = supportFragmentManager
-        this.areMapsDisabled = areMapsDisabled
-
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
-
         initMap(mSupportFragmentManager)
-
         val startRecordingButton = rootView?.findViewById<Button>(R.id.start_recording_button)
         startRecordingButton?.setOnClickListener {
             onStartRecordingClicked()
@@ -109,21 +102,22 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
 
     private fun onStartRecordingClicked() {
         for (listener in listeners) {
-            listener.onStartRecordingClicked(session!!)
+            session?.let { listener.onStartRecordingClicked(it) }
         }
     }
 
     private fun buildDescription(): SpannableStringBuilder {
-        val blueColor = ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
+        val blueColor =
+            ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
 
         return SpannableStringBuilder()
             .append(getString(R.string.session_confirmation_description_part1))
             .append(" ")
-            .color(blueColor, { bold { append(session?.displayedType) } })
+            .color(blueColor) { bold { append(session?.displayedType) } }
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part2))
             .append(" ")
-            .color(blueColor, { bold { append(session?.name) } })
+            .color(blueColor) { bold { append(session?.name) } }
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part3))
     }
