@@ -1,12 +1,18 @@
 package pl.llp.aircasting.screens.dashboard.active
 
 import android.content.Context
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.events.NoteCreatedEvent
+import pl.llp.aircasting.events.StandaloneModeEvent
 import pl.llp.aircasting.events.StopRecordingEvent
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
@@ -16,17 +22,12 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.models.observers.ActiveSessionsObserver
 import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
+import pl.llp.aircasting.screens.dashboard.SessionsController
+import pl.llp.aircasting.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.screens.sync.SyncActivity
-import pl.llp.aircasting.sensor.AirBeamReconnector
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.events.StandaloneModeEvent
-import pl.llp.aircasting.screens.dashboard.*
 import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
+import pl.llp.aircasting.sensor.AirBeamReconnector
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
