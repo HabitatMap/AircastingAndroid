@@ -126,9 +126,7 @@ class ChartAveragesCreator {
                 xValue--
             }
         }
-        return if (entries.size == 0) {
-            entries
-        } else entries
+        return entries
     }
 
     private fun getTolerance(measurementsInPeriod: Double): Double {
