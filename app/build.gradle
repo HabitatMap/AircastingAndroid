@@ -15,11 +15,11 @@ android {
         applicationId "pl.llp.aircasting"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 178
-        versionName "2.0.37"
+        versionCode 180
+        versionName "2.0.38"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resConfigs "en", "es"
+        resConfigs "en", "es", "fr"
 
         // Read the API key from ./secure.properties into R.string.maps_api_key
         def secureProps = new Properties()
@@ -108,10 +108,10 @@ dependencies {
     implementation 'com.opencsv:opencsv:4.6'
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
-    implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     // for Google Places API
-    implementation(name:'places-maps-sdk-3.1.0-beta', ext:'aar')
+    implementation('com.google.android.libraries.places:places:2.5.0')
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.auto.value:auto-value-annotations:1.6.3'
 

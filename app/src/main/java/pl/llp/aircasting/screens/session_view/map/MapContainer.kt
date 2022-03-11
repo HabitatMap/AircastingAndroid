@@ -10,13 +10,14 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.*
-import com.google.android.libraries.maps.model.*
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_map.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.SessionBoundingBox
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Note
@@ -80,27 +81,6 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     fun unregisterListener() {
         mListener = null
-    }
-
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMap ?: return
-        mMap = googleMap
-
-        styleMap()
-
-        // sometimes onMapReady is invoked earlier than bindStream
-        if (status.get() == Status.SESSION_LOADED.value) {
-            setup()
-        }
-        status.set(Status.MAP_LOADED.value)
-
-        setCustomCompassLocation()
-    }
-
-    private fun styleMap() {
-        mMap?.setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(
-                mContext, R.raw.map_style))
     }
 
     fun setup() {
@@ -270,8 +250,9 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         if (mMeasurements.isEmpty()) return
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
-        mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
 
+        boundingBox?.let { CameraUpdateFactory.newLatLngBounds(it, padding) }
+            ?.let { mMap?.animateCamera(it) }
     }
 
     private fun animateCameraToFixedSession() {
@@ -289,12 +270,12 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         centerMap(position)
     }
 
-    private fun centerMap(location: Session.Location?) {
-        val position = location?.longitude?.let { LatLng(location.latitude, it) }
+    private fun centerMap(location: Session.Location) {
+        val position = LatLng(location.latitude, location.longitude)
         centerMap(position)
     }
 
-    private fun centerMap(position: LatLng?, zoom: Float = DEFAULT_ZOOM) {
+    private fun centerMap(position: LatLng, zoom: Float = DEFAULT_ZOOM) {
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom))
     }
 
@@ -346,10 +327,18 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     private fun locate() {
         if (mSessionPresenter?.session?.location?.latitude != 0.0 || mSessionPresenter?.session?.location?.longitude != 0.0) {
-            if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else centerMap(
-                mSessionPresenter?.session?.location
-            )
-        } else mMeasurements.apply { centerMap(Session.Location(first().latitude!!, first().longitude!!)) }
+            if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else
+                mSessionPresenter?.session?.location?.let { centerMap(it) }
+        } else {
+            if (mMeasurements.isNotEmpty()) mMeasurements.apply {
+                centerMap(
+                    Session.Location(
+                        first().latitude!!,
+                        first().longitude!!
+                    )
+                )
+            }
+        }
     }
 
     private fun clearMap() {
@@ -411,6 +400,20 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     private fun shouldDrawLastMeasurement(): Boolean {
         return mSessionPresenter?.session?.tab != SessionsTab.MOBILE_DORMANT
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+
+        mMap = googleMap
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+
+        // sometimes onMapReady is invoked earlier than bindStream
+        if (status.get() == Status.SESSION_LOADED.value) {
+            setup()
+        }
+        status.set(Status.MAP_LOADED.value)
+
+        setCustomCompassLocation()
     }
 }
 

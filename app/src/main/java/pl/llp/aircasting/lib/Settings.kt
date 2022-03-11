@@ -11,6 +11,7 @@ open class Settings(private val mApplication: Application) {
     protected val EMAIL_KEY = "email"
     protected val AUTH_TOKEN_KEY = "auth_token"
     protected val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
+    protected val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
     protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
     protected val CALIBRATION_KEY = "calibration"
     protected val MAPS_DISABLED_KEY = "maps_disabled"
@@ -28,6 +29,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_SESSIONS_TO_REMOVE = false
     private val DEFAULT_CALIBRATION_VALUE = 100
     private val DEFAULT_USE_24_HOUR_FORMAT = true
+    private val DEFAULT_USE_CELSIUS_SCALE = false
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
@@ -59,6 +61,10 @@ open class Settings(private val mApplication: Application) {
         return getBooleanFromSettings(USE_24_HOUR_FORMAT_KEY, DEFAULT_USE_24_HOUR_FORMAT)
     }
 
+    fun isCelsiusScaleEnabled(): Boolean {
+        return getBooleanFromSettings(USE_CELSIUS_SCALE_KEY, DEFAULT_USE_CELSIUS_SCALE)
+    }
+
     fun isCrowdMapEnabled(): Boolean {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
@@ -84,7 +90,10 @@ open class Settings(private val mApplication: Application) {
     }
 
     fun getIsDeleteSessionInProgress(): Boolean {
-        return getBooleanFromSettings(DELETE_SESSION_IN_PROGERSS_KEY, DEFAULT_DELETE_SESSION_IN_PROGRESS)
+        return getBooleanFromSettings(
+            DELETE_SESSION_IN_PROGERSS_KEY,
+            DEFAULT_DELETE_SESSION_IN_PROGRESS
+        )
     }
 
     fun isKeepScreenOnEnabled(): Boolean {
@@ -104,7 +113,12 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(USE_24_HOUR_FORMAT_KEY, enabled)
     }
 
-    fun toggleMapSettingsEnabled(){
+    fun toggleUseCelsiusScaleEnabled() {
+        val enabled = !isCelsiusScaleEnabled()
+        saveToSettings(USE_CELSIUS_SCALE_KEY, enabled)
+    }
+
+    fun toggleMapSettingsEnabled() {
         val enabled = !areMapsDisabled()
         saveToSettings(MAPS_DISABLED_KEY, enabled)
     }
@@ -127,7 +141,7 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(ONBOARDING_DISPLAYED_KEY, false)
     }
 
-    fun microphoneSettingsChanged(calibration: Int){
+    fun microphoneSettingsChanged(calibration: Int) {
         saveToSettings(CALIBRATION_KEY, calibration)
     }
 
@@ -171,7 +185,7 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() - 1)
     }
 
-    open fun logout(){
+    open fun logout() {
         deleteFromSettings()
     }
 
@@ -199,13 +213,13 @@ open class Settings(private val mApplication: Application) {
         editor.apply()
     }
 
-    protected open fun saveToSettings(key: String, value: Int){
+    protected open fun saveToSettings(key: String, value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
         editor.apply()
     }
 
-    private fun deleteFromSettings(){
+    private fun deleteFromSettings() {
         val keys = sharedPreferences.all.keys
         val editor = sharedPreferences.edit()
         for (key in keys) {

@@ -2,20 +2,23 @@ package pl.llp.aircasting.screens.session_view.hlu
 
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.android.synthetic.main.hlu_dialog.view.*
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.labelFormat
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.screens.common.BaseDialog
-import kotlinx.android.synthetic.main.hlu_dialog.view.*
 
 class HLUDialog(
     private var mSensorThreshold: SensorThreshold?,
     private val mMeasurementStream: MeasurementStream?,
     mFragmentManager: FragmentManager,
     private val listener: HLUDialogListener
-): BaseDialog(mFragmentManager) {
+) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
@@ -39,11 +42,29 @@ class HLUDialog(
     }
 
     private fun setupView() {
-        mView.hlu_dialog_min.setText(mSensorThreshold?.thresholdVeryLow.toString())
-        mView.hlu_dialog_low.setText(mSensorThreshold?.thresholdLow.toString())
-        mView.hlu_dialog_medium.setText(mSensorThreshold?.thresholdMedium.toString())
-        mView.hlu_dialog_high.setText(mSensorThreshold?.thresholdHigh.toString())
-        mView.hlu_dialog_max.setText(mSensorThreshold?.thresholdVeryHigh.toString())
+        mView.apply {
+            setThresholdText(hlu_dialog_min, mMeasurementStream?.thresholdVeryLow)
+            setThresholdText(hlu_dialog_low, mMeasurementStream?.thresholdLow)
+            setThresholdText(hlu_dialog_medium, mMeasurementStream?.thresholdMedium)
+            setThresholdText(hlu_dialog_high, mMeasurementStream?.thresholdHigh)
+            setThresholdText(hlu_dialog_max, mMeasurementStream?.thresholdVeryHigh)
+        }
+    }
+
+    private fun setThresholdText(label: TextView, threshold: Int?) {
+        if (threshold != null) {
+            label.text =
+                if (mMeasurementStream?.isMeasurementTypeTemperature() == true
+                    && TemperatureConverter.isCelsiusToggleEnabled()
+                )
+                    labelFormat(
+                        TemperatureConverter.fahrenheitToCelsius(
+                            threshold.toFloat()
+                        )
+                    )
+                else
+                    threshold.toString()
+        }
     }
 
     private fun okButtonClicked() {
@@ -78,11 +99,13 @@ class HLUDialog(
     private fun resetToDefaultsClicked() {
         if (mSensorThreshold == null || mMeasurementStream == null) return
 
-        mSensorThreshold!!.thresholdVeryLow = mMeasurementStream.thresholdVeryLow
-        mSensorThreshold!!.thresholdLow = mMeasurementStream.thresholdLow
-        mSensorThreshold!!.thresholdMedium = mMeasurementStream.thresholdMedium
-        mSensorThreshold!!.thresholdHigh = mMeasurementStream.thresholdHigh
-        mSensorThreshold!!.thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
+        mSensorThreshold?.apply {
+            thresholdVeryLow = mMeasurementStream.thresholdVeryLow
+            thresholdLow = mMeasurementStream.thresholdLow
+            thresholdMedium = mMeasurementStream.thresholdMedium
+            thresholdHigh = mMeasurementStream.thresholdHigh
+            thresholdVeryHigh = mMeasurementStream.thresholdVeryHigh
+        }
 
         listener.onSensorThresholdChangedFromDialog(mSensorThreshold!!)
 
@@ -91,9 +114,13 @@ class HLUDialog(
 
     private fun getValue(input: TextInputEditText): Int? {
         val stringValue = input.text.toString().trim()
-        
         if (stringValue.isEmpty()) return null
 
-        return stringValue.toInt()
+        val value = stringValue.toInt()
+        return if (mMeasurementStream?.isMeasurementTypeTemperature() == true
+            && mMeasurementStream.isDetailedTypeCelsius()
+        )
+            TemperatureConverter.celsiusToFahrenheit(value)
+        else value
     }
 }

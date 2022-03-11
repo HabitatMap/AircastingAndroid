@@ -1,5 +1,9 @@
 package pl.llp.aircasting.sensor.microphone
 
+import kotlinx.android.parcel.Parcelize
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.events.StopRecordingEvent
 import pl.llp.aircasting.exceptions.AudioReaderError
@@ -8,10 +12,6 @@ import pl.llp.aircasting.lib.ResultCodes
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import kotlinx.android.parcel.Parcelize
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 @Parcelize

@@ -134,10 +134,18 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         val URL_SUFFIX = "/"
         val baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
 
+<<<<<<< chart-inaccurate-fix
         return if (mSettings.getBackendUrl()?.last()
                 ?.equals(URL_SUFFIX) == true
         ) baseUrl.toHttpUrl()
         else (baseUrl + URL_SUFFIX).toHttpUrl()
+=======
+        if (mSettings.getBackendUrl()?.last()?.equals(URL_SUFFIX) == true) {
+            return baseUrl.toHttpUrl()
+        } else {
+            return (baseUrl + URL_SUFFIX).toHttpUrl()
+        }
+>>>>>>> master
     }
 
     private fun encodedCredentials(username: String, password: String): String {

@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentManager
 import com.google.android.gms.common.api.Status
-import com.google.android.libraries.maps.*
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
@@ -94,13 +95,6 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMap ?: return
-        mMap = googleMap
-        setZoomPreferences()
-        resetMapToDefaults()
-    }
-
     override fun onDestroy() {
         mMap = null
         mMapFragment?.onDestroy()
@@ -146,4 +140,13 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
 
         return mapOptions
     }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+
+        setZoomPreferences()
+        resetMapToDefaults()
+    }
+
 }

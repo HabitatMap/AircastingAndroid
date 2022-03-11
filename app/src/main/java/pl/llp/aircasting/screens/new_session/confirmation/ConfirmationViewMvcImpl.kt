@@ -10,45 +10,39 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.*
-import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.Marker
-import com.google.android.libraries.maps.model.MarkerOptions
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
+import pl.llp.aircasting.lib.styleGoogleMap
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
 
-abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMvc.Listener>, ConfirmationViewMvc,
-    OnMapReadyCallback {
-    protected var session: Session? = null
+abstract class ConfirmationViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager?,
+    session: Session,
     protected val areMapsDisabled: Boolean
+) : BaseObservableViewMvc<ConfirmationViewMvc.Listener>(), ConfirmationViewMvc,
+    OnMapReadyCallback {
+    protected var session: Session? = session
 
-    private val DEFAULT_ZOOM = 16f
+    val DEFAULT_ZOOM = 16f
 
-    private var mMarker: Marker? = null
-    private var mMap: GoogleMap? = null
+    var mMarker: Marker? = null
+    var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
-    private var mSupportFragmentManager: FragmentManager?
+    private var mSupportFragmentManager: FragmentManager? = supportFragmentManager
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?,
-        session: Session,
-        areMapsDisabled: Boolean
-    ): super() {
+    init {
         this.rootView = inflater.inflate(layoutId(), parent, false)
-        this.session = session
-        this.mSupportFragmentManager = supportFragmentManager
-        this.areMapsDisabled = areMapsDisabled
-
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
-
         initMap(mSupportFragmentManager)
-
         val startRecordingButton = rootView?.findViewById<Button>(R.id.start_recording_button)
         startRecordingButton?.setOnClickListener {
             onStartRecordingClicked()
@@ -92,36 +86,24 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoom))
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMap ?: return
-        mMap = googleMap
-        val sessionLocation = session?.location ?: return
-        val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
-        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
-        val marker = MarkerOptions()
-            .position(location)
-            .icon(icon)
-        mMarker = googleMap.addMarker(marker)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
-    }
-
     private fun onStartRecordingClicked() {
         for (listener in listeners) {
-            listener.onStartRecordingClicked(session!!)
+            session?.let { listener.onStartRecordingClicked(it) }
         }
     }
 
     private fun buildDescription(): SpannableStringBuilder {
-        val blueColor = ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
+        val blueColor =
+            ResourcesCompat.getColor(context.resources, R.color.aircasting_blue_400, null)
 
         return SpannableStringBuilder()
             .append(getString(R.string.session_confirmation_description_part1))
             .append(" ")
-            .color(blueColor, { bold { append(session?.displayedType) } })
+            .color(blueColor) { bold { append(session?.displayedType) } }
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part2))
             .append(" ")
-            .color(blueColor, { bold { append(session?.name) } })
+            .color(blueColor) { bold { append(session?.name) } }
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part3))
     }
@@ -136,5 +118,20 @@ abstract class ConfirmationViewMvcImpl: BaseObservableViewMvc<ConfirmationViewMv
         mapOptions.rotateGesturesEnabled(false)
 
         return mapOptions
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        val sessionLocation = session?.location ?: return
+
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+
+        val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
+        val marker = MarkerOptions()
+            .position(location)
+            .icon(icon)
+        mMarker = googleMap.addMarker(marker)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
 }

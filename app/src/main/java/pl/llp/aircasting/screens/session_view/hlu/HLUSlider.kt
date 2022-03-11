@@ -1,15 +1,25 @@
 package pl.llp.aircasting.screens.session_view.hlu
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.slider.RangeSlider
 import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.labelFormat
+import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.SensorThreshold
 
-class HLUSlider {
-    private val mContext: Context
+@SuppressLint("RestrictedApi")
+class HLUSlider
+    (
+    rootView: View?,
+    context: Context,
+    onThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit
+) {
+    private val mContext: Context = context
 
     private var mSegments: List<View?>
     private var fromLabel: TextView?
@@ -19,35 +29,28 @@ class HLUSlider {
     private val mSlider: RangeSlider?
     private val mThumbRadiusInPixels: Int
 
+    private var mStream: MeasurementStream? = null
     private var mSensorThreshold: SensorThreshold? = null
-    private var mOnThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit
+    private var mOnThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit = onThresholdChanged
 
-    constructor(rootView: View?, context: Context, onThresholdChanged: (sensorThreshold: SensorThreshold) -> Unit) {
-        mContext = context
-
+    init {
         val lowSegment = rootView?.findViewById<View>(R.id.low_segment)
         val mediumSegment = rootView?.findViewById<View>(R.id.medium_segment)
         val highSegment = rootView?.findViewById<View>(R.id.high_segment)
         val veryHighSegment = rootView?.findViewById<View>(R.id.very_high_segment)
         mSegments = listOf(lowSegment, mediumSegment, highSegment, veryHighSegment)
-
         val lowLabel = rootView?.findViewById<TextView>(R.id.low_label)
         val mediumLabel = rootView?.findViewById<TextView>(R.id.medium_label)
         val highLabel = rootView?.findViewById<TextView>(R.id.high_label)
         fromLabel = rootView?.findViewById(R.id.very_low_label)
         toLabel = rootView?.findViewById(R.id.very_high_label)
         mLabels = listOf(lowLabel, mediumLabel, highLabel)
-
         mSlider = rootView?.findViewById(R.id.slider)
-
-        mThumbRadiusInPixels = mContext.resources.getDimension(R.dimen.hlu_slider_thumb_radius).toInt()
-
-        mOnThresholdChanged = onThresholdChanged
-
+        mThumbRadiusInPixels =
+            mContext.resources.getDimension(R.dimen.hlu_slider_thumb_radius).toInt()
         mSlider?.addOnChangeListener { _, _, _ ->
             draw()
         }
-
         mSlider?.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: RangeSlider) {
                 // Do nothing
@@ -59,50 +62,75 @@ class HLUSlider {
         })
     }
 
-    fun bindSensorThreshold(sensorThreshold: SensorThreshold?) {
+    fun bindSensorThreshold(sensorThreshold: SensorThreshold?, stream: MeasurementStream? = null) {
         sensorThreshold ?: return
 
+        mStream = stream
         mSensorThreshold = sensorThreshold
-        mSlider?.valueFrom = sensorThreshold.from
-        mSlider?.valueTo = sensorThreshold.to
-        mSlider?.values = valuesFromThreshold(sensorThreshold)
+
+        setValuesForSliderBasedOnSelectedMeasurementStream()
 
         draw()
     }
 
-    fun refresh(sensorThreshold: SensorThreshold?) {
-        bindSensorThreshold(sensorThreshold)
+    private fun setValuesForSliderBasedOnSelectedMeasurementStream() {
+        mStream ?: return
+
+        if (mStream!!.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled())
+            mSlider?.apply {
+                valueFrom =
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold!!.from)
+                valueTo =
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold!!.to)
+
+                values = arrayListOf(
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold?.thresholdLow!!.toFloat()),
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold?.thresholdMedium!!.toFloat()),
+                    TemperatureConverter.fahrenheitToCelsius(mSensorThreshold?.thresholdHigh!!.toFloat())
+                )
+            } else mSlider?.apply {
+            valueFrom = mSensorThreshold!!.from
+            valueTo = mSensorThreshold!!.to
+            values = arrayListOf(
+                mSensorThreshold?.thresholdLow?.toFloat(),
+                mSensorThreshold?.thresholdMedium?.toFloat(),
+                mSensorThreshold?.thresholdHigh?.toFloat()
+            )
+        }
     }
 
-    private fun valuesFromThreshold(sensorThreshold: SensorThreshold): List<Float> {
-        return arrayListOf(
-            sensorThreshold.thresholdLow.toFloat(),
-            sensorThreshold.thresholdMedium.toFloat(),
-            sensorThreshold.thresholdHigh.toFloat()
-        )
+    fun refresh(sensorThreshold: SensorThreshold?, stream: MeasurementStream? = null) {
+        bindSensorThreshold(sensorThreshold, stream)
     }
 
     private fun updateSensorThreshold() {
         mSensorThreshold ?: return
         val values = mSlider?.values ?: return
 
-        val thresholdLow = values.getOrNull(0)?.toInt()
-        thresholdLow?.let { mSensorThreshold!!.thresholdLow = thresholdLow }
-        val thresholdMedium = values.getOrNull(1)?.toInt()
-        thresholdMedium?.let { mSensorThreshold!!.thresholdMedium = thresholdMedium }
-        val thresholdHigh = values.getOrNull(2)?.toInt()
-        thresholdHigh?.let { mSensorThreshold!!.thresholdHigh = thresholdHigh }
+        var thresholdLow = values.getOrNull(0)?.toInt()
+        var thresholdMedium = values.getOrNull(1)?.toInt()
+        var thresholdHigh = values.getOrNull(2)?.toInt()
+
+        mStream ?: return
+        if (mStream!!.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) {
+            thresholdLow = TemperatureConverter.celsiusToFahrenheit(thresholdLow!!)
+            thresholdMedium = TemperatureConverter.celsiusToFahrenheit(thresholdMedium!!)
+            thresholdHigh = TemperatureConverter.celsiusToFahrenheit(thresholdHigh!!)
+        }
+
+        thresholdLow?.let { mSensorThreshold?.thresholdLow = thresholdLow }
+        thresholdMedium?.let { mSensorThreshold?.thresholdMedium = thresholdMedium }
+        thresholdHigh?.let { mSensorThreshold?.thresholdHigh = thresholdHigh }
 
         mOnThresholdChanged.invoke(mSensorThreshold!!)
     }
 
-    inner class SegmentProperty {
+    inner class SegmentProperty(adjacentProperty: SegmentProperty?, aValue: Float) {
         val xPosition: Float
         val width: Int
-        val value: Float
+        val value: Float = aValue
 
-        constructor(adjacentProperty: SegmentProperty?, aValue: Float) {
-            value = aValue
+        init {
             width = calculateWidth(adjacentProperty, value)
             xPosition = calculateXPosition(adjacentProperty)
         }
@@ -110,10 +138,10 @@ class HLUSlider {
         private fun calculateXPosition(adjacentProperty: SegmentProperty?): Float {
             if (mSlider == null) return 0f
 
-            if (adjacentProperty == null) {
-                return mSlider.x
+            return if (adjacentProperty == null) {
+                mSlider.x
             } else {
-                return adjacentProperty.xPosition + adjacentProperty.width
+                adjacentProperty.xPosition + adjacentProperty.width
             }
         }
 
@@ -121,12 +149,13 @@ class HLUSlider {
             if (mSlider == null || mSensorThreshold == null) return 0
 
             val adjacentValue = adjacentValue(adjacentProperty)
-            val percentage = (value - adjacentValue) / (mSensorThreshold!!.to - mSensorThreshold!!.from)
+            val percentage =
+                (value - adjacentValue) / (mSlider.valueTo - mSlider.valueFrom)
             return (percentage * mSlider.trackWidth).toInt()
         }
 
         private fun adjacentValue(adjacentProperty: SegmentProperty?): Float {
-            return adjacentProperty?.value ?: mSensorThreshold?.from ?: 0f
+            return adjacentProperty?.value ?: mSlider?.valueFrom ?: 0f
         }
     }
 
@@ -137,6 +166,11 @@ class HLUSlider {
         toLabel?.visibility = View.VISIBLE
         mSlider?.visibility = View.VISIBLE
     }
+
+    /*
+    This is the function for drawing the slider and setting values
+    from threshold_very_low to threshold_very_high.
+    */
 
     private fun draw() {
         mSensorThreshold ?: return
@@ -151,15 +185,15 @@ class HLUSlider {
             segmentProperty
         }
 
-        fromLabel?.text = labelFormat(mSensorThreshold?.from)
-        toLabel?.text = labelFormat(mSensorThreshold?.to)
+        fromLabel?.text = labelFormat(mSlider.valueFrom)
+        toLabel?.text = labelFormat(mSlider.valueTo)
         mLabels.forEachIndexed { index, _ ->
             updateLabel(mLabels.getOrNull(index), segmentProperties.getOrNull(index))
         }
     }
 
     private fun updateSegmentSize(segment: View?, width: Int) {
-        var params = LinearLayoutCompat.LayoutParams(segment?.layoutParams)
+        val params = LinearLayoutCompat.LayoutParams(segment?.layoutParams)
         params.width = width
         segment?.layoutParams = params
     }
@@ -172,9 +206,5 @@ class HLUSlider {
 
         label.x = position
         label.text = labelFormat(segmentProperty.value)
-    }
-
-    private fun labelFormat(value: Float?): String {
-        return "%d".format(value?.toInt())
     }
 }
