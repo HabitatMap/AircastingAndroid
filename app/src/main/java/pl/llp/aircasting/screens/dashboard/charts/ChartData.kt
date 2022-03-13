@@ -4,7 +4,6 @@ import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.lib.DateConverter
-import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.services.AveragedMeasurementsService
@@ -63,11 +62,7 @@ class ChartData(
     }
 
     private fun averagesCount(): Int {
-        if (mMaxEntriesCount > 0) {
-            return -mMaxEntriesCount + 1
-        } else {
-            return -mMaxEntriesCount
-        }
+        return if (mMaxEntriesCount > 0) -mMaxEntriesCount + 1 else -mMaxEntriesCount
     }
 
     private fun startTimeString(): String {

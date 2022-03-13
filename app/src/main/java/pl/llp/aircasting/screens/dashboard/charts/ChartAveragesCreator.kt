@@ -90,7 +90,7 @@ class ChartAveragesCreator {
         var xValue = MAX_X_VALUE.toDouble()
         val entries: MutableList<Entry> = mutableListOf()
         val periodData: MutableList<List<Measurement>?> = mutableListOf()
-        val maxMeasurementsAmount = 500
+        val maxMeasurementsAmount = 600
 
         measurements = stream.getLastMeasurements(maxMeasurementsAmount)
 
@@ -113,9 +113,8 @@ class ChartAveragesCreator {
         }
         if (periodData.size > 0) {
             for (dataChunk in periodData) {
-                if (xValue < 0) {
-                    return entries
-                }
+                if (xValue < 0) return entries
+
                 val yValue = getAverage(dataChunk).toDouble()
                 entries.add(
                     Entry(
