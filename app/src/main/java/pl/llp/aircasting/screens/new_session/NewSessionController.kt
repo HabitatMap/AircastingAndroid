@@ -69,7 +69,7 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this);
+        EventBus.getDefault().safeRegister(this)
         setupProgressMax()
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {

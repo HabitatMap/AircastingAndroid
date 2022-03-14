@@ -10,10 +10,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
-import com.google.android.libraries.maps.*
-import com.google.android.libraries.maps.model.LatLng
-import com.google.android.libraries.maps.model.Marker
-import com.google.android.libraries.maps.model.MarkerOptions
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.BitmapHelper
 import pl.llp.aircasting.lib.styleGoogleMap
@@ -31,10 +31,10 @@ abstract class ConfirmationViewMvcImpl(
     OnMapReadyCallback {
     protected var session: Session? = session
 
-    private val DEFAULT_ZOOM = 16f
+    val DEFAULT_ZOOM = 16f
 
-    private var mMarker: Marker? = null
-    private var mMap: GoogleMap? = null
+    var mMarker: Marker? = null
+    var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
     private var mSupportFragmentManager: FragmentManager? = supportFragmentManager
 
@@ -86,20 +86,6 @@ abstract class ConfirmationViewMvcImpl(
         mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoom))
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMap ?: return
-        mMap = googleMap
-        styleGoogleMap(mMap!!, context)
-        val sessionLocation = session?.location ?: return
-        val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
-        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
-        val marker = MarkerOptions()
-            .position(location)
-            .icon(icon)
-        mMarker = googleMap.addMarker(marker)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
-    }
-
     private fun onStartRecordingClicked() {
         for (listener in listeners) {
             session?.let { listener.onStartRecordingClicked(it) }
@@ -132,5 +118,20 @@ abstract class ConfirmationViewMvcImpl(
         mapOptions.rotateGesturesEnabled(false)
 
         return mapOptions
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        val sessionLocation = session?.location ?: return
+
+        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+
+        val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
+        val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
+        val marker = MarkerOptions()
+            .position(location)
+            .icon(icon)
+        mMarker = googleMap.addMarker(marker)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
 }

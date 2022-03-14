@@ -2,8 +2,8 @@ package pl.llp.aircasting.screens.session_view.map
 
 import android.content.Context
 import android.graphics.Color
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.model.*
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.*
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.SensorThreshold
