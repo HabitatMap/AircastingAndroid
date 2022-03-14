@@ -8,7 +8,6 @@ import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.networking.responses.SessionStreamResponse
 import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
-import pl.llp.aircasting.services.AveragingService
 import java.util.*
 
 class MeasurementStream(
@@ -102,7 +101,7 @@ class MeasurementStream(
     }
 
     companion object {
-        private val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
+        private const val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
     }
     
     enum class AirBeamSensorName(val detailedType: String) {
@@ -131,11 +130,11 @@ class MeasurementStream(
     }
     
     private fun buildDetailedType(): String? {
-        when (sensorPackageName) {
-            MicrophoneDeviceItem.DEFAULT_ID -> return MicrophoneDeviceItem.DETAILED_TYPE
+        return when (sensorPackageName) {
+            MicrophoneDeviceItem.DEFAULT_ID -> MicrophoneDeviceItem.DETAILED_TYPE
             else -> {
                 val split = sensorName.split("-")
-                return split.lastOrNull()
+                split.lastOrNull()
             }
         }
     }
@@ -169,10 +168,9 @@ class MeasurementStream(
         return measurements.filter { it.time in timeSpan}
     }
 
-    fun getLastMeasurements(amount: Int): MutableList<Measurement>? {
+    fun getLastMeasurements(amount: Int): MutableList<Measurement> {
         // copy the backing list to avoid ConcurrentModificationException
-        val allMeasurements = ArrayList<Measurement>(measurements)
-
+        val allMeasurements = ArrayList(measurements)
         val measurementsSize = allMeasurements.size
 
         if (amount >= measurementsSize) return allMeasurements
@@ -185,16 +183,16 @@ class MeasurementStream(
         return calculateSum() / measurements.size
     }
 
-    fun calculateSum(): Double {
-        return measurements.sumByDouble { it.value }
+    private fun calculateSum(): Double {
+        return measurements.sumOf { it.value }
     }
 
     fun calculateSum(visibleTimeSpan: ClosedRange<Date>): Double {
-        return getMeasurementsForTimeSpan(visibleTimeSpan).sumByDouble { it.value }
+        return getMeasurementsForTimeSpan(visibleTimeSpan).sumOf { it.value }
     }
 
-    private fun getFirstMeasurements(amount: Int): List<Measurement?>? {
-        val allMeasurements = ArrayList<Measurement?>(measurements)
+    private fun getFirstMeasurements(amount: Int): List<Measurement?> {
+        val allMeasurements = ArrayList(measurements)
         val size = allMeasurements.size
         return if (size > amount) {
             allMeasurements.subList(0, amount - 1)
@@ -212,7 +210,7 @@ class MeasurementStream(
         return filteredMeasurements.takeLast(amount)
     }
 
-    fun lastMeasurement(): Measurement? {
+    fun lastMeasurement(): Measurement {
         return measurements.last()
     }
 
