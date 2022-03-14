@@ -1,104 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/container"
-        android:background="@android:color/white"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <TextView
+        android:id="@+id/session_details_header"
+        style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/mobile_session_details_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/guidelineTop"
-            app:layout_constraintGuide_percent="0.02"
-            android:orientation="horizontal"/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/session_name"
+        style="@style/Widget.Aircasting.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:hint="@string/session_details_session_name_hint"
+        app:errorEnabled="true"
+        app:hintEnabled="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/session_details_header">
 
-        <TextView
-            android:id="@+id/session_details_header"
-            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/mobile_session_details_header"
-            android:layout_marginTop="@dimen/keyline_8"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/guidelineTop"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/session_name"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/session_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/session_details_session_name_hint"
-            app:hintEnabled="false"
-            style="@style/Widget.Aircasting.TextInputLayout"
-            app:errorEnabled="true"
-            android:layout_marginTop="@dimen/keyline_6"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/session_details_header"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            android:inputType="text"
+            android:minHeight="60dp"
+            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+            android:textColor="@color/aircasting_grey_700" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/session_name_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="60dp"
-                android:hint="@string/session_details_session_name_hint"
-                android:inputType="text"
-                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/session_info"
+        style="@style/Widget.Aircasting.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginEnd="@dimen/keyline_8"
+        app:hintEnabled="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/session_name">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/session_info"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/session_tags_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintEnabled="false"
-            style="@style/Widget.Aircasting.TextInputLayout"
-            android:layout_marginTop="@dimen/keyline_6"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/session_name"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            android:hint="@string/session_details_session_tags_hint"
+            android:inputType="text"
+            android:minHeight="60dp"
+            android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+            android:textColor="@color/aircasting_grey_700" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/session_tags_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="60dp"
-                android:hint="@string/session_details_session_tags_hint"
-                android:inputType="text"
-                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
-                android:textColor="@color/aircasting_grey_700"
-                />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/session_details_continue_button"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/session_info"
+        app:layout_constraintVertical_bias="0.8" />
 
-        <Button
-            android:id="@+id/continue_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
-            android:text="@string/session_details_continue_button"
-            app:layout_constraintTop_toBottomOf="@+id/session_info"
-            app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.8"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.98"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

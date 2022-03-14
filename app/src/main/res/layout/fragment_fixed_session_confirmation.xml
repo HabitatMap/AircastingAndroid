@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/confirmation"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,67 +14,67 @@
             style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/session_confirmation_header"
-            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/session_confirmation_header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/description"
             style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header" />
 
         <TextView
             android:id="@+id/instructions"
             style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/fixed_session_confirmation_instructions"
-            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/header_1_vertical_margin"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/description"
+            android:text="@string/fixed_session_confirmation_instructions"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description" />
 
         <androidx.fragment.app.FragmentContainerView xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/map"
             android:name="com.google.android.libraries.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/map_height"
-            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
+            app:layout_constraintTop_toBottomOf="@id/instructions"
             map:uiRotateGestures="false"
             map:uiScrollGestures="false"
             map:uiTiltGestures="false"
             map:uiZoomControls="true"
-            map:uiZoomGestures="true"
-            app:layout_constraintTop_toBottomOf="@id/instructions" />
+            map:uiZoomGestures="true" />
 
         <Button
             android:id="@+id/start_recording_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
-            android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_10"
             android:text="@string/session_confirmation_start_recording_button"
-            app:layout_constraintTop_toBottomOf="@id/map"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/map" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
