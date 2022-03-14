@@ -74,10 +74,29 @@
                         android:layout_height="wrap_content"
                         android:text="@string/microphone_settings_description"
                         android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                        app:layout_constraintBottom_toTopOf="@id/separator"
+                        app:layout_constraintBottom_toTopOf="@id/firstSeparator"
                         app:layout_constraintEnd_toEndOf="@id/description_guideline"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/microphone_settings_button" />
+
+                    <View
+                        android:id="@+id/firstSeparator"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/aircasting_grey_100"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view" />
+
+                    <TextView
+                        android:id="@+id/theme"
+                        style="@style/Widget.Aircasting.SettingsButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Theme"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/firstSeparator" />
 
                     <View
                         android:id="@+id/separator"
@@ -87,7 +106,7 @@
                         app:layout_constraintBottom_toTopOf="@id/keep_screen_on_button"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view" />
+                        app:layout_constraintTop_toBottomOf="@id/theme" />
 
                     <TextView
                         android:id="@+id/keep_screen_on_button"
