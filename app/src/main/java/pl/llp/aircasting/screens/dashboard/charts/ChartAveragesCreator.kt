@@ -93,7 +93,7 @@ class ChartAveragesCreator {
 
         measurements = stream.getLastMeasurements(maxMeasurementsAmount)
 
-        if (measurements == null || measurements.isEmpty()) return entries
+        if (measurements.isEmpty()) return entries
 
         val calendar = Calendar.getInstance()
         calendar.time = measurements[0].time
@@ -103,9 +103,7 @@ class ChartAveragesCreator {
             val measurement: Measurement = measurements[i]
             calendar.time = measurement.time
             val measurementHour: Int = calendar[Calendar.HOUR_OF_DAY]
-            if (hour == measurementHour) {
-                measurementsInHour.add(measurement)
-            } else {
+            if (hour == measurementHour) measurementsInHour.add(measurement) else {
                 periodData.add(measurementsInHour)
                 hour = measurementHour
                 measurementsInHour = ArrayList<Measurement>()
@@ -114,9 +112,8 @@ class ChartAveragesCreator {
         }
         if (periodData.size > 0) {
             for (dataChunk in periodData) {
-                if (xValue < 0) {
-                    return entries
-                }
+                if (xValue < 0) return entries
+
                 val yValue = getAverage(dataChunk).toDouble()
                 entries.add(
                     Entry(

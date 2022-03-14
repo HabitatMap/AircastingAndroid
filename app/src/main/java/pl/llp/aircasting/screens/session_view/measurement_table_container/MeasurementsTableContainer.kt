@@ -224,9 +224,8 @@ abstract class MeasurementsTableContainer {
         )
         mLastMeasurementColors[stream.sensorName] = color
 
-        if (stream.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) {
-            measurementValue = TemperatureConverter.fahrenheitToCelsius(measurementValue)
-        }
+        if (stream.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) measurementValue =
+            TemperatureConverter.fahrenheitToCelsius(measurementValue)
 
         val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)
