@@ -169,14 +169,14 @@ class MeasurementStream(
         return measurements.filter { it.time in timeSpan}
     }
 
-    fun getLastMeasurements(amount: Int): MutableList<Measurement> {
+    fun getLastMeasurements(amount: Int = measurements.size): MutableList<Measurement> {
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList(measurements)
         val measurementsSize = allMeasurements.size
 
         if (amount >= measurementsSize) return allMeasurements
 
-        return allMeasurements.subList(measurementsSize - amount, measurementsSize)
+        return allMeasurements.subList(0, amount)
     }
 
     fun getAvgMeasurement(): Double? {
