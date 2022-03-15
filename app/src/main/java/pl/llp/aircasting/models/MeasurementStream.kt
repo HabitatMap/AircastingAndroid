@@ -68,6 +68,7 @@ class MeasurementStream(
         this.mMeasurements = streamWithLastMeasurementsDBObject.measurements.map { measurementDBObject ->
             Measurement(measurementDBObject)
         }
+        this.mMeasurements = this.mMeasurements.sortedWith(compareByDescending { it.time })
     }
 
     constructor(sessionStreamResponse: SessionStreamResponse): this(
