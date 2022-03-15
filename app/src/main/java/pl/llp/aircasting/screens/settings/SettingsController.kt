@@ -26,11 +26,11 @@ class SettingsController(
     SettingsViewMvc.MicrophoneSettingsDialogListener,
     BaseController<SettingsViewMvcImpl>(viewMvc) {
 
-    fun onStart(){
+    fun onStart() {
         viewMvc?.registerListener(this)
     }
 
-    fun onStop(){
+    fun onStop() {
         viewMvc?.unregisterListener(this)
     }
 
@@ -40,6 +40,10 @@ class SettingsController(
 
     override fun onBackendSettingsClicked() {
         startBackendSettingsDialog()
+    }
+
+    override fun onThemeTextClicked() {
+        startThemeDialog()
     }
 
     override fun onToggleKeepScreenOnEnabled() {
@@ -86,7 +90,11 @@ class SettingsController(
         MicrophoneSettingsDialog(fragmentManager, calibration, this).show()
     }
 
-    fun startBackendSettingsDialog(){
+    private fun startThemeDialog() {
+        ThemeSettingsDialog(fragmentManager, this, mContext).show()
+    }
+
+    private fun startBackendSettingsDialog() {
         val url = mSettings.getBackendUrl()
         val port = mSettings.getBackendPort()
         BackendSettingsDialog(fragmentManager, url, port, this, mContext).show()

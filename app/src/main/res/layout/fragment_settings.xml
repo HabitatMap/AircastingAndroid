@@ -88,7 +88,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view" />
 
-                    <TextView
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/theme"
                         style="@style/Widget.Aircasting.SettingsButtons"
                         android:layout_width="match_parent"
