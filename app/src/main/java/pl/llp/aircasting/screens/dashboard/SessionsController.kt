@@ -40,6 +40,7 @@ abstract class SessionsController(
     val fragmentManager: FragmentManager,
     private var context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
+    private val MAX_CHART_MEASUREMENTS_NEEDED = 600
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -272,7 +273,7 @@ abstract class SessionsController(
         DatabaseProvider.runQuery {
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
             sessionId?.let {
-                mActiveSessionsRepository.loadMeasurementsForStreams(it, session.streams, 540)
+                mActiveSessionsRepository.loadMeasurementsForStreams(it, session.streams, MAX_CHART_MEASUREMENTS_NEEDED)
             }
         }
     }
