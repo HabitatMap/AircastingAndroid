@@ -89,7 +89,6 @@ class ChartAveragesCreator {
         var xValue = MAX_X_VALUE.toDouble()
         val entries: MutableList<Entry> = mutableListOf()
         val periodData: MutableList<List<Measurement>?> = mutableListOf()
-        val maxMeasurementsAmount = 600
 
         measurements = stream.getLastMeasurements(maxMeasurementsAmount)
 
