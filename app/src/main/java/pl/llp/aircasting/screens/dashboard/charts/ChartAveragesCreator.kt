@@ -5,6 +5,7 @@ import com.google.common.collect.Lists
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import java.util.*
+import kotlin.math.roundToInt
 
 class ChartAveragesCreator {
     companion object {
@@ -170,6 +171,6 @@ class ChartAveragesCreator {
                 sum.toInt() / lastIndex
             }
         }
-        return (sum / size).toInt()
+        return ((sum / size).roundToInt())
     }
 }
