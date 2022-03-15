@@ -149,7 +149,7 @@ class MeasurementStream(
         var deltaSum = 0.0
         val sample: ArrayList<Measurement> = Lists.newArrayList(getFirstMeasurements(10))
         for (i in 0 until sample.size - 1) {
-            val delta: Double = (sample[i + 1].time.time - sample[i].time.time).toDouble()
+            val delta: Double = (sample[i].time.time - sample[i + 1].time.time).toDouble()
             deltaSum += delta
         }
         return deltaSum / divisor
