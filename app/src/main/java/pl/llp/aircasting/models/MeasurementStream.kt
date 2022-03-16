@@ -68,8 +68,7 @@ class MeasurementStream(
             this(streamWithLastMeasurementsDBObject.stream) {
         this.mMeasurements = streamWithLastMeasurementsDBObject.measurements.map { measurementDBObject ->
             Measurement(measurementDBObject)
-        }
-        this.mMeasurements = this.mMeasurements.sortedWith(compareByDescending { it.time })
+        }.sortedWith(compareBy { it.time })
     }
 
     constructor(sessionStreamResponse: SessionStreamResponse): this(
@@ -150,7 +149,7 @@ class MeasurementStream(
         var deltaSum = 0.0
         val sample: ArrayList<Measurement> = Lists.newArrayList(getFirstMeasurements(10))
         for (i in 0 until sample.size - 1) {
-            val delta: Double = (sample[i].time.time - sample[i + 1].time.time).toDouble()
+            val delta: Double = (sample[i + 1].time.time - sample[i].time.time).toDouble()
             deltaSum += delta
         }
         return deltaSum / divisor
@@ -177,7 +176,7 @@ class MeasurementStream(
 
         if (amount >= measurementsSize) return allMeasurements
 
-        return allMeasurements.subList(0, amount)
+        return allMeasurements.subList(measurementsSize - amount, measurementsSize)
     }
 
     fun getFreshestMeasurementValue(): Double {
