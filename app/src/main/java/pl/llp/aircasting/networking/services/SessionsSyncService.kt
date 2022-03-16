@@ -213,6 +213,6 @@ class SessionsSyncService {
     }
 
     fun pause() {
-        syncInBackground.set(false)
+        syncInBackground.set(true)
     }
 }
