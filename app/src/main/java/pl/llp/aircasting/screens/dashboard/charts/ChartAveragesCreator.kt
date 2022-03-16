@@ -33,7 +33,7 @@ class ChartAveragesCreator {
         periodData = Lists.partition(measurements, measurementsInPeriod)
 
         if (periodData.size > 0) {
-            for (i in periodData.indices) {
+            for (i in periodData.size - 1 downTo 0) {
                 var yValue: Double
                 try {
                     val dataChunk: List<Measurement> =
