@@ -209,6 +209,7 @@
 
     <!-- Errors -->
     <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
+    <string name="errors_location_background_services_required">Without using location in background permission, the app may not work properly on newer Android devices.</string>
     <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
