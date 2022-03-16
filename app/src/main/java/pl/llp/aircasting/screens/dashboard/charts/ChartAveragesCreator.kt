@@ -11,7 +11,8 @@ class ChartAveragesCreator {
     companion object {
         const val MAX_AVERAGES_AMOUNT = 9
         private val MOBILE_INTERVAL_IN_SECONDS = 60
-        private val MAX_X_VALUE = 8
+        private const val MAX_X_VALUE = 8.0
+        private const val MIN_X_VALUE = 0.0
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
     }
 
