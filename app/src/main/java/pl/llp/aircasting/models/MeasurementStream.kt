@@ -4,6 +4,7 @@ import com.google.common.collect.Lists
 import pl.llp.aircasting.database.data_classes.MeasurementStreamDBObject
 import pl.llp.aircasting.database.data_classes.StreamWithLastMeasurementsDBObject
 import pl.llp.aircasting.database.data_classes.StreamWithMeasurementsDBObject
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.networking.responses.SessionStreamResponse
 import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
@@ -159,7 +160,7 @@ class MeasurementStream(
         val frequency = samplingFrequency(divisor)
         return try {
             val measurementsInPeriod = (60 / frequency).toInt() * amount
-            getLastMeasurements(measurementsInPeriod)
+            getFreshMeasurements(measurementsInPeriod)
         } catch (e: IndexOutOfBoundsException) {
             getMeasurementsForPeriod(amount - 1, divisor)
         }
@@ -169,7 +170,7 @@ class MeasurementStream(
         return measurements.filter { it.time in timeSpan}
     }
 
-    fun getLastMeasurements(amount: Int = measurements.size): MutableList<Measurement> {
+    fun getFreshMeasurements(amount: Int = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_NUMBER): MutableList<Measurement> {
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList(measurements)
         val measurementsSize = allMeasurements.size
