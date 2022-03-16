@@ -31,15 +31,13 @@ class ChartAveragesCreator {
         if (measurementsInPeriod == 0) return mutableListOf()
 
         periodData = Lists.partition(measurements, measurementsInPeriod)
-        val reversedPeriodData: List<List<Measurement>?> =
-            Lists.reverse<List<Measurement>?>(periodData)
 
         if (periodData.size > 0) {
-            for (i in reversedPeriodData.indices) {
+            for (i in periodData.indices) {
                 var yValue: Double
                 try {
                     val dataChunk: List<Measurement> =
-                        Collections.synchronizedList(reversedPeriodData[i])
+                        Collections.synchronizedList(periodData[i])
                     if (dataChunk.size > measurementsInPeriod - getTolerance(
                             measurementsInPeriod.toDouble()
                         )
@@ -66,8 +64,10 @@ class ChartAveragesCreator {
         }
         if (entries.size == 0) return entries
 
-        oldEntries = entries
-        return entries
+        val reversedEntries = Lists.reverse(entries)
+
+        oldEntries = reversedEntries
+        return reversedEntries
     }
 
     fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
