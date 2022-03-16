@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -72,12 +73,13 @@ class NewSessionController(
         EventBus.getDefault().safeRegister(this)
         setupProgressMax()
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
-            goToFirstStep()
-        } else {
-            showLocationPermissionPopUp()
-        }
+        if (permissionsManager.locationPermissionsGranted(mContextActivity)
+            || areMapsDisabled()
+            && permissionsManager.backgroundLocationPermissionsGranted(mContextActivity)
+        ) goToFirstStep() else showLocationPermissionPopUp()
+
     }
+
 
     private fun showLocationPermissionPopUp() {
         LocationPermissionPopUp(mFragmentManager, permissionsManager, mContextActivity).show()
@@ -210,29 +212,35 @@ class NewSessionController(
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION ->
                 if (permissionsManager.permissionsGranted(grantResults)) {
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) permissionsManager.requestBackgroundLocationPermissions(
+                        mContextActivity
+                    )
                     goToFirstStep()
-                } else {
-                    errorHandler.showError(R.string.errors_location_services_required)
-                }
-            }
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO -> {
-                if (permissionsManager.permissionsGranted(grantResults)) {
-                    startMicrophoneSession()
-                } else {
-                    errorHandler.showError(R.string.errors_audio_required)
-                }
-            }
-            else -> {
-                // Ignore all other requests.
-            }
+                } else errorHandler.showError(
+                    R.string.errors_location_services_required
+                )
+
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION ->
+                if (permissionsManager.permissionsGranted(grantResults)) goToFirstStep() else errorHandler.showError(
+                    R.string.errors_location_services_required
+                )
+
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO ->
+                if (permissionsManager.permissionsGranted(grantResults)) startMicrophoneSession() else errorHandler.showError(
+                    R.string.errors_audio_required
+                )
+
+            else -> {}
         }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> if (resultCode == RESULT_OK) startNewSessionWizard() else errorHandler.showError(
+            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> if (resultCode == RESULT_OK) startNewSessionWizard()
+            else errorHandler.showError(
                 R.string.errors_location_services_required
             )
 
@@ -242,7 +250,6 @@ class NewSessionController(
             ) else errorHandler.showError(R.string.errors_bluetooth_required)
 
             else -> {}
-            // Ignore all other requests.
         }
     }
 
@@ -312,7 +319,7 @@ class NewSessionController(
         this.wifiPassword = wifiPassword
         if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
             wizardNavigator.goToTurnOffLocationServices(session, this)
-        } else if (sessionType == Session.Type.MOBILE || indoor == true) {
+        } else if (sessionType == Session.Type.MOBILE || indoor) {
             wizardNavigator.goToConfirmation(session, this)
         } else {
             wizardNavigator.goToChooseLocation(session, this, errorHandler)
