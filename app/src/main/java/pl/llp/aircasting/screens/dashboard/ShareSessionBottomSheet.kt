@@ -130,7 +130,7 @@ class ShareSessionBottomSheet(
         radioButton.id = View.generateViewId()
         radioButton.text = stream.detailedType
         radioButton.layoutParams = layoutParams
-        radioButton.setAppearance(context!!, R.style.TextAppearance_Aircasting_Body1)
+        context?.let { radioButton.setAppearance(it, R.style.TextAppearance_Aircasting_Body1) }
         radioButton.gravity = Gravity.TOP
         radioButton.buttonDrawable = drawable
         radioButton.setBackgroundColor(Color.TRANSPARENT)
