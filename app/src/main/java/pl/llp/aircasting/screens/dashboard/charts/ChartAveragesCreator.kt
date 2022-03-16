@@ -145,9 +145,9 @@ class ChartAveragesCreator {
         } catch (e: ConcurrentModificationException) {
             return if (lastIndex == 0) {
                 usePreviousEntry = true
-                sum.toInt()
+                sum.roundToInt()
             } else {
-                sum.toInt() / lastIndex
+                sum.roundToInt() / lastIndex
             }
         }
         return ((sum / size).roundToInt())
