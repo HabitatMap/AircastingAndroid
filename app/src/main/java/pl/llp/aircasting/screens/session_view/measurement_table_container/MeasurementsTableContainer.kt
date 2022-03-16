@@ -241,7 +241,7 @@ abstract class MeasurementsTableContainer {
         return if (mDisplayAvarages) {
             stream.getAvgMeasurement()
         } else {
-            stream.measurements.lastOrNull()?.value
+            stream.getFreshestMeasurementValue()
         }
     }
 
