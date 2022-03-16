@@ -19,6 +19,9 @@ open class PermissionsManager {
 
     private val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
+    private val BLUETOOTH_PERMISSIONS =
+        arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN)
+
     fun permissionsGranted(grantResults: IntArray): Boolean {
         return (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
     }
@@ -33,6 +36,10 @@ open class PermissionsManager {
 
     open fun audioPermissionsGranted(context: Context): Boolean {
         return permissionsGranted(AUDIO_PERMISSIONS, context)
+    }
+
+    open fun bluetoothPermissionsGranted(context: Context): Boolean {
+        return permissionsGranted(BLUETOOTH_PERMISSIONS, context)
     }
 
     open fun requestLocationPermissions(activity: Activity) {
@@ -56,6 +63,14 @@ open class PermissionsManager {
             activity,
             AUDIO_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO
+        )
+    }
+
+    fun requestBluetoothPermissions(activity: Activity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            BLUETOOTH_PERMISSIONS,
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH
         )
     }
 
