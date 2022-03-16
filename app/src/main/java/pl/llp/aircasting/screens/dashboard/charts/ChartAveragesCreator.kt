@@ -22,7 +22,7 @@ class ChartAveragesCreator {
     fun getMobileEntries(stream: MeasurementStream): MutableList<Entry> {
         val periodData: MutableList<List<Measurement>?>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
-        var xValue = MAX_X_VALUE.toDouble()
+        var xValue = MAX_X_VALUE
         val measurementsInPeriod = (MOBILE_INTERVAL_IN_SECONDS / streamFrequency).toInt()
         val entries: MutableList<Entry> = mutableListOf()
         val measurements: MutableList<Measurement>? =
@@ -72,7 +72,7 @@ class ChartAveragesCreator {
 
     fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
-        var xValue = MAX_X_VALUE.toDouble()
+        var xValue = MAX_X_VALUE
         for (measurement in lastMeasurements.reversed()) {
             entries.add(
                 Entry(
@@ -88,7 +88,7 @@ class ChartAveragesCreator {
 
     fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
         val measurements: MutableList<Measurement>?
-        var xValue = MAX_X_VALUE.toDouble()
+        var xValue = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
         val periodData: MutableList<List<Measurement>?> = mutableListOf()
 
