@@ -113,7 +113,7 @@ class ChartAveragesCreator {
         }
         if (periodData.size > 0) {
             for (dataChunk in periodData) {
-                if (xValue < 0) return entries
+                if (xValue > MAX_AVERAGES_AMOUNT) return entries
 
                 val yValue = getAverage(dataChunk).toDouble()
                 entries.add(
@@ -122,7 +122,7 @@ class ChartAveragesCreator {
                         yValue.toFloat()
                     )
                 )
-                xValue--
+                xValue++
             }
         }
         return entries
