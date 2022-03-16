@@ -19,7 +19,7 @@ open class GraphViewFixedMvcImpl(
     }
 
     override fun measurementsSample(): List<Measurement> {
-        return mSessionPresenter?.selectedStream?.getLastMeasurements(MEASUREMENTS_SAMPLE_SIZE) ?: listOf<Measurement>()
+        return mSessionPresenter?.selectedStream?.getFreshMeasurements(MEASUREMENTS_SAMPLE_SIZE) ?: listOf<Measurement>()
     }
 
     override fun getSessionType(): Session.Type {
