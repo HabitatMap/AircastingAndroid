@@ -2,12 +2,13 @@ package pl.llp.aircasting.screens.dashboard
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.DeleteSessionEvent
 import pl.llp.aircasting.events.DeleteStreamsEvent
@@ -15,6 +16,7 @@ import pl.llp.aircasting.events.ExportSessionEvent
 import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
+import pl.llp.aircasting.lib.*
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -22,13 +24,6 @@ import pl.llp.aircasting.networking.services.*
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.screens.session_view.map.MapActivity
-import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.lib.*
-import pl.llp.aircasting.database.data_classes.MeasurementDBObject
-import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.database.repositories.MeasurementsRepository
-import pl.llp.aircasting.models.Measurement
 
 
 abstract class SessionsController(
@@ -40,7 +35,7 @@ abstract class SessionsController(
     val fragmentManager: FragmentManager,
     private var context: Context?
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener, DeleteSessionBottomSheet.Listener {
-    private val MAX_CHART_MEASUREMENTS_NEEDED = 600
+    private val MAX_CHART_MEASUREMENTS_NUMBER = 600
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
@@ -273,7 +268,7 @@ abstract class SessionsController(
         DatabaseProvider.runQuery {
             val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
             sessionId?.let {
-                mActiveSessionsRepository.loadMeasurementsForStreams(it, session.streams, MAX_CHART_MEASUREMENTS_NEEDED)
+                mActiveSessionsRepository.loadMeasurementsForStreams(it, session.streams, MAX_CHART_MEASUREMENTS_NUMBER)
             }
         }
     }
