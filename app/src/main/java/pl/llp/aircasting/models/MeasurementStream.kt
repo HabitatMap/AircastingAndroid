@@ -211,7 +211,7 @@ class MeasurementStream(
         return filteredMeasurements.takeLast(amount)
     }
 
-    fun lastMeasurement(): Measurement {
+    fun lastMeasurement(): Measurement? {
         return measurements.last()
     }
 
