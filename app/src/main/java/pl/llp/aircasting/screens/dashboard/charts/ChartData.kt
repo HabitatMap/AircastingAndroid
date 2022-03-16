@@ -92,7 +92,7 @@ class ChartData(
             Session.Type.MOBILE -> time
         }
     }
-    
+
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
         mSession.streamsSortedByDetailedType().forEach { stream ->
@@ -109,10 +109,12 @@ class ChartData(
                 mMaxEntriesCount = entries?.size ?: 0
             }
 
-            mEntriesPerStream.put(
-                streamKey(stream),
-                Lists.reverse(entries)
-            )
+            entries?.toList()?.let {
+                mEntriesPerStream.put(
+                    streamKey(stream),
+                    it
+                )
+            }
         }
     }
 
