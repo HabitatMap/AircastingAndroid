@@ -1,6 +1,5 @@
 package pl.llp.aircasting.database.repositories
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
@@ -8,7 +7,10 @@ import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 
 class ActiveSessionMeasurementsRepository {
-    private val ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER = 60 * 9 // we only need 9 mins of measurements. TODO: we should calculate that number based on time
+    companion object {
+        const val MAX_MEASUREMENTS_NUMBER = 60 * 9 // we only need 9 mins of measurements. TODO: we should calculate that number based on time
+    }
+
     private val mDatabase = DatabaseProvider.get()
 
     fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
@@ -50,7 +52,7 @@ class ActiveSessionMeasurementsRepository {
     fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
         val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
 
-        if (lastMeasurementsCount > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER ) {
+        if (lastMeasurementsCount > MAX_MEASUREMENTS_NUMBER ) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
                 streamId,
                 sessionId,
@@ -75,11 +77,11 @@ class ActiveSessionMeasurementsRepository {
         val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, measurementStreamId)
         var measurementsToBeReplaced = listOf<Measurement>()
 
-        if(measurements.size > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
-             measurementsToBeReplaced = measurements.takeLast(ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER)
+        if(measurements.size > MAX_MEASUREMENTS_NUMBER) {
+             measurementsToBeReplaced = measurements.takeLast(MAX_MEASUREMENTS_NUMBER)
         }
 
-        if((lastMeasurementsCount + measurements.size) > ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER && measurements.size <= ACTIVE_SESSIONS_MEASUREMENTS_MAX_NUMBER) {
+        if((lastMeasurementsCount + measurements.size) > MAX_MEASUREMENTS_NUMBER && measurements.size <= MAX_MEASUREMENTS_NUMBER) {
             measurementsToBeReplaced = measurements
         }
 
