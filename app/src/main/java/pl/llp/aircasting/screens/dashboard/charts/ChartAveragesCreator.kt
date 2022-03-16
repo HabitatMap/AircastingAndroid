@@ -92,8 +92,7 @@ class ChartAveragesCreator {
         val entries: MutableList<Entry> = mutableListOf()
         val periodData: MutableList<List<Measurement>?> = mutableListOf()
 
-        measurements = stream.getLastMeasurements()
-        removeMeasurementsFromUnfinishedHour(measurements)
+        measurements = stream.getFreshMeasurements()
 
         if (measurements.isEmpty()) return entries
 
@@ -127,27 +126,6 @@ class ChartAveragesCreator {
             }
         }
         return entries
-    }
-
-    private fun removeMeasurementsFromUnfinishedHour(measurements: MutableList<Measurement>) {
-        try {
-            measurements.first()
-        } catch (e: NoSuchElementException ) {
-            return
-        }
-
-        val calendar = Calendar.getInstance()
-        calendar.time = measurements.first().time
-
-        val unwantedHour = calendar[Calendar.HOUR_OF_DAY]
-
-        while (true) {
-            calendar.time = measurements.first().time
-            val lastMeasurementHour = calendar[Calendar.HOUR_OF_DAY]
-            if (lastMeasurementHour == unwantedHour) {
-                measurements.removeFirst()
-            } else break
-        }
     }
 
     private fun getTolerance(measurementsInPeriod: Double): Double {
