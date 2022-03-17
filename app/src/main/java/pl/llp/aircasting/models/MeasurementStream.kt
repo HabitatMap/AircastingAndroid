@@ -216,7 +216,7 @@ class MeasurementStream(
     }
 
     fun lastMeasurement(): Measurement? {
-        return measurements.last()
+        return measurements.lastOrNull()
     }
 
     fun isMeasurementTypeTemperature(): Boolean {
