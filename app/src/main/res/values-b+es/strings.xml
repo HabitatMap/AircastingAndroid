@@ -371,5 +371,8 @@
     <string name="onboarding_page4_header">Tu privacidad</string>
     <string name="onboarding_page4_description">Revisa nuestro compromiso de preservar tu privacidad y acepta nuestra política de privacidad</string>
     <string name="accept_button_onboarding">Acceptar</string>
+    <string name="light_theme">Tema ligero</string>
+    <string name="system_default_recommended">System default (Recommended)</string>
+    <string name="dark_theme">Dark theme</string>
 
 </resources>
