@@ -1,10 +1,11 @@
-package pl.llp.aircasting.screens.new_session.select_device
+package pl.llp.aircasting.screens.new_session.select_device_type
 
 import pl.llp.aircasting.screens.common.BaseController
+import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 
 class SelectDeviceTypeController(
     var viewMvc: SelectDeviceTypeViewMvcImpl?
-) : BaseController<SelectDeviceTypeViewMvcImpl>(viewMvc){
+) : BaseController<SelectDeviceTypeViewMvcImpl>(viewMvc) {
 
     fun registerListener(listener: SelectDeviceTypeViewMvc.Listener) {
         mViewMvc?.registerListener(listener)
