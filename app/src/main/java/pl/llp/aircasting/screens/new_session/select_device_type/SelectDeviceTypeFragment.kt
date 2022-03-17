@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.screens.common.BaseFragment
-import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 
-class SelectDeviceTypeFragment() :
+class SelectDeviceTypeFragment :
     BaseFragment<SelectDeviceTypeViewMvcImpl, SelectDeviceTypeController>() {
     var listener: SelectDeviceTypeViewMvc.Listener? = null
 
