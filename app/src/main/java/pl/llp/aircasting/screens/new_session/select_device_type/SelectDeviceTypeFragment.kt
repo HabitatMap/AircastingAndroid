@@ -1,12 +1,14 @@
-package pl.llp.aircasting.screens.new_session.select_device
+package pl.llp.aircasting.screens.new_session.select_device_type
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.screens.common.BaseFragment
+import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 
-class SelectDeviceTypeFragment() :  BaseFragment<SelectDeviceTypeViewMvcImpl, SelectDeviceTypeController>()  {
+class SelectDeviceTypeFragment() :
+    BaseFragment<SelectDeviceTypeViewMvcImpl, SelectDeviceTypeController>() {
     var listener: SelectDeviceTypeViewMvc.Listener? = null
 
     override fun onCreateView(
@@ -23,7 +25,6 @@ class SelectDeviceTypeFragment() :  BaseFragment<SelectDeviceTypeViewMvcImpl, Se
     override fun onStart() {
         super.onStart()
         listener?.let { controller?.registerListener(it) }
-
     }
 
     override fun onStop() {
