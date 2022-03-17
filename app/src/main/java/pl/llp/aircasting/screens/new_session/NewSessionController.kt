@@ -73,10 +73,9 @@ class NewSessionController(
         EventBus.getDefault().safeRegister(this)
         setupProgressMax()
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity)
-            || areMapsDisabled()
-            && permissionsManager.backgroundLocationPermissionsGranted(mContextActivity)
-        ) goToFirstStep() else showLocationPermissionPopUp()
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
+            goToFirstStep()
+        } else showLocationPermissionPopUp()
 
     }
 
