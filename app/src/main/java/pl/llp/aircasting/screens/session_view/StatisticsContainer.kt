@@ -210,6 +210,6 @@ class StatisticsContainer {
     }
 
     private fun getNowValue(stream: MeasurementStream?): Double? {
-        return stream?.getFreshestMeasurementValue()
+        return stream?.getLastMeasurementValue()
     }
 }

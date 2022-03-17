@@ -179,10 +179,8 @@ class MeasurementStream(
         return allMeasurements.subList(measurementsSize - amount, measurementsSize)
     }
 
-    fun getFreshestMeasurementValue(): Double {
-        if (measurements.isEmpty()) return 0.0
-
-        return measurements.last().value
+    fun getLastMeasurementValue(): Double {
+        return lastMeasurement()?.value ?: 0.0
     }
 
     fun getAvgMeasurement(): Double? {
