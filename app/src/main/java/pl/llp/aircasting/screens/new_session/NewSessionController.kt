@@ -36,7 +36,7 @@ import pl.llp.aircasting.screens.new_session.choose_location.ChooseLocationViewM
 import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.screens.new_session.connect_airbeam.*
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
+import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
 import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import pl.llp.aircasting.sensor.AirBeamRecordSessionService
