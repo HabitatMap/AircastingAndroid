@@ -1,7 +1,6 @@
 package pl.llp.aircasting.screens.new_session.select_device_type
 
 import pl.llp.aircasting.screens.common.BaseController
-import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 
 class SelectDeviceTypeController(
     var viewMvc: SelectDeviceTypeViewMvcImpl?
