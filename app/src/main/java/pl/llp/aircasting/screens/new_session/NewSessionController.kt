@@ -73,10 +73,7 @@ class NewSessionController(
         EventBus.getDefault().safeRegister(this)
         setupProgressMax()
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity)
-            || areMapsDisabled()
-            && permissionsManager.backgroundLocationPermissionsGranted(mContextActivity)
-        ) goToFirstStep() else showLocationPermissionPopUp()
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) goToFirstStep() else showLocationPermissionPopUp()
 
     }
 
@@ -151,6 +148,8 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) permissionsManager.requestBluetoothPermissions(mContextActivity)
+
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -233,6 +232,10 @@ class NewSessionController(
                     R.string.errors_audio_required
                 )
 
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH ->
+                if (permissionsManager.permissionsGranted(grantResults)) requestBluetoothEnable() else errorHandler.showError(
+                    R.string.errors_location_services_required
+                )
             else -> {}
         }
     }
