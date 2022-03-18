@@ -13,6 +13,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.ValidationHelper
+import pl.llp.aircasting.lib.setAppearance
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BottomSheet
@@ -129,7 +130,7 @@ class ShareSessionBottomSheet(
         radioButton.id = View.generateViewId()
         radioButton.text = stream.detailedType
         radioButton.layoutParams = layoutParams
-        radioButton.setTextAppearance(context, R.style.TextAppearance_Aircasting_Body1)
+        context?.let { radioButton.setAppearance(it, R.style.TextAppearance_Aircasting_Body1) }
         radioButton.gravity = Gravity.TOP
         radioButton.buttonDrawable = drawable
         radioButton.setBackgroundColor(Color.TRANSPARENT)

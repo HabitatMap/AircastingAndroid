@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
 import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.setAppearance
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
@@ -172,10 +173,9 @@ abstract class MeasurementsTableContainer {
         mMeasurementValues?.forEach { resetValueViewBorder(it as LinearLayout) }
     }
 
-    //TODO - setTextAppearance is deprecated
     private fun resetMeasurementHeader(headerView: View) {
         val headerTextView = headerView.findViewById<TextView>(R.id.measurement_header)
-        headerTextView.setTextAppearance(
+        headerTextView.setAppearance(
             mContext,
             R.style.TextAppearance_Aircasting_MeasurementsTableHeader
         )
@@ -193,9 +193,8 @@ abstract class MeasurementsTableContainer {
         }
     }
 
-    //TODO - setTextAppearance is deprecated
     private fun markMeasurementHeaderAsSelected(headerTextView: TextView) {
-        headerTextView.setTextAppearance(
+        headerTextView.setAppearance(
             mContext,
             R.style.TextAppearance_Aircasting_MeasurementsTableHeaderSelected
         )
@@ -224,9 +223,8 @@ abstract class MeasurementsTableContainer {
         )
         mLastMeasurementColors[stream.sensorName] = color
 
-        if (stream.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) {
-            measurementValue = TemperatureConverter.fahrenheitToCelsius(measurementValue)
-        }
+        if (stream.isMeasurementTypeTemperature() && TemperatureConverter.isCelsiusToggleEnabled()) measurementValue =
+            TemperatureConverter.fahrenheitToCelsius(measurementValue)
 
         val valueViewContainer = renderValueView(measurementValue, color, stream)
         mMeasurementValues?.addView(valueViewContainer)
@@ -243,7 +241,7 @@ abstract class MeasurementsTableContainer {
         return if (mDisplayAvarages) {
             stream.getAvgMeasurement()
         } else {
-            stream.measurements.lastOrNull()?.value
+            stream.getLastMeasurementValue()
         }
     }
 
