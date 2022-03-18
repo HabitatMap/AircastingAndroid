@@ -342,7 +342,7 @@ class NewSessionController(
         return settings.areMapsDisabled()
     }
 
-    fun goToSessionDetails(sessionUUID: String?, deviceItem: DeviceItem?) {
+    private fun goToSessionDetails(sessionUUID: String?, deviceItem: DeviceItem?) {
         sessionUUID ?: return
         deviceItem ?: return
 
