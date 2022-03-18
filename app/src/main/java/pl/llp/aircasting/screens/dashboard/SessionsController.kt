@@ -37,10 +37,12 @@ abstract class SessionsController(
 ) : SessionsViewMvc.Listener, EditSessionBottomSheet.Listener, ShareSessionBottomSheet.Listener,
     DeleteSessionBottomSheet.Listener {
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
-    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
-    protected val mMobileSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    protected val mDownloadMeasurementsService = DownloadMeasurementsService(mApiService, mErrorHandler)
+    protected val mMobileSessionsSyncService =
+        SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
+    protected val mDownloadMeasurementsService =
+        DownloadMeasurementsService(mApiService, mErrorHandler)
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
     protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
@@ -117,7 +119,8 @@ abstract class SessionsController(
 
     protected fun reloadSession(session: Session) {
         DatabaseProvider.runQuery { scope ->
-            val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            val dbSessionWithMeasurements =
+                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSessionWithMeasurements?.let {
                 val reloadedSession = Session(dbSessionWithMeasurements)
 
@@ -143,12 +146,19 @@ abstract class SessionsController(
         NavigationController.goToLetsStart()
     }
 
-    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // handling buttons in EditSessionBottomSheet
+    override fun onEditDataPressed(
+        session: Session,
+        name: String,
+        tags: ArrayList<String>
+    ) { // handling buttons in EditSessionBottomSheet
         val event = UpdateSessionEvent(session, name, tags)
         EventBus.getDefault().post(event)
     }
 
-    override fun onShareLinkPressed(session: Session, sensor: String) { // handling button in ShareSessionBottomSheet
+    override fun onShareLinkPressed(
+        session: Session,
+        sensor: String
+    ) { // handling button in ShareSessionBottomSheet
         if (session.urlLocation != null) {
             openShareIntentChooser(session, sensor)
         } else {
@@ -156,7 +166,10 @@ abstract class SessionsController(
         }
     }
 
-    override fun onShareFilePressed(session: Session, emailInput: String) { // handling button in ShareSessionBottomSheet
+    override fun onShareFilePressed(
+        session: Session,
+        emailInput: String
+    ) { // handling button in ShareSessionBottomSheet
         if (session.locationless) {
             shareLocalFile(session)
         } else {
@@ -172,7 +185,11 @@ abstract class SessionsController(
 
     override fun onEditSessionClicked(session: Session) {
         if (!ConnectivityManager.isConnected(context)) {
-            Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                context?.getString(R.string.errors_network_required_edit),
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
         val onDownloadSuccess = { session: Session ->
@@ -201,7 +218,11 @@ abstract class SessionsController(
 
     override fun onDeleteSessionClicked(session: Session) {
         if (!ConnectivityManager.isConnected(context)) {
-            Toast.makeText(context, context?.getString(R.string.errors_network_required_delete_streams), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                context?.getString(R.string.errors_network_required_delete_streams),
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 
@@ -211,13 +232,20 @@ abstract class SessionsController(
     override fun onDeleteStreamsPressed(session: Session) {
         val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
         val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
-        if (deleteAllStreamsSelected(allStreamsBoxSelected, streamsToDelete?.size, session.streams.size )) {
+        if (deleteAllStreamsSelected(
+                allStreamsBoxSelected,
+                streamsToDelete?.size,
+                session.streams.size
+            )
+        ) {
             ConfirmationDeleteSessionDialog(this.fragmentManager) {
-                deleteSession(session.uuid) }
+                deleteSession(session.uuid)
+            }
                 .show()
-        } else  {
+        } else {
             ConfirmationDeleteSessionDialog(this.fragmentManager) {
-                deleteStreams(session, streamsToDelete) }
+                deleteStreams(session, streamsToDelete)
+            }
                 .show()
         }
     }
@@ -234,7 +262,11 @@ abstract class SessionsController(
         deleteSessionDialog?.dismiss()
     }
 
-    private fun deleteAllStreamsSelected(allStreamsBoxSelected: Boolean, selectedOptionsCount: Int?, sessionStreamsCount: Int?): Boolean {
+    private fun deleteAllStreamsSelected(
+        allStreamsBoxSelected: Boolean,
+        selectedOptionsCount: Int?,
+        sessionStreamsCount: Int?
+    ): Boolean {
         return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
     }
 
@@ -243,7 +275,7 @@ abstract class SessionsController(
         editDialog?.show(fragmentManager)
     }
 
-    private fun startShareSessionBottomSheet(session: Session){
+    private fun startShareSessionBottomSheet(session: Session) {
         shareDialog = ShareSessionBottomSheet(this, session, context)
         shareDialog?.show(fragmentManager)
     }
@@ -253,7 +285,7 @@ abstract class SessionsController(
         deleteSessionDialog?.show(fragmentManager, "Session delete")
     }
 
-    private fun openShareIntentChooser(session: Session, chosenSensor: String){
+    private fun openShareIntentChooser(session: Session, chosenSensor: String) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor, context))
