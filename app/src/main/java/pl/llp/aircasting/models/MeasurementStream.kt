@@ -159,7 +159,7 @@ class MeasurementStream(
         val frequency = samplingFrequency(divisor)
         return try {
             val measurementsInPeriod = (60 / frequency).toInt() * amount
-            getFreshMeasurements(measurementsInPeriod)
+            getLastMeasurements(measurementsInPeriod)
         } catch (e: IndexOutOfBoundsException) {
             getMeasurementsForPeriod(amount - 1, divisor)
         }
@@ -169,7 +169,7 @@ class MeasurementStream(
         return measurements.filter { it.time in timeSpan}
     }
 
-    fun getFreshMeasurements(amount: Int = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_NUMBER): MutableList<Measurement> {
+    fun getLastMeasurements(amount: Int = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_NUMBER): MutableList<Measurement> {
         // copy the backing list to avoid ConcurrentModificationException
         val allMeasurements = ArrayList(measurements)
         val measurementsSize = allMeasurements.size

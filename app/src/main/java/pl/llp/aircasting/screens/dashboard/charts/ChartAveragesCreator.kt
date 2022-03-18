@@ -92,7 +92,7 @@ class ChartAveragesCreator {
         val entries: MutableList<Entry> = mutableListOf()
         val periodData: MutableList<List<Measurement>?> = mutableListOf()
 
-        measurements = stream.getFreshMeasurements()
+        measurements = stream.getLastMeasurements()
 
         if (measurements.isEmpty()) return entries
 
