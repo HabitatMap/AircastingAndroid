@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.new_session.select_device
+package pl.llp.aircasting.screens.new_session.select_device_type
 
 import pl.llp.aircasting.screens.common.ObservableViewMvc
 
