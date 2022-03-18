@@ -36,8 +36,8 @@ import pl.llp.aircasting.screens.new_session.choose_location.ChooseLocationViewM
 import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.screens.new_session.connect_airbeam.*
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import pl.llp.aircasting.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
@@ -74,9 +74,7 @@ class NewSessionController(
         setupProgressMax()
 
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) goToFirstStep() else showLocationPermissionPopUp()
-
     }
-
 
     private fun showLocationPermissionPopUp() {
         LocationPermissionPopUp(mFragmentManager, permissionsManager, mContextActivity).show()
@@ -148,8 +146,6 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) permissionsManager.requestBluetoothPermissions(mContextActivity)
-
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -206,25 +202,21 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothOkClicked() {
-        requestBluetoothEnable()
+        needNewBluetoothPermissions()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION ->
-                if (permissionsManager.permissionsGranted(grantResults)) {
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) permissionsManager.requestBackgroundLocationPermissions(
-                        mContextActivity
-                    )
-                    goToFirstStep()
-                } else errorHandler.showError(
+                if (permissionsManager.permissionsGranted(grantResults)) needAccessBackgroundLocation() else errorHandler.showError(
                     R.string.errors_location_services_required
                 )
 
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION ->
-                if (permissionsManager.permissionsGranted(grantResults)) goToFirstStep() else errorHandler.showError(
-                    R.string.errors_location_services_required
+                if (permissionsManager.permissionsGranted(grantResults)) {
+                    goToFirstStep()
+                } else errorHandler.showError(
+                    R.string.errors_location_background_services_required
                 )
 
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO ->
@@ -234,7 +226,7 @@ class NewSessionController(
 
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH ->
                 if (permissionsManager.permissionsGranted(grantResults)) requestBluetoothEnable() else errorHandler.showError(
-                    R.string.errors_location_services_required
+                    R.string.bluetooth_error_permissions
                 )
             else -> {}
         }
@@ -265,7 +257,9 @@ class NewSessionController(
             var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
                 existing =
-                    sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
+                    sessionsRepository.mobileSessionAlreadyExistsForDeviceId(
+                        selectedDeviceItem.id
+                    )
             }
             query.await()
             if (existing) {
@@ -282,13 +276,15 @@ class NewSessionController(
         AirBeamRecordSessionService.startService(mContextActivity, deviceItem, sessionUUID)
     }
 
-    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
+    override fun onAirBeamConnectedContinueClicked(
+        deviceItem: DeviceItem,
+        sessionUUID: String
+    ) {
         goToSessionDetails(sessionUUID, deviceItem)
     }
 
     override fun validationFailed(errorMessage: String) {
-        val toast = Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG)
-        toast.show()
+        Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG).show()
     }
 
     override fun onSessionDetailsContinueClicked(
@@ -303,7 +299,8 @@ class NewSessionController(
         wifiPassword: String?
     ) {
 
-        val currentLocation = Session.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
+        val currentLocation =
+            Session.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
 
         val session = sessionBuilder.build(
             sessionUUID,
@@ -340,7 +337,8 @@ class NewSessionController(
         mContextActivity.finish()
     }
 
-    fun areMapsDisabled(): Boolean {
+    fun areMapsDisabled()
+            : Boolean {
         return settings.areMapsDisabled()
     }
 
@@ -371,5 +369,21 @@ class NewSessionController(
         val description =
             mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description)
         errorHandler.showErrorDialog(mFragmentManager, header, description)
+    }
+
+    private fun needAccessBackgroundLocation() {
+        if (isSDKVersionBiggerThanQ()) permissionsManager.requestBackgroundLocationPermissions(
+            mContextActivity
+        ) else goToFirstStep()
+    }
+
+    private fun needNewBluetoothPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) permissionsManager.requestBluetoothPermissions(
+            mContextActivity
+        ) else requestBluetoothEnable()
+    }
+
+    private fun isSDKVersionBiggerThanQ(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     }
 }
