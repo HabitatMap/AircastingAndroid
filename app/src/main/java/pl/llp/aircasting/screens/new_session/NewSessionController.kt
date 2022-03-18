@@ -378,7 +378,7 @@ class NewSessionController(
     }
 
     private fun needNewBluetoothPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) permissionsManager.requestBluetoothPermissions(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) permissionsManager.requestBluetoothPermissions(
             mContextActivity
         ) else requestBluetoothEnable()
     }
