@@ -190,7 +190,13 @@ class NewSessionController(
     }
 
     private fun onFixedSessionSelected() {
-        onBluetoothDeviceSelected()
+        if (isSDKVersionBiggerThanS() && permissionsManager.bluetoothPermissionsGranted(
+                mContextActivity
+            )
+        ) onBluetoothDeviceSelected()
+        else permissionsManager.requestBluetoothPermissions(
+            mContextActivity
+        )
     }
 
     private fun onMobileSessionSelected() {
@@ -378,9 +384,17 @@ class NewSessionController(
     }
 
     private fun needNewBluetoothPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) permissionsManager.requestBluetoothPermissions(
+        if (isSDKVersionBiggerThanS() && permissionsManager.bluetoothPermissionsGranted(
+                mContextActivity
+            )
+        ) requestBluetoothEnable()
+        else permissionsManager.requestBluetoothPermissions(
             mContextActivity
-        ) else requestBluetoothEnable()
+        )
+    }
+
+    private fun isSDKVersionBiggerThanS(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     }
 
     private fun isSDKVersionBiggerThanQ(): Boolean {
