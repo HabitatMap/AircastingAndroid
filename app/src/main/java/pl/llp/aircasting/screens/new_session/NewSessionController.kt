@@ -1,13 +1,16 @@
 package pl.llp.aircasting.screens.new_session
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.Dispatchers
@@ -100,6 +103,7 @@ class NewSessionController(
 
     private fun goToFirstStep() {
         if (mContextActivity.areLocationServicesOn()) {
+            println("i'm here")
             startNewSessionWizard()
         } else {
             wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)
@@ -146,6 +150,7 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
+        needNewBluetoothPermissions()
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -190,13 +195,7 @@ class NewSessionController(
     }
 
     private fun onFixedSessionSelected() {
-        if (isSDKVersionBiggerThanS() && permissionsManager.bluetoothPermissionsGranted(
-                mContextActivity
-            )
-        ) onBluetoothDeviceSelected()
-        else permissionsManager.requestBluetoothPermissions(
-            mContextActivity
-        )
+        onBluetoothDeviceSelected()
     }
 
     private fun onMobileSessionSelected() {
@@ -208,7 +207,7 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothOkClicked() {
-        needNewBluetoothPermissions()
+        requestBluetoothEnable()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
@@ -384,13 +383,16 @@ class NewSessionController(
     }
 
     private fun needNewBluetoothPermissions() {
-        if (isSDKVersionBiggerThanS() && permissionsManager.bluetoothPermissionsGranted(
-                mContextActivity
-            )
-        ) requestBluetoothEnable()
-        else permissionsManager.requestBluetoothPermissions(
-            mContextActivity
-        )
+        if (isSDKVersionBiggerThanS()) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    mContextActivity,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) != PackageManager.PERMISSION_GRANTED -> {
+                    permissionsManager.requestBluetoothPermissions(mContextActivity)
+                }
+            }
+        }
     }
 
     private fun isSDKVersionBiggerThanS(): Boolean {
