@@ -5,63 +5,63 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
 
     <application
+        android:name="pl.llp.aircasting.AircastingApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Aircasting"
-        android:largeHeap="true"
-        android:name="pl.llp.aircasting.AircastingApplication">
+        android:usesCleartextTraffic="true">
 
         <service
             android:name="pl.llp.aircasting.sensor.microphone.MicrophoneService"
-            android:stopWithTask="true" >
-        </service>
+            android:stopWithTask="true" />
 
         <service
             android:name="pl.llp.aircasting.sensor.AirBeamRecordSessionService"
-            android:stopWithTask="true">
-        </service>
+            android:stopWithTask="true" />
 
         <service
             android:name="pl.llp.aircasting.sensor.AirBeamReconnectSessionService"
-            android:stopWithTask="true">
-        </service>
+            android:stopWithTask="true" />
 
         <service
             android:name="pl.llp.aircasting.sensor.AirBeamSyncService"
-            android:stopWithTask="true">
-        </service>
+            android:stopWithTask="true" />
 
         <service
             android:name="pl.llp.aircasting.sensor.AirBeamClearCardService"
-            android:stopWithTask="true">
-        </service>
+            android:stopWithTask="true" />
 
-        <activity android:name="pl.llp.aircasting.screens.onboarding.OnboardingActivity"
+        <activity
+            android:name="pl.llp.aircasting.screens.onboarding.OnboardingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="pl.llp.aircasting.screens.main.MainActivity"
-            android:screenOrientation="portrait"
+            android:exported="true"
             android:launchMode="singleTop"
-            android:exported="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -71,34 +71,38 @@
         </activity>
         <activity
             android:name="pl.llp.aircasting.screens.login.LoginActivity"
-            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
             android:noHistory="true"
-            android:excludeFromRecents="true">
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="pl.llp.aircasting.screens.create_account.CreateAccountActivity"
-            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
             android:noHistory="false"
-            android:excludeFromRecents="true">
-        </activity>
-        <activity android:label=""
+            android:screenOrientation="portrait" />
+        <activity
             android:name="pl.llp.aircasting.screens.new_session.NewSessionActivity"
+            android:label=""
             android:screenOrientation="portrait" />
-        <activity android:label=""
+        <activity
             android:name="pl.llp.aircasting.screens.session_view.map.MapActivity"
+            android:label=""
             android:screenOrientation="portrait" />
-        <activity android:label=""
+        <activity
             android:name="pl.llp.aircasting.screens.session_view.graph.GraphActivity"
+            android:label=""
             android:screenOrientation="portrait" />
-        <activity android:label=""
+        <activity
             android:name="pl.llp.aircasting.screens.settings.my_account.MyAccountActivity"
+            android:label=""
             android:screenOrientation="portrait" />
-        <activity android:label=""
+        <activity
             android:name="pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity"
+            android:label=""
             android:screenOrientation="portrait" />
-        <activity   android:label=""
+        <activity
             android:name="pl.llp.aircasting.screens.sync.SyncActivity"
-            android:screenOrientation="portrait"/>
+            android:label=""
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

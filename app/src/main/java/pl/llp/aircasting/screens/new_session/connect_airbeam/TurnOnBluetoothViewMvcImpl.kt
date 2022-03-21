@@ -6,10 +6,12 @@ import android.widget.Button
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class TurnOnBluetoothViewMvcImpl : BaseObservableViewMvc<TurnOnBluetoothViewMvc.Listener>, TurnOnBluetoothViewMvc {
+class TurnOnBluetoothViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+) : BaseObservableViewMvc<TurnOnBluetoothViewMvc.Listener>(), TurnOnBluetoothViewMvc {
 
-    constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_turn_on_bluetooth, parent, false)
         val button = rootView?.findViewById<Button>(R.id.turn_on_bluetooth_ok_button)
         button?.setOnClickListener {
