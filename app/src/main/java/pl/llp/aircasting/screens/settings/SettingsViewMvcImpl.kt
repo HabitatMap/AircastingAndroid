@@ -43,6 +43,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
             onToggleUse24HourFormatEnabled()
         }
 
+        val useCelsiusScaleSwitch = rootView?.use_celcius_scale_switch
+        useCelsiusScaleSwitch?.isChecked = mSettings.isCelsiusScaleEnabled()
+        useCelsiusScaleSwitch?.setOnCheckedChangeListener { _, _ ->
+            onToggleCelsiusScaleEnabled()
+        }
+
         val contributeToCrowdMapSwitch = rootView?.crowd_map_settings_switch
         contributeToCrowdMapSwitch?.isChecked = mSettings.isCrowdMapEnabled()
         contributeToCrowdMapSwitch?.setOnCheckedChangeListener { _, _ ->
@@ -90,6 +96,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
     private fun onToggleUse24HourFormatEnabled() {
         for (listener in listeners) {
             listener.onToggle24hourFormatEnabled()
+        }
+    }
+
+    private fun onToggleCelsiusScaleEnabled() {
+        for (listener in listeners) {
+            listener.onToggleCelsiusScaleEnabled()
         }
     }
 

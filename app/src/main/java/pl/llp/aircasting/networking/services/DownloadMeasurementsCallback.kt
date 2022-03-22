@@ -1,7 +1,10 @@
 package pl.llp.aircasting.networking.services
 
 import android.database.sqlite.SQLiteConstraintException
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
@@ -16,9 +19,6 @@ import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.networking.responses.SessionWithMeasurementsResponse
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.services.AveragingService
 import retrofit2.Call
 import retrofit2.Callback

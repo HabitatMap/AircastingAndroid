@@ -22,7 +22,6 @@ import pl.llp.aircasting.services.AveragingPreviousMeasurementsBackgroundService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.database.LogoutService
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
@@ -148,7 +147,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun registerToEventBus() {
-        EventBus.getDefault().safeRegister(this);
+        EventBus.getDefault().safeRegister(this)
     }
 
     private fun unregisterFromEventBus() {

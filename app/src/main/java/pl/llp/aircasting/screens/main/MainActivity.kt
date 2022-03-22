@@ -48,6 +48,7 @@ class MainActivity: BaseActivity() {
         DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
         DateConverter.setup(settings)
+        TemperatureConverter.setup(settings)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)

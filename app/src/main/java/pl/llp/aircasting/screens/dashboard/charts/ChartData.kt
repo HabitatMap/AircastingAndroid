@@ -4,6 +4,7 @@ import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.lib.DateConverter
+import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.services.AveragedMeasurementsService
@@ -91,7 +92,7 @@ class ChartData(
             Session.Type.MOBILE -> time
         }
     }
-    
+
     private fun initStreams(): MutableList<MeasurementStream> {
         val streams: MutableList<MeasurementStream> = mutableListOf()
         mSession.streamsSortedByDetailedType().forEach { stream ->
@@ -108,10 +109,12 @@ class ChartData(
                 mMaxEntriesCount = entries?.size ?: 0
             }
 
-            mEntriesPerStream.put(
-                streamKey(stream),
-                Lists.reverse(entries)
-            )
+            entries?.toList()?.let {
+                mEntriesPerStream.put(
+                    streamKey(stream),
+                    it
+                )
+            }
         }
     }
 

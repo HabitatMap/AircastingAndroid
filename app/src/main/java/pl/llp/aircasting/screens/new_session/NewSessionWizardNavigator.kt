@@ -12,6 +12,8 @@ import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationFragment
 import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.screens.new_session.connect_airbeam.*
 import pl.llp.aircasting.screens.new_session.select_device.*
+import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeFragment
+import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsFragment
 import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 

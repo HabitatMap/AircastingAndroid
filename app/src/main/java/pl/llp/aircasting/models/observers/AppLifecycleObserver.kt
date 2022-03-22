@@ -1,21 +1,20 @@
 package pl.llp.aircasting.models.observers
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.events.AppToBackgroundEvent
 import pl.llp.aircasting.events.AppToForegroundEvent
-import org.greenrobot.eventbus.EventBus
 
-class AppLifecycleObserver : LifecycleObserver {
+class AppLifecycleObserver : DefaultLifecycleObserver {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onMoveToForeground() {
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
         EventBus.getDefault().post(AppToForegroundEvent())
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onMoveToBackground() {
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
         EventBus.getDefault().post(AppToBackgroundEvent())
     }
 }

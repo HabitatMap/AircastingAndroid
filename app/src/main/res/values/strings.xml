@@ -209,6 +209,7 @@
 
     <!-- Errors -->
     <string name="errors_location_services_required">Without location permissions you will not be able to record bluetooth sessions.</string>
+    <string name="errors_location_background_services_required">Without using location in background permission, the app may not work properly on newer Android devices.</string>
     <string name="errors_location_services_required_to_sync">Without location permissions you can\'t proceed with sync.</string>
     <string name="errors_location_services_required_to_locate">Location services are needed to center map on your location.</string>
     <string name="errors_bluetooth_required">Bluetooth is required to continue</string>
@@ -474,9 +475,7 @@
     <string name="note">Note</string>
     <string name="tap_to_add_picture">Tap to add picture</string>
     <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Your note will be timestamped and displayed on the AirCasting map</string>
-    <string name="light_theme">Light theme</string>
-    <string name="system_default_recommended">System default (Recommended)</string>
-    <string name="dark_theme">Dark theme</string>
+    <string name="bluetooth_error_permissions">Without Bluetooth permissions, you will not be able to see the available devices</string>
 
 
 </resources>

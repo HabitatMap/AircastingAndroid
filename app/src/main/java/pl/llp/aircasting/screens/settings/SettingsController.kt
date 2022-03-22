@@ -55,6 +55,10 @@ class SettingsController(
         mSettings.toggleUse24HourFormatEnabled()
     }
 
+    override fun onToggleCelsiusScaleEnabled() {
+        mSettings.toggleUseCelsiusScaleEnabled()
+    }
+
     override fun onToggleCrowdMapEnabled() {
         mSettings.toggleCrowdMapEnabled()
     }
