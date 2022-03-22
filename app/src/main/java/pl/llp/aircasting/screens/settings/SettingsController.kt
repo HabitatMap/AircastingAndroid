@@ -91,7 +91,7 @@ class SettingsController(
     }
 
     private fun startThemeDialog() {
-        ThemeSettingsDialog(fragmentManager, this, mContext).show()
+        ThemeSettingsDialog(fragmentManager, mContext).show()
     }
 
     private fun startBackendSettingsDialog() {
