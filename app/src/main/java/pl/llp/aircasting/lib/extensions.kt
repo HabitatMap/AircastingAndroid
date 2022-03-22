@@ -1,6 +1,8 @@
 package pl.llp.aircasting.lib
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.location.LocationManager
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.MapStyleOptions
@@ -21,5 +23,11 @@ fun Context.areLocationServicesOn(): Boolean {
 fun styleGoogleMap(map: GoogleMap, context: Context) {
     map.setMapStyle(
         MapStyleOptions.loadRawResourceStyle(
-            context, R.raw.map_style))
+            context, R.raw.map_style
+        )
+    )
+}
+
+fun Context.isDarkThemeOn(): Boolean {
+    return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
 }
