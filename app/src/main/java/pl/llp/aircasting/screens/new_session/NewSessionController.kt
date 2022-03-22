@@ -1,12 +1,16 @@
 package pl.llp.aircasting.screens.new_session
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.Dispatchers
@@ -35,8 +39,8 @@ import pl.llp.aircasting.screens.new_session.choose_location.ChooseLocationViewM
 import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.screens.new_session.connect_airbeam.*
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
 import pl.llp.aircasting.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
@@ -69,14 +73,10 @@ class NewSessionController(
     private var wifiPassword: String? = null
 
     fun onCreate() {
-        EventBus.getDefault().safeRegister(this);
+        EventBus.getDefault().safeRegister(this)
         setupProgressMax()
 
-        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) {
-            goToFirstStep()
-        } else {
-            showLocationPermissionPopUp()
-        }
+        if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) goToFirstStep() else showLocationPermissionPopUp()
     }
 
     private fun showLocationPermissionPopUp() {
@@ -103,6 +103,7 @@ class NewSessionController(
 
     private fun goToFirstStep() {
         if (mContextActivity.areLocationServicesOn()) {
+            println("i'm here")
             startNewSessionWizard()
         } else {
             wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)
@@ -149,6 +150,7 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
+        needNewBluetoothPermissions()
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -210,29 +212,35 @@ class NewSessionController(
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION -> {
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION ->
+                if (permissionsManager.permissionsGranted(grantResults)) needAccessBackgroundLocation() else errorHandler.showError(
+                    R.string.errors_location_services_required
+                )
+
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION ->
                 if (permissionsManager.permissionsGranted(grantResults)) {
                     goToFirstStep()
-                } else {
-                    errorHandler.showError(R.string.errors_location_services_required)
-                }
-            }
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO -> {
-                if (permissionsManager.permissionsGranted(grantResults)) {
-                    startMicrophoneSession()
-                } else {
-                    errorHandler.showError(R.string.errors_audio_required)
-                }
-            }
-            else -> {
-                // Ignore all other requests.
-            }
+                } else errorHandler.showError(
+                    R.string.errors_location_background_services_required
+                )
+
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO ->
+                if (permissionsManager.permissionsGranted(grantResults)) startMicrophoneSession() else errorHandler.showError(
+                    R.string.errors_audio_required
+                )
+
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH ->
+                if (permissionsManager.permissionsGranted(grantResults)) requestBluetoothEnable() else errorHandler.showError(
+                    R.string.bluetooth_error_permissions
+                )
+            else -> {}
         }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> if (resultCode == RESULT_OK) startNewSessionWizard() else errorHandler.showError(
+            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> if (resultCode == RESULT_OK) startNewSessionWizard()
+            else errorHandler.showError(
                 R.string.errors_location_services_required
             )
 
@@ -242,7 +250,6 @@ class NewSessionController(
             ) else errorHandler.showError(R.string.errors_bluetooth_required)
 
             else -> {}
-            // Ignore all other requests.
         }
     }
 
@@ -255,7 +262,9 @@ class NewSessionController(
             var existing = false
             val query = GlobalScope.async(Dispatchers.IO) {
                 existing =
-                    sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
+                    sessionsRepository.mobileSessionAlreadyExistsForDeviceId(
+                        selectedDeviceItem.id
+                    )
             }
             query.await()
             if (existing) {
@@ -272,13 +281,15 @@ class NewSessionController(
         AirBeamRecordSessionService.startService(mContextActivity, deviceItem, sessionUUID)
     }
 
-    override fun onAirBeamConnectedContinueClicked(deviceItem: DeviceItem, sessionUUID: String) {
+    override fun onAirBeamConnectedContinueClicked(
+        deviceItem: DeviceItem,
+        sessionUUID: String
+    ) {
         goToSessionDetails(sessionUUID, deviceItem)
     }
 
     override fun validationFailed(errorMessage: String) {
-        val toast = Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG)
-        toast.show()
+        Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG).show()
     }
 
     override fun onSessionDetailsContinueClicked(
@@ -293,7 +304,8 @@ class NewSessionController(
         wifiPassword: String?
     ) {
 
-        val currentLocation = Session.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
+        val currentLocation =
+            Session.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
 
         val session = sessionBuilder.build(
             sessionUUID,
@@ -312,7 +324,7 @@ class NewSessionController(
         this.wifiPassword = wifiPassword
         if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
             wizardNavigator.goToTurnOffLocationServices(session, this)
-        } else if (sessionType == Session.Type.MOBILE || indoor == true) {
+        } else if (sessionType == Session.Type.MOBILE || indoor) {
             wizardNavigator.goToConfirmation(session, this)
         } else {
             wizardNavigator.goToChooseLocation(session, this, errorHandler)
@@ -330,11 +342,12 @@ class NewSessionController(
         mContextActivity.finish()
     }
 
-    fun areMapsDisabled(): Boolean {
+    fun areMapsDisabled()
+            : Boolean {
         return settings.areMapsDisabled()
     }
 
-    fun goToSessionDetails(sessionUUID: String?, deviceItem: DeviceItem?) {
+    private fun goToSessionDetails(sessionUUID: String?, deviceItem: DeviceItem?) {
         sessionUUID ?: return
         deviceItem ?: return
 
@@ -361,5 +374,32 @@ class NewSessionController(
         val description =
             mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description)
         errorHandler.showErrorDialog(mFragmentManager, header, description)
+    }
+
+    private fun needAccessBackgroundLocation() {
+        if (isSDKVersionBiggerThanQ()) permissionsManager.requestBackgroundLocationPermissions(
+            mContextActivity
+        ) else goToFirstStep()
+    }
+
+    private fun needNewBluetoothPermissions() {
+        if (isSDKVersionBiggerThanS()) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    mContextActivity,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) != PackageManager.PERMISSION_GRANTED -> {
+                    permissionsManager.requestBluetoothPermissions(mContextActivity)
+                }
+            }
+        }
+    }
+
+    private fun isSDKVersionBiggerThanS(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    }
+
+    private fun isSDKVersionBiggerThanQ(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     }
 }

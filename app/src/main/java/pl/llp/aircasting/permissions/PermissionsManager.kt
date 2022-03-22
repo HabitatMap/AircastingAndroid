@@ -4,40 +4,42 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.lib.ResultCodes
 
 open class PermissionsManager {
-    private val LOCATION_PERMISSIONS = if (Build.VERSION.SDK_INT >= 29) arrayOf(
+    private val LOCATION_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-        Manifest.permission.BLUETOOTH_CONNECT,
-        Manifest.permission.BLUETOOTH_SCAN
+        Manifest.permission.ACCESS_FINE_LOCATION
     )
-    else
-        arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
+
+    private val LOCATION_BACKGROUND_PERMISSION =
+        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
 
     private val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
+    private val BLUETOOTH_PERMISSIONS =
+        arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN)
+
     fun permissionsGranted(grantResults: IntArray): Boolean {
-        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-            return true
-        }
-        return false
+        return (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
     }
 
     open fun locationPermissionsGranted(context: Context): Boolean {
         return permissionsGranted(LOCATION_PERMISSIONS, context)
     }
 
+    open fun backgroundLocationPermissionsGranted(context: Context): Boolean {
+        return permissionsGranted(LOCATION_BACKGROUND_PERMISSION, context)
+    }
+
     open fun audioPermissionsGranted(context: Context): Boolean {
         return permissionsGranted(AUDIO_PERMISSIONS, context)
+    }
+
+    open fun bluetoothPermissionsGranted(context: Context): Boolean {
+        return permissionsGranted(BLUETOOTH_PERMISSIONS, context)
     }
 
     open fun requestLocationPermissions(activity: Activity) {
@@ -48,11 +50,27 @@ open class PermissionsManager {
         )
     }
 
+    open fun requestBackgroundLocationPermissions(activity: Activity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            LOCATION_BACKGROUND_PERMISSION,
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
+        )
+    }
+
     fun requestAudioPermissions(activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
             AUDIO_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO
+        )
+    }
+
+    fun requestBluetoothPermissions(activity: Activity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            BLUETOOTH_PERMISSIONS,
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH
         )
     }
 

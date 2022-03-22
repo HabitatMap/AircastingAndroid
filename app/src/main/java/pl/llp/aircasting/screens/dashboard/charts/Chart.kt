@@ -2,6 +2,7 @@ package pl.llp.aircasting.screens.dashboard.charts
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -9,37 +10,25 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.MeasurementColor
+import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
-import kotlinx.android.synthetic.main.expanded_session_view.view.*
 
 
-class Chart {
-    private val mContext: Context
-    private val mRootView: View?
-    private val mChartStartTimeTextView: TextView?
-    private val mChartEndTimeTextView: TextView?
-    private val mChartUnitTextView: TextView?
+class Chart(context: Context, rootView: View?) {
+    private val mContext: Context = context
+    private val mRootView: View? = rootView
+    private val mChartStartTimeTextView: TextView? = mRootView?.chart_start_time
+    private val mChartEndTimeTextView: TextView? = mRootView?.chart_end_time
+    private val mChartUnitTextView: TextView? = mRootView?.chart_unit
 
     private var mEntries: List<Entry> = listOf()
 
-    private var mLineChart: LineChart?
+    private var mLineChart: LineChart? = mRootView?.chart_view
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
-
-    constructor(
-        context: Context,
-        rootView: View?
-
-    ) {
-        mContext = context
-        mRootView = rootView
-        mLineChart = mRootView?.chart_view
-        mChartStartTimeTextView = mRootView?.chart_start_time
-        mChartEndTimeTextView = mRootView?.chart_end_time
-        mChartUnitTextView = mRootView?.chart_unit
-    }
 
     fun bindChart(
         sessionPresenter: SessionPresenter?
@@ -47,13 +36,13 @@ class Chart {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
-            setEntries(sessionPresenter)
+        setEntries(sessionPresenter)
 
-            if (session != null && session?.streams.count() > 0) {
-                resetChart()
-                mDataSet = prepareDataSet()
-                drawChart()
-            }
+        if (session != null && session.streams.isNotEmpty()) {
+            resetChart()
+            mDataSet = prepareDataSet()
+            drawChart()
+        }
         setTimesAndUnit()
     }
 
@@ -63,7 +52,8 @@ class Chart {
     }
 
     private fun setEntries(sessionPresenter: SessionPresenter?) {
-        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream) ?: listOf()
+        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream)
+            ?: listOf()
     }
 
     private fun drawChart() {
@@ -108,7 +98,7 @@ class Chart {
         mLineChart?.data = lineData
 
         // Removing the legend for colors
-        mLineChart?.legend?.isEnabled  = false
+        mLineChart?.legend?.isEnabled = false
 
         // Removing description on the down right
         mLineChart?.description?.isEnabled = false
@@ -123,22 +113,30 @@ class Chart {
         mLineChart?.invalidate()
     }
 
-    private fun prepareDataSet(): LineDataSet? {
+    private fun prepareDataSet(): LineDataSet {
         if (mEntries == null || mEntries.isEmpty()) {
             return LineDataSet(listOf(), "")
         }
-        val dataSet = LineDataSet(mEntries, "")
+
+        val dataSet: LineDataSet =
+            if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true
+                && TemperatureConverter.isCelsiusToggleEnabled()) {
+                val celsiusEntries: List<Entry> = mEntries.map { entry ->
+                    Entry(entry.x, TemperatureConverter.fahrenheitToCelsius(entry.y))
+                }
+                LineDataSet(celsiusEntries, "")
+            } else LineDataSet(mEntries, "")
 
         // Making the line a curve, not a polyline
         dataSet.mode = LineDataSet.Mode.LINEAR
 
         // Circle colors
         dataSet.circleRadius = 3.5f
-        dataSet.setCircleColors(circleColors())
+        dataSet.circleColors = circleColors()
         dataSet.setDrawCircleHole(false)
 
         // Line color
-        dataSet.setColor(ContextCompat.getColor(mContext, R.color.aircasting_grey_300))
+        dataSet.color = ContextCompat.getColor(mContext, R.color.aircasting_grey_300)
         dataSet.lineWidth = 1f
 
         // Values size and color
@@ -148,15 +146,19 @@ class Chart {
         return dataSet
     }
 
-    private fun circleColors(): List<Int>? {
-        return mEntries?.map { entry ->
-            getColor(entry?.y)
+    private fun circleColors(): List<Int> {
+        return mEntries.map { entry ->
+            getColor(entry.y)
         }
     }
 
     private fun getColor(value: Float?): Int {
         val measurementValue = value?.toDouble() ?: 0.0
-        return  MeasurementColor.forMap(mContext, measurementValue, mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream))
+        return MeasurementColor.forMap(
+            mContext,
+            measurementValue,
+            mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream)
+        )
     }
 
     private fun setTimesAndUnit() {
@@ -166,14 +168,14 @@ class Chart {
     }
 
     private fun chartUnitText(): String {
-        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
+        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.detailedType}"
     }
 
     private fun chartUnitLabelId(): Int {
-        if(mSessionPresenter?.isFixed()!!){
-            return R.string.fixed_session_units_label
+        return if (mSessionPresenter?.isFixed()!!) {
+            R.string.fixed_session_units_label
         } else {
-            return R.string.mobile_session_units_label
+            R.string.mobile_session_units_label
         }
     }
 }

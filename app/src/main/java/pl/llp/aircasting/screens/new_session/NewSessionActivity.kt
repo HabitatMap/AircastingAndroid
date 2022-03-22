@@ -30,7 +30,7 @@ class NewSessionActivity : BaseActivity() {
     lateinit var sessionBuilder: SessionBuilder
 
     companion object {
-        val SESSION_TYPE_KEY = "sessionType"
+        const val SESSION_TYPE_KEY = "sessionType"
         private var fixedLauncher: ActivityResultLauncher<Intent>? = null
         private var mobileLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -46,9 +46,11 @@ class NewSessionActivity : BaseActivity() {
                             NavigationController.goToDashboard(tabId)
                         }
                     }
-                if (sessionType == Session.Type.FIXED) fixedLauncher =
-                    launcher else mobileLauncher = launcher
 
+                when (sessionType) {
+                    Session.Type.FIXED -> fixedLauncher = launcher
+                    Session.Type.MOBILE -> mobileLauncher = launcher
+                }
             }
         }
 
@@ -57,9 +59,10 @@ class NewSessionActivity : BaseActivity() {
                 val intent = Intent(it, NewSessionActivity::class.java)
                 intent.putExtra(SESSION_TYPE_KEY, sessionType)
 
-                if (sessionType == Session.Type.FIXED) fixedLauncher?.launch(intent) else mobileLauncher?.launch(
-                    intent
-                )
+                when (sessionType) {
+                    Session.Type.FIXED -> fixedLauncher?.launch(intent)
+                    Session.Type.MOBILE -> mobileLauncher?.launch(intent)
+                }
 
             }
         }

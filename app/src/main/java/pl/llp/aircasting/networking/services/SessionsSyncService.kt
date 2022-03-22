@@ -2,8 +2,10 @@ package pl.llp.aircasting.networking.services
 
 import android.database.sqlite.SQLiteConstraintException
 import com.google.gson.Gson
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.database.repositories.NoteRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.events.sessions_sync.SessionsSyncSuccessEvent
@@ -16,9 +18,6 @@ import pl.llp.aircasting.networking.params.SyncSessionBody
 import pl.llp.aircasting.networking.params.SyncSessionParams
 import pl.llp.aircasting.networking.responses.SyncResponse
 import pl.llp.aircasting.networking.responses.UploadSessionResponse
-import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.database.repositories.NoteRepository
-import pl.llp.aircasting.lib.NoteResponseParser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -84,7 +83,7 @@ class SessionsSyncService {
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
-        if (syncStarted.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress() == true) {
+        if (syncStarted.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
             return
         }
 

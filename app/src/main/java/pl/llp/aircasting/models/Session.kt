@@ -221,6 +221,12 @@ class Session(
                 Type.FIXED -> "fijo"
             }
         }
+        "fr" -> {
+            when(type) {
+                Type.MOBILE -> "mobile"
+                Type.FIXED -> "fixé"
+            }
+        }
         else -> {
             when (type) {
                 Type.MOBILE -> "mobile"

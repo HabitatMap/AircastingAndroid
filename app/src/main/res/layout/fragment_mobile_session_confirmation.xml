@@ -49,7 +49,7 @@
 
         <androidx.fragment.app.FragmentContainerView xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/map"
-            android:name="com.google.android.libraries.maps.SupportMapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/map_height"
             android:layout_marginStart="@dimen/keyline_8"

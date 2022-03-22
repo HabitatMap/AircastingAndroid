@@ -7,10 +7,13 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class TurnOnAirBeamViewMvcImpl : BaseObservableViewMvc<TurnOnAirBeamViewMvc.Listener>, TurnOnAirBeamViewMvc {
+class TurnOnAirBeamViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    sessionType: Session.Type
+) : BaseObservableViewMvc<TurnOnAirBeamViewMvc.Listener>(), TurnOnAirBeamViewMvc {
 
-    constructor(
-        inflater: LayoutInflater, parent: ViewGroup?, sessionType: Session.Type): super() {
+    init {
         val layoutId = getLayoutId(sessionType)
         this.rootView = inflater.inflate(layoutId, parent, false)
         val button = rootView?.findViewById<Button>(R.id.turn_on_airbeam_ready_button)
