@@ -33,6 +33,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS.get(position)
         val sessionPresenter = mSessionPresenters[uuid]
+        // TODO: Looks like it binds more frequently than needed. This causes a lot of unnecessary recalculation on chart
         sessionPresenter?.let {
             holder.view.bindSession(sessionPresenter)
         }

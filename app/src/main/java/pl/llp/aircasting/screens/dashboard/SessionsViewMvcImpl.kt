@@ -85,6 +85,7 @@ abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<Sessions
 
     override fun showSessionsView(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
         if (recyclerViewCanBeUpdated()) {
+            // TODO: Here we rebind all sessions while we could only rebind data from specific session which data has been changed
             mAdapter.bindSessions(sessions, sensorThresholds)
             mRecyclerSessions?.visibility = View.VISIBLE
             mEmptyView?.visibility = View.INVISIBLE

@@ -75,15 +75,10 @@ class ActiveSessionMeasurementsRepository {
     }
 
     fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
-        val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, measurementStreamId)
-        var measurementsToBeReplaced = listOf<Measurement>()
+        var measurementsToBeReplaced = measurements
 
         if(measurements.size > MAX_MEASUREMENTS_NUMBER) {
              measurementsToBeReplaced = measurements.takeLast(MAX_MEASUREMENTS_NUMBER)
-        }
-
-        if((lastMeasurementsCount + measurements.size) > MAX_MEASUREMENTS_NUMBER && measurements.size <= MAX_MEASUREMENTS_NUMBER) {
-            measurementsToBeReplaced = measurements
         }
 
         val measurementsDbObjectsToBeReplaced = measurementsToBeReplaced.map { measurement ->
