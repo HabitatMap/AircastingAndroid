@@ -26,8 +26,13 @@ class SettingsViewMvcImpl(
         microphoneSettingsButton?.setOnClickListener {
             onMicrophoneSettingsClicked()
         }
-        val themeChangeBtn = rootView?.theme
-        themeChangeBtn?.setOnClickListener { onThemeTextClicked() }
+
+        val themeChangeBtn = rootView?.theme_change
+        themeChangeBtn?.isChecked = mSettings.isThemeChangeEnabled()
+        themeChangeBtn?.setOnCheckedChangeListener { _, _ ->
+            onToggleThemeChangeEnabled()
+        }
+
         val keepScreenOnSwitch = rootView?.keep_screen_on_switch
         keepScreenOnSwitch?.isChecked = mSettings.isKeepScreenOnEnabled()
         keepScreenOnSwitch?.setOnCheckedChangeListener { _, _ ->
@@ -70,9 +75,9 @@ class SettingsViewMvcImpl(
         versionValueTextView?.text = BuildConfig.VERSION_NAME
     }
 
-    private fun onThemeTextClicked() {
+    private fun onToggleThemeChangeEnabled() {
         for (listener in listeners) {
-            listener.onThemeTextClicked()
+            listener.onToggleThemeChange()
         }
     }
 

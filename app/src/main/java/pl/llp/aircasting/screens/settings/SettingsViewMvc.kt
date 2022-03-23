@@ -15,7 +15,7 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
     interface Listener {
         fun onMyAccountClicked()
         fun onBackendSettingsClicked()
-        fun onThemeTextClicked()
+        fun onToggleThemeChange()
         fun onToggleKeepScreenOnEnabled()
         fun onToggle24hourFormatEnabled()
         fun onToggleCelsiusScaleEnabled()

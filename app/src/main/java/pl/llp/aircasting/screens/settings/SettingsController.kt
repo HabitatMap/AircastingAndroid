@@ -42,8 +42,8 @@ class SettingsController(
         startBackendSettingsDialog()
     }
 
-    override fun onThemeTextClicked() {
-        startThemeDialog()
+    override fun onToggleThemeChange() {
+        mSettings.toggleThemeChangeEnabled()
     }
 
     override fun onToggleKeepScreenOnEnabled() {
@@ -92,10 +92,6 @@ class SettingsController(
     private fun startMicrophoneSettingsDialog() {
         val calibration = mSettings.getCalibrationValue()
         MicrophoneSettingsDialog(fragmentManager, calibration, this).show()
-    }
-
-    private fun startThemeDialog() {
-        ThemeSettingsDialog(fragmentManager, mContext).show()
     }
 
     private fun startBackendSettingsDialog() {
