@@ -50,7 +50,7 @@ class ActiveSessionMeasurementsRepository {
         val lastMeasurementsCount =
             mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
 
-        if (lastMeasurementsCount > MAX_MEASUREMENTS_NUMBER) {
+        if (lastMeasurementsCount > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
                 streamId,
                 sessionId,
@@ -79,8 +79,8 @@ class ActiveSessionMeasurementsRepository {
     ) {
         var measurementsToLoad = measurements
 
-        if (measurements.size > MAX_MEASUREMENTS_NUMBER) {
-            measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_NUMBER)
+        if (measurements.size > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+            measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
         val dbObjectsToLoad = createActiveSessionMeasurementsDBObjects(
