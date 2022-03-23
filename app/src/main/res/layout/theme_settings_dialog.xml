@@ -20,11 +20,11 @@
         app:lineHeight="@dimen/keyline_6" />
 
     <RadioGroup
+        android:id="@+id/radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:id="@+id/radio_group"
         android:orientation="vertical">
 
         <RadioButton
