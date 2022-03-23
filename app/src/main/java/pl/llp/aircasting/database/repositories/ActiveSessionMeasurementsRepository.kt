@@ -77,18 +77,17 @@ class ActiveSessionMeasurementsRepository {
         sessionId: Long,
         measurements: List<Measurement>
     ) {
+        val lastMeasurementsCount = mDatabase.activeSessionsMeasurements()
+            .countBySessionAndStream(sessionId, measurementStreamId)
         var measurementsToLoad = measurements
 
         if (measurements.size > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
-        val dbObjectsToLoad = createActiveSessionMeasurementsDBObjects(
-            measurementsToLoad,
-            measurementStreamId,
-            sessionId
-        )
-        deleteAndInsert(dbObjectsToLoad)
+        if((lastMeasurementsCount + measurements.size) > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+            deleteAndInsert(measurementStreamId, sessionId, measurementsToLoad)
+        } else insertAll(measurementStreamId, sessionId, measurementsToLoad)
     }
 
     private fun deleteAndInsert(
