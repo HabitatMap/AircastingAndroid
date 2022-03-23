@@ -20,38 +20,20 @@ class AppBar {
             rootActivity.setSupportActionBar(mTopAppBar)
 
             mTopAppBar?.setNavigationOnClickListener {
-                    rootActivity.onBackPressed()
+                rootActivity.onBackPressed()
             }
 
-            mReorderSessionsButton = view?.findViewById<ImageView>(R.id.reorder_sessions_button)
+            mReorderSessionsButton = view?.findViewById(R.id.reorder_sessions_button)
             mReorderSessionsButton?.setOnClickListener {
                 onReorderSessionButtonClicked()
             }
 
-            mFinishedReorderingSessionsButton = view?.findViewById(R.id.finished_reordering_session_button)
+            mFinishedReorderingSessionsButton =
+                view?.findViewById(R.id.finished_reordering_session_button)
             mFinishedReorderingSessionsButton?.setOnClickListener {
                 onFinishedReorderingSessionsButtonClicked()
             }
 
-            mReorderSessionsButton = view?.findViewById<ImageView>(R.id.reorder_sessions_button)
-            mReorderSessionsButton?.setOnClickListener {
-                onReorderSessionButtonClicked()
-            }
-
-            mFinishedReorderingSessionsButton = view?.findViewById(R.id.finished_reordering_session_button)
-            mFinishedReorderingSessionsButton?.setOnClickListener {
-                onFinishedReorderingSessionsButtonClicked()
-            }
-
-            mReorderSessionsButton = view?.findViewById<ImageView>(R.id.reorder_sessions_button)
-            mReorderSessionsButton?.setOnClickListener {
-                onReorderSessionButtonClicked()
-            }
-
-            mFinishedReorderingSessionsButton = view?.findViewById(R.id.finished_reordering_session_button)
-            mFinishedReorderingSessionsButton?.setOnClickListener {
-                onFinishedReorderingSessionsButtonClicked()
-            }
         }
 
         fun destroy() {
@@ -60,12 +42,13 @@ class AppBar {
 
         fun adjustMenuVisibility(isFollowingTab: Boolean, followingSessionsNumber: Int = 0) {
             val visibility = if (isFollowingTab && followingSessionsNumber > 1) {
-               View.VISIBLE
+                View.VISIBLE
             } else {
                 View.INVISIBLE
             }
 
-            mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = visibility
+            mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
+                visibility
         }
 
         private fun onReorderSessionButtonClicked() {
