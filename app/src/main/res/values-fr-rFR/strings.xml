@@ -374,6 +374,7 @@
     <string name="light_theme">Thème lumière</string>
     <string name="system_default_recommended">Système par défaut (recommandé)</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="use_dark_theme">Use Dark theme</string>
 
 
 </resources>

@@ -479,6 +479,7 @@
     <string name="light_theme">Light theme</string>
     <string name="system_default_recommended">System Default (Recommended)</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="use_dark_theme">Use Dark theme</string>
 
 
 </resources>
