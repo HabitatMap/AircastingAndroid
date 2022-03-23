@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.settings
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -44,6 +45,10 @@ class SettingsController(
 
     override fun onToggleThemeChange() {
         mSettings.toggleThemeChangeEnabled()
+        if (mSettings.isThemeChangeEnabled()) AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_YES
+        ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
     }
 
     override fun onToggleKeepScreenOnEnabled() {
