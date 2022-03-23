@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/onboarding_lets_start_background"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.05"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
 
     <ImageView
         android:id="@+id/onboarding_get_started_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/onboarding_picture_1"
         android:scaleType="fitStart"
-        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/onboarding_picture_1"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineMiddle"
@@ -42,53 +41,53 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_icon_aircasting_small"
-        app:layout_constraintTop_toTopOf="@id/onboarding_get_started_header"
         app:layout_constraintStart_toStartOf="@id/onboarding_get_started_header"
+        app:layout_constraintTop_toTopOf="@id/onboarding_get_started_header"
         app:tint="@color/aircasting_blue_400" />
 
     <TextView
         android:id="@+id/onboarding_get_started_header"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/onboarding_page1_header"
-        android:textAlignment="center"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:paddingStart="20dp"
         android:paddingTop="20dp"
+        android:text="@string/onboarding_page1_header"
+        android:textAlignment="center"
         android:textSize="@dimen/text_size_xxl"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/onboarding_get_started_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_get_started_description"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle" />
 
     <TextView
         android:id="@+id/onboarding_get_started_description"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
-        android:textAlignment="center"
-        android:text="@string/onboarding_page1_description"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_get_started_header"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/onboarding_page1_description"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/get_started_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/get_started_button"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_get_started_header" />
 
     <Button
         android:id="@+id/get_started_button"
+        style="@style/Widget.Aircasting.OutlinedTextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/get_started"
-        style="@style/Widget.Aircasting.OutlinedTextButton"
-        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_get_started_description"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/get_started"
+        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_get_started_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>
