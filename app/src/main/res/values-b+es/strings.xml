@@ -373,5 +373,8 @@
     <string name="accept_button_onboarding">Acceptar</string>
     <string name="errors_location_background_services_required">Sin usar la ubicación en el permiso de fondo, es posible que la aplicación no funcione correctamente en los dispositivos Android más nuevos.</string>
     <string name="bluetooth_error_permissions">Sin permisos de Bluetooth, no podrá ver los dispositivos disponibles</string>
+    <string name="light_theme">Tema ligero</string>
+    <string name="system_default_recommended">Valor predeterminado del sistema (recomendado)</string>
+    <string name="dark_theme">tema oscuro</string>
 
 </resources>
