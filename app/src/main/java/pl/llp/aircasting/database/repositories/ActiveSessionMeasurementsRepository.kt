@@ -46,14 +46,16 @@ class ActiveSessionMeasurementsRepository {
         mDatabase.activeSessionsMeasurements().deleteAndInsertInTransaction(measurement)
     }
 
-    private fun deleteAndInsertMultipleRows(measurements: List<ActiveSessionMeasurementDBObject>) {
-        mDatabase.activeSessionsMeasurements().deleteAndInsertMultipleMeasurementsInTransaction(measurements)
+    private fun deleteAndInsert(measurementsDBObjects: List<ActiveSessionMeasurementDBObject>) {
+        mDatabase.activeSessionsMeasurements()
+            .deleteAndInsertMultipleMeasurementsInTransaction(measurementsDBObjects)
     }
 
     fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
-        val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
+        val lastMeasurementsCount =
+            mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
 
-        if (lastMeasurementsCount > MAX_MEASUREMENTS_NUMBER ) {
+        if (lastMeasurementsCount > MAX_MEASUREMENTS_NUMBER) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
                 streamId,
                 sessionId,
@@ -70,18 +72,36 @@ class ActiveSessionMeasurementsRepository {
 
     fun deleteBySessionId(sessionId: Long?) {
         sessionId?.let {
-            mDatabase.activeSessionsMeasurements().deleteActiveSessionMeasurementsBySession(sessionId)
+            mDatabase.activeSessionsMeasurements()
+                .deleteActiveSessionMeasurementsBySession(sessionId)
         }
     }
 
-    fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
-        var measurementsToBeReplaced = measurements
+    fun createOrReplaceMultipleRows(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        var measurementsToLoad = measurements
 
-        if(measurements.size > MAX_MEASUREMENTS_NUMBER) {
-             measurementsToBeReplaced = measurements.takeLast(MAX_MEASUREMENTS_NUMBER)
+        if (measurements.size > MAX_MEASUREMENTS_NUMBER) {
+            measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_NUMBER)
         }
 
-        val measurementsDbObjectsToBeReplaced = measurementsToBeReplaced.map { measurement ->
+        val dbObjectsToLoad = createActiveSessionMeasurementsDBObjects(
+            measurementsToLoad,
+            measurementStreamId,
+            sessionId
+        )
+        deleteAndInsert(dbObjectsToLoad)
+    }
+
+    private fun createActiveSessionMeasurementsDBObjects(
+        measurementsToBeLoaded: List<Measurement>,
+        measurementStreamId: Long,
+        sessionId: Long
+    ): List<ActiveSessionMeasurementDBObject> {
+        return measurementsToBeLoaded.map { measurement ->
             ActiveSessionMeasurementDBObject(
                 measurementStreamId,
                 sessionId,
@@ -91,7 +111,6 @@ class ActiveSessionMeasurementsRepository {
                 measurement.latitude
             )
         }
-        deleteAndInsertMultipleRows(measurementsDbObjectsToBeReplaced)
     }
 
     fun loadMeasurementsForStreams(
@@ -99,7 +118,7 @@ class ActiveSessionMeasurementsRepository {
         measurementStreams: List<MeasurementStream>?,
         limit: Int
     ) {
-        var measurements:  List<Measurement> = mutableListOf()
+        var measurements: List<Measurement> = mutableListOf()
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =
@@ -107,7 +126,7 @@ class ActiveSessionMeasurementsRepository {
 
             streamId?.let { streamId ->
                 measurements =
-                   measurementsList(
+                    measurementsList(
                         MeasurementsRepository().getLastMeasurementsForStream(
                             streamId,
                             limit
