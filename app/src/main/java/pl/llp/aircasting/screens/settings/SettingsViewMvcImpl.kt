@@ -10,73 +10,62 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, SettingsViewMvc  {
+class SettingsViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    mSettings: Settings
+) : BaseObservableViewMvc<SettingsViewMvc.Listener>(), SettingsViewMvc  {
 
-    constructor(
-        inflater: LayoutInflater, parent: ViewGroup?,
-        mSettings: Settings
-    ) : super(){
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_settings, parent, false)
-
         val myAccountButton = rootView?.myAccount_Button
         myAccountButton?.setOnClickListener {
             onMyAccountClicked()
         }
-
         val microphoneSettingsButton = rootView?.findViewById<Button>(R.id.microphone_settings_button)
         microphoneSettingsButton?.setOnClickListener {
             onMicrophoneSettingsClicked()
         }
-
         val themeChangeBtn = rootView?.theme
         themeChangeBtn?.setOnClickListener { onThemeTextClicked() }
-
         val keepScreenOnSwitch = rootView?.keep_screen_on_switch
         keepScreenOnSwitch?.isChecked = mSettings.isKeepScreenOnEnabled()
         keepScreenOnSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleKeepScreenOnEnabled()
         }
-
         val use24HourFormatSwitch = rootView?.use_24_hour_format_switch
         use24HourFormatSwitch?.isChecked = mSettings.isUsing24HourFormat()
         use24HourFormatSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleUse24HourFormatEnabled()
         }
-
         val useCelsiusScaleSwitch = rootView?.use_celcius_scale_switch
         useCelsiusScaleSwitch?.isChecked = mSettings.isCelsiusScaleEnabled()
         useCelsiusScaleSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleCelsiusScaleEnabled()
         }
-
         val contributeToCrowdMapSwitch = rootView?.crowd_map_settings_switch
         contributeToCrowdMapSwitch?.isChecked = mSettings.isCrowdMapEnabled()
         contributeToCrowdMapSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleCrowdMapEnabled()
         }
-
         val mapEnabledSwitch = rootView?.map_settings_switch
         mapEnabledSwitch?.isChecked = mSettings.areMapsDisabled()
         mapEnabledSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleMapsEnabled()
         }
-
         val backendSettingsButton = rootView?.findViewById<Button>(R.id.backend_settings_button)
         backendSettingsButton?.setOnClickListener {
             onBackendSettingsClicked()
         }
-
         val clearSDCardButton = rootView?.findViewById<Button>(R.id.clear_sd_card_button)
         clearSDCardButton?.visibility = View.VISIBLE
         clearSDCardButton?.setOnClickListener {
             onClearSDCardClicked()
         }
-
         val yourPrivacyButton = rootView?.findViewById<Button>(R.id.your_privacy_button)
         yourPrivacyButton?.setOnClickListener {
             yourPrivacyClicked()
         }
-
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME
     }
