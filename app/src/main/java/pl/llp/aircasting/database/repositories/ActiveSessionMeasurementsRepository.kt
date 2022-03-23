@@ -46,11 +46,6 @@ class ActiveSessionMeasurementsRepository {
         mDatabase.activeSessionsMeasurements().deleteAndInsertInTransaction(measurement)
     }
 
-    private fun deleteAndInsert(measurementsDBObjects: List<ActiveSessionMeasurementDBObject>) {
-        mDatabase.activeSessionsMeasurements()
-            .deleteAndInsertMultipleMeasurementsInTransaction(measurementsDBObjects)
-    }
-
     fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
         val lastMeasurementsCount =
             mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
@@ -96,21 +91,24 @@ class ActiveSessionMeasurementsRepository {
         deleteAndInsert(dbObjectsToLoad)
     }
 
-    private fun createActiveSessionMeasurementsDBObjects(
-        measurementsToBeLoaded: List<Measurement>,
+    private fun deleteAndInsert(
         measurementStreamId: Long,
-        sessionId: Long
-    ): List<ActiveSessionMeasurementDBObject> {
-        return measurementsToBeLoaded.map { measurement ->
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        val measurementDBObjects = measurements.map { measurement ->
             ActiveSessionMeasurementDBObject(
                 measurementStreamId,
                 sessionId,
                 measurement.value,
                 measurement.time,
-                measurement.longitude,
-                measurement.latitude
+                measurement.latitude,
+                measurement.longitude
             )
         }
+
+        mDatabase.activeSessionsMeasurements()
+            .deleteAndInsertMultipleMeasurementsInTransaction(measurementDBObjects)
     }
 
     fun loadMeasurementsForStreams(
