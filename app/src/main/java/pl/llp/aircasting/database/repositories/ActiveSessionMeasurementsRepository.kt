@@ -9,7 +9,7 @@ import pl.llp.aircasting.models.MeasurementStream
 class ActiveSessionMeasurementsRepository {
     companion object {
         // We get 10 hours/minutes of Measurements for chart, to calculate first hour as full
-        const val MAX_MEASUREMENTS_NUMBER = 60 * 10
+        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 10
     }
 
     private val mDatabase = DatabaseProvider.get()
