@@ -5,13 +5,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import pl.llp.aircasting.R
-import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 
-enum class SessionsTab(val value: Int){
+enum class SessionsTab(val value: Int) {
     FOLLOWING(0),
     MOBILE_ACTIVE(1),
     MOBILE_DORMANT(2),
@@ -22,10 +21,12 @@ enum class SessionsTab(val value: Int){
     }
 }
 
-class DashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)
-    : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class DashboardPagerAdapter(
+    private val mContext: Context,
+    mFragmentManager: FragmentManager
+) : FragmentPagerAdapter(mFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    val fragments = hashMapOf(
+    private val fragments = hashMapOf(
         FOLLOWING_TAB_INDEX to FollowingFragment(),
         MOBILE_ACTIVE_TAB_INDEX to MobileActiveFragment(),
         MOBILE_DORMANT_TAB_INDEX to MobileDormantFragment(),
@@ -38,19 +39,7 @@ class DashboardPagerAdapter(private val mContext: Context, private val mFragment
         val MOBILE_DORMANT_TAB_INDEX = SessionsTab.MOBILE_DORMANT.value
         val FIXED_TAB_INDEX = SessionsTab.FIXED.value
 
-        val TABS_COUNT = 4
-
-        fun tabIndexForSessionType(sessionType: Session.Type, sessionStatus: Session.Status): Int {
-            if (sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.RECORDING) {
-                return MOBILE_ACTIVE_TAB_INDEX
-            }
-
-            if (sessionType == Session.Type.MOBILE && sessionStatus == Session.Status.FINISHED) {
-                return MOBILE_DORMANT_TAB_INDEX
-            }
-
-            return FOLLOWING_TAB_INDEX
-        }
+        const val TABS_COUNT = 4
     }
 
     override fun getCount(): Int {

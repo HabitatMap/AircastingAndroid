@@ -5,12 +5,13 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_dashboard">
 
-    <action android:id="@+id/actionGlobalDashboard"
+    <action
+        android:id="@+id/actionGlobalDashboard"
         app:destination="@+id/navigation_dashboard">
         <argument
             android:name="tabId"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
     </action>
 
     <fragment
@@ -23,13 +24,13 @@
         android:id="@+id/navigation_dashboard"
         android:name="pl.llp.aircasting.screens.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_lets_start" />
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_lets_start"
         android:name="pl.llp.aircasting.screens.lets_start.LetsStartFragment"
         android:label="     "
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_lets_start" />
 
     <fragment
         android:id="@+id/navigation_settings"

@@ -10,22 +10,25 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.AnimatedLoader
-import pl.llp.aircasting.screens.common.BaseViewMvc
 import kotlinx.android.synthetic.main.activity_main.view.*
+import pl.llp.aircasting.R
+import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.database.repositories.SessionsRepository
+import pl.llp.aircasting.lib.AnimatedLoader
+import pl.llp.aircasting.lib.NavigationController
+import pl.llp.aircasting.screens.common.BaseViewMvc
+import pl.llp.aircasting.screens.dashboard.SessionsTab
 
-class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
+class MainViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
     private val rootActivity: AppCompatActivity
+) : BaseViewMvc(), MainViewMvc {
     private val loader: ImageView?
+    private val mSessionRepository = SessionsRepository()
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        rootActivity: AppCompatActivity): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.activity_main, parent, false)
-        this.rootActivity = rootActivity
-
         this.loader = rootView?.loader
     }
 
@@ -41,6 +44,32 @@ class MainViewMvcImpl: BaseViewMvc, MainViewMvc {
         )
         rootActivity.setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        navView.setOnItemSelectedListener { item ->
+
+            when (item.itemId) {
+                R.id.navigation_dashboard -> {
+
+                    DatabaseProvider.runQuery { scope ->
+                        val isMobileActiveSessionExists =
+                            mSessionRepository.mobileActiveSessionExists()
+
+                        DatabaseProvider.backToUIThread(scope) {
+                            if (isMobileActiveSessionExists) NavigationController.goToDashboard(
+                                SessionsTab.MOBILE_ACTIVE.value
+                            ) else NavigationController.goToDashboard(
+                                SessionsTab.FOLLOWING.value
+                            )
+                        }
+
+                    }
+                }
+
+                R.id.navigation_lets_start -> NavigationController.goToLetsStart()
+                R.id.navigation_settings -> NavigationController.goToSettings()
+            }
+            true
+        }
     }
 
     override fun showLoader() {

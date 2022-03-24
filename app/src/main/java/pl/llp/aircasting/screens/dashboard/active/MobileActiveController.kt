@@ -22,8 +22,8 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.models.observers.ActiveSessionsObserver
 import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.screens.dashboard.SessionsController
+import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
@@ -138,11 +138,7 @@ class MobileActiveController(
     }
 
     private fun goToDormantTab() {
-        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
-            Session.Type.MOBILE,
-            Session.Status.FINISHED
-        )
-        NavigationController.goToDashboard(tabId)
+        NavigationController.goToDashboard(SessionsTab.MOBILE_DORMANT.value)
     }
 
     override fun beforeReconnection(session: Session) {
