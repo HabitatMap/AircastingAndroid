@@ -7,6 +7,6 @@ class DashboardController(
 ) : BaseController<DashboardViewMvcImpl>(viewMvc) {
 
     fun onCreate(tabId: Int?) {
-        viewMvc?.goToTab(tabId ?: 0)
+        viewMvc?.goToTab(tabId ?: SessionsTab.FOLLOWING.value)
     }
 }
