@@ -6,47 +6,47 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
+        style="@style/Widget.Aircasting.AppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/keyline_4"
         android:theme="@style/ThemeOverlay.Aircasting.EmptyAppBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:navigationIcon="@drawable/chevron_left"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        style="@style/Widget.Aircasting.AppBar"
-        android:paddingTop="@dimen/keyline_4">
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/chevron_left"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reorder_buttons_group"
             android:layout_width="wrap_content"
-            android:layout_gravity="right"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="right">
 
-        <ImageView
-            android:id="@+id/reorder_sessions_button"
-            style="@style/Widget.AppCompat.ActionButton"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/aircasting_white"
-            app:srcCompat="@drawable/ic_draggable_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/aircasting_grey_700" />
+            <ImageView
+                android:id="@+id/reorder_sessions_button"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/aircasting_white"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_draggable_icon"
+                app:tint="@color/aircasting_grey_700" />
 
             <Button
                 android:id="@+id/finished_reordering_session_button"
+                style="@style/Widget.Aircasting.ExpandedCardButtons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Finished"
-                android:visibility="gone"
-                style="@style/Widget.Aircasting.ExpandedCardButtons"
                 android:textColor="@color/aircasting_blue_400"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.MaterialToolbar>
