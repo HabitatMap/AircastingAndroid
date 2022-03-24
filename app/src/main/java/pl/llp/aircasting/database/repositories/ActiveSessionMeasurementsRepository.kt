@@ -85,7 +85,7 @@ class ActiveSessionMeasurementsRepository {
             measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
-        val measurementsToBePresentInTable = measurementsAlreadyInTable + measurements.size
+        val measurementsToBePresentInTable = measurementsAlreadyInTable + measurementsToLoad.size
 
         if(measurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             deleteAndInsert(measurementStreamId, sessionId, measurementsToLoad)
