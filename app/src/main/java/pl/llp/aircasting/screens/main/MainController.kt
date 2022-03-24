@@ -18,7 +18,6 @@ import pl.llp.aircasting.networking.services.ApiService
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.networking.services.SessionsSyncService
-import pl.llp.aircasting.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.onboarding.OnboardingActivity
@@ -95,11 +94,7 @@ class MainController(
     }
 
     private fun goToDormantTab() {
-        val tabId = DashboardPagerAdapter.tabIndexForSessionType(
-            Session.Type.MOBILE,
-            Session.Status.FINISHED
-        )
-        NavigationController.goToDashboard(tabId)
+        NavigationController.goToDashboard(2)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
