@@ -77,7 +77,7 @@ class ActiveSessionMeasurementsRepository {
         sessionId: Long,
         measurements: List<Measurement>
     ) {
-        val measurementsAlreadyInTable = mDatabase.activeSessionsMeasurements()
+        val numberOfMeasurementsAlreadyInTable = mDatabase.activeSessionsMeasurements()
             .countBySessionAndStream(sessionId, measurementStreamId)
         var measurementsToLoad = measurements
 
@@ -85,9 +85,9 @@ class ActiveSessionMeasurementsRepository {
             measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
-        val measurementsToBePresentInTable = measurementsAlreadyInTable + measurementsToLoad.size
+        val numberOfMeasurementsToBePresentInTable = numberOfMeasurementsAlreadyInTable + measurementsToLoad.size
 
-        if(measurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+        if(numberOfMeasurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             deleteAndInsert(measurementStreamId, sessionId, measurementsToLoad)
         } else insertAll(measurementStreamId, sessionId, measurementsToLoad)
     }
