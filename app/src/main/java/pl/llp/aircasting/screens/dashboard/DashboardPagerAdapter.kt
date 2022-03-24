@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import pl.llp.aircasting.R
-import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.active.MobileActiveFragment
 import pl.llp.aircasting.screens.dashboard.dormant.MobileDormantFragment
 import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
@@ -41,22 +40,6 @@ class DashboardPagerAdapter(
         val FIXED_TAB_INDEX = SessionsTab.FIXED.value
 
         const val TABS_COUNT = 4
-
-        fun tabIndexForSessionType(sessionType: Session.Type, sessionStatus: Session.Status): Int {
-
-            if (sessionType == Session.Type.MOBILE) {
-
-                return when (sessionStatus) {
-                    Session.Status.RECORDING -> MOBILE_ACTIVE_TAB_INDEX
-                    Session.Status.FINISHED -> MOBILE_DORMANT_TAB_INDEX
-
-                    else -> FOLLOWING_TAB_INDEX
-                }
-
-            }
-
-            return FOLLOWING_TAB_INDEX
-        }
     }
 
     override fun getCount(): Int {
