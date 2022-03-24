@@ -9,18 +9,18 @@ import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseViewMvc
 
-class DashboardViewMvcImpl : BaseViewMvc, DashboardViewMvc {
-    protected val mPager: ViewPager?
+open class DashboardViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    fragmentManager: FragmentManager?,
+    adapter: FragmentPagerAdapter,
+    tabsCount: Int
+) : BaseViewMvc(), DashboardViewMvc {
+    private val mPager: ViewPager?
 
-    constructor(
-        inflater: LayoutInflater, parent: ViewGroup?,
-        fragmentManager: FragmentManager?,
-        adapter: FragmentPagerAdapter,
-        tabsCount: Int
-    ): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
         mPager = rootView?.findViewById(R.id.pager)
-
         mPager?.offscreenPageLimit = tabsCount
         fragmentManager?.let { mPager?.adapter = adapter }
         setTabsMargins()
@@ -30,7 +30,7 @@ class DashboardViewMvcImpl : BaseViewMvc, DashboardViewMvc {
         mPager?.currentItem = tabId
     }
 
-    protected fun setTabsMargins() {
+    private fun setTabsMargins() {
         val tabs: TabLayout? = rootView?.findViewById(R.id.tabs)
         val firstTab = tabs?.getChildAt(0)
         val firstTabParams = firstTab?.layoutParams as ViewGroup.MarginLayoutParams
