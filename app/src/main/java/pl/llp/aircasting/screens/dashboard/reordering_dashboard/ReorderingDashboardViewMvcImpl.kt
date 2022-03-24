@@ -9,20 +9,19 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseViewMvc
 import pl.llp.aircasting.screens.dashboard.DashboardViewMvc
 
-class ReorderingDashboardViewMvcImpl: BaseViewMvc, DashboardViewMvc {
+class ReorderingDashboardViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    fragmentManager: FragmentManager?
+) : BaseViewMvc(), DashboardViewMvc {
 
     private val mPager: ViewPager?
 
-    constructor(
-        inflater: LayoutInflater, parent: ViewGroup?,
-        fragmentManager: FragmentManager?
-    ): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
         mPager = rootView?.findViewById(R.id.pager)
-
         mPager?.offscreenPageLimit = ReorderingDashboardPagerAdapter.TABS_COUNT
         fragmentManager?.let { mPager?.adapter = ReorderingDashboardPagerAdapter(context, it) }
-
         setTabsMargins()
     }
 
