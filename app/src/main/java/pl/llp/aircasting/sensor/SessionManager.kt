@@ -206,6 +206,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
         if (session.isFixed()) {
             session.follow()
+            settings.increaseFollowedSessionsNumber()
             fixedSessionUploadService.upload(session)
         }
 
