@@ -12,7 +12,7 @@ class NavigationController {
             mNavController = navController
         }
 
-        fun goToDashboard(tabId: Int = 0) {
+        fun goToDashboard(tabId: Int) {
             val action = MobileNavigationDirections.actionGlobalDashboard(tabId)
             mNavController.navigate(action)
         }
@@ -23,6 +23,10 @@ class NavigationController {
 
         fun goToReorderingDashboard() {
             mNavController.navigate(R.id.navigation_reordering_dashboard)
+        }
+
+        fun goToSettings() {
+            mNavController.navigate(R.id.navigation_settings)
         }
     }
 }
