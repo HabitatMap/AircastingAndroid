@@ -66,10 +66,5 @@ class AppBar {
             mFinishedReorderingSessionsButton?.visibility = View.INVISIBLE
             mReorderSessionsButton?.visibility = View.VISIBLE
         }
-
-        fun showReorderButton() {
-            mReorderSessionsButton?.visibility = View.VISIBLE
-        }
-
     }
 }
