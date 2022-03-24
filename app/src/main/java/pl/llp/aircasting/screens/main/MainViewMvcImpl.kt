@@ -17,6 +17,7 @@ import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.screens.common.BaseViewMvc
+import pl.llp.aircasting.screens.dashboard.SessionsTab
 
 class MainViewMvcImpl(
     inflater: LayoutInflater,
@@ -54,8 +55,10 @@ class MainViewMvcImpl(
                             mSessionRepository.mobileActiveSessionExists()
 
                         DatabaseProvider.backToUIThread(scope) {
-                            if (isMobileActiveSessionExists) NavigationController.goToDashboard(1) else NavigationController.goToDashboard(
-                                0
+                            if (isMobileActiveSessionExists) NavigationController.goToDashboard(
+                                SessionsTab.MOBILE_ACTIVE.value
+                            ) else NavigationController.goToDashboard(
+                                SessionsTab.FOLLOWING.value
                             )
                         }
 

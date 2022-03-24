@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.appbar.MaterialToolbar
 import pl.llp.aircasting.R
+import pl.llp.aircasting.screens.dashboard.SessionsTab
 
 class AppBar {
     companion object {
@@ -57,7 +58,7 @@ class AppBar {
         }
 
         fun onFinishedReorderingSessionsButtonClicked() {
-            NavigationController.goToDashboard(0)
+            NavigationController.goToDashboard(SessionsTab.FOLLOWING.value)
             showFinishedReorderingSessionsButtonClicked()
         }
 

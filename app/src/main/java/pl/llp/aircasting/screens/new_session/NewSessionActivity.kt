@@ -13,6 +13,7 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.common.BaseActivity
+import pl.llp.aircasting.screens.dashboard.SessionsTab
 import javax.inject.Inject
 
 class NewSessionActivity : BaseActivity() {
@@ -38,7 +39,7 @@ class NewSessionActivity : BaseActivity() {
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                         if (it.resultCode == RESULT_OK) {
-                            NavigationController.goToDashboard(1)
+                            NavigationController.goToDashboard(SessionsTab.MOBILE_ACTIVE.value)
                         }
                     }
 
