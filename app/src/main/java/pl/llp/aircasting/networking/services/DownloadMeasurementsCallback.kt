@@ -97,7 +97,6 @@ class DownloadMeasurementsCallback(
         // Because of that when we launch the app after some time of inactivity we have to insert all
         // new measurements for following session to active_measurements_table apart from the basic measurements db table
 
-        // TODO: We need to ask if the first hour is finished and only then upload
         if (session.isFixed() && session.followedAt != null) {
             activeSessionMeasurementsRepository.createOrReplaceMultipleRows(streamId, sessionId, measurements)
         }
