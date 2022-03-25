@@ -138,7 +138,7 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
-                    finalizeReconnection()
+                    finalizeReconnectionWithError()
                     resetTriesNumberWithDelay()
                     return
                 } else {
@@ -148,23 +148,21 @@ class AirBeamReconnector(
                 }
             }
         } else {
-            finalizeReconnection()
+            finalizeReconnectionWithError()
         }
     }
 
-    private fun finalizeReconnection() {
-        mAirBeamDiscoveryService.reset()
+    private fun finalizeReconnectionWithError() {
         mErrorCallback?.invoke()
-        mFinallyCallback?.invoke()
-        unregisterFromEventBus()
+        finalizeReconnection()
     }
 
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
-        cancelReconnection()
+        finalizeReconnection()
     }
 
-    private fun cancelReconnection() {
+    private fun finalizeReconnection() {
         mAirBeamDiscoveryService.reset()
         mFinallyCallback?.invoke()
         unregisterFromEventBus()
