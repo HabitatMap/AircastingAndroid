@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.settings
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -26,11 +27,11 @@ class SettingsController(
     SettingsViewMvc.MicrophoneSettingsDialogListener,
     BaseController<SettingsViewMvcImpl>(viewMvc) {
 
-    fun onStart(){
+    fun onStart() {
         viewMvc?.registerListener(this)
     }
 
-    fun onStop(){
+    fun onStop() {
         viewMvc?.unregisterListener(this)
     }
 
@@ -40,6 +41,14 @@ class SettingsController(
 
     override fun onBackendSettingsClicked() {
         startBackendSettingsDialog()
+    }
+
+    override fun onToggleThemeChange() {
+        mSettings.toggleThemeChangeEnabled()
+        if (mSettings.isThemeChangeEnabled()) AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_YES
+        ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
     }
 
     override fun onToggleKeepScreenOnEnabled() {
@@ -90,7 +99,7 @@ class SettingsController(
         MicrophoneSettingsDialog(fragmentManager, calibration, this).show()
     }
 
-    fun startBackendSettingsDialog(){
+    fun startBackendSettingsDialog() {
         val url = mSettings.getBackendUrl()
         val port = mSettings.getBackendPort()
         BackendSettingsDialog(fragmentManager, url, port, this, mContext).show()

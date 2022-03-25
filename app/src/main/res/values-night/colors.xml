@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <color name="colorBackground" tools:ignore="MissingDefaultResource">#EB292929</color>
+    <color name="colorCardBackground" tools:ignore="MissingDefaultResource">#000000</color>
+    <color name="colorTitle60" tools:ignore="MissingDefaultResource">#99FFFFFF</color>
+    <color name="colorNumber" tools:ignore="MissingDefaultResource">#DEFFFFFF</color>
+    <color name="colorBtnBackground" tools:ignore="MissingDefaultResource">#BB86FC</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="aircasting_blue_400">#00B2EF</color>
+    <color name="aircasting_dark_blue">#3E4374</color>
+    <color name="aircasting_pink">#D81B60</color>
+    <color name="aircasting_red">#E65F5E</color>
+    <color name="aircasting_white">#FFFFFF</color>
+    <color name="aircasting_green">#33C4B2</color>
+    <color name="aircasting_blue_50">#26E0F0FF</color>
+    <color name="aircasting_grey_0">#FAFAFA</color>
+    <color name="aircasting_grey_50">#40000000</color>
+    <color name="aircasting_grey_100">#EAECF2</color>
+    <color name="aircasting_grey_300">#A1A2A6</color>
+    <color name="aircasting_grey_700">#737578</color>
+    <color name="aircasting_black_overlay">#40000000</color>
+
+    <color name="session_color_indicator_low">#96D788</color>
+    <color name="session_color_indicator_low_shadow">#3096D788</color>
+    <color name="session_color_indicator_medium">#FDD760</color>
+    <color name="session_color_indicator_high">#F9A342</color>
+    <color name="session_color_indicator_very_high">#E65F5E</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color">@color/aircasting_grey_100</color>
+
+    <color name="graph_overlay">#40FFFFFF</color>
+    <color name="aircasting_blue_400_transparent">#5000B2EF</color>
+    <color name="did_you_know_box_color">#F4F9FF</color>
+
+    <color name="add_picture_grey">#FAFBFB</color>
+</resources>

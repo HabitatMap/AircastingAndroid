@@ -7,20 +7,21 @@ import pl.llp.aircasting.database.LogoutService
 
 open class Settings(private val mApplication: Application) {
     private val PRIVATE_MODE = 0
-    protected val PREFERENCES_NAME = "preferences"
-    protected val EMAIL_KEY = "email"
-    protected val AUTH_TOKEN_KEY = "auth_token"
-    protected val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
-    protected val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
-    protected val CROWD_MAP_ENABLED_KEY = "crowd_map"
-    protected val CALIBRATION_KEY = "calibration"
-    protected val MAPS_DISABLED_KEY = "maps_disabled"
-    protected val BACKEND_URL_KEY = "backend_url"
-    protected val BACKEND_PORT_KEY = "backend_port"
-    protected val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
-    protected val APP_RESTARTED = "app_restarted"
-    protected val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
-    protected val KEEP_SCREEN_ON_KEY = "keep_screen_on"
+    private val PREFERENCES_NAME = "preferences"
+    private val EMAIL_KEY = "email"
+    private val AUTH_TOKEN_KEY = "auth_token"
+    private val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
+    private val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
+    private val CROWD_MAP_ENABLED_KEY = "crowd_map"
+    private val CALIBRATION_KEY = "calibration"
+    private val MAPS_DISABLED_KEY = "maps_disabled"
+    private val BACKEND_URL_KEY = "backend_url"
+    private val BACKEND_PORT_KEY = "backend_port"
+    private val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
+    private val APP_RESTARTED = "app_restarted"
+    private val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
+    private val THEME_SET_TO_DARK_KEY = "theme_dark"
+    private val KEEP_SCREEN_ON_KEY = "keep_screen_on"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -33,17 +34,15 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_CROWD_MAP_ENABLED = true
     private val DEFAULT_MAPS_DISABLED = false
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
-    protected val DEFAULT_BACKEND_PORT = "80"
+    private val DEFAULT_BACKEND_PORT = "80"
     protected open val DEFAULT_ONBOARDING_DISPLAYED = false
     private val DEFAULT_APP_RESTARTED = false
+    private val DEFAULT_THEME_VALUE = false
     private val DEFAULT_KEEP_SCREEN_ON = false
     private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
 
-    private val sharedPreferences: SharedPreferences
-
-    init {
-        sharedPreferences = mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
-    }
+    private val sharedPreferences: SharedPreferences =
+        mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
 
     fun getAuthToken(): String? {
         return getStringFromSettings(AUTH_TOKEN_KEY)
@@ -59,6 +58,10 @@ open class Settings(private val mApplication: Application) {
 
     fun isUsing24HourFormat(): Boolean {
         return getBooleanFromSettings(USE_24_HOUR_FORMAT_KEY, DEFAULT_USE_24_HOUR_FORMAT)
+    }
+
+    fun isThemeChangeEnabled(): Boolean {
+        return getBooleanFromSettings(THEME_SET_TO_DARK_KEY, DEFAULT_THEME_VALUE)
     }
 
     fun isCelsiusScaleEnabled(): Boolean {
@@ -126,6 +129,11 @@ open class Settings(private val mApplication: Application) {
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
+    }
+
+    fun toggleThemeChangeEnabled() {
+        val enabled = !isThemeChangeEnabled()
+        saveToSettings(THEME_SET_TO_DARK_KEY, enabled)
     }
 
     fun toggleKeepScreenOn() {

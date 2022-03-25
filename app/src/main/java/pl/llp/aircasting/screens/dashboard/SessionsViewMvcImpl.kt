@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.FollowingSessionReorderingTouchHelperCallback
 import pl.llp.aircasting.lib.ItemTouchHelperAdapter
@@ -18,46 +18,40 @@ import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-abstract class SessionsViewMvcImpl<ListenerType>: BaseObservableViewMvc<SessionsViewMvc.Listener>, SessionsViewMvc {
+abstract class SessionsViewMvcImpl<ListenerType>(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager
+) : BaseObservableViewMvc<SessionsViewMvc.Listener>(), SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
 
     protected var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
-    var mDidYouKnowBox: ConstraintLayout? = null
+    var mDidYouKnowBox: MaterialCardView? = null
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager
-    ): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
-
         mEmptyView = rootView?.findViewById(layoutId())
         mRecordSessionButton = rootView?.findViewById(recordNewSessionButtonId())
         mRecordSessionButton?.setOnClickListener {
             onRecordNewSessionClicked()
         }
-
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
-        mRecyclerSessions?.setLayoutManager(LinearLayoutManager(rootView!!.context))
-
+        mRecyclerSessions?.layoutManager = LinearLayoutManager(rootView!!.context)
         mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
         mDidYouKnowBox?.setOnClickListener {
             onDidYouKnowBoxClicked()
         }
-
         mAdapter = buildAdapter(inflater, supportFragmentManager)
-        mRecyclerSessions?.setAdapter(mAdapter)
+        mRecyclerSessions?.adapter = mAdapter
         addTouchHelperToRecyclerView()
-
         if (mAdapter is ItemTouchHelperAdapter) {
             val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
             val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
             itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
         }
-
         setupSwipeToRefreshLayout()
     }
 
