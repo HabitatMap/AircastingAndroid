@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import kotlinx.android.synthetic.main.fragment_settings.view.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
-import kotlinx.android.synthetic.main.fragment_settings.view.*
 
 class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, SettingsViewMvc  {
 
@@ -26,6 +26,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
         val microphoneSettingsButton = rootView?.findViewById<Button>(R.id.microphone_settings_button)
         microphoneSettingsButton?.setOnClickListener {
             onMicrophoneSettingsClicked()
+        }
+
+        val themeChangeBtn = rootView?.theme_change
+        themeChangeBtn?.isChecked = mSettings.isThemeChangeEnabled()
+        themeChangeBtn?.setOnCheckedChangeListener { _, _ ->
+            onToggleThemeChangeEnabled()
         }
 
         val keepScreenOnSwitch = rootView?.keep_screen_on_switch
@@ -76,6 +82,12 @@ class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, Set
 
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME
+    }
+
+    private fun onToggleThemeChangeEnabled() {
+        for (listener in listeners) {
+            listener.onToggleThemeChange()
+        }
     }
 
     private fun onToggleKeepScreenOnEnabled() {

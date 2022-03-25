@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,8 +6,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/aircasting_white">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/myAccount_Button"
@@ -76,10 +74,37 @@
                         android:layout_height="wrap_content"
                         android:text="@string/microphone_settings_description"
                         android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                        app:layout_constraintBottom_toTopOf="@id/separator"
+                        app:layout_constraintBottom_toTopOf="@id/firstSeparator"
                         app:layout_constraintEnd_toEndOf="@id/description_guideline"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/microphone_settings_button" />
+
+                    <View
+                        android:id="@+id/firstSeparator"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/aircasting_grey_100"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/theme"
+                        style="@style/Widget.Aircasting.SettingsButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/use_dark_theme"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/firstSeparator" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/theme_change"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/theme"
+                        app:layout_constraintEnd_toEndOf="@+id/theme"
+                        app:layout_constraintTop_toTopOf="@+id/theme" />
 
                     <View
                         android:id="@+id/separator"
@@ -89,7 +114,7 @@
                         app:layout_constraintBottom_toTopOf="@id/keep_screen_on_button"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/microphone_settings_text_view" />
+                        app:layout_constraintTop_toBottomOf="@id/theme" />
 
                     <TextView
                         android:id="@+id/keep_screen_on_button"

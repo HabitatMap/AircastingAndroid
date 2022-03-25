@@ -5,10 +5,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.SessionsRepository
-import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.events.AirBeamConnectionSuccessfulEvent
-import pl.llp.aircasting.events.AirBeamDiscoveryFailedEvent
-import pl.llp.aircasting.events.SensorDisconnectedEvent
+import pl.llp.aircasting.events.*
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
@@ -141,7 +138,7 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
-                    finalizeReconnection()
+                    finalizeReconnectionWithError()
                     resetTriesNumberWithDelay()
                     return
                 } else {
@@ -151,13 +148,22 @@ class AirBeamReconnector(
                 }
             }
         } else {
-            finalizeReconnection()
+            finalizeReconnectionWithError()
         }
+    }
+
+    private fun finalizeReconnectionWithError() {
+        mErrorCallback?.invoke()
+        finalizeReconnection()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: StopRecordingEvent) {
+        finalizeReconnection()
     }
 
     private fun finalizeReconnection() {
         mAirBeamDiscoveryService.reset()
-        mErrorCallback?.invoke()
         mFinallyCallback?.invoke()
         unregisterFromEventBus()
     }

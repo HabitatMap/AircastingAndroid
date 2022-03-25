@@ -303,7 +303,7 @@ abstract class SessionsController(
                 mActiveSessionsRepository.loadMeasurementsForStreams(
                     it,
                     session.streams,
-                    ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_NUMBER
+                    ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
                 )
             }
         }

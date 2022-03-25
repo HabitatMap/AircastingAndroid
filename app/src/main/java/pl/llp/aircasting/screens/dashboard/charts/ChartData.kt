@@ -25,6 +25,7 @@ class ChartData(
     private var mChartRefreshService = ChartRefreshService(session)
 
     init {
+        // TODO: See if the ChartData instantiates only when following and unfollowing or at some other time as well
         initData()
         calculateAverages()
         calculateTimes()
@@ -37,6 +38,9 @@ class ChartData(
     }
 
     fun refresh(session: Session) {
+        // TODO: This is wrong check. If session started at 9:59 the hour will change on 10:00 -> average will be calculated for one minute
+        // TODO: We should probably have two different hourChanged values: One like this, when we have enough measurements (more than 9 hours)
+        // TODO: And another one with check for elapsed hourChanged (from 9.59 - 10.59), when we have less than 9 hours of measurements
         var hourChanged = mSession.endTime?.hours != session.endTime?.hours
         mSession = session
         mEndTime = mSession.endTime ?: Date()
