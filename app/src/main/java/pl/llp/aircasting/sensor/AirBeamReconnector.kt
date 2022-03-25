@@ -160,6 +160,17 @@ class AirBeamReconnector(
     }
 
     @Subscribe
+    fun onMessageEvent(event: StopRecordingEvent) {
+        cancelReconnection()
+    }
+
+    private fun cancelReconnection() {
+        mAirBeamDiscoveryService.reset()
+        mFinallyCallback?.invoke()
+        unregisterFromEventBus()
+    }
+
+    @Subscribe
     fun onMessageEvent(event: AirBeamDiscoveryFailedEvent) {
         onDiscoveryFailed()
     }
