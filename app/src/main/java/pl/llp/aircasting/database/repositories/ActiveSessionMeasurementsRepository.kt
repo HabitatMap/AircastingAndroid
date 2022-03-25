@@ -9,7 +9,7 @@ import pl.llp.aircasting.models.MeasurementStream
 class ActiveSessionMeasurementsRepository {
     companion object {
         // We get 10 hours/minutes of Measurements for chart, to calculate first hour as full
-        const val MAX_MEASUREMENTS_NUMBER = 60 * 10
+        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 10
     }
 
     private val mDatabase = DatabaseProvider.get()
@@ -46,14 +46,11 @@ class ActiveSessionMeasurementsRepository {
         mDatabase.activeSessionsMeasurements().deleteAndInsertInTransaction(measurement)
     }
 
-    private fun deleteAndInsertMultipleRows(measurements: List<ActiveSessionMeasurementDBObject>) {
-        mDatabase.activeSessionsMeasurements().deleteAndInsertMultipleMeasurementsInTransaction(measurements)
-    }
-
     fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
-        val lastMeasurementsCount = mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
+        val lastMeasurementsCount =
+            mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
 
-        if (lastMeasurementsCount > MAX_MEASUREMENTS_NUMBER ) {
+        if (lastMeasurementsCount > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
                 streamId,
                 sessionId,
@@ -70,28 +67,49 @@ class ActiveSessionMeasurementsRepository {
 
     fun deleteBySessionId(sessionId: Long?) {
         sessionId?.let {
-            mDatabase.activeSessionsMeasurements().deleteActiveSessionMeasurementsBySession(sessionId)
+            mDatabase.activeSessionsMeasurements()
+                .deleteActiveSessionMeasurementsBySession(sessionId)
         }
     }
 
-    fun createOrReplaceMultipleRows(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
-        var measurementsToBeReplaced = measurements
+    fun createOrReplaceMultipleRows(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        val numberOfMeasurementsAlreadyInTable = mDatabase.activeSessionsMeasurements()
+            .countBySessionAndStream(sessionId, measurementStreamId)
+        var measurementsToLoad = measurements
 
-        if(measurements.size > MAX_MEASUREMENTS_NUMBER) {
-             measurementsToBeReplaced = measurements.takeLast(MAX_MEASUREMENTS_NUMBER)
+        if (measurements.size > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+            measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
-        val measurementsDbObjectsToBeReplaced = measurementsToBeReplaced.map { measurement ->
+        val numberOfMeasurementsToBePresentInTable = numberOfMeasurementsAlreadyInTable + measurementsToLoad.size
+
+        if(numberOfMeasurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+            deleteAndInsert(measurementStreamId, sessionId, measurementsToLoad)
+        } else insertAll(measurementStreamId, sessionId, measurementsToLoad)
+    }
+
+    private fun deleteAndInsert(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        val measurementDBObjects = measurements.map { measurement ->
             ActiveSessionMeasurementDBObject(
                 measurementStreamId,
                 sessionId,
                 measurement.value,
                 measurement.time,
-                measurement.longitude,
-                measurement.latitude
+                measurement.latitude,
+                measurement.longitude
             )
         }
-        deleteAndInsertMultipleRows(measurementsDbObjectsToBeReplaced)
+
+        mDatabase.activeSessionsMeasurements()
+            .deleteAndInsertMultipleMeasurementsInTransaction(measurementDBObjects)
     }
 
     fun loadMeasurementsForStreams(
@@ -99,7 +117,7 @@ class ActiveSessionMeasurementsRepository {
         measurementStreams: List<MeasurementStream>?,
         limit: Int
     ) {
-        var measurements:  List<Measurement> = mutableListOf()
+        var measurements: List<Measurement> = mutableListOf()
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =
@@ -107,7 +125,7 @@ class ActiveSessionMeasurementsRepository {
 
             streamId?.let { streamId ->
                 measurements =
-                   measurementsList(
+                    measurementsList(
                         MeasurementsRepository().getLastMeasurementsForStream(
                             streamId,
                             limit
@@ -125,5 +143,4 @@ class ActiveSessionMeasurementsRepository {
             }
         }
     }
-
 }
