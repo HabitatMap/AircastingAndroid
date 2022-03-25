@@ -11,21 +11,20 @@ import pl.llp.aircasting.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.SessionViewMvcImpl
 
-open class FollowingSessionViewMvcImpl:
-    SessionViewMvcImpl<SessionCardListener>,
+open class FollowingSessionViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    supportFragmentManager: FragmentManager
+) :
+    SessionViewMvcImpl<SessionCardListener>(inflater, parent, supportFragmentManager),
     FollowingSessionViewMvc {
 
-    val noMeasurementsIcon: ImageView?
-    val noMeasurementsLabels: View?
+    private val noMeasurementsIcon: ImageView?
+    private val noMeasurementsLabels: View?
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup,
-        supportFragmentManager: FragmentManager
-    ): super(inflater, parent, supportFragmentManager) {
+    init {
         val actionsView = this.rootView?.findViewById<ImageView>(R.id.session_actions_button)
         actionsView?.visibility = View.GONE
-
         noMeasurementsIcon = this.rootView?.findViewById(R.id.session_no_measurements_icon)
         noMeasurementsLabels = this.rootView?.findViewById(R.id.session_no_measurements_labels)
     }
@@ -42,7 +41,7 @@ open class FollowingSessionViewMvcImpl:
     }
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
-        return null;
+        return null
     }
 
     override fun bindMeasurementsTable() {

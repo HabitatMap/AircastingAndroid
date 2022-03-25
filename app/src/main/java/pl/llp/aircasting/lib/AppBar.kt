@@ -17,7 +17,7 @@ class AppBar {
         private var mFinishedReorderingSessionsButton: Button? = null
 
         fun setup(view: View?, rootActivity: AppCompatActivity) {
-            mTopAppBar = view?.findViewById(R.id.topAppBar);
+            mTopAppBar = view?.findViewById(R.id.topAppBar)
             rootActivity.setSupportActionBar(mTopAppBar)
 
             mTopAppBar?.setNavigationOnClickListener {
@@ -42,14 +42,9 @@ class AppBar {
         }
 
         fun adjustMenuVisibility(isFollowingTab: Boolean, followingSessionsNumber: Int = 0) {
-            val visibility = if (isFollowingTab && followingSessionsNumber > 1) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
-            }
+            val visibility = if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.INVISIBLE
 
-            mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
-                visibility
+            mTopAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = visibility
         }
 
         private fun onReorderSessionButtonClicked() {
@@ -71,6 +66,5 @@ class AppBar {
             mFinishedReorderingSessionsButton?.visibility = View.INVISIBLE
             mReorderSessionsButton?.visibility = View.VISIBLE
         }
-
     }
 }
