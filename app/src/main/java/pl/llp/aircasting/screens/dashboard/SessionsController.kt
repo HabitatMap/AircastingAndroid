@@ -16,7 +16,10 @@ import pl.llp.aircasting.events.ExportSessionEvent
 import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.lib.*
+import pl.llp.aircasting.lib.CSVHelper
+import pl.llp.aircasting.lib.NavigationController
+import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.ShareHelper
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -62,7 +65,6 @@ abstract class SessionsController(
         mViewMvc?.showLoader()
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
-        AppBar.adjustMenuVisibility(false)
     }
 
     open fun onPause() {
