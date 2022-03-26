@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.AppBar
-import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.common.BaseFragment
 import javax.inject.Inject
@@ -35,8 +33,4 @@ class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController
         return view.rootView
     }
 
-    override fun onResume() {
-        super.onResume()
-        controller?.onResume()
-    }
 }
