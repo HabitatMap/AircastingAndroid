@@ -58,6 +58,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
                 sessionPresenter!!.session = prepareSession(session, sessionPresenter.expanded)
+                // TODO: Take conditions that ask about refreshing here
                 sessionPresenter.chartData?.refresh(session)
             } else {
                 val sessionPresenter = SessionPresenter(session, sensorThresholds)
