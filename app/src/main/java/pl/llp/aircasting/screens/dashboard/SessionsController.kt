@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.Navigation
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
@@ -17,7 +18,6 @@ import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
 import pl.llp.aircasting.lib.CSVHelper
-import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.ShareHelper
 import pl.llp.aircasting.models.MeasurementStream
@@ -145,7 +145,7 @@ abstract class SessionsController(
     }
 
     override fun onDidYouKnowBoxClicked() {
-        NavigationController.goToLetsStart()
+        mViewMvc?.rootView?.let { Navigation.findNavController(it).navigate(R.id.navigation_lets_start) }
     }
 
     override fun onEditDataPressed(
