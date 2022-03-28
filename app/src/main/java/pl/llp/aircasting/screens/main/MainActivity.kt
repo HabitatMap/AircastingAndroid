@@ -12,12 +12,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import pl.llp.aircasting.lib.DateConverter
-import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
-import pl.llp.aircasting.screens.dashboard.SessionsTab
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
@@ -64,7 +62,7 @@ class MainActivity : BaseActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController: NavController = navHostFragment.navController
-        NavigationController.setup(navController)
+        view?.setupNavController(navController)
         view?.setupBottomNavigationBar(navController)
     }
 
@@ -91,7 +89,7 @@ class MainActivity : BaseActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
 
-        NavigationController.goToDashboard(SessionsTab.FOLLOWING.value)
+        //NavigationController.goToDashboard(SessionsTab.FOLLOWING.value)
         view?.showFinishedReorderingSessionsButtonClicked()
     }
 
