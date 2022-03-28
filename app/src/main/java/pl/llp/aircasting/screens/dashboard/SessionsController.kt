@@ -5,7 +5,6 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.Navigation
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
@@ -142,10 +141,6 @@ abstract class SessionsController(
         mViewMvc?.showLoaderFor(session)
         val finallyCallback = { reloadSession(session) }
         mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
-    }
-
-    override fun onDidYouKnowBoxClicked() {
-        mViewMvc?.rootView?.let { Navigation.findNavController(it).navigate(R.id.navigation_lets_start) }
     }
 
     override fun onEditDataPressed(
