@@ -23,14 +23,18 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SessionsSyncService {
-    private val apiService: ApiService
-    private val errorHandler: ErrorHandler
+class SessionsSyncService private constructor(
+    private val apiService: ApiService,
+    private val errorHandler: ErrorHandler,
     private val settings: Settings
+) {
 
-    private val uploadService: MobileSessionUploadService
-    private val downloadService: SessionDownloadService
-    private val removeOldMeasurementsService: RemoveOldMeasurementsService
+    private val uploadService: MobileSessionUploadService =
+        MobileSessionUploadService(apiService, errorHandler)
+    private val downloadService: SessionDownloadService =
+        SessionDownloadService(apiService, errorHandler)
+    private val removeOldMeasurementsService: RemoveOldMeasurementsService =
+        RemoveOldMeasurementsService()
 
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
@@ -41,16 +45,6 @@ class SessionsSyncService {
     private var triedToSyncBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
 
-
-    private constructor(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings) {
-        this.apiService = apiService
-        this.errorHandler = errorHandler
-        this.settings = settings
-
-        this.uploadService = MobileSessionUploadService(apiService, errorHandler)
-        this.downloadService = SessionDownloadService(apiService, errorHandler)
-        this.removeOldMeasurementsService = RemoveOldMeasurementsService()
-    }
 
     companion object {
         private var mSingleton: SessionsSyncService? = null
