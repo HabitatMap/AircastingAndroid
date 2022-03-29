@@ -15,8 +15,8 @@ android {
         applicationId "pl.llp.aircasting"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 186
-        versionName "2.0.43.experimental"
+        versionCode 184
+        versionName "2.0.41"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "en", "es", "fr"
@@ -143,3 +143,4 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
     androidTestImplementation 'com.nhaarman:mockito-kotlin:1.5.0'
 }
+
