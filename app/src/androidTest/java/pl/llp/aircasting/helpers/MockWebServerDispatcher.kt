@@ -13,7 +13,7 @@ class MockWebServerDispatcher {
                     return config[request.path] ?: MockResponse().setResponseCode(404)
                 }
             }
-            mockWebServer.setDispatcher(dispatcher)
+            mockWebServer.dispatcher = dispatcher
         }
     }
 }
