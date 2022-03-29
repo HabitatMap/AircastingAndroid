@@ -38,11 +38,11 @@ android {
     }
     buildTypes {
         debug {
-            manifestPlaceholders = [crashlyticsCollectionEnabled:"false"]
+            manifestPlaceholders = [crashlyticsCollectionEnabled: "false"]
         }
 
         release {
-            manifestPlaceholders = [crashlyticsCollectionEnabled:"true"]
+            manifestPlaceholders = [crashlyticsCollectionEnabled: "true"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -59,6 +59,10 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    testOptions {
+        animationsDisabled = true
     }
 }
 
