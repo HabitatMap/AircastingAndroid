@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
@@ -22,8 +23,8 @@ class ShareSessionBottomSheet(
     private val mListener: Listener,
     val session: Session,
     private val mContext: Context?
-): BottomSheet() {
-    interface Listener{
+) : BottomSheet() {
+    interface Listener {
         fun onShareLinkPressed(session: Session, sensor: String)
         fun onShareFilePressed(session: Session, emailInput: String)
     }
@@ -102,15 +103,19 @@ class ShareSessionBottomSheet(
 
     private fun showError() {
         emailInputLayout?.error = " "
-        Toast.makeText(mContext, getString(R.string.provided_email_is_not_correct), Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            mContext,
+            getString(R.string.provided_email_is_not_correct),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
-    fun shareLinkPressed(){
+    fun shareLinkPressed() {
         mListener.onShareLinkPressed(session, chosenSensor)
         dismiss()
     }
 
-    private fun setRadioButtonsForChosenSession(){
+    private fun setRadioButtonsForChosenSession() {
         fieldValues.clear()
         val currentSessionStreams = session.activeStreams
         currentSessionStreams.forEach { stream ->
@@ -120,13 +125,20 @@ class ShareSessionBottomSheet(
         chosenSensor = fieldValues[fieldValues.keys.minOrNull()]?.sensorName.toString()
     }
 
-    private fun setRadioButtonProperties(stream: MeasurementStream){
+    private fun setRadioButtonProperties(stream: MeasurementStream) {
         val radioButton = RadioButton(context)
-        val radioButtonPaddingLeft = context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
-        val radioButtonPaddingBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
-        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        val drawable = context?.getDrawable(R.drawable.aircasting_radio_button)
-
+        val radioButtonPaddingLeft =
+            context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
+        val radioButtonPaddingBottom =
+            context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        )
+        val drawable =
+            context?.let { AppCompatResources.getDrawable(it, R.drawable.aircasting_radio_button) }
         radioButton.id = View.generateViewId()
         radioButton.text = stream.detailedType
         radioButton.layoutParams = layoutParams
@@ -134,7 +146,7 @@ class ShareSessionBottomSheet(
         radioButton.gravity = Gravity.TOP
         radioButton.buttonDrawable = drawable
         radioButton.setBackgroundColor(Color.TRANSPARENT)
-        radioButton.setPadding( radioButtonPaddingLeft, 0, 0, radioButtonPaddingBottom)
+        radioButton.setPadding(radioButtonPaddingLeft, 0, 0, radioButtonPaddingBottom)
         radioGroup?.addView(radioButton)
         fieldValues[radioButton.id] = CurrentSessionStreams(stream.sensorName, stream.detailedType)
     }

@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.dashboard.active
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.models.Session
@@ -11,23 +12,22 @@ import pl.llp.aircasting.screens.dashboard.ActiveSessionActionsBottomSheet
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.dashboard.SessionViewMvcImpl
 
-class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>,
+class MobileActiveSessionViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    supportFragmentManager: FragmentManager
+) : SessionViewMvcImpl<MobileActiveSessionViewMvc.Listener>(
+    inflater,
+    parent,
+    supportFragmentManager
+),
     MobileActiveSessionViewMvc,
     MobileActiveSessionViewMvc.DisconnectedViewListener,
-    ActiveSessionActionsBottomSheet.Listener
-{
+    ActiveSessionActionsBottomSheet.Listener {
 
-    private val mDisconnectedView: DisconnectedView
-    private val mSupportFragmentManager: FragmentManager
-
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup,
-        supportFragmentManager: FragmentManager
-    ): super(inflater, parent, supportFragmentManager) {
-        mDisconnectedView = DisconnectedView(context, this.rootView, supportFragmentManager, this)
-        mSupportFragmentManager = supportFragmentManager
-    }
+    private val mDisconnectedView: DisconnectedView =
+        DisconnectedView(context, this.rootView, supportFragmentManager, this)
+    private val mSupportFragmentManager: FragmentManager = supportFragmentManager
 
     override fun showMeasurementsTableValues(): Boolean {
         return true
@@ -36,11 +36,13 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
     override fun showExpandedMeasurementsTableValues() = true
 
     override fun bindCollapsedMeasurementsDesctription() {
-        mMeasurementsDescription?.text = context.getString(R.string.session_last_sec_measurements_description)
+        mMeasurementsDescription?.text =
+            context.getString(R.string.session_last_sec_measurements_description)
     }
 
     override fun bindExpandedMeasurementsDesctription() {
-        mMeasurementsDescription?.text = context.getString(R.string.session_last_sec_measurements_description)
+        mMeasurementsDescription?.text =
+            context.getString(R.string.session_last_sec_measurements_description)
     }
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
@@ -54,8 +56,8 @@ class MobileActiveSessionViewMvcImpl : SessionViewMvcImpl<MobileActiveSessionVie
             mActionsButton.visibility = View.GONE
             mCollapseSessionButton.visibility = View.GONE
             mExpandSessionButton.visibility = View.GONE
-            mSessionCardLayout.background = context.getDrawable(R.drawable.top_border)
-
+            mSessionCardLayout.background =
+                context.let { AppCompatResources.getDrawable(it, R.drawable.top_border) }
             mExpandedSessionView.visibility = View.GONE
         } else {
             mDisconnectedView.hide()

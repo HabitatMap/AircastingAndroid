@@ -6,40 +6,40 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import kotlinx.android.synthetic.main.fragment_refreshed_sessions.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
-import kotlinx.android.synthetic.main.fragment_refreshed_sessions.view.*
 
-class RefreshedSessionsViewMvcImpl: BaseObservableViewMvc<RefreshedSessionsViewMvc.Listener>, RefreshedSessionsViewMvc {
+class RefreshedSessionsViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    success: Boolean
+) : BaseObservableViewMvc<RefreshedSessionsViewMvc.Listener>(), RefreshedSessionsViewMvc {
     private val mHeader: TextView?
     private val mDescription: TextView?
     private val mIcon: ImageView?
     private val mPrimaryButton: Button?
     private val mCancelButton: Button?
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        success: Boolean
-    ): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_refreshed_sessions, parent, false)
         mHeader = this.rootView?.refreshed_sessions_header
         mDescription = this.rootView?.refreshed_sessions_description
         mIcon = this.rootView?.icon
         mPrimaryButton = this.rootView?.primary_button
         mCancelButton = this.rootView?.cancel_button
-
         if (success) {
             mHeader?.text = context.getString(R.string.refreshed_sessions_header_successful)
-            mDescription?.text = context.getString(R.string.refreshed_sessions_description_successful)
-            mIcon?.setImageDrawable(context.getDrawable(R.drawable.connected))
-
+            mDescription?.text =
+                context.getString(R.string.refreshed_sessions_description_successful)
+            mIcon?.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.connected))
             mPrimaryButton?.setOnClickListener { onContinueClicked() }
             mCancelButton?.visibility = View.GONE
         } else {
             mHeader?.text = context.getString(R.string.refreshed_sessions_header_error)
             mDescription?.text = context.getString(R.string.refreshed_sessions_description_error)
-            mIcon?.setImageDrawable(context.getDrawable(R.drawable.error_icon))
+            mIcon?.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.error_icon))
 
             mPrimaryButton?.text = context.getString(R.string.refreshed_sessions_retry)
             mPrimaryButton?.setOnClickListener { onRetryClicked() }
