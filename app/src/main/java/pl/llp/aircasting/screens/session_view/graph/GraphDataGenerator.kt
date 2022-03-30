@@ -9,7 +9,6 @@ import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.services.AveragingService
 import java.util.*
-import kotlin.collections.ArrayList
 
 class GraphDataGenerator(
     private val mContext: Context
@@ -100,10 +99,10 @@ class GraphDataGenerator(
     private fun buildAverageEntry(date: Date, hasNote: Boolean = false): Entry {
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
-        if (hasNote) {
-            return Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
+        return if (hasNote) {
+            Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
         } else {
-            return Entry(time, value)
+            Entry(time, value)
         }
     }
 
