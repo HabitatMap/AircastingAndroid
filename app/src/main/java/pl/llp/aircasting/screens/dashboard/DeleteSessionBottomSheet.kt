@@ -3,13 +3,14 @@ package pl.llp.aircasting.screens.dashboard
 import android.view.View
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
+import kotlinx.android.synthetic.main.delete_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.common.BottomSheet
-import kotlinx.android.synthetic.main.delete_session_bottom_sheet.view.*
 
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheet() {
@@ -104,7 +105,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         val radioButtonPaddingTopBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val drawable = context?.getDrawable(R.drawable.checkbox_selector)
+        val drawable = context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_background_selector) }
 
         layoutParams.leftMargin = 10
         layoutParams.bottomMargin = 10
@@ -113,7 +114,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
 
         checkbox.layoutParams = layoutParams
         checkbox.buttonDrawable = drawable
-        checkbox.background = context?.getDrawable(R.drawable.checkbox_background_selector)
+        checkbox.background = context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_background_selector) }
 
         TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
 
