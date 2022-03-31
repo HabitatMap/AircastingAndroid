@@ -93,7 +93,7 @@ class NewSessionController(
 
     fun onResume() {
         if (settings.isKeepScreenOnEnabled()) mContextActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        AppBar.adjustMenuVisibility(false)
+        adjustMenuVisibility(mContextActivity, false)
     }
 
     fun onStop() {
@@ -103,7 +103,6 @@ class NewSessionController(
 
     private fun goToFirstStep() {
         if (mContextActivity.areLocationServicesOn()) {
-            println("i'm here")
             startNewSessionWizard()
         } else {
             wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)

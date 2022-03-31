@@ -2,15 +2,16 @@ package pl.llp.aircasting.screens.sync
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
+import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.AppBar
-import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.common.BaseActivity
@@ -75,7 +76,15 @@ class SyncActivity: BaseActivity() {
         controller?.onCreate()
 
         setContentView(view.rootView)
-        AppBar.setup(view.rootView, this)
+        setupAppBar()
+    }
+
+    private fun setupAppBar() {
+        setSupportActionBar(topAppBar)
+        topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.INVISIBLE
+        topAppBar?.setNavigationOnClickListener {
+            onBackPressed()
+        }
     }
 
     override fun onStop() {

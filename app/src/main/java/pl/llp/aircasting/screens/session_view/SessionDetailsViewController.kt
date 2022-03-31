@@ -17,8 +17,8 @@ import pl.llp.aircasting.events.NewMeasurementEvent
 import pl.llp.aircasting.events.NoteDeletedEvent
 import pl.llp.aircasting.events.NoteEditedEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.adjustMenuVisibility
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.models.*
@@ -76,7 +76,7 @@ abstract class SessionDetailsViewController(
 
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
-        AppBar.adjustMenuVisibility(false)
+        adjustMenuVisibility(rootActivity, false)
         if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
