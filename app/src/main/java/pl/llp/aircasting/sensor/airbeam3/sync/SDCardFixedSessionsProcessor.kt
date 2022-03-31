@@ -15,8 +15,6 @@ class SDCardFixedSessionsProcessor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mMeasurementsRepository: MeasurementsRepository
 ) {
-    private val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
-
     fun run(deviceId: String) {
         val file = mCSVFileFactory.getFixedFile()
 
@@ -44,9 +42,6 @@ class SDCardFixedSessionsProcessor(
         csvSession.streams.forEach { (headerKey, csvMeasurements) ->
             processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
         }
-
-        //finishSession(sessionId, session)
-        mProcessedSessionsIds.add(sessionId)
     }
 
     private fun processMeasurements(
