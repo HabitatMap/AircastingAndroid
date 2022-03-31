@@ -86,10 +86,27 @@ open class SensorsModule {
 
     @Provides
     @Singleton
+    fun providesSDCardFixedSessionsProcessor(
+        csvFileFactory: SDCardCSVFileFactory,
+        csvIterator: SDCardCSVIterator,
+        sessionsRepository: SessionsRepository,
+        measurementStreamsRepository: MeasurementStreamsRepository,
+        measurementsRepository: MeasurementsRepository
+    ): SDCardFixedSessionsProcessor = SDCardFixedSessionsProcessor(
+        csvFileFactory,
+        csvIterator,
+        sessionsRepository,
+        measurementStreamsRepository,
+        measurementsRepository
+    )
+
+    @Provides
+    @Singleton
     fun providesSDCardSyncService(
         sdCardDownloadService: SDCardDownloadService,
         sdCardCSVFileChecker: SDCardCSVFileChecker,
         sdCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+        sdCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
         sessionsSyncService: SessionsSyncService?,
         sdCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
         errorHandler: ErrorHandler
@@ -97,6 +114,7 @@ open class SensorsModule {
         sdCardDownloadService,
         sdCardCSVFileChecker,
         sdCardMobileSessionsProcessor,
+        sdCardFixedSessionsProcessor,
         sessionsSyncService,
         sdCardUploadFixedMeasurementsService,
         errorHandler
