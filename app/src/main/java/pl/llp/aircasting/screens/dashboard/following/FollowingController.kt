@@ -3,9 +3,8 @@ package pl.llp.aircasting.screens.dashboard.following
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import pl.llp.aircasting.database.DatabaseProvider
-import pl.llp.aircasting.lib.AppBar
-import pl.llp.aircasting.lib.NavigationController
+import androidx.navigation.Navigation
+import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -15,22 +14,17 @@ import pl.llp.aircasting.screens.dashboard.SessionsController
 import pl.llp.aircasting.screens.dashboard.SessionsViewMvc
 
 class FollowingController(
-    mRootActivity: FragmentActivity?,
+    private val mRootActivity: FragmentActivity?,
     mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    private val mSettings: Settings,
+    mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val mContext: Context?
+    mContext: Context?
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
-
-    override fun onResume() {
-        super.onResume()
-        AppBar.adjustMenuVisibility(true, mSettings.getFollowedSessionsNumber())
-    }
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
@@ -41,7 +35,10 @@ class FollowingController(
     }
 
     override fun onRecordNewSessionClicked() {
-        NavigationController.goToLetsStart()
+        mRootActivity?.let {
+            Navigation.findNavController(it, R.id.nav_host_fragment)
+                .navigate(R.id.navigation_lets_start)
+        }
     }
 
     override fun onEditSessionClicked(session: Session) {

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,15 +36,11 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
         mEmptyView = rootView?.findViewById(layoutId())
         mRecordSessionButton = rootView?.findViewById(recordNewSessionButtonId())
-        mRecordSessionButton?.setOnClickListener {
-            onRecordNewSessionClicked()
-        }
+        mRecordSessionButton?.setOnClickListener { Navigation.findNavController(it).navigate(R.id.navigation_lets_start) }
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
         mRecyclerSessions?.layoutManager = LinearLayoutManager(rootView!!.context)
         mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
-        mDidYouKnowBox?.setOnClickListener {
-            onDidYouKnowBoxClicked()
-        }
+        mDidYouKnowBox?.setOnClickListener { Navigation.findNavController(it).navigate(R.id.navigation_lets_start) }
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.adapter = mAdapter
         addTouchHelperToRecyclerView()
@@ -65,7 +62,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<ListenerType>
 
-    private fun onRecordNewSessionClicked() {
+   private fun onRecordNewSessionClicked() {
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
         }
@@ -135,7 +132,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     private fun setupSwipeToRefreshLayout() {
-        mSwipeRefreshLayout = rootView?.findViewById<SwipeRefreshLayout>(R.id.refresh_sessions)
+        mSwipeRefreshLayout = rootView?.findViewById(R.id.refresh_sessions)
         mSwipeRefreshLayout?.let { layout ->
             layout.setColorSchemeResources(R.color.aircasting_blue_400)
             layout.setOnRefreshListener {
@@ -171,12 +168,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
             listener.onGraphButtonClicked(session, measurementStream?.sensorName)
-        }
-    }
-
-    fun onDidYouKnowBoxClicked() {
-        for (listener in listeners) {
-            listener.onDidYouKnowBoxClicked()
         }
     }
 }

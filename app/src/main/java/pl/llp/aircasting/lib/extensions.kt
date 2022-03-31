@@ -1,11 +1,17 @@
 package pl.llp.aircasting.lib
 
+import android.app.Activity
 import android.content.Context
 import android.location.LocationManager
 import android.os.Build
+import android.text.TextUtils
+import android.util.Patterns
+import android.view.View
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
+import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 
@@ -38,4 +44,19 @@ fun TextView.setAppearance(context: Context, res: Int) {
     } else {
         setTextAppearance(res)
     }
+}
+
+fun adjustMenuVisibility(
+    activity: Activity,
+    isFollowingTab: Boolean,
+    followingSessionsNumber: Int = 0
+) {
+    val visibility =
+        if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.INVISIBLE
+    activity.topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
+        visibility
+}
+
+fun isValidEmail(target: String): Boolean {
+    return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches())
 }

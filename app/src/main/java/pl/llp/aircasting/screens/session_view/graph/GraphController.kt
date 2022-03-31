@@ -14,7 +14,6 @@ import pl.llp.aircasting.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.events.StandaloneModeEvent
-import pl.llp.aircasting.lib.AppBar
 import pl.llp.aircasting.sensor.AirBeamReconnector
 
 

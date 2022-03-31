@@ -3,13 +3,15 @@ package pl.llp.aircasting.screens.main
 import android.content.IntentFilter
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.MobileNavigationDirections
+import pl.llp.aircasting.R
 import pl.llp.aircasting.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.ResultCodes
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
@@ -95,7 +97,10 @@ class MainController(
     }
 
     private fun goToDormantTab() {
-        NavigationController.goToDashboard(SessionsTab.MOBILE_DORMANT.value)
+        val action =
+            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_DORMANT.value)
+        Navigation.findNavController(rootActivity, R.id.nav_host_fragment)
+            .navigate(action)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

@@ -13,7 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.ValidationHelper
+import pl.llp.aircasting.lib.isValidEmail
 import pl.llp.aircasting.lib.setAppearance
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
@@ -92,7 +92,7 @@ class ShareSessionBottomSheet(
     private fun shareFilePressed() {
         val emailInput = emailInput?.text.toString().trim()
         if (!session.locationless) {
-            if (!ValidationHelper.isValidEmail(emailInput)) {
+            if (!isValidEmail(emailInput)) {
                 showError()
                 return
             }
