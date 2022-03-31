@@ -4,45 +4,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_lets_start.view.*
+import pl.llp.aircasting.R
+import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class LetsStartViewMvcImpl: BaseObservableViewMvc<LetsStartViewMvc.Listener>,
+class LetsStartViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager
+) : BaseObservableViewMvc<LetsStartViewMvc.Listener>(),
     LetsStartViewMvc {
-    private val mSupportFragmentManager: FragmentManager
+    private val mSupportFragmentManager: FragmentManager = supportFragmentManager
     private var mDialog: MoreInfoBottomSheet? = null
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager
-    ): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
-        mSupportFragmentManager = supportFragmentManager
-
         val fixedSessionCard = rootView?.fixed_session_start_card
         fixedSessionCard?.setOnClickListener {
             onFixedSessionSelected()
         }
-
         val mobileSessionCard = rootView?.mobile_session_start_card
         mobileSessionCard?.setOnClickListener {
             onMobileSessionSelected()
         }
-
         val moreInfoButton = rootView?.new_session_more_info
         moreInfoButton?.setOnClickListener {
             onMoreInfoClicked()
         }
-
         val syncCard = rootView?.sync_card
         syncCard?.visibility = View.VISIBLE
         syncCard?.setOnClickListener {
             onSyncSelected()
         }
-
     }
 
     override fun showMoreInfoDialog() {
