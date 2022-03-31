@@ -7,11 +7,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
-import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.PermissionsManager
@@ -41,9 +42,7 @@ class NewSessionActivity : BaseActivity() {
             rootActivity?.let {
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                        if (it.resultCode == RESULT_OK) {
-                            NavigationController.goToDashboard(SessionsTab.MOBILE_ACTIVE.value)
-                        }
+                        if (it.resultCode == RESULT_OK) goToActiveTab(rootActivity)
                     }
 
                 when (sessionType) {
@@ -64,6 +63,16 @@ class NewSessionActivity : BaseActivity() {
                 }
 
             }
+        }
+
+        private fun goToActiveTab(rootActivity: FragmentActivity?) {
+            val navHostFragment =
+                rootActivity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
+            val action = MobileNavigationDirections.actionGlobalDashboard(
+                SessionsTab.MOBILE_ACTIVE.value
+            )
+            navHostFragment.navController.navigate(action)
         }
     }
 
@@ -95,7 +104,8 @@ class NewSessionActivity : BaseActivity() {
 
     private fun setupAppBar() {
         setSupportActionBar(topAppBar)
-        topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.INVISIBLE
+        topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
+            View.INVISIBLE
         topAppBar?.setNavigationOnClickListener {
             onBackPressed()
         }

@@ -17,7 +17,6 @@ import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
 import pl.llp.aircasting.lib.CSVHelper
-import pl.llp.aircasting.lib.NavigationController
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.ShareHelper
 import pl.llp.aircasting.models.MeasurementStream
@@ -142,10 +141,6 @@ abstract class SessionsController(
         mViewMvc?.showLoaderFor(session)
         val finallyCallback = { reloadSession(session) }
         mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
-    }
-
-    override fun onDidYouKnowBoxClicked() {
-        NavigationController.goToLetsStart()
     }
 
     override fun onEditDataPressed(
