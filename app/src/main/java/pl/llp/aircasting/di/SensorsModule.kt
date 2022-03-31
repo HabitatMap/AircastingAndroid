@@ -70,7 +70,7 @@ open class SensorsModule {
 
     @Provides
     @Singleton
-    fun providesSDCardMeasurementsCreator(
+    fun providesSDCardMobileSessionsProcessor(
         csvFileFactory: SDCardCSVFileFactory,
         csvIterator: SDCardCSVIterator,
         sessionsRepository: SessionsRepository,
