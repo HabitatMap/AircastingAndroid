@@ -20,6 +20,7 @@ class SDCardSyncService(
     private val mSDCardDownloadService: SDCardDownloadService,
     private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+    private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
     private val mSessionsSyncService: SessionsSyncService?,
     private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
     private val mErrorHandler: ErrorHandler
@@ -69,11 +70,20 @@ class SDCardSyncService(
         if (mSDCardCSVFileChecker.run(steps)) {
             clearSDCard(airBeamConnector)
             saveMobileMeasurementsLocally()
+            saveFixedMeasurementsLocally()
         } else {
             // fatal error, we can't proceed with sync
             handleError(SDCardDownloadedFileCorrupted())
             cleanup()
         }
+    }
+
+    private fun saveFixedMeasurementsLocally() {
+        val deviceItem = mDeviceItem ?: return
+
+        Log.d(TAG, "Processing fixed sessions")
+
+        mSDCardFixedSessionsProcessor.run(deviceItem.id)
     }
 
     private fun handleError(exception: BaseException) {
