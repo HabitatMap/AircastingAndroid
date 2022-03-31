@@ -64,7 +64,7 @@ interface MeasurementDao {
     fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId AND time < :time ORDER BY time DESC LIMIT :limit")
-    fun getLastMeasurementsForStreamFromHour(streamId: Long, limit: Int, time: Date): List<MeasurementDBObject?>
+    fun getLastMeasurementsForStreamStartingFromHour(streamId: Long, limit: Int, time: Date): List<MeasurementDBObject?>
 
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId AND averaging_frequency=:averagingFrequency ORDER BY time DESC LIMIT :limit")
     fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?>
