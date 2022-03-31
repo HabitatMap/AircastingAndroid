@@ -42,7 +42,10 @@ class NewSessionActivity : BaseActivity() {
             rootActivity?.let {
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                        if (it.resultCode == RESULT_OK) goToActiveTab(rootActivity)
+                        if (it.resultCode == RESULT_OK) when (sessionType) {
+                            Session.Type.FIXED -> goToFollowingTab(rootActivity)
+                            Session.Type.MOBILE -> goToActiveTab(rootActivity)
+                        }
                     }
 
                 when (sessionType) {
@@ -68,9 +71,17 @@ class NewSessionActivity : BaseActivity() {
         private fun goToActiveTab(rootActivity: FragmentActivity?) {
             val navHostFragment =
                 rootActivity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-
             val action = MobileNavigationDirections.actionGlobalDashboard(
                 SessionsTab.MOBILE_ACTIVE.value
+            )
+            navHostFragment.navController.navigate(action)
+        }
+
+        private fun goToFollowingTab(rootActivity: FragmentActivity?) {
+            val navHostFragment =
+                rootActivity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val action = MobileNavigationDirections.actionGlobalDashboard(
+                SessionsTab.FOLLOWING.value
             )
             navHostFragment.navController.navigate(action)
         }
