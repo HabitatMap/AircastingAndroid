@@ -1,10 +1,12 @@
 package pl.llp.aircasting.database.repositories
 
+import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
+import java.util.*
 
 class ActiveSessionMeasurementsRepository {
     companion object {
@@ -126,9 +128,10 @@ class ActiveSessionMeasurementsRepository {
             streamId?.let { streamId ->
                 measurements =
                     measurementsList(
-                        MeasurementsRepository().getLastMeasurementsForStream(
+                        MeasurementsRepository().getLastMeasurementsForStreamFromHour(
                             streamId,
-                            limit
+                            limit,
+                            DateUtils.round(Date(), Calendar.HOUR_OF_DAY)
                         )
                     )
                 insertAll(streamId, sessionId, measurements)
