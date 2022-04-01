@@ -3,11 +3,16 @@ package pl.llp.aircasting.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.MapsInitializer.Renderer
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
@@ -16,14 +21,17 @@ import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
+import pl.llp.aircasting.screens.dashboard.SessionsTab
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     private var controller: MainController? = null
     private var view: MainViewMvcImpl? = null
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
+
+    private lateinit var mNavController: NavController
 
     companion object {
         fun start(context: Context?) {
@@ -49,6 +57,9 @@ class MainActivity : BaseActivity() {
         LocationHelper.setup(applicationContext)
         DateConverter.setup(settings)
         TemperatureConverter.setup(settings)
+
+        //New map renderer
+        MapsInitializer.initialize(applicationContext, Renderer.LATEST, this)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)
@@ -61,9 +72,10 @@ class MainActivity : BaseActivity() {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController: NavController = navHostFragment.navController
-        view?.setupNavController(navController)
-        view?.setupBottomNavigationBar(navController)
+        mNavController = navHostFragment.navController
+
+        view?.setupNavController(mNavController)
+        view?.setupBottomNavigationBar(mNavController)
     }
 
     override fun onResume() {
@@ -86,11 +98,18 @@ class MainActivity : BaseActivity() {
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
 
+    override fun onMapsSdkInitialized(renderer: Renderer) {
+        when (renderer) {
+            Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")
+            Renderer.LEGACY -> Log.d("MapsDemo", "The legacy version of the renderer is used.")
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
 
-        //NavigationController.goToDashboard(SessionsTab.FOLLOWING.value)
+        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
+        mNavController.navigate(action)
         view?.showFinishedReorderingSessionsButtonClicked()
     }
-
 }
