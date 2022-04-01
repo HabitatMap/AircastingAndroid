@@ -40,7 +40,8 @@ class SDCardSyncService(
         3. Check downloaded files (checks if downloaded file has at least 80% of expected lines and if there is at most 20% of corrupted lines)
         4. Save mobile measurements for disconnected sessions in the Android local db. Create sessions named "Imported from SD card" for every UUID that doesn't match with existing session.
         5. Send mobile measurements to the backend using SessionsSyncService.
-        6. Send fixed measurements to the backend - in this case backend knows more than Android app, so we are sending all of them and backend decides what to do with them.
+        6. Save filtered fixed measurements in the Android local db.
+        7. Send fixed measurements to the backend
 
      */
 
