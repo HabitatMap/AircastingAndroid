@@ -96,11 +96,10 @@ class SDCardSyncService(
 
         Log.d(TAG, "Processing mobile sessions")
 
-        mSDCardMobileSessionsProcessor.run(deviceItem.id,
-            onFinishCallback = { processedSessionsIds ->
-                sendMobileMeasurementsToBackend(processedSessionsIds)
-            }
-        )
+        mSDCardMobileSessionsProcessor.run(deviceItem.id
+        ) { processedSessionsIds ->
+            sendMobileMeasurementsToBackend(processedSessionsIds)
+        }
     }
 
     private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
