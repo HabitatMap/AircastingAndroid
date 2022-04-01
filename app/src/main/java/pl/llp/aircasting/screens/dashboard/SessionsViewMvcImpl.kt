@@ -84,7 +84,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
             mAdapter.bindSessions(sessions, sensorThresholds)
             mRecyclerSessions?.visibility = View.VISIBLE
             mEmptyView?.visibility = View.INVISIBLE
-            mDidYouKnowBox?.visibility = View.GONE
+            mDidYouKnowBox?.visibility = View.INVISIBLE
         }
     }
 
@@ -94,7 +94,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         if (showDidYouKnowBox()) {
             mDidYouKnowBox?.visibility = View.VISIBLE
         } else {
-            mDidYouKnowBox?.visibility = View.GONE
+            mDidYouKnowBox?.visibility = View.INVISIBLE
         }
     }
 
