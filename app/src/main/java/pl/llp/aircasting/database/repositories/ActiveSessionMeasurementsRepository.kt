@@ -1,15 +1,17 @@
 package pl.llp.aircasting.database.repositories
 
+import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
+import java.util.*
 
 class ActiveSessionMeasurementsRepository {
     companion object {
-        // We get 10 hours/minutes of Measurements for chart, to calculate first hour as full
-        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 10
+        // We get 9 hours/minutes of Measurements for chart (we display 9 dots)
+        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 9
     }
 
     private val mDatabase = DatabaseProvider.get()
@@ -123,12 +125,15 @@ class ActiveSessionMeasurementsRepository {
             val streamId =
                 MeasurementStreamsRepository().getId(sessionId, measurementStream)
 
+            val lastFinishedHour = DateUtils.round(Date(), Calendar.HOUR_OF_DAY)
+
             streamId?.let { streamId ->
                 measurements =
                     measurementsList(
-                        MeasurementsRepository().getLastMeasurementsForStream(
+                        MeasurementsRepository().getLastMeasurementsForStreamStartingFromHour(
                             streamId,
-                            limit
+                            limit,
+                            lastFinishedHour
                         )
                     )
                 insertAll(streamId, sessionId, measurements)
