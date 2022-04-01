@@ -127,11 +127,6 @@ class MainViewMvcImpl(
         mReorderSessionsButton?.visibility = View.VISIBLE
     }
 
-    fun goToDormantTab() {
-        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_DORMANT.value)
-        mNavController?.navigate(action)
-    }
-
     override fun showLoader() {
         AnimatedLoader(loader).start()
         loader?.visibility = View.VISIBLE
