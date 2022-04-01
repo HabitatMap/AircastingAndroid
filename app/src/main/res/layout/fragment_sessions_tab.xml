@@ -58,6 +58,7 @@
         android:background="@color/did_you_know_box_color"
         android:clickable="true"
         android:elevation="5dp"
+        android:visibility="invisible"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
