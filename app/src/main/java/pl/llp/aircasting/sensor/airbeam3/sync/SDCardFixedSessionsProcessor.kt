@@ -77,9 +77,6 @@ class SDCardFixedSessionsProcessor(
         val measurementsInDB =
             mMeasurementsRepository.getBySessionIdAndStreamId(sessionId, measurementStreamId)
 
-        // TODO: Should check if all the measurements not present in table
-        // TODO: There should be a faster way of dealing with it
-        // e.g.: binary search in sorted list
         return csvMeasurements.filter { csvMeasurement ->
             isNotAlreadyInDB(csvMeasurement, measurementsInDB)
         }
@@ -89,10 +86,8 @@ class SDCardFixedSessionsProcessor(
         csvMeasurement: CSVMeasurement,
         measurementsInDB: List<MeasurementDBObject?>
     ): Boolean {
-        var noDuplicate = true
-        for (measurement in measurementsInDB) {
-            if (measurement?.time == csvMeasurement.time) noDuplicate = false
-        }
-        return noDuplicate
+        val index = measurementsInDB.binarySearch{it?.time!!.compareTo(csvMeasurement.time)}
+
+        return index < 0
     }
 }
