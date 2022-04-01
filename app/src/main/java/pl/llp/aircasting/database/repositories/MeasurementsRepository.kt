@@ -91,4 +91,8 @@ class MeasurementsRepository {
         return mDatabase.measurements().getByStreamId(streamId)
     }
 
+    fun getLastMeasurementsForStreamStartingFromHour(streamId: Long, limit: Int, time: Date): List<MeasurementDBObject?> {
+        return mDatabase.measurements().getLastMeasurementsForStreamStartingFromHour(streamId, limit, time)
+    }
+
 }
