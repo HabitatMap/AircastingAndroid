@@ -41,15 +41,9 @@ class SDCardFixedSessionsProcessor(
         csvSession ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
-        val session: Session?
-        val sessionId: Long
+        val sessionId: Long? = dbSession?.id
 
-        if (dbSession == null) {
-            session = csvSession.toSession(deviceId) ?: return
-            sessionId = mSessionsRepository.insert(session)
-        } else {
-            sessionId = dbSession.id
-        }
+        sessionId ?: return
 
         csvSession.streams.forEach { (headerKey, csvMeasurements) ->
             processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
