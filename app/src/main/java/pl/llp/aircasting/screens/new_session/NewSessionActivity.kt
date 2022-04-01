@@ -2,10 +2,8 @@ package pl.llp.aircasting.screens.new_session
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.app_bar.*
@@ -13,6 +11,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
+import pl.llp.aircasting.lib.adjustMenuVisibility
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.PermissionsManager
@@ -115,8 +114,7 @@ class NewSessionActivity : BaseActivity() {
 
     private fun setupAppBar() {
         setSupportActionBar(topAppBar)
-        topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
-            View.INVISIBLE
+        adjustMenuVisibility(this, false)
         topAppBar?.setNavigationOnClickListener {
             onBackPressed()
         }

@@ -3,12 +3,10 @@ package pl.llp.aircasting.screens.session_view.graph
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
-import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.adjustMenuVisibility
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
@@ -70,7 +68,7 @@ class GraphActivity: BaseActivity() {
 
     private fun setupAppBar() {
         setSupportActionBar(topAppBar)
-        topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility = View.INVISIBLE
+        adjustMenuVisibility(this, false)
         topAppBar?.setNavigationOnClickListener {
             onBackPressed()
         }
