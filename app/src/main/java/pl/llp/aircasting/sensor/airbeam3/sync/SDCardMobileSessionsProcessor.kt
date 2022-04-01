@@ -24,16 +24,8 @@ class SDCardMobileSessionsProcessor(
     override val file: File
         get() = mCSVFileFactory.getMobileFile()
 
-        DatabaseProvider.runQuery {
-            mSDCardCSVIterator.run(file).forEach { csvSession ->
-                processSession(deviceId, csvSession)
-            }
-
-            onFinishCallback.invoke(mProcessedSessionsIds)
-        }
-    }
-
-    private fun processSession(deviceId: String, csvSession: CSVSession?) {
+    // TODO: Discuss with someone how to derive base implementation of the method in SDCardSessionsProcessor
+    override fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
