@@ -25,7 +25,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     supportFragmentManager: FragmentManager
 ) : BaseObservableViewMvc<SessionsViewMvc.Listener>(), SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
-
     protected var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
@@ -36,11 +35,13 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
         mEmptyView = rootView?.findViewById(layoutId())
         mRecordSessionButton = rootView?.findViewById(recordNewSessionButtonId())
-        mRecordSessionButton?.setOnClickListener { Navigation.findNavController(it).navigate(R.id.navigation_lets_start) }
+        mRecordSessionButton?.setOnClickListener { onRecordNewSessionClicked() }
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
-        mRecyclerSessions?.layoutManager = LinearLayoutManager(rootView!!.context)
+        mRecyclerSessions?.layoutManager = LinearLayoutManager(rootView?.context)
         mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
-        mDidYouKnowBox?.setOnClickListener { Navigation.findNavController(it).navigate(R.id.navigation_lets_start) }
+        mDidYouKnowBox?.setOnClickListener {
+            Navigation.findNavController(it).navigate(R.id.navigation_lets_start)
+        }
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.adapter = mAdapter
         addTouchHelperToRecyclerView()
@@ -62,7 +63,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<ListenerType>
 
-   private fun onRecordNewSessionClicked() {
+    private fun onRecordNewSessionClicked() {
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
         }
@@ -74,13 +75,16 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
     }
 
-    override fun showSessionsView(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
+    override fun showSessionsView(
+        sessions: List<Session>,
+        sensorThresholds: HashMap<String, SensorThreshold>
+    ) {
         if (recyclerViewCanBeUpdated()) {
             // TODO: Here we rebind all sessions while we could only rebind data from specific session which data has been changed
             mAdapter.bindSessions(sessions, sensorThresholds)
             mRecyclerSessions?.visibility = View.VISIBLE
             mEmptyView?.visibility = View.INVISIBLE
-            mDidYouKnowBox?.visibility = View.GONE
+            mDidYouKnowBox?.visibility = View.INVISIBLE
         }
     }
 
@@ -90,7 +94,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         if (showDidYouKnowBox()) {
             mDidYouKnowBox?.visibility = View.VISIBLE
         } else {
-            mDidYouKnowBox?.visibility = View.GONE
+            mDidYouKnowBox?.visibility = View.INVISIBLE
         }
     }
 

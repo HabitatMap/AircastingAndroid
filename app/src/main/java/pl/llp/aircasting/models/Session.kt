@@ -148,7 +148,7 @@ class Session(
         DISCONNECTED(2);
 
         companion object {
-            fun fromInt(value: Int) = Status.values().first { it.value == value }
+            fun fromInt(value: Int) = values().first { it.value == value }
         }
     }
 

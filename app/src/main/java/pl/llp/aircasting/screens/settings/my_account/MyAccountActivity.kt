@@ -3,10 +3,8 @@ package pl.llp.aircasting.screens.settings.my_account
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.app_bar.*
-import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.adjustMenuVisibility
 import pl.llp.aircasting.screens.common.BaseActivity
 
 class MyAccountActivity : BaseActivity() {
@@ -34,8 +32,7 @@ class MyAccountActivity : BaseActivity() {
 
     private fun setupAppBar() {
         setSupportActionBar(topAppBar)
-        topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
-            View.INVISIBLE
+        adjustMenuVisibility(this, false)
         topAppBar?.setNavigationOnClickListener {
             onBackPressed()
         }

@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.adjustMenuVisibility
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.models.observers.ActiveSessionsObserver
@@ -18,13 +19,18 @@ class FollowingController(
     mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     mContext: Context?
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 
     private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    override fun onResume() {
+        super.onResume()
+        mRootActivity?.let { adjustMenuVisibility(it, true, mSettings.getFollowedSessionsNumber()) }
+    }
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
