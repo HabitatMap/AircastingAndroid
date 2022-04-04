@@ -24,12 +24,8 @@ class ChartRefreshService {
         mLastRefreshTime = System.currentTimeMillis()
     }
 
-    fun shouldBeRefreshed(): Boolean {
-        return when (mSession?.type) {
-            Session.Type.MOBILE -> mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
-            Session.Type.FIXED -> (Date().minutes == 0) || (timeFromLastRefresh() >= mRefreshFrequency)
-            else -> mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
-        }
+    fun isTimeToRefresh(): Boolean {
+        return mLastRefreshTime == null || (timeFromLastRefresh() >= mRefreshFrequency)
     }
 
     private fun timeFromLastRefresh(): Long {
