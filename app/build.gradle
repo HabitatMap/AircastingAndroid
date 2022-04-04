@@ -102,7 +102,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.3"
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.opencsv:opencsv:4.6'
@@ -111,9 +111,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     // for Google Places API
-    implementation('com.google.android.libraries.places:places:2.5.0')
+    implementation('com.google.android.libraries.places:places:2.6.0')
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.auto.value:auto-value-annotations:1.6.3'
+    implementation 'com.google.auto.value:auto-value-annotations:1.9'
 
     // for Firebase Crashlytics and Test Lab
     implementation platform('com.google.firebase:firebase-bom:28.2.0')
