@@ -1,6 +1,7 @@
 package pl.llp.aircasting.sensor
 
 import android.content.Context
+import android.os.Build
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.database.DatabaseProvider
@@ -34,7 +35,8 @@ class AirBeamReconnector(
     private val RECONNECTION_TRIES_MAX = 15
     private val RECONNECTION_TRIES_INTERVAL = 15000L // 15s between reconnection tries
 
-    private val RECONNECTION_TRIES_RESET_DELAY = RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
+    private val RECONNECTION_TRIES_RESET_DELAY =
+        RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
     // greater than interval between tries so we don't trigger another try after we successfully reconnected
 
     fun registerListener(listener: Listener) {
@@ -47,7 +49,12 @@ class AirBeamReconnector(
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
-    fun reconnect(session: Session, deviceItem: DeviceItem?, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
+    fun reconnect(
+        session: Session,
+        deviceItem: DeviceItem?,
+        errorCallback: () -> Unit,
+        finallyCallback: () -> Unit
+    ) {
         EventBus.getDefault().safeRegister(this)
 
         if (mReconnectionTriesNumber != null) {
@@ -81,7 +88,11 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) return
         mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1
-        reconnect(session, deviceItem, { mListener?.errorCallback() }, { mListener?.finallyCallback(session) })
+        reconnect(
+            session,
+            deviceItem,
+            { mListener?.errorCallback() },
+            { mListener?.finallyCallback(session) })
     }
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
@@ -93,7 +104,7 @@ class AirBeamReconnector(
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
             if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
-                reconnect(mSession!!, null,  mErrorCallback!!, mFinallyCallback!!)
+                reconnect(mSession!!, null, mErrorCallback!!, mFinallyCallback!!)
             }
         } else {
             mFinallyCallback?.invoke()
@@ -102,7 +113,9 @@ class AirBeamReconnector(
 
     private fun sendDisconnectedEvent(session: Session) {
         val deviceId = session.deviceId
-        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid)) }
+        deviceId?.let {
+            EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid))
+        }
     }
 
     private fun updateSessionStatus(session: Session?, status: Session.Status) {
@@ -144,7 +157,11 @@ class AirBeamReconnector(
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
                     Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-                    reconnect(event.deviceItem.id, event.deviceItem)
+
+                    if (isSDKBiggerThanS()) {
+                        // TODO - Maybe sending user to disable Battery optimization or ..?
+
+                    } else reconnect(event.deviceItem.id, event.deviceItem)
                 }
             }
         } else {
@@ -174,6 +191,10 @@ class AirBeamReconnector(
     }
 
     private fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
+    }
+
+    private fun isSDKBiggerThanS(): Boolean {
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.S
     }
 }
