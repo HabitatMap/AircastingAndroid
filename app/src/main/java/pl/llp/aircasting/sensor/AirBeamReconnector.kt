@@ -195,6 +195,6 @@ class AirBeamReconnector(
     }
 
     private fun isSDKBiggerThanS(): Boolean {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.S
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     }
 }
