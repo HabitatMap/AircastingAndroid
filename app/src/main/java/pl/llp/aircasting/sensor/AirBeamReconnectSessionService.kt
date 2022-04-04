@@ -11,10 +11,15 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
     companion object {
-        val SESSION_UUID_KEY = "inputExtraSessionUUID"
-        val SESSION_DEVICE_ID_KEY = "inputExtraSessionDeviceId"
+        private const val SESSION_UUID_KEY = "inputExtraSessionUUID"
+        private const val SESSION_DEVICE_ID_KEY = "inputExtraSessionDeviceId"
 
-        fun startService(context: Context, sessionDeviceId: String?, deviceItem: DeviceItem?, sessionUUID: String? = null) {
+        fun startService(
+            context: Context,
+            sessionDeviceId: String?,
+            deviceItem: DeviceItem?,
+            sessionUUID: String? = null
+        ) {
             val startIntent = Intent(context, AirBeamReconnectSessionService::class.java)
 
             startIntent.putExtra(SESSION_DEVICE_ID_KEY, sessionDeviceId)

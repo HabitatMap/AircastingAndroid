@@ -27,7 +27,7 @@ class AirBeamReconnector(
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
-    private var mListener: AirBeamReconnector.Listener? = null
+    private var mListener: Listener? = null
 
     private var mStandaloneMode = AtomicBoolean(false)
     var mReconnectionTriesNumber: Int? = null
@@ -37,7 +37,7 @@ class AirBeamReconnector(
     private val RECONNECTION_TRIES_RESET_DELAY = RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
     // greater than interval between tries so we don't trigger another try after we successfully reconnected
 
-    fun registerListener(listener: AirBeamReconnector.Listener) {
+    fun registerListener(listener: Listener) {
         mListener = listener
     }
 
