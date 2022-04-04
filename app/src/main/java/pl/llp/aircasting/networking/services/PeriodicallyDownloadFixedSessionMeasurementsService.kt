@@ -1,14 +1,13 @@
 package pl.llp.aircasting.networking.services
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.responses.SessionWithMeasurementsResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import retrofit2.Call
-
 
 class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
     private val sessionsRepository = SessionsRepository()
@@ -37,7 +36,6 @@ class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
         private var call: Call<SessionWithMeasurementsResponse>? = null
-
 
         override fun run() {
             try {
@@ -69,8 +67,10 @@ class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService
 
         private fun downloadMeasurements(sessionId: Long, session: Session) {
             GlobalScope.launch(Dispatchers.IO) {
-                call =
-                    downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(sessionId, session)
+                call = downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(
+                    sessionId,
+                    session
+                )
             }
         }
     }

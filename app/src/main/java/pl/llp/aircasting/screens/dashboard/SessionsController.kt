@@ -179,7 +179,6 @@ abstract class SessionsController(
         CSVGenerationService(session, context!!, CSVHelper(), mErrorHandler).start()
     }
 
-
     override fun onEditSessionClicked(session: Session) {
         if (!ConnectivityManager.isConnected(context)) {
             Toast.makeText(
