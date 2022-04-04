@@ -56,6 +56,10 @@ class MeasurementsRepository {
         return mDatabase.measurements().getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
     }
 
+    fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?> {
+        return mDatabase.measurements().getBySessionIdAndStreamId(sessionId, measurementStreamId)
+    }
+
     fun deleteMeasurementsOlderThan(
         streamId: Long,
         lastExpectedMeasurementTime: Date

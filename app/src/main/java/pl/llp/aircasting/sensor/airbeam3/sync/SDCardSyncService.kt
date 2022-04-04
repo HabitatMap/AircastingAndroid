@@ -20,6 +20,7 @@ class SDCardSyncService(
     private val mSDCardDownloadService: SDCardDownloadService,
     private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+    private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
     private val mSessionsSyncService: SessionsSyncService?,
     private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
     private val mErrorHandler: ErrorHandler
@@ -39,7 +40,8 @@ class SDCardSyncService(
         3. Check downloaded files (checks if downloaded file has at least 80% of expected lines and if there is at most 20% of corrupted lines)
         4. Save mobile measurements for disconnected sessions in the Android local db. Create sessions named "Imported from SD card" for every UUID that doesn't match with existing session.
         5. Send mobile measurements to the backend using SessionsSyncService.
-        6. Send fixed measurements to the backend - in this case backend knows more than Android app, so we are sending all of them and backend decides what to do with them.
+        6. Save filtered fixed measurements in the Android local db.
+        7. Send fixed measurements to the backend
 
      */
 
@@ -69,11 +71,20 @@ class SDCardSyncService(
         if (mSDCardCSVFileChecker.run(steps)) {
             clearSDCard(airBeamConnector)
             saveMobileMeasurementsLocally()
+            saveFixedMeasurementsLocally()
         } else {
             // fatal error, we can't proceed with sync
             handleError(SDCardDownloadedFileCorrupted())
             cleanup()
         }
+    }
+
+    private fun saveFixedMeasurementsLocally() {
+        val deviceItem = mDeviceItem ?: return
+
+        Log.d(TAG, "Processing fixed sessions")
+
+        mSDCardFixedSessionsProcessor.run(deviceItem.id)
     }
 
     private fun handleError(exception: BaseException) {
@@ -85,11 +96,10 @@ class SDCardSyncService(
 
         Log.d(TAG, "Processing mobile sessions")
 
-        mSDCardMobileSessionsProcessor.run(deviceItem.id,
-            onFinishCallback = { processedSessionsIds ->
-                sendMobileMeasurementsToBackend(processedSessionsIds)
-            }
-        )
+        mSDCardMobileSessionsProcessor.run(deviceItem.id
+        ) { processedSessionsIds ->
+            sendMobileMeasurementsToBackend(processedSessionsIds)
+        }
     }
 
     private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
