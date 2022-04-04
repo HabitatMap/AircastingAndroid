@@ -67,8 +67,7 @@ class SDCardFixedSessionsProcessor(
         csvMeasurement: CSVMeasurement,
         measurementsInDB: List<MeasurementDBObject?>
     ): Boolean {
-        val index = measurementsInDB.binarySearch{it?.time!!.compareTo(csvMeasurement.time)}
-
+        val index = measurementsInDB.binarySearch{it?.time?.compareTo(csvMeasurement.time) ?: -1}
         return index < 0
     }
 }
