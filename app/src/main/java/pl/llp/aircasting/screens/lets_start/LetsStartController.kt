@@ -1,15 +1,16 @@
 package pl.llp.aircasting.screens.lets_start
 
 import android.content.Context
-import pl.llp.aircasting.exceptions.ErrorHandler
 import androidx.fragment.app.FragmentActivity
 import pl.llp.aircasting.R
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.isAPIVersionLessThanNMR1
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.screens.common.BaseController
-import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.screens.sync.SyncActivity
+import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 
 
 class LetsStartController(
@@ -46,7 +47,7 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N_MR1) {
+        if (isAPIVersionLessThanNMR1()) {
             mRootActivity?.supportFragmentManager?.let { fragmentManager ->
                 SyncUnavailableDialog(
                     fragmentManager

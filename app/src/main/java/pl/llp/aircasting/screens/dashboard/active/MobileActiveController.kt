@@ -17,6 +17,7 @@ import pl.llp.aircasting.events.NoteCreatedEvent
 import pl.llp.aircasting.events.StandaloneModeEvent
 import pl.llp.aircasting.events.StopRecordingEvent
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.isAPIVersionLessThanNMR1
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
@@ -90,7 +91,7 @@ class MobileActiveController(
     }
 
     override fun onDisconnectSessionClicked(session: Session) {
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N_MR1) {
+        if (isAPIVersionLessThanNMR1()) {
             SyncUnavailableDialog(this.fragmentManager)
                 .show()
         } else {

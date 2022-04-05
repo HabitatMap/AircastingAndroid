@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import pl.llp.aircasting.lib.isSDKVersionBiggerThanQ
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.NewSessionViewMvc
 import pl.llp.aircasting.screens.new_session.TurnOnWifiDialog
@@ -90,11 +90,11 @@ class FixedSessionDetailsController(
             scanForNetworks()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (isSDKVersionBiggerThanQ()) {
             val intent = Intent(Settings.Panel.ACTION_WIFI)
             startForResult?.launch(intent)
         } else {
-            mWifiManager?.setWifiEnabled(true)
+            mWifiManager?.wifiState
             scanForNetworks()
         }
     }
