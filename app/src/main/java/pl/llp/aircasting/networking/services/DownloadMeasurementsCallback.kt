@@ -58,7 +58,7 @@ class DownloadMeasurementsCallback(
                             streamResponses.forEach { streamResponse ->
                                 saveStreamData(streamResponse)
                             }
-                            updateSessionEndTime(body?.end_time)
+                            updateSessionEndTime(body.end_time)
                         } catch( e: SQLiteConstraintException) {
                             errorHandler.handle(DBInsertException(e))
                         }
