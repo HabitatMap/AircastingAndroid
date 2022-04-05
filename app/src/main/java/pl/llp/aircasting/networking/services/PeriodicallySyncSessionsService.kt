@@ -33,10 +33,9 @@ class PeriodicallySyncSessionsService(
         var paused = false
         private var call: Call<SyncResponse>? = null
 
-
         override fun run() {
             try {
-                while (!isInterrupted && settings.getAreThereSessionsToRemove() == true) {
+                while (!isInterrupted && settings.getAreThereSessionsToRemove()) {
                     syncSessions()
                     sleep(POLL_INTERVAL)
 
