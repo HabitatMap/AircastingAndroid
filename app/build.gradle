@@ -69,6 +69,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
 
     def androidX_version = "1.4.1"
+    def work_version = "2.7.1"
+
     implementation "androidx.appcompat:appcompat:$androidX_version"
     implementation "androidx.fragment:fragment-ktx:$androidX_version"
     implementation 'androidx.activity:activity-ktx:1.4.0'
@@ -78,6 +80,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     // for complex recycler views
