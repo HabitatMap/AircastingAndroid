@@ -126,8 +126,6 @@ class SessionManager(
     fun onStart() {
         registerToEventBus()
 
-        // we only want to do this after a crash/restart becuase MainActivity can be destroyed when the app is in the background
-        // https://stackoverflow.com/questions/59648644/foreground-service-content-intent-not-resuming-the-app-but-relaunching-it
         if (settings.appRestarted()) {
             updateMobileSessions()
             settings.setAppNotRestarted()
