@@ -394,11 +394,5 @@ class NewSessionController(
         }
     }
 
-    private fun isSDKVersionBiggerThanS(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    }
 
-    private fun isSDKVersionBiggerThanQ(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-    }
 }
