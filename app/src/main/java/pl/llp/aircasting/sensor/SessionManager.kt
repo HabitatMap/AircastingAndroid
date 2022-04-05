@@ -3,13 +3,15 @@ package pl.llp.aircasting.sensor
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.widget.Toast
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.*
 import pl.llp.aircasting.events.*
 import pl.llp.aircasting.exceptions.DBInsertException
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.services.AveragingService
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.location.LocationHelper
@@ -19,9 +21,7 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.*
 import pl.llp.aircasting.services.AveragingBackgroundService
 import pl.llp.aircasting.services.AveragingPreviousMeasurementsBackgroundService
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.services.AveragingService
 
 class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
     private val errorHandler = ErrorHandler(mContext)
@@ -29,11 +29,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
-    private val fixedSessionDownloadMeasurementsService = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
-    private val periodicallySyncSessionsService = PeriodicallySyncSessionsService(settings, sessionsSyncService)
+    private val fixedSessionDownloadMeasurementsService =
+        PeriodicallyDownloadFixedSessionMeasurementsService(mContext, apiService, errorHandler)
+    private val periodicallySyncSessionsService =
+        PeriodicallySyncSessionsService(settings, sessionsSyncService)
     private var averagingBackgroundService: AveragingBackgroundService? = null
     private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? = null
-    private val sessionsRespository = SessionsRepository()
+    private val sessionsRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
     private val activeSessionMeasurementsRepository = ActiveSessionMeasurementsRepository()
@@ -156,8 +158,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun updateMobileSessions() {
         DatabaseProvider.runQuery {
-            sessionsRespository.disconnectMobileBluetoothSessions()
-            sessionsRespository.finishMobileMicSessions()
+            sessionsRepository.disconnectMobileBluetoothSessions()
+            sessionsRepository.finishMobileMicSessions()
         }
     }
 
@@ -183,7 +185,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         val deviceId = event.deviceId ?: return
 
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getMobileActiveSessionIdByDeviceId(deviceId)
+            val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId)
             sessionId?.let {
                 try {
                     val measurementStreamId =
@@ -211,7 +213,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
 
         DatabaseProvider.runQuery {
-            DBsessionId = sessionsRespository.insert(session)
+            DBsessionId = sessionsRepository.insert(session)
             if (session.isMobile()) {
                 DBsessionId?.let {
                     val averagingService = AveragingService.get(it)
@@ -231,11 +233,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun stopRecording(uuid: String) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
-            val session = sessionsRespository.loadSessionAndMeasurementsByUUID(uuid)
+            val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
+            val session = sessionsRepository.loadSessionAndMeasurementsByUUID(uuid)
             session?.let {
                 it.stopRecording()
-                sessionsRespository.update(it)
+                sessionsRepository.update(it)
                 activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
                 sessionsSyncService.sync()
                 averagingBackgroundService?.stop()
@@ -247,7 +249,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun startStandaloneMode(uuid: String) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
+            val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
             averagingBackgroundService?.stop()
             averagingPreviousMeasurementsBackgroundService?.stop()
             AveragingService.destroy(sessionId)
@@ -256,7 +258,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun disconnectSession(deviceId: String) {
         DatabaseProvider.runQuery {
-            sessionsRespository.disconnectSession(deviceId)
+            sessionsRepository.disconnectSession(deviceId)
         }
     }
 
@@ -266,7 +268,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         session.tags = event.tags
         sessionUpdateService.update(session) {
             DatabaseProvider.runQuery {
-                sessionsRespository.update(session)
+                sessionsRepository.update(session)
             }
         }
     }
@@ -284,7 +286,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteSession(sessionUUID: String) {
         DatabaseProvider.runQuery {
             settings.setDeletingSessionsInProgress(true)
-            sessionsRespository.markForRemoval(listOf(sessionUUID))
+            sessionsRepository.markForRemoval(listOf(sessionUUID))
             settings.setSessionsToRemove(true)
             settings.setDeletingSessionsInProgress(false)
         }
@@ -299,14 +301,14 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?, callback: () -> Unit) {
         mCallback = callback
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
+            val sessionId = sessionsRepository.getSessionIdByUUID(session.uuid)
             measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
             mCallback?.invoke()
         }
     }
 
     private fun updateSession(session: Session) {
-        val reloadedSession = sessionsRespository.loadSessionForUpload(session.uuid)
+        val reloadedSession = sessionsRepository.loadSessionForUpload(session.uuid)
 
         if (reloadedSession != null) {
             sessionUpdateService.update(reloadedSession) {
@@ -324,7 +326,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun addNote(event: NoteCreatedEvent) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+            val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
             sessionId?.let{
                 noteRepository.insert(sessionId, event.note)
             }
@@ -334,7 +336,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun editNote(event: NoteEditedEvent) {
         DatabaseProvider.runQuery {
             event.session?.let {
-                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+                val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.update(sessionId, event.note)
                 }
@@ -346,7 +348,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun deleteNote(event: NoteDeletedEvent) {
         DatabaseProvider.runQuery {
             event.session?.let {
-                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+                val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.delete(sessionId, event.note)
                 }
