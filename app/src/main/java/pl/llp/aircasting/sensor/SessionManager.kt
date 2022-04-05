@@ -23,7 +23,11 @@ import pl.llp.aircasting.services.AveragingBackgroundService
 import pl.llp.aircasting.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.services.AveragingService
 
-class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
+class SessionManager(
+    private val mContext: Context,
+    apiService: ApiService,
+    private val settings: Settings
+) {
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
@@ -136,13 +140,13 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         unregisterFromEventBus()
     }
 
-    fun onAppToForeground() {
+    private fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
         sessionsSyncService.resume()
         periodicallySyncSessionsService.resume()
     }
 
-    fun onAppToBackground() {
+    private fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
         sessionsSyncService.pause()
         periodicallySyncSessionsService.pause()
@@ -200,7 +204,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     private fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        var DBsessionId: Long? = null
+        var DBsessionId: Long?
 
         EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
@@ -341,7 +345,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.update(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let { session -> updateSession(session) }
+            if (event.session?.endTime != null) updateSession(event.session)
         }
     }
 
@@ -353,9 +357,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.delete(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let {
-                    session -> updateSession(session)
-            }
+            if (event.session?.endTime != null) updateSession(event.session)
         }
     }
 }
