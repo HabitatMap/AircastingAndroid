@@ -75,13 +75,14 @@ class GraphDataGenerator(
             entries.add(buildAverageEntry(date))
         }
 
+        entries.sortBy { it.x }
+
         val range = (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
         for (entry in entries) {
             if (entry.icon != null) {
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
             }
         }
-
         return Result(entries, midnightPoints, noteRanges)
     }
 
