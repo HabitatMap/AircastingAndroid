@@ -107,12 +107,11 @@ class MainController(
     }
 
     fun showBatteryOptimizationHelperDialog() {
-        val dialog = BatteryAlertDialog(
+        BatteryAlertDialog(
             mFragmentManager,
             rootActivity.getString(R.string.running_background),
             rootActivity.getString(R.string.battery_desc)
-        )
-        dialog.show()
+        ).show()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
