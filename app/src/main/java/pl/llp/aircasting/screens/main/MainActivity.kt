@@ -3,6 +3,8 @@ package pl.llp.aircasting.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -12,21 +14,22 @@ import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.lib.TemperatureConverter
+import pl.llp.aircasting.lib.isIgnoringBatteryOptimizations
+import pl.llp.aircasting.lib.isSDKVersionBiggerThanM
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
-import pl.llp.aircasting.screens.dashboard.SessionsTab
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     private var controller: MainController? = null
     private var view: MainViewMvcImpl? = null
+    private var isBackButtonPressed = false
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -63,7 +66,8 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)
-        controller = MainController(this, view!!, settings, apiServiceFactory)
+        controller =
+            MainController(this, view!!, settings, supportFragmentManager, apiServiceFactory)
 
         controller?.onCreate()
 
@@ -106,10 +110,17 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (isBackButtonPressed) {
+            super.onBackPressed()
+            return
+        }
+        isBackButtonPressed = true
 
-        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-        mNavController.navigate(action)
-        view?.showFinishedReorderingSessionsButtonClicked()
+        // show explanation about background task and let the user disable the battery optimization
+        if (isSDKVersionBiggerThanM() && !isIgnoringBatteryOptimizations(applicationContext)) controller?.showBatteryOptimizationHelperDialog()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            isBackButtonPressed = false
+        }, 2000)
     }
 }
