@@ -1,11 +1,16 @@
 package pl.llp.aircasting.sensor
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.*
+import pl.llp.aircasting.lib.isIgnoringBatteryOptimizations
+import pl.llp.aircasting.lib.isSDKVersionBiggerThanM
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
@@ -27,7 +32,7 @@ class AirBeamReconnector(
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
-    private var mListener: AirBeamReconnector.Listener? = null
+    private var mListener: Listener? = null
 
     private var mStandaloneMode = AtomicBoolean(false)
     var mReconnectionTriesNumber: Int? = null
@@ -37,7 +42,7 @@ class AirBeamReconnector(
     private val RECONNECTION_TRIES_RESET_DELAY = RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
     // greater than interval between tries so we don't trigger another try after we successfully reconnected
 
-    fun registerListener(listener: AirBeamReconnector.Listener) {
+    fun registerListener(listener: Listener) {
         mListener = listener
     }
 
@@ -85,7 +90,28 @@ class AirBeamReconnector(
     }
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
-        AirBeamReconnectSessionService.startService(mContext, deviceId, deviceItem, mSession?.uuid)
+        try {
+
+            // Checking if API M+ and battery optimization is enabled or not
+            if (isSDKVersionBiggerThanM()) {
+                if (!isIgnoringBatteryOptimizations(mContext)) {
+                    val name = mContext.getString(R.string.app_name)
+                    Toast.makeText(
+                        mContext,
+                        "Battery optimization -> All apps -> $name -> Don't optimize",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else AirBeamReconnectSessionService.startService(
+                mContext,
+                deviceId,
+                deviceItem,
+                mSession?.uuid
+            )
+
+        } catch (e: Exception) {
+            Log.d("TAG", e.message.toString())
+        }
     }
 
     private fun onDiscoveryFailed() {
