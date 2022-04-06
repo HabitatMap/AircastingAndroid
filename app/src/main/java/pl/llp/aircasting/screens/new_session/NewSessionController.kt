@@ -13,10 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -163,6 +160,7 @@ class NewSessionController(
         wizardNavigator.goToTurnOnBluetooth(this)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onMicrophoneDeviceSelected() {
         GlobalScope.launch(Dispatchers.Main) {
             var existing = false
@@ -256,6 +254,7 @@ class NewSessionController(
         wizardNavigator.goToSelectDevice(bluetoothManager, this)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
         GlobalScope.launch(Dispatchers.Main) {
             var existing = false

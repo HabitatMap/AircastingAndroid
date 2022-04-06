@@ -5,13 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import kotlinx.coroutines.*
 import pl.llp.aircasting.database.converters.*
 import pl.llp.aircasting.database.data_classes.*
 import pl.llp.aircasting.database.migrations.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 @Database(
@@ -77,6 +74,7 @@ class DatabaseProvider {
             return mAppDatabase!!
         }
 
+        @OptIn(DelicateCoroutinesApi::class)
         fun runQuery(block: (scope: CoroutineScope) -> Unit) {
             GlobalScope.launch(Dispatchers.IO) {
                 block(this)

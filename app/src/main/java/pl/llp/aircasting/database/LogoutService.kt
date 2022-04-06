@@ -1,9 +1,6 @@
 package pl.llp.aircasting.database
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.events.LogoutEvent
 import pl.llp.aircasting.lib.Settings
@@ -17,6 +14,7 @@ class LogoutService(private val mSettings: Settings) {
         callback?.invoke()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun clearDatabase() {
         Thread.sleep(1000)
         runBlocking {
