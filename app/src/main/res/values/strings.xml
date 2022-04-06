@@ -477,5 +477,7 @@
     <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Your note will be timestamped and displayed on the AirCasting map</string>
     <string name="bluetooth_error_permissions">Without Bluetooth permissions, you will not be able to see the available devices</string>
     <string name="use_dark_theme">Use Dark theme</string>
+    <string name="battery_desc">While you exit, the app uses foreground services to sync and have fresh data for the next time you open the app. In order to do that, we will need you to disable Battery Optimization in the settings.</string>
+    <string name="running_background">Running on Background</string>
 
 </resources>
