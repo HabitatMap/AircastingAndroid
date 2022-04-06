@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager
 
 abstract class BaseDialog(private val mFragmentManager: FragmentManager): DialogFragment() {
     companion object {
-        val TAG = "BaseDialog"
+        const val TAG = "BaseDialog"
     }
 
     abstract fun setupView(inflater: LayoutInflater): View
@@ -26,7 +26,7 @@ abstract class BaseDialog(private val mFragmentManager: FragmentManager): Dialog
             builder.setView(view)
 
             val dialog = builder.create()
-            dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog
         } ?: throw IllegalStateException("Activity cannot be null")
     }
