@@ -33,6 +33,18 @@
         android:textSize="@dimen/text_size_s"
         tools:text="Alert desc" />
 
+    <TextView
+        android:id="@+id/direction"
+        style="@style/TextAppearance.Aircasting.Cards.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/battery_optimization_all_apps_aircasting_don_t_optimize"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_s" />
+
     <Button
         android:id="@+id/ok_button"
         android:layout_width="match_parent"
