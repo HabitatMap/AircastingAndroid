@@ -26,12 +26,11 @@ class GraphDataGenerator(
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>, val noteRanges: MutableList<ClosedRange<Long>>)
 
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
-    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int = 1): Result {
+    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int = samples.size, averagingFrequency: Int = 1): Result {
         reset()
 
-        val entries = ArrayList<Entry>()
-        val midnightPoints = ArrayList<Float>()
-        val visibleMeasurementsSize = visibleMeasurementsSize ?: samples.size
+        val entries = LinkedList<Entry>()
+        val midnightPoints = LinkedList<Float>()
         val noteRanges = mutableListOf<ClosedRange<Long>>()
         averagingGeneratorFrequency = averagingFrequency
         // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
