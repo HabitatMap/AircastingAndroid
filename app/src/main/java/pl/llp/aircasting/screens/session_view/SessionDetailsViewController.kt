@@ -157,6 +157,7 @@ abstract class SessionDetailsViewController(
         reloadMeasurements()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun reloadMeasurements() {
         runBlocking {
             val query = GlobalScope.async(Dispatchers.IO) {

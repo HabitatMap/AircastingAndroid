@@ -17,6 +17,10 @@ import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.graph.view.*
+<<<<<<< airbeam_reconnect_issue_plan_b
+=======
+import kotlinx.coroutines.DelicateCoroutinesApi
+>>>>>>> master
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -315,6 +319,7 @@ class GraphContainer(
         updateVisibleTimeSpan()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun updateLabelsBasedOnVisibleTimeSpan() {
         mGraph ?: return
 
