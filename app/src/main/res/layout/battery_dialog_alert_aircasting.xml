@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/alert_dialog_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/header"
+        style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_m"
+        app:lineHeight="@dimen/keyline_6"
+        tools:text="Alert header" />
+
+    <TextView
+        android:id="@+id/description"
+        style="@style/TextAppearance.Aircasting.Cards.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:lineHeight="@dimen/keyline_4"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_s"
+        tools:text="Alert desc" />
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/ok" />
+
+    <Button
+        android:id="@+id/cancel_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6"
+        android:backgroundTint="@color/aircasting_white"
+        android:text="@string/cancel"
+        android:textColor="@color/aircasting_blue_400" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
