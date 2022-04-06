@@ -111,9 +111,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     // for Google Places API
-    implementation('com.google.android.libraries.places:places:2.5.0')
+    implementation('com.google.android.libraries.places:places:2.6.0')
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.auto.value:auto-value-annotations:1.6.3'
+    implementation 'com.google.auto.value:auto-value-annotations:1.9'
 
     // for Firebase Crashlytics and Test Lab
     implementation platform('com.google.firebase:firebase-bom:28.2.0')
