@@ -139,11 +139,7 @@ class GraphDataGenerator(
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
-        return note.date.month == date.month &&
-                note.date.day == date.day &&
-                note.date.hours == date.hours &&
-                note.date.minutes == date.minutes &&
-                note.date.seconds == date.seconds
+        return note.date == date
     }
 
     private fun isSameDateAveraging(note: Note, date: Date, averagingFrequency: Int): Boolean {
