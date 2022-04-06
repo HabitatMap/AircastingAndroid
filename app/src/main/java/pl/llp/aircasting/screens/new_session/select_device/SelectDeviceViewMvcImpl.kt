@@ -11,17 +11,14 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import com.xwray.groupie.Section
-import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.AnimatedLoader
-import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_select_device.view.*
 import kotlinx.android.synthetic.main.select_device_group_header.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.label
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import pl.llp.aircasting.R
+import pl.llp.aircasting.lib.AnimatedLoader
+import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {
@@ -97,6 +94,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             viewHolder.itemView.label.text = label
         }
 
+        @OptIn(DelicateCoroutinesApi::class)
         fun showLoader() {
             AnimatedLoader(mLoader).start()
             mLoader?.visibility = View.VISIBLE

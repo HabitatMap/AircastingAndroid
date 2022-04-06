@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -145,18 +146,21 @@ class MobileActiveController(
                 .navigate(action) }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun beforeReconnection(session: Session) {
         GlobalScope.launch(Dispatchers.Main) {
             mViewMvc?.showReconnectingLoaderFor(session)
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun errorCallback() {
         GlobalScope.launch(Dispatchers.Main) {
             mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun finallyCallback(session: Session) {
         GlobalScope.launch(Dispatchers.Main) {
             mViewMvc?.hideReconnectingLoaderFor(session)

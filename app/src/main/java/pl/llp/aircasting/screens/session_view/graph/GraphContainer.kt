@@ -16,6 +16,11 @@ import com.github.mikephil.charting.jobs.MoveViewJob
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import kotlinx.android.synthetic.main.graph.view.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.lib.MeasurementColor
@@ -25,12 +30,7 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
-import kotlinx.android.synthetic.main.graph.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import pl.llp.aircasting.services.AveragingService
-import java.lang.Math.abs
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -315,6 +315,7 @@ class GraphContainer(
         updateVisibleTimeSpan()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun updateLabelsBasedOnVisibleTimeSpan() {
         mGraph ?: return
 
