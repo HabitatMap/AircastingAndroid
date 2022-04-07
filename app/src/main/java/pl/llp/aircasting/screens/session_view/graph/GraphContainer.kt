@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.lib.MeasurementColor
-import pl.llp.aircasting.lib.isAPIVersionLessThanN
+import pl.llp.aircasting.lib.isSDKLessThanN
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
@@ -243,7 +243,7 @@ class GraphContainer(
         mGraph?.setDrawGridBackground(false)
         mGraph?.isDragDecelerationEnabled = false
         mGraph?.setMaxVisibleValueCount(100000) //todo: this allows us to display icons on graph, value may be changed if icons would not display during tests
-        if (isAPIVersionLessThanN()) mGraph?.setHardwareAccelerationEnabled(false) // graph wasn't drawn properly for older android versions without this line
+        if (isSDKLessThanN()) mGraph?.setHardwareAccelerationEnabled(false) // graph wasn't drawn properly for older android versions without this line
 
         mGraph?.onChartGestureListener = this
 

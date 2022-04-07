@@ -9,7 +9,7 @@ import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.lib.isSDKVersionBiggerThanQ
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToQ
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.NewSessionViewMvc
 import pl.llp.aircasting.screens.new_session.TurnOnWifiDialog
@@ -90,7 +90,7 @@ class FixedSessionDetailsController(
             scanForNetworks()
         }
 
-        if (isSDKVersionBiggerThanQ()) {
+        if (isSDKGreaterOrEqualToQ()) {
             val intent = Intent(Settings.Panel.ACTION_WIFI)
             startForResult?.launch(intent)
         } else {

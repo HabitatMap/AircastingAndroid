@@ -39,7 +39,7 @@ fun labelFormat(value: Float?): String {
 }
 
 fun TextView.setAppearance(context: Context, res: Int) {
-    if (isAPIVersionLessThanM()) {
+    if (isSDKLessThanM()) {
         setTextAppearance(context, res)
     } else {
         setTextAppearance(res)
@@ -64,7 +64,7 @@ fun isValidEmail(target: String): Boolean {
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     val pwrm = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
     val name = context.applicationContext.packageName
-    if (isSDKVersionBiggerThanM()) {
+    if (isSDKGreaterOrEqualToM()) {
         return pwrm.isIgnoringBatteryOptimizations(name)
     }
     return true

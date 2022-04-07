@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.isAPIVersionLessThanNMR1
+import pl.llp.aircasting.lib.isSDKLessOrEqualToNMR1
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.screens.common.BaseController
@@ -47,7 +47,7 @@ class LetsStartController(
     }
 
     override fun onSyncSelected() {
-        if (isAPIVersionLessThanNMR1()) {
+        if (isSDKLessOrEqualToNMR1()) {
             mRootActivity?.supportFragmentManager?.let { fragmentManager ->
                 SyncUnavailableDialog(
                     fragmentManager

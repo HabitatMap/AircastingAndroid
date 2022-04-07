@@ -6,7 +6,6 @@ import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -375,13 +374,13 @@ class NewSessionController(
     }
 
     private fun needAccessBackgroundLocation() {
-        if (isSDKVersionBiggerThanQ()) permissionsManager.requestBackgroundLocationPermissions(
+        if (isSDKGreaterOrEqualToQ()) permissionsManager.requestBackgroundLocationPermissions(
             mContextActivity
         ) else goToFirstStep()
     }
 
     private fun needNewBluetoothPermissions() {
-        if (isSDKVersionBiggerThanS()) {
+        if (isSDKGreaterOrEqualToS()) {
             when {
                 ContextCompat.checkSelfPermission(
                     mContextActivity,

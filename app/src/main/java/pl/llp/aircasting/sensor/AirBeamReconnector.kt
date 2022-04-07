@@ -10,7 +10,7 @@ import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.events.*
 import pl.llp.aircasting.lib.isIgnoringBatteryOptimizations
-import pl.llp.aircasting.lib.isSDKVersionBiggerThanM
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
@@ -93,7 +93,7 @@ class AirBeamReconnector(
         try {
 
             // Checking if API M+ and battery optimization is enabled or not
-            if (isSDKVersionBiggerThanM()) {
+            if (isSDKGreaterOrEqualToM()) {
                 if (!isIgnoringBatteryOptimizations(mContext)) {
                     val name = mContext.getString(R.string.app_name)
                     Toast.makeText(

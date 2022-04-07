@@ -20,7 +20,7 @@ import pl.llp.aircasting.exceptions.AircastingUncaughtExceptionHandler
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.lib.TemperatureConverter
 import pl.llp.aircasting.lib.isIgnoringBatteryOptimizations
-import pl.llp.aircasting.lib.isSDKVersionBiggerThanM
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
@@ -117,7 +117,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         isBackButtonPressed = true
 
         // show explanation about background task and let the user disable the battery optimization
-        if (isSDKVersionBiggerThanM() && !isIgnoringBatteryOptimizations(applicationContext)) controller?.showBatteryOptimizationHelperDialog()
+        if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(applicationContext)) controller?.showBatteryOptimizationHelperDialog()
 
         Handler(Looper.getMainLooper()).postDelayed({
             isBackButtonPressed = false
