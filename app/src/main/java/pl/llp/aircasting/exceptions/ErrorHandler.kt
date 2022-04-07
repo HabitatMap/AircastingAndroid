@@ -8,7 +8,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.screens.common.AircastingAlertDialog
 

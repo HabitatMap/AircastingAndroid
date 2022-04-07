@@ -374,5 +374,7 @@
     <string name="errors_location_background_services_required">Sin usar la ubicación en el permiso de fondo, es posible que la aplicación no funcione correctamente en los dispositivos Android más nuevos.</string>
     <string name="bluetooth_error_permissions">Sin permisos de Bluetooth, no podrá ver los dispositivos disponibles</string>
     <string name="use_dark_theme">Usar tema oscuro</string>
+    <string name="battery_desc">Mientras sale, la aplicación utiliza servicios de primer plano para sincronizar y tener datos actualizados para la próxima vez que abra la aplicación. Para hacer eso, necesitaremos que desactive la Optimización de la batería en la configuración.</string>
+    <string name="running_background">Corriendo en segundo plano</string>
 
 </resources>

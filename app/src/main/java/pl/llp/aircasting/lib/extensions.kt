@@ -3,7 +3,7 @@ package pl.llp.aircasting.lib
 import android.app.Activity
 import android.content.Context
 import android.location.LocationManager
-import android.os.Build
+import android.os.PowerManager
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
@@ -39,7 +39,7 @@ fun labelFormat(value: Float?): String {
 }
 
 fun TextView.setAppearance(context: Context, res: Int) {
-    if (Build.VERSION.SDK_INT < 23) {
+    if (isSDKLessThanM()) {
         setTextAppearance(context, res)
     } else {
         setTextAppearance(res)
@@ -59,4 +59,13 @@ fun adjustMenuVisibility(
 
 fun isValidEmail(target: String): Boolean {
     return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches())
+}
+
+fun isIgnoringBatteryOptimizations(context: Context): Boolean {
+    val pwrm = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+    val name = context.applicationContext.packageName
+    if (isSDKGreaterOrEqualToM()) {
+        return pwrm.isIgnoringBatteryOptimizations(name)
+    }
+    return true
 }

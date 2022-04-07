@@ -3,6 +3,7 @@ package pl.llp.aircasting.screens.main
 import android.content.IntentFilter
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -20,6 +21,7 @@ import pl.llp.aircasting.networking.services.ApiService
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.networking.services.SessionsSyncService
+import pl.llp.aircasting.screens.common.BatteryAlertDialog
 import pl.llp.aircasting.screens.dashboard.SessionsTab
 import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
@@ -31,6 +33,7 @@ class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
+    private val mFragmentManager: FragmentManager,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
     private var mSessionManager: SessionManager? = null
@@ -101,6 +104,14 @@ class MainController(
             MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_DORMANT.value)
         Navigation.findNavController(rootActivity, R.id.nav_host_fragment)
             .navigate(action)
+    }
+
+    fun showBatteryOptimizationHelperDialog() {
+        BatteryAlertDialog(
+            mFragmentManager,
+            rootActivity.getString(R.string.running_background),
+            rootActivity.getString(R.string.battery_desc)
+        ).show()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

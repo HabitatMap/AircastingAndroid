@@ -122,7 +122,7 @@ class MainViewMvcImpl(
         mReorderSessionsButton?.visibility = View.INVISIBLE
     }
 
-    fun showFinishedReorderingSessionsButtonClicked() {
+    private fun showFinishedReorderingSessionsButtonClicked() {
         mFinishedReorderingSessionsButton?.visibility = View.INVISIBLE
         mReorderSessionsButton?.visibility = View.VISIBLE
     }

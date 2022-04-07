@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import org.greenrobot.eventbus.EventBus
@@ -13,6 +12,8 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.events.StopRecordingEvent
 import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToO
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.screens.main.MainActivity
 import java.util.concurrent.atomic.AtomicBoolean
@@ -41,7 +42,7 @@ abstract class SensorService : Service() {
         startSensor(intent)
         createNotificationChannel()
         val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        val pendingIntent = if (isSDKGreaterOrEqualToM())
             PendingIntent.getActivity(
                 this,
                 0, notificationIntent,
@@ -91,7 +92,7 @@ abstract class SensorService : Service() {
     abstract fun notificationMessage(): String
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (isSDKGreaterOrEqualToO()) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID, "Foreground Service Channel",
                 NotificationManager.IMPORTANCE_DEFAULT

@@ -2,30 +2,30 @@ package pl.llp.aircasting.lib
 
 import android.os.Build
 
-fun isSDKVersionBiggerThanS(): Boolean {
+fun isSDKGreaterOrEqualToS(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
 
-fun isSDKVersionBiggerThanM(): Boolean {
+fun isSDKGreaterOrEqualToM(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 }
 
-fun isSDKVersionBiggerThanQ(): Boolean {
+fun isSDKGreaterOrEqualToQ(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 }
 
-fun isAPIVersionBiggerThanO(): Boolean {
+fun isSDKGreaterOrEqualToO(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 }
 
-fun isAPIVersionLessThanNMR1(): Boolean {
+fun isSDKLessOrEqualToNMR1(): Boolean {
     return Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1
 }
 
-fun isAPIVersionLessThanN(): Boolean {
+fun isSDKLessThanN(): Boolean {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.N
 }
 
-fun isAPIVersionLessThanM(): Boolean {
+fun isSDKLessThanM(): Boolean {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
 }
