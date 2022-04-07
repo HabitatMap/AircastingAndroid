@@ -94,7 +94,7 @@ class FixedSessionDetailsController(
             val intent = Intent(Settings.Panel.ACTION_WIFI)
             startForResult?.launch(intent)
         } else {
-            mWifiManager?.wifiState
+            mWifiManager?.isWifiEnabled = true
             scanForNetworks()
         }
     }
