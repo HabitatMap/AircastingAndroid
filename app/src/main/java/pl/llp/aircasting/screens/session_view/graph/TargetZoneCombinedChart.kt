@@ -10,6 +10,7 @@ import com.github.mikephil.charting.charts.CombinedChart
 class TargetZoneCombinedChart : CombinedChart {
     private var mYAxisSafeZonePaint: Paint? = null
     private var mTargetZones: MutableList<TargetZone>? = null
+    private val points = FloatArray(4)
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -29,17 +30,16 @@ class TargetZoneCombinedChart : CombinedChart {
     override fun onDraw(canvas: Canvas) {
         for (targetZone in mTargetZones!!) {
             // prepare coordinates
-            val pts = FloatArray(4)
-            pts[1] = targetZone.lowerLimit
-            pts[3] = targetZone.upperLimit
-            mLeftAxisTransformer.pointValuesToPixel(pts)
+            points[1] = targetZone.lowerLimit
+            points[3] = targetZone.upperLimit
+            mLeftAxisTransformer.pointValuesToPixel(points)
 
             // draw
             mYAxisSafeZonePaint?.color = targetZone.color
             mYAxisSafeZonePaint?.let {
                 canvas.drawRect(
-                    mViewPortHandler.contentLeft(), pts[1], mViewPortHandler.contentRight(),
-                    pts[3], it
+                    mViewPortHandler.contentLeft(), points[1], mViewPortHandler.contentRight(),
+                    points[3], it
                 )
             }
         }

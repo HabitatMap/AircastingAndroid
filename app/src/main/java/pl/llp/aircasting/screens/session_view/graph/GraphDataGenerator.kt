@@ -25,12 +25,11 @@ class GraphDataGenerator(
     class Result(val entries: List<Entry>, val midnightPoints: List<Float>, val noteRanges: MutableList<ClosedRange<Long>>)
 
     // Generate method is in fact triggered every time we add new measurement to session, what means fillFactor is different every time too as "samples.size" differs
-    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int?, averagingFrequency: Int = 1): Result {
+    fun generate(samples: List<Measurement>, notes: List<Note>?, limit: Int = DEFAULT_LIMIT, visibleMeasurementsSize: Int = samples.size, averagingFrequency: Int = 1): Result {
         reset()
 
-        val entries = ArrayList<Entry>()
-        val midnightPoints = ArrayList<Float>()
-        val visibleMeasurementsSize = visibleMeasurementsSize ?: samples.size
+        val entries = LinkedList<Entry>()
+        val midnightPoints = LinkedList<Float>()
         val noteRanges = mutableListOf<ClosedRange<Long>>()
         averagingGeneratorFrequency = averagingFrequency
         // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
@@ -74,13 +73,14 @@ class GraphDataGenerator(
             entries.add(buildAverageEntry(date))
         }
 
+        entries.sortBy { it.x }
+
         val range = (entries.last().x - entries.first().x).div(40) // I assume clickable range as about 5% of screen
         for (entry in entries) {
             if (entry.icon != null) {
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
             }
         }
-
         return Result(entries, midnightPoints, noteRanges)
     }
 
@@ -138,11 +138,7 @@ class GraphDataGenerator(
     }
 
     private fun isSameDate(note: Note, date: Date): Boolean {
-        return note.date.month == date.month &&
-                note.date.day == date.day &&
-                note.date.hours == date.hours &&
-                note.date.minutes == date.minutes &&
-                note.date.seconds == date.seconds
+        return note.date == date
     }
 
     private fun isSameDateAveraging(note: Note, date: Date, averagingFrequency: Int): Boolean {
