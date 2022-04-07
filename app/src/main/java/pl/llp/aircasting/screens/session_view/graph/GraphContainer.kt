@@ -17,10 +17,7 @@ import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.graph.view.*
-<<<<<<< airbeam_reconnect_issue_plan_b
-=======
 import kotlinx.coroutines.DelicateCoroutinesApi
->>>>>>> master
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,7 +35,6 @@ import pl.llp.aircasting.services.AveragingService
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
-
 
 class GraphContainer(
     rootView: View?,
