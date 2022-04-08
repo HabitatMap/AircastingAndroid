@@ -91,7 +91,7 @@ class StreamWithMeasurementsDBObject {
 
     @Relation(
         parentColumn = "id",
-        entityColumn = "measurement_stream_id",
+        entityColumn = "stream_id",
         entity = MeasurementDBObject::class
     )
     lateinit var measurements: List<MeasurementDBObject>
