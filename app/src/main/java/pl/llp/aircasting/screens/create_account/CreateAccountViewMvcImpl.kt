@@ -12,31 +12,28 @@ import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.networking.responses.CreateAccountErrorResponse
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.Listener>, CreateAccountViewMvc {
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        settings: Settings,
-        fromOnboarding: Boolean?): super() {
+class CreateAccountViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    settings: Settings,
+    fromOnboarding: Boolean?
+) : BaseObservableViewMvc<CreateAccountViewMvc.Listener>(), CreateAccountViewMvc {
+    init {
         this.rootView = inflater.inflate(R.layout.activity_create_account, parent, false)
-
         val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
         createAccountButton?.setOnClickListener {
             onCreateAccountClicked()
         }
-
         val loginButton = rootView?.findViewById<Button>(R.id.sign_in_button)
         loginButton?.setOnClickListener {
             onLoginClicked()
         }
-
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
         if (fromOnboarding == true) {
             progressBarFrame?.visibility = View.VISIBLE
         } else {
             progressBarFrame?.visibility = View.GONE
         }
-
     }
 
     private fun onCreateAccountClicked() {

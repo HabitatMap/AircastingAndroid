@@ -3,7 +3,7 @@ package pl.llp.aircasting.lib
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateConverter {
+class DateConverter private constructor(settings: Settings) {
     companion object {
         private var singleton: DateConverter? = null
         val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
@@ -27,14 +27,10 @@ class DateConverter {
         }
     }
 
-    private var mSettings: Settings? = null
+    private var mSettings: Settings? = settings
     private val DATE_FORMAT = "MM/dd/yy"
     private val HOUR_FORMAT_24 = "HH:mm"
     private val HOUR_FORMAT_12 = "hh:mm a"
-
-    private constructor(settings: Settings) {
-        this.mSettings = settings
-    }
 
     fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
         val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
@@ -48,10 +44,10 @@ class DateConverter {
     }
 
     fun toTimeStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
-        if (mSettings?.isUsing24HourFormat() == true) {
-            return toDateString(date, timeZone, HOUR_FORMAT_24)
+        return if (mSettings?.isUsing24HourFormat() == true) {
+            toDateString(date, timeZone, HOUR_FORMAT_24)
         } else {
-            return toDateString(date, timeZone, HOUR_FORMAT_12)
+            toDateString(date, timeZone, HOUR_FORMAT_12)
         }
     }
 
