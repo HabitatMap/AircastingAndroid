@@ -21,7 +21,8 @@ import java.util.*
     ],
     indices = [
         Index("stream_id"),
-        Index("session_id")
+        Index("session_id"),
+        Index(value = ["session_id", "stream_id", "time"], unique = true)
     ]
 )
 data class ActiveSessionMeasurementDBObject(
