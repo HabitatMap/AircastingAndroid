@@ -7,12 +7,11 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseViewMvc
 
-class ConnectingAirBeamViewMvcImpl : BaseViewMvc, ConnectingAirBeamViewMvc {
+class ConnectingAirBeamViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc(),
+    ConnectingAirBeamViewMvc {
 
-    constructor(
-        inflater: LayoutInflater, parent: ViewGroup?): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_connecting_airbeam, parent, false)
-
         startLoader()
     }
 
