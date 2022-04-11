@@ -7,13 +7,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseViewMvc
 
-class RefreshingSessionsViewMvcImpl: BaseViewMvc, RefreshingSessionsViewMvc {
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): super() {
+class RefreshingSessionsViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc(),
+    RefreshingSessionsViewMvc {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_refreshing_sessions, parent, false)
-
         startLoader()
     }
 
