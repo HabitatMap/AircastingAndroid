@@ -93,6 +93,7 @@ class DisconnectedView {
     }
 
     private fun hideReconnectingLoader() {
+        AnimatedLoader(mReconnectingLoader).stop()
         mReconnectingLoader?.visibility = View.GONE
         mPrimaryButton?.isEnabled = true
     }

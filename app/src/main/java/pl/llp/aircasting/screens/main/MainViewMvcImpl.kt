@@ -133,6 +133,7 @@ class MainViewMvcImpl(
     }
 
     override fun hideLoader() {
+        AnimatedLoader(loader).stop()
         loader?.visibility = View.GONE
     }
 }

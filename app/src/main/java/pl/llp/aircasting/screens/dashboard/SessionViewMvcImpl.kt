@@ -289,6 +289,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     override fun hideLoader() {
+        AnimatedLoader(mLoader).stop()
         mLoader?.visibility = View.GONE
     }
 
