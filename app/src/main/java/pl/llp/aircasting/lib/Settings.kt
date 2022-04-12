@@ -103,7 +103,7 @@ open class Settings(private val mApplication: Application) {
         return getBooleanFromSettings(KEEP_SCREEN_ON_KEY, DEFAULT_KEEP_SCREEN_ON)
     }
 
-    fun getAreThereSessionsToRemove(): Boolean {
+    fun thereAreSessionsToRemove(): Boolean {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
     }
 
