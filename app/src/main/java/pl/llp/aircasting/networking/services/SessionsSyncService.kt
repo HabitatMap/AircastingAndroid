@@ -1,7 +1,10 @@
 package pl.llp.aircasting.networking.services
 
 import android.database.sqlite.SQLiteConstraintException
+import android.os.Handler
+import android.os.Looper
 import com.google.gson.Gson
+import kotlinx.coroutines.coroutineScope
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
@@ -21,7 +24,9 @@ import pl.llp.aircasting.networking.responses.UploadSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.schedule
 
 class SessionsSyncService private constructor(
     private val apiService: ApiService,
@@ -45,11 +50,14 @@ class SessionsSyncService private constructor(
     private var triedToSyncBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
 
-
     companion object {
         private var mSingleton: SessionsSyncService? = null
 
-        fun get(apiService: ApiService, errorHandler: ErrorHandler, settings: Settings): SessionsSyncService {
+        fun get(
+            apiService: ApiService,
+            errorHandler: ErrorHandler,
+            settings: Settings
+        ): SessionsSyncService {
             if (mSingleton == null) {
                 mSingleton = SessionsSyncService(apiService, errorHandler, settings)
             }
@@ -72,6 +80,7 @@ class SessionsSyncService private constructor(
         finallyCallback: (() -> Unit)? = null,
         shouldDisplayErrors: Boolean = true
     ) {
+
         // This will happen if we regain connectivity when app is in background.
         // When in foreground again, it should sync
         if (syncInBackground.get()) {
@@ -88,15 +97,13 @@ class SessionsSyncService private constructor(
             val sessions = sessionRepository.finishedSessions()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
-            mCall = apiService.sync(SyncSessionBody(jsonData))
 
+            mCall = apiService.sync(SyncSessionBody(jsonData))
             mCall?.enqueue(object : Callback<SyncResponse> {
                 override fun onResponse(
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
                 ) {
-                    syncStarted.set(false)
-                    finallyCallback?.invoke()
 
                     if (response.isSuccessful) {
                         val body = response.body()
@@ -104,16 +111,17 @@ class SessionsSyncService private constructor(
                             DatabaseProvider.runQuery {
                                 deleteMarkedForRemoval()
                                 delete(body.deleted)
-                                upload(body.upload)
-                                download(body.download)
                                 removeOldMeasurements()
 
+                                upload(body.upload)
+                                download(body.download)
                                 EventBus.getDefault().post(SessionsSyncSuccessEvent())
                             }
                         }
-                    } else {
-                        handleSyncError(shouldDisplayErrors, call)
-                    }
+                    } else handleSyncError(shouldDisplayErrors, call)
+
+                    syncStarted.set(false)
+                    finallyCallback?.invoke()
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
@@ -176,9 +184,7 @@ class SessionsSyncService private constructor(
                     }
                 }
             }
-            if (mCall?.isCanceled != true) {
-                downloadService.download(uuid, onDownloadSuccess)
-            }
+            if (mCall?.isCanceled != true) downloadService.download(uuid, onDownloadSuccess)
         }
     }
 
@@ -186,16 +192,19 @@ class SessionsSyncService private constructor(
         return !(session.locationless && session.isMobile())
     }
 
-    private fun handleSyncError(shouldDisplayErrors: Boolean, call: Call<SyncResponse>, t: Throwable? = null) {
+    private fun handleSyncError(
+        shouldDisplayErrors: Boolean,
+        call: Call<SyncResponse>,
+        t: Throwable? = null
+    ) {
         if (!call.isCanceled && !syncInBackground.get()) {
             EventBus.getDefault().post(SessionsSyncErrorEvent())
 
-            if (shouldDisplayErrors) {
-                errorHandler.handleAndDisplay(SyncError(t))
-            } else {
-                errorHandler.handle(SyncError(t))
-            }
+            if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
+                SyncError(t)
+            )
         }
+
     }
 
     fun resume() {
