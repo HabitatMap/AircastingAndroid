@@ -3,10 +3,13 @@ package pl.llp.aircasting.lib
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateConverter {
+class DateConverter private constructor(settings: Settings) {
     companion object {
         private var singleton: DateConverter? = null
-        val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+        private const val DATE_FORMAT = "MM/dd/yy"
+        const val HOUR_FORMAT_24 = "HH:mm"
+        const val HOUR_FORMAT_12 = "hh:mm a"
+        private const val DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
         fun setup(settings: Settings) {
             if (singleton == null) singleton = DateConverter(settings)
