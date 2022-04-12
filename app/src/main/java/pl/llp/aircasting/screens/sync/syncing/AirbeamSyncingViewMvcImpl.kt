@@ -4,15 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import pl.llp.aircasting.R
-import pl.llp.aircasting.lib.AnimatedLoader
-import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader
 import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
+import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SDCardSyncError
+import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.sensor.airbeam3.sync.SDCardReader
 
-class AirbeamSyncingViewMvcImpl: BaseObservableViewMvc<AirbeamSyncingViewMvc.Listener>, AirbeamSyncingViewMvc {
+class AirbeamSyncingViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+) : BaseObservableViewMvc<AirbeamSyncingViewMvc.Listener>(), AirbeamSyncingViewMvc {
     private val header: TextView?
     private val stepTitles = hashMapOf(
         SDCardReader.StepType.MOBILE to "Mobile",
@@ -20,16 +23,11 @@ class AirbeamSyncingViewMvcImpl: BaseObservableViewMvc<AirbeamSyncingViewMvc.Lis
         SDCardReader.StepType.FIXED_CELLULAR to "Fixed Cellular"
     )
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_airbeam_syncing, parent, false)
-
         header = rootView?.airbeam_syncing_header
         val title = context.getString(R.string.airbeam_syncing_header)
         header?.text = "${title}..."
-
         startLoader()
     }
 

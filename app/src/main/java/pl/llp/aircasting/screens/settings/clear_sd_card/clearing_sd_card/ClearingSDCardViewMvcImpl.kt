@@ -7,16 +7,13 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.lib.AnimatedLoader
 import pl.llp.aircasting.screens.common.BaseViewMvc
 
-class ClearingSDCardViewMvcImpl: BaseViewMvc, ClearingSDCardViewMvc {
+class ClearingSDCardViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc(),
+    ClearingSDCardViewMvc {
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-        ): super() {
-            this.rootView = inflater.inflate(R.layout.fragment_sd_card_clearing, parent, false)
-
-            startLoader()
-        }
+    init {
+        this.rootView = inflater.inflate(R.layout.fragment_sd_card_clearing, parent, false)
+        startLoader()
+    }
 
     private fun startLoader() {
         val loader = rootView?.findViewById<ImageView>(R.id.loader)

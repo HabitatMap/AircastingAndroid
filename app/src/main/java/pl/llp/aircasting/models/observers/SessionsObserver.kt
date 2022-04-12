@@ -44,7 +44,7 @@ abstract class SessionsObserver<Type>(
     }
 
     private fun onSessionsChanged(coroutineScope: CoroutineScope, sessions: List<Session>, sensorThresholds: List<SensorThreshold>) {
-        if (sessions.size > 0) {
+        if (sessions.isNotEmpty()) {
             updateSensorThresholds(sensorThresholds)
             showSessionsView(coroutineScope, sessions)
         } else {

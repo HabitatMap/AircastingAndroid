@@ -5,7 +5,6 @@ import pl.llp.aircasting.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.lib.NoteResponseParser
 import pl.llp.aircasting.models.MeasurementStream
-import pl.llp.aircasting.models.Note
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.TAGS_SEPARATOR
 import pl.llp.aircasting.networking.params.SessionParams
@@ -14,29 +13,30 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SessionDownloadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class SessionDownloadService(
+    private val apiService: ApiService,
+    private val errorHandler: ErrorHandler
+) {
 
     private val noteResponseParser = NoteResponseParser(errorHandler)
 
-    fun download(uuid: String, successCallback: (Session) -> Unit?, finallyCallback: (() -> Unit?)? = null) {
+    fun download(
+        uuid: String,
+        successCallback: (Session) -> Unit?,
+        finallyCallback: (() -> Unit?)? = null
+    ) {
         val call = apiService.downloadSession(uuid)
         call.enqueue(object : Callback<SessionResponse> {
             override fun onResponse(
                 call: Call<SessionResponse>,
                 response: Response<SessionResponse>
             ) {
-                if (response.isSuccessful) {
-                    val body = response.body()
+                if (response.isSuccessful) response.body()?.let {
+                    val session = sessionFromResponse(it)
+                    session?.let { successCallback(session) }
+                } else errorHandler.handle(UnexpectedAPIError())
 
-                    body?.let {
-                        val session = sessionFromResponse(body)
-                        session?.let { successCallback(session) }
-                    }
-                } else {
-                    errorHandler.handle(UnexpectedAPIError())
-                }
-                 finallyCallback?.invoke()
-
+                finallyCallback?.invoke()
             }
 
             override fun onFailure(call: Call<SessionResponse>, t: Throwable) {
@@ -85,7 +85,7 @@ class SessionDownloadService(private val apiService: ApiService, private val err
     }
 
     private fun sessionType(type: String): Session.Type {
-        return when(type) {
+        return when (type) {
             SessionParams.FIXED_SESSION_TYPE -> Session.Type.FIXED
             else -> return Session.Type.MOBILE
         }

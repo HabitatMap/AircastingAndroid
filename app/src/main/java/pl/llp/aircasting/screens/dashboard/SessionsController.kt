@@ -118,7 +118,7 @@ abstract class SessionsController(
         GraphActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
     }
 
-    protected fun reloadSession(session: Session) {
+    private fun reloadSession(session: Session) {
         DatabaseProvider.runQuery { scope ->
             val dbSessionWithMeasurements =
                 mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)

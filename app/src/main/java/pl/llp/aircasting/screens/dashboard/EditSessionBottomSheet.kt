@@ -75,6 +75,7 @@ class EditSessionBottomSheet(
     }
 
     fun hideLoader() {
+        AnimatedLoader(mLoader).stop()
         mLoader?.visibility = View.GONE
         sessionNameInput?.isEnabled = true
         tagsInput?.isEnabled = true

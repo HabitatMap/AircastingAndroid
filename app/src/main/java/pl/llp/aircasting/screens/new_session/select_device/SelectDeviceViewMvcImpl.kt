@@ -111,6 +111,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
 
         fun hideLoader() {
+            AnimatedLoader(mLoader).stop()
             mLoader?.visibility = View.INVISIBLE
             showRefreshButton()
         }

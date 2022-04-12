@@ -203,6 +203,7 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     fun hideLoader(loader: ImageView?) {
+        AnimatedLoader(loader).stop()
         loader?.visibility = View.GONE
     }
 }

@@ -24,11 +24,11 @@ class MobileDormantSessionViewMvcImpl(
 
     override fun showExpandedMeasurementsTableValues() = true
 
-    override fun bindCollapsedMeasurementsDesctription() {
+    override fun bindCollapsedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
-    override fun bindExpandedMeasurementsDesctription() {
+    override fun bindExpandedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
     }
 

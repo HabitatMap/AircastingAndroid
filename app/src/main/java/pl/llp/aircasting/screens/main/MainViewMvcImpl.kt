@@ -1,5 +1,7 @@
 package pl.llp.aircasting.screens.main
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -132,7 +134,12 @@ class MainViewMvcImpl(
         loader?.visibility = View.VISIBLE
     }
 
+    // Considering delay as the last resort sync data is being bound into RecyclerView after some time.
+    // The performance and the binding section can be improved.
     override fun hideLoader() {
-        loader?.visibility = View.GONE
+        Handler(Looper.getMainLooper()).postDelayed({
+            AnimatedLoader(loader).stop()
+            loader?.visibility = View.GONE
+        }, 10000)
     }
 }

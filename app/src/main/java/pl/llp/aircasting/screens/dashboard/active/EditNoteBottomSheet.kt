@@ -87,6 +87,7 @@ class EditNoteBottomSheet(
     }
 
     fun hideLoader() {
+        AnimatedLoader(mLoader).stop()
         mLoader?.visibility = View.GONE
         noteInput?.isEnabled = true
     }
