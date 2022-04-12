@@ -111,7 +111,7 @@ class SessionsRepository {
     }
 
     fun delete(uuids: List<String>) {
-        if (!uuids.isEmpty()) {
+        if (uuids.isNotEmpty()) {
             mDatabase.sessions().delete(uuids)
         }
     }
@@ -126,11 +126,11 @@ class SessionsRepository {
 
     fun updateOrCreate(session: Session): Long? {
         val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
-        if (sessionDbObject == null) {
-            return insert(session)
+        return if (sessionDbObject == null) {
+            insert(session)
         } else {
             update(session)
-            return null
+            null
         }
     }
 
