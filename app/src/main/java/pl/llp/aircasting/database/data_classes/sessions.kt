@@ -85,7 +85,7 @@ class SessionWithStreamsAndMeasurementsDBObject {
     lateinit var streams: List<StreamWithMeasurementsDBObject>
 }
 
-class StreamWithMeasurementsDBObject {
+open class StreamWithMeasurementsDBObject {
     @Embedded
     lateinit var stream: MeasurementStreamDBObject
 
