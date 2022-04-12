@@ -1,6 +1,8 @@
 package pl.llp.aircasting.screens.dashboard
 
 import android.graphics.Rect
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.TouchDelegate
 import android.view.View
@@ -40,25 +42,25 @@ abstract class SessionViewMvcImpl<ListenerType>(
     private val mInfoTextView: TextView
     protected val mActionsButton: ImageView
     private val mSupportFragmentManager: FragmentManager = supportFragmentManager
-    protected var mBottomSheet: BottomSheet? = null
+    private var mBottomSheet: BottomSheet? = null
 
     protected var mExpandedSessionView: View
     protected var mExpandSessionButton: ImageView
     protected var mCollapseSessionButton: ImageView
     protected var mReorderSessionButton: ImageView
-    protected val mChart: Chart
-    protected val mChartView: ConstraintLayout?
+    private val mChart: Chart
+    private val mChartView: ConstraintLayout?
     protected val mMeasurementsDescription: TextView?
 
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
-    protected var mMapButton: Button
+    private var mMapButton: Button
     private var mGraphButton: Button
     private var mLoader: ImageView?
 
     protected var mSessionPresenter: SessionPresenter? = null
-    protected var expandCardCallback: (() -> Unit?)? = null
-    protected var onExpandSessionCardClickedCallback: (() -> Unit?)? = null
+    private var expandCardCallback: (() -> Unit?)? = null
+    private var onExpandSessionCardClickedCallback: (() -> Unit?)? = null
     private var using24HourFormat: Boolean? = true
 
     init {
@@ -114,7 +116,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
         }
-        mLoader = rootView?.findViewById<ImageView>(R.id.loader)
+        mLoader = rootView?.findViewById(R.id.loader)
     }
 
     protected abstract fun showMeasurementsTableValues(): Boolean
@@ -202,10 +204,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
             mMeasurementsDescription?.visibility = View.GONE
         } else if (sessionPresenter.expanded) {
             mMeasurementsDescription?.visibility = View.VISIBLE
-            bindExpandedMeasurementsDesctription()
+            bindExpandedMeasurementsDescription()
         } else {
             mMeasurementsDescription?.visibility = View.VISIBLE
-            bindCollapsedMeasurementsDesctription()
+            bindCollapsedMeasurementsDescription()
         }
 
     }
@@ -243,7 +245,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         if (showChart()) {
             mChartView?.visibility = View.VISIBLE
         }
-        bindExpandedMeasurementsDesctription()
+        bindExpandedMeasurementsDescription()
 
         adjustSessionCardPadding()
 
@@ -257,7 +259,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         setExpandCollapseButton()
         mExpandedSessionView.visibility = View.GONE
 
-        bindCollapsedMeasurementsDesctription()
+        bindCollapsedMeasurementsDescription()
         mMeasurementsTableContainer.makeCollapsed(showMeasurementsTableValues())
 
         adjustSessionCardPadding()
@@ -275,11 +277,11 @@ abstract class SessionViewMvcImpl<ListenerType>(
         }
     }
 
-    protected open fun bindExpandedMeasurementsDesctription() {
+    protected open fun bindExpandedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
-    protected open fun bindCollapsedMeasurementsDesctription() {
+    protected open fun bindCollapsedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
@@ -360,7 +362,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     private fun getExpandedTouchDelegate(child: View): TouchDelegate {
         val paddingX = 10
         val paddingY = 40
-        var rect = Rect()
+        val rect = Rect()
         child.getHitRect(rect)
         rect.left -= paddingX
         rect.top -= paddingY
@@ -371,7 +373,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun expandButtonsHitAreas(buttons: List<View>, parentView: View) {
-        var touchDelegateComposite = TouchDelegateComposite(parentView)
+        val touchDelegateComposite = TouchDelegateComposite(parentView)
 
         buttons.forEach { button ->
             touchDelegateComposite.addDelegate(getExpandedTouchDelegate(button))
