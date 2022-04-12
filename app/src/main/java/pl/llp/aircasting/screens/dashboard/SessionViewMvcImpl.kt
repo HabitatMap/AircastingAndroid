@@ -202,10 +202,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
             mMeasurementsDescription?.visibility = View.GONE
         } else if (sessionPresenter.expanded) {
             mMeasurementsDescription?.visibility = View.VISIBLE
-            bindExpandedMeasurementsDesctription()
+            bindExpandedMeasurementsDescription()
         } else {
             mMeasurementsDescription?.visibility = View.VISIBLE
-            bindCollapsedMeasurementsDesctription()
+            bindCollapsedMeasurementsDescription()
         }
 
     }
@@ -243,7 +243,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         if (showChart()) {
             mChartView?.visibility = View.VISIBLE
         }
-        bindExpandedMeasurementsDesctription()
+        bindExpandedMeasurementsDescription()
 
         adjustSessionCardPadding()
 
@@ -257,7 +257,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         setExpandCollapseButton()
         mExpandedSessionView.visibility = View.GONE
 
-        bindCollapsedMeasurementsDesctription()
+        bindCollapsedMeasurementsDescription()
         mMeasurementsTableContainer.makeCollapsed(showMeasurementsTableValues())
 
         adjustSessionCardPadding()
@@ -275,11 +275,11 @@ abstract class SessionViewMvcImpl<ListenerType>(
         }
     }
 
-    protected open fun bindExpandedMeasurementsDesctription() {
+    protected open fun bindExpandedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
-    protected open fun bindCollapsedMeasurementsDesctription() {
+    protected open fun bindCollapsedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.parameters)
     }
 
@@ -297,7 +297,6 @@ abstract class SessionViewMvcImpl<ListenerType>(
         bindChartData()
     }
 
-    // TODO: This does not fire when the new session is created
     private fun onFollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
             session.follow()
