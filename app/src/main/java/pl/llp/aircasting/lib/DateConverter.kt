@@ -28,38 +28,30 @@ class DateConverter private constructor(settings: Settings) {
             formatter.timeZone = timeZone
             return formatter.format(date)
         }
-    }
 
-    private var mSettings: Settings? = null
-    private val DATE_FORMAT = "MM/dd/yy"
-    private val HOUR_FORMAT_24 = "HH:mm"
-    private val HOUR_FORMAT_12 = "hh:mm a"
+        fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
+            val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
+            parser.timeZone = TimeZone.getDefault()
+            return parser.parse(dateString)
+        }
 
-    private constructor(settings: Settings) {
-        this.mSettings = settings
-    }
+        fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
+            val dateFormat = SimpleDateFormat("yyyyMMdd")
+            return dateFormat.format(startTime) == dateFormat.format(endTime)
+        }
 
-    fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
-        val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
-        parser.timeZone = TimeZone.getDefault()
-        return parser.parse(dateString)
-    }
-
-    fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
-        val dateFormat = SimpleDateFormat("yyyyMMdd")
-        return dateFormat.format(startTime) == dateFormat.format(endTime)
-    }
-
-    fun toTimeStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
-        if (mSettings?.isUsing24HourFormat() == true) {
-            return toDateString(date, timeZone, HOUR_FORMAT_24)
-        } else {
-            return toDateString(date, timeZone, HOUR_FORMAT_12)
+        fun toDateStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
+            return toDateString(date, timeZone, DATE_FORMAT)
         }
     }
 
-    fun toDateStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
-        return toDateString(date, timeZone, DATE_FORMAT)
-    }
+    private var mSettings: Settings? = settings
 
+    fun toTimeStringForDisplay(date: Date, timeZone: TimeZone = TimeZone.getDefault()): String {
+        return if (mSettings?.isUsing24HourFormat() == true) {
+            toDateString(date, timeZone, HOUR_FORMAT_24)
+        } else {
+            toDateString(date, timeZone, HOUR_FORMAT_12)
+        }
+    }
 }
