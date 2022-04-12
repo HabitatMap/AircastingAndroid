@@ -82,9 +82,9 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         if (recyclerViewCanBeUpdated()) {
             // TODO: Here we rebind all sessions while we could only rebind data from specific session which data has been changed
             mAdapter.bindSessions(sessions, sensorThresholds)
-            mRecyclerSessions?.visibility = View.VISIBLE
             mEmptyView?.visibility = View.INVISIBLE
             mDidYouKnowBox?.visibility = View.INVISIBLE
+            mRecyclerSessions?.visibility = View.VISIBLE
         }
     }
 
@@ -131,8 +131,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     private fun recyclerViewCanBeUpdated(): Boolean {
-        return mRecyclerSessions?.isComputingLayout == false
-                && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE
+        return mRecyclerSessions?.isComputingLayout == false && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE
     }
 
     private fun setupSwipeToRefreshLayout() {
