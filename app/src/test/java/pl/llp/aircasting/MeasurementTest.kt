@@ -1,9 +1,10 @@
 package pl.llp.aircasting
 
+import junit.framework.TestCase
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.SensorThreshold
 import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.util.*
 
 /**
@@ -11,7 +12,7 @@ import java.util.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class MeasurementTest {
+class MeasurementTest : TestCase() {
     @Test
     fun getLevelTest() {
         val sensorThreshold = SensorThreshold(
