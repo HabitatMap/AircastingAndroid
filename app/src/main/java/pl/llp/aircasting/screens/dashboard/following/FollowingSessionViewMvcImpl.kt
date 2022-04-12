@@ -54,11 +54,11 @@ open class FollowingSessionViewMvcImpl(
         }
     }
 
-    override fun bindCollapsedMeasurementsDesctription() {
+    override fun bindCollapsedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
     }
 
-    override fun bindExpandedMeasurementsDesctription() {
+    override fun bindExpandedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
     }
 
