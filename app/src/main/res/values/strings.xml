@@ -480,5 +480,7 @@
     <string name="battery_desc">While you exit, the app uses foreground services to sync and have fresh data for the next time you open the app. In order to do that, we will need you to disable Battery Optimization in the settings.</string>
     <string name="running_background">Running on Background</string>
     <string name="battery_optimization_all_apps_aircasting_don_t_optimize" translatable="false"><![CDATA[Battery optimization -> All apps -> Aircasting -> Don\'t optimize]]></string>
+    <string name="follow_title">Follow session</string>
+    <string name="follow_description">recorded by a measuring station</string>
 
 </resources>
