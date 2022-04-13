@@ -376,5 +376,6 @@
     <string name="running_background">Courir en arrière-plan</string>
     <string name="follow_title">Follow session</string>
     <string name="follow_description">recorded by a measuring station</string>
+    <string name="title_search_fixed_sessions">Search fixed sessions</string>
 
 </resources>

@@ -4,9 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Mohsen/Desktop/Android/AircastingAndroid/app/src/main/res/layout/fragment_settings.xml" value="0.20555555555555555" />
+        <entry key="app/src/main/res/layout/activity_clear_sd_card.xml" value="0.21331521739130435" />
         <entry key="app/src/main/res/layout/activity_graph.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/app_bar.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/empty_dashboard.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/fragment_lets_begin.xml" value="0.29638335315893727" />
         <entry key="app/src/main/res/layout/fragment_lets_start.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/microphone_settings_dialog.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/prominent_app_bar.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/search_fixed_sessions.xml" value="0.21331521739130435" />
       </map>
     </option>
   </component>
