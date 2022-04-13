@@ -13,6 +13,9 @@
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceHeadline2"
         app:layout_constraintBottom_toTopOf="@id/dashboard_mobile_active_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -20,11 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_6"
-        android:lineHeight="30dp"
+        android:lineHeight="@dimen/keyline_7"
         android:text="@string/dashboard_empty_mobile_active_text"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceBody1"
         app:layout_constraintBottom_toTopOf="@id/dashboard_mobile_record_new_session_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dashboard_mobile_active_header" />
 
     <Button
@@ -34,6 +40,9 @@
         android:layout_marginTop="@dimen/keyline_8"
         android:text="@string/record_mobile_session"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dashboard_mobile_active_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
