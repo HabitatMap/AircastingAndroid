@@ -29,7 +29,7 @@
     <!--  Dashboard -->
     <string name="title_settings">Configuración</string>
     <string name="dashboard_empty_header">¿Listo para empezar?</string>
-    <string name="dashboard_empty_text">Grabar una nueva sesión para monitorear su salud y medio ambiente </string>
+    <string name="dashboard_empty_text">Explorar y Siga las sesiones de AirCasting existentes o use su propio dispositivo para grabar una nueva sesión y controlar su salud y su salud. medioambiente.</string>
     <string name="dashboard_tabs_following">Siguiendo</string>
     <string name="dashboard_tabs_mobile_active">Móvil activo</string>
     <string name="dashboard_tabs_mobile_dormant">Móvil inactivo</string>
