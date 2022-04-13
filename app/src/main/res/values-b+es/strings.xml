@@ -78,7 +78,7 @@
     <string name="turn_on_wifi_dialog_ok_button">Enciende</string>
 
     <!-- Let's begin (new session start) -->
-    <string name="title_lets_start">Vamos a empezar</string>
+    <string name="title_lets_begin">Vamos a empezar</string>
     <string name="record_new_session_title">Grabar una nueva sesión</string>
     <string name="select_session_type_header">¿Cómo le gustaría agregar su sesión?</string>
     <string name="new_session_more_info"><u>Más información</u></string>

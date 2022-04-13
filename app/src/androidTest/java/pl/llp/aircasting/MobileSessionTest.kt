@@ -98,7 +98,7 @@ class MobileSessionTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
@@ -196,7 +196,7 @@ class MobileSessionTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
 

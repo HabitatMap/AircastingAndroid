@@ -109,7 +109,7 @@ class FixedSessionTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
 
@@ -171,7 +171,7 @@ class FixedSessionTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
 
         onView(withId(R.id.fixed_session_start_card)).perform(click())
 
