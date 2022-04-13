@@ -482,5 +482,6 @@
     <string name="battery_optimization_all_apps_aircasting_don_t_optimize" translatable="false"><![CDATA[Battery optimization -> All apps -> Aircasting -> Don\'t optimize]]></string>
     <string name="follow_title">Follow session</string>
     <string name="follow_description">recorded by a measuring station</string>
+    <string name="title_search_fixed_sessions">Search fixed sessions</string>
 
 </resources>
