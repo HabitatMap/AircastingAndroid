@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_4"
-        android:lineHeight="@dimen/keyline_5"
+        android:lineHeight="@dimen/keyline_7"
         android:text="@string/dashboard_empty_text"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceBody1"
