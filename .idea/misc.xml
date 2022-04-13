@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Mohsen/Desktop/Android/AircastingAndroid/app/src/main/res/layout/fragment_settings.xml" value="0.20555555555555555" />
+        <entry key="app/src/main/res/layout/activity_graph.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/fragment_lets_begin.xml" value="0.29638335315893727" />
+        <entry key="app/src/main/res/layout/fragment_lets_start.xml" value="0.15070921985815602" />
       </map>
     </option>
   </component>
