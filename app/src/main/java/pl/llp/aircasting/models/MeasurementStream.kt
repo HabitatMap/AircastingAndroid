@@ -11,7 +11,7 @@ import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsRespo
 import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
-class MeasurementStream(
+open class MeasurementStream(
     val sensorPackageName: String,
     val sensorName: String,
     val measurementType: String,

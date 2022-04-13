@@ -300,7 +300,6 @@ abstract class SessionViewMvcImpl<ListenerType>(
         bindChartData()
     }
 
-    // TODO: This does not fire when the new session is created
     private fun onFollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
             session.follow()

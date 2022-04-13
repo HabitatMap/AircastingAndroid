@@ -35,14 +35,14 @@ class Measurement(
 
     constructor(measurementResponse: MeasurementResponse): this(
         measurementResponse.value,
-        DateConverter.get()?.fromString(measurementResponse.time) ?: Date(),
+        DateConverter.fromString(measurementResponse.time) ?: Date(),
         measurementResponse.latitude,
         measurementResponse.longitude
     )
 
     constructor(measurementResponse: MeasurementResponse, averagingFrequency: Int): this(
         measurementResponse.value,
-        DateConverter.get()?.fromString(measurementResponse.time) ?: Date(),
+        DateConverter.fromString(measurementResponse.time) ?: Date(),
         measurementResponse.latitude,
         measurementResponse.longitude,
         averagingFrequency

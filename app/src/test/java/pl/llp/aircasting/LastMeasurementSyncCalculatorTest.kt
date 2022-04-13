@@ -3,7 +3,7 @@ package pl.llp.aircasting
 import pl.llp.aircasting.lib.DateConverter
 import pl.llp.aircasting.networking.services.LastMeasurementSyncCalculator
 import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class LastMeasurementSyncCalculatorTest {
     val sessionEndTime = DateConverter.fromString("1987-07-23T11:00:00")!!
