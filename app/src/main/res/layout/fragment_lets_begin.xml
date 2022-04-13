@@ -18,7 +18,7 @@
             android:paddingStart="@dimen/keyline_10"
             android:paddingEnd="@dimen/keyline_10"
             android:paddingBottom="@dimen/keyline_6"
-            android:text="@string/title_lets_start"
+            android:text="@string/title_lets_begin"
             android:textAppearance="?attr/textAppearanceHeadline1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

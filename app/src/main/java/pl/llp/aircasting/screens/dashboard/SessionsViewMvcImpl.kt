@@ -40,7 +40,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         mRecyclerSessions?.layoutManager = LinearLayoutManager(rootView?.context)
         mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
         mDidYouKnowBox?.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.navigation_lets_start)
+            Navigation.findNavController(it).navigate(R.id.navigation_lets_begin)
         }
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.adapter = mAdapter

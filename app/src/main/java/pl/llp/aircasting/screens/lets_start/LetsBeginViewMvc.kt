@@ -1,8 +1,8 @@
-package pl.llp.aircasting.screens.lets_start
+package pl.llp.aircasting.screens.lets_begin
 
 import pl.llp.aircasting.screens.common.ObservableViewMvc
 
-interface LetsStartViewMvc: ObservableViewMvc<LetsStartViewMvc.Listener> {
+interface LetsBeginViewMvc: ObservableViewMvc<LetsBeginViewMvc.Listener> {
     fun showMoreInfoDialog()
     interface Listener {
         fun onFixedSessionSelected()

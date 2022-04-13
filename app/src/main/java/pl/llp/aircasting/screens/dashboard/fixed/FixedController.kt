@@ -49,7 +49,7 @@ class FixedController(
     override fun onRecordNewSessionClicked() {
         mRootActivity?.let {
             Navigation.findNavController(it, R.id.nav_host_fragment)
-                .navigate(R.id.navigation_lets_start)
+                .navigate(R.id.navigation_lets_begin)
         }
     }
 
