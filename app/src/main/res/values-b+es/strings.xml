@@ -291,7 +291,7 @@
     <string name="airbeam_sync_select_device_header">Seleccione el dispositivo que desea sincronizar</string>
     <string name="airbeam_syncing_header">Sincronización</string>
     <string name="airbeam_syncing_description">Mantenga su AirBeam cerca de su Android. Conecte su AirBeam para acelerar la sincronización.</string>
-    <string name="airbeam_syncing_finalizing">Finalizando...</string>
+    <string name="airbeam_syncing_finalizing">Finalizando…</string>
     <string name="airbeam_syncing_finished_header">Sincronización completa</string>
     <string name="airbeam_syncing_finished_description">Los datos de su AirBeam3 se sincronizaron correctamente con la aplicación. Se borró la tarjeta SD.</string>
     <string name="sync_error_header">Algo salió mal</string>
@@ -376,5 +376,6 @@
     <string name="use_dark_theme">Usar tema oscuro</string>
     <string name="battery_desc">Mientras sale, la aplicación utiliza servicios de primer plano para sincronizar y tener datos actualizados para la próxima vez que abra la aplicación. Para hacer eso, necesitaremos que desactive la Optimización de la batería en la configuración.</string>
     <string name="running_background">Corriendo en segundo plano</string>
+    <string name="explore_existing_sessions">Explorar sesiones existentes</string>
 
 </resources>

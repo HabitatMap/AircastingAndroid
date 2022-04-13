@@ -374,5 +374,6 @@
     <string name="use_dark_theme">Utiliser le thème sombre</string>
     <string name="battery_desc">Pendant que vous quittez, l\'application utilise les services de premier plan pour se synchroniser et avoir de nouvelles données pour la prochaine fois que vous ouvrez l\'application. Pour ce faire, nous aurons besoin que vous désactiviez l\'optimisation de la batterie dans les paramètres.</string>
     <string name="running_background">Courir en arrière-plan</string>
+    <string name="explore_existing_sessions">Explorer les sessions existantes</string>
 
 </resources>
