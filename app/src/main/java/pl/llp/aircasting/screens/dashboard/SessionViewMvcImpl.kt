@@ -1,8 +1,6 @@
 package pl.llp.aircasting.screens.dashboard
 
 import android.graphics.Rect
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.TouchDelegate
 import android.view.View
@@ -288,11 +286,13 @@ abstract class SessionViewMvcImpl<ListenerType>(
     override fun showLoader() {
         AnimatedLoader(mLoader).start()
         mLoader?.visibility = View.VISIBLE
+        mFollowButton.isEnabled = false
     }
 
     override fun hideLoader() {
         AnimatedLoader(mLoader).stop()
         mLoader?.visibility = View.GONE
+        mFollowButton.isEnabled = true
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {

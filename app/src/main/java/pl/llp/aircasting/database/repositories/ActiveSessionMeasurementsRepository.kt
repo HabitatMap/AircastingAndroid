@@ -125,15 +125,16 @@ class ActiveSessionMeasurementsRepository {
             val streamId =
                 MeasurementStreamsRepository().getId(sessionId, measurementStream)
 
-            val lastFinishedHour = DateUtils.round(Date(), Calendar.HOUR_OF_DAY)
-
             streamId?.let { streamId ->
+                val lastMeasurementTime = MeasurementsRepository().lastMeasurementTime(sessionId, streamId)
+                val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
+
                 measurements =
                     measurementsList(
                         MeasurementsRepository().getLastMeasurementsForStreamStartingFromHour(
                             streamId,
                             limit,
-                            lastFinishedHour
+                            lastMeasurementHour
                         )
                     )
                 insertAll(streamId, sessionId, measurements)
