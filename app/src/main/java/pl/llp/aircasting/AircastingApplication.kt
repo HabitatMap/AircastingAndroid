@@ -1,18 +1,21 @@
 package pl.llp.aircasting
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
+import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.di.AppModule
 import pl.llp.aircasting.di.PermissionsModule
 import pl.llp.aircasting.lib.Settings
 import pl.llp.aircasting.models.observers.AppLifecycleObserver
 
-
-class AircastingApplication: Application() {
+class AircastingApplication : Application() {
     lateinit var appComponent: AppComponent
     lateinit var permissionsModule: PermissionsModule
     private var mSettings: Settings? = null
+
+    val database by lazy { DatabaseProvider.get(this) }
 
     override fun onCreate() {
         super.onCreate()
@@ -22,6 +25,8 @@ class AircastingApplication: Application() {
         ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         permissionsModule = PermissionsModule()
+
+        appContext = applicationContext
 
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
@@ -33,5 +38,9 @@ class AircastingApplication: Application() {
             .lifecycle
             .addObserver(AppLifecycleObserver())
 
+    }
+
+    companion object {
+        lateinit var appContext: Context
     }
 }
