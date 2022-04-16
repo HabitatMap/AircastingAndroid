@@ -40,16 +40,18 @@ class MobileDormantFragment : Fragment() {
             childFragmentManager
         )
 
-        controller = MobileDormantController(
-            activity,
-            view,
-            sessionsViewModel,
-            viewLifecycleOwner,
-            settings,
-            apiServiceFactory,
-            childFragmentManager,
-            context
-        )
+        controller = context?.let {
+            MobileDormantController(
+                activity,
+                view,
+                sessionsViewModel,
+                viewLifecycleOwner,
+                settings,
+                apiServiceFactory,
+                childFragmentManager,
+                it
+            )
+        }
 
         if (sessionsRequested) {
             controller?.onCreate()
