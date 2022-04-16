@@ -56,7 +56,6 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         // subscribing to custom uncaught exception handler to handle crash
         Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings))
 
-        DatabaseProvider.setup(applicationContext)
         LocationHelper.setup(applicationContext)
         DateConverter.setup(settings)
         TemperatureConverter.setup(settings)
