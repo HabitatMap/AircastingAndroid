@@ -1,12 +1,13 @@
 package pl.llp.aircasting.models
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.*
 
-class SessionsViewModel(): ViewModel() {
-    private val mDatabase = DatabaseProvider.get()
+class SessionsViewModel(application: Application) : AndroidViewModel(application) {
+    private val mDatabase = DatabaseProvider.get(application.applicationContext)
 
     fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
@@ -22,7 +23,9 @@ class SessionsViewModel(): ViewModel() {
 
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
-            Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
+            Session.Type.MOBILE,
+            listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value)
+        )
     }
 
     fun loadLiveDataCompleteSessionBySessionUUID(sessionUUID: String): LiveData<CompleteSessionDBObject?> {
@@ -34,11 +37,13 @@ class SessionsViewModel(): ViewModel() {
     }
 
     fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatus(Session.Type.MOBILE, Session.Status.FINISHED)
+        return mDatabase.sessions()
+            .loadAllByTypeAndStatus(Session.Type.MOBILE, Session.Status.FINISHED)
     }
 
     fun loadMobileDormantSessionsWithMeasurementsAndNotes(): LiveData<List<SessionWithStreamsAndNotesDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithNotes(Session.Type.MOBILE, Session.Status.FINISHED)
+        return mDatabase.sessions()
+            .loadAllByTypeAndStatusWithNotes(Session.Type.MOBILE, Session.Status.FINISHED)
     }
 
     fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
@@ -67,7 +72,10 @@ class SessionsViewModel(): ViewModel() {
             .map { SensorThreshold(it) }
     }
 
-    private fun createSensorThresholds(streams: List<MeasurementStream>, existingThreshols: List<SensorThreshold>): List<SensorThreshold> {
+    private fun createSensorThresholds(
+        streams: List<MeasurementStream>,
+        existingThreshols: List<SensorThreshold>
+    ): List<SensorThreshold> {
         val existingSensorNames = existingThreshols.map { it.sensorName }
         val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
 
