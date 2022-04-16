@@ -21,11 +21,20 @@ class MobileDormantController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager,
-    private val mContext: Context?
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
+    mContext: Context
+) : SessionsController(
+    mRootActivity,
+    mViewMvc,
+    mSessionsViewModel,
+    mSettings,
+    mApiServiceFactory,
+    fragmentManager,
+    mContext
+),
     SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
 
-    private var mSessionsObserver = MobileDormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver =
+        MobileDormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurementsAndNotes())
@@ -38,7 +47,7 @@ class MobileDormantController(
     override fun onRecordNewSessionClicked() {
         startNewSession(Session.Type.MOBILE)
     }
-    
+
     override fun onFinishSessionConfirmed(session: Session) {
         // do nothing
     }

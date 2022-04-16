@@ -1,6 +1,7 @@
 package pl.llp.aircasting.database.repositories
 
 import org.apache.commons.lang3.time.DateUtils
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
@@ -14,7 +15,8 @@ class ActiveSessionMeasurementsRepository {
         const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 9
     }
 
-    private val mDatabase = DatabaseProvider.get()
+    val context = AircastingApplication.appContext
+    private val mDatabase = DatabaseProvider.get(context)
 
     fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
         val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
@@ -29,7 +31,11 @@ class ActiveSessionMeasurementsRepository {
         return mDatabase.activeSessionsMeasurements().insert(activeSessionMeasurementDBObject)
     }
 
-    fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+    private fun insertAll(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
         val measurementDBObjects = measurements.map { measurement ->
             ActiveSessionMeasurementDBObject(
                 measurementStreamId,
@@ -87,9 +93,10 @@ class ActiveSessionMeasurementsRepository {
             measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
-        val numberOfMeasurementsToBePresentInTable = numberOfMeasurementsAlreadyInTable + measurementsToLoad.size
+        val numberOfMeasurementsToBePresentInTable =
+            numberOfMeasurementsAlreadyInTable + measurementsToLoad.size
 
-        if(numberOfMeasurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+        if (numberOfMeasurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             deleteAndInsert(measurementStreamId, sessionId, measurementsToLoad)
         } else insertAll(measurementStreamId, sessionId, measurementsToLoad)
     }
@@ -119,15 +126,16 @@ class ActiveSessionMeasurementsRepository {
         measurementStreams: List<MeasurementStream>?,
         limit: Int
     ) {
-        var measurements: List<Measurement> = mutableListOf()
+        var measurements: List<Measurement>
 
         measurementStreams?.forEach { measurementStream ->
-            val streamId =
-                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+            val streamId = MeasurementStreamsRepository().getId(sessionId, measurementStream)
 
             streamId?.let { streamId ->
-                val lastMeasurementTime = MeasurementsRepository().lastMeasurementTime(sessionId, streamId)
-                val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
+                val lastMeasurementTime =
+                    MeasurementsRepository().lastMeasurementTime(sessionId, streamId)
+                val lastMeasurementHour =
+                    DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
 
                 measurements =
                     measurementsList(

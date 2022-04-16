@@ -1,12 +1,14 @@
 package pl.llp.aircasting.database.repositories
 
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.models.Measurement
 import java.util.*
 
 class MeasurementsRepository {
-    private val mDatabase = DatabaseProvider.get()
+    val context = AircastingApplication.appContext
+    private val mDatabase = DatabaseProvider.get(context)
 
     fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
         val measurementDBObjects = measurements.map { measurement ->
@@ -52,11 +54,19 @@ class MeasurementsRepository {
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
-    fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?> {
-        return mDatabase.measurements().getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
+    fun getLastMeasurementsWithGivenAveragingFrequency(
+        streamId: Long,
+        limit: Int,
+        averagingFrequency: Int
+    ): List<MeasurementDBObject?> {
+        return mDatabase.measurements()
+            .getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
     }
 
-    fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?> {
+    fun getBySessionIdAndStreamId(
+        sessionId: Long,
+        measurementStreamId: Long
+    ): List<MeasurementDBObject?> {
         return mDatabase.measurements().getBySessionIdAndStreamId(sessionId, measurementStreamId)
     }
 
@@ -67,20 +77,39 @@ class MeasurementsRepository {
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
-    fun getNonAveragedPreviousMeasurementsCount(sessionId: Long, crossingThresholdTime: Date, newAveragingFrequency: Int): Int {
-        return mDatabase.measurements().getNonAveragedPreviousMeasurementsCount(sessionId, crossingThresholdTime, newAveragingFrequency )
+    fun getNonAveragedPreviousMeasurementsCount(
+        sessionId: Long,
+        crossingThresholdTime: Date,
+        newAveragingFrequency: Int
+    ): Int {
+        return mDatabase.measurements().getNonAveragedPreviousMeasurementsCount(
+            sessionId,
+            crossingThresholdTime,
+            newAveragingFrequency
+        )
     }
 
     fun getNonAveragedCurrentMeasurementsCount(sessionId: Long, crossingThresholdTime: Date): Int {
-        return mDatabase.measurements().getNonAveragedCurrentMeasurementsCount(sessionId, crossingThresholdTime )
+        return mDatabase.measurements()
+            .getNonAveragedCurrentMeasurementsCount(sessionId, crossingThresholdTime)
     }
 
-    fun getNonAveragedPreviousMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
-        return mDatabase.measurements().getNonAveragedPreviousMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
+    fun getNonAveragedPreviousMeasurements(
+        streamId: Long,
+        averagingFrequency: Int,
+        thresholdCrossingTime: Date
+    ): List<MeasurementDBObject> {
+        return mDatabase.measurements()
+            .getNonAveragedPreviousMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
     }
 
-    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
-        return mDatabase.measurements().getNonAveragedCurrentMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
+    fun getNonAveragedCurrentMeasurements(
+        streamId: Long,
+        averagingFrequency: Int,
+        thresholdCrossingTime: Date
+    ): List<MeasurementDBObject> {
+        return mDatabase.measurements()
+            .getNonAveragedCurrentMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
     }
 
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
@@ -95,8 +124,13 @@ class MeasurementsRepository {
         return mDatabase.measurements().getByStreamId(streamId)
     }
 
-    fun getLastMeasurementsForStreamStartingFromHour(streamId: Long, limit: Int, time: Date): List<MeasurementDBObject?> {
-        return mDatabase.measurements().getLastMeasurementsForStreamStartingFromHour(streamId, limit, time)
+    fun getLastMeasurementsForStreamStartingFromHour(
+        streamId: Long,
+        limit: Int,
+        time: Date
+    ): List<MeasurementDBObject?> {
+        return mDatabase.measurements()
+            .getLastMeasurementsForStreamStartingFromHour(streamId, limit, time)
     }
 
 }

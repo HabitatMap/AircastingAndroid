@@ -1,11 +1,13 @@
 package pl.llp.aircasting.database.repositories
 
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.NoteDBObject
 import pl.llp.aircasting.models.Note
 
 class NoteRepository {
-    private val mDatabase = DatabaseProvider.get()
+    val context = AircastingApplication.appContext
+    private val mDatabase = DatabaseProvider.get(context)
 
     fun insert(sessionId: Long, note: Note) {
         val noteDBObject =
