@@ -1,12 +1,14 @@
 package pl.llp.aircasting.networking.services
 
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.database.repositories.MeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.models.Session
 import java.util.*
 
-class RemoveOldMeasurementsService() {
+class RemoveOldMeasurementsService {
+    val context = AircastingApplication.appContext
     private val measurementRepository = MeasurementsRepository()
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
@@ -20,14 +22,24 @@ class RemoveOldMeasurementsService() {
         // so we take 1440 last measurements for each stream in fixed sessions
         // and we remove older than the first of them.
         val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
-        val streamsForFixedSessionsIds = measurementStreamsRepository.getStreamsIdsBySessionIds(fixedSessionsIds)
+        val streamsForFixedSessionsIds = fixedSessionsIds.let {
+            measurementStreamsRepository.getStreamsIdsBySessionIds(
+                it
+            )
+        }
 
         streamsForFixedSessionsIds.forEach { streamId ->
-            val lastMeasurements = measurementRepository.getLastMeasurementsForStream(streamId, TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT)
+            val lastMeasurements = measurementRepository.getLastMeasurementsForStream(
+                streamId,
+                TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT
+            )
             if (shouldDeleteMeasurements(lastMeasurements.size)) {
                 val lastExpectedMeasurement = lastMeasurements.last()
                 val lastExpectedMeasurementTime: Date = lastExpectedMeasurement?.time!!
-                measurementRepository.deleteMeasurementsOlderThan(streamId, lastExpectedMeasurementTime)
+                measurementRepository.deleteMeasurementsOlderThan(
+                    streamId,
+                    lastExpectedMeasurementTime
+                )
             }
         }
     }

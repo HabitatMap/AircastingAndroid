@@ -10,7 +10,6 @@ import pl.llp.aircasting.database.converters.*
 import pl.llp.aircasting.database.data_classes.*
 import pl.llp.aircasting.database.migrations.*
 
-
 @Database(
     entities = [SessionDBObject::class,
         MeasurementStreamDBObject::class,
@@ -37,19 +36,14 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun activeSessionsMeasurements(): ActiveSessionMeasurementDao
 }
 
-//TODO - Using context in static fields should be avoided - preventing memory leaks.
-class DatabaseProvider {
+abstract class DatabaseProvider {
     companion object {
-        private val DB_NAME = "aircasting"
+        private const val DB_NAME = "aircasting"
 
-        private lateinit var mContext: Context
-        var mAppDatabase: AppDatabase? = null
+        @Volatile
+        private var mAppDatabase: AppDatabase? = null
 
-        fun setup(context: Context) {
-            mContext = context
-        }
-
-        fun get(): AppDatabase {
+        fun get(mContext: Context): AppDatabase {
             if (mAppDatabase == null) {
                 mAppDatabase = Room.databaseBuilder(
                     mContext,

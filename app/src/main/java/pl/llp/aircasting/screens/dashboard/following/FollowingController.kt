@@ -21,7 +21,7 @@ class FollowingController(
     mLifecycleOwner: LifecycleOwner,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    mContext: Context?
+    mContext: Context
 ): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
     SessionsViewMvc.Listener {
 

@@ -1,5 +1,6 @@
 package pl.llp.aircasting.screens.dashboard
 
+import android.app.Application
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -8,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.models.SensorThreshold
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionsViewModel
@@ -15,8 +17,9 @@ import pl.llp.aircasting.models.SessionsViewModel
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager
-): RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
-    protected val mSessionsViewModel = SessionsViewModel()
+) : RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
+    val context = AircastingApplication.appContext
+    protected val mSessionsViewModel = SessionsViewModel(context as Application)
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
@@ -77,7 +80,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     fun hideLoaderFor(deviceId: String) {
-        val sessionPresenter = mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.session?.deviceId == deviceId }
+        val sessionPresenter =
+            mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.session?.deviceId == deviceId }
         sessionPresenter?.loading = false
 
         notifyDataSetChanged()
@@ -116,7 +120,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
         runBlocking {
             val query = GlobalScope.async(Dispatchers.IO) {
-                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                val dbSessionWithMeasurements =
+                    mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
                 dbSessionWithMeasurements?.let {
                     reloadedSession = Session(dbSessionWithMeasurements)
                 }

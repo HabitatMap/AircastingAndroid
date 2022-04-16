@@ -9,7 +9,6 @@ import pl.llp.aircasting.database.repositories.SessionsRepository
 import pl.llp.aircasting.models.Measurement
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.collections.HashMap
 
 /**
  * Averaging for long mobile sessions
@@ -79,7 +78,7 @@ class AveragingService private constructor(private val sessionId: Long) {
                 time = SECOND_TRESHOLD_TIME
             )
         )
-        
+
         /**
          * We keep separate singleton objects for each session in case someone is recording multiple mobile sessions
          */
@@ -99,21 +98,23 @@ class AveragingService private constructor(private val sessionId: Long) {
             }
         }
 
-        fun getAveragingThreshold(firstMeasurement: Measurement?, lastMeasurement: Measurement?): Int {
+        fun getAveragingThreshold(
+            firstMeasurement: Measurement?,
+            lastMeasurement: Measurement?
+        ): Int {
             val sessionDuration = firstMeasurement?.time?.time?.let {
                 lastMeasurement?.time?.time?.minus(it)
-            }
-            if (sessionDuration == null) return 0
+            } ?: return 0
             when {
                 sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
-                (sessionDuration > FIRST_TRESHOLD_TIME)  &&  (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
+                (sessionDuration > FIRST_TRESHOLD_TIME) && (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
                 sessionDuration > SECOND_TRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
             }
             return 0
         }
     }
 
-    private fun streamIds() : List<Long>? {
+    private fun streamIds(): List<Long>? {
         if (mStreamIds?.isEmpty() == true) {
             mStreamIds = getStreamIds()
         }
@@ -121,7 +122,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         return mStreamIds
     }
 
-    private fun getStreamIds() : List<Long> {
+    private fun getStreamIds(): List<Long> {
         return mMeasurementStreamsRepository.getStreamsIdsBySessionIds(listOf(sessionId))
     }
 
@@ -157,7 +158,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    private fun getCurrentMeasurementsToAverage(streamId: Long):  List<MeasurementDBObject>? {
+    private fun getCurrentMeasurementsToAverage(streamId: Long): List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
             currentAveragingThreshold().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedCurrentMeasurements(
@@ -169,7 +170,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    private fun getPreviousMeasurementsToAverage(streamId: Long):  List<MeasurementDBObject>? {
+    private fun getPreviousMeasurementsToAverage(streamId: Long): List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
             currentAveragingThreshold().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedPreviousMeasurements(
@@ -221,18 +222,27 @@ class AveragingService private constructor(private val sessionId: Long) {
                 Log.d(LOG_TAG, "No measurements to average")
             } else {
                 if (measurements!!.size >= windowSize || isFinal) {
-                    averageStreamMeasurements(streamId, measurements!!, windowSize, averagingFrequency, isCurrent, isFinal)
+                    averageStreamMeasurements(
+                        streamId,
+                        measurements!!,
+                        windowSize,
+                        averagingFrequency,
+                        isCurrent,
+                        isFinal
+                    )
                 }
             }
         }
     }
 
-    private fun averageStreamMeasurements(streamId: Long,
-                                          measurements: List<MeasurementDBObject>,
-                                          windowSize: Int,
-                                          averagingFrequency: Int,
-                                          isCurrent: Boolean,
-                                          isFinal: Boolean = false) {
+    private fun averageStreamMeasurements(
+        streamId: Long,
+        measurements: List<MeasurementDBObject>,
+        windowSize: Int,
+        averagingFrequency: Int,
+        isCurrent: Boolean,
+        isFinal: Boolean = false
+    ) {
 
         measurements.chunked(windowSize) { measurementsInWindow: List<MeasurementDBObject> ->
             if (measurementsInWindow.size == windowSize) {
@@ -244,7 +254,12 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    private fun removeTrailingMeasurements(trailingMeasurements: List<MeasurementDBObject>, streamId: Long, isFinalAveraging: Boolean, isPreviousMeasurementsAveraging: Boolean) {
+    private fun removeTrailingMeasurements(
+        trailingMeasurements: List<MeasurementDBObject>,
+        streamId: Long,
+        isFinalAveraging: Boolean,
+        isPreviousMeasurementsAveraging: Boolean
+    ) {
         // if this is final averaging after the session has finished OR it is averaging previous measurements
         // we want to delete remaining measurements instead of averaging smaller amount
         if (isFinalAveraging || isPreviousMeasurementsAveraging) {
@@ -256,7 +271,11 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    private fun averageMeasurementsInWindow(measurementsInWindow: List<MeasurementDBObject>, averagingFrequency: Int, streamId: Long) {
+    private fun averageMeasurementsInWindow(
+        measurementsInWindow: List<MeasurementDBObject>,
+        averagingFrequency: Int,
+        streamId: Long
+    ) {
         val measurementsToDeleteIds: List<Long>
 
         val averagedMeasurements = measurementsInWindow.toMutableList()
@@ -302,7 +321,8 @@ class AveragingService private constructor(private val sessionId: Long) {
 
         if (nonAveragedMeasurementsCount ?: 0 > 0) {
             thresholdTime = currentAveragingThreshold().time
-            previousWindowSize = mPreviousAveragingFrequency ?: THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
+            previousWindowSize = mPreviousAveragingFrequency
+                ?: THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
             averagingFrequency = currentAveragingThreshold().windowSize
             windowSize = averagingFrequency / previousWindowSize
         }
@@ -325,11 +345,14 @@ class AveragingService private constructor(private val sessionId: Long) {
 
     private fun updateCurrentAveragingFrequency() {
         currentAveragingThreshold().let { averagingThreshold ->
-            mSessionsRepository.updateSessionAveragingFrequency(sessionId, averagingThreshold.windowSize)
+            mSessionsRepository.updateSessionAveragingFrequency(
+                sessionId,
+                averagingThreshold.windowSize
+            )
         }
     }
 
-    private fun crossingLastThresholdTime() : Long? {
+    private fun crossingLastThresholdTime(): Long? {
         return when (currentAveragingThresholdIndex()) {
             2 -> mSecondThresholdTime
             1 -> mFirstThresholdTime
@@ -337,11 +360,11 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    fun currentAveragingThreshold() : AveragingThreshold {
+    fun currentAveragingThreshold(): AveragingThreshold {
         return THRESHOLDS[currentAveragingThresholdIndex()]
     }
 
-    private fun currentAveragingThresholdIndex() : Int {
+    private fun currentAveragingThresholdIndex(): Int {
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId) ?: Date()
         return when {
             lastMeasurementTime.time > mSecondThresholdTime -> 2

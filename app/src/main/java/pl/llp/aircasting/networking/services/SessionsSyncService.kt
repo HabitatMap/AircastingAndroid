@@ -1,10 +1,7 @@
 package pl.llp.aircasting.networking.services
 
 import android.database.sqlite.SQLiteConstraintException
-import android.os.Handler
-import android.os.Looper
 import com.google.gson.Gson
-import kotlinx.coroutines.coroutineScope
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
@@ -24,9 +21,7 @@ import pl.llp.aircasting.networking.responses.UploadSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.concurrent.schedule
 
 class SessionsSyncService private constructor(
     private val apiService: ApiService,

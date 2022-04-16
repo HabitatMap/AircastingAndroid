@@ -1,6 +1,5 @@
 package pl.llp.aircasting.sensor
 
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
@@ -11,7 +10,7 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.sensor.airbeam3.sync.SDCardSyncService
 import javax.inject.Inject
 
-class AirBeamSyncService: AirBeamService() {
+class  AirBeamSyncService : AirBeamService() {
     @Inject
     lateinit var airBeamDiscoveryService: AirBeamDiscoveryService
 
@@ -41,7 +40,8 @@ class AirBeamSyncService: AirBeamService() {
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
-        val deviceItem = intent.getParcelableExtra<DeviceItem>(AirBeamRecordSessionService.DEVICE_ITEM_KEY)
+        val deviceItem =
+            intent.getParcelableExtra<DeviceItem>(AirBeamRecordSessionService.DEVICE_ITEM_KEY)
 
         if (deviceItem == null) {
             errorHandler.handle(AirbeamServiceError("DeviceItem passed through intent is null"))

@@ -1,5 +1,6 @@
 package pl.llp.aircasting.database.repositories
 
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.data_classes.SessionDBObject
 import pl.llp.aircasting.database.data_classes.SessionWithStreamsAndMeasurementsDBObject
@@ -8,7 +9,8 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 import java.util.*
 
 class SessionsRepository {
-    private val mDatabase = DatabaseProvider.get()
+    val context = AircastingApplication.appContext
+    private val mDatabase = DatabaseProvider.get(context)
 
     fun insert(session: Session): Long {
         val sessionDBObject =
@@ -17,14 +19,10 @@ class SessionsRepository {
     }
 
     fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId,
-            Session.Status.RECORDING, Session.Type.MOBILE)
-
-        if (sessionDBObject != null) {
-            return sessionDBObject.id
-        } else {
-            return null
-        }
+        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+            deviceId,
+            Session.Status.RECORDING, Session.Type.MOBILE
+        )?.id
     }
 
     fun getSessionByUUID(uuid: String): SessionDBObject? {
@@ -66,35 +64,65 @@ class SessionsRepository {
 
     fun update(session: Session) {
         session.endTime?.let {
-            mDatabase.sessions().update(session.uuid, session.name, session.tags,
-                it, session.status, session.version, session.urlLocation)
+            mDatabase.sessions().update(
+                session.uuid, session.name, session.tags,
+                it, session.status, session.version, session.urlLocation
+            )
         }
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+            deviceId,
+            Session.Status.RECORDING,
+            Session.Type.MOBILE
+        ) != null ||
+                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+                    deviceId,
+                    Session.Status.DISCONNECTED,
+                    Session.Type.MOBILE
+                ) != null
     }
 
     fun isMicrophoneSessionAlreadyRecording(): Boolean {
-        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(Session.Status.RECORDING, Session.Type.MOBILE, DeviceItem.Type.MIC) != null
+        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(
+            Session.Status.RECORDING,
+            Session.Type.MOBILE,
+            DeviceItem.Type.MIC
+        ) != null
     }
 
     fun mobileActiveSessionExists(): Boolean {
-        return mDatabase.sessions().loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByStatusAndType(Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+        return mDatabase.sessions()
+            .loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
+                mDatabase.sessions().loadSessionByStatusAndType(
+                    Session.Status.DISCONNECTED,
+                    Session.Type.MOBILE
+                ) != null
     }
 
     fun disconnectMobileBluetoothSessions() {
-        mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().disconnectSessions(
+            Session.Status.DISCONNECTED,
+            DeviceItem.Type.MIC,
+            Session.Type.MOBILE,
+            Session.Status.RECORDING
+        )
     }
 
     fun finishMobileMicSessions() {
-        mDatabase.sessions().finishSessions(Session.Status.FINISHED, Date(), DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().finishSessions(
+            Session.Status.FINISHED,
+            Date(),
+            DeviceItem.Type.MIC,
+            Session.Type.MOBILE,
+            Session.Status.RECORDING
+        )
     }
 
     fun disconnectSession(deviceId: String) {
-        mDatabase.sessions().disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
+        mDatabase.sessions()
+            .disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }
 
     fun finishedSessions(): List<Session> {

@@ -39,16 +39,18 @@ class FixedFragment : Fragment() {
             null,
             childFragmentManager
         )
-        controller = FixedController(
-            activity,
-            view,
-            sessionsViewModel,
-            viewLifecycleOwner,
-            settings,
-            apiServiceFactory,
-            childFragmentManager,
-            context
-        )
+        controller = context?.let {
+            FixedController(
+                activity,
+                view,
+                sessionsViewModel,
+                viewLifecycleOwner,
+                settings,
+                apiServiceFactory,
+                childFragmentManager,
+                it
+            )
+        }
 
         if (sessionsRequested) {
             controller?.onCreate()

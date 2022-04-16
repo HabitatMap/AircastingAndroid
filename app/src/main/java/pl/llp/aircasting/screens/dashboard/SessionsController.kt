@@ -10,7 +10,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.database.repositories.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.database.repositories.SessionsRepository
-import pl.llp.aircasting.events.*
+import pl.llp.aircasting.events.DeleteSessionEvent
+import pl.llp.aircasting.events.DeleteStreamsEvent
+import pl.llp.aircasting.events.ExportSessionEvent
+import pl.llp.aircasting.events.UpdateSessionEvent
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.exceptions.SessionUploadPendingError
 import pl.llp.aircasting.lib.CSVHelper
@@ -38,17 +41,17 @@ abstract class SessionsController(
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
-    protected val mMobileSessionsSyncService =
+    private val mMobileSessionsSyncService =
         SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    protected val mDownloadMeasurementsService =
+    private val mDownloadMeasurementsService =
         DownloadMeasurementsService(mApiService, mErrorHandler)
-    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
-    protected val mSessionRepository = SessionsRepository()
-    protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
+    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    private val mSessionRepository = SessionsRepository()
+    private val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
 
-    protected var editDialog: EditSessionBottomSheet? = null
-    protected var shareDialog: ShareSessionBottomSheet? = null
-    protected var deleteSessionDialog: DeleteSessionBottomSheet? = null
+    private var editDialog: EditSessionBottomSheet? = null
+    private var shareDialog: ShareSessionBottomSheet? = null
+    private var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
@@ -173,7 +176,7 @@ abstract class SessionsController(
     }
 
     private fun shareLocalFile(session: Session) {
-        CSVGenerationService(session, context!!, CSVHelper(), mErrorHandler).start()
+        context?.let { CSVGenerationService(session, it, CSVHelper(), mErrorHandler).start() }
     }
 
 

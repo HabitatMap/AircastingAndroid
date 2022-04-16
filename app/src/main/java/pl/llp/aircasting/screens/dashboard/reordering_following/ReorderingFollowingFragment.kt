@@ -24,15 +24,17 @@ class ReorderingFollowingFragment: FollowingFragment() {
             childFragmentManager
         )
 
-        controller = FollowingController(
-            activity,
-            view,
-            sessionsViewModel,
-            viewLifecycleOwner,
-            settings,
-            apiServiceFactory,
-            context
-        )
+        controller = context?.let {
+            FollowingController(
+                activity,
+                view,
+                sessionsViewModel,
+                viewLifecycleOwner,
+                settings,
+                apiServiceFactory,
+                it
+            )
+        }
 
         if (sessionsRequested) {
             controller?.onCreate()

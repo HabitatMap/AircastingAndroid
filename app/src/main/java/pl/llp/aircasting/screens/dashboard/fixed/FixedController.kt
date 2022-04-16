@@ -23,7 +23,7 @@ class FixedController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager,
-    mContext: Context?
+    mContext: Context
 ) : SessionsController(
     mRootActivity,
     mViewMvc,
