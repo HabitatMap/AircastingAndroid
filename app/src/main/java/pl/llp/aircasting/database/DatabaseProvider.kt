@@ -12,13 +12,15 @@ import pl.llp.aircasting.database.migrations.*
 
 
 @Database(
-    entities = [SessionDBObject::class,
+    entities = arrayOf(
+        SessionDBObject::class,
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
         NoteDBObject::class,
-        ActiveSessionMeasurementDBObject::class],
-    version = 29,
+        ActiveSessionMeasurementDBObject::class
+    ),
+    version = 28,
     exportSchema = true
 )
 @TypeConverters(
@@ -37,7 +39,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun activeSessionsMeasurements(): ActiveSessionMeasurementDao
 }
 
-//TODO - Using context in static fields should be avoided - preventing memory leaks.
 class DatabaseProvider {
     companion object {
         private val DB_NAME = "aircasting"
@@ -66,8 +67,7 @@ class DatabaseProvider {
                     MIGRATION_24_25,
                     MIGRATION_25_26,
                     MIGRATION_26_27,
-                    MIGRATION_27_28,
-                    MIGRATION_28_29
+                    MIGRATION_27_28
                 ).build()
             }
 
