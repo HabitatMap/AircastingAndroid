@@ -18,7 +18,7 @@ import pl.llp.aircasting.database.migrations.*
         SensorThresholdDBObject::class,
         NoteDBObject::class,
         ActiveSessionMeasurementDBObject::class],
-    version = 29,
+    version = 30,
     exportSchema = true
 )
 @TypeConverters(
