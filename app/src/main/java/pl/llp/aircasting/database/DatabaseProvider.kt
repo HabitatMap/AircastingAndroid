@@ -11,12 +11,14 @@ import pl.llp.aircasting.database.data_classes.*
 import pl.llp.aircasting.database.migrations.*
 
 @Database(
-    entities = [SessionDBObject::class,
+    entities = arrayOf(
+        SessionDBObject::class,
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
         NoteDBObject::class,
-        ActiveSessionMeasurementDBObject::class],
+        ActiveSessionMeasurementDBObject::class
+    ),
     version = 29,
     exportSchema = true
 )
