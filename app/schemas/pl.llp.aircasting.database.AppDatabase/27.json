@@ -268,7 +268,7 @@
       },
       {
         "tableName": "measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -278,7 +278,7 @@
           },
           {
             "fieldPath": "measurementStreamId",
-            "columnName": "stream_id",
+            "columnName": "measurement_stream_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -327,12 +327,12 @@
         },
         "indices": [
           {
-            "name": "index_measurements_stream_id",
+            "name": "index_measurements_measurement_stream_id",
             "unique": false,
             "columnNames": [
-              "stream_id"
+              "measurement_stream_id"
             ],
-            "createSql": "CREATE  INDEX `index_measurements_stream_id` ON `${TABLE_NAME}` (`stream_id`)"
+            "createSql": "CREATE  INDEX `index_measurements_measurement_stream_id` ON `${TABLE_NAME}` (`measurement_stream_id`)"
           },
           {
             "name": "index_measurements_session_id",
@@ -349,7 +349,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "stream_id"
+              "measurement_stream_id"
             ],
             "referencedColumns": [
               "id"
