@@ -16,7 +16,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 32
         versionCode 193
-        versionName "2.0.45"
+        versionName "2.0.46"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "en", "es", "fr"
