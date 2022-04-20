@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="629dp" />
+        app:layout_constraintGuide_end="646dp" />
 
     <TextView
         android:id="@+id/search_parameter_header"
@@ -57,7 +57,7 @@
         app:layout_constraintStart_toStartOf="@+id/search_parameter_header"
         app:layout_constraintTop_toTopOf="@+id/guidelineTop">
 
-        <RadioGroup
+        <com.google.android.material.chip.ChipGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -65,57 +65,48 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RadioButton
+                <com.google.android.material.chip.Chip
                     android:id="@+id/particulate_matter_radio_button"
-                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                    style="@style/Widget.Aircasting.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:minHeight="0dp"
                     android:text="@string/particulate_matter"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <RadioButton
+                <com.google.android.material.chip.Chip
                     android:id="@+id/temperature_radio_button"
-                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                    style="@style/Widget.Aircasting.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:minHeight="0dp"
                     android:text="@string/temperature"
                     app:layout_constraintEnd_toEndOf="parent" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RadioButton
+                <com.google.android.material.chip.Chip
                     android:id="@+id/humidity_radio_button"
-                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                    style="@style/Widget.Aircasting.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="@dimen/keyline_2"
-                    android:minHeight="0dp"
                     android:text="@string/humidity"
                     app:layout_constraintEnd_toStartOf="@id/graph_button" />
 
-                <RadioButton
+                <com.google.android.material.chip.Chip
                     android:id="@+id/graph_button"
-                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                    style="@style/Widget.Aircasting.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:minHeight="0dp"
                     android:text="@string/ozone"
                     app:layout_constraintEnd_toEndOf="parent" />
             </LinearLayout>
 
-        </RadioGroup>
+        </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -123,6 +114,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="366dp" />
+        app:layout_constraintGuide_end="348dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
