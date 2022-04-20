@@ -1,5 +1,6 @@
 package pl.llp.aircasting.database
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -43,11 +44,12 @@ class DatabaseProvider {
     companion object {
         private val DB_NAME = "aircasting"
 
+        @SuppressLint("StaticFieldLeak")
         private lateinit var mContext: Context
         var mAppDatabase: AppDatabase? = null
 
         fun setup(context: Context) {
-            mContext = context
+            mContext = context.applicationContext
         }
 
         fun get(): AppDatabase {
