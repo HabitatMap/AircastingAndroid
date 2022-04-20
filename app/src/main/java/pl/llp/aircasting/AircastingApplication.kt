@@ -3,6 +3,7 @@ package pl.llp.aircasting
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
+import pl.llp.aircasting.database.DatabaseProvider
 import pl.llp.aircasting.di.AppModule
 import pl.llp.aircasting.di.PermissionsModule
 import pl.llp.aircasting.lib.Settings
@@ -16,6 +17,9 @@ class AircastingApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        DatabaseProvider.setup(applicationContext)
+
         mSettings = Settings(this)
         if (mSettings?.isThemeChangeEnabled() == true) AppCompatDelegate.setDefaultNightMode(
             AppCompatDelegate.MODE_NIGHT_YES
