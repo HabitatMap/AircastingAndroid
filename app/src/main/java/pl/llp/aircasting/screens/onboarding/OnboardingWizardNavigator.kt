@@ -27,8 +27,6 @@ class OnboardingWizardNavigator(
         goToFragment(fragment)
     }
 
-    // TODO: Below method will be needed when implementing ticket:
-    // https://trello.com/c/hjkuOowK/1350-intro-wizard-unhide-hows-the-air-near-you (after "following & let's begin: search & follow fixed sessions")
     fun goToHowIsTheAir(listener: OnboardingHowsTheAirViewMvc.Listener) {
         incrementStepProgress()
         val fragment = OnboardingHowsTheAirFragment()
@@ -36,7 +34,7 @@ class OnboardingWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToMeasureandMap(listener: OnboardingMeasureAndMapViewMvc.Listener) {
+    fun goToMeasureAndMap(listener: OnboardingMeasureAndMapViewMvc.Listener) {
         incrementStepProgress()
         val fragment = OnboardingMeasureAndMapFragment()
         fragment.listener = listener
