@@ -73,7 +73,7 @@
 
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/particulate_matter_radio_button"
+                android:id="@+id/particulate_matter_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/temperature_radio_button"
+                android:id="@+id/temperature_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,15 +89,15 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/humidity_radio_button"
+                android:id="@+id/humidity_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/humidity"
-                app:layout_constraintEnd_toStartOf="@id/graph_button" />
+                app:layout_constraintEnd_toStartOf="@id/ozone_chip" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/graph_button"
+                android:id="@+id/ozone_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
