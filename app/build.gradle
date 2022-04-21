@@ -15,8 +15,8 @@ android {
         applicationId "pl.llp.aircasting"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 190
-        versionName "2.0.43"
+        versionCode 194
+        versionName "2.0.46"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "en", "es", "fr"

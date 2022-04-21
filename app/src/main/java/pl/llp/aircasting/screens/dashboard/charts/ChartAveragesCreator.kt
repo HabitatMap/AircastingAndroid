@@ -10,6 +10,7 @@ import kotlin.math.roundToInt
 class ChartAveragesCreator {
     companion object {
         const val MAX_AVERAGES_AMOUNT = 9
+        const val NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE = 60
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private const val MAX_X_VALUE = 8.0
         private const val MIN_X_VALUE = 0.0
@@ -90,28 +91,14 @@ class ChartAveragesCreator {
         val measurements: MutableList<Measurement>?
         var xValue = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
-        val periodData: MutableList<List<Measurement>?> = mutableListOf()
 
         measurements = stream.getLastMeasurements()
 
         if (measurements.isEmpty()) return entries
 
-        val calendar = Calendar.getInstance()
-        calendar.time = measurements[0].time
-        var hour: Int = calendar[Calendar.HOUR_OF_DAY]
-        var measurementsInHour: MutableList<Measurement> = ArrayList<Measurement>()
-        for (i in measurements.indices) {
-            val measurement: Measurement = measurements[i]
-            calendar.time = measurement.time
-            val measurementHour: Int = calendar[Calendar.HOUR_OF_DAY]
-            if (hour == measurementHour) measurementsInHour.add(measurement) else {
-                periodData.add(measurementsInHour)
-                hour = measurementHour
-                measurementsInHour = ArrayList<Measurement>()
-                measurementsInHour.add(measurement)
-            }
-        }
-        if (periodData.size > 0) {
+        val periodData = measurements.chunked(NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE)
+
+        if (periodData.isNotEmpty()) {
             for (dataChunk in periodData) {
                 if (xValue > MAX_AVERAGES_AMOUNT) return entries
 

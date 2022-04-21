@@ -12,13 +12,15 @@ import pl.llp.aircasting.database.migrations.*
 
 
 @Database(
-    entities = [SessionDBObject::class,
+    entities = arrayOf(
+        SessionDBObject::class,
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
         NoteDBObject::class,
-        ActiveSessionMeasurementDBObject::class],
-    version = 29,
+        ActiveSessionMeasurementDBObject::class
+    ),
+    version = 30,
     exportSchema = true
 )
 @TypeConverters(
@@ -37,7 +39,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun activeSessionsMeasurements(): ActiveSessionMeasurementDao
 }
 
-//TODO - Using context in static fields should be avoided - preventing memory leaks.
 class DatabaseProvider {
     companion object {
         private val DB_NAME = "aircasting"
@@ -54,21 +55,24 @@ class DatabaseProvider {
                 mAppDatabase = Room.databaseBuilder(
                     mContext,
                     AppDatabase::class.java, DB_NAME
-                ).addMigrations(
-                    MIGRATION_16_17,
-                    MIGRATION_17_18,
-                    MIGRATION_18_19,
-                    MIGRATION_19_20,
-                    MIGRATION_20_21,
-                    MIGRATION_21_22,
-                    MIGRATION_22_23,
-                    MIGRATION_23_24,
-                    MIGRATION_24_25,
-                    MIGRATION_25_26,
-                    MIGRATION_26_27,
-                    MIGRATION_27_28,
-                    MIGRATION_28_29
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .addMigrations(
+                        MIGRATION_16_17,
+                        MIGRATION_17_18,
+                        MIGRATION_18_19,
+                        MIGRATION_19_20,
+                        MIGRATION_20_21,
+                        MIGRATION_21_22,
+                        MIGRATION_22_23,
+                        MIGRATION_23_24,
+                        MIGRATION_24_25,
+                        MIGRATION_25_26,
+                        MIGRATION_26_27,
+                        MIGRATION_27_28,
+                        MIGRATION_28_29
+                    )
+                    .build()
             }
 
             return mAppDatabase!!
