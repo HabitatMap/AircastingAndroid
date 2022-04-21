@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="@+id/searchInputField"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
-
     <include
         android:id="@+id/include"
         layout="@layout/prominent_app_bar" />
@@ -31,16 +30,13 @@
         android:id="@+id/searchInputField"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-
         android:layout_marginStart="@dimen/keyline_7"
         android:layout_marginEnd="@dimen/keyline_9"
         android:background="@drawable/search_input_field_background"
         app:iconifiedByDefault="false"
         app:layout_constraintTop_toTopOf="@+id/guidelineTop"
-
         app:queryBackground="@null"
         app:queryHint="@string/search_session_query_hint"
-
         app:searchIcon="@null" />
 
     <TextView
@@ -108,7 +104,6 @@
                 android:checked="true"
                 android:text="@string/ozone"
                 app:layout_constraintEnd_toEndOf="parent" />
-
         </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
