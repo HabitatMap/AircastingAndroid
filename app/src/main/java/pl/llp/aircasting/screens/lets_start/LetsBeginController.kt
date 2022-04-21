@@ -65,8 +65,6 @@ class LetsBeginController(
     }
 
     override fun onFollowSessionSelected() {
-        val intent = Intent(mContext, SearchFixedSessionsActivity::class.java)
-
-        mRootActivity?.startActivity(intent)
+        SearchFixedSessionsActivity.start(mRootActivity)
     }
 }
