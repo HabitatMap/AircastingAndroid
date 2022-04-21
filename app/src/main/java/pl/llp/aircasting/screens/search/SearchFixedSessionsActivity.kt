@@ -12,7 +12,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         fun start(rootActivity: FragmentActivity?) {
             rootActivity ?: return
 
-            val intent = Intent(rootActivity, SyncActivity::class.java)
+            val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
 
             rootActivity.startActivity(intent)
         }
