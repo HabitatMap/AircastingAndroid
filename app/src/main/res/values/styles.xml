@@ -417,7 +417,9 @@
         <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
     </style>
 
-    <style name="Widget.Aircasting.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Widget.Aircasting.Chip.Filter" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="checkedIconEnabled">false</item>
+        <item name="checkedIcon">@null</item>
         <item name="chipBackgroundColor">@color/chip_background_selector</item>
         <item name="android:textColor">@color/chip_text_selector</item>
         <item name="android:fontFamily">@font/muli_semi_bold</item>

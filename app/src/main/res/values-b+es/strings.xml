@@ -379,7 +379,6 @@
     <string name="follow_title">Follow session</string>
     <string name="follow_description">recorded by a measuring station</string>
     <string name="title_search_fixed_sessions">Search fixed sessions</string>
-    <string name="title_search_fixed_sessions">Search fixed sessions</string>
     <string name="search_session_query_hint">Session location</string>
     <string name="search_session_parameters_header">Which parameter are you interested in?</string>
     <string name="ozone">Ozone</string>
