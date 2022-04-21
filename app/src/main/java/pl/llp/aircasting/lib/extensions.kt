@@ -8,12 +8,10 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
-import kotlinx.android.synthetic.main.app_bar.*
-import kotlinx.android.synthetic.main.prominent_app_bar.*
+import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.prominent_app_bar.topAppBar
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
@@ -50,7 +48,7 @@ fun TextView.setAppearance(context: Context, res: Int) {
     }
 }
 
-fun setupAppBar(activity: BaseActivity, toolbar: androidx.appcompat.widget.Toolbar) {
+fun setupAppBar(activity: BaseActivity, toolbar: Toolbar) {
     activity.setSupportActionBar(toolbar)
     adjustMenuVisibility(activity)
     toolbar.setNavigationOnClickListener {
