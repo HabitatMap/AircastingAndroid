@@ -36,6 +36,10 @@ class LetsBeginViewMvcImpl(
         syncCard?.setOnClickListener {
             onSyncSelected()
         }
+        val followSessionCard = rootView?.follow_session_card
+        followSessionCard?.setOnClickListener {
+            onFollowSessionCardClicked()
+        }
     }
 
     override fun showMoreInfoDialog() {
@@ -64,6 +68,12 @@ class LetsBeginViewMvcImpl(
     private fun onMoreInfoClicked() {
         for (listener in listeners) {
             listener.onMoreInfoClicked()
+        }
+    }
+
+    private fun onFollowSessionCardClicked() {
+        for (listener in listeners) {
+            listener.onFollowSessionSelected()
         }
     }
 }

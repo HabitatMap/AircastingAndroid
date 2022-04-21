@@ -228,7 +228,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/follow_card"
+            android:id="@+id/follow_session_card"
             style="@style/Widget.Aircasting.Cards"
             android:layout_width="0dp"
             android:layout_height="0dp"
