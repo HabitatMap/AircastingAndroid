@@ -134,21 +134,6 @@ open class SensorsModule {
 
     @Provides
     @Singleton
-    open fun providesAirBeamReconnector(
-        application: AircastingApplication,
-        sessionsRepository: SessionsRepository,
-        airBeamDiscoveryService: AirBeamDiscoveryService
-    ): AirBeamReconnector = AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService)
-
-    @Provides
-    @Singleton
-    open fun providesAirBeamDiscoveryService(
-        application: AircastingApplication,
-        bluetoothManager: BluetoothManager
-    ): AirBeamDiscoveryService = AirBeamDiscoveryService(application, bluetoothManager)
-
-    @Provides
-    @Singleton
     fun providesSessionBuilder(): SessionBuilder = SessionBuilder()
 
     @Provides
