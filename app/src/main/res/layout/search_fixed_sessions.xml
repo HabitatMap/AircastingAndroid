@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="@+id/searchInputField"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
-
     <include
         android:id="@+id/include"
         layout="@layout/prominent_app_bar" />
@@ -31,16 +30,13 @@
         android:id="@+id/searchInputField"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-
         android:layout_marginStart="@dimen/keyline_7"
         android:layout_marginEnd="@dimen/keyline_9"
         android:background="@drawable/search_input_field_background"
         app:iconifiedByDefault="false"
         app:layout_constraintTop_toTopOf="@+id/guidelineTop"
-
         app:queryBackground="@null"
         app:queryHint="@string/search_session_query_hint"
-
         app:searchIcon="@null" />
 
     <TextView
@@ -77,7 +73,7 @@
 
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/particulate_matter_radio_button"
+                android:id="@+id/particulate_matter_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -85,7 +81,7 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/temperature_radio_button"
+                android:id="@+id/temperature_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,22 +89,21 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/humidity_radio_button"
+                android:id="@+id/humidity_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/humidity"
-                app:layout_constraintEnd_toStartOf="@id/graph_button" />
+                app:layout_constraintEnd_toStartOf="@id/ozone_chip" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/graph_button"
+                android:id="@+id/ozone_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/ozone"
                 app:layout_constraintEnd_toEndOf="parent" />
-
         </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
