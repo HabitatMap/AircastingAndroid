@@ -1,12 +1,10 @@
 package pl.llp.aircasting.bluetooth
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-
+@SuppressLint("MissingPermission")
 open class BluetoothManagerDefault : BluetoothManager {
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
