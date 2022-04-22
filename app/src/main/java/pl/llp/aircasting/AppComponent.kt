@@ -40,6 +40,7 @@ import javax.inject.Singleton
         AppModule::class,
         ApiModule::class,
         SettingsModule::class,
+        ActivityModule::class,
         PermissionsModule::class,
         SensorsModule::class,
         NewSessionWizardModule::class
