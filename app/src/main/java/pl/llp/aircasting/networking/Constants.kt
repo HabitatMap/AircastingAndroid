@@ -1,13 +1,13 @@
 package pl.llp.aircasting.networking
 
 object Constants {
-    /* GET Methods */
+    /* GET Requests */
     const val urlDownloadSession = "/api/user/sessions/empty.json"
     const val urlDownloadFixedMeasurements = "/api/realtime/sync_measurements.json"
     const val urlLogin = "/api/user.json"
     const val urlExportSession = "/api/sessions/export_by_uuid.json"
 
-    /* POST Methods */
+    /* POST Requests */
     const val urlCreateMobileSession = "/api/sessions"
     const val urlCreateFixedSession = "/api/realtime/sessions.json"
     const val urlSync = "/api/user/sessions/sync_with_versioning.json"

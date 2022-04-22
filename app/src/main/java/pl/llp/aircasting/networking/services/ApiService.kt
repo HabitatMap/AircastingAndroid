@@ -47,7 +47,7 @@ interface ApiService {
         @Query("uuid") uuid: String
     ): Call<ExportSessionResponse>
 
-    /* POST Methods */
+    /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
     fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
