@@ -7,8 +7,8 @@ import android.os.PowerManager
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
 import kotlinx.android.synthetic.main.prominent_app_bar.*
@@ -53,7 +53,7 @@ fun adjustMenuVisibility(
 ) {
     val visibility =
         if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.INVISIBLE
-    activity.topAppBar?.findViewById<ConstraintLayout>(R.id.reorder_buttons_group)?.visibility =
+    activity.topAppBar?.findViewById<ImageView>(R.id.reorder_sessions_button)?.visibility =
         visibility
 }
 

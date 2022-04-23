@@ -377,5 +377,6 @@
     <string name="battery_desc">Mientras sale, la aplicación utiliza servicios de primer plano para sincronizar y tener datos actualizados para la próxima vez que abra la aplicación. Para hacer eso, necesitaremos que desactive la Optimización de la batería en la configuración.</string>
     <string name="running_background">Corriendo en segundo plano</string>
     <string name="explore_existing_sessions">Explorar sesiones existentes</string>
+    <string name="finished">Acabado</string>
 
 </resources>

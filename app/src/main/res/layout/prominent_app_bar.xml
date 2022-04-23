@@ -20,8 +20,7 @@
             android:id="@+id/reorder_buttons_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:visibility="invisible">
+            android:layout_gravity="end">
 
             <ImageView
                 android:id="@+id/reorder_sessions_button"
@@ -31,20 +30,35 @@
                 android:backgroundTint="@color/aircasting_white"
                 android:clickable="true"
                 android:focusable="true"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_draggable_icon"
                 app:tint="@color/aircasting_grey_700" />
 
+            <ImageView
+                android:id="@+id/search_follow_icon"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:visibility="invisible"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_search_group"
+                app:tint="@color/aircasting_blue_400" />
+
             <Button
                 android:id="@+id/finished_reordering_session_button"
                 style="@style/Widget.Aircasting.ExpandedCardButtons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Finished"
+                android:text="@string/finished"
                 android:textColor="@color/aircasting_blue_400"
-                android:visibility="gone"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

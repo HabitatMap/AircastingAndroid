@@ -481,5 +481,6 @@
     <string name="running_background">Running on Background</string>
     <string name="battery_optimization_all_apps_aircasting_don_t_optimize" translatable="false"><![CDATA[Battery optimization -> All apps -> Aircasting -> Don\'t optimize]]></string>
     <string name="explore_existing_sessions">Explore existing sessions</string>
+    <string name="finished">Finished</string>
 
 </resources>
