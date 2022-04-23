@@ -27,14 +27,20 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_lets_start"
-        android:name="pl.llp.aircasting.screens.lets_start.LetsStartFragment"
+        android:id="@+id/navigation_lets_begin"
+        android:name="pl.llp.aircasting.screens.lets_begin.LetsStartFragment"
         android:label="     "
-        tools:layout="@layout/fragment_lets_start" />
+        tools:layout="@layout/fragment_lets_begin" />
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="pl.llp.aircasting.screens.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_search_fixed_sessions"
+        android:name="pl.llp.aircasting.screens.search.SearchFixedSessionsFragment"
+        android:label="@string/title_search_fixed_sessions"
+        tools:layout="@layout/search_fixed_sessions" />
 </navigation>

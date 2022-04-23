@@ -11,7 +11,7 @@ import pl.llp.aircasting.screens.dashboard.fixed.FixedFragment
 import pl.llp.aircasting.screens.dashboard.following.FollowingFragment
 import pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardFragment
 import pl.llp.aircasting.screens.dashboard.reordering_following.ReorderingFollowingFragment
-import pl.llp.aircasting.screens.lets_start.LetsStartFragment
+import pl.llp.aircasting.screens.lets_begin.LetsStartFragment
 import pl.llp.aircasting.screens.login.LoginActivity
 import pl.llp.aircasting.screens.main.MainActivity
 import pl.llp.aircasting.screens.new_session.NewSessionActivity

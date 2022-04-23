@@ -29,7 +29,7 @@
     <!--  Dashboard -->
     <string name="title_settings">Paramètres</string>
     <string name="dashboard_empty_header">Prêt à commencer ?</string>
-    <string name="dashboard_empty_text">Explorez &amp; suivez les sessions AirCasting existantes ou utilisez votre propre appareil pour enregistrer une nouvelle session et surveiller votre santé &amp; environnement.</string>
+    <string name="dashboard_empty_text">Enregistrez une nouvelle session pour surveiller votre santé &amp; environnement.</string>
     <string name="dashboard_tabs_following">Suivante</string>
     <string name="dashboard_tabs_mobile_active">Mobile actif</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile En sommeil</string>
@@ -374,8 +374,6 @@
     <string name="use_dark_theme">Utiliser le thème sombre</string>
     <string name="battery_desc">Pendant que vous quittez, l\'application utilise les services de premier plan pour se synchroniser et avoir de nouvelles données pour la prochaine fois que vous ouvrez l\'application. Pour ce faire, nous aurons besoin que vous désactiviez l\'optimisation de la batterie dans les paramètres.</string>
     <string name="running_background">Courir en arrière-plan</string>
-    <string name="explore_existing_sessions">Explorer les sessions existantes</string>
-    <string name="finished">Achevé</string>
 
 
 </resources>

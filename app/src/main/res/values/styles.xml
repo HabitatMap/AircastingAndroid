@@ -417,6 +417,13 @@
         <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
     </style>
 
+    <style name="Widget.Aircasting.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_selector</item>
+        <item name="android:textColor">@color/chip_text_selector</item>
+        <item name="android:fontFamily">@font/muli_semi_bold</item>
+        <item name="chipSpacingHorizontal">@dimen/keyline_10</item>
+    </style>
+
     <style name="Widget.Aircasting.ExpandedCardButtonUnfollow" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:translationX">0dp</item>
         <item name="android:backgroundTint">@color/aircasting_white</item>

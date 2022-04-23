@@ -1,10 +1,10 @@
-package pl.llp.aircasting.screens.lets_start
+package pl.llp.aircasting.screens.lets_begin
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.fragment_lets_start.view.*
+import kotlinx.android.synthetic.main.fragment_lets_begin.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
@@ -18,7 +18,7 @@ class LetsStartViewMvcImpl(
     private var mDialog: MoreInfoBottomSheet? = null
 
     init {
-        this.rootView = inflater.inflate(R.layout.fragment_lets_start, parent, false)
+        this.rootView = inflater.inflate(R.layout.fragment_lets_begin, parent, false)
         val fixedSessionCard = rootView?.fixed_session_start_card
         fixedSessionCard?.setOnClickListener {
             onFixedSessionSelected()

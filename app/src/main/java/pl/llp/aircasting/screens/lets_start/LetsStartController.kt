@@ -1,4 +1,4 @@
-package pl.llp.aircasting.screens.lets_start
+package pl.llp.aircasting.screens.lets_begin
 
 import android.content.Context
 import androidx.fragment.app.FragmentActivity

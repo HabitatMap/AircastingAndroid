@@ -78,7 +78,7 @@ class MainViewMvcImpl(
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_dashboard,
-                R.id.navigation_lets_start,
+                R.id.navigation_lets_begin,
                 R.id.navigation_settings
             )
         )
@@ -106,9 +106,9 @@ class MainViewMvcImpl(
 
                     }
                 }
-                R.id.navigation_lets_start -> {
+                R.id.navigation_lets_begin -> {
                     adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_lets_start)
+                    mNavController?.navigate(R.id.navigation_lets_begin)
                 }
                 R.id.navigation_settings -> {
                     adjustMenuVisibility(rootActivity, false)
