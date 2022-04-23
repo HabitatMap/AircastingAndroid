@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.lib.adjustMenuVisibility
+import pl.llp.aircasting.lib.setupAppBar
 import pl.llp.aircasting.screens.common.BaseActivity
 
 class MyAccountActivity : BaseActivity() {
@@ -27,15 +28,7 @@ class MyAccountActivity : BaseActivity() {
         controller = MyAccountController(this, view, settings)
 
         setContentView(view.rootView)
-        setupAppBar()
-    }
-
-    private fun setupAppBar() {
-        setSupportActionBar(topAppBar)
-        adjustMenuVisibility(this, false)
-        topAppBar?.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        setupAppBar(this, topAppBar)
     }
 
     override fun onStart() {

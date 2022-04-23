@@ -9,5 +9,6 @@ interface LetsBeginViewMvc: ObservableViewMvc<LetsBeginViewMvc.Listener> {
         fun onMobileSessionSelected()
         fun onSyncSelected()
         fun onMoreInfoClicked()
+        fun onFollowSessionSelected()
     }
 }

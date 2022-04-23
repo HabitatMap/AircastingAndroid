@@ -11,6 +11,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.lib.ResultCodes
 import pl.llp.aircasting.lib.adjustMenuVisibility
+import pl.llp.aircasting.lib.setupAppBar
 import pl.llp.aircasting.models.SessionsViewModel
 import pl.llp.aircasting.networking.services.ApiServiceFactory
 import pl.llp.aircasting.screens.common.BaseActivity
@@ -72,15 +73,7 @@ class MapActivity: BaseActivity() {
         controller?.onCreate()
 
         setContentView(view?.rootView)
-        setupAppBar()
-    }
-
-    private fun setupAppBar() {
-        setSupportActionBar(topAppBar)
-        adjustMenuVisibility(this, false)
-        topAppBar?.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        setupAppBar(this, topAppBar)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

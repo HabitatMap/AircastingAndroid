@@ -12,6 +12,7 @@ import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.lib.adjustMenuVisibility
+import pl.llp.aircasting.lib.setupAppBar
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.PermissionsManager
@@ -109,15 +110,7 @@ class NewSessionActivity : BaseActivity() {
         controller?.onCreate()
 
         setContentView(view.rootView)
-        setupAppBar()
-    }
-
-    private fun setupAppBar() {
-        setSupportActionBar(topAppBar)
-        adjustMenuVisibility(this, false)
-        topAppBar?.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        setupAppBar(this, topAppBar)
     }
 
     override fun onResume() {

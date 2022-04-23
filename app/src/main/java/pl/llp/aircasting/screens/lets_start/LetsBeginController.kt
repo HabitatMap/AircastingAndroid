@@ -1,6 +1,7 @@
 package pl.llp.aircasting.screens.lets_begin
 
 import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import pl.llp.aircasting.R
 import pl.llp.aircasting.exceptions.ErrorHandler
@@ -9,6 +10,7 @@ import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.networking.services.ConnectivityManager
 import pl.llp.aircasting.screens.common.BaseController
 import pl.llp.aircasting.screens.new_session.NewSessionActivity
+import pl.llp.aircasting.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 
@@ -60,5 +62,9 @@ class LetsBeginController(
 
     override fun onMoreInfoClicked() {
         mViewMvc?.showMoreInfoDialog()
+    }
+
+    override fun onFollowSessionSelected() {
+        SearchFixedSessionsActivity.start(mRootActivity)
     }
 }

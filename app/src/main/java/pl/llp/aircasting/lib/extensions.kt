@@ -11,9 +11,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
-import kotlinx.android.synthetic.main.prominent_app_bar.*
+import androidx.appcompat.widget.Toolbar
+import kotlinx.android.synthetic.main.prominent_app_bar.topAppBar
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
+import pl.llp.aircasting.screens.common.BaseActivity
 
 fun EventBus.safeRegister(subscriber: Any) {
     if (!EventBus.getDefault().isRegistered(subscriber)) {
@@ -46,9 +48,17 @@ fun TextView.setAppearance(context: Context, res: Int) {
     }
 }
 
+fun setupAppBar(activity: BaseActivity, toolbar: Toolbar) {
+    activity.setSupportActionBar(toolbar)
+    adjustMenuVisibility(activity)
+    toolbar.setNavigationOnClickListener {
+        activity.onBackPressed()
+    }
+}
+
 fun adjustMenuVisibility(
     activity: Activity,
-    isFollowingTab: Boolean,
+    isFollowingTab: Boolean = false,
     followingSessionsNumber: Int = 0
 ) {
     val visibility =

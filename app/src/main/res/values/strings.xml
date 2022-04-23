@@ -481,7 +481,13 @@
     <string name="running_background">Running on Background</string>
     <string name="battery_optimization_all_apps_aircasting_don_t_optimize" translatable="false"><![CDATA[Battery optimization -> All apps -> Aircasting -> Don\'t optimize]]></string>
     <string name="follow_title">Follow session</string>
-    <string name="follow_description">recorded by a measuring station</string>
+    <string name="follow_description">search &amp; follow fixed sessions</string>
     <string name="title_search_fixed_sessions">Search fixed sessions</string>
+    <string name="search_session_query_hint">Session location</string>
+    <string name="search_session_parameters_header">Which parameter are you interested in?</string>
+    <string name="ozone">Ozone</string>
+    <string name="humidity">Humidity</string>
+    <string name="temperature">Temperature</string>
+    <string name="particulate_matter">Particulate matter</string>
 
 </resources>

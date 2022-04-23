@@ -7,6 +7,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.bluetooth.BluetoothManager
 import pl.llp.aircasting.lib.adjustMenuVisibility
+import pl.llp.aircasting.lib.setupAppBar
 import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.common.BaseActivity
 import javax.inject.Inject
@@ -49,15 +50,7 @@ class ClearSDCardActivity : BaseActivity() {
         controller?.onCreate()
 
         setContentView(view.rootView)
-        setupAppBar()
-    }
-
-    private fun setupAppBar() {
-        setSupportActionBar(topAppBar)
-        adjustMenuVisibility(this, false)
-        topAppBar?.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        setupAppBar(this, topAppBar)
     }
 
     override fun onResume() {
