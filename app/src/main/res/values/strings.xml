@@ -79,7 +79,7 @@
     <string name="turn_on_wifi_dialog_ok_button">Turn on</string>
 
     <!-- Let's begin (new session start) -->
-    <string name="title_lets_start">Let\'s begin</string>
+    <string name="title_lets_begin">Let\'s begin</string>
     <string name="record_new_session_title">Record a new session</string>
     <string name="select_session_type_header">How would you like to add your session?</string>
     <string name="new_session_more_info"><u>more info</u></string>
@@ -480,5 +480,8 @@
     <string name="battery_desc">While you exit, the app uses foreground services to sync and have fresh data for the next time you open the app. In order to do that, we will need you to disable Battery Optimization in the settings.</string>
     <string name="running_background">Running on Background</string>
     <string name="battery_optimization_all_apps_aircasting_don_t_optimize" translatable="false"><![CDATA[Battery optimization -> All apps -> Aircasting -> Don\'t optimize]]></string>
+    <string name="follow_title">Follow session</string>
+    <string name="follow_description">recorded by a measuring station</string>
+    <string name="title_search_fixed_sessions">Search fixed sessions</string>
 
 </resources>

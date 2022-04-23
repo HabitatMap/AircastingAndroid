@@ -78,7 +78,7 @@
     <string name="turn_on_wifi_dialog_ok_button">Allumer</string>
 
     <!-- Let's begin (new session start) -->
-    <string name="title_lets_start">Commençons</string>
+    <string name="title_lets_begin">Commençons</string>
     <string name="record_new_session_title">Enregistrer une nouvelle session</string>
     <string name="select_session_type_header">Comment souhaitez-vous ajouter votre session?</string>
     <string name="new_session_more_info"><u>Plus d\'informations</u></string>
@@ -374,5 +374,8 @@
     <string name="use_dark_theme">Utiliser le thème sombre</string>
     <string name="battery_desc">Pendant que vous quittez, l\'application utilise les services de premier plan pour se synchroniser et avoir de nouvelles données pour la prochaine fois que vous ouvrez l\'application. Pour ce faire, nous aurons besoin que vous désactiviez l\'optimisation de la batterie dans les paramètres.</string>
     <string name="running_background">Courir en arrière-plan</string>
+    <string name="follow_title">Follow session</string>
+    <string name="follow_description">recorded by a measuring station</string>
+    <string name="title_search_fixed_sessions">Search fixed sessions</string>
 
 </resources>

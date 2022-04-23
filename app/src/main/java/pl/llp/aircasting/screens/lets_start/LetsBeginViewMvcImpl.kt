@@ -8,12 +8,12 @@ import kotlinx.android.synthetic.main.fragment_lets_begin.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.screens.common.BaseObservableViewMvc
 
-class LetsStartViewMvcImpl(
+class LetsBeginViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
-) : BaseObservableViewMvc<LetsStartViewMvc.Listener>(),
-    LetsStartViewMvc {
+) : BaseObservableViewMvc<LetsBeginViewMvc.Listener>(),
+    LetsBeginViewMvc {
     private val mSupportFragmentManager: FragmentManager = supportFragmentManager
     private var mDialog: MoreInfoBottomSheet? = null
 

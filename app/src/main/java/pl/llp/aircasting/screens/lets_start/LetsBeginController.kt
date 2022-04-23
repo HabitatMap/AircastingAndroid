@@ -13,12 +13,12 @@ import pl.llp.aircasting.screens.sync.SyncActivity
 import pl.llp.aircasting.screens.sync.SyncUnavailableDialog
 
 
-class LetsStartController(
+class LetsBeginController(
     private var mRootActivity: FragmentActivity?,
-    private var viewMvc: LetsStartViewMvcImpl?,
+    private var viewMvc: LetsBeginViewMvcImpl?,
     private var mContext: Context?,
     private val mErrorHandler: ErrorHandler
-): BaseController<LetsStartViewMvcImpl>(viewMvc), LetsStartViewMvc.Listener {
+): BaseController<LetsBeginViewMvcImpl>(viewMvc), LetsBeginViewMvc.Listener {
 
     fun onCreate() {
         mViewMvc?.registerListener(this)

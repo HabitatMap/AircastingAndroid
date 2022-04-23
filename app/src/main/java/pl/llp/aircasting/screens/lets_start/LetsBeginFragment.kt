@@ -10,7 +10,7 @@ import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.common.BaseFragment
 import javax.inject.Inject
 
-class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController>()  {
+class LetsBeginFragment : BaseFragment<LetsBeginViewMvcImpl, LetsBeginController>()  {
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
@@ -26,8 +26,8 @@ class LetsStartFragment : BaseFragment<LetsStartViewMvcImpl, LetsStartController
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = LetsStartViewMvcImpl(layoutInflater, null, childFragmentManager)
-        controller = LetsStartController(activity, view, context, errorHandler)
+        val view = LetsBeginViewMvcImpl(layoutInflater, null, childFragmentManager)
+        controller = LetsBeginController(activity, view, context, errorHandler)
         controller?.onCreate()
 
         return view.rootView

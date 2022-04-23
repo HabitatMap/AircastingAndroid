@@ -78,7 +78,7 @@
     <string name="turn_on_wifi_dialog_ok_button">Enciende</string>
 
     <!-- Let's begin (new session start) -->
-    <string name="title_lets_start">Vamos a empezar</string>
+    <string name="title_lets_begin">Vamos a empezar</string>
     <string name="record_new_session_title">Grabar una nueva sesión</string>
     <string name="select_session_type_header">¿Cómo le gustaría agregar su sesión?</string>
     <string name="new_session_more_info"><u>Más información</u></string>
@@ -376,5 +376,8 @@
     <string name="use_dark_theme">Usar tema oscuro</string>
     <string name="battery_desc">Mientras sale, la aplicación utiliza servicios de primer plano para sincronizar y tener datos actualizados para la próxima vez que abra la aplicación. Para hacer eso, necesitaremos que desactive la Optimización de la batería en la configuración.</string>
     <string name="running_background">Corriendo en segundo plano</string>
+    <string name="follow_title">Follow session</string>
+    <string name="follow_description">recorded by a measuring station</string>
+    <string name="title_search_fixed_sessions">Search fixed sessions</string>
 
 </resources>
