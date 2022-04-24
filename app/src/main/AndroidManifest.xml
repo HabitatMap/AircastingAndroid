@@ -34,30 +34,30 @@
         android:usesCleartextTraffic="true">
 
         <service
-            android:name="pl.llp.aircasting.sensor.microphone.MicrophoneService"
+            android:name=".util.helpers.sensor.microphone.MicrophoneService"
             android:stopWithTask="true" />
 
         <service
-            android:name="pl.llp.aircasting.sensor.AirBeamRecordSessionService"
+            android:name=".util.helpers.sensor.AirBeamRecordSessionService"
             android:stopWithTask="true" />
 
         <service
-            android:name="pl.llp.aircasting.sensor.AirBeamReconnectSessionService"
+            android:name=".util.helpers.sensor.AirBeamReconnectSessionService"
             android:stopWithTask="true" />
 
         <service
-            android:name="pl.llp.aircasting.sensor.AirBeamSyncService"
+            android:name=".util.helpers.sensor.AirBeamSyncService"
             android:stopWithTask="true" />
 
         <service
-            android:name="pl.llp.aircasting.sensor.AirBeamClearCardService"
+            android:name=".util.helpers.sensor.AirBeamClearCardService"
             android:stopWithTask="true" />
 
         <activity
-            android:name="pl.llp.aircasting.screens.onboarding.OnboardingActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.main.MainActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -69,37 +69,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="pl.llp.aircasting.screens.login.LoginActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.login.LoginActivity"
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.create_account.CreateAccountActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity"
             android:excludeFromRecents="true"
             android:noHistory="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.new_session.NewSessionActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity"
             android:label=""
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.session_view.map.MapActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity"
             android:label=""
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.session_view.graph.GraphActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity"
             android:label=""
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.settings.my_account.MyAccountActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity"
             android:label=""
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.settings.clear_sd_card.ClearSDCardActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity"
             android:label=""
             android:screenOrientation="portrait" />
         <activity
-            android:name="pl.llp.aircasting.screens.sync.SyncActivity"
+            android:name="pl.llp.aircasting.ui.view.screens.sync.SyncActivity"
             android:label=""
             android:screenOrientation="portrait" />
 
