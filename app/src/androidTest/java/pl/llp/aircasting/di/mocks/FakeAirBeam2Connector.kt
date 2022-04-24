@@ -2,12 +2,12 @@ package pl.llp.aircasting.di.mocks
 
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.exceptions.ErrorHandler
 import pl.llp.aircasting.helpers.stubDeviceItem
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.sensor.airbeam2.AirBeam2Connector
-import pl.llp.aircasting.sensor.airbeam2.AirBeam2Reader
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Reader
 
 class FakeAirBeam2Connector(
     private val app: AircastingApplication,

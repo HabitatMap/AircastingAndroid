@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pl.llp.aircasting.screens.common.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<pl.llp.aircasting.ui.view.screens.common.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/tools"
     android:id="@+id/choose_location"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -82,4 +81,4 @@
             app:layout_constraintTop_toBottomOf="@id/map" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</pl.llp.aircasting.screens.common.CustomScrollView>
+</pl.llp.aircasting.ui.view.screens.common.CustomScrollView>

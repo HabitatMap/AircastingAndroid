@@ -1,9 +1,9 @@
 package pl.llp.aircasting.di.mocks
 
 import android.content.Context
-import pl.llp.aircasting.screens.new_session.session_details.FixedSessionDetailsViewMvc
-import pl.llp.aircasting.screens.new_session.session_details.Network
-import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsController
+import pl.llp.aircasting.ui.view.screens.new_session.session_details.FixedSessionDetailsViewMvc
+import pl.llp.aircasting.ui.view.screens.new_session.session_details.Network
+import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsController
 
 class FakeFixedSessionDetailsController(
     private val mContext: Context?,

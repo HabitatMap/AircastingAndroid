@@ -17,9 +17,9 @@ import pl.llp.aircasting.helpers.JsonBody
 import pl.llp.aircasting.helpers.MockWebServerDispatcher
 import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
 import pl.llp.aircasting.helpers.getMockWebServerFrom
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.screens.main.MainActivity
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import okhttp3.mockwebserver.MockResponse
 import org.junit.After
 import org.junit.Assert.assertEquals

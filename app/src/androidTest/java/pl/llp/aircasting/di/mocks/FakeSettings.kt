@@ -1,7 +1,7 @@
 package pl.llp.aircasting.di.mocks
 
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.util.Settings
 
 class FakeSettings(application: AircastingApplication): Settings(application) {
     private var preferences : HashMap<String, String> = HashMap()

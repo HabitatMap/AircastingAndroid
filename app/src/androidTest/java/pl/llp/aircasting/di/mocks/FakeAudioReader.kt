@@ -2,7 +2,7 @@ package pl.llp.aircasting.di.mocks
 
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.sensor.microphone.AudioReader
+import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
