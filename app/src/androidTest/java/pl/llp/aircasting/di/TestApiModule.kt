@@ -1,9 +1,9 @@
 package pl.llp.aircasting.di
 
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.di.mocks.FakeApiServiceFactory
 import pl.llp.aircasting.di.mocks.FakeWebServerFactory
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.util.Settings
 
 class TestApiModule() : ApiModule(){
     override fun providesMockWebServerFactory(): WebServerFactory =

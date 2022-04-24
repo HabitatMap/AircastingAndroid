@@ -1,9 +1,8 @@
 package pl.llp.aircasting
 
 import junit.framework.TestCase
-import pl.llp.aircasting.models.Measurement
-import pl.llp.aircasting.models.SensorThreshold
-import org.junit.Assert.assertEquals
+import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.model.SensorThreshold
 import org.junit.jupiter.api.Test
 import java.util.*
 
