@@ -9,9 +9,9 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.prominent_app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.ui.view.screens.common.BaseFragment
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.adjustMenuVisibility
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
 import javax.inject.Inject
 
 class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {

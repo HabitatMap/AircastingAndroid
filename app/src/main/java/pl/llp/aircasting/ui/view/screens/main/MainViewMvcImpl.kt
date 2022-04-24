@@ -87,7 +87,6 @@ class MainViewMvcImpl(
         )
         rootActivity.setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_dashboard -> {
