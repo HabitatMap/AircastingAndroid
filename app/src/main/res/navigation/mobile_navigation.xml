@@ -37,4 +37,9 @@
         android:name="pl.llp.aircasting.ui.view.screens.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/navigation_searchFollowFragment"
+        android:name="pl.llp.aircasting.ui.view.fragments.SearchFollowFragment"
+        android:label=""
+        tools:layout="@layout/fragment_search_fixed_sessions" />
 </navigation>
