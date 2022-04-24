@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.ui.view.screens.common.BaseFragment
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
 import javax.inject.Inject
 
 class LetsBeginFragment : BaseFragment<LetsBeginViewMvcImpl, LetsBeginController>()  {
 
     @Inject
-    lateinit var permissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var errorHandler: ErrorHandler
