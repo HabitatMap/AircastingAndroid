@@ -3,12 +3,11 @@ package pl.llp.aircasting
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
-import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.di.AppModule
 import pl.llp.aircasting.di.PermissionsModule
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.models.observers.AppLifecycleObserver
-
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 
 class AircastingApplication: Application() {
     lateinit var appComponent: AppComponent

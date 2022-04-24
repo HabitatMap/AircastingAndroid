@@ -3,7 +3,7 @@ package pl.llp.aircasting.di
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.util.Settings
 import javax.inject.Singleton
 
 @Module

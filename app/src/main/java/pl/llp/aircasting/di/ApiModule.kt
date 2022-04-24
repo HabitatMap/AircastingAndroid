@@ -2,11 +2,11 @@ package pl.llp.aircasting.di
 
 import dagger.Module
 import dagger.Provides
-import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.networking.services.SessionsSyncService
-import pl.llp.aircasting.networking.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.inject.Singleton
 
 open class WebServerFactory

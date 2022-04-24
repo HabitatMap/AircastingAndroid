@@ -3,21 +3,21 @@ package pl.llp.aircasting.di
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.bluetooth.BluetoothManager
-import pl.llp.aircasting.database.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.database.repositories.MeasurementsRepository
-import pl.llp.aircasting.database.repositories.SessionsRepository
-import pl.llp.aircasting.exceptions.ErrorHandler
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.models.SessionBuilder
-import pl.llp.aircasting.networking.services.SessionsSyncService
-import pl.llp.aircasting.networking.services.UploadFixedMeasurementsService
-import pl.llp.aircasting.sensor.AirBeamConnectorFactory
-import pl.llp.aircasting.sensor.AirBeamDiscoveryService
-import pl.llp.aircasting.sensor.AirBeamReconnector
-import pl.llp.aircasting.sensor.airbeam3.sync.*
-import pl.llp.aircasting.sensor.microphone.AudioReader
-import pl.llp.aircasting.sensor.microphone.MicrophoneReader
+import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.model.SessionBuilder
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.sensor.AirBeamConnectorFactory
+import pl.llp.aircasting.util.helpers.sensor.AirBeamDiscoveryService
+import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.*
+import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
+import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneReader
 import javax.inject.Singleton
 
 @Module

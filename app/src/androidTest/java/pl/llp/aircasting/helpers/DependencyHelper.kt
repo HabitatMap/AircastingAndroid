@@ -1,7 +1,7 @@
 package pl.llp.aircasting.helpers
 
 import pl.llp.aircasting.di.mocks.FakeApiServiceFactory
-import pl.llp.aircasting.networking.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import okhttp3.mockwebserver.MockWebServer
 
 fun getFakeApiServiceFactoryFrom(apiServiceFactory: ApiServiceFactory) : FakeApiServiceFactory {

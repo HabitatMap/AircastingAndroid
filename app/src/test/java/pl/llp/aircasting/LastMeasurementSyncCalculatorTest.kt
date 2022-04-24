@@ -1,7 +1,7 @@
 package pl.llp.aircasting
 
-import pl.llp.aircasting.lib.DateConverter
-import pl.llp.aircasting.networking.services.LastMeasurementSyncCalculator
+import pl.llp.aircasting.util.DateConverter
+import pl.llp.aircasting.data.api.services.LastMeasurementSyncCalculator
 import org.junit.Assert
 import org.junit.jupiter.api.Test
 

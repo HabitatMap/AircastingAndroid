@@ -2,7 +2,7 @@ package pl.llp.aircasting.di
 
 import dagger.Module
 import dagger.Provides
-import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsControllerFactory
+import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsControllerFactory
 import javax.inject.Singleton
 
 @Module
