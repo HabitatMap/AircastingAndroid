@@ -29,7 +29,7 @@
     <!--  Dashboard -->
     <string name="title_settings">Paramètres</string>
     <string name="dashboard_empty_header">Prêt à commencer ?</string>
-    <string name="dashboard_empty_text">Enregistrez une nouvelle session pour surveiller votre santé &amp; environnement.</string>
+    <string name="dashboard_empty_text">Explorez &amp; suivez les sessions AirCasting existantes ou utilisez votre propre appareil pour enregistrer une nouvelle session et surveiller votre santé &amp; environnement.</string>
     <string name="dashboard_tabs_following">Suivante</string>
     <string name="dashboard_tabs_mobile_active">Mobile actif</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile En sommeil</string>
@@ -383,5 +383,7 @@
     <string name="humidity">Humidité</string>
     <string name="temperature">Température</string>
     <string name="particulate_matter">Affaire particulière</string>
+    <string name="explore_existing_sessions">Explorer les sessions existantes</string>
+    <string name="finished">Achevée</string>
 
 </resources>
