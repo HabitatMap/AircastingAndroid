@@ -19,11 +19,11 @@ import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.adjustMenuVisibility
-import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 
 class MainViewMvcImpl(
     inflater: LayoutInflater,
@@ -72,6 +72,8 @@ class MainViewMvcImpl(
             mNavController?.navigate(action)
             showFinishedReorderingSessionsButtonClicked()
         }
+
+        mSearchIcon?.setOnClickListener { mNavController?.navigate(R.id.navigation_searchFollowFragment) }
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
