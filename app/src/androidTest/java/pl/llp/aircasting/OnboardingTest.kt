@@ -12,9 +12,9 @@ import pl.llp.aircasting.di.AppModule
 import pl.llp.aircasting.di.PermissionsModule
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.screens.main.MainActivity
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
