@@ -10,13 +10,13 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.setupAppBar
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.ui.view.screens.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import pl.llp.aircasting.util.setupAppBar
 import javax.inject.Inject
 
 class NewSessionActivity : BaseActivity() {
@@ -24,7 +24,7 @@ class NewSessionActivity : BaseActivity() {
     private var controller: NewSessionController? = null
 
     @Inject
-    lateinit var permissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager

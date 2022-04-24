@@ -5,9 +5,9 @@ import android.text.SpannableStringBuilder
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
+import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.common.BottomSheet
-import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 
 class MoreInfoBottomSheet: BottomSheet() {
     override fun layoutId(): Int {
@@ -29,11 +29,11 @@ class MoreInfoBottomSheet: BottomSheet() {
         return SpannableStringBuilder()
             .append(getString(R.string.more_info_text_part1))
             .append(" ")
-            .color(blueColor, { bold { append(getString(R.string.more_info_text_part2)) } })
+            .color(blueColor) { bold { append(getString(R.string.more_info_text_part2)) } }
             .append(" ")
             .append(getString(R.string.more_info_text_part3))
             .append(" ")
-            .color(blueColor, { bold { append(getString(R.string.more_info_text_part4)) } })
+            .color(blueColor) { bold { append(getString(R.string.more_info_text_part4)) } }
             .append(" ")
             .append(getString(R.string.more_info_text_part5))
     }
