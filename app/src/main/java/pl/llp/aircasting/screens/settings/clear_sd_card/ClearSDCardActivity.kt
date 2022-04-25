@@ -5,9 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.DaggerActivityComponent
 import pl.llp.aircasting.bluetooth.BluetoothManager
-import pl.llp.aircasting.di.ActivityModule
 import pl.llp.aircasting.lib.adjustMenuVisibility
 import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.common.BaseActivity
@@ -36,12 +34,6 @@ class ClearSDCardActivity : BaseActivity() {
 
         val app = application as AircastingApplication
         val appComponent = app.appComponent
-
-        val activityComponent = DaggerActivityComponent.builder()
-            .appComponent(appComponent)
-            .activityModule(ActivityModule(this))
-            .build()
-        activityComponent.inject(this)
         appComponent.inject(this)
 
         val view = ClearSDCardViewMvcImpl(layoutInflater, null)
