@@ -73,7 +73,7 @@ class MainViewMvcImpl(
             showFinishedReorderingSessionsButtonClicked()
         }
 
-        mSearchIcon?.setOnClickListener { mNavController?.navigate(R.id.navigation_searchFollowFragment) }
+        mSearchIcon?.setOnClickListener { mNavController?.navigate(R.id.navigation_searchFixedSessionsActivity) }
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
