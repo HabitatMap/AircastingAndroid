@@ -1,59 +1,37 @@
 package pl.llp.aircasting.bluetooth
 
 import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.lib.ResultCodes
-import pl.llp.aircasting.screens.main.MainActivity
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
+
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    private val mainActivity: MainActivity
+    app: AircastingApplication
 ) : BluetoothManager {
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
-    private var devices: MutableSet<BluetoothDevice> = boundDevices()
-
-    private fun boundDevices(): MutableSet<BluetoothDevice> {
-        if (ActivityCompat.checkSelfPermission(
-                mainActivity,
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                mainActivity,
-                arrayOf(
-                    Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_CONNECT,
-                    Manifest.permission.BLUETOOTH_SCAN
-                ),
-                ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH
-            )
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-        } else {
-            return adapter?.bondedDevices ?: mutableSetOf()
-        }
-        return mutableSetOf()
-    }
+    private val appContext = app.applicationContext
 
     override fun pairedDeviceItems(): List<DeviceItem> {
-        return if (ActivityCompat.checkSelfPermission(
-                mainActivity,
+        return if (
+            ContextCompat.checkSelfPermission(
+                appContext,
                 Manifest.permission.BLUETOOTH_SCAN
-            ) == PackageManager.PERMISSION_GRANTED
+            )
+            == PackageManager.PERMISSION_GRANTED
         )
-            devices.map { DeviceItem(it) }
+            adapter?.bondedDevices?.map { DeviceItem(it) } ?: listOf()
         else listOf()
     }
 
@@ -61,24 +39,27 @@ open class BluetoothRuntimePermissionManager(
         if (adapter == null) {
             throw BluetoothNotSupportedException()
         }
-
         return adapter.isEnabled
     }
 
     override fun startDiscovery() {
-        if (ActivityCompat.checkSelfPermission(
-                mainActivity,
+        if (
+            ContextCompat.checkSelfPermission(
+                appContext,
                 Manifest.permission.BLUETOOTH_SCAN
-            ) == PackageManager.PERMISSION_GRANTED
+            )
+            == PackageManager.PERMISSION_GRANTED
         )
             adapter?.startDiscovery()
     }
 
     override fun cancelDiscovery() {
-        if (ActivityCompat.checkSelfPermission(
-                mainActivity,
+        if (
+            ContextCompat.checkSelfPermission(
+                appContext,
                 Manifest.permission.BLUETOOTH_SCAN
-            ) == PackageManager.PERMISSION_GRANTED
+            )
+            == PackageManager.PERMISSION_GRANTED
         )
             adapter?.cancelDiscovery()
     }
