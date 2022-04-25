@@ -6,14 +6,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.Settings
 
 class FixedController(
     private val mRootActivity: FragmentActivity?,
@@ -50,6 +50,13 @@ class FixedController(
         mRootActivity?.let {
             Navigation.findNavController(it, R.id.nav_host_fragment)
                 .navigate(R.id.navigation_lets_begin)
+        }
+    }
+
+    override fun onExploreNewSessionsClicked() {
+        mRootActivity?.let {
+            Navigation.findNavController(it, R.id.nav_host_fragment)
+                .navigate(R.id.navigation_searchFixedSessionsActivity)
         }
     }
 

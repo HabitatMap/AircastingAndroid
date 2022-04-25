@@ -8,7 +8,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
-
 class FixedViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
@@ -57,7 +56,12 @@ class FixedViewMvcImpl(
         return R.id.dashboard_record_new_session_button
     }
 
+    override fun onExploreNewSessionsButtonID(): Int {
+        return R.id.txtExploreExistingSessions
+    }
+
     override fun addTouchHelperToRecyclerView() {
         // Do nothing here
     }
+
 }
