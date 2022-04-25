@@ -23,13 +23,14 @@ open class PermissionsManager {
     private val BLUETOOTH_PERMISSIONS =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN,
                 Manifest.permission.BLUETOOTH_CONNECT,
                 Manifest.permission.BLUETOOTH_SCAN
             )
         } else {
-            TODO("VERSION.SDK_INT < S")
+            arrayOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN
+            )
         }
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
