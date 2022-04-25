@@ -1,8 +1,6 @@
 package pl.llp.aircasting.bluetooth
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
@@ -11,10 +9,11 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.lib.ResultCodes
+import pl.llp.aircasting.screens.main.MainActivity
 import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    private val mRootActivity: Activity
+    private val mainActivity: MainActivity
 ) : BluetoothManager {
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
@@ -22,12 +21,12 @@ open class BluetoothRuntimePermissionManager(
 
     private fun boundDevices(): MutableSet<BluetoothDevice> {
         if (ActivityCompat.checkSelfPermission(
-                mRootActivity,
+                mainActivity,
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                mRootActivity,
+                mainActivity,
                 arrayOf(
                     Manifest.permission.BLUETOOTH,
                     Manifest.permission.BLUETOOTH_CONNECT,
@@ -50,7 +49,7 @@ open class BluetoothRuntimePermissionManager(
 
     override fun pairedDeviceItems(): List<DeviceItem> {
         return if (ActivityCompat.checkSelfPermission(
-                mRootActivity,
+                mainActivity,
                 Manifest.permission.BLUETOOTH_SCAN
             ) == PackageManager.PERMISSION_GRANTED
         )
@@ -68,7 +67,7 @@ open class BluetoothRuntimePermissionManager(
 
     override fun startDiscovery() {
         if (ActivityCompat.checkSelfPermission(
-                mRootActivity,
+                mainActivity,
                 Manifest.permission.BLUETOOTH_SCAN
             ) == PackageManager.PERMISSION_GRANTED
         )
@@ -77,7 +76,7 @@ open class BluetoothRuntimePermissionManager(
 
     override fun cancelDiscovery() {
         if (ActivityCompat.checkSelfPermission(
-                mRootActivity,
+                mainActivity,
                 Manifest.permission.BLUETOOTH_SCAN
             ) == PackageManager.PERMISSION_GRANTED
         )
