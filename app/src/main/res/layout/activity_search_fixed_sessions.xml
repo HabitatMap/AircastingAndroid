@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/appBarSearch"
+        layout="@layout/app_bar" />
+
     <TextView
         style="@style/TextAppearance.Aircasting.Headline2"
         android:layout_width="0dp"
@@ -12,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guidelineTop"
         app:layout_constraintEnd_toEndOf="@+id/searchInputField"
         app:layout_constraintStart_toStartOf="@+id/searchInputField"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarSearch" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineTop"
