@@ -138,7 +138,6 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
-        needNewBluetoothPermissions()
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -196,6 +195,7 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothContinueClicked() {
+        needNewBluetoothPermissions()
         requestBluetoothEnable()
     }
 
