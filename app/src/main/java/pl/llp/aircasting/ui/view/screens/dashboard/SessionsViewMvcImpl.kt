@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
-import pl.llp.aircasting.util.ItemTouchHelperAdapter
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
+import pl.llp.aircasting.util.ItemTouchHelperAdapter
 
 abstract class SessionsViewMvcImpl<ListenerType>(
     inflater: LayoutInflater,
@@ -25,6 +25,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     supportFragmentManager: FragmentManager
 ) : BaseObservableViewMvc<SessionsViewMvc.Listener>(), SessionsViewMvc {
     private var mRecordSessionButton: Button? = null
+    private var mOnExploreBtn: Button? = null
     protected var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
@@ -33,12 +34,16 @@ abstract class SessionsViewMvcImpl<ListenerType>(
 
     init {
         this.rootView = inflater.inflate(R.layout.fragment_sessions_tab, parent, false)
-        mEmptyView = rootView?.findViewById(layoutId())
-        mRecordSessionButton = rootView?.findViewById(recordNewSessionButtonId())
-        mRecordSessionButton?.setOnClickListener { onRecordNewSessionClicked() }
+        mEmptyView = findViewById(layoutId())
+        mRecordSessionButton = findViewById(recordNewSessionButtonId())
+        mOnExploreBtn = findViewById(onExploreNewSessionsButtonID())
+        mDidYouKnowBox = findViewById(R.id.did_you_know_box)
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
+
+        mRecordSessionButton?.setOnClickListener { onRecordNewSessionClicked() }
+        mOnExploreBtn?.setOnClickListener { onExploreNewSessionsClicked() }
+
         mRecyclerSessions?.layoutManager = LinearLayoutManager(rootView?.context)
-        mDidYouKnowBox = rootView?.findViewById(R.id.did_you_know_box)
         mDidYouKnowBox?.setOnClickListener {
             Navigation.findNavController(it).navigate(R.id.navigation_lets_begin)
         }
@@ -56,6 +61,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     abstract fun layoutId(): Int
     abstract fun showDidYouKnowBox(): Boolean
     abstract fun recordNewSessionButtonId(): Int
+    abstract fun onExploreNewSessionsButtonID(): Int
     abstract fun addTouchHelperToRecyclerView()
 
     abstract fun buildAdapter(
@@ -66,6 +72,12 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     private fun onRecordNewSessionClicked() {
         for (listener in listeners) {
             listener.onRecordNewSessionClicked()
+        }
+    }
+
+    private fun onExploreNewSessionsClicked(){
+        for (listener in listeners) {
+            listener.onExploreNewSessionsClicked()
         }
     }
 
