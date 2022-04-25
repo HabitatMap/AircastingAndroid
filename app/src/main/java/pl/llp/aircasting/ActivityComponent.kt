@@ -3,9 +3,9 @@ package pl.llp.aircasting
 import android.app.Activity
 import dagger.Component
 import pl.llp.aircasting.di.*
-import pl.llp.aircasting.di.scopes.ActivityScope
+import javax.inject.Singleton
 
-@ActivityScope
+@Singleton
 @Component(
     modules = [
         ActivityModule::class
