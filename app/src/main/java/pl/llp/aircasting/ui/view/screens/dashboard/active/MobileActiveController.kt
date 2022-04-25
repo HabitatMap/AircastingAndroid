@@ -75,6 +75,10 @@ class MobileActiveController(
         startNewSession(Session.Type.MOBILE)
     }
 
+    override fun onExploreNewSessionsClicked() {
+        // Do nothing
+    }
+
     override fun onEditSessionClicked(session: Session) {
         // do nothing
     }
