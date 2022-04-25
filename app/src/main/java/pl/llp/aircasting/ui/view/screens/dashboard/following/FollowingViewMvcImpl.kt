@@ -38,6 +38,10 @@ open class FollowingViewMvcImpl(
         return R.id.dashboard_record_new_session_button
     }
 
+    override fun onExploreNewSessionsButtonID(): Int {
+        return R.id.txtExploreExistingSessions
+    }
+
     override fun addTouchHelperToRecyclerView() {
         // Do nothing here
     }

@@ -5,14 +5,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.adjustMenuVisibility
-import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.adjustMenuVisibility
 
 class FollowingController(
     private val mRootActivity: FragmentActivity?,
@@ -44,6 +44,13 @@ class FollowingController(
         mRootActivity?.let {
             Navigation.findNavController(it, R.id.nav_host_fragment)
                 .navigate(R.id.navigation_lets_begin)
+        }
+    }
+
+    override fun onExploreNewSessionsClicked() {
+        mRootActivity?.let {
+            Navigation.findNavController(it, R.id.nav_host_fragment)
+                .navigate(R.id.navigation_searchFixedSessionsActivity)
         }
     }
 
