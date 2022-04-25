@@ -82,4 +82,21 @@ open class BluetoothRuntimePermissionManager(
         )
             adapter?.cancelDiscovery()
     }
+
+    override fun requestBluetoothEnable(activity: Activity?) {
+        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+
+        if (activity?.let {
+                ActivityCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                )
+            } == PackageManager.PERMISSION_GRANTED
+        ) {
+            activity.startActivityForResult(
+                intent,
+                ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE
+            )
+        }
+    }
 }
