@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -17,11 +18,9 @@ import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
 
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    app: AircastingApplication
+    private val appContext: Context
 ) : BluetoothManager {
     private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
-    private val appContext = app.applicationContext
 
     override fun pairedDeviceItems(): List<DeviceItem> {
         return if (
