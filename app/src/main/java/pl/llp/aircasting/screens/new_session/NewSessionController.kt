@@ -195,7 +195,7 @@ class NewSessionController(
         MicrophoneService.startService(mContextActivity)
     }
 
-    override fun onTurnOnBluetoothOkClicked() {
+    override fun onTurnOnBluetoothContinueClicked() {
         requestBluetoothEnable()
     }
 

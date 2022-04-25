@@ -145,7 +145,7 @@ class SyncController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOnBluetoothOkClicked() {
+    override fun onTurnOnBluetoothContinueClicked() {
         requestBluetoothEnable()
     }
 
