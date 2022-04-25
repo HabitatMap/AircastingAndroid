@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
 
 class SearchFixedSessionsActivity : AppCompatActivity() {
-
     companion object {
         fun start(rootActivity: FragmentActivity?) {
             rootActivity ?: return
@@ -34,4 +33,5 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
+
 }

@@ -13,7 +13,11 @@ class MobileDormantViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
-): SessionsViewMvcImpl<MobileDormantSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+) : SessionsViewMvcImpl<MobileDormantSessionViewMvc.Listener>(
+    inflater,
+    parent,
+    supportFragmentManager
+),
     MobileDormantSessionViewMvc.Listener {
 
     override fun buildAdapter(
@@ -57,7 +61,12 @@ class MobileDormantViewMvcImpl(
         return R.id.dashboard_mobile_record_new_session_button
     }
 
+    override fun onExploreNewSessionsButtonID(): Int {
+        return R.id.txtExploreExistingSessions
+    }
+
     override fun addTouchHelperToRecyclerView() {
         // Do nothing here
     }
+
 }
