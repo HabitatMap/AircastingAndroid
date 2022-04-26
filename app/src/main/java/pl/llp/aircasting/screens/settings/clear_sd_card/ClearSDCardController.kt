@@ -102,16 +102,12 @@ class ClearSDCardController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOnBluetoothOkClicked() {
+    override fun onTurnOnBluetoothContinueClicked() {
         requestBluetoothEnable()
     }
 
     private fun requestBluetoothEnable() {
-        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-
-        // I know it's deprecated, but location services requires onActivityResult
-        // so I wanted to be consistent
-        mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+        mBluetoothManager.requestBluetoothEnable(mContextActivity)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

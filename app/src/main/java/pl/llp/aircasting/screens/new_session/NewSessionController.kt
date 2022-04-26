@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
@@ -132,20 +133,11 @@ class NewSessionController(
         wizardNavigator.goToConfirmation(session, this)
     }
 
-    @SuppressLint("MissingPermission")
     private fun requestBluetoothEnable() {
-        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-
-        // I know it's deprecated, but location services requires onActivityResult
-        // so I wanted to be consistent
-        mContextActivity.startActivityForResult(
-            intent,
-            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE
-        )
+        bluetoothManager.requestBluetoothEnable(mContextActivity)
     }
 
     override fun onBluetoothDeviceSelected() {
-        needNewBluetoothPermissions()
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -202,7 +194,8 @@ class NewSessionController(
         MicrophoneService.startService(mContextActivity)
     }
 
-    override fun onTurnOnBluetoothOkClicked() {
+    override fun onTurnOnBluetoothContinueClicked() {
+        needNewBluetoothPermissions()
         requestBluetoothEnable()
     }
 
