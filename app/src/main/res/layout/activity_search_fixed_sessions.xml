@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:text="@string/title_search_fixed_sessions"
         app:layout_constraintBottom_toTopOf="@+id/guidelineTop"
-        app:layout_constraintEnd_toEndOf="@+id/searchInputField"
-        app:layout_constraintStart_toStartOf="@+id/searchInputField"
+        app:layout_constraintEnd_toEndOf="@+id/layoutContainer"
+        app:layout_constraintStart_toStartOf="@+id/layoutContainer"
         app:layout_constraintTop_toBottomOf="@+id/appBarSearch" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -25,18 +25,24 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="154dp" />
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchInputField"
+    <LinearLayout
+        android:id="@+id/layoutContainer"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_7"
         android:layout_marginEnd="@dimen/keyline_9"
         android:background="@drawable/search_input_field_background"
-        app:iconifiedByDefault="false"
-        app:layout_constraintTop_toTopOf="@+id/guidelineTop"
-        app:queryBackground="@null"
-        app:queryHint="@string/search_session_query_hint"
-        app:searchIcon="@null" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineTop">
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/search_parameter_header"
@@ -45,12 +51,12 @@
         android:layout_marginTop="24dp"
         android:text="@string/search_session_parameters_header"
         android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-        app:layout_constraintEnd_toEndOf="@+id/searchInputField"
+        app:layout_constraintEnd_toEndOf="@+id/layoutContainer"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/searchInputField"
-        app:layout_constraintTop_toBottomOf="@+id/searchInputField" />
+        app:layout_constraintStart_toStartOf="@+id/layoutContainer"
+        app:layout_constraintTop_toBottomOf="@+id/layoutContainer" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
