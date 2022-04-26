@@ -4,6 +4,6 @@ import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
 
 interface TurnOnBluetoothViewMvc : ObservableViewMvc<TurnOnBluetoothViewMvc.Listener> {
     interface Listener {
-        fun onTurnOnBluetoothOkClicked()
+        fun onTurnOnBluetoothContinueClicked()
     }
 }

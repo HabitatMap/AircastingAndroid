@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.settings.clear_sd_card
 
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -104,16 +103,12 @@ class ClearSDCardController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOnBluetoothOkClicked() {
+    override fun onTurnOnBluetoothContinueClicked() {
         requestBluetoothEnable()
     }
 
     private fun requestBluetoothEnable() {
-        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-
-        // I know it's deprecated, but location services requires onActivityResult
-        // so I wanted to be consistent
-        mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+        mBluetoothManager.requestBluetoothEnable(mContextActivity)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

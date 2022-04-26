@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.util.ResultCodes
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
 
 open class PermissionsManager {
     private val LOCATION_PERMISSIONS = arrayOf(
@@ -20,7 +21,17 @@ open class PermissionsManager {
     private val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
     private val BLUETOOTH_PERMISSIONS =
-        arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN)
+        if (isSDKGreaterOrEqualToS()) {
+            arrayOf(
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN
+            )
+        }
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
         return (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)

@@ -21,7 +21,7 @@ class TurnOnBluetoothViewMvcImpl(
 
     private fun onOkClicked() {
         for (listener in listeners) {
-            listener.onTurnOnBluetoothOkClicked()
+            listener.onTurnOnBluetoothContinueClicked()
         }
     }
 }

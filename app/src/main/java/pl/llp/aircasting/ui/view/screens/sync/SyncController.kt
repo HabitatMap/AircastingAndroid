@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.sync
 
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -147,16 +146,12 @@ class SyncController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOnBluetoothOkClicked() {
+    override fun onTurnOnBluetoothContinueClicked() {
         requestBluetoothEnable()
     }
 
     private fun requestBluetoothEnable() {
-        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-
-        // I know it's deprecated, but location services requires onActivityResult
-        // so I wanted to be consistent
-        mContextActivity.startActivityForResult(intent, ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE)
+        mBluetoothManager.requestBluetoothEnable(mContextActivity)
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
