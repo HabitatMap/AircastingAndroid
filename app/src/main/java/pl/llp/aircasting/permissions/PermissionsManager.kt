@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.lib.ResultCodes
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToS
 
 open class PermissionsManager {
     private val LOCATION_PERMISSIONS = arrayOf(
@@ -21,7 +22,7 @@ open class PermissionsManager {
     private val AUDIO_PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
 
     private val BLUETOOTH_PERMISSIONS =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (isSDKGreaterOrEqualToS()) {
             arrayOf(
                 Manifest.permission.BLUETOOTH_CONNECT,
                 Manifest.permission.BLUETOOTH_SCAN
