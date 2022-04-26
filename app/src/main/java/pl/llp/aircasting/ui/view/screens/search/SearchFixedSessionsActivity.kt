@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +15,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import kotlinx.android.synthetic.main.activity_search_fixed_sessions.*
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
@@ -44,50 +44,61 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     private fun setupUI() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-
-
     }
 
     private fun setupAutoComplete() {
-        if (!Places.isInitialized()) Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
+        if (!Places.isInitialized()) Places.initialize(
+            applicationContext,
+            BuildConfig.PLACES_API_KEY
+        )
         placesClient = Places.createClient(this)
 
-        val autocompleteFragment = supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
-        autocompleteFragment?.view?.findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-            setText(getString(R.string.search_session_query_hint))
-            textSize = 15.0f
-            setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
-        }
-        autocompleteFragment?.view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.visibility = View.GONE
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
 
-        autocompleteFragment?.setPlaceFields(
-            listOf(
-                Place.Field.ID,
-                Place.Field.ADDRESS,
-                Place.Field.LAT_LNG
+        autocompleteFragment?.apply {
+            view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
+                ?.apply {
+                    setText(getString(R.string.search_session_query_hint))
+                    textSize = 15.0f
+                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                }
+            view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.visibility =
+                View.GONE
+
+            setPlaceFields(
+                listOf(
+                    Place.Field.ID,
+                    Place.Field.ADDRESS,
+                    Place.Field.LAT_LNG
+                )
             )
-        )
 
-        autocompleteFragment?.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                val address = place.address?.toString()
+            val etPlace =
+                view?.findViewById(R.id.places_autocomplete_search_input) as EditText
 
-                val lat = "${place.latLng?.latitude!!}::${place.latLng?.longitude!!}"
+            setOnPlaceSelectedListener(object : PlaceSelectionListener {
+                override fun onPlaceSelected(place: Place) {
+                    val address = place.address?.toString()
+                    val lat = "${place.latLng?.latitude}"
+                    val long = "${place.latLng?.longitude}"
 
-                val resultIntent = Intent()
+                    if (address != null) {
+                        enableContinueBtn()
+                        etPlace.hint = address
+                    }
 
-                resultIntent.putExtra("location", address)
-                resultIntent.putExtra("latlong", lat)
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
-            }
+                }
 
-            override fun onError(status: Status) {
-               Log.d("tag", status.statusMessage.toString())
-            }
-        })
+                override fun onError(status: Status) {
+                    Log.d("tag", status.statusMessage.toString())
+                }
+            })
+        }
+    }
 
+    private fun enableContinueBtn() {
+        btnContinue.visibility = View.VISIBLE
     }
 
     override fun onSupportNavigateUp(): Boolean {
