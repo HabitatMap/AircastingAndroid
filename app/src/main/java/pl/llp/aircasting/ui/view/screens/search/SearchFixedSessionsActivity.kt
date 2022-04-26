@@ -3,8 +3,12 @@ package pl.llp.aircasting.ui.view.screens.search
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
@@ -41,14 +45,22 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+
+
     }
 
     private fun setupAutoComplete() {
         if (!Places.isInitialized()) Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
         placesClient = Places.createClient(this)
 
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
+        val autocompleteFragment = supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
+        autocompleteFragment?.view?.findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
+            setText(getString(R.string.search_session_query_hint))
+            textSize = 15.0f
+            setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+        }
+        autocompleteFragment?.view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.visibility = View.GONE
+
         autocompleteFragment?.setPlaceFields(
             listOf(
                 Place.Field.ID,
@@ -72,7 +84,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             }
 
             override fun onError(status: Status) {
-                Toast.makeText(applicationContext, status.toString(), Toast.LENGTH_LONG).show()
+               Log.d("tag", status.statusMessage.toString())
             }
         })
 
