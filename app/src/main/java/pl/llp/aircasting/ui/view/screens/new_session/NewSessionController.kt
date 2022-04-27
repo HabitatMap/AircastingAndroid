@@ -1,12 +1,15 @@
-package pl.llp.aircasting.ui.view.screens.new_session
+package pl.llp.aircasting.screens.new_session
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
@@ -15,34 +18,36 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
-import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.model.SessionBuilder
-import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
-import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
-import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.*
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceViewMvc
-import pl.llp.aircasting.ui.view.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
-import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsViewMvc
-import pl.llp.aircasting.util.*
-import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
-import pl.llp.aircasting.util.events.SendSessionAuth
-import pl.llp.aircasting.util.events.StartRecordingEvent
-import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.location.LocationHelper
-import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
-import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
-import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
+import pl.llp.aircasting.bluetooth.BluetoothManager
+import pl.llp.aircasting.database.repositories.SessionsRepository
+import pl.llp.aircasting.events.AirBeamConnectionFailedEvent
+import pl.llp.aircasting.events.AirBeamConnectionSuccessfulEvent
+import pl.llp.aircasting.events.SendSessionAuth
+import pl.llp.aircasting.events.StartRecordingEvent
+import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
+import pl.llp.aircasting.exceptions.ErrorHandler
+import pl.llp.aircasting.lib.*
+import pl.llp.aircasting.location.LocationHelper
+import pl.llp.aircasting.models.Session
+import pl.llp.aircasting.models.SessionBuilder
+import pl.llp.aircasting.permissions.LocationPermissionPopUp
+import pl.llp.aircasting.permissions.PermissionsManager
+import pl.llp.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
+import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
+import pl.llp.aircasting.screens.new_session.connect_airbeam.*
+import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.screens.new_session.select_device.SelectDeviceViewMvc
+import pl.llp.aircasting.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
+import pl.llp.aircasting.screens.new_session.session_details.SessionDetailsViewMvc
+import pl.llp.aircasting.sensor.AirBeamRecordSessionService
+import pl.llp.aircasting.sensor.microphone.MicrophoneDeviceItem
+import pl.llp.aircasting.sensor.microphone.MicrophoneService
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
     mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager,
-    private val permissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager,
+    private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val sessionBuilder: SessionBuilder,
     private val settings: Settings,
@@ -72,11 +77,7 @@ class NewSessionController(
     }
 
     private fun showLocationPermissionPopUp() {
-        pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp(
-            mFragmentManager,
-            permissionsManager,
-            mContextActivity
-        ).show()
+        LocationPermissionPopUp(mFragmentManager, permissionsManager, mContextActivity).show()
     }
 
     private fun setupProgressMax() {
@@ -137,7 +138,6 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
-        needNewBluetoothPermissions()
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -196,6 +196,7 @@ class NewSessionController(
 
     override fun onTurnOnBluetoothContinueClicked() {
         needNewBluetoothPermissions()
+        requestBluetoothEnable()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

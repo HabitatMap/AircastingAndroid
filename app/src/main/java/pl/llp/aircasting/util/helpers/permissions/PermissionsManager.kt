@@ -1,13 +1,14 @@
-package pl.llp.aircasting.util.helpers.permissions
+package pl.llp.aircasting.permissions
 
 import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import pl.llp.aircasting.util.ResultCodes
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
+import pl.llp.aircasting.lib.ResultCodes
+import pl.llp.aircasting.lib.isSDKGreaterOrEqualToS
 
 open class PermissionsManager {
     private val LOCATION_PERMISSIONS = arrayOf(
