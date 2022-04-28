@@ -4,13 +4,17 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.*
+import pl.llp.aircasting.data.api.responses.SessionsInRegionResponse
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.utilities.StubData
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SessionsInRegionDownloadServiceTest {
@@ -18,13 +22,9 @@ class SessionsInRegionDownloadServiceTest {
     val mockWebServer = MockWebServer()
     private val retrofit by lazy {
         Retrofit.Builder()
-            // 1
             .baseUrl(mockWebServer.url("/"))
-            // 2
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            // 3
             .addConverterFactory(GsonConverterFactory.create())
-            // 4
             .build()
     }
     private val apiService by lazy {
