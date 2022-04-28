@@ -31,7 +31,7 @@ class SessionsInRegionDownloadServiceTest {
         retrofit.create(ApiService::class.java)
     }
 
-    private val testJson = StubData.getJson("Cracow.json")
+    private val testJson = StubData.getJson("SessionsCracow.json")
 
     @Test
     fun whenThereAreNoSessionsDownloaded_shouldReturnEmptyList() {
