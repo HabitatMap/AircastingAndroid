@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.api.services
 
 import android.util.Base64
+import io.reactivex.Single
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
