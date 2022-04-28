@@ -13,3 +13,10 @@ class SessionsInRegionDownloadService {
         sessions.add(session)
     }
 }
+
+data class GeoSquare(
+    val north: Double,
+    val south: Double,
+    val east: Double,
+    val west: Double
+)
