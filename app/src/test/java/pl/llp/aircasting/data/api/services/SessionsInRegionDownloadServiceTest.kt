@@ -34,18 +34,83 @@ class SessionsInRegionDownloadServiceTest {
     private val testJson = StubData.getJson("Cracow.json")
 
     @Test
-    fun whenThereAreNoSessions_shouldReturnEmptyList() {
-        val service = SessionsInRegionDownloadService()
+    fun whenThereAreNoSessionsDownloaded_shouldReturnEmptyList() {
+        // when
+        val service = SessionsInRegionDownloadService(apiService)
 
+        // then
         assertTrue(service.sessions.isEmpty())
     }
 
     @Test
     fun whenThereAreSessions_shouldReturnNonEmptyList() {
-        val service = SessionsInRegionDownloadService()
-        val session = Mockito.mock(Session::class.java)
+        // given
+        val service = SessionsInRegionDownloadService(apiService)
+        val session = mock(Session::class.java)
+
+        // when
         service.add(session)
 
+        // then
         assertTrue(service.sessions.isNotEmpty())
+    }
+
+    @Test
+    fun whenRegionIsSet_shouldCallApi() {
+        // given
+        val square = GeoSquare(0.0, 0.0, 0.0, 0.0)
+        val apiSpy = spy<ApiService>(apiService)
+        val service = SessionsInRegionDownloadService(apiSpy)
+
+        // when
+        service.setRegion(square)
+
+        // then
+        verify(apiSpy).getSessionsInRegion()
+    }
+
+    @Test
+    fun whenRegionIsSet_apiCall_shouldContainRegionCoordinates() {
+        // given
+        val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
+        val apiSpy = spy<ApiService>(apiService)
+        val service = SessionsInRegionDownloadService(apiSpy)
+
+        // when
+        service.setRegion(square)
+
+        // then
+        verify(apiSpy).getSessionsInRegion(
+            north = square.north,
+            south = square.south,
+            east = square.east,
+            west = square.west
+        )
+    }
+
+    @Test
+    fun whenRegionIsSet_shouldEnqueueApiCall() {
+        // given
+        val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
+        val apiSpy = spy<ApiService>(apiService)
+        val service = SessionsInRegionDownloadService(apiSpy)
+        val callSpy = spy(apiSpy.getSessionsInRegion(
+            north = square.north,
+            south = square.south,
+            east = square.east,
+            west = square.west
+        ))
+        doReturn(callSpy).`when`(apiSpy).getSessionsInRegion(
+            north = square.north,
+            south = square.south,
+            east = square.east,
+            west = square.west
+        )
+
+        // when
+        service.setRegion(square)
+
+        // then
+        verify(callSpy).enqueue(any())
     }
 }
