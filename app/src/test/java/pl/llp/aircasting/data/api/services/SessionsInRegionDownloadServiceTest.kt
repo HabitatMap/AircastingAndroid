@@ -41,7 +41,7 @@ class SessionsInRegionDownloadServiceTest {
     }
 
     @Test
-    fun whenThereAreSessions_shouldNotReturnEmptyList() {
+    fun whenThereAreSessions_shouldReturnNonEmptyList() {
         val service = SessionsInRegionDownloadService()
         val session = Mockito.mock(Session::class.java)
         service.add(session)
