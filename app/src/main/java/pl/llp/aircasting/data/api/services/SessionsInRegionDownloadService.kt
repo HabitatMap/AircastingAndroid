@@ -6,11 +6,31 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SessionsInRegionDownloadService {
+class SessionsInRegionDownloadService(private val apiService: ApiService) {
     val sessions: MutableList<Session> = mutableListOf()
-
     fun add(session: Session) {
         sessions.add(session)
+    }
+
+    fun setRegion(square: GeoSquare) {
+        val call = apiService.getSessionsInRegion(
+            north = square.north,
+            south = square.south,
+            east = square.east,
+            west = square.west
+        )
+        call.enqueue(object : Callback<SessionsInRegionResponse> {
+            override fun onResponse(
+                call: Call<SessionsInRegionResponse>,
+                response: Response<SessionsInRegionResponse>
+            ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFailure(call: Call<SessionsInRegionResponse>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 }
 
