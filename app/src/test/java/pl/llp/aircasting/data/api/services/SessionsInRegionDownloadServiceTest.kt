@@ -106,12 +106,14 @@ class SessionsInRegionDownloadServiceTest {
         val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
         val apiSpy = spy<ApiService>(apiService)
         val service = SessionsInRegionDownloadService(apiSpy)
-        val callSpy = spy(apiSpy.getSessionsInRegion(
-            north = square.north,
-            south = square.south,
-            east = square.east,
-            west = square.west
-        ))
+        val callSpy = spy(
+            apiSpy.getSessionsInRegion(
+                north = square.north,
+                south = square.south,
+                east = square.east,
+                west = square.west
+            )
+        )
         doReturn(callSpy).`when`(apiSpy).getSessionsInRegion(
             north = square.north,
             south = square.south,
