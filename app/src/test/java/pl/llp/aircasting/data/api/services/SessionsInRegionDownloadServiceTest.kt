@@ -127,4 +127,25 @@ class SessionsInRegionDownloadServiceTest {
         // then
         verify(callSpy).enqueue(any())
     }
+
+    @Test
+    fun whenApiResponse_isSuccessful_andThereAreNoSessionsInRegion_shouldClearSessionsList() {
+        // given
+        val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
+        val session = mock(Session::class.java)
+        val service = SessionsInRegionDownloadService(apiService)
+        service.add(session)
+
+        // when
+        service.setRegion(square)
+        Thread.sleep(2000)
+
+        // then
+        assertTrue(service.sessions.isEmpty())
+    }
+
+    @After
+    fun tearDown() {
+        mockWebServer.shutdown()
+    }
 }
