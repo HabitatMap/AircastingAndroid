@@ -24,11 +24,11 @@ class SessionsInRegionDownloadService(private val apiService: ApiService) {
                 call: Call<SessionsInRegionResponse>,
                 response: Response<SessionsInRegionResponse>
             ) {
-                TODO("Not yet implemented")
+                sessions.clear()
             }
 
             override fun onFailure(call: Call<SessionsInRegionResponse>, t: Throwable) {
-                TODO("Not yet implemented")
+                print(t.stackTrace)
             }
         })
     }
