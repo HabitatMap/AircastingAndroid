@@ -1,4 +1,4 @@
-package pl.llp.aircasting.bluetooth
+package pl.llp.aircasting.util.helpers.bluetooth
 
 import android.Manifest
 import android.app.Activity

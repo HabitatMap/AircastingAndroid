@@ -2,7 +2,7 @@ package pl.llp.aircasting.ui.view.screens.new_session
 
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator

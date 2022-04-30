@@ -1,4 +1,4 @@
-package pl.llp.aircasting.bluetooth
+package pl.llp.aircasting.util.helpers.bluetooth
 
 import android.app.Activity
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
