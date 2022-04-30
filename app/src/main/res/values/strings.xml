@@ -491,5 +491,6 @@
     <string name="particulate_matter">Particulate matter</string>
     <string name="explore_existing_sessions">Explore existing sessions</string>
     <string name="finished">Finished</string>
+    <string name="showing_results_for">Showing results for:</string>
 
 </resources>
