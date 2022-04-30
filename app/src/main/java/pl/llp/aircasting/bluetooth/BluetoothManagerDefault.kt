@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
-import pl.llp.aircasting.exceptions.BluetoothNotSupportedException
-import pl.llp.aircasting.lib.ResultCodes
-import pl.llp.aircasting.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.ResultCodes
+import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
 
 @SuppressLint("MissingPermission")
 open class BluetoothManagerDefault : BluetoothManager {

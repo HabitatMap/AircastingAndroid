@@ -1,15 +1,12 @@
 package pl.llp.aircasting.screens.new_session
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
@@ -31,7 +28,6 @@ import pl.llp.aircasting.location.LocationHelper
 import pl.llp.aircasting.models.Session
 import pl.llp.aircasting.models.SessionBuilder
 import pl.llp.aircasting.permissions.LocationPermissionPopUp
-import pl.llp.aircasting.permissions.PermissionsManager
 import pl.llp.aircasting.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.screens.new_session.connect_airbeam.*
