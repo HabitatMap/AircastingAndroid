@@ -19,12 +19,15 @@ class SessionsInRegionDownloadService(private val apiService: ApiService) {
             east = square.east,
             west = square.west
         )
+
         call.enqueue(object : Callback<SessionsInRegionResponse> {
             override fun onResponse(
                 call: Call<SessionsInRegionResponse>,
                 response: Response<SessionsInRegionResponse>
             ) {
-                sessions.clear()
+                if (response.isSuccessful) {
+                    sessions.clear()
+                }
             }
 
             override fun onFailure(call: Call<SessionsInRegionResponse>, t: Throwable) {
