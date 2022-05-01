@@ -147,8 +147,33 @@ class SessionsInRegionDownloadServiceTest {
         assertTrue(service.sessions.isEmpty())
     }
 
-    @After
-    fun tearDown() {
-        mockWebServer.shutdown()
+    @Test
+    fun whenOnApiResponse_isUnSuccessful_shouldNotClearSessionsList() {
+        // given
+        mockWebServer.dispatcher = unsuccessDispatcher
+        val session = mock(Session::class.java)
+        val service = SessionsInRegionDownloadService(apiService)
+        service.add(session)
+
+        // when
+        service.setRegion(testSquare)
+        Thread.sleep(2000)
+
+        // then
+        assertTrue(service.sessions.isNotEmpty())
+    }
+
+    @Ignore("Not ready")
+    @Test
+    fun whenOnApiResponse_isSuccessful_thereAreSessionsInRegion_shouldAddSessionToList() {
+        // given
+        val service = SessionsInRegionDownloadService(apiService)
+
+        // when
+        service.setRegion(testSquare)
+        Thread.sleep(2000)
+
+        // then
+        assertTrue(service.sessions.isNotEmpty())
     }
 }
