@@ -133,7 +133,7 @@ class SessionsInRegionDownloadServiceTest {
     }
 
     @Test
-    fun whenApiResponse_isSuccessful_andThereAreNoSessionsInRegion_shouldClearSessionsList() {
+    fun whenOnApiResponse_isSuccessful_shouldClearSessionsList() {
         // given
         val session = mock(Session::class.java)
         val service = SessionsInRegionDownloadService(apiService)
