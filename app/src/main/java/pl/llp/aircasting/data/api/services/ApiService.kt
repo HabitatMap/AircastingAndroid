@@ -38,13 +38,13 @@ interface ApiService {
         @Query("south") south: Double = 0.0,
         @Query("east") east: Double = 0.0,
         @Query("west") west: Double = 0.0,
-        @Query("time_from") time_from: Int = 0,
-        @Query("time_to") time_to: Int = 0,
-        @Query("measurement_type") measurement_type: String = "",
-        @Query("sensor_name") sensor_name: String = "",
-        @Query("unit_symbol") unit_symbol: String = "",
-        @Query("tags") tags: String = "",
-        @Query("usernames") usernames: String = ""
+//        @Query("time_from") time_from: Int = 0,
+//        @Query("time_to") time_to: Int = 0,
+//        @Query("measurement_type") measurement_type: String = "",
+//        @Query("sensor_name") sensor_name: String = "",
+//        @Query("unit_symbol") unit_symbol: String = "",
+//        @Query("tags") tags: String = "",
+//        @Query("usernames") usernames: String = ""
     ): Call<SessionsInRegionResponse>
 
     @GET("/api/fixed/active/sessions.json")
