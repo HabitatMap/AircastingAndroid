@@ -43,7 +43,12 @@ class SessionsInRegionDownloadServiceTest {
 
     @Before
     fun setup() {
-        mockWebServer.dispatcher = dispatcher
+        mockWebServer.dispatcher = successDispatcher
+    }
+
+    @After
+    fun cleanup() {
+        mockWebServer.shutdown()
     }
 
     @Test
