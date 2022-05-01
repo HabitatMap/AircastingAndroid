@@ -43,13 +43,12 @@ class OnboardingController(
     }
 
     override fun onGetStartedClicked() {
-//        wizardNavigator.goToHowIsTheAir(this) TODO: this is commented for now as this feature is not part of MVP, later on 'goToMeasureAndMap' will be removed from this function
-        wizardNavigator.goToMeasureandMap(this)
+        wizardNavigator.goToHowIsTheAir(this)
         mViewMvc.showProgressBar()
     }
 
     override fun onContinueHowsTheAirClicked() {
-        wizardNavigator.goToMeasureandMap(this)
+        wizardNavigator.goToMeasureAndMap(this)
         mViewMvc.changeProgressBarColorToGreen()
     }
 
