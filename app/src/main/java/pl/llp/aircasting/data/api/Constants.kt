@@ -1,4 +1,4 @@
-package pl.llp.aircasting.networking
+package pl.llp.aircasting.data.api
 
 object Constants {
     /* GET Requests */

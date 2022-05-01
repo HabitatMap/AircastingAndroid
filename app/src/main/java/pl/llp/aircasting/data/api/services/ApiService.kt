@@ -1,4 +1,4 @@
-package pl.llp.aircasting.networking.services
+package pl.llp.aircasting.data.api.services
 
 import android.util.Base64
 import okhttp3.HttpUrl
@@ -8,10 +8,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.Constants
-import pl.llp.aircasting.networking.params.*
-import pl.llp.aircasting.networking.responses.*
+import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.params.*
+import pl.llp.aircasting.data.api.responses.*
+import pl.llp.aircasting.util.Settings
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -134,19 +134,19 @@ open class ApiServiceFactory(private val mSettings: Settings) {
 
     protected open fun baseUrl(): HttpUrl {
         val URL_SUFFIX = "/"
-        var baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
+        val baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
 
-        if (mSettings.getBackendUrl()?.last()?.equals(URL_SUFFIX) == true) {
-            return baseUrl.toHttpUrl()
+        return if (mSettings.getBackendUrl()?.last().toString() == URL_SUFFIX) {
+            baseUrl.toHttpUrl()
         } else {
-            return (baseUrl + URL_SUFFIX).toHttpUrl()
+            (baseUrl + URL_SUFFIX).toHttpUrl()
         }
     }
 
     private fun encodedCredentials(username: String, password: String): String {
         val credentials = "${username}:${password}"
         val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
-        return "Basic ${encodedCredentials}"
+        return "Basic $encodedCredentials"
     }
 
 }
