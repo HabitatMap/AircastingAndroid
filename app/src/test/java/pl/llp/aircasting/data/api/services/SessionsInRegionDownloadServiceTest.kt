@@ -27,13 +27,16 @@ class SessionsInRegionDownloadServiceTest {
     }
 
     private val testJson = StubData.getJson("SessionsCracow.json")
-    private val dispatcher = object : QueueDispatcher() {
+    private val successDispatcher = object : QueueDispatcher() {
         override fun dispatch(request: RecordedRequest): MockResponse {
-            return if (request.path == "/api/fixed/active/sessions.json") {
-                MockResponse()
+            return MockResponse()
                     .setBody(testJson)
                     .setResponseCode(200)
-            } else MockResponse()
+        }
+    }
+    private val unsuccessDispatcher = object : QueueDispatcher() {
+        override fun dispatch(request: RecordedRequest): MockResponse {
+            return MockResponse()
                 .setResponseCode(500)
         }
     }
