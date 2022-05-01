@@ -2,7 +2,6 @@ package pl.llp.aircasting.data.api.services
 
 import okhttp3.mockwebserver.*
 import org.junit.*
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.*
 import pl.llp.aircasting.data.model.Session
@@ -10,11 +9,10 @@ import pl.llp.aircasting.utilities.StubData
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Thread.sleep
-import java.net.HttpURLConnection
 import kotlin.test.assertTrue
 
 class SessionsInRegionDownloadServiceTest {
+    private val testSquare = GeoSquare(1.0,1.0,1.0,1.0)
     @get:Rule
     val mockWebServer = MockWebServer()
     private val retrofit by lazy {
