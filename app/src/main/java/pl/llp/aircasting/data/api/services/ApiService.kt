@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.api.services
+package pl.llp.aircasting.networking.services
 
 import android.util.Base64
 import okhttp3.HttpUrl
@@ -8,9 +8,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.data.api.params.*
-import pl.llp.aircasting.data.api.responses.*
-import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.lib.Settings
+import pl.llp.aircasting.networking.Constants
+import pl.llp.aircasting.networking.params.*
+import pl.llp.aircasting.networking.responses.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,42 +21,52 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-
 interface ApiService {
-    @POST("/api/sessions")
-    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
-    @POST("/api/realtime/sessions.json")
-    fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
-
-    @GET("/api/user/sessions/empty.json")
+    @GET(Constants.urlDownloadSession)
     fun downloadSession(@Query("uuid") uuid: String): Call<SessionResponse>
 
-    @GET("/api/user/sessions/empty.json")
-    fun downloadSessionWithMeasurements(@Query("uuid") uuid: String, @Query("stream_measurements") stream_measurements: Boolean = true): Call<SessionWithMeasurementsResponse>
+    @GET(Constants.urlDownloadSession)
+    fun downloadSessionWithMeasurements(
+        @Query("uuid") uuid: String,
+        @Query("stream_measurements") stream_measurements: Boolean = true
+    ): Call<SessionWithMeasurementsResponse>
 
-    @POST("/api/user/sessions/sync_with_versioning.json")
-    fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
+    @GET(Constants.urlDownloadFixedMeasurements)
+    fun downloadFixedMeasurements(
+        @Query("uuid") uuid: String,
+        @Query("last_measurement_sync") last_measurement_sync: String
+    ): Call<SessionWithMeasurementsResponse>
 
-    @GET("/api/realtime/sync_measurements.json")
-    fun downloadFixedMeasurements(@Query("uuid") uuid: String, @Query("last_measurement_sync") last_measurement_sync: String): Call<SessionWithMeasurementsResponse>
-
-    @GET("/api/user.json")
+    @GET(Constants.urlLogin)
     fun login(): Call<UserResponse>
 
-    @POST("/api/user.json")
+    @GET(Constants.urlExportSession)
+    fun exportSession(
+        @Query("email") email: String,
+        @Query("uuid") uuid: String
+    ): Call<ExportSessionResponse>
+
+    /* POST Requests */
+    @POST(Constants.urlCreateMobileSession)
+    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @POST(Constants.urlCreateFixedSession)
+    fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @POST(Constants.urlSync)
+    fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
+
+    @POST(Constants.urlCreateAccount)
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 
-    @POST("/api/user/sessions/update_session.json")
+    @POST(Constants.urlUpdateSession)
     fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
 
-    @GET("/api/sessions/export_by_uuid.json")
-    fun exportSession(@Query("email") email: String, @Query("uuid") uuid: String): Call<ExportSessionResponse>
-
-    @POST("/users/password.json")
+    @POST(Constants.urlResetPassword)
     fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
 
-    @POST("/api/realtime/measurements")
+    @POST(Constants.urlUploadFixedMeasurements)
     fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Call<Unit>
 }
 
@@ -86,7 +97,7 @@ open class ApiServiceFactory(private val mSettings: Settings) {
             .baseUrl(baseUrl())
             .build()
 
-        return retrofit.create(ApiService::class.java)
+        return retrofit.create<ApiService>(ApiService::class.java)
     }
 
     fun get(username: String, password: String): ApiService {
@@ -121,7 +132,7 @@ open class ApiServiceFactory(private val mSettings: Settings) {
         )
     }
 
-    protected open fun baseUrl() : HttpUrl {
+    protected open fun baseUrl(): HttpUrl {
         val URL_SUFFIX = "/"
         var baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
 
