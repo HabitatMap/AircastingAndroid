@@ -17,6 +17,8 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
@@ -35,6 +37,11 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     var placesClient: PlacesClient? = null
     private var btnContinue: Button? = null
 
+    private var ozonChip: Chip? = null
+    private var airbeamChip: Chip? = null
+    private var purpleChip: Chip? = null
+    private var openAQ: Chip? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_fixed_sessions)
@@ -48,6 +55,22 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         btnContinue = findViewById(R.id.btnContinue)
+        airbeamChip = findViewById(R.id.airbeam_chip)
+        purpleChip = findViewById(R.id.purple_air_chip)
+        ozonChip = findViewById(R.id.ozone_chip)
+        openAQ = findViewById(R.id.open_aq_chip)
+
+        val chipFirstGroup = findViewById<ChipGroup>(R.id.chip_group_first)
+        chipFirstGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (checkedId == ozonChip?.id){
+                airbeamChip?.visibility = View.GONE
+                purpleChip?.visibility = View.GONE
+                openAQ?.isChecked = true
+            } else {
+                airbeamChip?.visibility = View.VISIBLE
+                purpleChip?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun setupAutoComplete() {
@@ -63,10 +86,10 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         autocompleteFragment?.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                        setText(getString(R.string.search_session_query_hint))
-                        textSize = 15.0f
-                        setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
-                    }
+                    setText(getString(R.string.search_session_query_hint))
+                    textSize = 15.0f
+                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                }
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.visibility =
                     View.GONE
             }
