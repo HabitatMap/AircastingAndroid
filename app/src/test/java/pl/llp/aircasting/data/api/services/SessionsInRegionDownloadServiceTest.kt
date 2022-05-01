@@ -90,45 +90,43 @@ class SessionsInRegionDownloadServiceTest {
     @Test
     fun whenRegionIsSet_apiCall_shouldContainRegionCoordinates() {
         // given
-        val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
         val apiSpy = spy<ApiService>(apiService)
         val service = SessionsInRegionDownloadService(apiSpy)
 
         // when
-        service.setRegion(square)
+        service.setRegion(testSquare)
 
         // then
         verify(apiSpy).getSessionsInRegion(
-            north = square.north,
-            south = square.south,
-            east = square.east,
-            west = square.west
+            north = testSquare.north,
+            south = testSquare.south,
+            east = testSquare.east,
+            west = testSquare.west
         )
     }
 
     @Test
     fun whenRegionIsSet_shouldEnqueueApiCall() {
         // given
-        val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
         val apiSpy = spy<ApiService>(apiService)
         val service = SessionsInRegionDownloadService(apiSpy)
         val callSpy = spy(
             apiSpy.getSessionsInRegion(
-                north = square.north,
-                south = square.south,
-                east = square.east,
-                west = square.west
+                north = testSquare.north,
+                south = testSquare.south,
+                east = testSquare.east,
+                west = testSquare.west
             )
         )
         doReturn(callSpy).`when`(apiSpy).getSessionsInRegion(
-            north = square.north,
-            south = square.south,
-            east = square.east,
-            west = square.west
+            north = testSquare.north,
+            south = testSquare.south,
+            east = testSquare.east,
+            west = testSquare.west
         )
 
         // when
-        service.setRegion(square)
+        service.setRegion(testSquare)
 
         // then
         verify(callSpy).enqueue(any())
@@ -137,13 +135,12 @@ class SessionsInRegionDownloadServiceTest {
     @Test
     fun whenApiResponse_isSuccessful_andThereAreNoSessionsInRegion_shouldClearSessionsList() {
         // given
-        val square = GeoSquare(1.0, 1.0, 1.0, 1.0)
         val session = mock(Session::class.java)
         val service = SessionsInRegionDownloadService(apiService)
         service.add(session)
 
         // when
-        service.setRegion(square)
+        service.setRegion(testSquare)
         Thread.sleep(2000)
 
         // then
