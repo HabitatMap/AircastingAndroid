@@ -97,7 +97,7 @@ open class ApiServiceFactory(private val mSettings: Settings) {
             .baseUrl(baseUrl())
             .build()
 
-        return retrofit.create<ApiService>(ApiService::class.java)
+        return retrofit.create(ApiService::class.java)
     }
 
     fun get(username: String, password: String): ApiService {
