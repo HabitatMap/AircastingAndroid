@@ -25,23 +25,11 @@
         app:queryBackground="@null"
         app:searchIcon="@null" />
 
-    <TextView
-        android:id="@+id/txtShowing"
-        style="@style/TextAppearance.Aircasting.Body1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_7"
-        android:layout_marginTop="@dimen/keyline_2"
-        android:alpha="0.5"
-        android:text="@string/showing_results_for"
-        android:textColor="@color/aircasting_dark_blue"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchInputField" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
+        android:id="@+id/map_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:alpha="0.2"
+        android:background="@color/aircasting_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -52,12 +40,32 @@
             android:id="@+id/mapView"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@drawable/my_gradient_transparent_drawable"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+            <TextView
+                android:id="@+id/txtShowing"
+                style="@style/TextAppearance.Aircasting.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_7"
+                android:layout_marginTop="@dimen/keyline_2"
+                android:text="@string/showing_results_for"
+                android:textColor="@android:color/background_dark" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
