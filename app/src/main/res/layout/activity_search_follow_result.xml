@@ -61,7 +61,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_7"
                 android:layout_marginTop="@dimen/keyline_2"
-                android:text="@string/showing_results_for"
                 android:textColor="@android:color/background_dark" />
 
         </RelativeLayout>
