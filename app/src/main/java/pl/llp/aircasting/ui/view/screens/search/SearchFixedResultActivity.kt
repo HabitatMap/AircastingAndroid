@@ -9,6 +9,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
+import pl.llp.aircasting.util.styleGoogleMap
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -30,6 +31,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        styleGoogleMap(googleMap, this)
+
         val sydney = LatLng(-33.852, 151.211)
         googleMap.addMarker(
             MarkerOptions()
