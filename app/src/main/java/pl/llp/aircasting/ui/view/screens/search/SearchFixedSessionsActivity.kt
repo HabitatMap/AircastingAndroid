@@ -34,13 +34,13 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         }
     }
 
-    var placesClient: PlacesClient? = null
+    private var placesClient: PlacesClient? = null
     private var btnContinue: Button? = null
-
     private var ozonChip: Chip? = null
     private var airbeamChip: Chip? = null
     private var purpleChip: Chip? = null
     private var openAQ: Chip? = null
+    private var txtSelectedParameter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +66,12 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 airbeamChip?.visibility = View.GONE
                 purpleChip?.visibility = View.GONE
                 openAQ?.isChecked = true
+                txtSelectedParameter = "Ozon"
+
             } else {
                 airbeamChip?.visibility = View.VISIBLE
                 purpleChip?.visibility = View.VISIBLE
+                txtSelectedParameter = "particulate matter"
             }
         }
     }
@@ -143,6 +146,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         val intent = Intent(this@SearchFixedSessionsActivity, SearchFixedResultActivity::class.java)
         intent.putExtra("lat", lat)
         intent.putExtra("long", long)
+        intent.putExtra("txtType", txtSelectedParameter)
         startActivity(intent)
     }
 
