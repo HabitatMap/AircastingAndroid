@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -8,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_search_follow_result.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.styleGoogleMap
 
@@ -20,14 +22,18 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         setupUI()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupUI() {
         // retrieving data from the previous activity
         val lat = intent.getStringExtra("lat")
         val long = intent.getStringExtra("long")
+        val txtReceivedType = intent.getStringExtra("txtType")
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+
+        txtShowing.text = getString(R.string.showing_results_for) + " " + txtReceivedType
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
