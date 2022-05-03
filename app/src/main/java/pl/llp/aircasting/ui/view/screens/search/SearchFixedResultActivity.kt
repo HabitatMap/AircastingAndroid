@@ -10,6 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_search_follow_result.*
+import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.styleGoogleMap
 
@@ -24,16 +25,17 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("SetTextI18n")
     private fun setupUI() {
+        setSupportActionBar(topAppBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         // retrieving data from the previous activity
         val lat = intent.getStringExtra("lat")
         val long = intent.getStringExtra("long")
-        val txtReceivedType = intent.getStringExtra("txtType")
+        txtShowing.text = getString(R.string.showing_results_for) + " " + intent.getStringExtra("txtType")
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
-
-        txtShowing.text = getString(R.string.showing_results_for) + " " + txtReceivedType
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
