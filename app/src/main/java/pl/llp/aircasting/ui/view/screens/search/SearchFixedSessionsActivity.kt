@@ -67,7 +67,6 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 purpleChip?.visibility = View.GONE
                 openAQ?.isChecked = true
                 txtSelectedParameter = "Ozon"
-
             } else {
                 airbeamChip?.visibility = View.VISIBLE
                 purpleChip?.visibility = View.VISIBLE
@@ -127,11 +126,6 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 }
 
                 override fun onError(status: Status) {
-                    Toast.makeText(
-                        this@SearchFixedSessionsActivity,
-                        "Something went wrong!",
-                        Toast.LENGTH_SHORT
-                    ).show()
                     Log.d("tag", status.statusMessage.toString())
                 }
             })
