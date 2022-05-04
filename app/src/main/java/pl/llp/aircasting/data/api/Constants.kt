@@ -2,6 +2,7 @@ package pl.llp.aircasting.data.api
 
 object Constants {
     /* GET Requests */
+    const val urlSessionInGivenLocation = "/api/fixed/active/sessions.json"
     const val urlDownloadSession = "/api/user/sessions/empty.json"
     const val urlDownloadFixedMeasurements = "/api/realtime/sync_measurements.json"
     const val urlLogin = "/api/user.json"
