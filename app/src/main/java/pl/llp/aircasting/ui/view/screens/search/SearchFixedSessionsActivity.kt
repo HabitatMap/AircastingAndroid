@@ -61,7 +61,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         openAQ = findViewById(R.id.open_aq_chip)
 
         val chipFirstGroup = findViewById<ChipGroup>(R.id.chip_group_first)
-        chipFirstGroup.setOnCheckedChangeListener { group, checkedId ->
+        chipFirstGroup.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == ozonChip?.id){
                 airbeamChip?.visibility = View.GONE
                 purpleChip?.visibility = View.GONE
@@ -141,6 +141,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         intent.putExtra("lat", lat)
         intent.putExtra("long", long)
         intent.putExtra("txtType", txtSelectedParameter)
+
         startActivity(intent)
     }
 

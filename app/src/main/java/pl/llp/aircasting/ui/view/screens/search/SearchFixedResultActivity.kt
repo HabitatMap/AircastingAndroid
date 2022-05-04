@@ -38,7 +38,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         val long = intent.getStringExtra("long")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + "particulate matter"
-        binding.txtShowing.text = getString(R.string.using_txt) + " " + "OpenAQ"
+        binding.txtUsing.text = getString(R.string.using_txt) + " " + "OpenAQ"
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
