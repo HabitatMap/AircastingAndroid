@@ -491,10 +491,11 @@
     <string name="particulate_matter">Particulate matter</string>
     <string name="explore_existing_sessions">Explore existing sessions</string>
     <string name="finished">Finished</string>
-    <string name="showing_results_for" translatable="false">Showing results for:</string>
+    <string name="showing_results_for" translatable="false">Results for:</string>
     <string name="which_sensor_are_you_interested_in" translatable="false">Which sensor are you interested in?</string>
     <string name="airbeam" translatable="false">Airbeam</string>
     <string name="openaq" translatable="false">OpenAQ</string>
     <string name="purpleair" translatable="false">PurpleAir</string>
+    <string name="using_txt">Using:</string>
 
 </resources>
