@@ -1,55 +1,21 @@
 package pl.llp.aircasting.data.api.services
 
-import okhttp3.mockwebserver.*
-import org.junit.*
-import org.mockito.Mockito.mock
+import com.google.gson.Gson
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.mockito.Mockito.any
 import org.mockito.kotlin.*
+import pl.llp.aircasting.data.api.responses.SessionsInRegionResponse
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.utilities.StubData
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import org.junit.Test
 import kotlin.test.assertTrue
 
 class SessionsInRegionDownloadServiceTest {
-    private val testSquare = GeoSquare(1.0,1.0,1.0,1.0)
-    @get:Rule
-    val mockWebServer = MockWebServer()
-    private val retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/"))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-    private val apiService by lazy {
-        retrofit.create(ApiService::class.java)
-    }
-
+    private val testSquare = GeoSquare(1.0, 1.0, 1.0, 1.0)
     private val testJson = StubData.getJson("SessionsCracow.json")
-    private val successDispatcher = object : QueueDispatcher() {
-        override fun dispatch(request: RecordedRequest): MockResponse {
-            return MockResponse()
-                    .setBody(testJson)
-                    .setResponseCode(200)
-        }
-    }
-    private val unsuccessDispatcher = object : QueueDispatcher() {
-        override fun dispatch(request: RecordedRequest): MockResponse {
-            return MockResponse()
-                .setResponseCode(500)
-        }
-    }
-
-    @Before
-    fun setup() {
-        mockWebServer.dispatcher = successDispatcher
-    }
-
-    @After
-    fun cleanup() {
-        mockWebServer.shutdown()
-    }
 
     @Test
     fun whenThereAreNoSessionsDownloaded_shouldReturnEmptyList() {
@@ -174,6 +140,40 @@ class SessionsInRegionDownloadServiceTest {
         Thread.sleep(2000)
 
         // then
-        assertTrue(service.sessions.isNotEmpty())
+        assertTrue(sessionsSpy.isNotEmpty())
+    }
+
+    private fun mockSuccessfulCallWithJson(json: String): Call<SessionsInRegionResponse> {
+        val gson = Gson().fromJson(json, SessionsInRegionResponse::class.java)
+        val response = Response.success(gson)
+        return mock<Call<SessionsInRegionResponse>> {
+            on { enqueue(any()) } doAnswer {
+                val callback = it.arguments[0] as Callback<SessionsInRegionResponse>
+                callback.onResponse(mock, response)
+            }
+        }
+    }
+
+    private fun mockApiServiceWithCall(call: Call<SessionsInRegionResponse>): ApiService {
+        return mock<ApiService> {
+            on {
+                getSessionsInRegion(
+                    north = testSquare.north,
+                    south = testSquare.south,
+                    east = testSquare.east,
+                    west = testSquare.west
+                )
+            } doReturn call
+        }
+    }
+
+    private fun mockUnsuccessfulCall(): Call<SessionsInRegionResponse> {
+        val response = Response.error<SessionsInRegionResponse>(500, "{}".toResponseBody())
+        return mock<Call<SessionsInRegionResponse>> {
+            on { enqueue(any()) } doAnswer {
+                val callback = it.arguments[0] as Callback<SessionsInRegionResponse>
+                callback.onResponse(mock, response)
+            }
+        }
     }
 }
