@@ -7,12 +7,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SessionsInRegionDownloadService(private val apiService: ApiService) {
-    val sessions: MutableList<Session> = mutableListOf()
-    fun add(session: Session) {
-        sessions.add(session)
-    }
-
-    fun setRegion(square: GeoSquare) {
+    fun getSessionsFromRegionToList(square: GeoSquare, sessions: MutableList<Session>) {
         val call = apiService.getSessionsInRegion(
             north = square.north,
             south = square.south,
