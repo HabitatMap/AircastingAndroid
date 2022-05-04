@@ -3,22 +3,27 @@ package pl.llp.aircasting.ui.view.screens.search
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.activity_search_follow_result.*
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
+import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
+import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.util.styleGoogleMap
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private lateinit var binding: ActivitySearchFollowResultBinding
+    private lateinit var adapter: FixedFollowAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search_follow_result)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search_follow_result)
 
         setupUI()
     }
@@ -31,11 +36,20 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         // retrieving data from the previous activity
         val lat = intent.getStringExtra("lat")
         val long = intent.getStringExtra("long")
-        txtShowing.text = getString(R.string.showing_results_for) + " " + intent.getStringExtra("txtType")
+
+        binding.txtShowing.text = getString(R.string.showing_results_for) + " " + "particulate matter"
+        binding.txtShowing.text = getString(R.string.using_txt) + " " + "OpenAQ"
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = FixedFollowAdapter(arrayListOf())
+        binding.recyclerFixedFollow.adapter = adapter
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
