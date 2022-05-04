@@ -20,8 +20,22 @@ class SessionsInRegionDownloadService(private val apiService: ApiService) {
                 call: Call<SessionsInRegionResponse>,
                 response: Response<SessionsInRegionResponse>
             ) {
+                val sessionsInRegion = response.body()?.sessions
                 if (response.isSuccessful) {
                     sessions.clear()
+                    if (sessionsInRegion?.isNotEmpty() == true) {
+                        sessions.add(
+                            Session(
+                                "",
+                                null,
+                                null,
+                                Session.Type.FIXED,
+                                "",
+                                arrayListOf(),
+                                Session.Status.RECORDING
+                            )
+                        )
+                    }
                 }
             }
 
