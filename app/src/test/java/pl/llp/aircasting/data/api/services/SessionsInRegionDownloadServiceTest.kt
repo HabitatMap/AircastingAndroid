@@ -18,52 +18,17 @@ class SessionsInRegionDownloadServiceTest {
     private val testJson = StubData.getJson("SessionsCracow.json")
 
     @Test
-    fun whenThereAreNoSessionsDownloaded_shouldReturnEmptyList() {
-        // when
-        val service = SessionsInRegionDownloadService(apiService)
-
-        // then
-        assertTrue(service.sessions.isEmpty())
-    }
-
-    @Test
-    fun whenThereAreSessions_shouldReturnNonEmptyList() {
+    fun whenGivenCoordinates_shouldConstructCallWithGivenCoordinates() {
         // given
-        val service = SessionsInRegionDownloadService(apiService)
-        val session = mock(Session::class.java)
+        val mockCall = mockSuccessfulCallWithJson("{}")
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
 
         // when
-        service.add(session)
+        service.getSessionsFromRegionToList(testSquare, mutableListOf())
 
         // then
-        assertTrue(service.sessions.isNotEmpty())
-    }
-
-    @Test
-    fun whenRegionIsSet_shouldCallApi() {
-        // given
-        val square = GeoSquare(0.0, 0.0, 0.0, 0.0)
-        val apiSpy = spy<ApiService>(apiService)
-        val service = SessionsInRegionDownloadService(apiSpy)
-
-        // when
-        service.setRegion(square)
-
-        // then
-        verify(apiSpy).getSessionsInRegion()
-    }
-
-    @Test
-    fun whenRegionIsSet_apiCall_shouldContainRegionCoordinates() {
-        // given
-        val apiSpy = spy<ApiService>(apiService)
-        val service = SessionsInRegionDownloadService(apiSpy)
-
-        // when
-        service.setRegion(testSquare)
-
-        // then
-        verify(apiSpy).getSessionsInRegion(
+        verify(mockApiService).getSessionsInRegion(
             north = testSquare.north,
             south = testSquare.south,
             east = testSquare.east,
@@ -72,72 +37,111 @@ class SessionsInRegionDownloadServiceTest {
     }
 
     @Test
-    fun whenRegionIsSet_shouldEnqueueApiCall() {
+    fun whenGivenCoordinates_shouldEnqueueCallToApi() {
         // given
-        val apiSpy = spy<ApiService>(apiService)
-        val service = SessionsInRegionDownloadService(apiSpy)
-        val callSpy = spy(
-            apiSpy.getSessionsInRegion(
-                north = testSquare.north,
-                south = testSquare.south,
-                east = testSquare.east,
-                west = testSquare.west
-            )
-        )
-        doReturn(callSpy).`when`(apiSpy).getSessionsInRegion(
-            north = testSquare.north,
-            south = testSquare.south,
-            east = testSquare.east,
-            west = testSquare.west
-        )
+        val mockCall = mockSuccessfulCallWithJson("{}")
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
 
         // when
-        service.setRegion(testSquare)
+        service.getSessionsFromRegionToList(testSquare, mutableListOf())
 
         // then
-        verify(callSpy).enqueue(any())
+        verify(mockCall).enqueue(anyOrNull())
     }
 
     @Test
-    fun whenOnApiResponse_isSuccessful_shouldClearSessionsList() {
+    fun whenApiResponseIsSuccessful_shouldClearGivenList() {
         // given
-        val session = mock(Session::class.java)
-        val service = SessionsInRegionDownloadService(apiService)
-        service.add(session)
+        val mockCall = mockSuccessfulCallWithJson("{}")
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
+        val sessions = mutableListOf<Session>()
+        val sessionsSpy = spy(sessions)
 
         // when
-        service.setRegion(testSquare)
-        Thread.sleep(2000)
+        service.getSessionsFromRegionToList(testSquare, sessionsSpy)
 
         // then
-        assertTrue(service.sessions.isEmpty())
+        verify(sessionsSpy).clear()
     }
 
     @Test
-    fun whenOnApiResponse_isUnSuccessful_shouldNotClearSessionsList() {
+    fun whenApiResponseIsUnSuccessful_shouldNotClearGivenList() {
         // given
-        mockWebServer.dispatcher = unsuccessDispatcher
-        val session = mock(Session::class.java)
-        val service = SessionsInRegionDownloadService(apiService)
-        service.add(session)
+        val mockCall = mockUnsuccessfulCall()
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
+        val sessions = mutableListOf<Session>()
+        val sessionsSpy = spy(sessions)
 
         // when
-        service.setRegion(testSquare)
-        Thread.sleep(2000)
+        service.getSessionsFromRegionToList(testSquare, sessionsSpy)
 
         // then
-        assertTrue(service.sessions.isNotEmpty())
+        verify(sessionsSpy, never()).clear()
     }
 
-    @Ignore("Not ready")
+
     @Test
-    fun whenOnApiResponse_isSuccessful_thereAreSessionsInRegion_shouldAddSessionToList() {
+    fun whenThereAreNoSessionsDownloaded_shouldNotAddToGivenList() {
         // given
-        val service = SessionsInRegionDownloadService(apiService)
+        val sessions = mutableListOf<Session>()
+        val sessionsSpy = spy(sessions)
+        val mockCall = mockSuccessfulCallWithJson("{}")
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
 
         // when
-        service.setRegion(testSquare)
-        Thread.sleep(2000)
+        service.getSessionsFromRegionToList(testSquare, sessionsSpy)
+
+        // then
+        verify(sessionsSpy, never()).add(anyOrNull())
+    }
+
+    @Test
+    fun whenThereAreNoSessionsDownloaded_shouldHaveGivenListEmpty() {
+        // given
+        val sessions = mutableListOf<Session>()
+        val sessionsSpy = spy(sessions)
+        val mockCall = mockSuccessfulCallWithJson("{}")
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
+
+        // when
+        service.getSessionsFromRegionToList(testSquare, sessionsSpy)
+
+        // then
+        assertTrue(sessionsSpy.isEmpty())
+    }
+
+    @Test
+    fun whenThereAreSessionsDownloaded_shouldAddToGivenList() {
+        // given
+        val sessions = mutableListOf<Session>()
+        val sessionsSpy = spy(sessions)
+        val mockCall = mockSuccessfulCallWithJson(testJson)
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
+
+        // when
+        service.getSessionsFromRegionToList(testSquare, sessionsSpy)
+
+        // then
+        verify(sessionsSpy).add(anyOrNull())
+    }
+
+    @Test
+    fun whenThereAreSessionsDownloaded_shouldHaveGivenListNonEmpty() {
+        // given
+        val sessions = mutableListOf<Session>()
+        val sessionsSpy = spy(sessions)
+        val mockCall = mockSuccessfulCallWithJson(testJson)
+        val mockApiService = mockApiServiceWithCall(mockCall)
+        val service = SessionsInRegionDownloadService(mockApiService)
+
+        // when
+        service.getSessionsFromRegionToList(testSquare, sessionsSpy)
 
         // then
         assertTrue(sessionsSpy.isNotEmpty())
