@@ -1,7 +1,8 @@
 package pl.llp.aircasting
 
 import dagger.Component
-import pl.llp.aircasting.di.*
+import pl.llp.aircasting.di.AppComponent
+import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
 
 @Singleton

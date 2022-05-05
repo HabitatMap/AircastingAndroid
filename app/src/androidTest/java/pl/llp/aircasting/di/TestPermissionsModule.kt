@@ -1,6 +1,7 @@
 package pl.llp.aircasting.di
 
 import org.mockito.Mockito
+import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 
 class TestPermissionsModule: PermissionsModule() {
