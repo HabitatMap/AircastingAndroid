@@ -11,6 +11,7 @@ import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.params.*
 import pl.llp.aircasting.data.api.responses.*
+import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.util.Settings
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -48,7 +49,7 @@ interface ApiService {
     ): Call<ExportSessionResponse>
 
     @GET(Constants.urlSessionInGivenLocation)
-    fun getSessionsInRegion(
+   suspend fun getSessionsInRegion(
         @Query("north") north: Double,
         @Query("south") south: Double,
         @Query("east") east: Double,
@@ -60,7 +61,7 @@ interface ApiService {
         @Query("unit_symbol") unit_symbol: String,
         @Query("tags") tags: String,
         @Query("usernames") usernames: String
-    ): Call<SessionsInRegionResponse>
+    ): Call<SessionsInRegionsRes>
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
