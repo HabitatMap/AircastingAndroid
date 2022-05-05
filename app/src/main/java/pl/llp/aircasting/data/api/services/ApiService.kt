@@ -61,7 +61,7 @@ interface ApiService {
         @Query("unit_symbol") unit_symbol: String,
         @Query("tags") tags: String,
         @Query("usernames") usernames: String
-    ): Call<SessionsInRegionsRes>
+    ): SessionsInRegionsRes
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
