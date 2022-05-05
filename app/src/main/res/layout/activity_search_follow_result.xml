@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="@dimen/keyline_5"
+            android:inputType="none"
             android:layout_marginEnd="@dimen/keyline_5"
             android:background="@drawable/search_input_field_background"
             app:iconifiedByDefault="false"
@@ -126,6 +127,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
