@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -43,8 +42,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         (application as AircastingApplication)
             .appComponent.inject(this)
-        searchFollowViewModel =
-            ViewModelProviders.of(this, viewModelFactory)[SearchFollowViewModel::class.java]
+        searchFollowViewModel = ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
     }
