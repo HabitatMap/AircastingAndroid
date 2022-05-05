@@ -42,4 +42,8 @@
         tools:layout="@layout/activity_search_fixed_sessions"
         android:name="pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity"
         android:label="" />
+    <activity
+        android:id="@+id/searchFixedResultActivity"
+        android:name="pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity"
+        android:label="SearchFixedResultActivity" />
 </navigation>

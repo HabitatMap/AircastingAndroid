@@ -3,16 +3,18 @@ package pl.llp.aircasting.util
 import android.app.Activity
 import android.content.Context
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.PowerManager
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
-import androidx.appcompat.widget.Toolbar
-import kotlinx.android.synthetic.main.prominent_app_bar.topAppBar
+import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.common.BaseActivity
@@ -79,3 +81,33 @@ fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     }
     return true
 }
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
+}
+
+val Context.isConnected: Boolean
+    get() {
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return when {
+            isSDKGreaterOrEqualToM() -> {
+                val nw = connectivityManager.activeNetwork ?: return false
+                val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+                when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    else -> false
+                }
+            }
+            else -> {
+                // For older APIs
+                val nwInfo = connectivityManager.activeNetworkInfo ?: return false
+                nwInfo.isConnected
+            }
+        }
+    }

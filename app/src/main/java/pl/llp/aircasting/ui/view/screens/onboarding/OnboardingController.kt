@@ -2,7 +2,6 @@ package pl.llp.aircasting.ui.view.screens.onboarding
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedViewMvc
@@ -12,6 +11,7 @@ import pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map.OnboardingMe
 import pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map.OnboardingMeasureAndMapViewMvc
 import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.LearnMoreYourPrivacyBottomSheet
 import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvc
+import pl.llp.aircasting.util.Settings
 
 class OnboardingController(
     private val mContextActivity: AppCompatActivity,
@@ -27,12 +27,16 @@ class OnboardingController(
     fun onBackPressed() {
         wizardNavigator.onBackPressed()
 
-        if (mContextActivity.supportFragmentManager.fragments.last() is OnboardingMeasureAndMapFragment) {
-            mViewMvc.changeProgressBarColorToGreen()
-        } else if (mContextActivity.supportFragmentManager.fragments.last() is OnboardingGetStartedFragment) {
-            mViewMvc.hideProgressBar()
-        } else {
-            mViewMvc.changeProgressBarColorToBlue()
+        when {
+            mContextActivity.supportFragmentManager.fragments.last() is OnboardingMeasureAndMapFragment -> {
+                mViewMvc.changeProgressBarColorToGreen()
+            }
+            mContextActivity.supportFragmentManager.fragments.last() is OnboardingGetStartedFragment -> {
+                mViewMvc.hideProgressBar()
+            }
+            else -> {
+                mViewMvc.changeProgressBarColorToBlue()
+            }
         }
     }
 
@@ -43,13 +47,12 @@ class OnboardingController(
     }
 
     override fun onGetStartedClicked() {
-//        wizardNavigator.goToHowIsTheAir(this) TODO: this is commented for now as this feature is not part of MVP, later on 'goToMeasureAndMap' will be removed from this function
-        wizardNavigator.goToMeasureandMap(this)
+        wizardNavigator.goToHowIsTheAir(this)
         mViewMvc.showProgressBar()
     }
 
     override fun onContinueHowsTheAirClicked() {
-        wizardNavigator.goToMeasureandMap(this)
+        wizardNavigator.goToMeasureAndMap(this)
         mViewMvc.changeProgressBarColorToGreen()
     }
 

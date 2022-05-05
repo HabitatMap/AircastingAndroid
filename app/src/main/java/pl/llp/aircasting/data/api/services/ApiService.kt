@@ -1,7 +1,6 @@
 package pl.llp.aircasting.data.api.services
 
 import android.util.Base64
-import io.reactivex.Single
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
@@ -9,8 +8,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.params.*
 import pl.llp.aircasting.data.api.responses.*
+import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.util.Settings
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -21,69 +22,55 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-
 interface ApiService {
-    @POST("/api/sessions")
-    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
-    @POST("/api/realtime/sessions.json")
-    fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
-
-    @GET("/api/user/sessions/empty.json")
+    @GET(Constants.urlDownloadSession)
     fun downloadSession(@Query("uuid") uuid: String): Call<SessionResponse>
 
-    @GET("/api/fixed/active/sessions.json")
-    fun getSessionsInRegion(
-        @Query("north") north: Double = 0.0,
-        @Query("south") south: Double = 0.0,
-        @Query("east") east: Double = 0.0,
-        @Query("west") west: Double = 0.0,
-//        @Query("time_from") time_from: Int = 0,
-//        @Query("time_to") time_to: Int = 0,
-//        @Query("measurement_type") measurement_type: String = "",
-//        @Query("sensor_name") sensor_name: String = "",
-//        @Query("unit_symbol") unit_symbol: String = "",
-//        @Query("tags") tags: String = "",
-//        @Query("usernames") usernames: String = ""
-    ): Call<SessionsInRegionResponse>
-
-    @GET("/api/fixed/active/sessions.json")
-    fun getSessionInRegion(): Single<SessionInRegionResponse>
-
-    @GET("/api/user/sessions/empty.json")
+    @GET(Constants.urlDownloadSession)
     fun downloadSessionWithMeasurements(
         @Query("uuid") uuid: String,
         @Query("stream_measurements") stream_measurements: Boolean = true
     ): Call<SessionWithMeasurementsResponse>
 
-    @POST("/api/user/sessions/sync_with_versioning.json")
-    fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
-
-    @GET("/api/realtime/sync_measurements.json")
+    @GET(Constants.urlDownloadFixedMeasurements)
     fun downloadFixedMeasurements(
         @Query("uuid") uuid: String,
         @Query("last_measurement_sync") last_measurement_sync: String
     ): Call<SessionWithMeasurementsResponse>
 
-    @GET("/api/user.json")
+    @GET(Constants.urlLogin)
     fun login(): Call<UserResponse>
 
-    @POST("/api/user.json")
-    fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
-
-    @POST("/api/user/sessions/update_session.json")
-    fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
-
-    @GET("/api/sessions/export_by_uuid.json")
+    @GET(Constants.urlExportSession)
     fun exportSession(
         @Query("email") email: String,
         @Query("uuid") uuid: String
     ): Call<ExportSessionResponse>
 
-    @POST("/users/password.json")
+    @GET(Constants.urlSessionInGivenLocation)
+    suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsRes
+
+    /* POST Requests */
+    @POST(Constants.urlCreateMobileSession)
+    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @POST(Constants.urlCreateFixedSession)
+    fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+
+    @POST(Constants.urlSync)
+    fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
+
+    @POST(Constants.urlCreateAccount)
+    fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
+
+    @POST(Constants.urlUpdateSession)
+    fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
+
+    @POST(Constants.urlResetPassword)
     fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
 
-    @POST("/api/realtime/measurements")
+    @POST(Constants.urlUploadFixedMeasurements)
     fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Call<Unit>
 }
 
@@ -151,19 +138,19 @@ open class ApiServiceFactory(private val mSettings: Settings) {
 
     protected open fun baseUrl(): HttpUrl {
         val URL_SUFFIX = "/"
-        var baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
+        val baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
 
-        if (mSettings.getBackendUrl()?.last()?.equals(URL_SUFFIX) == true) {
-            return baseUrl.toHttpUrl()
+        return if (mSettings.getBackendUrl()?.last().toString() == URL_SUFFIX) {
+            baseUrl.toHttpUrl()
         } else {
-            return (baseUrl + URL_SUFFIX).toHttpUrl()
+            (baseUrl + URL_SUFFIX).toHttpUrl()
         }
     }
 
     private fun encodedCredentials(username: String, password: String): String {
         val credentials = "${username}:${password}"
         val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
-        return "Basic ${encodedCredentials}"
+        return "Basic $encodedCredentials"
     }
 
 }

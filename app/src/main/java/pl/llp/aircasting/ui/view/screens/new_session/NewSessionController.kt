@@ -34,6 +34,8 @@ import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
@@ -42,7 +44,7 @@ class NewSessionController(
     private val mContextActivity: AppCompatActivity,
     mViewMvc: NewSessionViewMvc,
     private val mFragmentManager: FragmentManager,
-    private val permissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager,
+    private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val sessionBuilder: SessionBuilder,
     private val settings: Settings,
@@ -72,11 +74,7 @@ class NewSessionController(
     }
 
     private fun showLocationPermissionPopUp() {
-        pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp(
-            mFragmentManager,
-            permissionsManager,
-            mContextActivity
-        ).show()
+        LocationPermissionPopUp(mFragmentManager, permissionsManager, mContextActivity).show()
     }
 
     private fun setupProgressMax() {
@@ -137,7 +135,6 @@ class NewSessionController(
     }
 
     override fun onBluetoothDeviceSelected() {
-        needNewBluetoothPermissions()
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
@@ -196,6 +193,7 @@ class NewSessionController(
 
     override fun onTurnOnBluetoothContinueClicked() {
         needNewBluetoothPermissions()
+        requestBluetoothEnable()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

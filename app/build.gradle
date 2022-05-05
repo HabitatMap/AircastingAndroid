@@ -15,8 +15,8 @@ android {
         applicationId "pl.llp.aircasting"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 194
-        versionName "2.0.46"
+        versionCode 196
+        versionName "2.0.48"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "en", "es", "fr"
@@ -71,6 +71,10 @@ android {
             useJUnitPlatform()
         }
     }
+
+    buildFeatures {
+        dataBinding true
+    }
     sourceSets {
         main {
             assets {
@@ -106,6 +110,10 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    def lifecycle_version = "2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     // for complex recycler views

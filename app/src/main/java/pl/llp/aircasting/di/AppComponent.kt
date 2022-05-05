@@ -1,7 +1,8 @@
-package pl.llp.aircasting
+package pl.llp.aircasting.di
 
 import dagger.Component
-import pl.llp.aircasting.di.*
+import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.di.modules.*
 import pl.llp.aircasting.ui.view.screens.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardFragment
@@ -18,6 +19,8 @@ import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationFragment
 import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.view.screens.settings.SettingsFragment
@@ -39,10 +42,12 @@ import javax.inject.Singleton
     modules = [
         AppModule::class,
         ApiModule::class,
+        NetworkModule::class,
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
-        NewSessionWizardModule::class
+        NewSessionWizardModule::class,
+        ViewModelModule::class
     ]
 )
 interface AppComponent {
@@ -53,6 +58,10 @@ interface AppComponent {
     fun inject(activity: CreateAccountActivity)
     fun inject(activity: MainActivity)
     fun inject(activity: SyncActivity)
+
+    fun inject(activity: SearchFixedResultActivity)
+    fun inject(activity: SearchFixedSessionsActivity)
+
     fun inject(fragment: AirbeamSyncingFragment)
     fun inject(fragment: AirbeamSyncedFragment)
     fun inject(fragment: FollowingFragment)
