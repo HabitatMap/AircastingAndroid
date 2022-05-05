@@ -49,19 +49,7 @@ interface ApiService {
     ): Call<ExportSessionResponse>
 
     @GET(Constants.urlSessionInGivenLocation)
-   suspend fun getSessionsInRegion(
-        @Query("north") north: Double,
-        @Query("south") south: Double,
-        @Query("east") east: Double,
-        @Query("west") west: Double,
-        @Query("time_from") time_from: Int,
-        @Query("time_to") time_to: Int,
-        @Query("measurement_type") measurement_type: String,
-        @Query("sensor_name") sensor_name: String,
-        @Query("unit_symbol") unit_symbol: String,
-        @Query("tags") tags: String,
-        @Query("usernames") usernames: String
-    ): SessionsInRegionsRes
+    suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsRes
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
