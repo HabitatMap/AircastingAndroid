@@ -3,15 +3,15 @@ package pl.llp.aircasting.ui.view.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import pl.llp.aircasting.data.model.SessionsModel
+import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 
-class FixedFollowAdapter(private val sessions: ArrayList<SessionsModel>) :
+class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
     inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(sessions: SessionsModel) {
+        fun bind(sessions: Session) {
             binding.mySessions = sessions
             binding.executePendingBindings()
         }
@@ -31,7 +31,7 @@ class FixedFollowAdapter(private val sessions: ArrayList<SessionsModel>) :
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
         holder.bind(sessions[position])
 
-    fun addData(list: List<SessionsModel>) {
+    fun addData(list: List<Session>) {
         sessions.addAll(list)
     }
 
