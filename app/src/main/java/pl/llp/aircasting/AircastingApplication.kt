@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.di.AppModule
-import pl.llp.aircasting.di.PermissionsModule
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
+import pl.llp.aircasting.di.AppComponent
+import pl.llp.aircasting.di.DaggerAppComponent
+import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.di.modules.PermissionsModule
+import pl.llp.aircasting.util.Settings
 
-class AircastingApplication: Application() {
+class AircastingApplication : Application() {
     lateinit var appComponent: AppComponent
     lateinit var permissionsModule: PermissionsModule
     private var mSettings: Settings? = null
