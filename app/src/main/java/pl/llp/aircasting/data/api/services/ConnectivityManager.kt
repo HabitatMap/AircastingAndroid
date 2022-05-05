@@ -3,24 +3,18 @@ package pl.llp.aircasting.data.api.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-
-// I know it's deprecated, but it's needed to support Android 5.0
-import android.net.NetworkInfo
-
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.isConnected
 
-class ConnectivityManager(apiService: ApiService, context: Context, settings: Settings): BroadcastReceiver() {
-    val sessionSyncService = SessionsSyncService.get(apiService, ErrorHandler(context), settings)
+class ConnectivityManager(apiService: ApiService, context: Context, settings: Settings) :
+    BroadcastReceiver() {
+    private val sessionSyncService =
+        SessionsSyncService.get(apiService, ErrorHandler(context), settings)
 
     companion object {
-        val ACTION = ConnectivityManager.CONNECTIVITY_ACTION
-
         fun isConnected(context: Context?): Boolean {
-            val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-            return activeNetwork?.isConnectedOrConnecting == true
+            return context?.isConnected ?: false
         }
     }
 
