@@ -10,10 +10,12 @@ import javax.inject.Singleton
     modules = [
         AppModule::class,
         ApiModule::class,
+        NetworkModule::class,
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
-        NewSessionWizardModule::class
+        NewSessionWizardModule::class,
+        ViewModelModule::class
     ]
 )
 interface TestAppComponent: AppComponent {
