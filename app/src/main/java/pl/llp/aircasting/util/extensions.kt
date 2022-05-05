@@ -3,6 +3,8 @@ package pl.llp.aircasting.util
 import android.app.Activity
 import android.content.Context
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.PowerManager
 import android.text.TextUtils
 import android.util.Patterns
@@ -87,3 +89,25 @@ fun View.visible() {
 fun View.gone() {
     visibility = View.GONE
 }
+
+val Context.isConnected: Boolean
+    get() {
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return when {
+            isSDKGreaterOrEqualToM() -> {
+                val nw = connectivityManager.activeNetwork ?: return false
+                val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+                when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    else -> false
+                }
+            }
+            else -> {
+                // For older APIs
+                val nwInfo = connectivityManager.activeNetworkInfo ?: return false
+                nwInfo.isConnected
+            }
+        }
+    }
