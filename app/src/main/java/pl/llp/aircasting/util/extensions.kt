@@ -9,10 +9,10 @@ import android.util.Patterns
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
-import androidx.appcompat.widget.Toolbar
-import kotlinx.android.synthetic.main.prominent_app_bar.topAppBar
+import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.common.BaseActivity
@@ -78,4 +78,12 @@ fun isIgnoringBatteryOptimizations(context: Context): Boolean {
         return pwrm.isIgnoringBatteryOptimizations(name)
     }
     return true
+}
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
 }
