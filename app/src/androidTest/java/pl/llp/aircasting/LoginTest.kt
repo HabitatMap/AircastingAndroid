@@ -10,8 +10,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import pl.llp.aircasting.di.AppModule
-import pl.llp.aircasting.di.PermissionsModule
+import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.helpers.JsonBody

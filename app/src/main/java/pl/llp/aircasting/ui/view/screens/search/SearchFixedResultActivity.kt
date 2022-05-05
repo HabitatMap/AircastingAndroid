@@ -16,11 +16,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.Status.*
+import pl.llp.aircasting.util.inVisible
 import pl.llp.aircasting.util.styleGoogleMap
+import pl.llp.aircasting.util.visible
 import javax.inject.Inject
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -78,21 +81,23 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         searchFollowViewModel.getSessionsInRegion(query).observe(this) {
             when (it.status) {
                 SUCCESS -> {
-
-                    it.data?.let { sessions ->
-                        Toast.makeText(this, "Sessions $sessions!" + it.message, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-
+                    binding.progressBar.inVisible()
+                    it.data?.let { sessions -> renderData(sessions) }
                 }
                 LOADING -> {
-
+                    binding.progressBar.visible()
                 }
                 ERROR -> {
+                    binding.progressBar.inVisible()
                     Toast.makeText(this, "Error!" + it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    private fun renderData(mySessions: List<Session>) {
+        adapter.addData(mySessions)
+        adapter.notifyDataSetChanged()
     }
 
     private fun showBottomSheetDialog() {

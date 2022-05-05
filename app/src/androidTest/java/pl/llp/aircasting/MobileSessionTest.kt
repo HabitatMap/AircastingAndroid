@@ -27,6 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import pl.llp.aircasting.di.modules.AppModule
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
