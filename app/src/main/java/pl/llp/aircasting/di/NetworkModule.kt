@@ -1,32 +1,34 @@
 package pl.llp.aircasting.di
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.services.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-object NetworkModule {
-    private const val base_url = "http://aircasting.org/"
-    private const val READ_TIMEOUT_SECONDS: Long = 60
-    private const val CONNECT_TIMEOUT_SECONDS: Long = 60
+class NetworkModule {
+    private val READ_TIMEOUT_SECONDS: Long = 60
+    private val CONNECT_TIMEOUT_SECONDS: Long = 60
+
+    @Provides
+    fun provideBaseUrl() = Constants.baseUrl
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient, gson: Gson): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(base_url)
+    fun provideRetrofit(client: OkHttpClient): ApiService =
+        Retrofit.Builder()
+            .baseUrl(provideBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
-    }
+            .create(ApiService::class.java)
 
     @Provides
     @Singleton
@@ -49,12 +51,6 @@ object NetworkModule {
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.NONE
             }
-    }
-
-    @Provides
-    @Singleton
-    fun providesGson(): Gson {
-        return GsonBuilder().create()
     }
 
 }
