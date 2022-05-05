@@ -18,6 +18,8 @@ import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationFragment
 import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.view.screens.settings.SettingsFragment
@@ -39,6 +41,7 @@ import javax.inject.Singleton
     modules = [
         AppModule::class,
         ApiModule::class,
+        NetworkModule::class,
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
@@ -53,6 +56,10 @@ interface AppComponent {
     fun inject(activity: CreateAccountActivity)
     fun inject(activity: MainActivity)
     fun inject(activity: SyncActivity)
+
+    fun inject(activity: SearchFixedSessionsActivity)
+    fun inject(activity: SearchFixedResultActivity)
+
     fun inject(fragment: AirbeamSyncingFragment)
     fun inject(fragment: AirbeamSyncedFragment)
     fun inject(fragment: FollowingFragment)
