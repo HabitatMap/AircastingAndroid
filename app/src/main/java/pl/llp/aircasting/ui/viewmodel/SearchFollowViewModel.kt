@@ -14,7 +14,7 @@ class SearchFollowViewModel @Inject constructor(
         emit(Resource.loading(data = null))
 
         try {
-                val getSessions = searchFollowRepo.getSessionsInRegion(query)
+                val getSessions = searchFollowRepo.getSessionsInRegion(query).sessions
                 emit(Resource.success(data = getSessions))
 
         } catch (e: Exception) {
