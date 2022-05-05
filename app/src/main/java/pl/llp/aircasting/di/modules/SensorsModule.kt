@@ -1,4 +1,4 @@
-package pl.llp.aircasting.di
+package pl.llp.aircasting.di.modules
 
 import dagger.Module
 import dagger.Provides

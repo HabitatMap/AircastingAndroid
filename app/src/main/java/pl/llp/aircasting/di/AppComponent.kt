@@ -1,7 +1,8 @@
-package pl.llp.aircasting
+package pl.llp.aircasting.di
 
 import dagger.Component
-import pl.llp.aircasting.di.*
+import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.di.modules.*
 import pl.llp.aircasting.ui.view.screens.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardFragment
@@ -45,7 +46,8 @@ import javax.inject.Singleton
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
-        NewSessionWizardModule::class
+        NewSessionWizardModule::class,
+        ViewModelModule::class
     ]
 )
 interface AppComponent {
@@ -57,8 +59,8 @@ interface AppComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: SyncActivity)
 
-    fun inject(activity: SearchFixedSessionsActivity)
     fun inject(activity: SearchFixedResultActivity)
+    fun inject(activity: SearchFixedSessionsActivity)
 
     fun inject(fragment: AirbeamSyncingFragment)
     fun inject(fragment: AirbeamSyncedFragment)
