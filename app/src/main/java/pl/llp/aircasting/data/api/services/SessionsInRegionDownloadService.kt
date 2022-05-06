@@ -1,48 +1,26 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.data.api.responses.SessionsInRegionResponse
-import pl.llp.aircasting.data.model.Session
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
 class SessionsInRegionDownloadService(private val apiService: ApiService) {
-    fun getSessionsFromRegionToList(square: GeoSquare, sessions: MutableList<Session>) {
-        val call = apiService.getSessionsInRegion(
-            north = square.north,
-            south = square.south,
-            east = square.east,
-            west = square.west
+    companion object {
+        fun constructAndGetJsonWith(square: GeoSquare): String {
+            return "{\"time_from\":\"1531008000\"" +
+                    ",\"time_to\":\"1562630399\"," +
+                    "\"tags\":\"\"," +
+                    "\"usernames\":\"\"," +
+                    "\"west\":${square.west}," +
+                    "\"east\":${square.east}," +
+                    "\"south\":${square.south}," +
+                    "\"north\":${square.north}," +
+                    "\"sensor_name\":\"airbeam2-pm2.5\"," +
+                    "\"unit_symbol\":\"µg/m³\"," +
+                    "\"measurement_type\":\"ParticulateMatter\"}"
+        }
+    }
+
+    suspend fun getSessionsFromRegion(square: GeoSquare) {
+        val sessionsInRegionsRes = apiService.getSessionsInRegion(
+            constructAndGetJsonWith(square)
         )
-
-        call.enqueue(object : Callback<SessionsInRegionResponse> {
-            override fun onResponse(
-                call: Call<SessionsInRegionResponse>,
-                response: Response<SessionsInRegionResponse>
-            ) {
-                val sessionsInRegion = response.body()?.sessions
-                if (response.isSuccessful) {
-                    sessions.clear()
-                    if (sessionsInRegion?.isNotEmpty() == true) {
-                        sessions.add(
-                            Session(
-                                "",
-                                null,
-                                null,
-                                Session.Type.FIXED,
-                                "",
-                                arrayListOf(),
-                                Session.Status.RECORDING
-                            )
-                        )
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<SessionsInRegionResponse>, t: Throwable) {
-                print(t.stackTrace)
-            }
-        })
     }
 }
 
