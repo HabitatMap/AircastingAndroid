@@ -60,8 +60,8 @@ class SessionsInRegionDownloadRepositoryTest {
     @Test
     fun constructAndGetJsonWith_shouldContain_currentStartAndEndTimeOfTheDay() {
         // given
-        val currentDayTimeFrom = getStartOfDayEpochSecond()
-        val currentDayTimeTo = getEndOfDayEpochSecond()
+        val currentDayTimeFrom = getStartOfDayEpoch()
+        val currentDayTimeTo = getEndOfDayEpoch()
 
         val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
         val jsonObject = JsonParser.parseString(json).asJsonObject
@@ -83,7 +83,6 @@ class SessionsInRegionDownloadRepositoryTest {
         // then
         JsonParser.parseString(json)
     }
-
 
 
     @Test
@@ -246,6 +245,18 @@ class SessionsInRegionDownloadRepositoryTest {
                 callback.onResponse(mock, response)
             }
         }
+    }
+
+    private fun getStartOfDayEpoch(): Long {
+        val secondsInDay = (60 * 60 * 24).toLong()
+        val currentSecond = System.currentTimeMillis() / 1000
+        return currentSecond - currentSecond % secondsInDay
+    }
+
+    private fun getEndOfDayEpoch(): Long {
+        val startOfTheDayEpoch = getStartOfDayEpoch()
+        val secondInDay = (60 * 60 * 24).toLong()
+        return startOfTheDayEpoch + secondInDay - 1
     }
 
     private fun firstSessionFromResponse(response: SessionInRegionResponse): Session {
