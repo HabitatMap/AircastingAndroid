@@ -40,16 +40,21 @@ class SessionsInRegionDownloadRepositoryTest {
     @Test
     fun constructAndGetJsonWith_shouldConstructJsonContainingGivenCoordinates(): Unit =
         runBlocking {
-            // when
+            // given
             val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
+            val jsonObject = JsonParser.parseString(json).asJsonObject
+
+            // when
+            val east = jsonObject.get("east").asJsonPrimitive.asDouble
+            val west = jsonObject.get("west").asJsonPrimitive.asDouble
+            val south = jsonObject.get("south").asJsonPrimitive.asDouble
+            val north = jsonObject.get("north").asJsonPrimitive.asDouble
 
             // then
-            assertTrue(
-                json.contains(testSquare.east.toString()) &&
-                        json.contains(testSquare.west.toString()) &&
-                        json.contains(testSquare.north.toString()) &&
-                        json.contains(testSquare.south.toString())
-            )
+            assertEquals(testSquare.east, east)
+            assertEquals(testSquare.west, west)
+            assertEquals(testSquare.north, north)
+            assertEquals(testSquare.south, south)
         }
 
     @Test(expected = Test.None::class)
