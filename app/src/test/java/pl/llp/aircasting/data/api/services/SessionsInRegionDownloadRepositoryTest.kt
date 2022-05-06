@@ -57,6 +57,24 @@ class SessionsInRegionDownloadRepositoryTest {
             assertEquals(testSquare.south, south)
         }
 
+    @Test
+    fun constructAndGetJsonWith_shouldContain_currentStartAndEndTimeOfTheDay() {
+        // given
+        val currentDayTimeFrom = getStartOfDayEpochSecond()
+        val currentDayTimeTo = getEndOfDayEpochSecond()
+
+        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
+        val jsonObject = JsonParser.parseString(json).asJsonObject
+
+        // when
+        val timeFrom = jsonObject.getAsJsonPrimitive("time_from").asLong
+        val timeTo = jsonObject.getAsJsonPrimitive("time_to").asLong
+
+        // then
+        assertEquals(currentDayTimeFrom, timeFrom)
+        assertEquals(currentDayTimeTo, timeTo)
+    }
+
     @Test(expected = Test.None::class)
     fun constructAndGetJsonWith_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
         // when
