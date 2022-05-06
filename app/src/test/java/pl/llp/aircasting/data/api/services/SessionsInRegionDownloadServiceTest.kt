@@ -32,7 +32,31 @@ class SessionsInRegionDownloadServiceTest {
     }
 
     @Test
-    fun whenGivenCoordinates_shouldEnqueueCallToApi() {
+    fun whenGivenCoordinates_getJson_shouldConstructCallContainingGivenCoordinates(): Unit =
+        runBlocking {
+            // when
+            val json = SessionsInRegionDownloadService.constructAndGetJsonWith(testSquare)
+
+            // then
+            assertTrue(
+                json.contains(testSquare.east.toString()) &&
+                        json.contains(testSquare.west.toString()) &&
+                        json.contains(testSquare.north.toString()) &&
+                        json.contains(testSquare.south.toString())
+            )
+        }
+
+    @Test(expected = Test.None::class)
+    fun getJson_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
+        // when
+        val json = SessionsInRegionDownloadService.constructAndGetJsonWith(testSquare)
+
+        // then
+        JsonParser.parseString(json)
+    }
+
+    @Test
+    fun whenCallingApi_shouldCallJsonToStringConverter(): Unit = runBlocking {
         // given
         val mockCall = mockSuccessfulCallWithJson("{}")
         val mockApiService = mockApiServiceWithCall(mockCall)
