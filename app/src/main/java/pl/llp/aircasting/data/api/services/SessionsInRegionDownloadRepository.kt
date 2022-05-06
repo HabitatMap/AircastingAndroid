@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.api.services
 
-class SessionsInRegionDownloadService(private val apiService: ApiService) {
+class SessionsInRegionDownloadRepository(private val apiService: ApiService) {
     companion object {
         fun constructAndGetJsonWith(square: GeoSquare): String {
             return "{\"time_from\":\"1531008000\"" +
