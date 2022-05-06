@@ -38,6 +38,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String? = null
     private var txtSelectedSensor: String? = null
+    private var address: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +108,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
             setOnPlaceSelectedListener(object : PlaceSelectionListener {
                 override fun onPlaceSelected(place: Place) {
-                    val address = place.address?.toString()
+                    address = place.address?.toString()
                     lat = "${place.latLng?.latitude}"
                     long = "${place.latLng?.longitude}"
 
@@ -137,10 +138,12 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
     private fun goToSearchResult(lat: String, long: String) {
         val intent = Intent(this, SearchFixedResultActivity::class.java)
-        intent.putExtra("lat", lat)
-        intent.putExtra("long", long)
+        intent.putExtra("address", address)
         intent.putExtra("txtParameter", txtSelectedParameter)
         intent.putExtra("txtSensor", txtSelectedSensor)
+
+        intent.putExtra("lat", lat)
+        intent.putExtra("long", long)
 
         startActivity(intent)
     }
