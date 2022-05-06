@@ -181,23 +181,24 @@ class SessionsInRegionDownloadServiceTest {
         }
     }
 
-    private fun mockApiServiceWithCall(call: Call<SessionsInRegionResponse>): ApiService {
-        return mock<ApiService> {
-            on {
+    private fun mockApiServiceWithRes(res: SessionsInRegionsRes): ApiService = runBlocking {
+        return@runBlocking mock<ApiService> {
+            onBlocking {
                 getSessionsInRegion(
-                    north = testSquare.north,
-                    south = testSquare.south,
-                    east = testSquare.east,
-                    west = testSquare.west
+                    anyOrNull()
                 )
-            } doReturn call
+            } doReturn res
         }
+    }
+
+    private fun mockSuccessfulResponseWithJson(json: String): SessionsInRegionsRes {
+        return Gson().fromJson(json, SessionsInRegionsRes::class.java)
     }
 
     private fun mockUnsuccessfulCall(): Call<SessionsInRegionResponse> {
         val response = Response.error<SessionsInRegionResponse>(500, "{}".toResponseBody())
         return mock<Call<SessionsInRegionResponse>> {
-            on { enqueue(any()) } doAnswer {
+            on { enqueue(anyOrNull()) } doAnswer {
                 val callback = it.arguments[0] as Callback<SessionsInRegionResponse>
                 callback.onResponse(mock, response)
             }
