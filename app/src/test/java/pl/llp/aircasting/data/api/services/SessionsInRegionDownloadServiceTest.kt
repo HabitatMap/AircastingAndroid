@@ -18,22 +18,17 @@ class SessionsInRegionDownloadServiceTest {
     private val testJson = StubData.getJson("SessionsCracow.json")
 
     @Test
-    fun whenGivenCoordinates_shouldConstructCallWithGivenCoordinates() {
+    fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
-        val mockCall = mockSuccessfulCallWithJson("{}")
-        val mockApiService = mockApiServiceWithCall(mockCall)
+        val mockResponse = mockSuccessfulResponseWithJson("{}")
+        val mockApiService = mockApiServiceWithRes(mockResponse)
         val service = SessionsInRegionDownloadService(mockApiService)
 
         // when
-        service.getSessionsFromRegionToList(testSquare, mutableListOf())
+        service.getSessionsFromRegion(testSquare)
 
         // then
-        verify(mockApiService).getSessionsInRegion(
-            north = testSquare.north,
-            south = testSquare.south,
-            east = testSquare.east,
-            west = testSquare.west
-        )
+        verify(mockApiService).getSessionsInRegion(anyOrNull())
     }
 
     @Test
