@@ -58,15 +58,19 @@ class SessionsInRegionDownloadServiceTest {
     @Test
     fun whenCallingApi_shouldCallJsonToStringConverter(): Unit = runBlocking {
         // given
-        val mockCall = mockSuccessfulCallWithJson("{}")
-        val mockApiService = mockApiServiceWithCall(mockCall)
+        val mockResponse = mockSuccessfulResponseWithJson("{}")
+        val mockApiService = mockApiServiceWithRes(mockResponse)
         val service = SessionsInRegionDownloadService(mockApiService)
 
         // when
-        service.getSessionsFromRegionToList(testSquare, mutableListOf())
+        service.getSessionsFromRegion(testSquare)
 
         // then
-        verify(mockCall).enqueue(anyOrNull())
+        verify(mockApiService).getSessionsInRegion(
+            argThat {
+                equals(SessionsInRegionDownloadService.constructAndGetJsonWith(testSquare))
+            }
+        )
     }
 
     @Test
