@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="session"
+            type="pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,20 +21,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchInputField"
+        <LinearLayout
+            android:id="@+id/layoutContainer"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_5"
-            android:inputType="none"
             android:layout_marginEnd="@dimen/keyline_5"
             android:background="@drawable/search_input_field_background"
-            app:iconifiedByDefault="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include"
-            app:queryBackground="@null"
-            app:searchIcon="@null" />
+            app:layout_constraintTop_toBottomOf="@+id/include">
+
+            <fragment
+                android:id="@+id/place_autocomplete_fragment"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/map_container"
@@ -42,7 +48,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchInputField">
+            app:layout_constraintTop_toBottomOf="@+id/layoutContainer">
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/mapView"
@@ -58,12 +64,12 @@
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="@dimen/keyline_9"
                 android:background="@drawable/my_gradient_transparent_drawable"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -81,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_5"
-                    android:layout_marginTop="@dimen/keyline_2"
+                    android:layout_marginTop="@dimen/keyline_1"
                     android:textColor="@android:color/background_dark"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -92,12 +98,12 @@
                     style="@style/TextAppearance.Aircasting.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_2"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="@dimen/keyline_1"
+                    android:layout_marginEnd="@dimen/keyline_5"
                     android:textColor="@android:color/background_dark"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Using: OpenAQ" />
+                    tools:text="using: OpenAQ" />
 
                 <TextView
                     android:id="@+id/txtSessions"
@@ -105,10 +111,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_5"
+                    android:text='@{@string/sessions_showing + " " + session.fetchableSessionsCount + " " + @string/of + " " + session.fetchableSessionsCount + " " + @string/results}'
                     android:textColor="@android:color/background_dark"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerFixedFollow"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Sessions: Showing 9 of 9 results" />
+                    tools:text="Sessions showing 9 of 9 results" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerFixedFollow"
