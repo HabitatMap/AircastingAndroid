@@ -58,7 +58,7 @@ class SessionsInRegionDownloadRepositoryTest {
         }
 
     @Test
-    fun constructAndGetJsonWith_shouldContain_currentStartAndEndTimeOfTheDay() {
+    fun constructAndGetJsonWith_shouldContainTimeParametersAs_currentStartAndEndTimeOfTheDay() {
         // given
         val currentDayTimeFrom = getStartOfDayEpoch()
         val currentDayTimeTo = getEndOfDayEpoch()
@@ -220,8 +220,6 @@ class SessionsInRegionDownloadRepositoryTest {
 
 
     }
-
-
 
     private fun mockApiServiceWithRes(res: SessionsInRegionsRes): ApiService = runBlocking {
         return@runBlocking mock<ApiService> {
