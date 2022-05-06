@@ -3,8 +3,8 @@ package pl.llp.aircasting.data.api.services
 class SessionsInRegionDownloadRepository(private val apiService: ApiService) {
     companion object {
         fun constructAndGetJsonWith(square: GeoSquare): String {
-            return "{\"time_from\":\"1531008000\"" +
-                    ",\"time_to\":\"1562630399\"," +
+            return "{\"time_from\":\"1531008000\"," +
+                    "\"time_to\":\"1562630399\"," +
                     "\"tags\":\"\"," +
                     "\"usernames\":\"\"," +
                     "\"west\":${square.west}," +
