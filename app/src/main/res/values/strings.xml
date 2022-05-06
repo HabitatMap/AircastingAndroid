@@ -497,5 +497,6 @@
     <string name="openaq" translatable="false">OpenAQ</string>
     <string name="purpleair" translatable="false">PurpleAir</string>
     <string name="using_txt">Using:</string>
+    <string name="sessions_showing">Sessions: Showing</string>
 
 </resources>
