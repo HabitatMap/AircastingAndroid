@@ -37,6 +37,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String? = null
+    private var txtSelectedSensor: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +52,22 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.chipGroupFirst.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == binding.ozoneChip.id) {
+            txtSelectedParameter = if (checkedId == binding.ozoneChip.id) {
                 binding.airbeamChip.gone()
                 binding.purpleAirChip.gone()
-                binding.openAqChip.isChecked = true
-                txtSelectedParameter = "Ozon"
+                "Ozon"
             } else {
                 binding.airbeamChip.visible()
                 binding.purpleAirChip.visible()
-                txtSelectedParameter = "particulate matter"
+                "particulate matter"
+            }
+        }
+
+        binding.chipGroupSensors.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                binding.airbeamChip.id -> txtSelectedSensor = "airbeam"
+                binding.openAqChip.id -> txtSelectedSensor = "openAQ"
+                binding.purpleAirChip.id -> txtSelectedSensor = "purpleAir"
             }
         }
     }
@@ -115,16 +123,24 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             })
 
             binding.btnContinue.setOnClickListener {
-                if (lat != null && long != null) goToSearchResult(lat.toString(), long.toString())
+                if (lat != null &&
+                    long != null &&
+                    txtSelectedParameter != null &&
+                    txtSelectedSensor != null
+                ) goToSearchResult(
+                    lat.toString(),
+                    long.toString()
+                )
             }
         }
     }
 
     private fun goToSearchResult(lat: String, long: String) {
-        val intent = Intent(this@SearchFixedSessionsActivity, SearchFixedResultActivity::class.java)
+        val intent = Intent(this, SearchFixedResultActivity::class.java)
         intent.putExtra("lat", lat)
         intent.putExtra("long", long)
-        intent.putExtra("txtType", txtSelectedParameter)
+        intent.putExtra("txtParameter", txtSelectedParameter)
+        intent.putExtra("txtSensor", txtSelectedSensor)
 
         startActivity(intent)
     }
