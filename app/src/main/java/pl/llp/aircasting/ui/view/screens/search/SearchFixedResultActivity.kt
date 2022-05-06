@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -47,21 +48,24 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         setupUI()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupUI() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // retrieving data from the previous activity
-        val lat = intent.getStringExtra("lat")
-        val long = intent.getStringExtra("long")
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding.txtShowing.text =
-            getString(R.string.showing_results_for) + " " + "particulate matter"
-        binding.txtUsing.text = getString(R.string.using_txt) + " " + "OpenAQ"
+        // retrieving data from the previous activity
+        val lat = intent.getStringExtra("lat")
+        val long = intent.getStringExtra("long")
+        val txtParameter = intent.getStringExtra("txtParameter")
+        val txtSensor = intent.getStringExtra("txtSensor")
+
+
+        binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
+        binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
 
         setupRecyclerView()
 
