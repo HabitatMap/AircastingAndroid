@@ -37,7 +37,7 @@ class SessionsInRegionDownloadRepositoryTest {
     }
 
     @Test
-    fun whenGivenCoordinates_getSessionsFromRegion_shouldConstructCallContainingGivenCoordinates(): Unit =
+    fun constructAndGetJsonWith_shouldConstructJsonContainingGivenCoordinates(): Unit =
         runBlocking {
             // when
             val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
@@ -52,7 +52,7 @@ class SessionsInRegionDownloadRepositoryTest {
         }
 
     @Test(expected = Test.None::class)
-    fun getSessionsFromRegion_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
+    fun constructAndGetJsonWith_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
         // when
         val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
 
