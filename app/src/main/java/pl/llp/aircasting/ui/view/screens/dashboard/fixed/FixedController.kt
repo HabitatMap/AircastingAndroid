@@ -1,6 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.fixed
 
 import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -12,6 +13,7 @@ import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 
@@ -23,7 +25,7 @@ class FixedController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager,
-    mContext: Context?
+    val mContext: Context?
 ) : SessionsController(
     mRootActivity,
     mViewMvc,
@@ -54,10 +56,8 @@ class FixedController(
     }
 
     override fun onExploreNewSessionsClicked() {
-        mRootActivity?.let {
-            Navigation.findNavController(it, R.id.nav_host_fragment)
-                .navigate(R.id.navigation_searchFixedSessionsActivity)
-        }
+        val intent = Intent(mContext, SearchFixedSessionsActivity::class.java)
+        mContext?.startActivity(intent)
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
