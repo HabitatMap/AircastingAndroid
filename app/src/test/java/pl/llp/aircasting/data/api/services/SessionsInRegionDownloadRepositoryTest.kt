@@ -7,11 +7,13 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.*
+import pl.llp.aircasting.data.api.repositories.GeoSquare
+import pl.llp.aircasting.data.api.repositories.SessionsInRegionDownloadRepository
 import pl.llp.aircasting.data.api.responses.SessionInRegionResponse
 import pl.llp.aircasting.data.api.responses.SessionsInRegionResponse
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.utilities.StubData
 import retrofit2.Call
@@ -19,6 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class SessionsInRegionDownloadRepositoryTest {
