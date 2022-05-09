@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.main
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repositories.SessionsRepository
 import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.adjustMenuVisibility
@@ -73,7 +75,10 @@ class MainViewMvcImpl(
             showFinishedReorderingSessionsButtonClicked()
         }
 
-        mSearchIcon?.setOnClickListener { mNavController?.navigate(R.id.navigation_searchFixedSessionsActivity) }
+        mSearchIcon?.setOnClickListener {
+            val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
+            rootActivity.startActivity(intent)
+        }
     }
 
     fun setupBottomNavigationBar(navController: NavController) {

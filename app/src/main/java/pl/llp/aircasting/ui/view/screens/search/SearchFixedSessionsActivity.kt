@@ -3,13 +3,11 @@ package pl.llp.aircasting.ui.view.screens.search
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
@@ -17,11 +15,13 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
+import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
+import pl.llp.aircasting.util.gone
+import pl.llp.aircasting.util.visible
+
 
 class SearchFixedSessionsActivity : AppCompatActivity() {
 
@@ -34,17 +34,15 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
-    private var btnContinue: Button? = null
-    private var ozonChip: Chip? = null
-    private var airbeamChip: Chip? = null
-    private var purpleChip: Chip? = null
-    private var openAQ: Chip? = null
     private var txtSelectedParameter: String? = null
+    private var txtSelectedSensor: String? = null
+    private var address: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search_fixed_sessions)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search_fixed_sessions)
 
         setupUI()
         setupAutoComplete()
@@ -54,23 +52,23 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        btnContinue = findViewById(R.id.btnContinue)
-        airbeamChip = findViewById(R.id.airbeam_chip)
-        purpleChip = findViewById(R.id.purple_air_chip)
-        ozonChip = findViewById(R.id.ozone_chip)
-        openAQ = findViewById(R.id.open_aq_chip)
-
-        val chipFirstGroup = findViewById<ChipGroup>(R.id.chip_group_first)
-        chipFirstGroup.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == ozonChip?.id){
-                airbeamChip?.visibility = View.GONE
-                purpleChip?.visibility = View.GONE
-                openAQ?.isChecked = true
-                txtSelectedParameter = "Ozon"
+        binding.chipGroupFirst.setOnCheckedChangeListener { _, checkedId ->
+            txtSelectedParameter = if (checkedId == binding.ozoneChip.id) {
+                binding.airbeamChip.gone()
+                binding.purpleAirChip.gone()
+                "Ozon"
             } else {
-                airbeamChip?.visibility = View.VISIBLE
-                purpleChip?.visibility = View.VISIBLE
-                txtSelectedParameter = "particulate matter"
+                binding.airbeamChip.visible()
+                binding.purpleAirChip.visible()
+                "particulate matter"
+            }
+        }
+
+        binding.chipGroupSensors.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                binding.airbeamChip.id -> txtSelectedSensor = "airbeam"
+                binding.openAqChip.id -> txtSelectedSensor = "openAQ"
+                binding.purpleAirChip.id -> txtSelectedSensor = "purpleAir"
             }
         }
     }
@@ -92,8 +90,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                     textSize = 15.0f
                     setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
                 }
-                findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.visibility =
-                    View.GONE
+                findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }
 
             setPlaceFields(
@@ -111,18 +108,14 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
             setOnPlaceSelectedListener(object : PlaceSelectionListener {
                 override fun onPlaceSelected(place: Place) {
-                    val address = place.address?.toString()
+                    address = place.address?.toString()
                     lat = "${place.latLng?.latitude}"
                     long = "${place.latLng?.longitude}"
 
                     if (address != null) {
-                        btnContinue?.visibility = View.VISIBLE
+                        binding.btnContinue.visible()
                         etPlace.hint = address
-                    } else Toast.makeText(
-                        this@SearchFixedSessionsActivity,
-                        "Something went wrong!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    }
                 }
 
                 override fun onError(status: Status) {
@@ -130,17 +123,27 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 }
             })
 
-            btnContinue?.setOnClickListener {
-                goToSearchResult(lat.toString(), long.toString())
+            binding.btnContinue.setOnClickListener {
+                if (lat != null &&
+                    long != null &&
+                    txtSelectedParameter != null &&
+                    txtSelectedSensor != null
+                ) goToSearchResult(
+                    lat.toString(),
+                    long.toString()
+                )
             }
         }
     }
 
     private fun goToSearchResult(lat: String, long: String) {
-        val intent = Intent(this@SearchFixedSessionsActivity, SearchFixedResultActivity::class.java)
+        val intent = Intent(this, SearchFixedResultActivity::class.java)
+        intent.putExtra("address", address)
+        intent.putExtra("txtParameter", txtSelectedParameter)
+        intent.putExtra("txtSensor", txtSelectedSensor)
+
         intent.putExtra("lat", lat)
         intent.putExtra("long", long)
-        intent.putExtra("txtType", txtSelectedParameter)
 
         startActivity(intent)
     }

@@ -496,6 +496,9 @@
     <string name="airbeam" translatable="false">Airbeam</string>
     <string name="openaq" translatable="false">OpenAQ</string>
     <string name="purpleair" translatable="false">PurpleAir</string>
-    <string name="using_txt">Using:</string>
+    <string name="using_txt">using:</string>
+    <string name="sessions_showing">Sessions showing</string>
+    <string name="of">of</string>
+    <string name="results">results</string>
 
 </resources>

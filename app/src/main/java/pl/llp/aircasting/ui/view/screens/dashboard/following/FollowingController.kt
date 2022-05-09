@@ -1,6 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.following
 
 import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
@@ -10,6 +11,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.adjustMenuVisibility
@@ -21,11 +23,20 @@ class FollowingController(
     mLifecycleOwner: LifecycleOwner,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    mContext: Context?
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
+    val mContext: Context?
+) : SessionsController(
+    mRootActivity,
+    mViewMvc,
+    mSessionsViewModel,
+    mSettings,
+    mApiServiceFactory,
+    mRootActivity!!.supportFragmentManager,
+    mContext
+),
     SessionsViewMvc.Listener {
 
-    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver =
+        ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onResume() {
         super.onResume()
@@ -48,10 +59,8 @@ class FollowingController(
     }
 
     override fun onExploreNewSessionsClicked() {
-        mRootActivity?.let {
-            Navigation.findNavController(it, R.id.nav_host_fragment)
-                .navigate(R.id.navigation_searchFixedSessionsActivity)
-        }
+        val intent = Intent(mContext, SearchFixedSessionsActivity::class.java)
+        mContext?.startActivity(intent)
     }
 
     override fun onEditSessionClicked(session: Session) {
