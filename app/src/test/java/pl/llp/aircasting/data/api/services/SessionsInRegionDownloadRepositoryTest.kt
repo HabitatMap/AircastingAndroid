@@ -223,16 +223,6 @@ class SessionsInRegionDownloadRepositoryTest {
         return Gson().fromJson(json, SessionsInRegionsRes::class.java)
     }
 
-    private fun mockUnsuccessfulCall(): Call<SessionsInRegionResponse> {
-        val response = Response.error<SessionsInRegionResponse>(500, "{}".toResponseBody())
-        return mock<Call<SessionsInRegionResponse>> {
-            on { enqueue(anyOrNull()) } doAnswer {
-                val callback = it.arguments[0] as Callback<SessionsInRegionResponse>
-                callback.onResponse(mock, response)
-            }
-        }
-    }
-
     private fun getStartOfDayEpoch(): Long {
         val secondsInDay = (60 * 60 * 24).toLong()
         val currentSecond = System.currentTimeMillis() / 1000
@@ -243,18 +233,5 @@ class SessionsInRegionDownloadRepositoryTest {
         val startOfTheDayEpoch = getStartOfDayEpoch()
         val secondInDay = (60 * 60 * 24).toLong()
         return startOfTheDayEpoch + secondInDay - 1
-    }
-
-    private fun firstSessionFromResponse(response: SessionInRegionResponse): Session {
-        return Session(
-            response.uuid,
-            null,
-            null,
-            Session.Type.FIXED,
-            response.title,
-            arrayListOf(),
-            Session.Status.RECORDING,
-            Date(Date.parse(response.start_time_local))
-        )
     }
 }
