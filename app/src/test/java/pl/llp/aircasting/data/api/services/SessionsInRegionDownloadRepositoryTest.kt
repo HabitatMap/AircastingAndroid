@@ -132,6 +132,26 @@ class SessionsInRegionDownloadRepositoryTest {
         }
     }
 
+    @Test
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenOzoneOpenAQSensor() {
+        // given
+        val expectedSensorName = "openaq-o3"
+        val expectedUnitSymbol = "ppb"
+        val expectedMeasurementType = "Ozone"
+        val sensor = Ozone.OPEN_AQ
+
+        // when
+        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+
+        // then
+        val resultObject = JsonParser.parseString(result).asJsonObject
+        assertTrue {
+            resultObject.get("sensor_name").asString == expectedSensorName &&
+                    resultObject.get("unit_symbol").asString == expectedUnitSymbol &&
+                    resultObject.get("measurement_type").asString == expectedMeasurementType
+        }
+    }
+
     @Test(expected = Test.None::class)
     fun constructAndGetJsonWith_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
         // when
