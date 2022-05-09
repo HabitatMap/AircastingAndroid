@@ -1,6 +1,17 @@
-package pl.llp.aircasting.data.api.services
+package pl.llp.aircasting.data.api.repositories
 
-class SessionsInRegionDownloadRepository(private val apiService: ApiService) {
+import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.util.ParticulateMatter
+import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.util.Resource
+import pl.llp.aircasting.util.ResponseHandler
+import java.lang.Exception
+
+class SessionsInRegionDownloadRepository(
+    private val apiService: ApiService,
+    private val responseHandler: ResponseHandler = ResponseHandler()
+) {
     companion object {
         fun constructAndGetJsonWith(square: GeoSquare): String {
             return "{\"time_from\":\"${getStartOfDayEpoch()}\"," +
