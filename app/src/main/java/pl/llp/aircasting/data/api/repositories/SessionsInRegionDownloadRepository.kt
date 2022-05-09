@@ -41,10 +41,10 @@ class SessionsInRegionDownloadRepository @Inject constructor(
         }
     }
 
-    suspend fun getSessionsFromRegion(square: GeoSquare): Resource<SessionsInRegionsRes> {
+    suspend fun getSessionsFromRegion(square: GeoSquare, sensorInfo: SensorInformation = ParticulateMatter.AIRBEAM): Resource<SessionsInRegionsRes> {
         return try {
             val response = apiService.getSessionsInRegion(
-                constructAndGetJsonWith(square)
+                constructAndGetJsonWith(square, sensorInfo)
             )
             responseHandler.handleSuccess(response)
 
