@@ -149,7 +149,6 @@ class SessionsInRegionDownloadRepositoryTest {
         JsonParser.parseString(json)
     }
 
-
     @Test
     fun whenCallingApi_shouldCallJsonToStringConverter(): Unit = runBlocking {
         // given
@@ -196,107 +195,6 @@ class SessionsInRegionDownloadRepositoryTest {
 
         // then
         assertNotNull(result.data)
-    }
-
-    @Ignore
-    @Test
-    fun whenApiResponseIsUnSuccessful_shouldNotClearGivenList(): Unit = runBlocking {
-        // given
-        val mockCall = mockUnsuccessfulCall()
-        val mockResponse = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
-
-        // when
-        service.getSessionsFromRegion(testSquare)
-
-        // then
-        verify(sessionsSpy, never()).clear()
-    }
-
-    @Ignore
-    @Test
-    fun whenThereAreNoSessionsDownloaded_shouldNotAddToGivenList(): Unit = runBlocking {
-        // given
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
-        val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
-
-        // when
-        service.getSessionsFromRegion(testSquare)
-
-        // then
-        verify(sessionsSpy, never()).add(anyOrNull())
-    }
-
-    @Ignore
-    @Test
-    fun whenThereAreNoSessionsDownloaded_shouldHaveGivenListEmpty(): Unit = runBlocking {
-        // given
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
-        val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
-
-        // when
-        service.getSessionsFromRegion(testSquare)
-
-        // then
-        assertTrue(sessionsSpy.isEmpty())
-    }
-
-    @Ignore
-    @Test
-    fun whenThereAreSessionsDownloaded_shouldAddSessionsToGivenList(): Unit = runBlocking {
-        // given
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
-        val mockResponse = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
-
-        // when
-        service.getSessionsFromRegion(testSquare)
-
-        // then
-        verify(sessionsSpy).add(anyOrNull())
-    }
-
-    @Ignore
-    @Test
-    fun whenThereAreSessionsDownloaded_shouldHaveGivenListNonEmpty(): Unit = runBlocking {
-        // given
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
-        val mockResponse = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithRes(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
-
-        // when
-        service.getSessionsFromRegion(testSquare)
-
-        // then
-        assertTrue(sessionsSpy.isNotEmpty())
-    }
-
-    @Ignore
-    @Test
-    fun whenThereAreSessionsDownloaded_shouldAddSessionsFromResponse(): Unit = runBlocking {
-        // given
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
-        val response = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithResponse(response)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
-
-        // when
-
-
     }
 
     private fun mockApiServiceWithResponse(res: SessionsInRegionsRes): ApiService = runBlocking {
