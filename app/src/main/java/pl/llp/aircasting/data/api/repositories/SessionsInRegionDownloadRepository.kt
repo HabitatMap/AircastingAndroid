@@ -7,8 +7,9 @@ import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
 import java.lang.Exception
+import javax.inject.Inject
 
-class SessionsInRegionDownloadRepository(
+class SessionsInRegionDownloadRepository @Inject constructor(
     private val apiService: ApiService,
     private val responseHandler: ResponseHandler = ResponseHandler()
 ) {
