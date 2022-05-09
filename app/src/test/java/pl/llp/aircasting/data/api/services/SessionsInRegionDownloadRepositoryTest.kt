@@ -80,6 +80,66 @@ class SessionsInRegionDownloadRepositoryTest {
         assertEquals(currentDayTimeTo, timeTo)
     }
 
+    @Test
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterAirbeamSensor() {
+        // given
+        val expectedSensorName = "airbeam2-pm2.5"
+        val expectedUnitSymbol = "µg/m³"
+        val expectedMeasurementType = "ParticulateMatter"
+        val sensor = ParticulateMatter.AIRBEAM
+
+        // when
+        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+
+        // then
+        val resultObject = JsonParser.parseString(result).asJsonObject
+        assertTrue {
+            resultObject.get("sensor_name").asString == expectedSensorName &&
+                    resultObject.get("unit_symbol").asString == expectedUnitSymbol &&
+                    resultObject.get("measurement_type").asString == expectedMeasurementType
+        }
+    }
+
+    @Test
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterOpenAQSensor() {
+        // given
+        val expectedSensorName = "openaq-pm2.5"
+        val expectedUnitSymbol = "µg/m³"
+        val expectedMeasurementType = "ParticulateMatter"
+        val sensor = ParticulateMatter.OPEN_AQ
+
+        // when
+        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+
+        // then
+        val resultObject = JsonParser.parseString(result).asJsonObject
+        assertTrue {
+            resultObject.get("sensor_name").asString == expectedSensorName &&
+                    resultObject.get("unit_symbol").asString == expectedUnitSymbol &&
+                    resultObject.get("measurement_type").asString == expectedMeasurementType
+        }
+    }
+
+    @Test
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterPurpleAirSensor() {
+        // given
+        val expectedSensorName = "purpleair-pm2.5"
+        val expectedUnitSymbol = "µg/m³"
+        val expectedMeasurementType = "ParticulateMatter"
+        val sensor = ParticulateMatter.PURPLE_AIR
+
+        // when
+        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+
+        // then
+        val resultObject = JsonParser.parseString(result).asJsonObject
+        assertTrue {
+            resultObject.get("sensor_name").asString == expectedSensorName &&
+                    resultObject.get("unit_symbol").asString == expectedUnitSymbol &&
+                    resultObject.get("measurement_type").asString == expectedMeasurementType
+        }
+    }
+
     @Test(expected = Test.None::class)
     fun constructAndGetJsonWith_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
         // when
