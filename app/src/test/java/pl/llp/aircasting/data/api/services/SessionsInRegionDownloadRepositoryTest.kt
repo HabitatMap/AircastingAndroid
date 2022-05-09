@@ -11,6 +11,8 @@ import pl.llp.aircasting.data.api.responses.SessionInRegionResponse
 import pl.llp.aircasting.data.api.responses.SessionsInRegionResponse
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.util.Resource
+import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.utilities.StubData
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,7 +29,7 @@ class SessionsInRegionDownloadRepositoryTest {
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
         val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
@@ -89,7 +91,7 @@ class SessionsInRegionDownloadRepositoryTest {
     fun whenCallingApi_shouldCallJsonToStringConverter(): Unit = runBlocking {
         // given
         val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
@@ -126,7 +128,7 @@ class SessionsInRegionDownloadRepositoryTest {
         // given
         val mockCall = mockUnsuccessfulCall()
         val mockResponse = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
         val sessions = mutableListOf<Session>()
         val sessionsSpy = spy(sessions)
@@ -145,7 +147,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sessions = mutableListOf<Session>()
         val sessionsSpy = spy(sessions)
         val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
@@ -162,7 +164,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sessions = mutableListOf<Session>()
         val sessionsSpy = spy(sessions)
         val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
@@ -179,7 +181,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sessions = mutableListOf<Session>()
         val sessionsSpy = spy(sessions)
         val mockResponse = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
@@ -213,7 +215,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sessions = mutableListOf<Session>()
         val sessionsSpy = spy(sessions)
         val response = mockSuccessfulResponseWithJson(testJson)
-        val mockApiService = mockApiServiceWithRes(response)
+        val mockApiService = mockApiServiceWithResponse(response)
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
@@ -221,7 +223,7 @@ class SessionsInRegionDownloadRepositoryTest {
 
     }
 
-    private fun mockApiServiceWithRes(res: SessionsInRegionsRes): ApiService = runBlocking {
+    private fun mockApiServiceWithResponse(res: SessionsInRegionsRes): ApiService = runBlocking {
         return@runBlocking mock<ApiService> {
             onBlocking {
                 getSessionsInRegion(
