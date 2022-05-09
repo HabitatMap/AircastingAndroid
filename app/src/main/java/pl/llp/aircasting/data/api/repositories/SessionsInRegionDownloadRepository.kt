@@ -40,10 +40,16 @@ class SessionsInRegionDownloadRepository(
         }
     }
 
-    suspend fun getSessionsFromRegion(square: GeoSquare) {
-        val sessionsInRegionsRes = apiService.getSessionsInRegion(
-            constructAndGetJsonWith(square)
-        )
+    suspend fun getSessionsFromRegion(square: GeoSquare): Resource<SessionsInRegionsRes> {
+        return try {
+            val response = apiService.getSessionsInRegion(
+                constructAndGetJsonWith(square)
+            )
+            responseHandler.handleSuccess(response)
+
+        } catch (e: Exception) {
+            responseHandler.handleException(e)
+        }
     }
 }
 
