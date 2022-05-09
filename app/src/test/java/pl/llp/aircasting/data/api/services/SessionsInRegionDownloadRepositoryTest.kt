@@ -168,21 +168,34 @@ class SessionsInRegionDownloadRepositoryTest {
         )
     }
 
-    @Ignore
+    // Integration with ResponseHandler
+
     @Test
-    fun whenApiResponseIsSuccessful_shouldClearGivenList(): Unit = runBlocking {
+    fun whenApiResponseIsSuccessful_shouldReturnResourceWithSuccessStatus(): Unit = runBlocking {
         // given
-        val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithRes(mockResponse)
+        val mockResponse = mockSuccessfulResponseWithJson(testJson)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
         val service = SessionsInRegionDownloadRepository(mockApiService)
-        val sessions = mutableListOf<Session>()
-        val sessionsSpy = spy(sessions)
+        val expected = Status.SUCCESS
 
         // when
-        service.getSessionsFromRegion(testSquare)
+        val result = service.getSessionsFromRegion(testSquare)
 
         // then
-        verify(sessionsSpy).clear()
+        assertEquals(expected, result.status)
+    }
+
+    @Test
+    fun whenApiResponseIsSuccessful_shouldReturnResourceWithNonNullData(): Unit = runBlocking {
+        val mockResponse = mockSuccessfulResponseWithJson(testJson)
+        val mockApiService = mockApiServiceWithResponse(mockResponse)
+        val service = SessionsInRegionDownloadRepository(mockApiService)
+
+        // when
+        val result = service.getSessionsFromRegion(testSquare)
+
+        // then
+        assertNotNull(result.data)
     }
 
     @Ignore
