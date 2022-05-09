@@ -1,8 +1,6 @@
 package pl.llp.aircasting.util
 
-import android.media.MediaDrm
 import retrofit2.HttpException
-import java.net.SocketTimeoutException
 
 open class ResponseHandler {
     fun <T : Any> handleSuccess(data: T): Resource<T> {
