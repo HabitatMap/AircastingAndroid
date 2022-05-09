@@ -13,7 +13,7 @@ class SessionsInRegionDownloadRepository(
     private val responseHandler: ResponseHandler = ResponseHandler()
 ) {
     companion object {
-        fun constructAndGetJsonWith(square: GeoSquare): String {
+        fun constructAndGetJsonWith(square: GeoSquare, sensorInfo: SensorInformation = ParticulateMatter.AIRBEAM): String {
             return "{\"time_from\":\"${getStartOfDayEpoch()}\"," +
                     "\"time_to\":\"${getEndOfDayEpoch()}\"," +
                     "\"tags\":\"\"," +
@@ -22,9 +22,9 @@ class SessionsInRegionDownloadRepository(
                     "\"east\":${square.east}," +
                     "\"south\":${square.south}," +
                     "\"north\":${square.north}," +
-                    "\"sensor_name\":\"airbeam2-pm2.5\"," +
-                    "\"unit_symbol\":\"µg/m³\"," +
-                    "\"measurement_type\":\"ParticulateMatter\"}"
+                    "\"sensor_name\":\"${sensorInfo.getSensorName()}\"," +
+                    "\"unit_symbol\":\"${sensorInfo.getUnitSymbol()}\"," +
+                    "\"measurement_type\":\"${sensorInfo.getMeasurementType()}\"}"
         }
 
         private fun getStartOfDayEpoch(): Long {
