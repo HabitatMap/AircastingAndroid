@@ -5,11 +5,11 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.kotlin.*
-import pl.llp.aircasting.data.api.repositories.GeoSquare
 import pl.llp.aircasting.data.api.repositories.SessionsInRegionDownloadRepository
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
+import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.utilities.StubData
 import kotlin.test.assertEquals
@@ -28,7 +28,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
-        service.getSessionsFromRegion(testSquare)
+        service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         verify(mockApiService).getSessionsInRegion(anyOrNull())
@@ -38,7 +38,7 @@ class SessionsInRegionDownloadRepositoryTest {
     fun constructAndGetJsonWith_shouldConstructJsonContainingGivenCoordinates(): Unit =
         runBlocking {
             // given
-            val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
+            val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
             val jsonObject = JsonParser.parseString(json).asJsonObject
 
             // when
@@ -60,7 +60,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val currentDayTimeFrom = getStartOfDayEpoch()
         val currentDayTimeTo = getEndOfDayEpoch()
 
-        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
+        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
         val jsonObject = JsonParser.parseString(json).asJsonObject
 
         // when
@@ -155,7 +155,7 @@ class SessionsInRegionDownloadRepositoryTest {
     @Test(expected = Test.None::class)
     fun constructAndGetJsonWith_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
         // when
-        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare)
+        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         JsonParser.parseString(json)
@@ -169,12 +169,12 @@ class SessionsInRegionDownloadRepositoryTest {
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
-        service.getSessionsFromRegion(testSquare)
+        service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         verify(mockApiService).getSessionsInRegion(
             argThat {
-                equals(SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare))
+                equals(SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM))
             }
         )
     }
@@ -190,7 +190,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val expected = Status.SUCCESS
 
         // when
-        val result = service.getSessionsFromRegion(testSquare)
+        val result = service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         assertEquals(expected, result.status)
@@ -203,7 +203,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val service = SessionsInRegionDownloadRepository(mockApiService)
 
         // when
-        val result = service.getSessionsFromRegion(testSquare)
+        val result = service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         assertNotNull(result.data)

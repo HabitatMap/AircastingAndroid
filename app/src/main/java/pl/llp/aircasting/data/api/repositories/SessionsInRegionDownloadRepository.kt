@@ -17,7 +17,7 @@ class SessionsInRegionDownloadRepository @Inject constructor(
     companion object {
         fun constructAndGetJsonWith(
             square: GeoSquare,
-            sensorInfo: SensorInformation = ParticulateMatter.AIRBEAM
+            sensorInfo: SensorInformation
         ): String {
             return "{\"time_from\":\"${getStartOfDayEpoch()}\"," +
                     "\"time_to\":\"${getEndOfDayEpoch()}\"," +
@@ -47,7 +47,7 @@ class SessionsInRegionDownloadRepository @Inject constructor(
 
     suspend fun getSessionsFromRegion(
         square: GeoSquare,
-        sensorInfo: SensorInformation = ParticulateMatter.AIRBEAM
+        sensorInfo: SensorInformation
     ): Resource<SessionsInRegionsRes> {
         return try {
             val response = apiService.getSessionsInRegion(
