@@ -21,6 +21,9 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.responses.search.Session
+import pl.llp.aircasting.data.api.util.ParticulateMatter
+import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -69,11 +72,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
 
-        val jsonData =
-            "{\"time_from\":\"1531008000\",\"time_to\":\"1562630399\",\"tags\":\"\",\"usernames\":\"\",\"west\":-73.9766655034307,\"east\":-73.97618605856928,\"south\":40.68019783151002,\"north\":40.680367168382396,\"sensor_name\":\"airbeam2-pm2.5\",\"unit_symbol\":\"µg/m³\",\"measurement_type\":\"Particulate Matter\"}"
+        val square =
+            GeoSquare(40.680367168382396, 40.68019783151002, -73.97618605856928, -73.9766655034307)
 
         setupRecyclerView()
-        setupObserver(jsonData)
+        setupObserver(square, ParticulateMatter.AIRBEAM)
         setupSearchLayout()
     }
 
@@ -98,19 +101,20 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.recyclerFixedFollow.adapter = adapter
     }
 
-    private fun setupObserver(query: String) {
-        searchFollowViewModel.getSessionsInRegion(query).observe(this) {
+    private fun setupObserver(
+        square: GeoSquare,
+        sensorInfo: SensorInformation
+    ) {
+        searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 SUCCESS -> {
                     binding.progressBar.inVisible()
-                    it.data?.let { sessions -> renderData(sessions) }
+                    it.data?.let { sessions -> renderData(sessions)}
                 }
-                LOADING -> {
-                    binding.progressBar.visible()
-                }
+                LOADING -> binding.progressBar.visible()
                 ERROR -> {
                     binding.progressBar.inVisible()
-                    Toast.makeText(this, "Error!" + it.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
