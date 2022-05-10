@@ -4,6 +4,7 @@ import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
 import java.lang.Exception
@@ -59,10 +60,3 @@ class SessionsInRegionDownloadRepository @Inject constructor(
         }
     }
 }
-
-data class GeoSquare(
-    val north: Double,
-    val south: Double,
-    val east: Double,
-    val west: Double
-)
