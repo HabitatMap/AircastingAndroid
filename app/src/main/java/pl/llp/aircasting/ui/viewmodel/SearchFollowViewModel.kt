@@ -30,7 +30,7 @@ class SearchFollowViewModel @Inject constructor(
                 else emit(
                     Resource.error(
                         null,
-                        mApp.getString(R.string.fixed_session_no_internet_connection)
+                        mApp.getString(R.string.fixed_session_no_internet_connection_header)
                     )
                 )
 
