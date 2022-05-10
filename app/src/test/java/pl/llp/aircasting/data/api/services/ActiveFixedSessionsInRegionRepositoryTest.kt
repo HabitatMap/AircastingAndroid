@@ -5,7 +5,7 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.kotlin.*
-import pl.llp.aircasting.data.api.repositories.SessionsInRegionDownloadRepository
+import pl.llp.aircasting.data.api.repositories.ActiveFixedSessionsInRegionRepository
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class SessionsInRegionDownloadRepositoryTest {
+class ActiveFixedSessionsInRegionRepositoryTest {
     private val testSquare = GeoSquare(1.0, 1.0, 1.0, 1.0)
     private val testJson = StubData.getJson("SessionsCracow.json")
 
@@ -25,7 +25,7 @@ class SessionsInRegionDownloadRepositoryTest {
         // given
         val mockResponse = mockSuccessfulResponseWithJson("{}")
         val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
+        val service = ActiveFixedSessionsInRegionRepository(mockApiService)
 
         // when
         service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
@@ -38,7 +38,7 @@ class SessionsInRegionDownloadRepositoryTest {
     fun constructAndGetJsonWith_shouldConstructJsonContainingGivenCoordinates(): Unit =
         runBlocking {
             // given
-            val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
+            val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
             val jsonObject = JsonParser.parseString(json).asJsonObject
 
             // when
@@ -60,7 +60,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val currentDayTimeFrom = getStartOfDayEpoch()
         val currentDayTimeTo = getEndOfDayEpoch()
 
-        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
+        val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
         val jsonObject = JsonParser.parseString(json).asJsonObject
 
         // when
@@ -81,7 +81,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sensor = ParticulateMatter.AIRBEAM
 
         // when
-        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+        val result = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, sensor)
 
         // then
         val resultObject = JsonParser.parseString(result).asJsonObject
@@ -101,7 +101,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sensor = ParticulateMatter.OPEN_AQ
 
         // when
-        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+        val result = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, sensor)
 
         // then
         val resultObject = JsonParser.parseString(result).asJsonObject
@@ -121,7 +121,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sensor = ParticulateMatter.PURPLE_AIR
 
         // when
-        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+        val result = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, sensor)
 
         // then
         val resultObject = JsonParser.parseString(result).asJsonObject
@@ -141,7 +141,7 @@ class SessionsInRegionDownloadRepositoryTest {
         val sensor = Ozone.OPEN_AQ
 
         // when
-        val result = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, sensor)
+        val result = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, sensor)
 
         // then
         val resultObject = JsonParser.parseString(result).asJsonObject
@@ -155,7 +155,7 @@ class SessionsInRegionDownloadRepositoryTest {
     @Test(expected = Test.None::class)
     fun constructAndGetJsonWith_shouldNotThrowJsonSyntaxException(): Unit = runBlocking {
         // when
-        val json = SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
+        val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         JsonParser.parseString(json)
@@ -166,7 +166,7 @@ class SessionsInRegionDownloadRepositoryTest {
         // given
         val mockResponse = mockSuccessfulResponseWithJson("{}")
         val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
+        val service = ActiveFixedSessionsInRegionRepository(mockApiService)
 
         // when
         service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
@@ -174,7 +174,7 @@ class SessionsInRegionDownloadRepositoryTest {
         // then
         verify(mockApiService).getSessionsInRegion(
             argThat {
-                equals(SessionsInRegionDownloadRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM))
+                equals(ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, ParticulateMatter.AIRBEAM))
             }
         )
     }
@@ -186,7 +186,7 @@ class SessionsInRegionDownloadRepositoryTest {
         // given
         val mockResponse = mockSuccessfulResponseWithJson(testJson)
         val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
+        val service = ActiveFixedSessionsInRegionRepository(mockApiService)
         val expected = Status.SUCCESS
 
         // when
@@ -200,7 +200,7 @@ class SessionsInRegionDownloadRepositoryTest {
     fun whenApiResponseIsSuccessful_shouldReturnResourceWithNonNullData(): Unit = runBlocking {
         val mockResponse = mockSuccessfulResponseWithJson(testJson)
         val mockApiService = mockApiServiceWithResponse(mockResponse)
-        val service = SessionsInRegionDownloadRepository(mockApiService)
+        val service = ActiveFixedSessionsInRegionRepository(mockApiService)
 
         // when
         val result = service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)

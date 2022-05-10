@@ -10,7 +10,7 @@ import pl.llp.aircasting.util.ResponseHandler
 import java.lang.Exception
 import javax.inject.Inject
 
-class SessionsInRegionDownloadRepository @Inject constructor(
+class ActiveFixedSessionsInRegionRepository @Inject constructor(
     private val apiService: ApiService,
     private val responseHandler: ResponseHandler = ResponseHandler()
 ) {
