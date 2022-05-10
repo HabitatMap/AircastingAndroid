@@ -12,7 +12,10 @@ class FixedFollowAdapter(
 ) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
-    inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
+    inner class DataViewHolder(
+        private val binding: ItemSesssionsListFixedFollowBinding,
+        private val onItemClicked: (Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(sessions: Session) {
             binding.mySessions = sessions
@@ -37,5 +40,4 @@ class FixedFollowAdapter(
     fun addData(list: List<Session>) {
         sessions.addAll(list)
     }
-
 }
