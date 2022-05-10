@@ -5,7 +5,6 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.data.api.Constants
@@ -14,6 +13,7 @@ import pl.llp.aircasting.data.api.responses.*
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.util.Settings
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -49,7 +49,7 @@ interface ApiService {
     ): Call<ExportSessionResponse>
 
     @GET(Constants.urlSessionInGivenLocation)
-    suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsRes
+    suspend fun getSessionsInRegion(@Query("q") query: String): Response<SessionsInRegionsRes>
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
@@ -156,7 +156,7 @@ open class ApiServiceFactory(private val mSettings: Settings) {
 }
 
 class AuthenticationInterceptor(private val authToken: String) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val original = chain.request()
 
         val builder = original.newBuilder()
