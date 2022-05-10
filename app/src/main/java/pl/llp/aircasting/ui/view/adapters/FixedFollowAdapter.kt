@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 
-class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
+class FixedFollowAdapter(
+    private val sessions: ArrayList<Session>,
+    private val onItemClicked: (Session) -> Unit
+) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
     inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
