@@ -35,7 +35,9 @@ class FixedFollowAdapter(
             parent,
             false
         )
-        return DataViewHolder(binding)
+        return DataViewHolder(binding) {
+            onItemClicked(sessions[it])
+        }
     }
 
     override fun getItemCount(): Int = sessions.size
