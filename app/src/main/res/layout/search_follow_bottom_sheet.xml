@@ -72,6 +72,11 @@
                     tools:layout_editor_absoluteY="53dp"
                     tools:text="03/02/2022 10:35-15:34" />
 
+                <include
+                    layout="@layout/measurements_table"
+                    app:layout_constraintTop_toBottomOf="@id/textView4"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/mapView"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
