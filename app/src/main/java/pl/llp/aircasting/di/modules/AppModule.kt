@@ -1,5 +1,6 @@
 package pl.llp.aircasting.di.modules
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
@@ -11,6 +12,11 @@ import javax.inject.Singleton
 
 @Module
 class AppModule(private val app: AircastingApplication) {
+
+    @Provides
+    @Singleton
+    fun provideContext(): Context = app.applicationContext
+
     @Provides
     @Singleton
     fun providesApp(): AircastingApplication = app
@@ -25,7 +31,8 @@ class AppModule(private val app: AircastingApplication) {
 
     @Provides
     @Singleton
-    fun providesMeasurementStreamsRepository(): MeasurementStreamsRepository = MeasurementStreamsRepository()
+    fun providesMeasurementStreamsRepository(): MeasurementStreamsRepository =
+        MeasurementStreamsRepository()
 
     @Provides
     @Singleton
