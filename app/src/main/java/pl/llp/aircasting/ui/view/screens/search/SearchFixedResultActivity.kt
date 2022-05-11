@@ -32,14 +32,12 @@ import pl.llp.aircasting.util.*
 import java.util.*
 import javax.inject.Inject
 
-class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback{
+class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var searchFollowViewModel: SearchFollowViewModel
-
     @Inject
     lateinit var adapter: FixedFollowAdapter
 
@@ -149,7 +147,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback{
 
         styleGoogleMap(googleMap, this)
         googleMap.setOnMapLoadedCallback {
-            
+
         }
 
         if (lat != null && long != null) {
