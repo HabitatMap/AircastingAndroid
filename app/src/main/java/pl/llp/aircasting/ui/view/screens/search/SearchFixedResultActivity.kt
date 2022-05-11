@@ -1,6 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.search
 
 import android.annotation.SuppressLint
+import android.location.Geocoder
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageButton
@@ -28,9 +29,10 @@ import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
+import java.util.*
 import javax.inject.Inject
 
-class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
+class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -38,8 +40,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
     @Inject
     lateinit var searchFollowViewModel: SearchFollowViewModel
 
+    @Inject
+    lateinit var adapter: FixedFollowAdapter
+
     private lateinit var binding: ActivitySearchFollowResultBinding
-    private lateinit var adapter: FixedFollowAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,9 +68,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val txtParameter = intent.getStringExtra("txtParameter")
         val txtSensor = intent.getStringExtra("txtSensor")
+        val address = intent.getStringExtra("address")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
+
+        println("getResults ${getAddressResults(address)}")
 
         val square =
             GeoSquare(40.680367168382396, 40.68019783151002, -73.97618605856928, -73.9766655034307)
@@ -114,6 +121,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun getAddressResults(address: String?): Any {
+        return try {
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val getFromTheLocName = geocoder.getFromLocationName(address, 1)
+
+        } catch (e: Exception) {
+            e.message.toString()
+        }
+    }
+
     private fun renderData(mySessions: List<Session>) {
         adapter.addData(mySessions)
         adapter.notifyDataSetChanged()
@@ -126,19 +143,22 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         bottomSheetDialog.show()
     }
 
-    override fun onMapReady(mMap: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
         val lat = intent.getStringExtra("lat")?.toDouble()
         val long = intent.getStringExtra("long")?.toDouble()
 
-        styleGoogleMap(mMap, this)
+        styleGoogleMap(googleMap, this)
+        googleMap.setOnMapLoadedCallback {
+            
+        }
 
         if (lat != null && long != null) {
             val myLocation = LatLng(lat, long)
-            mMap.addMarker(
+            googleMap.addMarker(
                 MarkerOptions()
                     .position(myLocation)
             )
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10f), 1000, null)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10f), 1000, null)
         }
     }
 
