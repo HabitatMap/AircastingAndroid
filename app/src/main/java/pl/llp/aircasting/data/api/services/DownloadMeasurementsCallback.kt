@@ -6,10 +6,10 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.responses.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.responses.SessionWithMeasurementsResponse
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.repositories.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session

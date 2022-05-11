@@ -1,8 +1,8 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import java.util.*
 

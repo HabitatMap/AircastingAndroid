@@ -3,6 +3,7 @@ package pl.llp.aircasting.data.local.repositories
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Rule
 import org.junit.Test
+import pl.llp.aircasting.data.api.repositories.SearchedFixedSessionsRepository
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.model.Session
 import retrofit2.Retrofit

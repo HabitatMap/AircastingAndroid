@@ -3,9 +3,9 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.inject.Singleton
 

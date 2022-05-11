@@ -1,9 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import java.io.File
 
 abstract class SDCardSessionsProcessor(

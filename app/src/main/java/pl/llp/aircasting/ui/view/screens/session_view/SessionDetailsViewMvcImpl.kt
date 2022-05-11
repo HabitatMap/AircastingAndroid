@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
 import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.DurationStringHelper
 import pl.llp.aircasting.data.model.Measurement

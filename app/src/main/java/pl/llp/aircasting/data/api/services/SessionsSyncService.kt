@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteConstraintException
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.NoteRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.NoteRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
