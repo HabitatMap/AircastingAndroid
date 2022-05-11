@@ -13,7 +13,6 @@ import pl.llp.aircasting.data.api.responses.*
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.util.Settings
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -49,7 +48,7 @@ interface ApiService {
     ): Call<ExportSessionResponse>
 
     @GET(Constants.urlSessionInGivenLocation)
-    suspend fun getSessionsInRegion(@Query("q") query: String): Response<SessionsInRegionsRes>
+    suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsRes
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
