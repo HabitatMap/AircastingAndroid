@@ -119,7 +119,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         adapter.notifyDataSetChanged()
     }
 
-    private fun showBottomSheetDialog(sessions: Session) {
+    private fun showBottomSheetDialog(session: Session) {
+        searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
     }
 
