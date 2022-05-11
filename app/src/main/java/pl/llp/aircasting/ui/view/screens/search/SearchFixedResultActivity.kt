@@ -39,7 +39,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivitySearchFollowResultBinding
     private lateinit var adapter: FixedFollowAdapter
-    private val bottomSheetDialog: SearchFixedBottomSheet = SearchFixedBottomSheet()
+    private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
