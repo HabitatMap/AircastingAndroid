@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
+import javax.inject.Inject
 
-class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
+class FixedFollowAdapter @Inject constructor(private val sessions: ArrayList<Session>) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
-    inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(sessions: Session) {
             binding.mySessions = sessions
             binding.executePendingBindings()
@@ -28,8 +28,7 @@ class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
 
     override fun getItemCount(): Int = sessions.size
 
-    override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
-        holder.bind(sessions[position])
+    override fun onBindViewHolder(holder: DataViewHolder, position: Int) = holder.bind(sessions[position])
 
     fun addData(list: List<Session>) {
         sessions.addAll(list)
