@@ -10,7 +10,8 @@ import javax.inject.Inject
 class FixedFollowAdapter @Inject constructor(private val sessions: ArrayList<Session>) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
-    inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(sessions: Session) {
             binding.mySessions = sessions
             binding.executePendingBindings()
@@ -28,10 +29,10 @@ class FixedFollowAdapter @Inject constructor(private val sessions: ArrayList<Ses
 
     override fun getItemCount(): Int = sessions.size
 
-    override fun onBindViewHolder(holder: DataViewHolder, position: Int) = holder.bind(sessions[position])
+    override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
+        holder.bind(sessions[position])
 
     fun addData(list: List<Session>) {
         sessions.addAll(list)
     }
-
 }
