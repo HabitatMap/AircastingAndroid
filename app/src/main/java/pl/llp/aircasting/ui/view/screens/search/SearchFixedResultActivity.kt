@@ -26,11 +26,7 @@ import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.util.Status.*
-import pl.llp.aircasting.util.gone
-import pl.llp.aircasting.util.inVisible
-import pl.llp.aircasting.util.styleGoogleMap
-import pl.llp.aircasting.util.visible
+import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -101,21 +97,19 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.recyclerFixedFollow.adapter = adapter
     }
 
-    private fun setupObserver(
-        square: GeoSquare,
-        sensorInfo: SensorInformation
-    ) {
+    private fun setupObserver(square: GeoSquare, sensorInfo: SensorInformation) {
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
-                SUCCESS -> {
+                Status.SUCCESS -> {
+                    it.data?.sessions?.let { it1 -> renderData(it1) }
                     binding.progressBar.inVisible()
-                    it.data?.let { sessions -> renderData(sessions)}
                 }
-                LOADING -> binding.progressBar.visible()
-                ERROR -> {
+                Status.ERROR -> {
                     binding.progressBar.inVisible()
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT)
+                        .show()
                 }
+                Status.LOADING -> binding.progressBar.visible()
             }
         }
     }

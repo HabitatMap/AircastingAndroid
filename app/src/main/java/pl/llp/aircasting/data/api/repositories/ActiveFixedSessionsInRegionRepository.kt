@@ -1,11 +1,17 @@
 package pl.llp.aircasting.data.api.repositories
 
+import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
+import pl.llp.aircasting.util.Resource
+import pl.llp.aircasting.util.ResponseHandler
 import javax.inject.Inject
 
-class ActiveFixedSessionsInRegionRepository @Inject constructor(private val apiService: ApiService) {
+class ActiveFixedSessionsInRegionRepository @Inject constructor(
+    private val apiService: ApiService,
+    private val responseHandler: ResponseHandler
+) {
     companion object {
         fun constructAndGetJsonWith(
             square: GeoSquare,
@@ -40,6 +46,15 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(private val apiS
     suspend fun getSessionsFromRegion(
         square: GeoSquare,
         sensorInfo: SensorInformation
-    ) = apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
+    ): Resource<SessionsInRegionsRes> {
+        return try {
+            val response = apiService.getSessionsInRegion(
+                constructAndGetJsonWith(square, sensorInfo)
+            )
+            responseHandler.handleSuccess(response)
 
+        } catch (e: Exception) {
+            responseHandler.handleException(e)
+        }
+    }
 }
