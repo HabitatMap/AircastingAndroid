@@ -11,13 +11,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import pl.llp.aircasting.R
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 
-abstract class BottomSheet: BottomSheetDialogFragment() {
+abstract class BottomSheet : BottomSheetDialogFragment() {
     private val TAG = "BottomSheet"
     private val EXPANDED_PERCENT = 0.9
-    protected var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
     protected var contentView: View? = null
 
-    abstract protected fun layoutId(): Int
+    protected abstract fun layoutId(): Int
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheet = super.onCreateDialog(savedInstanceState)
