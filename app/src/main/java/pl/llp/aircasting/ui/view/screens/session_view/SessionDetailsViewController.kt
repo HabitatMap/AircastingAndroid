@@ -11,9 +11,9 @@ import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
 import pl.llp.aircasting.data.local.data_classes.SessionDBObject
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteDeletedEvent
 import pl.llp.aircasting.util.events.NoteEditedEvent

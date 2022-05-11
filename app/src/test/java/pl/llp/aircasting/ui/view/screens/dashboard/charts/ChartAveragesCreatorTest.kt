@@ -1,8 +1,8 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import junit.framework.TestCase
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.BeforeEach
+import org.junit.Before
+import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -19,7 +19,7 @@ class ChartAveragesCreatorTest : TestCase() {
     @Mock
     private lateinit var stream: MeasurementStream
 
-    @BeforeEach
+    @Before
     public override fun setUp() {
         super.setUp()
 

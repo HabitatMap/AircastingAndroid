@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.local.repositories
+package pl.llp.aircasting.data.api.repositories
 
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.data_classes.SessionDBObject

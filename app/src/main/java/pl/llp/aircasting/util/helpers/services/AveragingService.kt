@@ -3,9 +3,9 @@ package pl.llp.aircasting.util.helpers.services
 import android.util.Log
 import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
 import pl.llp.aircasting.data.local.data_classes.SessionDBObject
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean

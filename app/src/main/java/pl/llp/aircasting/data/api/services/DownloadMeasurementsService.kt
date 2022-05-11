@@ -2,10 +2,10 @@ package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.data_classes.SessionWithStreamsAndMeasurementsDBObject
-import pl.llp.aircasting.data.local.repositories.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.local.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repositories.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
+import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.data.model.Session

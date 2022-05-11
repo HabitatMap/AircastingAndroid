@@ -3,7 +3,7 @@ package pl.llp.aircasting
 import junit.framework.TestCase
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.SensorThreshold
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import java.util.*
 
 /**
