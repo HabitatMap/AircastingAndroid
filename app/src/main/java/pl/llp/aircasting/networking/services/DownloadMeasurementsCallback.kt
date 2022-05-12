@@ -35,7 +35,7 @@ class DownloadMeasurementsCallback(
     private val errorHandler: ErrorHandler,
     private val finallyCallback: (() -> Unit)? = null
 
-): Callback<SessionWithMeasurementsResponse> {
+) : Callback<SessionWithMeasurementsResponse> {
     val callCanceled = AtomicBoolean(false)
     val averagingService = AveragingService.get(sessionId)
 
@@ -59,7 +59,7 @@ class DownloadMeasurementsCallback(
                                 saveStreamData(streamResponse)
                             }
                             updateSessionEndTime(body.end_time)
-                        } catch( e: SQLiteConstraintException) {
+                        } catch (e: SQLiteConstraintException) {
                             errorHandler.handle(DBInsertException(e))
                         }
                     }
@@ -103,7 +103,7 @@ class DownloadMeasurementsCallback(
     }
 
     private fun updateSessionEndTime(endTimeString: String?) {
-        if(endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
+        if (endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
         sessionsRepository.update(session)
     }
 
