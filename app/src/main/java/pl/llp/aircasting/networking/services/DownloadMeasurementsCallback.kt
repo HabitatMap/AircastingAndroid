@@ -97,8 +97,17 @@ class DownloadMeasurementsCallback(
         // Because of that when we launch the app after some time of inactivity we have to insert all
         // new measurements for following session to active_measurements_table apart from the basic measurements db table
 
+        // TODO: Add only when the measurement has hour greater than the last measurement hour in Active Session Measurements table
+
         if (session.isFixed() && session.followedAt != null) {
-            activeSessionMeasurementsRepository.createOrReplaceMultipleRows(streamId, sessionId, measurements)
+            val downloadedLastMeasurementsTime = measurementsRepository.lastMeasurementTime(sessionId, streamId)
+            val chartLastMeasurementTime = activeSessionMeasurementsRepository.lastMeasurementTime(sessionId, streamId)
+
+            activeSessionMeasurementsRepository.createOrReplaceMultipleRows(
+                streamId,
+                sessionId,
+                measurements
+            )
         }
     }
 
