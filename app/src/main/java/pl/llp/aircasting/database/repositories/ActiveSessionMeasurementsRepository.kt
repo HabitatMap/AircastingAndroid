@@ -67,6 +67,11 @@ class ActiveSessionMeasurementsRepository {
         }
     }
 
+    fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date {
+        return mDatabase.activeSessionsMeasurements()
+            .getEndTimeOfMeasurementStream(sessionId, measurementStreamId)
+    }
+
     fun deleteBySessionId(sessionId: Long?) {
         sessionId?.let {
             mDatabase.activeSessionsMeasurements()
