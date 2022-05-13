@@ -1,6 +1,8 @@
 package pl.llp.aircasting.networking.services
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
+import org.apache.commons.lang3.time.DateUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.database.DatabaseProvider
@@ -17,12 +19,14 @@ import pl.llp.aircasting.lib.safeRegister
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
 import pl.llp.aircasting.models.Session
+import pl.llp.aircasting.networking.Constants
 import pl.llp.aircasting.networking.responses.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.networking.responses.SessionWithMeasurementsResponse
 import pl.llp.aircasting.services.AveragingService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class DownloadMeasurementsCallback(
