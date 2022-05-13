@@ -15,4 +15,9 @@ object Constants {
     const val urlUpdateSession = "/api/user/sessions/update_session.json"
     const val urlResetPassword = "/users/password.json"
     const val urlUploadFixedMeasurements = "/api/realtime/measurements"
+
+    /* Milliseconds */
+    const val MILLIS_IN_HOUR = 60 * 60 * 1000
+    const val MILLIS_IN_MINUTE = 60 * 1000
+    const val MILLIS_IN_SECOND = 1000
 }
