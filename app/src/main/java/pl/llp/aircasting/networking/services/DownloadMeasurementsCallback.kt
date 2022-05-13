@@ -101,17 +101,59 @@ class DownloadMeasurementsCallback(
         // Because of that when we launch the app after some time of inactivity we have to insert all
         // new measurements for following session to active_measurements_table apart from the basic measurements db table
 
-        // TODO: Add only when the measurement has hour greater than the last measurement hour in Active Session Measurements table
-
         if (session.isFixed() && session.followedAt != null) {
-            val downloadedLastMeasurementsTime = measurementsRepository.lastMeasurementTime(sessionId, streamId)
-            val chartLastMeasurementTime = activeSessionMeasurementsRepository.lastMeasurementTime(sessionId, streamId)
+            val downloadedLastMeasurementTime =
+                measurementsRepository.lastMeasurementTime(sessionId, streamId)
+            val chartLastMeasurementTime =
+                activeSessionMeasurementsRepository.lastMeasurementTime(sessionId, streamId)
+            val timeDifference =
+                chartLastMeasurementTime?.time?.let { downloadedLastMeasurementTime?.time?.minus(it) }
 
-            activeSessionMeasurementsRepository.createOrReplaceMultipleRows(
-                streamId,
-                sessionId,
-                measurements
-            )
+            if (oneHourHasElapsed(timeDifference)) {
+                val lastMeasurementHour =
+                    DateUtils.truncate(downloadedLastMeasurementTime, Calendar.HOUR_OF_DAY)
+                val newMeasurements =
+                    getNewMeasurementsForStreamStartingFromHour(streamId, timeDifference, lastMeasurementHour)
+
+                activeSessionMeasurementsRepository.createOrReplaceMultipleRows(
+                    streamId,
+                    sessionId,
+                    newMeasurements
+                )
+            }
+        }
+    }
+
+    private fun oneHourHasElapsed(timeDifference: Long?): Boolean {
+        return if (timeDifference == null) false
+        else
+            // Removing minute here to update on edge case when the minutes are the same, but
+                // the difference is less than hour e.g. 7:59:59 -> 8:59:00
+            timeDifference > (Constants.MILLIS_IN_HOUR - Constants.MILLIS_IN_MINUTE)
+    }
+
+    private fun getNewMeasurementsForStreamStartingFromHour(
+        streamId: Long,
+        timeDifference: Long?,
+        lastMeasurementHour: Date
+    ): List<Measurement> {
+        if (timeDifference == null) return listOf()
+
+        val hoursElapsed = timeDifference.toInt() / Constants.MILLIS_IN_HOUR
+
+        val lastMeasurements = measurementsRepository.getLastMeasurementsForStreamStartingFromHour(
+            streamId,
+            Constants.MEASUREMENTS_IN_HOUR * (hoursElapsed),
+            lastMeasurementHour
+        ).asReversed()
+
+        return lastMeasurements.map {
+            if (it != null) {
+                Measurement(it)
+            } else {
+                Log.d("Followed session", "There was Null measurement in the list")
+                Measurement()
+            }
         }
     }
 
