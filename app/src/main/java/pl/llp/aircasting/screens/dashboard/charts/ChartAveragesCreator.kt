@@ -87,8 +87,6 @@ class ChartAveragesCreator {
         return entries
     }
 
-
-    // TODO: Rewrite to use query for averaging
     fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
         val measurements: MutableList<Measurement>?
         var xValue = MIN_X_VALUE
@@ -104,7 +102,7 @@ class ChartAveragesCreator {
             for (dataChunk in periodData) {
                 if (xValue > MAX_AVERAGES_AMOUNT) return entries
 
-                val yValue = getAverage(dataChunk).toDouble()
+                val yValue = getAverage(dataChunk)
                 entries.add(
                     Entry(
                         xValue.toFloat(),
