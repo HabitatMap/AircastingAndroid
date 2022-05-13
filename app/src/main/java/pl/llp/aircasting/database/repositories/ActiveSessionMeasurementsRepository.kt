@@ -6,12 +6,13 @@ import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.database.data_classes.MeasurementDBObject
 import pl.llp.aircasting.models.Measurement
 import pl.llp.aircasting.models.MeasurementStream
+import pl.llp.aircasting.networking.Constants
 import java.util.*
 
 class ActiveSessionMeasurementsRepository {
     companion object {
         // We get 9 hours/minutes of Measurements for chart (we display 9 dots)
-        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 9
+        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = Constants.MEASUREMENTS_IN_HOUR * 9
     }
 
     private val mDatabase = DatabaseProvider.get()
