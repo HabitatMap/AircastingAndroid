@@ -500,5 +500,8 @@
     <string name="sessions_showing">Sessions showing</string>
     <string name="of">of</string>
     <string name="results">results</string>
+    <string name="unauth">Unauthorised</string>
+    <string name="not_found">Not found</string>
+    <string name="internal_error">Internal server error</string>
 
 </resources>

@@ -19,9 +19,9 @@ open class ResponseHandler @Inject constructor(val mContext: Context) {
 
     private fun getErrorMessage(code: Int): String {
         return when (code) {
-            401 -> "Unauthorised"
-            404 -> "Not found"
-            500 -> "Internal server error"
+            401 -> mContext.getString(R.string.unauth)
+            404 -> mContext.getString(R.string.not_found)
+            500 -> mContext.getString(R.string.internal_error)
             else -> mContext.getString(R.string.sync_error_header)
         }
     }
