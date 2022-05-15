@@ -1,10 +1,9 @@
 package pl.llp.aircasting.networking.params
 
 import pl.llp.aircasting.models.Measurement
+import pl.llp.aircasting.networking.Constants
 import pl.llp.aircasting.sensor.airbeam3.sync.CSVMeasurement
 import java.util.*
-
-val MILLISECONDS_IN_SECOND = 1000
 
 class MeasurementParams {
     constructor(measurement: Measurement) {
@@ -12,7 +11,7 @@ class MeasurementParams {
         this.latitude = measurement.latitude
         this.longitude = measurement.longitude
         this.time = measurement.time
-        this.milliseconds = measurement.time.time.rem(MILLISECONDS_IN_SECOND).toInt()
+        this.milliseconds = measurement.time.time.rem(Constants.MILLIS_IN_SECOND).toInt()
     }
 
     constructor(csvMeasurement: CSVMeasurement) {
@@ -20,7 +19,7 @@ class MeasurementParams {
         this.latitude = csvMeasurement.latitude
         this.longitude = csvMeasurement.longitude
         this.time = csvMeasurement.time
-        this.milliseconds = csvMeasurement.time.time.rem(MILLISECONDS_IN_SECOND).toInt()
+        this.milliseconds = csvMeasurement.time.time.rem(Constants.MILLIS_IN_SECOND).toInt()
     }
 
     val longitude: Double?

@@ -1,22 +1,15 @@
 package pl.llp.aircasting.screens.dashboard.charts
 
 import pl.llp.aircasting.models.Session
-import java.util.*
-import kotlin.time.minutes
+import pl.llp.aircasting.networking.Constants
 
 
-class ChartRefreshService {
-    private val MINUTE_IN_MILLISECONDS = 60 * 1000
-    private val HOUR_IN_MILLISECONDS = 60 * 60 * 1000
-
+class ChartRefreshService(session: Session?) {
     private var mLastRefreshTime: Long? = null
     private var mRefreshFrequency: Int
-    private val mSession: Session?
+    private val mSession: Session? = session
 
-    constructor(
-        session: Session?
-    ) {
-        mSession = session
+    init {
         mRefreshFrequency = getRefreshFrequency()
     }
 
@@ -34,9 +27,9 @@ class ChartRefreshService {
 
     private fun getRefreshFrequency(): Int {
         return when (mSession?.type) {
-            Session.Type.MOBILE -> MINUTE_IN_MILLISECONDS
-            Session.Type.FIXED -> HOUR_IN_MILLISECONDS
-            else -> MINUTE_IN_MILLISECONDS
+            Session.Type.MOBILE -> Constants.MILLIS_IN_MINUTE
+            Session.Type.FIXED -> Constants.MILLIS_IN_HOUR
+            else -> Constants.MILLIS_IN_MINUTE
         }
     }
 }
