@@ -98,12 +98,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
                     tools:layout_editor_absoluteY="53dp"
-                    tools:text="03/02/2022 10:35-15:34" />
+                    tools:text="Fixed, AirBeam3" />
 
-                <include
-                    layout="@layout/measurements_table"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView4" />
+                <LinearLayout
+                    android:id="@+id/measurements_table"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/session_type"
+                    app:layout_constraintTop_toBottomOf="@id/session_type">
+
+                    <include layout="@layout/measurements_table" />
+
+                </LinearLayout>
+
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/mapView"
