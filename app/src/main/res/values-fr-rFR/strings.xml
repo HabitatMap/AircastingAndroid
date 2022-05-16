@@ -374,7 +374,7 @@
     <string name="use_dark_theme">Utiliser le thème sombre</string>
     <string name="battery_desc">Pendant que vous quittez, l\'application utilise les services de premier plan pour se synchroniser et avoir de nouvelles données pour la prochaine fois que vous ouvrez l\'application. Pour ce faire, nous aurons besoin que vous désactiviez l\'optimisation de la batterie dans les paramètres.</string>
     <string name="running_background">Courir en arrière-plan</string>
-    <string name="follow_title">Suivre la session</string>
+    <string name="follow_session">Suivre la session</string>
     <string name="follow_description">rechercher &amp; suivre des sessions fixes</string>
     <string name="title_search_fixed_sessions">Rechercher des sessions fixes</string>
     <string name="search_session_query_hint">Lieu de la séance</string>
@@ -385,6 +385,7 @@
     <string name="particulate_matter">Affaire particulière</string>
     <string name="explore_existing_sessions">Explorer les sessions existantes</string>
     <string name="finished">Achevée</string>
+    <string name="close">Close</string>
 
 
 </resources>

@@ -255,7 +255,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginEnd="@dimen/keyline_2"
-                    android:text="@string/follow_title"
+                    android:text="@string/follow_session"
                     android:textAppearance="?attr/textAppearanceHeadline1"
                     android:textColor="@color/aircasting_grey_700"
                     app:layout_constraintEnd_toEndOf="parent"

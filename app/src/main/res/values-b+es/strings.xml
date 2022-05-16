@@ -376,7 +376,7 @@
     <string name="use_dark_theme">Usar tema oscuro</string>
     <string name="battery_desc">Mientras sale, la aplicación utiliza servicios de primer plano para sincronizar y tener datos actualizados para la próxima vez que abra la aplicación. Para hacer eso, necesitaremos que desactive la Optimización de la batería en la configuración.</string>
     <string name="running_background">Corriendo en segundo plano</string>
-    <string name="follow_title">Seguir sesión</string>
+    <string name="follow_session">Seguir sesión</string>
     <string name="follow_description">buscar &amp; seguir sesiones fijas</string>
     <string name="title_search_fixed_sessions">Buscar sesiones fijas</string>
     <string name="search_session_query_hint">Ubicación de la sesión</string>
@@ -387,5 +387,6 @@
     <string name="particulate_matter">Materia particular</string>
     <string name="explore_existing_sessions">Explorar sesiones existentes</string>
     <string name="finished">Acabada</string>
+    <string name="close">Close</string>
 
 </resources>
