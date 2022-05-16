@@ -3,8 +3,28 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
+            name="title"
+            type="String" />
+
+        <variable
+            name="startDate"
+            type="String" />
+
+        <variable
+            name="startTime"
+            type="String" />
+
+        <variable
+            name="endDate"
+            type="String" />
+
+        <variable
+            name="endTime"
+            type="String" />
+
+        <variable
+            name="type"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
