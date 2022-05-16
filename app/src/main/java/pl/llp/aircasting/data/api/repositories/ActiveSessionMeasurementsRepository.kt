@@ -1,12 +1,12 @@
-package pl.llp.aircasting.database.repositories
+package pl.llp.aircasting.data.api.repositories
 
 import org.apache.commons.lang3.time.DateUtils
-import pl.llp.aircasting.database.DatabaseProvider
-import pl.llp.aircasting.database.data_classes.ActiveSessionMeasurementDBObject
-import pl.llp.aircasting.database.data_classes.MeasurementDBObject
-import pl.llp.aircasting.models.Measurement
-import pl.llp.aircasting.models.MeasurementStream
-import pl.llp.aircasting.networking.Constants
+import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.data_classes.ActiveSessionMeasurementDBObject
+import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
+import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 
 class ActiveSessionMeasurementsRepository {

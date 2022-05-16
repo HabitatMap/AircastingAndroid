@@ -1,8 +1,8 @@
-package pl.llp.aircasting.networking.params
+package pl.llp.aircasting.data.api.params
 
-import pl.llp.aircasting.models.Measurement
-import pl.llp.aircasting.networking.Constants
-import pl.llp.aircasting.sensor.airbeam3.sync.CSVMeasurement
+import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
 import java.util.*
 
 class MeasurementParams {
