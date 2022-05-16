@@ -55,12 +55,13 @@
                     android:paddingEnd="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     android:src="@drawable/ic_x"
+                    android:contentDescription="@string/close"
                     app:layout_constraintBottom_toTopOf="@+id/txtTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_5"
@@ -81,13 +82,13 @@
                     android:textSize="@dimen/text_size_xl"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3"
+                    app:layout_constraintTop_toBottomOf="@+id/date"
                     app:lineHeight="@dimen/keyline_6"
-                    tools:text="Neighborhood check"
-                    android:text="@{viewModel.selectedSession.title}"/>
+                    tools:text="Neighborhood check" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/session_type"
+                    style="@style/SessionDetailsTypeHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
@@ -110,7 +111,7 @@
                     android:minHeight="250dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table" />
 
                 <Button
                     android:id="@+id/followBtn"
@@ -119,7 +120,7 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_5"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    android:text="Follow session"
+                    android:text="@string/follow_session"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/mapView" />
