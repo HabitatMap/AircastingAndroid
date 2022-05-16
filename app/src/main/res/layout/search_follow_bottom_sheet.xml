@@ -73,7 +73,7 @@
 
                 <TextView
                     android:id="@+id/txtTitle"
-                    style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+                    style="@style/SessionDetailsNameHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
