@@ -16,8 +16,18 @@ class SearchFixedBottomSheet : BottomSheet() {
 
     override fun setup() {
         super.setup()
-
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
-        binding?.viewModel = viewModel
+        setObserver()
+    }
+
+    private fun setObserver() {
+        viewModel.selectedSession.observe(this) {
+            binding?.title = it.title
+            binding?.startDate = formatDate(it.startTimeLocal)
+            binding?.startTime = formatTime(it.startTimeLocal)
+            binding?.endDate = formatDate(it.endTimeLocal)
+            binding?.endTime = formatTime(it.endTimeLocal)
+            binding?.type = formatType(it.type)
+        }
     }
 }
