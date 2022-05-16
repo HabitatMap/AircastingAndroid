@@ -5,9 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
-import javax.inject.Inject
 
-class FixedFollowAdapter @Inject constructor(private val sessions: ArrayList<Session>) :
+class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
     inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
