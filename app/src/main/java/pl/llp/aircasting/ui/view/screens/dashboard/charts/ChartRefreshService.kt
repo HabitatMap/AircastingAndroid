@@ -1,8 +1,7 @@
-package pl.llp.aircasting.screens.dashboard.charts
+package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
-import pl.llp.aircasting.models.Session
-import pl.llp.aircasting.networking.Constants
-
+import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.model.Session
 
 class ChartRefreshService(session: Session?) {
     private var mLastRefreshTime: Long? = null
