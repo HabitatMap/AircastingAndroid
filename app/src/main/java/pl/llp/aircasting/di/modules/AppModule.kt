@@ -22,9 +22,9 @@ class AppModule(private val app: AircastingApplication) {
     @Singleton
     fun providesApp(): AircastingApplication = app
 
-    @Provides
-    @Singleton
-    fun provideAdapter(): FixedFollowAdapter = FixedFollowAdapter(arrayListOf())
+//    @Provides
+//    @Singleton
+//    fun provideAdapter(): FixedFollowAdapter = FixedFollowAdapter(arrayListOf())
 
     @Provides
     @Singleton
