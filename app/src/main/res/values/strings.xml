@@ -506,5 +506,6 @@
 
     <!-- Search and Follow -->
     <string name="start_end_date" translatable="false">%1$s %2$s - %3$s %4$s</string>
+    <string name="type_and_sensor_name" translatable="false">%1$s, %2$s</string>
     <string name="close">Close</string>
 </resources>
