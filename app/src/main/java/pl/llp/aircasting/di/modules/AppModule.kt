@@ -7,7 +7,6 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
 import pl.llp.aircasting.data.api.repositories.SessionsRepository
-import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.inject.Singleton
 
