@@ -37,8 +37,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     @Inject
     lateinit var searchFollowViewModel: SearchFollowViewModel
-
-    @Inject
     lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
