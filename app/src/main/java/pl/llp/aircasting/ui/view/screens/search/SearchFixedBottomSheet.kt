@@ -24,6 +24,10 @@ class SearchFixedBottomSheet : BottomSheet() {
             val splitByCapitalLetter = type?.split(Regex("(?=[A-Z])"))
             return splitByCapitalLetter?.get(1) ?: "Error getting session type"
         }
+        private fun formatSensorName(sensor: String = ""): String {
+            val splitByHyphen = sensor.split("-")
+            return splitByHyphen[0]
+        }
     }
 
     override fun layoutId(): Int {
@@ -44,6 +48,7 @@ class SearchFixedBottomSheet : BottomSheet() {
             binding?.endDate = formatDate(it.endTimeLocal)
             binding?.endTime = formatTime(it.endTimeLocal)
             binding?.type = formatType(it.type)
+            binding?.sensorName = formatSensorName(it.streams.airBeam2PM25.sensorName)
         }
     }
 }
