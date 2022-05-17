@@ -20,9 +20,9 @@ class SearchFixedBottomSheet : BottomSheet() {
         private fun formatDate(date: String = ""): String? = DateConverter.fromString(date)
             ?.let { DateConverter.toDateStringForDisplay(it) }
 
-        private fun formatType(type: String?): String {
-            val splitByCapitalLetter = type?.split(Regex("(?=[A-Z])"))
-            return splitByCapitalLetter?.get(1) ?: "Error getting session type"
+        private fun formatType(type: String = ""): String {
+            val splitByCapitalLetter = type.split(Regex("(?=[A-Z])"))
+            return splitByCapitalLetter[1]
         }
         private fun formatSensorName(sensor: String = ""): String {
             val splitByHyphen = sensor.split("-")
