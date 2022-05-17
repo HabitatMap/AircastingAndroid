@@ -24,6 +24,7 @@ class SearchFixedBottomSheet : BottomSheet() {
             val splitByCapitalLetter = type.split(Regex("(?=[A-Z])"))
             return splitByCapitalLetter[1]
         }
+
         private fun formatSensorName(sensor: String = ""): String {
             val splitByHyphen = sensor.split("-")
             return splitByHyphen[0]
@@ -42,13 +43,15 @@ class SearchFixedBottomSheet : BottomSheet() {
 
     private fun setObserver() {
         viewModel.selectedSession.observe(this) {
-            binding?.title = it.title
-            binding?.startDate = formatDate(it.startTimeLocal)
-            binding?.startTime = formatTime(it.startTimeLocal)
-            binding?.endDate = formatDate(it.endTimeLocal)
-            binding?.endTime = formatTime(it.endTimeLocal)
-            binding?.type = formatType(it.type)
-            binding?.sensorName = formatSensorName(it.streams.airBeam2PM25.sensorName)
+            binding?.apply {
+                title = it.title
+                startDate = formatDate(it.startTimeLocal)
+                startTime = formatTime(it.startTimeLocal)
+                endDate = formatDate(it.endTimeLocal)
+                endTime = formatTime(it.endTimeLocal)
+                type = formatType(it.type)
+                sensorName = formatSensorName(it.streams.airBeam2PM25.sensorName)
+            }
         }
     }
 }
