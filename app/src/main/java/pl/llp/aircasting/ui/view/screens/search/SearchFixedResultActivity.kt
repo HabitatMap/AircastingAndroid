@@ -16,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.VisibleRegion
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -43,6 +42,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
+    private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
     private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +92,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupRecyclerView() {
-        adapter = FixedFollowAdapter(arrayListOf())
+        adapter = FixedFollowAdapter(arrayListOf(), this::showBottomSheetDialog)
         binding.recyclerFixedFollow.adapter = adapter
     }
 
@@ -118,11 +118,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         adapter.notifyDataSetChanged()
     }
 
-    private fun showBottomSheetDialog() {
-        val bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.setContentView(R.layout.search_follow_bottom_sheet)
-
-        bottomSheetDialog.show()
+    private fun showBottomSheetDialog(session: Session) {
+        searchFollowViewModel.selectSession(session)
+        bottomSheetDialog.show(supportFragmentManager)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
