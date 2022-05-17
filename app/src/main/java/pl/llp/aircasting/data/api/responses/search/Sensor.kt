@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class AirBeam2PM25(
+data class Sensor(
     @SerializedName("average_value")
     val averageValue: Double,
     @SerializedName("id")
