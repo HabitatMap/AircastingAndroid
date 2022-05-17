@@ -83,11 +83,11 @@
 
                 <TextView
                     android:id="@+id/txtShowing"
-                    style="@style/TextAppearance.Aircasting.Body1"
+                    style="@style/TextAppearance.Aircasting.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_5"
-                    android:layout_marginTop="@dimen/keyline_1"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:textColor="@android:color/background_dark"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -95,10 +95,10 @@
 
                 <TextView
                     android:id="@+id/txtUsing"
-                    style="@style/TextAppearance.Aircasting.Body1"
+                    style="@style/TextAppearance.Aircasting.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_1"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:layout_marginEnd="@dimen/keyline_5"
                     android:textColor="@android:color/background_dark"
                     app:layout_constraintEnd_toEndOf="parent"

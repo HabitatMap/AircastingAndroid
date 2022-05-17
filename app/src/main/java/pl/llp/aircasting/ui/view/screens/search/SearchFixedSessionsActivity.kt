@@ -15,15 +15,17 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.util.Ozone
+import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.util.gone
 import pl.llp.aircasting.util.visible
 
-
-class SearchFixedSessionsActivity : AppCompatActivity() {
+class SearchFixedSessionsActivity : AppCompatActivity(), ChipGroup.OnCheckedStateChangeListener {
 
     companion object {
         fun start(rootActivity: FragmentActivity?) {
@@ -52,25 +54,8 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.chipGroupFirst.setOnCheckedChangeListener { _, checkedId ->
-            txtSelectedParameter = if (checkedId == binding.ozoneChip.id) {
-                binding.airbeamChip.gone()
-                binding.purpleAirChip.gone()
-                "Ozon"
-            } else {
-                binding.airbeamChip.visible()
-                binding.purpleAirChip.visible()
-                "particulate matter"
-            }
-        }
-
-        binding.chipGroupSensors.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                binding.airbeamChip.id -> txtSelectedSensor = "airbeam"
-                binding.openAqChip.id -> txtSelectedSensor = "openAQ"
-                binding.purpleAirChip.id -> txtSelectedSensor = "purpleAir"
-            }
-        }
+        binding.chipGroupFirst.setOnCheckedStateChangeListener(this)
+        binding.chipGroupSensors.setOnCheckedStateChangeListener(this)
     }
 
     private fun setupAutoComplete() {
@@ -146,6 +131,27 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         intent.putExtra("long", long)
 
         startActivity(intent)
+    }
+
+    override fun onCheckedChanged(chipGroup: ChipGroup, checkedIds: MutableList<Int>) {
+        txtSelectedParameter = if (chipGroup.id == binding.ozoneChip.id) {
+            binding.airbeamChip.gone()
+            binding.purpleAirChip.gone()
+            Ozone.OPEN_AQ.getMeasurementType()
+        } else {
+            binding.airbeamChip.visible()
+            binding.purpleAirChip.visible()
+            ParticulateMatter.AIRBEAM.getMeasurementType()
+        }
+
+        when (checkedIds[0]) {
+            binding.airbeamChip.id -> txtSelectedSensor =
+                ParticulateMatter.AIRBEAM.getSensorName()
+            binding.openAqChip.id -> txtSelectedSensor =
+                ParticulateMatter.OPEN_AQ.getSensorName()
+            binding.purpleAirChip.id -> txtSelectedSensor =
+                ParticulateMatter.PURPLE_AIR.getSensorName()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

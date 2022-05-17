@@ -11,6 +11,6 @@ enum class ParticulateMatter : SensorInformation {
         override fun getSensorName(): String = "purpleair-pm2.5"
     };
 
-    override fun getMeasurementType(): String = "ParticulateMatter"
+    override fun getMeasurementType(): String = "Particulate Matter"
     override fun getUnitSymbol() = "µg/m³"
 }

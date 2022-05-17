@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.api.repositories
 
 import org.apache.commons.lang3.time.DateUtils
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.data_classes.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
@@ -11,7 +12,7 @@ import java.util.*
 class ActiveSessionMeasurementsRepository {
     companion object {
         // We get 9 hours/minutes of Measurements for chart (we display 9 dots)
-        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = 60 * 9
+        const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = Constants.MEASUREMENTS_IN_HOUR * 9
     }
 
     private val mDatabase = DatabaseProvider.get()
@@ -65,6 +66,11 @@ class ActiveSessionMeasurementsRepository {
         } else {
             insert(streamId, sessionId, measurement)
         }
+    }
+
+    fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date? {
+        return mDatabase.activeSessionsMeasurements()
+            .getEndTimeOfMeasurementStream(sessionId, measurementStreamId)
     }
 
     fun deleteBySessionId(sessionId: Long?) {
