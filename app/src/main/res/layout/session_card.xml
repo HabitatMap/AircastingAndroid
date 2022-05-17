@@ -44,15 +44,10 @@
             android:id="@+id/session_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2"
-            android:textAppearance="?attr/textAppearanceHeadline4"
-            android:textColor="@color/aircasting_dark_blue"
-            android:fontFamily="@font/moderat_trial_medium"
-            android:ellipsize="end"
-            android:singleLine="true"
             app:layout_constraintTop_toBottomOf="@+id/session_date"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/expand_session_button" />
+            app:layout_constraintEnd_toStartOf="@+id/expand_session_button"
+            style="@style/SessionDetailsNameHeader" />
 
         <ImageView
             android:id="@+id/expand_session_button"
@@ -99,12 +94,10 @@
             android:id="@+id/session_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textColor="@color/aircasting_dark_blue"
             app:layout_constraintTop_toBottomOf="@+id/session_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/SessionDetailsTypeHeader" />
 
         <include android:id="@+id/no_measurements_view"
             layout="@layout/no_measurements_view" />

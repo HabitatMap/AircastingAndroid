@@ -7,7 +7,6 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
 import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
 import pl.llp.aircasting.data.api.repositories.SessionsRepository
-import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.inject.Singleton
 
@@ -22,9 +21,9 @@ class AppModule(private val app: AircastingApplication) {
     @Singleton
     fun providesApp(): AircastingApplication = app
 
-    @Provides
-    @Singleton
-    fun provideAdapter(): FixedFollowAdapter = FixedFollowAdapter(arrayListOf())
+//    @Provides
+//    @Singleton
+//    fun provideAdapter(): FixedFollowAdapter = FixedFollowAdapter(arrayListOf())
 
     @Provides
     @Singleton

@@ -3,8 +3,31 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
+            name="title"
+            type="String" />
+
+        <variable
+            name="startDate"
+            type="String" />
+
+        <variable
+            name="startTime"
+            type="String" />
+
+        <variable
+            name="endDate"
+            type="String" />
+
+        <variable
+            name="endTime"
+            type="String" />
+
+        <variable
+            name="type"
+            type="String" />
+        <variable
+            name="sensorName"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -35,15 +58,17 @@
                     android:paddingEnd="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     android:src="@drawable/ic_x"
+                    android:contentDescription="@string/close"
                     app:layout_constraintBottom_toTopOf="@+id/txtTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_5"
+                    android:text="@{@string/start_end_date(startDate, startTime, endDate, endTime)}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_editor_absoluteY="53dp"
@@ -51,35 +76,44 @@
 
                 <TextView
                     android:id="@+id/txtTitle"
-                    style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+                    style="@style/SessionDetailsNameHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6"
+                    android:text="@{title}"
                     android:textColor="@color/aircasting_dark_blue"
                     android:textSize="@dimen/text_size_xl"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3"
+                    app:layout_constraintTop_toBottomOf="@+id/date"
                     app:lineHeight="@dimen/keyline_6"
-                    tools:text="Neighborhood check"
-                    android:text="@{viewModel.selectedSession.title}"/>
+                    tools:text="Neighborhood check" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/session_type"
+                    style="@style/SessionDetailsTypeHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
+                    android:text="@{@string/type_and_sensor_name(type, sensorName)}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
                     tools:layout_editor_absoluteY="53dp"
-                    tools:text="03/02/2022 10:35-15:34" />
+                    tools:text="Fixed, AirBeam3" />
 
-                <include
-                    layout="@layout/measurements_table"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView4" />
+                <LinearLayout
+                    android:id="@+id/measurements_table"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/session_type"
+                    app:layout_constraintTop_toBottomOf="@id/session_type">
+
+                    <include layout="@layout/measurements_table" />
+
+                </LinearLayout>
+
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/mapView"
@@ -90,7 +124,7 @@
                     android:minHeight="250dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table" />
 
                 <Button
                     android:id="@+id/followBtn"
@@ -99,7 +133,7 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_5"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    android:text="Follow session"
+                    android:text="@string/follow_session"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/mapView" />
