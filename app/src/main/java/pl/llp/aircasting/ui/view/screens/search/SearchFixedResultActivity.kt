@@ -1,7 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.annotation.SuppressLint
-import android.location.Geocoder
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageButton
@@ -16,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.VisibleRegion
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.app_bar.*
@@ -29,19 +28,22 @@ import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
-import java.util.*
 import javax.inject.Inject
 
-class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
+class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
+    GoogleMap.OnCameraIdleListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var searchFollowViewModel: SearchFollowViewModel
+
     @Inject
     lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
+    private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +57,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         setupUI()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setupUI() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -66,18 +67,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val txtParameter = intent.getStringExtra("txtParameter")
         val txtSensor = intent.getStringExtra("txtSensor")
-        val address = intent.getStringExtra("address")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
 
-        println("getResults ${getAddressResults(address)}")
-
-        val square =
-            GeoSquare(40.680367168382396, 40.68019783151002, -73.97618605856928, -73.9766655034307)
-
         setupRecyclerView()
-        setupObserver(square, ParticulateMatter.AIRBEAM)
         setupSearchLayout()
     }
 
@@ -119,16 +113,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getAddressResults(address: String?): Any {
-        return try {
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val getFromTheLocName = geocoder.getFromLocationName(address, 1)
-
-        } catch (e: Exception) {
-            e.message.toString()
-        }
-    }
-
     private fun renderData(mySessions: List<Session>) {
         adapter.addData(mySessions)
         adapter.notifyDataSetChanged()
@@ -142,26 +126,44 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
         val lat = intent.getStringExtra("lat")?.toDouble()
         val long = intent.getStringExtra("long")?.toDouble()
 
-        styleGoogleMap(googleMap, this)
-        googleMap.setOnMapLoadedCallback {
-
-        }
+        styleGoogleMap(mMap, this)
+        mMap.setOnCameraIdleListener(this)
 
         if (lat != null && long != null) {
             val myLocation = LatLng(lat, long)
-            googleMap.addMarker(
+            mMap.addMarker(
                 MarkerOptions()
                     .position(myLocation)
             )
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10f), 1000, null)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 12f), 1000, null)
         }
+    }
+
+    override fun onCameraIdle() {
+        getMapVisibleRadius(mMap)
+    }
+
+    private fun getMapVisibleRadius(mMap: GoogleMap) {
+        val visibleRegion: VisibleRegion = mMap.projection.visibleRegion
+
+        val farLeftLat = visibleRegion.farLeft.latitude // north
+        val farLeftLong = visibleRegion.farLeft.longitude // west
+
+        val nearRightLat = visibleRegion.nearRight.latitude // east
+        val nearRightLong = visibleRegion.nearRight.longitude // south
+
+        val square =
+            GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
+        setupObserver(square, ParticulateMatter.AIRBEAM)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
+
 }
