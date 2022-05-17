@@ -19,7 +19,8 @@ import kotlin.test.assertTrue
 
 class ActiveFixedSessionsInRegionRepositoryTest {
     private val testSquare = GeoSquare(1.0, 1.0, 1.0, 1.0)
-    private val testJson = StubData.getJson("SessionsCracow.json")
+    private val sessionsInRegionResponse = StubData.getJson("SessionsCracow.json")
+    private val streamOfGivenSessionResponse = StubData.getJson("StreamSensorNameHabitatMap.json")
 
     @Test
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
@@ -205,7 +206,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     @Test
     fun whenApiResponseIsSuccessful_shouldReturnResourceWithSuccessStatus(): Unit = runBlocking {
         // given
-        val mockResponse = mockSuccessfulResponseWithJson(testJson)
+        val mockResponse = mockSuccessfulResponseWithJson(sessionsInRegionResponse)
         val mockApiService = mockApiServiceWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler> {
             whenever(mock.handleSuccess(any())).thenCallRealMethod()
@@ -223,7 +224,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
 
     @Test
     fun whenApiResponseIsSuccessful_shouldReturnResourceWithNonNullData(): Unit = runBlocking {
-        val mockResponse = mockSuccessfulResponseWithJson(testJson)
+        val mockResponse = mockSuccessfulResponseWithJson(sessionsInRegionResponse)
         val mockApiService = mockApiServiceWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler> {
             whenever(mock.handleSuccess(any())).thenCallRealMethod()
