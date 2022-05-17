@@ -6,11 +6,23 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 
-class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
+class FixedFollowAdapter(
+    private val sessions: ArrayList<Session>,
+    private val onItemClicked: (Session) -> Unit
+) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
 
-    inner class DataViewHolder(private val binding: ItemSesssionsListFixedFollowBinding) :
+    inner class DataViewHolder(
+        private val binding: ItemSesssionsListFixedFollowBinding,
+        private val onItemClicked: (Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                onItemClicked(bindingAdapterPosition)
+            }
+        }
+
         fun bind(sessions: Session) {
             binding.mySessions = sessions
             binding.executePendingBindings()
@@ -23,7 +35,9 @@ class FixedFollowAdapter(private val sessions: ArrayList<Session>) :
             parent,
             false
         )
-        return DataViewHolder(binding)
+        return DataViewHolder(binding) {
+            onItemClicked(sessions[it])
+        }
     }
 
     override fun getItemCount(): Int = sessions.size
