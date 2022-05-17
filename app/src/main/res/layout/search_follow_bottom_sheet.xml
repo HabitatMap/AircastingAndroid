@@ -25,6 +25,9 @@
         <variable
             name="type"
             type="String" />
+        <variable
+            name="sensorName"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -94,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
-                    android:text="@{type}"
+                    android:text="@{@string/type_and_sensor_name(type, sensorName)}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
                     tools:layout_editor_absoluteY="53dp"
