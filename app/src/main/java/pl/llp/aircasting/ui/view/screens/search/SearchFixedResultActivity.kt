@@ -98,7 +98,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    it.data?.sessions?.let { it1 -> renderData(it1) }
+                    it.data?.sessions?.let { it1 -> renderData(it1.reversed()) }
                     binding.progressBar.inVisible()
                 }
                 Status.ERROR -> {
@@ -149,12 +149,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val farLeftLat = visibleRegion.farLeft.latitude // north
         val farLeftLong = visibleRegion.farLeft.longitude // west
 
-        val nearRightLat = visibleRegion.nearRight.latitude // east
-        val nearRightLong = visibleRegion.nearRight.longitude // south
+        val nearRightLat = visibleRegion.nearRight.latitude // south
+        val nearRightLong = visibleRegion.nearRight.longitude // east
 
-        val square =
-            GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
-        setupObserver(square, ParticulateMatter.AIRBEAM)
+        val square = GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
+        setupObserver(square, ParticulateMatter.OPEN_AQ)
     }
 
     override fun onSupportNavigateUp(): Boolean {
