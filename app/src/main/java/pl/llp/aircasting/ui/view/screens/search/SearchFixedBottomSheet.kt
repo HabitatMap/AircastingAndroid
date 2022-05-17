@@ -50,7 +50,7 @@ class SearchFixedBottomSheet : BottomSheet() {
                 endDate = formatDate(it.endTimeLocal)
                 endTime = formatTime(it.endTimeLocal)
                 type = formatType(it.type)
-                sensorName = formatSensorName(it.streams.airBeam2PM25.sensorName)
+                sensorName = formatSensorName(it.streams.sensor.sensorName)
             }
         }
     }
