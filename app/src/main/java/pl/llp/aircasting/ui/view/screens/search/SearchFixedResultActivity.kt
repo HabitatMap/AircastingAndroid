@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.responses.search.Session
+import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
@@ -42,6 +43,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var binding: ActivitySearchFollowResultBinding
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
     private lateinit var mMap: GoogleMap
+    private var txtParameter: String? = null
+    private var txtSensor: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +66,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        val txtParameter = intent.getStringExtra("txtParameter")
-        val txtSensor = intent.getStringExtra("txtSensor")
+        txtParameter = intent.getStringExtra("txtParameter")
+        txtSensor = intent.getStringExtra("txtSensor")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
@@ -148,12 +151,21 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         val farLeftLat = visibleRegion.farLeft.latitude // north
         val farLeftLong = visibleRegion.farLeft.longitude // west
-
         val nearRightLat = visibleRegion.nearRight.latitude // south
         val nearRightLong = visibleRegion.nearRight.longitude // east
 
         val square = GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
-        setupObserver(square, ParticulateMatter.OPEN_AQ)
+        var sensorInfo: SensorInformation? = null
+
+        when (txtSensor) {
+            "airbeam2-pm2.5" -> sensorInfo = ParticulateMatter.AIRBEAM
+            "openaq-pm2.5" -> sensorInfo = ParticulateMatter.OPEN_AQ
+            "purpleair-pm2.5" -> sensorInfo = ParticulateMatter.PURPLE_AIR
+            "openaq-o3" -> sensorInfo = Ozone.OPEN_AQ
+        }
+        if (sensorInfo != null) {
+            setupObserver(square, sensorInfo)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
