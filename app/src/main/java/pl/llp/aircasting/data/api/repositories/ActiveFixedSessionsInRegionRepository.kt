@@ -48,11 +48,9 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
         sensorInfo: SensorInformation
     ): Resource<SessionsInRegionsRes> {
         return try {
-            val response = apiService.getSessionsInRegion(
-                constructAndGetJsonWith(square, sensorInfo)
-            )
+            val response =
+                apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
             responseHandler.handleSuccess(response)
-
         } catch (e: Exception) {
             responseHandler.handleException(e)
         }
