@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="title"
             type="String" />
@@ -25,9 +26,28 @@
         <variable
             name="type"
             type="String" />
+
         <variable
             name="sensorName"
             type="String" />
+
+        <import type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="border"
+            type="Drawable" />
+
+        <variable
+            name="header"
+            type="String" />
+
+        <variable
+            name="value"
+            type="String" />
+
+        <variable
+            name="tintColor"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -54,11 +74,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/keyline_4"
+                    android:contentDescription="@string/close"
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingEnd="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     android:src="@drawable/ic_x"
-                    android:contentDescription="@string/close"
                     app:layout_constraintBottom_toTopOf="@+id/txtTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -104,13 +124,19 @@
                     tools:text="Fixed, AirBeam3" />
 
                 <LinearLayout
-                    android:id="@+id/measurements_table"
+                    android:id="@+id/measurements_table_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="@id/session_type"
                     app:layout_constraintTop_toBottomOf="@id/session_type">
 
-                    <include layout="@layout/measurements_table" />
+                    <include
+
+                        layout="@layout/measurements_table_binding"
+                        app:border="@{border}"
+                        app:tintColor="@{tintColor}"
+                        app:header="@{header}"
+                        app:value="@{value}" />
 
                 </LinearLayout>
 
@@ -124,7 +150,7 @@
                     android:minHeight="250dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/measurements_table" />
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table_layout" />
 
                 <Button
                     android:id="@+id/followBtn"
