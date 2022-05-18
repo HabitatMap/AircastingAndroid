@@ -319,25 +319,64 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         assertNotNull(result.data)
     }
 
-    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsRes): ApiService = runBlocking {
-        return@runBlocking mock<ApiService> {
-            onBlocking {
-                getSessionsInRegion(
-                    anyOrNull()
-                )
-            } doReturn res
+    @Test
+    fun whenGettingStreamOfGivenSessionIsSuccessful_shouldReturnResourceWithSuccessStatus(): Unit = runBlocking {
+        // given
+        val mockResponse =
+            mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
+        val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
+        val mockHandler = mock<ResponseHandler> {
+            whenever(mock.handleSuccess(any())).thenCallRealMethod()
         }
+        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+        val expected = Status.SUCCESS
+
+        // when
+        val result = repository.getStreamOfGivenSession(123L, "Ozone")
+
+        // then
+        assertEquals(expected, result.status)
     }
 
-    private fun mockGetStreamOfGivenSessionCallWithResponse(res: StreamOfGivenSessionResponse): ApiService = runBlocking {
-        return@runBlocking mock<ApiService> {
-            onBlocking {
-                getStreamOfGivenSession(
-                    anyOrNull(), anyOrNull()
-                )
-            } doReturn res
+    @Test
+    fun whenGettingStreamOfGivenSessionIsSuccessful_shouldReturnResourceWithNonNullData(): Unit = runBlocking {
+        // given
+        val mockResponse =
+            mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
+        val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
+        val mockHandler = mock<ResponseHandler> {
+            whenever(mock.handleSuccess(any())).thenCallRealMethod()
         }
+        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+
+        // when
+        val result = repository.getStreamOfGivenSession(123L, "Ozone")
+
+        // then
+        assertNotNull(result.data)
     }
+
+    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsRes): ApiService =
+        runBlocking {
+            return@runBlocking mock<ApiService> {
+                onBlocking {
+                    getSessionsInRegion(
+                        anyOrNull()
+                    )
+                } doReturn res
+            }
+        }
+
+    private fun mockGetStreamOfGivenSessionCallWithResponse(res: StreamOfGivenSessionResponse): ApiService =
+        runBlocking {
+            return@runBlocking mock<ApiService> {
+                onBlocking {
+                    getStreamOfGivenSession(
+                        anyOrNull(), anyOrNull()
+                    )
+                } doReturn res
+            }
+        }
 
     private fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsRes {
         return Gson().fromJson(json, SessionsInRegionsRes::class.java)
