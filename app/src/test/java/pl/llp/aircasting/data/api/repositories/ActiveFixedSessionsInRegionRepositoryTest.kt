@@ -29,10 +29,10 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val mockResponse = mockGetSessionsInRegionResponseWithJson("{}")
         val mockApiService = mockGetSessionsInRegionCallWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler>()
-        val service = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
         // when
-        service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         verify(mockApiService).getSessionsInRegion(anyOrNull())
@@ -184,10 +184,10 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val mockResponse = mockGetSessionsInRegionResponseWithJson("{}")
         val mockApiService = mockGetSessionsInRegionCallWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler>()
-        val service = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
         // when
-        service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         verify(mockApiService).getSessionsInRegion(
@@ -213,11 +213,11 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             whenever(mock.handleSuccess(any())).thenCallRealMethod()
         }
         whenever(mockHandler.handleSuccess(any())).thenCallRealMethod()
-        val service = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
         val expected = Status.SUCCESS
 
         // when
-        val result = service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         assertEquals(expected, result.status)
@@ -231,10 +231,10 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             whenever(mock.handleSuccess(any())).thenCallRealMethod()
         }
         whenever(mockHandler.handleSuccess(any())).thenCallRealMethod()
-        val service = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
         // when
-        val result = service.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         assertNotNull(result.data)
