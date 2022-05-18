@@ -8,7 +8,7 @@ import androidx.annotation.Keep
 data class Streams(
     @SerializedName(
         "Sensor",
-        alternate = ["AirBeam2-PM2.5", "PurpleAir-PM2.5", "OpenAQ-PM2.5"]
+        alternate = ["AirBeam2-PM2.5", "PurpleAir-PM2.5", "OpenAQ-PM2.5", "OpenAQ-O3"]
     )
     val sensor: Sensor,
 )
