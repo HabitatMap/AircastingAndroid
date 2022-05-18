@@ -5,6 +5,7 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.kotlin.*
+import pl.llp.aircasting.data.api.responses.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.Ozone
@@ -261,6 +262,10 @@ class ActiveFixedSessionsInRegionRepositoryTest {
 
     private fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsRes {
         return Gson().fromJson(json, SessionsInRegionsRes::class.java)
+    }
+
+    private fun mockGetStreamOfGivenSessionResponseWithJson(json: String): StreamOfGivenSessionResponse {
+        return Gson().fromJson(json, StreamOfGivenSessionResponse::class.java)
     }
 
     private fun getStartOfDayEpoch(): Long {
