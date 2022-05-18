@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="border"
+            type="Drawable" />
+
+        <variable
+            name="header"
+            type="String" />
+
+        <variable
+            name="value"
+            type="String" />
+
+        <variable
+            name="tintColor"
+            type="Integer" />
+    </data>
+
+    <merge xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <TextView
+            android:id="@+id/session_measurements_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:text="@string/session_measurements_description"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility="@integer/visible_in_larger_screens"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/session_name" />
+
+        <TableLayout
+            android:id="@+id/measurements_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_10"
+            android:layout_marginTop="@dimen/keyline_4"
+            android:layout_marginEnd="@dimen/keyline_10"
+            app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
+
+            <TableRow android:id="@+id/measurement_headers">
+
+                <include
+                    layout="@layout/stream_measurement_header_and_value"
+                    app:border="@{border}"
+                    app:tintColor="@{tintColor}"
+                    app:header="@{header}"
+                    app:value="@{value}" />
+            </TableRow>
+
+
+            <TableRow android:id="@+id/measurement_values" />
+        </TableLayout>
+    </merge>
+</layout>
