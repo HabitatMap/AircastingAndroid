@@ -26,7 +26,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
         val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
+        val mockApiService = mockGetSessionsInRegionCallWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler>()
         val service = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
@@ -181,7 +181,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     fun whenCallingApi_shouldCallJsonToStringConverter(): Unit = runBlocking {
         // given
         val mockResponse = mockSuccessfulResponseWithJson("{}")
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
+        val mockApiService = mockGetSessionsInRegionCallWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler>()
         val service = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
@@ -207,7 +207,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     fun whenApiResponseIsSuccessful_shouldReturnResourceWithSuccessStatus(): Unit = runBlocking {
         // given
         val mockResponse = mockSuccessfulResponseWithJson(sessionsInRegionResponse)
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
+        val mockApiService = mockGetSessionsInRegionCallWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler> {
             whenever(mock.handleSuccess(any())).thenCallRealMethod()
         }
@@ -225,7 +225,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     @Test
     fun whenApiResponseIsSuccessful_shouldReturnResourceWithNonNullData(): Unit = runBlocking {
         val mockResponse = mockSuccessfulResponseWithJson(sessionsInRegionResponse)
-        val mockApiService = mockApiServiceWithResponse(mockResponse)
+        val mockApiService = mockGetSessionsInRegionCallWithResponse(mockResponse)
         val mockHandler = mock<ResponseHandler> {
             whenever(mock.handleSuccess(any())).thenCallRealMethod()
         }
@@ -239,7 +239,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         assertNotNull(result.data)
     }
 
-    private fun mockApiServiceWithResponse(res: SessionsInRegionsRes): ApiService = runBlocking {
+    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsRes): ApiService = runBlocking {
         return@runBlocking mock<ApiService> {
             onBlocking {
                 getSessionsInRegion(
