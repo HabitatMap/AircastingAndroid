@@ -86,7 +86,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         // given
         val expectedSensorName = "airbeam2-pm2.5"
         val expectedUnitSymbol = "µg/m³"
-        val expectedMeasurementType = "ParticulateMatter"
+        val expectedMeasurementType = "Particulate Matter"
         val sensor = ParticulateMatter.AIRBEAM
 
         // when
@@ -107,7 +107,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         // given
         val expectedSensorName = "openaq-pm2.5"
         val expectedUnitSymbol = "µg/m³"
-        val expectedMeasurementType = "ParticulateMatter"
+        val expectedMeasurementType = "Particulate Matter"
         val sensor = ParticulateMatter.OPEN_AQ
 
         // when
@@ -128,7 +128,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         // given
         val expectedSensorName = "purpleair-pm2.5"
         val expectedUnitSymbol = "µg/m³"
-        val expectedMeasurementType = "ParticulateMatter"
+        val expectedMeasurementType = "Particulate Matter"
         val sensor = ParticulateMatter.PURPLE_AIR
 
         // when
