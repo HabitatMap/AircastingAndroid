@@ -11,6 +11,7 @@ import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.model.GeoSquare
+import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
 import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.utilities.StubData
@@ -220,23 +221,26 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     }
 
     @Test
-    fun whenGettingStreamOfGivenSession_shouldReturnDataWithCorrespondingResponse(): Unit = runBlocking {
-        // given
-        val mockResponse = mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
-        val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
-        val mockHandler = mock<ResponseHandler> {
-            whenever(mock.handleSuccess(any())).thenCallRealMethod()
-        }
-        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+    fun whenGettingStreamOfGivenSession_shouldReturnResourceWithDataWithCorrespondingToResponse(): Unit =
+        runBlocking {
+            // given
+            val mockResponse =
+                mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
+            val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
+            val mockHandler = mock<ResponseHandler> {
+                whenever(mock.handleSuccess(any())).thenCallRealMethod()
+            }
+            val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
-        // when
-        val response = repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
+            // when
+            val response: Resource<StreamOfGivenSessionResponse> =
+                repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
-        // then
-        assertTrue {
-            response.data == mockResponse
+            // then
+            assertTrue {
+                response.data == mockResponse
+            }
         }
-    }
 
     @Test
     fun whenGettingStreamOfGivenSession_shouldReturnResponseWithSessionIdAndSensorNameSameAsInCall(): Unit =
@@ -320,41 +324,43 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     }
 
     @Test
-    fun whenGettingStreamOfGivenSessionIsSuccessful_shouldReturnResourceWithSuccessStatus(): Unit = runBlocking {
-        // given
-        val mockResponse =
-            mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
-        val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
-        val mockHandler = mock<ResponseHandler> {
-            whenever(mock.handleSuccess(any())).thenCallRealMethod()
+    fun whenGettingStreamOfGivenSessionIsSuccessful_shouldReturnResourceWithSuccessStatus(): Unit =
+        runBlocking {
+            // given
+            val mockResponse =
+                mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
+            val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
+            val mockHandler = mock<ResponseHandler> {
+                whenever(mock.handleSuccess(any())).thenCallRealMethod()
+            }
+            val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+            val expected = Status.SUCCESS
+
+            // when
+            val result = repository.getStreamOfGivenSession(123L, "Ozone")
+
+            // then
+            assertEquals(expected, result.status)
         }
-        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
-        val expected = Status.SUCCESS
-
-        // when
-        val result = repository.getStreamOfGivenSession(123L, "Ozone")
-
-        // then
-        assertEquals(expected, result.status)
-    }
 
     @Test
-    fun whenGettingStreamOfGivenSessionIsSuccessful_shouldReturnResourceWithNonNullData(): Unit = runBlocking {
-        // given
-        val mockResponse =
-            mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
-        val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
-        val mockHandler = mock<ResponseHandler> {
-            whenever(mock.handleSuccess(any())).thenCallRealMethod()
+    fun whenGettingStreamOfGivenSessionIsSuccessful_shouldReturnResourceWithNonNullData(): Unit =
+        runBlocking {
+            // given
+            val mockResponse =
+                mockGetStreamOfGivenSessionResponseWithJson(streamOfGivenSessionResponse)
+            val mockApiService = mockGetStreamOfGivenSessionCallWithResponse(mockResponse)
+            val mockHandler = mock<ResponseHandler> {
+                whenever(mock.handleSuccess(any())).thenCallRealMethod()
+            }
+            val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
+
+            // when
+            val result = repository.getStreamOfGivenSession(123L, "Ozone")
+
+            // then
+            assertNotNull(result.data)
         }
-        val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
-
-        // when
-        val result = repository.getStreamOfGivenSession(123L, "Ozone")
-
-        // then
-        assertNotNull(result.data)
-    }
 
     private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsRes): ApiService =
         runBlocking {
