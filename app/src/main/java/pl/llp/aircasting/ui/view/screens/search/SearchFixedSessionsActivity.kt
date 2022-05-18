@@ -104,7 +104,7 @@ class SearchFixedSessionsActivity : AppCompatActivity(), ChipGroup.OnCheckedStat
                 }
 
                 override fun onError(status: Status) {
-                    Log.d("tag", status.statusMessage.toString())
+                    Log.d("onError", status.statusMessage.toString())
                 }
             })
 
@@ -134,7 +134,7 @@ class SearchFixedSessionsActivity : AppCompatActivity(), ChipGroup.OnCheckedStat
     }
 
     override fun onCheckedChanged(chipGroup: ChipGroup, checkedIds: MutableList<Int>) {
-        txtSelectedParameter = if (chipGroup.id == binding.ozoneChip.id) {
+        txtSelectedParameter = if (chipGroup.checkedChipId == binding.ozoneChip.id) {
             binding.airbeamChip.gone()
             binding.purpleAirChip.gone()
             Ozone.OPEN_AQ.getMeasurementType()
@@ -144,7 +144,7 @@ class SearchFixedSessionsActivity : AppCompatActivity(), ChipGroup.OnCheckedStat
             ParticulateMatter.AIRBEAM.getMeasurementType()
         }
 
-        when (checkedIds[0]) {
+        when (chipGroup.checkedChipId) {
             binding.airbeamChip.id -> txtSelectedSensor =
                 ParticulateMatter.AIRBEAM.getSensorName()
             binding.openAqChip.id -> txtSelectedSensor =
@@ -152,6 +152,7 @@ class SearchFixedSessionsActivity : AppCompatActivity(), ChipGroup.OnCheckedStat
             binding.purpleAirChip.id -> txtSelectedSensor =
                 ParticulateMatter.PURPLE_AIR.getSensorName()
         }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
