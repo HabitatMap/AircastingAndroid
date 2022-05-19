@@ -7,11 +7,11 @@ import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.repositories.ActiveFixedSessionsInRegionRepository
+import pl.llp.aircasting.data.api.responses.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.isConnected
-import pl.llp.aircasting.data.api.responses.search.Session
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
