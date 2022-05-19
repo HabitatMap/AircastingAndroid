@@ -36,7 +36,7 @@ class DateConverter private constructor(settings: Settings) {
         }
 
         fun isTheSameDay(startTime: Date, endTime: Date): Boolean {
-            val dateFormat = SimpleDateFormat("yyyyMMdd")
+            val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
             return dateFormat.format(startTime) == dateFormat.format(endTime)
         }
 
