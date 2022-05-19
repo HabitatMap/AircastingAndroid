@@ -70,13 +70,14 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mMap = googleMap
         styleGoogleMap(mMap, requireActivity())
 
+        mMap.uiSettings.isScrollGesturesEnabled = false
         if (txtLat != null && txtLong != null) {
             val myLocation = LatLng(txtLat!!, txtLong!!)
             mMap.addMarker(
                 MarkerOptions()
                     .position(myLocation)
             )
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 12f), 1000, null)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f), null)
         }
     }
 }
