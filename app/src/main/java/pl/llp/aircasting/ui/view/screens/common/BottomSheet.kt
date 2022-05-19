@@ -8,8 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import pl.llp.aircasting.R
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
+import pl.llp.aircasting.R
 
 abstract class BottomSheet : BottomSheetDialogFragment() {
     private val TAG = "BottomSheet"
@@ -58,4 +58,5 @@ abstract class BottomSheet : BottomSheetDialogFragment() {
         params.height = (screenHeight * EXPANDED_PERCENT).toInt()
         card.layoutParams = params
     }
+
 }
