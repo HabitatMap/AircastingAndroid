@@ -386,5 +386,12 @@
     <string name="explore_existing_sessions">Explorer les sessions existantes</string>
     <string name="finished">Achevée</string>
     <string name="close">Close</string>
+    <string name="using_txt">en utilisant:</string>
+    <string name="sessions_showing">Séances montrant</string>
+    <string name="of">de</string>
+    <string name="results">résultats</string>
+    <string name="unauth">Non autorisé</string>
+    <string name="not_found">Pas trouvé</string>
+    <string name="internal_error">Erreur Interne du Serveur</string>
 
 </resources>
