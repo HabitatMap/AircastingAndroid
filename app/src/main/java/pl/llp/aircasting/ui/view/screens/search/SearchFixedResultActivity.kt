@@ -163,9 +163,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             "purpleair-pm2.5" -> sensorInfo = ParticulateMatter.PURPLE_AIR
             "openaq-o3" -> sensorInfo = Ozone.OPEN_AQ
         }
-        if (sensorInfo != null) {
-            setupObserver(square, sensorInfo)
-        }
+        if (sensorInfo != null) setupObserver(square, sensorInfo)
     }
 
     override fun onSupportNavigateUp(): Boolean {
