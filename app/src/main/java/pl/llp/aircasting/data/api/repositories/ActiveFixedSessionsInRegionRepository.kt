@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.api.repositories
 
+import pl.llp.aircasting.data.api.responses.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -51,6 +52,19 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
             val response =
                 apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
             responseHandler.handleSuccess(response)
+        } catch (e: Exception) {
+            responseHandler.handleException(e)
+        }
+    }
+
+    suspend fun getStreamOfGivenSession(
+        sessionId: Long,
+        sensorName: String
+    ): Resource<StreamOfGivenSessionResponse> {
+        return try {
+            val response = apiService.getStreamOfGivenSession(sessionId, sensorName)
+            responseHandler.handleSuccess(response)
+
         } catch (e: Exception) {
             responseHandler.handleException(e)
         }

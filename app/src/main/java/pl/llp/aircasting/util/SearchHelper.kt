@@ -4,8 +4,8 @@ class SearchHelper {
     companion object {
         private val dateConverter = DateConverter.get()
 
-        fun formatTime(time: String = ""): String? =
-            DateConverter.fromString(time)?.let { dateConverter?.toTimeStringForDisplay(it) }
+        fun formatTime(time: String = ""): String? = DateConverter.fromString(time)
+            ?.let { dateConverter?.toTimeStringForDisplay(it) }
 
         fun formatDate(date: String = ""): String? = DateConverter.fromString(date)
             ?.let { DateConverter.toDateStringForDisplay(it) }

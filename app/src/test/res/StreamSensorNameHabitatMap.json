@@ -1,0 +1,27 @@
+{
+  "title": "HabitatMap HQ",
+  "username": "HabitatMap",
+  "sensorName": "AirBeam3-PM2.5",
+  "measurements": [
+    {
+      "value": 0.0,
+      "time": 1650884234000,
+      "longitude": -73.976356946,
+      "latitude": 40.680268333
+    }
+  ],
+  "startTime": 1649068083000,
+  "endTime": 1650884234000,
+  "id": 1758913,
+  "streamId": 2207995,
+  "sensorUnit": "µg/m³",
+  "latitude": 40.680268333,
+  "longitude": -73.976356946,
+  "maxLatitude": 40.680268333,
+  "maxLongitude": -73.976356946,
+  "minLatitude": 40.680268333,
+  "minLongitude": -73.976356946,
+  "notes": [],
+  "isIndoor": false,
+  "lastMeasurementValue": 0.0
+}
