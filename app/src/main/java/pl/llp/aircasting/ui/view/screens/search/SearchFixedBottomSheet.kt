@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.util.Log
 import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
@@ -34,6 +35,11 @@ class SearchFixedBottomSheet : BottomSheet() {
                 endTime = formatTime(it.endTimeLocal)
                 type = formatType(it.type)
                 sensorName = formatSensorName(it.streams.sensor.sensorName)
+                header = it.streams.sensor.measurementShortType
+                // Testing
+                tintColor = R.color.aircasting_pink
+                Log.i("Color", tintColor.toString())
+                Log.i("Resource", R.color.aircasting_pink.toString())
             }
         }
     }
