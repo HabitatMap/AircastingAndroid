@@ -3,11 +3,11 @@ package pl.llp.aircasting.ui.view.screens.onboarding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
-import pl.llp.aircasting.ui.view.fragments.OnboardingGetStartedFragment
+import pl.llp.aircasting.ui.view.fragments.onboarding.OnboardingGetStartedFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedViewMvc
 import pl.llp.aircasting.ui.view.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvc
 import pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map.LearnMoreMeasureAndMapBottomSheet
-import pl.llp.aircasting.ui.view.fragments.OnboardingMeasureAndMapFragment
+import pl.llp.aircasting.ui.view.fragments.onboarding.OnboardingMeasureAndMapFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map.OnboardingMeasureAndMapViewMvc
 import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.LearnMoreYourPrivacyBottomSheet
 import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvc

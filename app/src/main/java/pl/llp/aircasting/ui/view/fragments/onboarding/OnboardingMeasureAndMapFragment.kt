@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.fragments
+package pl.llp.aircasting.ui.view.fragments.onboarding
 
 import android.os.Bundle
 import android.view.LayoutInflater
