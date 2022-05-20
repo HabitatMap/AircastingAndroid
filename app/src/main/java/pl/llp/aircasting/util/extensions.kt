@@ -65,8 +65,11 @@ fun adjustMenuVisibility(
 ) {
     val visibility =
         if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.INVISIBLE
-    activity.topAppBar?.findViewById<ImageView>(R.id.reorder_sessions_button)?.visibility =
-        visibility
+    activity.topAppBar?.apply {
+        findViewById<ImageView>(R.id.reorder_sessions_button)?.visibility = visibility
+        findViewById<ImageView>(R.id.search_follow_icon)?.visibility =
+            if (isFollowingTab && visibility == View.INVISIBLE) View.VISIBLE else View.INVISIBLE
+    }
 }
 
 fun isValidEmail(target: String): Boolean {
