@@ -1,5 +1,8 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageButton
@@ -12,9 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.VisibleRegion
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
@@ -40,9 +41,13 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     lateinit var searchFollowViewModel: SearchFollowViewModel
     lateinit var adapter: FixedFollowAdapter
 
-    private lateinit var binding: ActivitySearchFollowResultBinding
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
+
+    private lateinit var binding: ActivitySearchFollowResultBinding
     private lateinit var mMap: GoogleMap
+
+    private val latLngs: ArrayList<LatLng> = arrayListOf()
+    private val options = MarkerOptions()
     private var txtParameter: String? = null
     private var txtSensor: String? = null
 
@@ -101,7 +106,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    it.data?.sessions?.let { it1 -> renderData(it1.reversed()) }
+                    it.data?.sessions?.let { sessions ->
+
+                        sessions.forEach { latLng ->
+                            val getLats = latLng.latitude
+                            val getLongs = latLng.longitude
+                            latLngs.add(LatLng(getLats, getLongs))
+                        }
+                        renderData(sessions.reversed())
+                    }
                     binding.progressBar.inVisible()
                 }
                 Status.ERROR -> {
@@ -132,18 +145,26 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         styleGoogleMap(mMap, this)
         mMap.setOnCameraIdleListener(this)
 
-        if (lat != null && long != null) {
-            val myLocation = LatLng(lat, long)
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(myLocation)
-            )
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 12f), 1000, null)
-        }
-    }
+        val myList: ArrayList<LatLng> = arrayListOf(
+            LatLng(50.06465009999999, 50.06465009999999),
+            LatLng(52.52000659999999, 13.404954)
+        )
+        // for testing purposes
 
-    override fun onCameraIdle() {
-        getMapVisibleRadius(mMap)
+        if (lat != null && long != null) {
+            myList.forEach {
+                mMap.addMarker(
+                    options
+                        .position(it)
+                        .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
+                )
+            }
+
+            // The selected location
+            val theLocation = LatLng(lat, long)
+            mMap.addMarker(options.position(theLocation))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 5f), null)
+        }
     }
 
     private fun getMapVisibleRadius(mMap: GoogleMap) {
@@ -163,12 +184,26 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             "purpleair-pm2.5" -> sensorInfo = ParticulateMatter.PURPLE_AIR
             "openaq-o3" -> sensorInfo = Ozone.OPEN_AQ
         }
-        if (sensorInfo != null) setupObserver(square, sensorInfo)
+        sensorInfo?.let { setupObserver(square, it) }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        return ContextCompat.getDrawable(context, vectorResId)?.run {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+            val bitmap =
+                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            draw(Canvas(bitmap))
+            BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
+    }
+
+    override fun onCameraIdle() {
+        getMapVisibleRadius(mMap)
     }
 
 }
