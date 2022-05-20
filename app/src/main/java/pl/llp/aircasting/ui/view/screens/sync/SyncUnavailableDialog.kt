@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.sync_unavailable_dialog.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseDialog
+import pl.llp.aircasting.ui.view.common.BaseDialog
 
 
 class SyncUnavailableDialog (

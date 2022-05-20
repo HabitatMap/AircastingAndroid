@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.sync.synced
 
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class AirbeamSyncedController(
         viewMvc: AirbeamSyncedViewMvcImpl?

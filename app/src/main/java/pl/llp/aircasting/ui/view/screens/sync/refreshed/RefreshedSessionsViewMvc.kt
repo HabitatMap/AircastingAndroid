@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.sync.refreshed
 
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 interface RefreshedSessionsViewMvc: ObservableViewMvc<RefreshedSessionsViewMvc.Listener> {
     interface Listener {

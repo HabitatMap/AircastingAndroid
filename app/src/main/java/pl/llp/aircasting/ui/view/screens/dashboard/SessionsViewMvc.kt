@@ -2,7 +2,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
 
 

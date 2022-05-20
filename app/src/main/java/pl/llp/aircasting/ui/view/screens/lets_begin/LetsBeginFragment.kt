@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import javax.inject.Inject

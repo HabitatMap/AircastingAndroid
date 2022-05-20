@@ -17,7 +17,7 @@ import pl.llp.aircasting.util.isValidEmail
 import pl.llp.aircasting.util.setAppearance
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 
 class ShareSessionBottomSheet(
     private val mListener: Listener,

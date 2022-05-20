@@ -1,7 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.new_session.confirmation
 
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 
 interface ConfirmationViewMvc : ObservableViewMvc<ConfirmationViewMvc.Listener> {

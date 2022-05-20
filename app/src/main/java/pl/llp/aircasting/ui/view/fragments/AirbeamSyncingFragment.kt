@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.sync.syncing
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingController
+import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvcImpl
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
-import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator
 
 class AirbeamSyncingFragment(
     private val mFragmentManager: FragmentManager,

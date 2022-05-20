@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.onboarding
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import pl.llp.aircasting.ui.view.screens.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BaseActivity
 
 class OnboardingActivity: BaseActivity() {
     private var controller: OnboardingController? = null

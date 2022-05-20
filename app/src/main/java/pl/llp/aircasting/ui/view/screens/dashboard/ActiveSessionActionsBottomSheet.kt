@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
 import kotlinx.android.synthetic.main.active_session_actions.view.*

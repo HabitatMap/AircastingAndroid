@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError

@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.delete_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 
 
 class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheet() {

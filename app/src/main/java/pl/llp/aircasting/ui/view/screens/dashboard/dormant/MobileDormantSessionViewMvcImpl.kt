@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl

@@ -7,7 +7,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl

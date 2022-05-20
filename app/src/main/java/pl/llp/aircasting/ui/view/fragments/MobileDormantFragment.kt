@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.following
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,16 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantController
+import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantViewMvcImpl
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 
-open class FollowingFragment : Fragment() {
-    protected var controller: FollowingController? = null
-    protected val sessionsViewModel by activityViewModels<SessionsViewModel>()
-    protected var view: FollowingViewMvcImpl? = null
+class MobileDormantFragment : Fragment() {
+    private var controller: MobileDormantController? = null
+    private val sessionsViewModel by activityViewModels<SessionsViewModel>()
+    private var view: MobileDormantViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
@@ -24,7 +26,7 @@ open class FollowingFragment : Fragment() {
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
 
-    protected var sessionsRequested = false
+    private var sessionsRequested = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,19 +36,20 @@ open class FollowingFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = FollowingViewMvcImpl(
+        view = MobileDormantViewMvcImpl(
             layoutInflater,
             null,
             childFragmentManager
         )
 
-        controller = FollowingController(
+        controller = MobileDormantController(
             activity,
             view,
             sessionsViewModel,
             viewLifecycleOwner,
             settings,
             apiServiceFactory,
+            childFragmentManager,
             context
         )
 
@@ -73,15 +76,15 @@ open class FollowingFragment : Fragment() {
         controller?.onPause()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         view = null
         controller?.onDestroy()
         controller = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         view = null
         controller?.onDestroy()
         controller = null

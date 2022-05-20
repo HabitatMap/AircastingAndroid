@@ -1,7 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.sync.refreshed
 
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class RefreshedSessionsController(
     private val mFragmentManager: FragmentManager,

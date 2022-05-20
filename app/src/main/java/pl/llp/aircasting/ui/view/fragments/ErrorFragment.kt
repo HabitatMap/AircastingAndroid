@@ -1,10 +1,13 @@
-package pl.llp.aircasting.ui.view.screens.sync.error
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.screens.sync.error.ErrorController
+import pl.llp.aircasting.ui.view.screens.sync.error.ErrorViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.error.ErrorViewMvcImpl
 
 class ErrorFragment: BaseFragment<ErrorViewMvcImpl, ErrorController>() {
     lateinit var listener: ErrorViewMvc.Listener

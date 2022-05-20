@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseDialog
+import pl.llp.aircasting.ui.view.common.BaseDialog
 import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 
 class BackendSettingsDialog(

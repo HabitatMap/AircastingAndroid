@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_turn_off_location_services.view.*
 import pl.llp.aircasting.data.model.Session
 

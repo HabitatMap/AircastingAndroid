@@ -1,21 +1,17 @@
-package pl.llp.aircasting.ui.view.screens.new_session.confirmation
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseFragment
-import javax.inject.Inject
+import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedController
+import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
+import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvcImpl
 
-class ConfirmationFragment() : BaseFragment<ConfirmationViewMvcImpl, ConfirmationController>() {
-    lateinit var listener: ConfirmationViewMvc.Listener
-    lateinit var session: Session
-
-    @Inject
-    lateinit var settings: Settings
+class SDCardClearedFragment: BaseFragment<SDCardClearedViewMvcImpl, SDCardClearedController>() {
+    lateinit var listener: SDCardClearedViewMvc.Listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,17 +21,15 @@ class ConfirmationFragment() : BaseFragment<ConfirmationViewMvcImpl, Confirmatio
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
-        controller = ConfirmationController(view, settings)
+        view = SDCardClearedViewMvcImpl(layoutInflater, null)
+        controller = SDCardClearedController(view)
+
         return view?.rootView
     }
 
     override fun onStart() {
         super.onStart()
-
-        controller?.registerToEventBus()
         controller?.registerListener(listener)
-        controller?.onStart(context)
     }
 
     override fun onStop() {

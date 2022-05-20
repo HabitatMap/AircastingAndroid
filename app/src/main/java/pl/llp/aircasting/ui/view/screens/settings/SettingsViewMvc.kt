@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.settings
 
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
 

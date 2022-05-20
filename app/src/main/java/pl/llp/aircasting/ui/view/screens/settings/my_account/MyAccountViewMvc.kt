@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.settings.my_account
 
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 interface MyAccountViewMvc : ObservableViewMvc<MyAccountViewMvc.Listener> {
 

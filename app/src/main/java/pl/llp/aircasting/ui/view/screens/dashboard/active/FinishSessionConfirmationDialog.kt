@@ -10,7 +10,7 @@ import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseDialog
+import pl.llp.aircasting.ui.view.common.BaseDialog
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 
 open class FinishSessionConfirmationDialog(

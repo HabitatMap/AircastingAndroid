@@ -7,15 +7,16 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.util.ProgressBarCounter
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardWizardNavigator
-import pl.llp.aircasting.ui.view.screens.sync.error.ErrorFragment
+import pl.llp.aircasting.ui.view.fragments.ErrorFragment
 import pl.llp.aircasting.ui.view.screens.sync.error.ErrorViewMvc
-import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsFragment
+import pl.llp.aircasting.ui.view.fragments.RefreshedSessionsFragment
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
-import pl.llp.aircasting.ui.view.screens.sync.refreshing.RefreshingSessionsFragment
-import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedFragment
+import pl.llp.aircasting.ui.view.fragments.RefreshingSessionsFragment
+import pl.llp.aircasting.ui.view.fragments.AirbeamSyncedFragment
 import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvc
-import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingFragment
+import pl.llp.aircasting.ui.view.fragments.AirbeamSyncingFragment
 import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 
 class SyncWizardNavigator(
     context: Context,
@@ -71,7 +72,7 @@ class SyncWizardNavigator(
 
     fun goToAirbeamSyncing(listener: AirbeamSyncingViewMvc.Listener) {
         incrementStepProgress()
-        val fragment = AirbeamSyncingFragment(mFragmentManager, pl.llp.aircasting.util.exceptions.ErrorHandler(mContext))
+        val fragment = AirbeamSyncingFragment(mFragmentManager, ErrorHandler(mContext))
         fragment.listener = listener
         registerBackPressed(fragment)
         goToFragment(fragment)

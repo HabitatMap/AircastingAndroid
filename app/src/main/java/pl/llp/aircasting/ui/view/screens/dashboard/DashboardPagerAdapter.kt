@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.dashboard.active.MobileActiveFragment
-import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantFragment
-import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedFragment
-import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingFragment
+import pl.llp.aircasting.ui.view.fragments.MobileActiveFragment
+import pl.llp.aircasting.ui.view.fragments.MobileDormantFragment
+import pl.llp.aircasting.ui.view.fragments.FixedFragment
+import pl.llp.aircasting.ui.view.fragments.FollowingFragment
 
 enum class SessionsTab(val value: Int) {
     FOLLOWING(0),

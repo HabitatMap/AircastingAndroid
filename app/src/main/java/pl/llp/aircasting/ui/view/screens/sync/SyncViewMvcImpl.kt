@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.sync
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
+import pl.llp.aircasting.ui.view.common.BaseViewMvc
 
 class SyncViewMvcImpl : BaseViewMvc, SyncViewMvc {
     constructor(

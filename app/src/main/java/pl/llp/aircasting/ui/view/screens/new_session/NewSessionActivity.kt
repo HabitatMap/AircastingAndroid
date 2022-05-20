@@ -12,7 +12,7 @@ import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
-import pl.llp.aircasting.ui.view.screens.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager

@@ -11,7 +11,7 @@ import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.labelFormat
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.ui.view.screens.common.BaseDialog
+import pl.llp.aircasting.ui.view.common.BaseDialog
 
 class HLUDialog(
     private var mSensorThreshold: SensorThreshold?,

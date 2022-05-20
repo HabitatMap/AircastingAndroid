@@ -1,12 +1,14 @@
-package pl.llp.aircasting.ui.view.screens.settings
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.screens.settings.SettingsController
+import pl.llp.aircasting.ui.view.screens.settings.SettingsViewMvcImpl
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
 import javax.inject.Inject
 
 class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>() {

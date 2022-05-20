@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.active
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,22 +8,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedController
+import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedViewMvcImpl
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
 
-class MobileActiveFragment : Fragment() {
-    private var controller: MobileActiveController? = null
+class FixedFragment : Fragment() {
+    private var controller: FixedController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
-    private var view: MobileActiveViewMvcImpl? = null
+    private var view: FixedViewMvcImpl? = null
 
     @Inject
     lateinit var settings: Settings
-
-    @Inject
-    lateinit var airbeamReconnector: AirBeamReconnector
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -38,20 +36,20 @@ class MobileActiveFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = MobileActiveViewMvcImpl(
+        view = FixedViewMvcImpl(
             layoutInflater,
             null,
             childFragmentManager
         )
-        controller = MobileActiveController(
+        controller = FixedController(
             activity,
             view,
             sessionsViewModel,
             viewLifecycleOwner,
             settings,
             apiServiceFactory,
-            airbeamReconnector,
-            requireContext()
+            childFragmentManager,
+            context
         )
 
         if (sessionsRequested) {
@@ -77,17 +75,17 @@ class MobileActiveFragment : Fragment() {
         controller?.onPause()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        controller?.onDestroy()
-        controller = null
-        view = null
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        view = null
         controller?.onDestroy()
         controller = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         view = null
+        controller?.onDestroy()
+        controller = null
     }
 }

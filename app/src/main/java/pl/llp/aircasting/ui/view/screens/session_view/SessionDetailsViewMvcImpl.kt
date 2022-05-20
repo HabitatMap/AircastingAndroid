@@ -18,7 +18,7 @@ import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialog
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialogListener

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.util.setupAppBar
-import pl.llp.aircasting.ui.view.screens.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BaseActivity
 
 class MyAccountActivity : BaseActivity() {
 

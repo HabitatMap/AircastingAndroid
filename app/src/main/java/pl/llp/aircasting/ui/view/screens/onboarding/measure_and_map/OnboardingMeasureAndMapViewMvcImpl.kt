@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.onboarding_measure_and_map.view.*
 
 class OnboardingMeasureAndMapViewMvcImpl: BaseObservableViewMvc<OnboardingMeasureAndMapViewMvc.Listener>, OnboardingMeasureAndMapViewMvc {

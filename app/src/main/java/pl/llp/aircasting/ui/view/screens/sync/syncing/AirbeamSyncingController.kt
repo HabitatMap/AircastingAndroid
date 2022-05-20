@@ -9,7 +9,7 @@ import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.safeRegister
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class AirbeamSyncingController(
     viewMvc: AirbeamSyncingViewMvcImpl?,

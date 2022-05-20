@@ -10,7 +10,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.AircastingAlertDialog
+import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc

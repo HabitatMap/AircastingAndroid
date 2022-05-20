@@ -9,7 +9,7 @@ import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.services.ConnectivityManager
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 
 class EditNoteBottomSheet(

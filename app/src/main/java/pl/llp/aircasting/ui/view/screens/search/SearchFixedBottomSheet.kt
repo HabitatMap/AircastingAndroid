@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.SearchHelper.Companion.formatDate
 import pl.llp.aircasting.util.SearchHelper.Companion.formatSensorName

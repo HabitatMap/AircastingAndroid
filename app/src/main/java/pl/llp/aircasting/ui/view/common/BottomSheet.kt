@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.common
+package pl.llp.aircasting.ui.view.common
 
 import android.app.Dialog
 import android.content.res.Resources

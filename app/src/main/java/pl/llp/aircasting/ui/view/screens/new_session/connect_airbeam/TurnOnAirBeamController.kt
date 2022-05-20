@@ -1,7 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam
 
 import android.content.Context
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class TurnOnAirBeamController(
     private val mContext: Context?,

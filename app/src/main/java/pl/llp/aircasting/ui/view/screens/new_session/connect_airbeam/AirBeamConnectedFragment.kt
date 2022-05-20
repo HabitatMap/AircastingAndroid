@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 
 class AirBeamConnectedFragment() : BaseFragment<AirBeamConnectedViewMvcImpl, AirBeamConnectedController>() {

@@ -7,7 +7,7 @@ import androidx.core.text.bold
 import androidx.core.text.color
 import kotlinx.android.synthetic.main.more_info_bottom_sheet.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 
 class MoreInfoBottomSheet: BottomSheet() {
     override fun layoutId(): Int {

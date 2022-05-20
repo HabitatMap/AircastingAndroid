@@ -18,7 +18,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.util.BitmapHelper
 import pl.llp.aircasting.util.styleGoogleMap
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 
 abstract class ConfirmationViewMvcImpl(

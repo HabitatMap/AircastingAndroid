@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.ui.view.screens.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.ResultCodes

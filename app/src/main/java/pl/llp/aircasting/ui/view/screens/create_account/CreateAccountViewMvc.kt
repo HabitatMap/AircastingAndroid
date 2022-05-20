@@ -1,7 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.create_account
 
 import pl.llp.aircasting.data.api.responses.CreateAccountErrorResponse
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 
 interface CreateAccountViewMvc : ObservableViewMvc<CreateAccountViewMvc.Listener> {

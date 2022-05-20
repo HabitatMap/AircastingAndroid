@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.onboarding
 
-import pl.llp.aircasting.ui.view.screens.common.ViewMvc
+import pl.llp.aircasting.ui.view.common.ViewMvc
 
 interface OnboardingViewMvc: ViewMvc {
     fun changeProgressBarColorToGreen()

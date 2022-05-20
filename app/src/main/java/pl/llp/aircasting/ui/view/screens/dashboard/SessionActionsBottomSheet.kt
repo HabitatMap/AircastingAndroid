@@ -2,7 +2,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import android.widget.ImageView
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import kotlinx.android.synthetic.main.session_actions.view.*
 
 class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet() {

@@ -14,7 +14,7 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BatteryAlertDialog
+import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity

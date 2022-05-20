@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam
 
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class RestartAirBeamController(
     var viewMvc: RestartAirBeamViewMvcImpl?

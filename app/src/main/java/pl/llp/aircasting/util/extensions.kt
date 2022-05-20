@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BaseActivity
 
 fun EventBus.safeRegister(subscriber: Any) {
     if (!EventBus.getDefault().isRegistered(subscriber)) {

@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.clearing_sd_card
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
-import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardController
+import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardViewMvcImpl
 
 class ClearingSDCardFragment(
     private val mFragmentManager: FragmentManager

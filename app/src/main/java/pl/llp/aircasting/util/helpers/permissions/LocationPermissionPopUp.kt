@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseDialog
+import pl.llp.aircasting.ui.view.common.BaseDialog
 
 class LocationPermissionPopUp(
     mFragmentManager : FragmentManager,

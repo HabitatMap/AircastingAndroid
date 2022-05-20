@@ -1,10 +1,10 @@
-package pl.llp.aircasting.ui.view.screens.common
+package pl.llp.aircasting.ui.view.common
 
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.R
 import kotlinx.android.synthetic.main.dialog_alert_aircasting.view.*
+import pl.llp.aircasting.R
 
 class AircastingAlertDialog(
     mFragmentManager : FragmentManager,

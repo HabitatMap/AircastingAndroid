@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.lets_begin
 
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 interface LetsBeginViewMvc: ObservableViewMvc<LetsBeginViewMvc.Listener> {
     fun showMoreInfoDialog()

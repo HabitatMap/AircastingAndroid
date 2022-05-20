@@ -22,7 +22,7 @@ import pl.llp.aircasting.util.isIgnoringBatteryOptimizations
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.ui.view.screens.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BaseActivity
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {

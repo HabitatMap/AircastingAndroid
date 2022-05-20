@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.onboarding.your_privacy
 
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class OnboardingYourPrivacyController(
     var viewMvc: OnboardingYourPrivacyViewMvcImpl?

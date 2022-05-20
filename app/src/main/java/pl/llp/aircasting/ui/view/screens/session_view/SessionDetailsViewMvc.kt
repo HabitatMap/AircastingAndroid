@@ -4,7 +4,7 @@ import android.location.Location
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.ObservableViewMvc
+import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUListener
 

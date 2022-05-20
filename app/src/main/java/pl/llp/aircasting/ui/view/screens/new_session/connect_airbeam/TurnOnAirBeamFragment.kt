@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseFragment
 
 class TurnOnAirBeamFragment() : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBeamController>() {
     var listener: TurnOnAirBeamViewMvc.Listener? = null

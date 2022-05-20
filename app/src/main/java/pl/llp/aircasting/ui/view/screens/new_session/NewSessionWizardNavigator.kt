@@ -5,7 +5,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationFragment
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationFragment

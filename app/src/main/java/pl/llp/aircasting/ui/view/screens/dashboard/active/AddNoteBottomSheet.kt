@@ -7,7 +7,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
 import java.util.*
 

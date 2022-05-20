@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.common
+package pl.llp.aircasting.ui.view.common
 
 abstract class BaseController<ViewType>(
     protected var mViewMvc: ViewType?

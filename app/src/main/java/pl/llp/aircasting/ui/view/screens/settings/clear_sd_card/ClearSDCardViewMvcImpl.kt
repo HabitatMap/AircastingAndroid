@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.settings.clear_sd_card
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
+import pl.llp.aircasting.ui.view.common.BaseViewMvc
 
 class ClearSDCardViewMvcImpl: BaseViewMvc, ClearSDCardViewMvc {
 

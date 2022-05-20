@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity

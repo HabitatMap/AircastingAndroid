@@ -7,7 +7,7 @@ import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 
 class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>, SessionDetailsViewMvc {

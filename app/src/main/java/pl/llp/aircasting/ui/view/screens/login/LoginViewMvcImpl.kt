@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.activity_login.view.*
 
 class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {

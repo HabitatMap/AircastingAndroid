@@ -11,7 +11,7 @@ import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 

@@ -2,7 +2,7 @@ package pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.clearing_sd_car
 
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 import org.greenrobot.eventbus.EventBus
 
 

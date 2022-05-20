@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseDialog
+import pl.llp.aircasting.ui.view.common.BaseDialog
 import kotlinx.android.synthetic.main.network_password_dialog.view.*
 
 class NetworkPasswordDialog(

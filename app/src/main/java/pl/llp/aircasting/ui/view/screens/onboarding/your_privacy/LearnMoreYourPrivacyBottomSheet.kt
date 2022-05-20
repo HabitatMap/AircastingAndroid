@@ -9,7 +9,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import kotlinx.android.synthetic.main.learn_more_onboarding_your_privacy.view.*
 
 class LearnMoreYourPrivacyBottomSheet: BottomSheet() {

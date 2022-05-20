@@ -8,7 +8,7 @@ import pl.llp.aircasting.util.KeyboardHelper
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.safeRegister
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class ConfirmationController(
     viewMvc: ConfirmationViewMvcImpl?,

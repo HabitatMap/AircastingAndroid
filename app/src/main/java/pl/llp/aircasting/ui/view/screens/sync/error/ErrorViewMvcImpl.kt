@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_sync_error.view.*
 
 class ErrorViewMvcImpl: BaseObservableViewMvc<ErrorViewMvc.Listener>, ErrorViewMvc {

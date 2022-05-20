@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.settings.my_account
 import android.content.Context
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 
 

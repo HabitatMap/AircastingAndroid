@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 class TurnOnAirBeamViewMvcImpl(
     inflater: LayoutInflater,

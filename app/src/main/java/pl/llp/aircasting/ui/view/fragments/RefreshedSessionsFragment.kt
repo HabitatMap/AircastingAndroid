@@ -1,12 +1,15 @@
-package pl.llp.aircasting.ui.view.screens.sync.refreshed
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
-import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsController
+import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvcImpl
 
 class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): BaseFragment<RefreshedSessionsViewMvcImpl, RefreshedSessionsController>(), BaseWizardNavigator.BackPressedListener {
     lateinit var listener: RefreshedSessionsViewMvc.Listener

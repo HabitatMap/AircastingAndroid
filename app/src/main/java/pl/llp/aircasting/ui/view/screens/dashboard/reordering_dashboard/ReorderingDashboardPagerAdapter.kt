@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import pl.llp.aircasting.ui.view.screens.dashboard.reordering_following.ReorderingFollowingFragment
+import pl.llp.aircasting.ui.view.fragments.ReorderingFollowingFragment
 
 
 class ReorderingDashboardPagerAdapter(private val mContext: Context, private val mFragmentManager: FragmentManager)

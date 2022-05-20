@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.new_session.choose_location
 
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 class ChooseLocationController (
     viewMvc: ChooseLocationViewMvcImpl?

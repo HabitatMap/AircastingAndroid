@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.fragment_lets_begin.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 class LetsBeginViewMvcImpl(
     inflater: LayoutInflater,

@@ -1,14 +1,17 @@
-package pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedController
+import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvcImpl
 
-class SDCardClearedFragment: BaseFragment<SDCardClearedViewMvcImpl, SDCardClearedController>() {
-    lateinit var listener: SDCardClearedViewMvc.Listener
+class AirbeamSyncedFragment: BaseFragment<AirbeamSyncedViewMvcImpl, AirbeamSyncedController>() {
+    lateinit var listener: AirbeamSyncedViewMvc.Listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -18,8 +21,8 @@ class SDCardClearedFragment: BaseFragment<SDCardClearedViewMvcImpl, SDCardCleare
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = SDCardClearedViewMvcImpl(layoutInflater, null)
-        controller = SDCardClearedController(view)
+        view = AirbeamSyncedViewMvcImpl(layoutInflater, null)
+        controller = AirbeamSyncedController(view)
 
         return view?.rootView
     }

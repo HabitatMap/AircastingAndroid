@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.onboarding.how_is_the_air
 
-import pl.llp.aircasting.ui.view.screens.common.BaseController
+import pl.llp.aircasting.ui.view.common.BaseController
 
 
 class OnboardingHowsTheAirController(

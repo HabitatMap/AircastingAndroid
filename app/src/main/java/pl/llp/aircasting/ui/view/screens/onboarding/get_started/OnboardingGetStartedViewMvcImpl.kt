@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 class OnboardingGetStartedViewMvcImpl: BaseObservableViewMvc<OnboardingGetStartedViewMvc.Listener>, OnboardingGetStartedViewMvc {
 

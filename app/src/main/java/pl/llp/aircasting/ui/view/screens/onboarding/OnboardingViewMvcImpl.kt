@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
+import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import kotlinx.android.synthetic.main.activity_onboarding.view.*
 
 

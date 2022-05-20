@@ -5,14 +5,14 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.*
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceFragment
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceViewMvc
-import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.clearing_sd_card.ClearingSDCardFragment
-import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamFragment
+import pl.llp.aircasting.ui.view.fragments.ClearingSDCardFragment
+import pl.llp.aircasting.ui.view.fragments.RestartAirBeamFragment
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
-import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedFragment
+import pl.llp.aircasting.ui.view.fragments.SDCardClearedFragment
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
 
 open class ClearSDCardWizardNavigator(

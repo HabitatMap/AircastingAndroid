@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
-import pl.llp.aircasting.ui.view.screens.common.BaseWizardNavigator
+import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 
 class ConnectingAirBeamFragment(private val mFragmentManager: FragmentManager) : BaseFragment<ConnectingAirBeamViewMvcImpl, ConnectingAirBeamController>(), BaseWizardNavigator.BackPressedListener {
     override fun onCreateView(

@@ -17,8 +17,8 @@ import pl.llp.aircasting.util.DurationStringHelper
 import pl.llp.aircasting.util.TouchDelegateComposite
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
-import pl.llp.aircasting.ui.view.screens.common.BottomSheet
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer

@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.select_device_item.view.label
 import kotlinx.coroutines.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.AnimatedLoader
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {

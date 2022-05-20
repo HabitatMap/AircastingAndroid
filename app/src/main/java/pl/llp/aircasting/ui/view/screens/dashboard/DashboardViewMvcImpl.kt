@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.common.BaseViewMvc
+import pl.llp.aircasting.ui.view.common.BaseViewMvc
 
 class DashboardViewMvcImpl(
     inflater: LayoutInflater,

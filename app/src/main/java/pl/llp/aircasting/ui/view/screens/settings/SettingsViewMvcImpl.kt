@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.fragment_settings.view.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 class SettingsViewMvcImpl : BaseObservableViewMvc<SettingsViewMvc.Listener>, SettingsViewMvc  {
 

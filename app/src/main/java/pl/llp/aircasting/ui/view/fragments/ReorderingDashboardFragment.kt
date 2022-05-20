@@ -1,11 +1,13 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pl.llp.aircasting.ui.view.screens.common.BaseFragment
+import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
+import pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard.ReorderingDashboardController
+import pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard.ReorderingDashboardPagerAdapter
 
 // Reordering dashboard is the screen we enter after pressing "Reorder" button
 // It's needed because we want to be able to turn on/ turn off Reorder feature and we need to change number of visible cards depending on it
@@ -20,7 +22,8 @@ class ReorderingDashboardFragment : BaseFragment<DashboardViewMvcImpl, Reorderin
         val pagerAdapter = context?.let { ReorderingDashboardPagerAdapter(it, childFragmentManager) }
         view = pagerAdapter?.let {
             DashboardViewMvcImpl(inflater, container, childFragmentManager,
-                it, ReorderingDashboardPagerAdapter.TABS_COUNT)
+                it, ReorderingDashboardPagerAdapter.TABS_COUNT
+            )
         }
 
         controller = ReorderingDashboardController(view)
