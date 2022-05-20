@@ -22,16 +22,12 @@ object BindingAdapter {
     @SuppressLint("SetTextI18n")
     @JvmStatic
     @BindingAdapter("formatDateStart", "formatDateEnd", requireAll = true)
-    fun TextView.setFormatDate(startTimeLocal: String, endTimeLocal: String) {
-        try {
-            val startDate = formatDate(startTimeLocal)
-            val startTime = formatTime(startTimeLocal)
-            val endDate = formatDate(endTimeLocal)
-            val endTime = formatTime(endTimeLocal)
+    fun TextView.setFormatDate(startDateTimeLocal: String, endDateTimeLocal: String) {
+        val startDate = formatDate(startDateTimeLocal)
+        val startTime = formatTime(startDateTimeLocal)
+        val endDate = formatDate(endDateTimeLocal)
+        val endTime = formatTime(endDateTimeLocal)
 
-            this.text = "$startDate $startTime - $endDate $endTime"
-        } catch (e: Exception) {
-            Log.d("TAG", e.message.toString())
-        }
+        this.text = "$startDate $startTime - $endDate $endTime"
     }
 }
