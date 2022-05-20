@@ -11,8 +11,9 @@ import pl.llp.aircasting.util.Settings
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-open class ApiServiceFactory(private val mSettings: Settings) {
+open class ApiServiceFactory @Inject constructor(private val mSettings: Settings) {
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
