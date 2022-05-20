@@ -1,10 +1,13 @@
-package pl.llp.aircasting.ui.view.screens.onboarding.get_started
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedController
+import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedViewMvc
+import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedViewMvcImpl
 
 class OnboardingGetStartedFragment: BaseFragment<OnboardingGetStartedViewMvcImpl, OnboardingGetStartedController>() {
     lateinit var listener: OnboardingGetStartedViewMvc.Listener

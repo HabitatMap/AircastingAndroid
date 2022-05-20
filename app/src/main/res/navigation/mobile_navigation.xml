@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/navigation_lets_begin"
-        android:name="pl.llp.aircasting.ui.view.screens.lets_begin.LetsBeginFragment"
+        android:name="pl.llp.aircasting.ui.view.fragments.LetsBeginFragment"
         android:label="     "
         tools:layout="@layout/fragment_lets_begin" />
 

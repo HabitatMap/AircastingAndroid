@@ -5,13 +5,13 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.ProgressBarCounter
 import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
-import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedFragment
+import pl.llp.aircasting.ui.view.fragments.OnboardingGetStartedFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.get_started.OnboardingGetStartedViewMvc
-import pl.llp.aircasting.ui.view.screens.onboarding.how_is_the_air.OnboardingHowsTheAirFragment
+import pl.llp.aircasting.ui.view.fragments.OnboardingHowsTheAirFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.how_is_the_air.OnboardingHowsTheAirViewMvc
-import pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map.OnboardingMeasureAndMapFragment
+import pl.llp.aircasting.ui.view.fragments.OnboardingMeasureAndMapFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.measure_and_map.OnboardingMeasureAndMapViewMvc
-import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyFragment
+import pl.llp.aircasting.ui.view.fragments.OnboardingYourPrivacyFragment
 import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvc
 
 class OnboardingWizardNavigator(

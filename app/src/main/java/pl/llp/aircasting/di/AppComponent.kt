@@ -12,7 +12,7 @@ import pl.llp.aircasting.ui.view.fragments.FixedFragment
 import pl.llp.aircasting.ui.view.fragments.FollowingFragment
 import pl.llp.aircasting.ui.view.fragments.ReorderingDashboardFragment
 import pl.llp.aircasting.ui.view.fragments.ReorderingFollowingFragment
-import pl.llp.aircasting.ui.view.screens.lets_begin.LetsBeginFragment
+import pl.llp.aircasting.ui.view.fragments.LetsBeginFragment
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity

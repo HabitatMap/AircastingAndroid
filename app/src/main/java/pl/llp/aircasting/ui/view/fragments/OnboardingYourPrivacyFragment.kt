@@ -1,10 +1,13 @@
-package pl.llp.aircasting.ui.view.screens.onboarding.your_privacy
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.ui.view.common.BaseFragment
+import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyController
+import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvc
+import pl.llp.aircasting.ui.view.screens.onboarding.your_privacy.OnboardingYourPrivacyViewMvcImpl
 
 class OnboardingYourPrivacyFragment: BaseFragment<OnboardingYourPrivacyViewMvcImpl, OnboardingYourPrivacyController>() {
     lateinit var listener: OnboardingYourPrivacyViewMvc.Listener
