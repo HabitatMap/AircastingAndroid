@@ -76,7 +76,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                 MarkerOptions()
                     .position(myLocation)
             )
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f), null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
         }
     }
 }
