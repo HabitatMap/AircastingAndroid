@@ -183,6 +183,19 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         styleGoogleMap(mMap, this)
 
+        //dummy data for showing the items/cards in recyclerView
+        val farLeftLat = 50.35515688978048
+        val farLeftLong = 19.675315394997597
+        val nearRightLat = 49.77237328564033
+        val nearRightLong = 20.214644260704517
+
+        getMapVisibleArea(
+            farLeftLat,
+            farLeftLong,
+            nearRightLat,
+            nearRightLong
+        )
+
         if (lat != null && long != null) {
             markerList.forEach { markerData ->
                 mMap.addMarker(
