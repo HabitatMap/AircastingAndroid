@@ -32,4 +32,20 @@ object BindingAdapter {
 
         this.text = "$startDate $startTime - $endDate $endTime"
     }
+
+    @JvmStatic
+    @BindingAdapter("setSelectedSensorBorderBackgroundDrawable")
+    fun View.setSelectedSensorBorderBackgroundDrawable(@ColorInt color: Int) {
+        if (isSDKGreaterOrEqualToM()) {
+            background = SelectedSensorBorder(this.context.getColor(R.color.aircasting_pink))
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @JvmStatic
+    @BindingAdapter("setSelectedSensorName", requireAll = true)
+    fun TextView.setSelectedSensorNameAndType(name: String) {
+        val type = this.context.getString(R.string.dashboard_tabs_fixed)
+        this.text = "$type, $name"
+    }
 }
