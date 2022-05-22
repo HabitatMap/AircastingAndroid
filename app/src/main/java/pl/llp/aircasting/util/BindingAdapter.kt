@@ -1,12 +1,13 @@
 package pl.llp.aircasting.util
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
-import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.databinding.BindingAdapter
+import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
 import pl.llp.aircasting.util.SearchHelper.Companion.formatDate
 import pl.llp.aircasting.util.SearchHelper.Companion.formatTime
 
