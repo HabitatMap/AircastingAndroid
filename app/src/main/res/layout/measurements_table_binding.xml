@@ -3,23 +3,9 @@
 
     <data>
 
-        <import type="android.graphics.drawable.Drawable" />
-
         <variable
-            name="border"
-            type="Drawable" />
-
-        <variable
-            name="header"
-            type="String" />
-
-        <variable
-            name="value"
-            type="String" />
-
-        <variable
-            name="tintColor"
-            type="Integer" />
+            name="model"
+            type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
     </data>
 
     <merge xmlns:android="http://schemas.android.com/apk/res/android"
@@ -50,10 +36,8 @@
 
                 <include
                     layout="@layout/stream_measurement_header_and_value"
-                    app:border="@{border}"
-                    app:tintColor="@{tintColor}"
-                    app:header="@{header}"
-                    app:value="@{value}" />
+                    app:model="@{model}"
+                    />
             </TableRow>
 
 
