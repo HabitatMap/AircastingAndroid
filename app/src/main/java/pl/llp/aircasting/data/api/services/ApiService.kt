@@ -4,6 +4,7 @@ import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.params.*
 import pl.llp.aircasting.data.api.responses.*
 import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.responses.search.geocoding.GeocodingResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -41,6 +42,12 @@ interface ApiService {
         @Path("sessionID") sessionID: Long,
         @Query("sensor_name") sensor_name: String
     ): StreamOfGivenSessionResponse
+
+    @GET(Constants.urlGoogleReverseGeocoding)
+    suspend fun getReversedGeocodingFromGoogleApi(
+        @Query("address") address: String,
+        @Query("key") key: String
+    ): GeocodingResponse
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
