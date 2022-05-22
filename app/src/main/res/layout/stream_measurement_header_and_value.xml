@@ -40,7 +40,8 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    app:tint="@{tintColor}" />
+                    setTint="@{0}"
+                    />
 
                 <TextView
                     android:id="@+id/measurement_value"
@@ -49,7 +50,7 @@
                     android:layout_marginEnd="8dp"
                     android:padding="@dimen/keyline_1"
                     android:paddingStart="3dp"
-                    android:text="@{value}"
+                    android:text="@{13}"
                     android:textColor="@color/aircasting_grey_700"
                     android:textSize="@dimen/text_size_xs" />
 
