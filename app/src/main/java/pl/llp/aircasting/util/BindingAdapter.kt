@@ -13,11 +13,12 @@ import pl.llp.aircasting.util.SearchHelper.Companion.formatTime
 
 object BindingAdapter {
     @JvmStatic
-    @BindingAdapter("tint")
+    @BindingAdapter("setTint", requireAll = true)
     fun ImageView.setImageTint(@ColorInt color: Int) {
-        setColorFilter(color)
-        imageTintList = ColorStateList.valueOf(color)
-        Log.i("ImageView", this.toString())
+        if (isSDKGreaterOrEqualToM()) {
+            setColorFilter(this.context.getColor(R.color.aircasting_pink))
+        }
+//        imageTintList = ColorStateList.valueOf(color)
     }
 
     @SuppressLint("SetTextI18n")
