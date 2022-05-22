@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.util.Log
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,10 +11,6 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.util.SearchHelper.Companion.formatDate
-import pl.llp.aircasting.util.SearchHelper.Companion.formatSensorName
-import pl.llp.aircasting.util.SearchHelper.Companion.formatTime
-import pl.llp.aircasting.util.SearchHelper.Companion.formatType
 import pl.llp.aircasting.util.styleGoogleMap
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
