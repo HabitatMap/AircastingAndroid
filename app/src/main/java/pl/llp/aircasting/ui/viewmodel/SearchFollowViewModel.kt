@@ -41,4 +41,20 @@ class SearchFollowViewModel @Inject constructor(
                 emit(Resource.error(null, message = e.message.toString()))
             }
         }
+
+    fun getReversedGeocodingFromGoogleApi(address: String, key: String) =
+        liveData(Dispatchers.IO) {
+            emit(Resource.loading(null))
+
+            try {
+                val mSessions =
+                    activeFixedRepo.getReversedGeocodingFromGoogleApi(
+                        address,
+                        key
+                    )
+                emit(mSessions)
+            } catch (e: Exception) {
+                emit(Resource.error(null, message = e.message.toString()))
+            }
+        }
 }
