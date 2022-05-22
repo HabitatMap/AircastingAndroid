@@ -15,7 +15,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
@@ -31,22 +34,20 @@ import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
-class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
-    GoogleMap.OnCameraIdleListener {
+class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var searchFollowViewModel: SearchFollowViewModel
-    lateinit var adapter: FixedFollowAdapter
-
-    private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
+    private lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
     private lateinit var mMap: GoogleMap
 
-    private val latLngs: ArrayList<LatLng> = arrayListOf()
+    private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
+    private val markerList = ArrayList<LatLng>()
     private val options = MarkerOptions()
     private var txtParameter: String? = null
     private var txtSensor: String? = null
@@ -61,6 +62,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
+        getSelectedAreaObserver()
     }
 
     private fun setupUI() {
@@ -79,6 +81,44 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         setupRecyclerView()
         setupSearchLayout()
+    }
+
+    // todo - I'm gonna need the api key - I couldn't enable it because of sanctions
+    private fun getSelectedAreaObserver() {
+        val address = intent.getStringExtra("address").toString()
+        searchFollowViewModel.getReversedGeocodingFromGoogleApi(
+            address,
+            "key"
+        ).observe(this) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    it.data?.results?.let { results ->
+                        results.forEach { data ->
+                            data.geometry.viewport.apply {
+                                val farLeftLat = northeast.lat
+                                val farLeftLong = northeast.lng
+                                val nearRightLat = southwest.lat
+                                val nearRightLong = southwest.lng
+
+                                getMapVisibleArea(
+                                    farLeftLat,
+                                    farLeftLong,
+                                    nearRightLat,
+                                    nearRightLong
+                                )
+                            }
+                        }
+                    }
+                    binding.progressBar.inVisible()
+                }
+                Status.ERROR -> {
+                    binding.progressBar.inVisible()
+                    Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT)
+                        .show()
+                }
+                Status.LOADING -> binding.progressBar.visible()
+            }
+        }
     }
 
     private fun setupSearchLayout() {
@@ -107,11 +147,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             when (it.status) {
                 Status.SUCCESS -> {
                     it.data?.sessions?.let { sessions ->
-
                         sessions.forEach { latLng ->
                             val getLats = latLng.latitude
-                            val getLongs = latLng.longitude
-                            latLngs.add(LatLng(getLats, getLongs))
+                            val getLngs = latLng.longitude
+                            markerList.add(LatLng(getLats, getLngs))
                         }
                         renderData(sessions.reversed())
                     }
@@ -143,19 +182,13 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val long = intent.getStringExtra("long")?.toDouble()
 
         styleGoogleMap(mMap, this)
-        mMap.setOnCameraIdleListener(this)
-
-        val myList: ArrayList<LatLng> = arrayListOf(
-            LatLng(50.06465009999999, 50.06465009999999),
-            LatLng(52.52000659999999, 13.404954)
-        )
-        // for testing purposes
 
         if (lat != null && long != null) {
-            myList.forEach {
+            markerList.forEach { markerData ->
                 mMap.addMarker(
                     options
-                        .position(it)
+                        .position(LatLng(markerData.latitude, markerData.longitude))
+                        .anchor(0.5f, 0.5f)
                         .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
                 )
             }
@@ -163,18 +196,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             // The selected location
             val theLocation = LatLng(lat, long)
             mMap.addMarker(options.position(theLocation))
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 5f), null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 5f))
         }
     }
 
-    private fun getMapVisibleRadius(mMap: GoogleMap) {
-        val visibleRegion: VisibleRegion = mMap.projection.visibleRegion
-
-        val farLeftLat = visibleRegion.farLeft.latitude // north
-        val farLeftLong = visibleRegion.farLeft.longitude // west
-        val nearRightLat = visibleRegion.nearRight.latitude // south
-        val nearRightLong = visibleRegion.nearRight.longitude // east
-
+    private fun getMapVisibleArea(
+        farLeftLat: Double,
+        farLeftLong: Double,
+        nearRightLat: Double,
+        nearRightLong: Double
+    ) {
         val square = GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
         var sensorInfo: SensorInformation? = null
 
@@ -187,11 +218,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         sensorInfo?.let { setupObserver(square, it) }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
-
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
         return ContextCompat.getDrawable(context, vectorResId)?.run {
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
@@ -202,8 +228,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    override fun onCameraIdle() {
-        getMapVisibleRadius(mMap)
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
-
 }
