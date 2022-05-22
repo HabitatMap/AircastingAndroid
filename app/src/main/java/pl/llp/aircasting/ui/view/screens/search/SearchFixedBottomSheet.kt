@@ -29,7 +29,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         super.setup()
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
         setupUI()
-        setObserver()
+        binding?.model = viewModel
     }
 
     private fun setupUI(){
@@ -40,25 +40,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         // Dummy data for showing on the map
         txtLat = 44.82112
         txtLong = 20.459113
-    }
-
-    private fun setObserver() {
-        viewModel.selectedSession.observe(this) {
-            binding?.apply {
-                title = it.title
-                startDate = formatDate(it.startTimeLocal)
-                startTime = formatTime(it.startTimeLocal)
-                endDate = formatDate(it.endTimeLocal)
-                endTime = formatTime(it.endTimeLocal)
-                type = formatType(it.type)
-                sensorName = formatSensorName(it.streams.sensor.sensorName)
-                header = it.streams.sensor.measurementShortType
-                // Testing
-                tintColor = R.color.aircasting_pink
-                Log.i("Color", tintColor.toString())
-                Log.i("Resource", R.color.aircasting_pink.toString())
-            }
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
