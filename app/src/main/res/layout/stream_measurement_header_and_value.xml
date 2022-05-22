@@ -3,23 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.graphics.drawable.Drawable" />
 
         <variable
-            name="border"
-            type="Drawable" />
-
-        <variable
-            name="header"
-            type="String" />
-
-        <variable
-            name="value"
-            type="String" />
-
-        <variable
-            name="tintColor"
-            type="Integer" />
+            name="model"
+            type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
     </data>
 
     <merge>
@@ -27,14 +14,13 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@{border}"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/measurement_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{header}"
+                android:text="@{model.selectedSession.streams.sensor.measurementShortType}"
                 android:textAlignment="center"
                 android:textColor="@color/aircasting_grey_700"
                 android:textSize="@dimen/text_size_xs" />
