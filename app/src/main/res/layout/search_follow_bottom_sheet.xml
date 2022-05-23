@@ -86,7 +86,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="@id/session_type"
-                    app:layout_constraintTop_toBottomOf="@id/session_type">
+                    app:layout_constraintTop_toBottomOf="@id/session_type"
+                    android:orientation="vertical"
+                    >
 
                     <include
                         layout="@layout/measurements_table_binding"
