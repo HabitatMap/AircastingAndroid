@@ -23,7 +23,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.responses.search.Session
+import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -62,6 +62,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
+        passLatLng()
         getSelectedAreaObserver()
     }
 
@@ -174,6 +175,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun showBottomSheetDialog(session: Session) {
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
+    }
+
+    private fun passLatLng() {
+        val lat = intent.getStringExtra("lat")?.toDouble()
+        val lng = intent.getStringExtra("long")?.toDouble()
+        if (lat != null && lng != null) {
+            searchFollowViewModel.getLat(lat)
+            searchFollowViewModel.getLng(lng)
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
