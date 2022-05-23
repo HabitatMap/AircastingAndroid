@@ -1,9 +1,9 @@
 package pl.llp.aircasting.data.model
 
 import com.google.common.collect.Lists
-import pl.llp.aircasting.data.api.repositories.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.api.responses.SessionStreamResponse
-import pl.llp.aircasting.data.api.responses.SessionStreamWithMeasurementsResponse
+import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.api.response.SessionStreamResponse
+import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.local.data_classes.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.data_classes.StreamWithLastMeasurementsDBObject
 import pl.llp.aircasting.data.local.data_classes.StreamWithMeasurementsDBObject

@@ -7,7 +7,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*

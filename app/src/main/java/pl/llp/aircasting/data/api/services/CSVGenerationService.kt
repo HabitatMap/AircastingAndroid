@@ -7,7 +7,7 @@ import pl.llp.aircasting.util.exceptions.CSVGenerationError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.CSVHelper
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.api.responses.SyncResponse
+import pl.llp.aircasting.data.api.response.SyncResponse
 import retrofit2.Call
 import java.io.IOException
 

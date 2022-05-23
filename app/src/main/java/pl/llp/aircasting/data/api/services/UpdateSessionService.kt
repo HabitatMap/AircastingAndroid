@@ -8,7 +8,7 @@ import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.params.SessionParams
 import pl.llp.aircasting.data.api.params.UpdateSessionBody
-import pl.llp.aircasting.data.api.responses.UpdateSessionResponse
+import pl.llp.aircasting.data.api.response.UpdateSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

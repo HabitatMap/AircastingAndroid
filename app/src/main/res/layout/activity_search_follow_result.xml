@@ -7,7 +7,7 @@
 
         <variable
             name="session"
-            type="pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes" />
+            type="pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

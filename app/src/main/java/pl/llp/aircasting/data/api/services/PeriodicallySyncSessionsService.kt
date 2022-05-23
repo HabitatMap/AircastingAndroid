@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.api.responses.SyncResponse
+import pl.llp.aircasting.data.api.response.SyncResponse
 import retrofit2.Call
 
 // We need this service to handle deleting sessions in quick succession.

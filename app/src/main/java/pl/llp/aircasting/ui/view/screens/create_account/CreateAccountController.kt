@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.api.responses.CreateAccountErrorResponse
+import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity

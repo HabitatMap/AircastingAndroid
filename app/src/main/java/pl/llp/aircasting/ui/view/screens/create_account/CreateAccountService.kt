@@ -7,8 +7,8 @@ import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.data.api.params.CreateAccountBody
 import pl.llp.aircasting.data.api.params.CreateAccountParams
-import pl.llp.aircasting.data.api.responses.CreateAccountErrorResponse
-import pl.llp.aircasting.data.api.responses.UserResponse
+import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
+import pl.llp.aircasting.data.api.response.UserResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import retrofit2.Call
 import retrofit2.Callback

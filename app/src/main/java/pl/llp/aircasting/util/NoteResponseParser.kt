@@ -3,7 +3,7 @@ package pl.llp.aircasting.util
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.ParseDateError
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.api.responses.NoteResponse
+import pl.llp.aircasting.data.api.response.NoteResponse
 import java.text.ParseException
 import java.util.*
 

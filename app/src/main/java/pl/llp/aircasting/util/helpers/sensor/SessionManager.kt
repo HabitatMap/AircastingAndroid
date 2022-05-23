@@ -7,7 +7,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.repositories.*
+import pl.llp.aircasting.data.api.repository.*
 import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.Measurement

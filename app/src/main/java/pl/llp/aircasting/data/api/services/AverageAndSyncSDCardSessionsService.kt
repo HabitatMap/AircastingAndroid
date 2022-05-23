@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.data.api.responses.SyncResponse
+import pl.llp.aircasting.data.api.response.SyncResponse
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import retrofit2.Call
 

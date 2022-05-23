@@ -9,8 +9,8 @@ import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.api.repositories.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError

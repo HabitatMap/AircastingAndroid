@@ -1,8 +1,8 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repository.MeasurementsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import java.io.File
 

@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.GzippedParams
 import pl.llp.aircasting.data.api.params.CreateSessionBody
 import pl.llp.aircasting.data.api.params.SessionParams
-import pl.llp.aircasting.data.api.responses.UploadSessionResponse
+import pl.llp.aircasting.data.api.response.UploadSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
