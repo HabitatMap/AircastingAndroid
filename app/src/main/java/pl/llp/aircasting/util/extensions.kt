@@ -11,6 +11,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -95,6 +96,10 @@ fun View.inVisible() {
 
 fun View.gone() {
     visibility = View.GONE
+}
+
+fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT){
+    Toast.makeText(this, message , duration).show()
 }
 
 val Context.isConnected: Boolean
