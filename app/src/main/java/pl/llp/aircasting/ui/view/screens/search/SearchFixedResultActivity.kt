@@ -226,6 +226,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         nearRightLat: Double,
         nearRightLong: Double
     ) {
+        //val square = GeoSquare(40.9175771, 40.4773991, -73.70027209999999, -74.25908989999999)
         val square = GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
         var sensorInfo: SensorInformation? = null
 
