@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -114,8 +113,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
-                    Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT)
-                        .show()
+                    showToast(it.message.toString())
                 }
                 Status.LOADING -> binding.progressBar.visible()
             }
@@ -159,8 +157,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
-                    Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT)
-                        .show()
+                    showToast(it.message.toString())
                 }
                 Status.LOADING -> binding.progressBar.visible()
             }
