@@ -22,17 +22,25 @@ import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.showToast
 
-class SessionManager(private val mContext: Context, private val apiService: ApiService, private val settings: Settings) {
+class SessionManager(
+    private val mContext: Context,
+    private val apiService: ApiService,
+    private val settings: Settings
+) {
     private val errorHandler = ErrorHandler(mContext)
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
     private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
-    private val fixedSessionDownloadMeasurementsService = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
-    private val periodicallySyncSessionsService = PeriodicallySyncSessionsService(settings, sessionsSyncService)
+    private val fixedSessionDownloadMeasurementsService =
+        PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
+    private val periodicallySyncSessionsService =
+        PeriodicallySyncSessionsService(settings, sessionsSyncService)
     private var averagingBackgroundService: AveragingBackgroundService? = null
-    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? = null
+    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
+        null
     private val sessionsRespository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val measurementsRepository = MeasurementsRepository()
@@ -81,12 +89,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     }
 
     @Subscribe
-    fun onMessageEvent(event: UpdateSessionEvent){
+    fun onMessageEvent(event: UpdateSessionEvent) {
         updateSession(event)
     }
 
     @Subscribe
-    fun onMessageEvent(event: ExportSessionEvent){
+    fun onMessageEvent(event: ExportSessionEvent) {
         exportSession(event)
     }
 
@@ -172,13 +180,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
             val fakeLocation = Session.Location.FAKE_LOCATION
             lat = fakeLocation.latitude
             lon = fakeLocation.longitude
-        }
-        else {
+        } else {
             val location = LocationHelper.lastLocation()
             lat = location?.latitude
             lon = location?.longitude
         }
-        val measurement = Measurement(event, lat , lon)
+        val measurement = Measurement(event, lat, lon)
 
         val deviceId = event.deviceId ?: return
 
@@ -189,8 +196,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     val measurementStreamId =
                         measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                     measurementsRepository.insert(measurementStreamId, sessionId, measurement)
-                    activeSessionMeasurementsRepository.createOrReplace(sessionId, measurementStreamId, measurement)
-                } catch( e: SQLiteConstraintException) {
+                    activeSessionMeasurementsRepository.createOrReplace(
+                        sessionId,
+                        measurementStreamId,
+                        measurement
+                    )
+                } catch (e: SQLiteConstraintException) {
                     errorHandler.handle(DBInsertException(e))
                 }
             }
@@ -273,11 +284,12 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
 
     private fun exportSession(event: ExportSessionEvent) {
         exportSessionService.export(event.email, event.session.uuid) {
-            Toast.makeText(
-                mContext,
-                mContext.getString(R.string.exported_session_service_success),
-                Toast.LENGTH_LONG
-            ).show()
+            mContext.apply {
+                showToast(
+                    getString(R.string.exported_session_service_success),
+                    Toast.LENGTH_LONG
+                )
+            }
         }
     }
 
@@ -296,7 +308,11 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
         }
     }
 
-    private fun markForRemoval(session: Session, streamsToDelete: List<MeasurementStream>?, callback: () -> Unit) {
+    private fun markForRemoval(
+        session: Session,
+        streamsToDelete: List<MeasurementStream>?,
+        callback: () -> Unit
+    ) {
         mCallback = callback
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
@@ -325,7 +341,7 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
     private fun addNote(event: NoteCreatedEvent) {
         DatabaseProvider.runQuery {
             val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
-            sessionId?.let{
+            sessionId?.let {
                 noteRepository.insert(sessionId, event.note)
             }
         }
@@ -351,8 +367,8 @@ class SessionManager(private val mContext: Context, private val apiService: ApiS
                     noteRepository.delete(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let {
-                    session -> updateSession(session)
+            if (event.session?.endTime != null) event.session.let { session ->
+                updateSession(session)
             }
         }
     }

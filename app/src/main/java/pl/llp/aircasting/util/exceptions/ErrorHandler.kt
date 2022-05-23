@@ -10,8 +10,9 @@ import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
+import pl.llp.aircasting.util.showToast
 
-class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper()) {
+class ErrorHandler(private val mContext: Context) : Handler(Looper.getMainLooper()) {
     private val TAG = "ErrorHandler"
     private val crashlytics = FirebaseCrashlytics.getInstance()
 
@@ -22,7 +23,12 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun handle(exception: BaseException) {
         exception.cause?.printStackTrace()
-        exception.messageToDisplay?.let { message -> if (exception.messageToDisplay is String) Log.e(TAG, message) }
+        exception.messageToDisplay?.let { message ->
+            if (exception.messageToDisplay is String) Log.e(
+                TAG,
+                message
+            )
+        }
 
         if (!BuildConfig.DEBUG) {
             exception.messageToDisplay?.let {
@@ -40,8 +46,7 @@ class ErrorHandler(private val mContext: Context): Handler(Looper.getMainLooper(
 
     fun showError(message: String?) {
         message?.let {
-            val toast = Toast.makeText(mContext, it, Toast.LENGTH_LONG)
-            toast.show()
+            mContext.showToast(it, Toast.LENGTH_LONG)
         }
     }
 

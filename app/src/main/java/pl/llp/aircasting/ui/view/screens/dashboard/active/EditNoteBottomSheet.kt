@@ -4,23 +4,25 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.AnimatedLoader
+import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
+import pl.llp.aircasting.util.AnimatedLoader
+import pl.llp.aircasting.util.showToast
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
     private var mSession: Session?,
     private val noteNumber: Int
-): BottomSheet() {
+) : BottomSheet() {
     interface Listener {
         fun saveChangesNotePressed(note: Note?, session: Session?)
         fun deleteNotePressed(note: Note?, session: Session?)
     }
+
     private var mNote: Note? = null
     private var noteInput: EditText? = null
     private var mLoader: ImageView? = null
@@ -58,7 +60,12 @@ class EditNoteBottomSheet(
 
     private fun saveChanges() {
         if (!ConnectivityManager.isConnected(context)) {
-            Toast.makeText(context, context?.getString(R.string.errors_network_required_edit), Toast.LENGTH_LONG).show()
+            context?.apply {
+                showToast(
+                    getString(R.string.errors_network_required_edit),
+                    Toast.LENGTH_LONG
+                )
+            }
             return
         }
 

@@ -276,7 +276,7 @@ class NewSessionController(
     }
 
     override fun validationFailed(errorMessage: String) {
-        Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG).show()
+        mContextActivity.showToast(errorMessage, Toast.LENGTH_LONG)
     }
 
     override fun onSessionDetailsContinueClicked(
