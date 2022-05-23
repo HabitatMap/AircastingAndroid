@@ -40,7 +40,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    setTint="@{0}"
+                    app:tint="@color/aircasting_blue_400"
                     />
 
                 <TextView
@@ -50,7 +50,7 @@
                     android:layout_marginEnd="8dp"
                     android:padding="@dimen/keyline_1"
                     android:paddingStart="3dp"
-                    android:text="@{13}"
+                    android:text="Test"
                     android:textColor="@color/aircasting_grey_700"
                     android:textSize="@dimen/text_size_xs" />
 
