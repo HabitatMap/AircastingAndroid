@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.login
 
-import pl.llp.aircasting.data.api.responses.UserResponse
+import pl.llp.aircasting.data.api.response.UserResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler

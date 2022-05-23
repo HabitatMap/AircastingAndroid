@@ -4,7 +4,7 @@ import android.content.Context
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionExportFailedError
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.data.api.responses.ExportSessionResponse
+import pl.llp.aircasting.data.api.response.ExportSessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

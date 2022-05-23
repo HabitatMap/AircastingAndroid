@@ -19,7 +19,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private var txtLat: Double? = null
-    private var txtLong: Double? = null
+    private var txtLng: Double? = null
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -28,26 +28,43 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun setup() {
         super.setup()
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
+
         setupUI()
+        getLatlngObserver()
         binding?.model = viewModel
     }
 
-    private fun setupUI(){
+    private fun setupUI() {
         val mapFragment =
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        // Dummy data for showing on the map
-        txtLat = 44.82112
-        txtLong = 20.459113
+        binding?.followBtn?.setOnClickListener {
+            onSessionFollowClicked()
+        }
+    }
+
+    private fun onSessionFollowClicked() {
+        // todo
+    }
+
+    private fun getLatlngObserver() {
+        viewModel.apply {
+            myLat.observe(requireActivity()) {
+                txtLat = it
+            }
+            myLng.observe(requireActivity()) {
+                txtLng = it
+            }
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         styleGoogleMap(mMap, requireActivity())
 
-        if (txtLat != null && txtLong != null) {
-            val myLocation = LatLng(txtLat!!, txtLong!!)
+        if (txtLat != null && txtLng != null) {
+            val myLocation = LatLng(txtLat!!, txtLng!!)
             mMap.addMarker(
                 MarkerOptions()
                     .position(myLocation)

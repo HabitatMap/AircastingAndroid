@@ -1,9 +1,9 @@
 package pl.llp.aircasting.util.helpers.services
 
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.api.repositories.MeasurementStreamsRepository
-import pl.llp.aircasting.data.api.repositories.MeasurementsRepository
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.api.repository.MeasurementsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartAveragesCreator

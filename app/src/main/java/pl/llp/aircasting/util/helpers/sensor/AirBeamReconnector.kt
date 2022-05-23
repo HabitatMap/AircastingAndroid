@@ -6,14 +6,15 @@ import android.widget.Toast
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.isIgnoringBatteryOptimizations
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.showToast
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
@@ -39,7 +40,8 @@ class AirBeamReconnector(
     private val RECONNECTION_TRIES_MAX = 15
     private val RECONNECTION_TRIES_INTERVAL = 15000L // 15s between reconnection tries
 
-    private val RECONNECTION_TRIES_RESET_DELAY = RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
+    private val RECONNECTION_TRIES_RESET_DELAY =
+        RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
     // greater than interval between tries so we don't trigger another try after we successfully reconnected
 
     fun registerListener(listener: Listener) {
@@ -52,7 +54,12 @@ class AirBeamReconnector(
         updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
-    fun reconnect(session: Session, deviceItem: DeviceItem?, errorCallback: () -> Unit, finallyCallback: () -> Unit) {
+    fun reconnect(
+        session: Session,
+        deviceItem: DeviceItem?,
+        errorCallback: () -> Unit,
+        finallyCallback: () -> Unit
+    ) {
         EventBus.getDefault().safeRegister(this)
 
         if (mReconnectionTriesNumber != null) {
@@ -86,21 +93,22 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) return
         mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1
-        reconnect(session, deviceItem, { mListener?.errorCallback() }, { mListener?.finallyCallback(session) })
+        reconnect(
+            session,
+            deviceItem,
+            { mListener?.errorCallback() },
+            { mListener?.finallyCallback(session) })
     }
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
         try {
-
-            // Checking if API M+ and battery optimization is enabled or not
             if (isSDKGreaterOrEqualToM()) {
                 if (!isIgnoringBatteryOptimizations(mContext)) {
                     val name = mContext.getString(R.string.app_name)
-                    Toast.makeText(
-                        mContext,
+                    mContext.showToast(
                         "Battery optimization -> All apps -> $name -> Don't optimize",
                         Toast.LENGTH_LONG
-                    ).show()
+                    )
                 }
             } else AirBeamReconnectSessionService.startService(
                 mContext,
@@ -119,7 +127,7 @@ class AirBeamReconnector(
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
             if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
-                reconnect(mSession!!, null,  mErrorCallback!!, mFinallyCallback!!)
+                reconnect(mSession!!, null, mErrorCallback!!, mFinallyCallback!!)
             }
         } else {
             mFinallyCallback?.invoke()
@@ -128,7 +136,9 @@ class AirBeamReconnector(
 
     private fun sendDisconnectedEvent(session: Session) {
         val deviceId = session.deviceId
-        deviceId?.let { EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid)) }
+        deviceId?.let {
+            EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid))
+        }
     }
 
     private fun updateSessionStatus(session: Session?, status: Session.Status) {

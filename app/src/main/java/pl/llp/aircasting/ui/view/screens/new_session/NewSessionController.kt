@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -276,7 +276,7 @@ class NewSessionController(
     }
 
     override fun validationFailed(errorMessage: String) {
-        Toast.makeText(mContextActivity, errorMessage, Toast.LENGTH_LONG).show()
+        mContextActivity.showToast(errorMessage, Toast.LENGTH_LONG)
     }
 
     override fun onSessionDetailsContinueClicked(

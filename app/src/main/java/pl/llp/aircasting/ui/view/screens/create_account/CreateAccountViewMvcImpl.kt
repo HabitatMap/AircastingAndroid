@@ -9,7 +9,7 @@ import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.api.responses.CreateAccountErrorResponse
+import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.Listener>, CreateAccountViewMvc {

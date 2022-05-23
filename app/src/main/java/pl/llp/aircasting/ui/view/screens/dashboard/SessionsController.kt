@@ -7,22 +7,26 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.api.repositories.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
-import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.util.CSVHelper
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.ShareHelper
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.CSVHelper
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.ShareHelper
+import pl.llp.aircasting.util.events.DeleteSessionEvent
+import pl.llp.aircasting.util.events.DeleteStreamsEvent
+import pl.llp.aircasting.util.events.ExportSessionEvent
+import pl.llp.aircasting.util.events.UpdateSessionEvent
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
+import pl.llp.aircasting.util.showToast
 
 
 abstract class SessionsController(
@@ -179,11 +183,12 @@ abstract class SessionsController(
 
     override fun onEditSessionClicked(session: Session) {
         if (!ConnectivityManager.isConnected(context)) {
-            Toast.makeText(
-                context,
-                context?.getString(R.string.errors_network_required_edit),
-                Toast.LENGTH_LONG
-            ).show()
+            context?.apply {
+                showToast(
+                    getString(R.string.errors_network_required_edit),
+                    Toast.LENGTH_LONG
+                )
+            }
             return
         }
         val onDownloadSuccess = { session: Session ->
@@ -212,11 +217,12 @@ abstract class SessionsController(
 
     override fun onDeleteSessionClicked(session: Session) {
         if (!ConnectivityManager.isConnected(context)) {
-            Toast.makeText(
-                context,
-                context?.getString(R.string.errors_network_required_delete_streams),
-                Toast.LENGTH_LONG
-            ).show()
+            context?.apply {
+                showToast(
+                    getString(R.string.errors_network_required_delete_streams),
+                    Toast.LENGTH_LONG
+                )
+            }
             return
         }
 

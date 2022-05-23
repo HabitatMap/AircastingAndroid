@@ -1,9 +1,9 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.data.api.repositories.SessionsRepository
+import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.api.responses.SessionWithMeasurementsResponse
+import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

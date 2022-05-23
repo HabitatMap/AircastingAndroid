@@ -4,7 +4,7 @@ import pl.llp.aircasting.data.local.data_classes.ActiveSessionMeasurementDBObjec
 import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.data.api.responses.MeasurementResponse
+import pl.llp.aircasting.data.api.response.MeasurementResponse
 import java.util.*
 
 class Measurement(

@@ -13,11 +13,12 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.isValidEmail
-import pl.llp.aircasting.util.setAppearance
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.util.isValidEmail
+import pl.llp.aircasting.util.setAppearance
+import pl.llp.aircasting.util.showToast
 
 class ShareSessionBottomSheet(
     private val mListener: Listener,
@@ -103,11 +104,7 @@ class ShareSessionBottomSheet(
 
     private fun showError() {
         emailInputLayout?.error = " "
-        Toast.makeText(
-            mContext,
-            getString(R.string.provided_email_is_not_correct),
-            Toast.LENGTH_LONG
-        ).show()
+        mContext?.showToast(getString(R.string.provided_email_is_not_correct), Toast.LENGTH_LONG)
     }
 
     fun shareLinkPressed() {

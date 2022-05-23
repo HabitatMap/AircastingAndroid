@@ -2,9 +2,9 @@ package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.params.*
-import pl.llp.aircasting.data.api.responses.*
-import pl.llp.aircasting.data.api.responses.search.SessionsInRegionsRes
-import pl.llp.aircasting.data.api.responses.search.geocoding.GeocodingResponse
+import pl.llp.aircasting.data.api.response.*
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.geocoding.GeocodingResponse
 import retrofit2.Call
 import retrofit2.http.*
 

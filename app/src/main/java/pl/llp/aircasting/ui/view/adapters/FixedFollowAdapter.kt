@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import pl.llp.aircasting.data.api.responses.search.Session
+import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 
 class FixedFollowAdapter constructor(

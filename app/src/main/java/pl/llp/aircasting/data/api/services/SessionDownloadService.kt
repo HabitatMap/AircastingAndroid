@@ -8,7 +8,7 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.data.api.params.SessionParams
-import pl.llp.aircasting.data.api.responses.SessionResponse
+import pl.llp.aircasting.data.api.response.SessionResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.repositories.ActiveFixedSessionsInRegionRepository
-import pl.llp.aircasting.data.api.responses.search.Session
+import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
+import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Resource
@@ -19,10 +19,23 @@ class SearchFollowViewModel @Inject constructor(
     private val mApp: AircastingApplication
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<Session>()
+    private val mutableLat = MutableLiveData<Double>()
+    private val mutableLng = MutableLiveData<Double>()
+
     val selectedSession: LiveData<Session> get() = mutableSelectedSession
+    val myLat: LiveData<Double> get() = mutableLat
+    val myLng: LiveData<Double> get() = mutableLng
 
     fun selectSession(session: Session) {
         mutableSelectedSession.value = session
+    }
+
+    fun getLat(lat: Double) {
+        mutableLat.value = lat
+    }
+
+    fun getLng(lng: Double){
+        mutableLng.value = lng
     }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
