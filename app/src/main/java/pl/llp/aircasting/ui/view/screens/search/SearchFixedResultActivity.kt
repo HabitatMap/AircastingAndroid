@@ -21,7 +21,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.Ozone
@@ -63,7 +62,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupUI()
         passLatLng()
-        getSelectedAreaObserver()
+        //getSelectedAreaObserver()
     }
 
     private fun setupUI() {
@@ -82,47 +81,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupRecyclerView()
         setupSearchLayout()
-    }
-
-    /** I'm gonna need the api key - I couldn't enable it because of sanctions
-     ** TODO considering this approach as Plan B because I couldn't figure it out how to refresh the map - there may be a better solution for it
-     *  - I was getting Geocoding parameters based on the setOnCameraIdleListener() callback method which works after map has been drawn
-     */
-
-    private fun getSelectedAreaObserver() {
-        val address = intent.getStringExtra("address").toString()
-        searchFollowViewModel.getReversedGeocodingFromGoogleApi(
-            address,
-            BuildConfig.PLACES_API_KEY
-        ).observe(this) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    it.data?.results?.let { results ->
-                        results.forEach { data ->
-                            data.geometry.viewport.apply {
-                                val farLeftLat = northeast.lat
-                                val farLeftLong = northeast.lng
-                                val nearRightLat = southwest.lat
-                                val nearRightLong = southwest.lng
-
-                                getMapVisibleArea(
-                                    farLeftLat,
-                                    farLeftLong,
-                                    nearRightLat,
-                                    nearRightLong
-                                )
-                            }
-                        }
-                    }
-                    binding.progressBar.inVisible()
-                }
-                Status.ERROR -> {
-                    binding.progressBar.inVisible()
-                    showToast(it.message.toString())
-                }
-                Status.LOADING -> binding.progressBar.visible()
-            }
-        }
     }
 
     private fun setupSearchLayout() {
@@ -154,6 +112,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
                         sessions.forEach { latLng ->
                             val getLats = latLng.latitude
                             val getLngs = latLng.longitude
+                            println("lat $getLats")
                             markerList.add(LatLng(getLats, getLngs))
                         }
                         renderData(sessions.reversed())
@@ -196,17 +155,24 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         styleGoogleMap(mMap, this)
 
         //dummy data for showing the items/cards in recyclerView
-        val farLeftLat = 50.35515688978048
-        val farLeftLong = 19.675315394997597
-        val nearRightLat = 49.77237328564033
-        val nearRightLong = 20.214644260704517
+
+        mMap.projection.visibleRegion.farLeft
+
+        //mMap.setOnCameraIdleListener(this)
+
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
 
         getMapVisibleArea(
-            farLeftLat,
-            farLeftLong,
-            nearRightLat,
-            nearRightLong
+            north,
+            west,
+            south,
+            east
         )
+        println("the $markerList")
 
         if (lat != null && long != null) {
             markerList.forEach { markerData ->
