@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.Ozone
@@ -83,12 +84,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         setupSearchLayout()
     }
 
-    // todo - I'm gonna need the api key - I couldn't enable it because of sanctions
+    /** I'm gonna need the api key - I couldn't enable it because of sanctions
+     ** TODO considering this approach as Plan B because I couldn't figure it out how to refresh the map - there may be a better solution for it
+     *  - I was getting Geocoding parameters based on the setOnCameraIdleListener() callback method which works after map has been drawn
+     */
+
     private fun getSelectedAreaObserver() {
         val address = intent.getStringExtra("address").toString()
         searchFollowViewModel.getReversedGeocodingFromGoogleApi(
             address,
-            "key"
+            BuildConfig.PLACES_API_KEY
         ).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
