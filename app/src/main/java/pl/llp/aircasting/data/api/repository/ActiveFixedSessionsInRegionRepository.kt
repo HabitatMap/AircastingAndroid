@@ -70,15 +70,15 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
         }
     }
 
-    suspend fun getReversedGeocodingFromGoogleApi(
-        address: String,
-        key: String
-    ): Resource<GeocodingResponse> {
-        return try {
-            val response = apiService.getReversedGeocodingFromGoogleApi(address, key)
-            responseHandler.handleSuccess(response)
-        } catch (e: Exception) {
-            responseHandler.handleException(e)
-        }
-    }
+//    suspend fun getReversedGeocodingFromGoogleApi(
+//        address: String,
+//        key: String
+//    ): Resource<GeocodingResponse> {
+//        return try {
+//            val response = apiService.getReversedGeocodingFromGoogleApi(address, key)
+//            responseHandler.handleSuccess(response)
+//        } catch (e: Exception) {
+//            responseHandler.handleException(e)
+//        }
+//    }
 }
