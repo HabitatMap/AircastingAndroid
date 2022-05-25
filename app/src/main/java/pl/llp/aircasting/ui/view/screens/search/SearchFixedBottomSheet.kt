@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -11,7 +12,9 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
+import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.util.styleGoogleMap
+import kotlin.math.roundToInt
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val viewModel: SearchFollowViewModel by activityViewModels()
@@ -32,6 +35,33 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         setupUI()
         getLatlngObserver()
         binding?.model = viewModel
+        setLastMeasurementsValue()
+    }
+
+    private fun setLastMeasurementsValue() {
+        var sessionId = viewModel.selectedSession.value?.id?.toLong()
+        var sensorName = viewModel.selectedSession.value?.streams?.sensor?.sensorName
+        if (sensorName != null && sessionId != null) {
+            // For Tests
+            sessionId = 1764780L
+            sensorName = "PurpleAir-PM2.5"
+            // For Tests
+            viewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        binding?.lastMeasurement =
+                            it.data?.lastMeasurementValue?.roundToInt().toString()
+                    }
+                    Status.LOADING -> {
+                        Toast.makeText(context, "Loading last measurements...", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    Status.ERROR -> {
+                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupUI() {
