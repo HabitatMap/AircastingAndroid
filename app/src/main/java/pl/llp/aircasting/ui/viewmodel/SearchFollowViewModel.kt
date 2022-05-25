@@ -22,14 +22,20 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableSelectedSession = MutableLiveData<Session>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
+    private val mutableThresholdColor = MutableLiveData<Int>()
     private var mSessionPresenter: SessionPresenter? = null
 
     val selectedSession: LiveData<Session> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
+    val thresholdColor: LiveData<Int> get() = mutableThresholdColor
 
     fun selectSession(session: Session) {
         mutableSelectedSession.value = session
+    }
+
+    fun selectColor(color: Int) {
+        mutableThresholdColor.value = color
     }
 
     fun getLat(lat: Double) {
