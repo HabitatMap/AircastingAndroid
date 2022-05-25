@@ -19,7 +19,7 @@ import pl.llp.aircasting.util.SearchHelper.Companion.formatType
 import pl.llp.aircasting.util.styleGoogleMap
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
-    private val viewModel: SearchFollowViewModel by activityViewModels()
+    private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
     private var binding: SearchFollowBottomSheetBinding? = null
 
     private lateinit var mMap: GoogleMap
@@ -44,17 +44,19 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding?.followBtn?.setOnClickListener {
-            onSessionFollowClicked()
-        }
+        binding?.followBtn?.setOnClickListener { onFollowClicked() }
     }
 
-    private fun onSessionFollowClicked() {
-        // todo
+    /** TODO: using the old implementation is not recommended!
+     * The followed sessions are being shown on the following tab from the DB all the time. This causes lots of memory waste for doing DB operations.
+     * We may have to change the way the followed sessions are being shown on the following tab after using MVVM.
+     * */
+    private fun onFollowClicked() {
+        searchFollowViewModel.onFollowSession()
     }
 
     private fun getLatlngObserver() {
-        viewModel.apply {
+        searchFollowViewModel.apply {
             myLat.observe(requireActivity()) {
                 txtLat = it
             }
@@ -65,7 +67,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun setObserver() {
-        viewModel.selectedSession.observe(this) {
+        searchFollowViewModel.selectedSession.observe(this) {
             binding?.apply {
                 title = it.title
                 startDate = formatDate(it.startTimeLocal)
