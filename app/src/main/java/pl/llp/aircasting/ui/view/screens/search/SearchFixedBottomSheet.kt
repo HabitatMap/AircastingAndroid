@@ -12,6 +12,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
+import pl.llp.aircasting.util.SensorThresholdColorPicker
 import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.util.styleGoogleMap
 import kotlin.math.roundToInt
@@ -49,8 +50,10 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             viewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
                 when (it.status) {
                     Status.SUCCESS -> {
-                        binding?.lastMeasurement =
-                            it.data?.lastMeasurementValue?.roundToInt().toString()
+                        val value = it.data?.lastMeasurementValue ?: 0.0
+                        binding?.lastMeasurement = value.roundToInt().toString()
+
+                        setThresholdColour(value)
                     }
                     Status.LOADING -> {
                         Toast.makeText(context, "Loading last measurements...", Toast.LENGTH_SHORT)
@@ -61,6 +64,16 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                     }
                 }
             }
+        }
+    }
+
+    private fun setThresholdColour(value: Double) {
+        val sensor = viewModel.selectedSession.value?.streams?.sensor
+        if (sensor != null) {
+            viewModel.selectColor(
+                SensorThresholdColorPicker(value, sensor)
+                    .getColor()
+            )
         }
     }
 
