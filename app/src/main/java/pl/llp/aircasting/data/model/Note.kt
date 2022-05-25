@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.model
 
-import pl.llp.aircasting.data.local.data_classes.NoteDBObject
+import pl.llp.aircasting.data.local.entity.NoteDBObject
 import java.util.*
 
 class Note(

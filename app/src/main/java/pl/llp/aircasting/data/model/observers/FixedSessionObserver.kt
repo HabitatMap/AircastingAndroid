@@ -2,7 +2,7 @@ package pl.llp.aircasting.data.model.observers
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import pl.llp.aircasting.data.local.data_classes.CompleteSessionDBObject
+import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter

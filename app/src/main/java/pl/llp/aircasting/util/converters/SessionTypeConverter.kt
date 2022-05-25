@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.local.converters
+package pl.llp.aircasting.util.converters
 
 import androidx.room.TypeConverter
 import pl.llp.aircasting.data.model.Session

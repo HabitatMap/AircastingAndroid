@@ -7,9 +7,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import kotlinx.coroutines.*
-import pl.llp.aircasting.data.local.converters.*
-import pl.llp.aircasting.data.local.data_classes.*
+import pl.llp.aircasting.data.local.dao.*
+import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.local.migrations.*
+import pl.llp.aircasting.util.converters.*
 
 @Database(
     entities = [SessionDBObject::class,

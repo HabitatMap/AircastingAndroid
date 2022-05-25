@@ -1,36 +1,8 @@
-package pl.llp.aircasting.data.local.data_classes
+package pl.llp.aircasting.data.local.dao
 
 import androidx.room.*
+import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import java.util.*
-
-@Entity(
-    tableName = "measurements",
-    foreignKeys = [
-        ForeignKey(
-            entity = MeasurementStreamDBObject::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("measurement_stream_id"),
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [
-        Index("measurement_stream_id"),
-        Index("session_id"),
-        Index(value = ["session_id", "measurement_stream_id", "time"], unique = true)
-    ]
-)
-data class MeasurementDBObject(
-    @ColumnInfo(name = "measurement_stream_id") val measurementStreamId: Long,
-    @ColumnInfo(name = "session_id") val sessionId: Long,
-    @ColumnInfo(name = "value") val value: Double,
-    @ColumnInfo(name = "time") val time: Date,
-    @ColumnInfo(name = "latitude") val latitude: Double?,
-    @ColumnInfo(name = "longitude") val longitude: Double?,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
-) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
-}
 
 @Dao
 interface MeasurementDao {
@@ -53,7 +25,10 @@ interface MeasurementDao {
     fun lastForStream(sessionId: Long, measurementStreamId: Long): MeasurementDBObject?
 
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId AND measurement_stream_id=:measurementStreamId ORDER BY time")
-    fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?>
+    fun getBySessionIdAndStreamId(
+        sessionId: Long,
+        measurementStreamId: Long
+    ): List<MeasurementDBObject?>
 
     @Query("DELETE FROM measurements")
     fun deleteAll()
@@ -71,26 +46,46 @@ interface MeasurementDao {
     fun getAverageMeasurementFromStreamInTimeFrame(streamId: Long, from: Date, to: Date): Float
 
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId AND time < :time ORDER BY time DESC LIMIT :limit")
-    fun getLastMeasurementsForStreamStartingFromHour(streamId: Long, limit: Int, time: Date): List<MeasurementDBObject?>
+    fun getLastMeasurementsForStreamStartingFromHour(
+        streamId: Long,
+        limit: Int,
+        time: Date
+    ): List<MeasurementDBObject?>
 
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId AND averaging_frequency=:averagingFrequency ORDER BY time DESC LIMIT :limit")
-    fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?>
+    fun getLastMeasurementsWithGivenAveragingFrequency(
+        streamId: Long,
+        limit: Int,
+        averagingFrequency: Int
+    ): List<MeasurementDBObject?>
 
     @Query("SELECT * FROM measurements WHERE averaging_frequency < :averagingFrequency AND measurement_stream_id=:streamId AND time <:thresholdCrossingTime")
-    fun getNonAveragedPreviousMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject>
+    fun getNonAveragedPreviousMeasurements(
+        streamId: Long,
+        averagingFrequency: Int,
+        thresholdCrossingTime: Date
+    ): List<MeasurementDBObject>
 
     @Query("SELECT * FROM measurements WHERE averaging_frequency < :averagingFrequency AND measurement_stream_id=:streamId AND time >:thresholdCrossingTime")
-    fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject>
+    fun getNonAveragedCurrentMeasurements(
+        streamId: Long,
+        averagingFrequency: Int,
+        thresholdCrossingTime: Date
+    ): List<MeasurementDBObject>
 
     @Query("SELECT COUNT(id) FROM measurements WHERE averaging_frequency < :newAveragingFrequency AND session_id=:sessionId AND time < :crossingThresholdTime")
-    fun getNonAveragedPreviousMeasurementsCount(sessionId: Long, crossingThresholdTime: Date, newAveragingFrequency: Int): Int
+    fun getNonAveragedPreviousMeasurementsCount(
+        sessionId: Long,
+        crossingThresholdTime: Date,
+        newAveragingFrequency: Int
+    ): Int
 
     @Query("SELECT COUNT(id) FROM measurements WHERE averaging_frequency> 1 AND session_id=:sessionId AND time > :crossingThresholdTime")
     fun getNonAveragedCurrentMeasurementsCount(sessionId: Long, crossingThresholdTime: Date): Int
 
     @Transaction
     fun deleteInTransaction(streamId: Long, lastExpectedMeasurementDate: Date) {
-        delete(streamId, lastExpectedMeasurementDate )
+        delete(streamId, lastExpectedMeasurementDate)
     }
 
     @Transaction

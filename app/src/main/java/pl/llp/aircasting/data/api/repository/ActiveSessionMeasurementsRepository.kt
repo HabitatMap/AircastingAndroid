@@ -3,8 +3,8 @@ package pl.llp.aircasting.data.api.repository
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.data_classes.ActiveSessionMeasurementDBObject
-import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
+import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
+import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*

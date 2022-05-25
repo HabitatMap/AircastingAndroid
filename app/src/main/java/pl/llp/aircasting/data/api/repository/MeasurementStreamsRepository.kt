@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.repository
 
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.data_classes.MeasurementStreamDBObject
+import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 
 class MeasurementStreamsRepository {

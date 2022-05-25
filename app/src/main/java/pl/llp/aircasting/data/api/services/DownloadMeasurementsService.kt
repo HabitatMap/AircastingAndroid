@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.data_classes.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.api.repository.MeasurementsRepository

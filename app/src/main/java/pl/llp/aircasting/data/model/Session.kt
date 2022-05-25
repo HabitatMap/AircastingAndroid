@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.model
 
-import pl.llp.aircasting.data.local.data_classes.*
+import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem

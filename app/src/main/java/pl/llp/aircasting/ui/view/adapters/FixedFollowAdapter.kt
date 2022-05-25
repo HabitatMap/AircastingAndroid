@@ -10,21 +10,22 @@ class FixedFollowAdapter constructor(
     private val sessions: ArrayList<Session>,
     private val onItemClicked: (Session) -> Unit
 ) : RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
+    private var cardLat: Double? = null
+    private var cardLng: Double? = null
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,
         private val onItemClicked: (Int) -> Unit
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.root.setOnClickListener {
-                onItemClicked(bindingAdapterPosition)
-            }
-        }
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(sessions: Session) {
             binding.mySessions = sessions
             binding.executePendingBindings()
+
+            binding.root.setOnClickListener { onItemClicked(bindingAdapterPosition) }
+
+            cardLat = sessions.latitude
+            cardLng = sessions.longitude
         }
     }
 
