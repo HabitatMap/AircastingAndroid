@@ -68,8 +68,8 @@
                 android:background="@drawable/my_gradient_transparent_drawable"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -111,8 +111,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_5"
-                    android:text='@{@string/sessions_showing + " " + session.fetchableSessionsCount + " " + @string/of + " " + session.fetchableSessionsCount + " " + @string/results}'
                     android:textColor="@android:color/background_dark"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerFixedFollow"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:text="Sessions showing 9 of 9 results" />
@@ -134,7 +134,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <ProgressBar
             android:id="@+id/progressBar"
