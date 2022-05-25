@@ -1,11 +1,15 @@
 package pl.llp.aircasting.util
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
 import pl.llp.aircasting.util.SearchHelper.Companion.formatDate
@@ -26,16 +30,21 @@ object BindingAdapter {
 
     @JvmStatic
     @BindingAdapter("setLayoutColors", requireAll = true)
-    fun LinearLayout.setLayoutColors(@ColorInt color: Int) {
-        if (isSDKGreaterOrEqualToM()) {
-            background = SelectedSensorBorder(context.getColor(R.color.aircasting_pink))
-            val circle = findViewById<ImageView>(R.id.circle_indicator)
-            circle.setColorFilter(context.getColor(R.color.aircasting_pink))
-        } else {
-            background = SelectedSensorBorder(context.resources.getColor(R.color.aircasting_pink))
-            val circle = findViewById<ImageView>(R.id.circle_indicator)
-            circle.setColorFilter(context.resources.getColor(R.color.aircasting_pink))
+    fun LinearLayout.setLayoutColors(colorData: LiveData<Int>) {
+        findViewTreeLifecycleOwner()?.let { lifecycleOwner ->
+            colorData.observe(lifecycleOwner) {
+                val color =
+                    if (isSDKGreaterOrEqualToM())
+                        context.getColor(it)
+                    else context.resources.getColor(it)
+
+                background = SelectedSensorBorder(color)
+
+                val circle = findViewById<ImageView>(R.id.circle_indicator)
+                circle.setColorFilter(color)
+            }
         }
+
     }
 
     @SuppressLint("SetTextI18n")
