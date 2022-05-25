@@ -2,7 +2,6 @@ package pl.llp.aircasting.data.api
 
 object Constants {
     const val baseUrl = "http://aircasting.org/"
-    const val urlGoogleReverseGeocoding = "https://maps.googleapis.com/maps/api/geocode/json"
 
     /* GET Requests */
     const val urlSessionInGivenLocation = "/api/fixed/active/sessions.json"

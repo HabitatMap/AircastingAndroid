@@ -1,15 +1,14 @@
 package pl.llp.aircasting.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.isConnected
 import javax.inject.Inject
@@ -21,6 +20,7 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableSelectedSession = MutableLiveData<Session>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
+    private var mSessionPresenter: SessionPresenter? = null
 
     val selectedSession: LiveData<Session> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -34,8 +34,12 @@ class SearchFollowViewModel @Inject constructor(
         mutableLat.value = lat
     }
 
-    fun getLng(lng: Double){
+    fun getLng(lng: Double) {
         mutableLng.value = lng
+    }
+
+    fun onFollowSession() = viewModelScope.launch(Dispatchers.IO) {
+        //
     }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
@@ -55,19 +59,4 @@ class SearchFollowViewModel @Inject constructor(
             }
         }
 
-    fun getReversedGeocodingFromGoogleApi(address: String, key: String) =
-        liveData(Dispatchers.IO) {
-            emit(Resource.loading(null))
-
-            try {
-                val mSessions =
-                    activeFixedRepo.getReversedGeocodingFromGoogleApi(
-                        address,
-                        key
-                    )
-                emit(mSessions)
-            } catch (e: Exception) {
-                emit(Resource.error(null, message = e.message.toString()))
-            }
-        }
 }
