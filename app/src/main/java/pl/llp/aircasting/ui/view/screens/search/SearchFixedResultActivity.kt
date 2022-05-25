@@ -73,7 +73,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         lat = intent.getStringExtra("lat")
         lng = intent.getStringExtra("long")
-
         txtParameter = intent.getStringExtra("txtParameter")
         txtSensor = intent.getStringExtra("txtSensor")
 
@@ -109,16 +108,22 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    it.data?.sessions?.let { sessions ->
+                    binding.apply {
+                        progressBar.inVisible()
+                        txtSessions.visible()
+                    }
+                    it.data?.let { data ->
+                        val sessions = data.sessions
+                        val count = data.fetchableSessionsCount
+
                         for (i in sessions.indices) {
                             val getLats = sessions[i].latitude
                             val getLngs = sessions[i].longitude
                             createMarkers(getLats, getLngs)
                         }
-
+                        binding.txtSessions.text = getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
                         renderData(sessions.reversed())
                     }
-                    binding.progressBar.inVisible()
                 }
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
@@ -140,11 +145,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun passLatLng() {
-        val lat = intent.getStringExtra("lat")?.toDouble()
-        val lng = intent.getStringExtra("long")?.toDouble()
-        if (lat != null && lng != null) {
-            searchFollowViewModel.getLat(lat)
-            searchFollowViewModel.getLng(lng)
+        val selectedLat = lat?.toDouble()
+        val selectedLng = lng?.toDouble()
+        if (selectedLat != null && selectedLng != null) {
+            searchFollowViewModel.getLat(selectedLat)
+            searchFollowViewModel.getLng(selectedLng)
         }
     }
 
