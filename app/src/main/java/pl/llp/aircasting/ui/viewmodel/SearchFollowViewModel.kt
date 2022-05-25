@@ -26,22 +26,6 @@ class SearchFollowViewModel @Inject constructor(
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
 
-    fun selectSession(session: Session) {
-        mutableSelectedSession.value = session
-    }
-
-    fun getLat(lat: Double) {
-        mutableLat.value = lat
-    }
-
-    fun getLng(lng: Double) {
-        mutableLng.value = lng
-    }
-
-    fun onFollowSession() = viewModelScope.launch(Dispatchers.IO) {
-        //
-    }
-
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
         liveData(Dispatchers.IO) {
             emit(Resource.loading(null))
@@ -59,4 +43,19 @@ class SearchFollowViewModel @Inject constructor(
             }
         }
 
+    fun selectSession(session: Session) {
+        mutableSelectedSession.value = session
+    }
+
+    fun getLat(lat: Double) {
+        mutableLat.value = lat
+    }
+
+    fun getLng(lng: Double) {
+        mutableLng.value = lng
+    }
+
+    fun onFollowSession() = viewModelScope.launch(Dispatchers.IO) {
+        //
+    }
 }
