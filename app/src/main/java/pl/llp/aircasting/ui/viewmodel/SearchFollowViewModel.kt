@@ -5,6 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
+import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
+import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
@@ -59,4 +61,17 @@ class SearchFollowViewModel @Inject constructor(
             }
         }
 
+    fun getLastStreamFromSelectedSession(
+        sessionId: Long,
+        sensorName: String
+    ): LiveData<Resource<StreamOfGivenSessionResponse>> =
+        liveData(Dispatchers.IO) {
+            emit(Resource.loading(null))
+
+            val stream = activeFixedRepo.getStreamOfGivenSession(
+                sessionId,
+                sensorName
+            )
+            emit(stream)
+        }
 }
