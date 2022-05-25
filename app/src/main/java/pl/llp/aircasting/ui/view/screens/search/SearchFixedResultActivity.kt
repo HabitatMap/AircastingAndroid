@@ -30,7 +30,8 @@ import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
-class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
+class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
+    GoogleMap.OnMarkerClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -121,7 +122,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
                             val getLngs = sessions[i].longitude
                             createMarkers(getLats, getLngs)
                         }
-                        binding.txtSessions.text = getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+                        binding.txtSessions.text =
+                            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
                         renderData(sessions.reversed())
                     }
                 }
@@ -151,28 +153,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
             searchFollowViewModel.getLat(selectedLat)
             searchFollowViewModel.getLng(selectedLng)
         }
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        val north = mMap.projection.visibleRegion.farLeft.latitude
-        val west = mMap.projection.visibleRegion.farLeft.longitude
-        val south = mMap.projection.visibleRegion.nearRight.latitude
-        val east = mMap.projection.visibleRegion.nearRight.longitude
-        getMapVisibleArea(north, south, east, west)
-        // sending GeoCoding to retrieve array for showing dots
-
-        styleGoogleMap(mMap, this)
-
-        val selectedLat = lat?.toDouble()
-        val selectedLng = lng?.toDouble()
-        if (selectedLat != null && selectedLng != null) {
-            val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.addMarker(options.position(theLocation))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 5f))
-        }
-        // The selected location marker
     }
 
     private fun getMapVisibleArea(north: Double, south: Double, east: Double, west: Double) {
@@ -205,6 +185,36 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
             draw(Canvas(bitmap))
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
+        getMapVisibleArea(north, south, east, west)
+
+        styleGoogleMap(mMap, this)
+
+        val selectedLat = lat?.toDouble()
+        val selectedLng = lng?.toDouble()
+        if (selectedLat != null && selectedLng != null) {
+            val theLocation = LatLng(selectedLat, selectedLng)
+            mMap.addMarker(options.position(theLocation))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+        }
+
+        mMap.setOnMarkerClickListener(this)
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        val lat = marker.position.latitude
+        val lng = marker.position.longitude
+
+        // the logic to match the selected marker with the cardView
+        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
