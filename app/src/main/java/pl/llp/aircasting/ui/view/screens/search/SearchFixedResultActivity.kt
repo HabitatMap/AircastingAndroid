@@ -14,10 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
@@ -46,10 +43,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
-    private val markerList = ArrayList<LatLng>()
+
     private val options = MarkerOptions()
     private var txtParameter: String? = null
     private var txtSensor: String? = null
+    private var lat: String? = null
+    private var lng: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +61,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupUI()
         passLatLng()
-        //getSelectedAreaObserver()
     }
 
     private fun setupUI() {
@@ -72,6 +70,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+
+        lat = intent.getStringExtra("lat")
+        lng = intent.getStringExtra("long")
 
         txtParameter = intent.getStringExtra("txtParameter")
         txtSensor = intent.getStringExtra("txtSensor")
@@ -109,12 +110,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
             when (it.status) {
                 Status.SUCCESS -> {
                     it.data?.sessions?.let { sessions ->
-                        sessions.forEach { latLng ->
-                            val getLats = latLng.latitude
-                            val getLngs = latLng.longitude
-                            println("lat $getLats")
-                            markerList.add(LatLng(getLats, getLngs))
+                        for (i in sessions.indices) {
+                            val getLats = sessions[i].latitude
+                            val getLngs = sessions[i].longitude
+                            createMarkers(getLats, getLngs)
                         }
+
                         renderData(sessions.reversed())
                     }
                     binding.progressBar.inVisible()
@@ -149,55 +150,28 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val lat = intent.getStringExtra("lat")?.toDouble()
-        val long = intent.getStringExtra("long")?.toDouble()
-
-        styleGoogleMap(mMap, this)
-
-        //dummy data for showing the items/cards in recyclerView
-
-        mMap.projection.visibleRegion.farLeft
-
-        //mMap.setOnCameraIdleListener(this)
 
         val north = mMap.projection.visibleRegion.farLeft.latitude
         val west = mMap.projection.visibleRegion.farLeft.longitude
-
         val south = mMap.projection.visibleRegion.nearRight.latitude
         val east = mMap.projection.visibleRegion.nearRight.longitude
+        getMapVisibleArea(north, south, east, west)
+        // sending GeoCoding to retrieve array for showing dots
 
-        getMapVisibleArea(
-            north,
-            west,
-            south,
-            east
-        )
-        println("the $markerList")
+        styleGoogleMap(mMap, this)
 
-        if (lat != null && long != null) {
-            markerList.forEach { markerData ->
-                mMap.addMarker(
-                    options
-                        .position(LatLng(markerData.latitude, markerData.longitude))
-                        .anchor(0.5f, 0.5f)
-                        .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
-                )
-            }
-
-            // The selected location
-            val theLocation = LatLng(lat, long)
+        val selectedLat = lat?.toDouble()
+        val selectedLng = lng?.toDouble()
+        if (selectedLat != null && selectedLng != null) {
+            val theLocation = LatLng(selectedLat, selectedLng)
             mMap.addMarker(options.position(theLocation))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 5f))
         }
+        // The selected location marker
     }
 
-    private fun getMapVisibleArea(
-        farLeftLat: Double,
-        farLeftLong: Double,
-        nearRightLat: Double,
-        nearRightLong: Double
-    ) {
-        val square = GeoSquare(farLeftLat, nearRightLong, nearRightLat, farLeftLong)
+    private fun getMapVisibleArea(north: Double, south: Double, east: Double, west: Double) {
+        val square = GeoSquare(north, south, east, west)
         var sensorInfo: SensorInformation? = null
 
         when (txtSensor) {
@@ -207,6 +181,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback {
             "openaq-o3" -> sensorInfo = Ozone.OPEN_AQ
         }
         sensorInfo?.let { setupObserver(square, it) }
+    }
+
+    private fun createMarkers(lat: Double, lng: Double): Marker? {
+        return mMap.addMarker(
+            options
+                .position(LatLng(lat, lng))
+                .anchor(0.5f, 0.5f)
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
+        )
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
