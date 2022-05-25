@@ -40,13 +40,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun setLastMeasurementsValue() {
-        var sessionId = viewModel.selectedSession.value?.id?.toLong()
-        var sensorName = viewModel.selectedSession.value?.streams?.sensor?.sensorName
+        val sessionId = viewModel.selectedSession.value?.id?.toLong()
+        val sensorName = viewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
-            // For Tests
-            sessionId = 1764780L
-            sensorName = "PurpleAir-PM2.5"
-            // For Tests
             viewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
                 when (it.status) {
                     Status.SUCCESS -> {
