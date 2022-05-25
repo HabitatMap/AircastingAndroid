@@ -1,8 +1,8 @@
 package pl.llp.aircasting.util
 
 import android.annotation.SuppressLint
-import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.databinding.BindingAdapter
@@ -12,15 +12,6 @@ import pl.llp.aircasting.util.SearchHelper.Companion.formatDate
 import pl.llp.aircasting.util.SearchHelper.Companion.formatTime
 
 object BindingAdapter {
-    @JvmStatic
-    @BindingAdapter("setTint", requireAll = true)
-    fun ImageView.setImageTint(@ColorInt color: Int) {
-        if (isSDKGreaterOrEqualToM()) {
-            setColorFilter(this.context.getColor(R.color.aircasting_pink))
-        }
-//        imageTintList = ColorStateList.valueOf(color)
-    }
-
     @SuppressLint("SetTextI18n")
     @JvmStatic
     @BindingAdapter("formatDateStart", "formatDateEnd", requireAll = true)
@@ -34,10 +25,16 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("setSelectedSensorBorderBackgroundDrawable")
-    fun View.setSelectedSensorBorderBackgroundDrawable(@ColorInt color: Int) {
+    @BindingAdapter("setLayoutColors", requireAll = true)
+    fun LinearLayout.setLayoutColors(@ColorInt color: Int) {
         if (isSDKGreaterOrEqualToM()) {
-            background = SelectedSensorBorder(this.context.getColor(R.color.aircasting_pink))
+            background = SelectedSensorBorder(context.getColor(R.color.aircasting_pink))
+            val circle = findViewById<ImageView>(R.id.circle_indicator)
+            circle.setColorFilter(context.getColor(R.color.aircasting_pink))
+        } else {
+            background = SelectedSensorBorder(context.resources.getColor(R.color.aircasting_pink))
+            val circle = findViewById<ImageView>(R.id.circle_indicator)
+            circle.setColorFilter(context.resources.getColor(R.color.aircasting_pink))
         }
     }
 
