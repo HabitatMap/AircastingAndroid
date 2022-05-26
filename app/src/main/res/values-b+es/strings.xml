@@ -395,5 +395,6 @@
     <string name="unauth">No autorizado</string>
     <string name="not_found">Extraviado</string>
     <string name="internal_error">Error de servidor interno</string>
+    <string name="loading_measurements">Loading last measurements…</string>
 
 </resources>

@@ -506,4 +506,5 @@
 
     <!-- Search and Follow -->
     <string name="close">Close</string>
+    <string name="loading_measurements">Loading last measurements…</string>
 </resources>

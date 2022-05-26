@@ -393,6 +393,7 @@
     <string name="unauth">Non autorisé</string>
     <string name="not_found">Pas trouvé</string>
     <string name="internal_error">Erreur Interne du Serveur</string>
+    <string name="loading_measurements">Loading last measurements…</string>
 
 
 </resources>
