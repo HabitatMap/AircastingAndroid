@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.local.data_classes
+package pl.llp.aircasting.data.local.entity
 
 import androidx.room.*
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -35,7 +35,7 @@ data class MeasurementStreamDBObject(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    constructor(sessionId: Long, measurementStream: MeasurementStream): this(
+    constructor(sessionId: Long, measurementStream: MeasurementStream) : this(
         sessionId,
         measurementStream.sensorPackageName,
         measurementStream.sensorName,
@@ -50,28 +50,4 @@ data class MeasurementStreamDBObject(
         measurementStream.thresholdVeryHigh,
         measurementStream.deleted
     )
-}
-
-@Dao
-interface MeasurementStreamDao {
-    @Query("SELECT * FROM measurement_streams")
-    fun getAll(): List<MeasurementStreamDBObject>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(measurementStream: MeasurementStreamDBObject): Long
-
-    @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
-    fun loadStreamBySessionIdAndSensorName(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
-
-    @Query("SELECT id FROM measurement_streams WHERE session_id in (:sessionIds)")
-    fun getStreamsIdsBySessionIds(sessionIds: List<Long>): List<Long>
-
-    @Query("DELETE FROM measurement_streams")
-    fun deleteAll()
-
-    @Query("UPDATE measurement_streams SET deleted=1 WHERE session_id=:sessionId AND sensor_name=:sensorName")
-    fun markForRemoval(sessionId: Long, sensorName: String)
-
-    @Query("DELETE FROM measurement_streams WHERE deleted=1")
-    fun deleteMarkedForRemoval()
 }

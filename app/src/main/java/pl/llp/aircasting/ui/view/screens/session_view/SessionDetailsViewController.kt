@@ -9,8 +9,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
-import pl.llp.aircasting.data.local.data_classes.SessionDBObject
+import pl.llp.aircasting.data.local.entity.MeasurementDBObject
+import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.api.repository.MeasurementsRepository
 import pl.llp.aircasting.data.api.repository.SessionsRepository

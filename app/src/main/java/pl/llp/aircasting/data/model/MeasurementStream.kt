@@ -4,9 +4,9 @@ import com.google.common.collect.Lists
 import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
-import pl.llp.aircasting.data.local.data_classes.MeasurementStreamDBObject
-import pl.llp.aircasting.data.local.data_classes.StreamWithLastMeasurementsDBObject
-import pl.llp.aircasting.data.local.data_classes.StreamWithMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
+import pl.llp.aircasting.data.local.entity.StreamWithLastMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.StreamWithMeasurementsDBObject
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
