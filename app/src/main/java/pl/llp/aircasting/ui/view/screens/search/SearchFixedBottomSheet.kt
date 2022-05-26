@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -12,9 +13,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.util.SensorThresholdColorPicker
-import pl.llp.aircasting.util.Status
-import pl.llp.aircasting.util.styleGoogleMap
+import pl.llp.aircasting.util.*
 import kotlin.math.roundToInt
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
@@ -25,6 +24,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private var txtLat: Double? = null
     private var txtLng: Double? = null
+    private lateinit var loader: AnimatedLoader
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -35,9 +35,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
 
 
+        binding?.model = searchFollowViewModel
         setupUI()
         getLatlngObserver()
-        binding?.model = searchFollowViewModel
         observeLastMeasurementsValue()
     }
 
@@ -48,17 +48,19 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
                 when (it.status) {
                     Status.SUCCESS -> {
+                        loader.stop()
+
                         val value = it.data?.lastMeasurementValue ?: 0.0
                         binding?.lastMeasurement = value.roundToInt().toString()
 
                         setThresholdColour(value)
                     }
                     Status.LOADING -> {
-                        Toast.makeText(context, getString(R.string.loading_measurements), Toast.LENGTH_SHORT)
-                            .show()
+                        loader.start()
                     }
                     Status.ERROR -> {
-                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                        loader.stop()
+                        context?.showToast(it.message.toString())
                     }
                 }
             }
@@ -77,10 +79,13 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun setupUI() {
         mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(pl.llp.aircasting.R.id.mapViewBottomSheet) as? SupportMapFragment
+            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
         binding?.followBtn?.setOnClickListener { onFollowClicked() }
+
+        val loaderImage = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
+        loader = AnimatedLoader(loaderImage)
     }
 
     /** TODO: using the old implementation is not recommended!
