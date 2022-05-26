@@ -34,17 +34,18 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         super.setup()
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
 
+
         setupUI()
         getLatlngObserver()
-        binding?.model = viewModel
+        binding?.model = searchFollowViewModel
         observeLastMeasurementsValue()
     }
 
     private fun observeLastMeasurementsValue() {
-        val sessionId = viewModel.selectedSession.value?.id?.toLong()
-        val sensorName = viewModel.selectedSession.value?.streams?.sensor?.sensorName
+        val sessionId = searchFollowViewModel.selectedSession.value?.id?.toLong()
+        val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
-            viewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
+            searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
                 when (it.status) {
                     Status.SUCCESS -> {
                         val value = it.data?.lastMeasurementValue ?: 0.0
@@ -65,9 +66,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun setThresholdColour(value: Double) {
-        val sensor = viewModel.selectedSession.value?.streams?.sensor
+        val sensor = searchFollowViewModel.selectedSession.value?.streams?.sensor
         if (sensor != null) {
-            viewModel.selectColor(
+            searchFollowViewModel.selectColor(
                 SensorThresholdColorPicker(value, sensor)
                     .getColor()
             )
