@@ -87,7 +87,7 @@
 
                 <LinearLayout
                     android:id="@+id/measurements_table_layout"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="@id/session_type"
