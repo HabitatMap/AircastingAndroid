@@ -56,7 +56,7 @@ class MeasurementColor {
             if (context == null) {
                 return 0
             }
-            return ResourcesCompat.getColor(context?.resources, colorId, null)
+            return ResourcesCompat.getColor(context.resources, colorId, null)
         }
     }
 }

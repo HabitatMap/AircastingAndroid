@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 
-class SessionDetailsViewFactory() {
+class SessionDetailsViewFactory {
     companion object {
         fun get(
             inflater: LayoutInflater,

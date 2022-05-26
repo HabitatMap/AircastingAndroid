@@ -68,7 +68,7 @@ class HexMessagesBuilder {
         val hex = StringBuilder()
 
         for (ch in chars) {
-            hex.append(Integer.toHexString(ch.toInt()))
+            hex.append(Integer.toHexString(ch.code))
         }
 
         return hex.toString()

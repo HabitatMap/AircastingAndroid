@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 
-class AirBeamConnectedFragment() : BaseFragment<AirBeamConnectedViewMvcImpl, AirBeamConnectedController>() {
+class AirBeamConnectedFragment : BaseFragment<AirBeamConnectedViewMvcImpl, AirBeamConnectedController>() {
 
     lateinit var listener: AirBeamConnectedViewMvc.Listener
     lateinit var deviceItem: DeviceItem

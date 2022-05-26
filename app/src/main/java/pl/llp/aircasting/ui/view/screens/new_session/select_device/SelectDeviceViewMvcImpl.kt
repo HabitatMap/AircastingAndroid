@@ -19,6 +19,7 @@ import kotlinx.coroutines.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import java.util.*
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {
@@ -42,13 +43,13 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         this.rootView?.select_device_header?.text = headerDescription
 
         mRecyclerDevices = this.rootView?.recycler_devices
-        mRecyclerDevices?.setLayoutManager(LinearLayoutManager(rootView!!.context))
+        mRecyclerDevices?.layoutManager = LinearLayoutManager(rootView!!.context)
         mAdapter = GroupAdapter()
         mAdapter.setOnItemClickListener { item, view ->
             val recyclerViewItem = item as? RecyclerViewDeviceItem
             recyclerViewItem?.let { onDeviceItemSelected(it) }
         }
-        mRecyclerDevices?.setAdapter(mAdapter)
+        mRecyclerDevices?.adapter = mAdapter
         mRefreshButton = this.rootView?.refresh_button
         mRefreshButton?.setOnClickListener {
             onRefreshClicked()
@@ -72,7 +73,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             } else {
                 viewHolder.itemView.radio.setImageResource(R.drawable.ic_radio)
             }
-            viewHolder.itemView.label.text = deviceItem.name.toUpperCase()
+            viewHolder.itemView.label.text = deviceItem.name.uppercase(Locale.getDefault())
         }
     }
 

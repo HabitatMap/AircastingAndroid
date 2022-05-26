@@ -19,7 +19,7 @@ open class ActiveSessionActionsBottomSheet(
     }
 
     override fun layoutId(): Int {
-        return R.layout.active_session_actions;
+        return R.layout.active_session_actions
     }
 
     override fun setup() {

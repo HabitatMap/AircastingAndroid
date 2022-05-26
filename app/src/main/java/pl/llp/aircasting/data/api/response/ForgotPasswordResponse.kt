@@ -1,3 +1,3 @@
 package pl.llp.aircasting.data.api.response
 
-class ForgotPasswordResponse ()
+class ForgotPasswordResponse

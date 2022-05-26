@@ -9,7 +9,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 
 
-class SelectDeviceFragment() : Fragment() {
+class SelectDeviceFragment : Fragment() {
     private var controller: SelectDeviceController? = null
     private var view: SelectDeviceViewMvcImpl? = null
     var listener: SelectDeviceViewMvc.Listener? = null

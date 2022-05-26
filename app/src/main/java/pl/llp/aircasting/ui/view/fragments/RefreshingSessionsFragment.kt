@@ -8,7 +8,7 @@ import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.sync.refreshing.RefreshingSessionsController
 import pl.llp.aircasting.ui.view.screens.sync.refreshing.RefreshingSessionsViewMvcImpl
 
-class RefreshingSessionsFragment(): BaseFragment<RefreshingSessionsViewMvcImpl, RefreshingSessionsController>() {
+class RefreshingSessionsFragment : BaseFragment<RefreshingSessionsViewMvcImpl, RefreshingSessionsController>() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

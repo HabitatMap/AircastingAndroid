@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class TurnOnBluetoothFragment() : Fragment() {
+class TurnOnBluetoothFragment : Fragment() {
     private var controller: TurnOnBluetoothController? = null
     var listener: TurnOnBluetoothViewMvc.Listener? = null
 

@@ -13,7 +13,7 @@ class AveragingBackgroundService(val averagingService: AveragingService) {
         thread.cancel()
     }
 
-    private inner class AveragingThread() : Thread() {
+    private inner class AveragingThread : Thread() {
 
         override fun run() {
             try {

@@ -8,7 +8,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseFragment
 
-class ChooseLocationFragment() : BaseFragment<ChooseLocationViewMvcImpl, ChooseLocationController>() {
+class ChooseLocationFragment : BaseFragment<ChooseLocationViewMvcImpl, ChooseLocationController>() {
     lateinit var listener: ChooseLocationViewMvc.Listener
     lateinit var session: Session
     lateinit var errorHandler: ErrorHandler

@@ -194,7 +194,7 @@ open class AudioReader {
     /**
      * Main loop of the builtin reader.  This runs in our own thread.
      */
-    open protected fun readerRun() {
+    protected open fun readerRun() {
         var buffer: ShortArray
         var index: Int
         var readSize: Int

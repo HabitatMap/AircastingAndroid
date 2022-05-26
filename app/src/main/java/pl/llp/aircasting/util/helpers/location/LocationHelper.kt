@@ -85,7 +85,7 @@ class LocationHelper(mContext: Context) {
     fun start() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                locationResult ?: return
+                locationResult
                 for (location in locationResult.locations) {
                     mLastLocation = location
                 }

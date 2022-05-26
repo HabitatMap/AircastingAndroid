@@ -329,7 +329,7 @@ class Session(
     }
 
     fun infoString(): String {
-        return "${displayedType.capitalize()}: ${sensorPackageNamesString()}"
+        return "${displayedType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}: ${sensorPackageNamesString()}"
     }
 
     fun sensorPackageNamesString(): String? {

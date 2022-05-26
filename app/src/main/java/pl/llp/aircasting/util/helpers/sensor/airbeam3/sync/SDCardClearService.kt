@@ -7,7 +7,7 @@ import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 import pl.llp.aircasting.util.safeRegister
 
-class SDCardClearService() {
+class SDCardClearService {
     private val CLEAR_CARD_TAG = "CLEAR_CARD"
 
     fun run(airBeamConnector: AirBeamConnector) {

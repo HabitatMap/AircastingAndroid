@@ -30,10 +30,10 @@ abstract class AirBeamConnector {
     protected var mDeviceItem: DeviceItem? = null
     protected var mSessionUUID: String? = null
 
-    abstract protected fun start(deviceItem: DeviceItem)
-    abstract protected fun stop()
-    abstract protected fun sendAuth(sessionUUID: String)
-    abstract protected fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
+    protected abstract fun start(deviceItem: DeviceItem)
+    protected abstract fun stop()
+    protected abstract fun sendAuth(sessionUUID: String)
+    protected abstract fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mDeviceItem = deviceItem
@@ -136,6 +136,6 @@ abstract class AirBeamConnector {
     }
 
     protected fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
     }
 }

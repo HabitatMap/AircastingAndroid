@@ -10,7 +10,7 @@ import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvcImpl
 
-class RestartAirBeamFragment() : BaseFragment<RestartAirBeamViewMvcImpl, RestartAirBeamController>() {
+class RestartAirBeamFragment : BaseFragment<RestartAirBeamViewMvcImpl, RestartAirBeamController>() {
     var listener: RestartAirBeamViewMvc.Listener? = null
     lateinit var sessionType: Session.Type
 

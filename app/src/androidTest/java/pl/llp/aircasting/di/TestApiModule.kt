@@ -7,7 +7,7 @@ import pl.llp.aircasting.di.modules.ApiModule
 import pl.llp.aircasting.di.modules.WebServerFactory
 import pl.llp.aircasting.util.Settings
 
-class TestApiModule() : ApiModule(){
+class TestApiModule : ApiModule(){
     override fun providesMockWebServerFactory(): WebServerFactory =
         FakeWebServerFactory()
 

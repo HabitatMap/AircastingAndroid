@@ -6,14 +6,13 @@ import android.view.MotionEvent
 import android.widget.ScrollView
 
 class CustomScrollView : ScrollView {
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         context,
         attrs,
         defStyle
-    ) {
-    }
+    )
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         val action = ev.action
