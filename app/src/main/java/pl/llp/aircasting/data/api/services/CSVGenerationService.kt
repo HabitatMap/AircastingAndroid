@@ -27,7 +27,7 @@ class CSVGenerationService(
             thread.cancel()
         }
 
-        inner class CSVThread(): Thread() {
+        inner class CSVThread : Thread() {
             private var call: Call<SyncResponse>? = null
 
             override fun run() {

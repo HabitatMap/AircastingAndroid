@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseFragment
 
-class TurnOnAirBeamFragment() : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBeamController>() {
+class TurnOnAirBeamFragment : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBeamController>() {
     var listener: TurnOnAirBeamViewMvc.Listener? = null
     lateinit var sessionType: Session.Type
 

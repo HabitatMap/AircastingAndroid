@@ -1,15 +1,14 @@
 package pl.llp.aircasting.util.helpers.services
 
 import android.util.Log
-import pl.llp.aircasting.data.local.data_classes.MeasurementDBObject
-import pl.llp.aircasting.data.local.data_classes.SessionDBObject
 import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.api.repository.MeasurementsRepository
 import pl.llp.aircasting.data.api.repository.SessionsRepository
+import pl.llp.aircasting.data.local.entity.MeasurementDBObject
+import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.collections.HashMap
 
 /**
  * Averaging for long mobile sessions
@@ -263,7 +262,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         val middleIndex = measurementsInWindow.size / 2
         val middle = averagedMeasurements.removeAt(middleIndex)
         val average =
-            measurementsInWindow.sumByDouble { it.value } / measurementsInWindow.size
+            measurementsInWindow.sumOf { it.value } / measurementsInWindow.size
         val averagedMeasurementId = middle.id
         mMeasurementsRepository.averageMeasurement(
             averagedMeasurementId,
@@ -300,7 +299,7 @@ class AveragingService private constructor(private val sessionId: Long) {
                 )
             }
 
-        if (nonAveragedMeasurementsCount ?: 0 > 0) {
+        if ((nonAveragedMeasurementsCount ?: 0) > 0) {
             thresholdTime = currentAveragingThreshold().time
             previousWindowSize = mPreviousAveragingFrequency ?: THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
             averagingFrequency = currentAveragingThreshold().windowSize

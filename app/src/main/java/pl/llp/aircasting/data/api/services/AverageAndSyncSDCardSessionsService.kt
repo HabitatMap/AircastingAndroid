@@ -21,7 +21,7 @@ class AverageAndSyncSDCardSessionsService(
         thread.cancel()
     }
 
-    inner class SyncThread(): Thread() {
+    inner class SyncThread : Thread() {
         private var call: Call<SyncResponse>? = null
 
 

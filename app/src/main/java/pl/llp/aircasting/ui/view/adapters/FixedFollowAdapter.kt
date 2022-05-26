@@ -16,15 +16,12 @@ class FixedFollowAdapter constructor(
         private val onItemClicked: (Int) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.root.setOnClickListener {
-                onItemClicked(bindingAdapterPosition)
-            }
-        }
 
         fun bind(sessions: Session) {
             binding.mySessions = sessions
             binding.executePendingBindings()
+
+            binding.root.setOnClickListener { onItemClicked(bindingAdapterPosition) }
         }
     }
 

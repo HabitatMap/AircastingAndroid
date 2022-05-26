@@ -113,7 +113,7 @@ abstract class SensorService : Service() {
     }
 
     private fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
     }
 
     private fun setAppRestarted() {

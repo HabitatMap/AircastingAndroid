@@ -33,7 +33,7 @@ class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService
 
     // TODO: consider using WorkManager
     // https://developer.android.com/topic/libraries/architecture/workmanager/basics
-    private inner class DownloadThread() : Thread() {
+    private inner class DownloadThread : Thread() {
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
         private var call: Call<SessionWithMeasurementsResponse>? = null

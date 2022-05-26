@@ -159,7 +159,7 @@ class SessionManager(
     }
 
     private fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
     }
 
     private fun updateMobileSessions() {

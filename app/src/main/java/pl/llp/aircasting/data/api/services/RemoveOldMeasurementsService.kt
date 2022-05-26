@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.api.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import java.util.*
 
-class RemoveOldMeasurementsService() {
+class RemoveOldMeasurementsService {
     private val measurementRepository = MeasurementsRepository()
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()

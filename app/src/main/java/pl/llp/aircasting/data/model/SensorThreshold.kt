@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.model
 
-import pl.llp.aircasting.data.local.data_classes.SensorThresholdDBObject
+import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 
 class SensorThreshold(
     val sensorName: String,

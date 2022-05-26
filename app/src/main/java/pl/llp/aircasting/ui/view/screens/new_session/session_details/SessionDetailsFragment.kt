@@ -10,7 +10,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import javax.inject.Inject
 
-class SessionDetailsFragment() : Fragment() {
+class SessionDetailsFragment : Fragment() {
     private var controller: SessionDetailsController? = null
     protected var view: SessionDetailsViewMvc? = null
     lateinit var listener: SessionDetailsViewMvc.Listener

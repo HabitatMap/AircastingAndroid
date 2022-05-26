@@ -30,7 +30,7 @@ class FixedSessionDetailsController(
     inner class WifiReceiver: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent?.action)) {
-                val wifiList = mWifiManager?.getScanResults()
+                val wifiList = mWifiManager?.scanResults
                 wifiList?.let {
                     val networkList = wifiList
                         .map { Network(it.SSID, it.level, it.frequency) }

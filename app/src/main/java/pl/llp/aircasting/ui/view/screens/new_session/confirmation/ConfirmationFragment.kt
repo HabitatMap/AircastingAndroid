@@ -10,7 +10,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import javax.inject.Inject
 
-class ConfirmationFragment() : BaseFragment<ConfirmationViewMvcImpl, ConfirmationController>() {
+class ConfirmationFragment : BaseFragment<ConfirmationViewMvcImpl, ConfirmationController>() {
     lateinit var listener: ConfirmationViewMvc.Listener
     lateinit var session: Session
 

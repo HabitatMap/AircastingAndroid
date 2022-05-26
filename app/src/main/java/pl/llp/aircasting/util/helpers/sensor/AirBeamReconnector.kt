@@ -210,6 +210,6 @@ class AirBeamReconnector(
     }
 
     private fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
     }
 }

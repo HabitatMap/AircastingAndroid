@@ -20,7 +20,7 @@ class BitmapHelper {
                 vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888
             )
             val canvas = Canvas(bitmap)
-            vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
 
             if (color != null) {
                 vectorDrawable.setTint(color)

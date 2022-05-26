@@ -15,7 +15,7 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet() 
     var mLoader: ImageView? = null
 
     override fun layoutId(): Int {
-        return R.layout.session_actions;
+        return R.layout.session_actions
     }
 
     override fun setup() {

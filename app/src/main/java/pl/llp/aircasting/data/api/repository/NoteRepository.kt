@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.repository
 
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.data_classes.NoteDBObject
+import pl.llp.aircasting.data.local.entity.NoteDBObject
 import pl.llp.aircasting.data.model.Note
 
 class NoteRepository {

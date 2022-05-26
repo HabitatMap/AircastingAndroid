@@ -29,6 +29,7 @@ import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
 import pl.llp.aircasting.di.modules.AppModule
 import java.net.HttpURLConnection
+import java.util.*
 import javax.inject.Inject
 
 
@@ -105,7 +106,7 @@ class MobileSessionTest {
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
-        onView(withText(containsString(FakeDeviceItem.NAME.toUpperCase()))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -139,7 +140,7 @@ class MobileSessionTest {
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
 
-        onView(isRoot()).perform(pressBack());
+        onView(isRoot()).perform(pressBack())
 
         expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
@@ -154,7 +155,7 @@ class MobileSessionTest {
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
 
-        onView(isRoot()).perform(pressBack());
+        onView(isRoot()).perform(pressBack())
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
@@ -223,7 +224,7 @@ class MobileSessionTest {
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")));
+        onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")))
 
         onView(withId(R.id.session_actions_button)).perform(click())
 

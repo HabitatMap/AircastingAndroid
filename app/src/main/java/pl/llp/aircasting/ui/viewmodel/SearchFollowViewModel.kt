@@ -12,7 +12,6 @@ import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.Resource
-import pl.llp.aircasting.util.isConnected
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
@@ -55,13 +54,9 @@ class SearchFollowViewModel @Inject constructor(
             emit(Resource.loading(null))
 
             try {
-                if (mApp.isConnected) {
-                    val mSessions =
-                        activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
-                    emit(mSessions)
-                } else {
-                    //TODO - load from DB or show error message
-                }
+                val mSessions =
+                    activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
+                emit(mSessions)
             } catch (e: Exception) {
                 emit(Resource.error(null, message = e.message.toString()))
             }

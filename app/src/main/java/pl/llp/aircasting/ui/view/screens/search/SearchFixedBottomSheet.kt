@@ -18,9 +18,10 @@ import pl.llp.aircasting.util.styleGoogleMap
 import kotlin.math.roundToInt
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
-    private val viewModel: SearchFollowViewModel by activityViewModels()
+    private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
     private var binding: SearchFollowBottomSheetBinding? = null
 
+    private var mapFragment: SupportMapFragment? = null
     private lateinit var mMap: GoogleMap
     private var txtLat: Double? = null
     private var txtLng: Double? = null
@@ -74,21 +75,23 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun setupUI() {
-        val mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
+        mapFragment =
+            requireActivity().supportFragmentManager.findFragmentById(pl.llp.aircasting.R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding?.followBtn?.setOnClickListener {
-            onSessionFollowClicked()
-        }
+        binding?.followBtn?.setOnClickListener { onFollowClicked() }
     }
 
-    private fun onSessionFollowClicked() {
-        // todo
+    /** TODO: using the old implementation is not recommended!
+     * The followed sessions are being shown on the following tab from the DB all the time. This causes lots of memory waste for doing DB operations.
+     * We may have to change the way the followed sessions are being shown on the following tab after using MVVM.
+     * */
+    private fun onFollowClicked() {
+        searchFollowViewModel.onFollowSession()
     }
 
     private fun getLatlngObserver() {
-        viewModel.apply {
+        searchFollowViewModel.apply {
             myLat.observe(requireActivity()) {
                 txtLat = it
             }
@@ -110,5 +113,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             )
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        if (mapFragment != null) parentFragmentManager.beginTransaction().remove(mapFragment!!)
+            .commit()
     }
 }

@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import java.io.*
 import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -84,7 +85,7 @@ class CSVHelper {
             try {
                 val matcher =
                     Pattern.compile("([_\\-a-zA-Z0-9])*")
-                        .matcher(title.toLowerCase())
+                        .matcher(title.lowercase(Locale.getDefault()))
                 while (matcher.find()) {
                     result.append(matcher.group())
                 }

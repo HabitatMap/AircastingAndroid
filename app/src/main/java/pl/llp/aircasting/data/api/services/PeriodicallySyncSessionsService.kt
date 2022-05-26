@@ -28,7 +28,7 @@ class PeriodicallySyncSessionsService(
         thread.paused = false
     }
 
-    inner class SyncThread(): Thread() {
+    inner class SyncThread : Thread() {
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
         private var call: Call<SyncResponse>? = null

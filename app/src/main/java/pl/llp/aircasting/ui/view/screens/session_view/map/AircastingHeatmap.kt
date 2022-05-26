@@ -124,8 +124,8 @@ class AircastingHeatmap(val context: Context?, val mMap: GoogleMap, val sensorTh
         var newIndexXend = indexXend
         var newIndexYend = indexYend
 
-        val middleLon = middleSquare?.mNorthEastLatLng?.longitude
-        val middleLat = middleSquare?.mNorthEastLatLng?.latitude
+        val middleLon = middleSquare.mNorthEastLatLng.longitude
+        val middleLat = middleSquare.mNorthEastLatLng.latitude
 
         if (measurement.longitude == null || measurement.latitude == null || middleLon == null || middleLat == null) return null
 
@@ -248,11 +248,11 @@ class AircastingHeatmap(val context: Context?, val mMap: GoogleMap, val sensorTh
 
         private fun getTransparentColor(color: Int) : Int{
             var alpha = Color.alpha(color)
-            val red = Color.red(color);
-            val green = Color.green(color);
-            val blue = Color.blue(color);
+            val red = Color.red(color)
+            val green = Color.green(color)
+            val blue = Color.blue(color)
 
-            alpha += 100;
+            alpha += 100
 
             return Color.argb(alpha, red, green, blue)
         }

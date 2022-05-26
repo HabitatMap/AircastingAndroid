@@ -1,8 +1,8 @@
 package pl.llp.aircasting.data.api.repository
 
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.data_classes.SessionDBObject
-import pl.llp.aircasting.data.local.data_classes.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*

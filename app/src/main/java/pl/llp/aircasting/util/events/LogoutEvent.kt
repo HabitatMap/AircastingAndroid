@@ -1,3 +1,3 @@
 package pl.llp.aircasting.util.events
 
-class LogoutEvent()
+class LogoutEvent

@@ -116,7 +116,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(FakeDeviceItem.NAME.toUpperCase()))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -158,7 +158,7 @@ class FixedSessionTest {
         Thread.sleep(4000)
 
         onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed outdoor session")))
-        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")));
+        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
     @Test
@@ -178,7 +178,7 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(FakeDeviceItem.NAME.toUpperCase()))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -214,7 +214,7 @@ class FixedSessionTest {
         Thread.sleep(4000)
 
         onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed indoor session")))
-        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")));
+        onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
     @Test
