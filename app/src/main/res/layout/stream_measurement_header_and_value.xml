@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -17,8 +18,9 @@
     <merge>
 
         <LinearLayout
+            android:id="@+id/measurement_info"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -30,36 +32,55 @@
                 android:textColor="@color/aircasting_grey_700"
                 android:textSize="@dimen/text_size_xs" />
 
-            <LinearLayout
-                setLayoutColors="@{model.thresholdColor}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/circle_indicator"
-                    android:layout_width="7dp"
-                    android:layout_height="7dp"
-                    android:layout_marginStart="@dimen/keyline_4"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/ic_circle"
-                    app:tint="@color/aircasting_white"/>
+                <include
+                    android:id="@+id/loader_image"
+                    layout="@layout/loader_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/measurement_value_container"
+                    android:layout_alignTop="@+id/measurement_value_container"
+                    android:layout_alignEnd="@+id/measurement_value_container"
+                    android:layout_alignBottom="@+id/measurement_value_container"
+                    android:elevation="2dp" />
 
-                <TextView
-                    android:id="@+id/measurement_value"
+                <LinearLayout
+                    android:id="@+id/measurement_value_container"
+                    setLayoutColors="@{model.thresholdColor}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:padding="@dimen/keyline_1"
-                    android:paddingStart="3dp"
-                    android:text="@{lastMeasurement}"
-                    android:textColor="@color/aircasting_grey_700"
-                    android:textSize="@dimen/text_size_xs" />
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/circle_indicator"
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_marginStart="@dimen/keyline_4"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/ic_circle"
+                        app:tint="@color/aircasting_white" />
+
+
+                    <TextView
+                        android:id="@+id/measurement_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:padding="@dimen/keyline_1"
+                        android:paddingStart="3dp"
+                        android:text="@{lastMeasurement}"
+                        android:textColor="@color/aircasting_grey_700"
+                        android:textSize="@dimen/text_size_xs"
+                        tools:text="14" />
+
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </merge>
 </layout>
