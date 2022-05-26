@@ -6,16 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 
-class FixedFollowAdapter constructor(
-    private val sessions: ArrayList<Session>,
-    private val onItemClicked: (Session) -> Unit
-) : RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
+class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Unit) :
+    RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
+    private val sessions: ArrayList<Session> = ArrayList()
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,
         private val onItemClicked: (Int) -> Unit
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(sessions: Session) {
             binding.mySessions = sessions
@@ -43,5 +41,10 @@ class FixedFollowAdapter constructor(
 
     fun addData(list: List<Session>) {
         sessions.addAll(list)
+    }
+
+    fun getSessionPositionBasedOnId(uid: String): Int {
+        val session = sessions.first { it.uuid == uid }
+        return sessions.indexOf(session)
     }
 }

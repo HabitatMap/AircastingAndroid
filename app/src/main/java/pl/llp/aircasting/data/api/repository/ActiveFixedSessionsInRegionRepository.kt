@@ -2,6 +2,7 @@ package pl.llp.aircasting.data.api.repository
 
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.geocoding.GeocodingResponse
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
@@ -68,4 +69,16 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
             responseHandler.handleException(e)
         }
     }
+
+//    suspend fun getReversedGeocodingFromGoogleApi(
+//        address: String,
+//        key: String
+//    ): Resource<GeocodingResponse> {
+//        return try {
+//            val response = apiService.getReversedGeocodingFromGoogleApi(address, key)
+//            responseHandler.handleSuccess(response)
+//        } catch (e: Exception) {
+//            responseHandler.handleException(e)
+//        }
+//    }
 }

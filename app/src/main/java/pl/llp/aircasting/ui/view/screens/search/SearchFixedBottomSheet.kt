@@ -1,5 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -11,7 +13,8 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.util.styleGoogleMap
+import pl.llp.aircasting.util.*
+import kotlin.math.roundToInt
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
@@ -21,6 +24,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private var txtLat: Double? = null
     private var txtLng: Double? = null
+    private lateinit var loader: AnimatedLoader
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -30,8 +34,47 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         super.setup()
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
 
+
+        binding?.model = searchFollowViewModel
         setupUI()
         getLatlngObserver()
+        observeLastMeasurementsValue()
+    }
+
+    private fun observeLastMeasurementsValue() {
+        val sessionId = searchFollowViewModel.selectedSession.value?.id?.toLong()
+        val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
+        if (sensorName != null && sessionId != null) {
+            searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        loader.stop()
+
+                        val value = it.data?.lastMeasurementValue ?: 0.0
+                        binding?.lastMeasurement = value.roundToInt().toString()
+
+                        setThresholdColour(value)
+                    }
+                    Status.LOADING -> {
+                        loader.start()
+                    }
+                    Status.ERROR -> {
+                        loader.stop()
+                        context?.showToast(it.message.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setThresholdColour(value: Double) {
+        val sensor = searchFollowViewModel.selectedSession.value?.streams?.sensor
+        if (sensor != null) {
+            searchFollowViewModel.selectColor(
+                SensorThresholdColorPicker(value, sensor)
+                    .getColor()
+            )
+        }
     }
 
     private fun setupUI() {
@@ -40,6 +83,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
 
         binding?.followBtn?.setOnClickListener { onFollowClicked() }
+
+        val loaderImage = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
+        loader = AnimatedLoader(loaderImage)
     }
 
     /** TODO: using the old implementation is not recommended!
