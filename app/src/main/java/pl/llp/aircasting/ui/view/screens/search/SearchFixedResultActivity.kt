@@ -101,7 +101,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupRecyclerView() {
-        adapter = FixedFollowAdapter(arrayListOf(), this::showBottomSheetDialog)
+        adapter = FixedFollowAdapter(this::showBottomSheetDialog)
         binding.recyclerFixedFollow.adapter = adapter
     }
 
@@ -120,11 +120,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                         for (i in sessions.indices) {
                             val getLats = sessions[i].latitude
                             val getLngs = sessions[i].longitude
-                            createMarkers(getLats, getLngs)
+                            val uuid = sessions[i].uuid
+                            createMarkers(getLats, getLngs, uuid)
                         }
                         binding.txtSessions.text =
                             getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
-                        renderData(sessions.reversed())
+                        renderData(sessions)
                     }
                 }
                 Status.ERROR -> {
@@ -168,11 +169,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         sensorInfo?.let { setupObserver(square, it) }
     }
 
-    private fun createMarkers(lat: Double, lng: Double): Marker? {
+    private fun createMarkers(lat: Double, lng: Double, uuid: String): Marker? {
         return mMap.addMarker(
             options
                 .position(LatLng(lat, lng))
                 .anchor(0.5f, 0.5f)
+                .snippet(uuid)
                 .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
         )
     }
@@ -210,10 +212,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        val lat = marker.position.latitude
-        val lng = marker.position.longitude
+        val uuid = marker.snippet.toString()
+        val position = adapter.getSessionPositionBasedOnId(uuid)
+        binding.recyclerFixedFollow.scrollToPosition(position)
 
-        // the logic to match the selected marker with the cardView
+
         return true
     }
 
