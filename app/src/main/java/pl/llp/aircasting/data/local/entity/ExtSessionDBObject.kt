@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import pl.llp.aircasting.data.api.response.search.Streams
 
 @Entity(tableName = "ext_session")
-data class ExtSession(
+data class ExtSessionDBObject(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "uuid") val uuid: String,
     @ColumnInfo(name = "title") val title: String,
