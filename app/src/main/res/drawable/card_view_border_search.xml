@@ -4,5 +4,5 @@
     <stroke
         android:width="2dp"
         android:color="@color/aircasting_blue_400" />
-    <corners android:radius="20dip" />
+    <corners android:radius="4dp" />
 </shape>
