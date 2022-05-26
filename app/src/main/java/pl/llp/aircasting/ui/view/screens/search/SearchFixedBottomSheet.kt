@@ -36,10 +36,10 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         setupUI()
         getLatlngObserver()
         binding?.model = viewModel
-        setLastMeasurementsValue()
+        observeLastMeasurementsValue()
     }
 
-    private fun setLastMeasurementsValue() {
+    private fun observeLastMeasurementsValue() {
         val sessionId = viewModel.selectedSession.value?.id?.toLong()
         val sensorName = viewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
@@ -52,7 +52,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                         setThresholdColour(value)
                     }
                     Status.LOADING -> {
-                        Toast.makeText(context, "Loading last measurements...", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, getString(R.string.loading_measurements), Toast.LENGTH_SHORT)
                             .show()
                     }
                     Status.ERROR -> {
