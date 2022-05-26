@@ -7,6 +7,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -22,7 +23,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private var txtLng: Double? = null
 
     override fun layoutId(): Int {
-        return pl.llp.aircasting.R.layout.search_follow_bottom_sheet
+        return R.layout.search_follow_bottom_sheet
     }
 
     override fun setup() {
@@ -35,7 +36,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun setupUI() {
         mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(pl.llp.aircasting.R.id.mapViewBottomSheet) as? SupportMapFragment
+            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
         binding?.followBtn?.setOnClickListener { onFollowClicked() }
