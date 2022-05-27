@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(
     tableName = "ext_sessions",
@@ -28,5 +29,6 @@ data class ExtSessionsDBObject(
     @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "longitude") val longitude: String,
     @ColumnInfo(name = "is_indoor") val isIndoor: Boolean,
-    @ColumnInfo(name = "stream_id") val streamId: Int
+    @ColumnInfo(name = "stream_id") val streamId: Int,
+    @ColumnInfo(name = "followed_at") val followedAt: Date? = null
 )
