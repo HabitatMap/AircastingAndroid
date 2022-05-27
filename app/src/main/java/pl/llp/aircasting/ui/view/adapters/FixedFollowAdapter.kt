@@ -66,8 +66,8 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
         notifyItemChanged(position)
     }
 
-    fun removeBorderFromPreviousCard() {
-        cardView?.apply {
+    private fun removeBorderFromPreviousCard() {
+        cardView.apply {
             setBackgroundColor(
                 ContextCompat.getColor(
                     context,
@@ -77,11 +77,11 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
         }
     }
 
-    fun setBackgroundWithBorder(cardView: View) {
+    private fun setBackgroundWithBorder(cardView: View) {
         cardView.setBackgroundResource(R.drawable.card_view_border_search)
     }
 
-    fun setBackgroundWithoutBorder(cardView: View) {
+    private fun setBackgroundWithoutBorder(cardView: View) {
         cardView.setBackgroundColor(
             ContextCompat.getColor(
                 cardView.context,
