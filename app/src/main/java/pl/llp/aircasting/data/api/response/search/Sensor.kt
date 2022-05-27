@@ -31,5 +31,6 @@ data class Sensor(
     @SerializedName("unit_name")
     val unitName: String,
     @SerializedName("unit_symbol")
-    val unitSymbol: String
+    val unitSymbol: String,
+    val deleted: Boolean = false
 )
