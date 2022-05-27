@@ -216,10 +216,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
         binding.recyclerFixedFollow.scrollToPosition(position)
-        adapter.apply {
-            addCardBorder(position)
-            removeItemBorder()
-        }
+        adapter.addCardBorder(position)
+
         return true
     }
 
