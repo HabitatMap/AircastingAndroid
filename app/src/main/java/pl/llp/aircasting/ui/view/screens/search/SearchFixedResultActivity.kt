@@ -31,7 +31,7 @@ import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,6 +79,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
+
+        binding.btnRedo.setOnClickListener { resetTheSearch() }
 
         setupRecyclerView()
         setupSearchLayout()
@@ -140,6 +142,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun renderData(mySessions: List<Session>) {
         adapter.addData(mySessions)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun resetTheSearch() {
+        val selectedLat = lat?.toDouble()
+        val selectedLng = lng?.toDouble()
+        if (selectedLat != null && selectedLng != null) {
+            val theLocation = LatLng(selectedLat, selectedLng)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+        }
+        binding.btnRedo.gone()
     }
 
     private fun showBottomSheetDialog(session: Session) {
@@ -209,6 +221,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
 
         mMap.setOnMarkerClickListener(this)
+        mMap.setOnCameraMoveStartedListener(this)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -216,8 +229,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val position = adapter.getSessionPositionBasedOnId(uuid)
         binding.recyclerFixedFollow.scrollToPosition(position)
 
-
         return true
+    }
+
+    override fun onCameraMoveStarted(p0: Int) {
+        binding.btnRedo.visible()
     }
 
     override fun onSupportNavigateUp(): Boolean {

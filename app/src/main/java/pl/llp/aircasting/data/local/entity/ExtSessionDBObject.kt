@@ -3,7 +3,6 @@ package pl.llp.aircasting.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import pl.llp.aircasting.data.api.response.search.Streams
 
 @Entity(tableName = "ext_session")
 data class ExtSessionDBObject(
@@ -20,3 +19,4 @@ data class ExtSessionDBObject(
     @ColumnInfo(name = "isIndoor") val isIndoor: Boolean,
     //@ColumnInfo(name = "streams") val streams: Streams,
 )
+// TODO: Need to do sth with the streams since we cannot save it like that on DB
