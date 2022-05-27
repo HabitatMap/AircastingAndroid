@@ -145,14 +145,13 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun resetTheSearch() {
-        binding.btnRedo.inVisible()
-
         val selectedLat = lat?.toDouble()
         val selectedLng = lng?.toDouble()
         if (selectedLat != null && selectedLng != null) {
             val theLocation = LatLng(selectedLat, selectedLng)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
         }
+        binding.btnRedo.gone()
     }
 
     private fun showBottomSheetDialog(session: Session) {
