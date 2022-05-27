@@ -14,12 +14,13 @@ import pl.llp.aircasting.util.converters.*
 
 @Database(
     entities = [SessionDBObject::class,
+        ExtSessionDBObject::class,
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
         NoteDBObject::class,
         ActiveSessionMeasurementDBObject::class],
-    version = 30,
+    version = 31,
     exportSchema = true
 )
 @TypeConverters(
@@ -31,6 +32,7 @@ import pl.llp.aircasting.util.converters.*
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessions(): SessionDao
+    abstract fun extSession(): ExtSessionDao
     abstract fun measurementStreams(): MeasurementStreamDao
     abstract fun measurements(): MeasurementDao
     abstract fun sensorThresholds(): SensorThresholdDao
