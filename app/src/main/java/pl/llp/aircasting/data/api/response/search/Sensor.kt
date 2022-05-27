@@ -18,12 +18,6 @@ data class Sensor(
     val sensorPackageName: String,
     @SerializedName("session_id")
     val sessionId: Int,
-    @SerializedName("size")
-    val size: Int,
-    @SerializedName("start_latitude")
-    val startLatitude: Double,
-    @SerializedName("start_longitude")
-    val startLongitude: Double,
     @SerializedName("threshold_high")
     val thresholdHigh: Int,
     @SerializedName("threshold_low")
