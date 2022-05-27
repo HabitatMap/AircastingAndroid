@@ -217,7 +217,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         if (selectedLat != null && selectedLng != null) {
             val theLocation = LatLng(selectedLat, selectedLng)
             mMap.addMarker(options.position(theLocation))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 13f))
         }
 
         mMap.setOnMarkerClickListener(this)

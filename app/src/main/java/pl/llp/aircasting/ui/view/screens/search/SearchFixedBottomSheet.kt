@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -93,7 +92,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
      * We may have to change the way the followed sessions are being shown on the following tab after using MVVM.
      * */
     private fun onFollowClicked() {
-        searchFollowViewModel.onFollowSession()
+        //searchFollowViewModel.onFollowSession()
     }
 
     private fun getLatlngObserver() {

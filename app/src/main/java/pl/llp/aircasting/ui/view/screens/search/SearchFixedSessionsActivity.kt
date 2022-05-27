@@ -152,7 +152,7 @@ class SearchFixedSessionsActivity : AppCompatActivity(), ChipGroup.OnCheckedStat
             binding.purpleAirChip.id -> txtSelectedSensor =
                 ParticulateMatter.PURPLE_AIR.getSensorName()
         }
-
+//Todo
     }
 
     override fun onSupportNavigateUp(): Boolean {
