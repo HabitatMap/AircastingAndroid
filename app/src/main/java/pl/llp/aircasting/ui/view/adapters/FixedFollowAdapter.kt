@@ -13,23 +13,21 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
     private val sessions: ArrayList<Session> = ArrayList()
     private var selectedSession: Session? = null
-    private var sessionView: View? = null
+    private lateinit var cardView: View
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,
         private val onItemClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(sessions: Session) {
-            binding.mySessions = sessions
+        fun bind(session: Session) {
+            binding.mySessions = session
             binding.executePendingBindings()
 
-            binding.root.setOnClickListener { onItemClicked(bindingAdapterPosition) }
-
-            sessionView = binding.root
             binding.root.apply {
-                if (selectedSession?.id == sessions.id) setBackgroundResource(R.drawable.card_view_border_search) else setBackgroundColor(
-                    ContextCompat.getColor(context, R.color.aircasting_white)
-                )
+                setOnClickListener { onItemClicked(bindingAdapterPosition) }
+                cardView = this
+
+                if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setBackgroundWithoutBorder(cardView)
             }
         }
     }
@@ -64,12 +62,12 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
 
     fun addCardBorder(position: Int) {
         selectedSession = sessions[position]
-        removeItemBorder()
+        removeBorderFromPreviousCard()
         notifyItemChanged(position)
     }
 
-    fun removeItemBorder() {
-        sessionView?.apply {
+    fun removeBorderFromPreviousCard() {
+        cardView?.apply {
             setBackgroundColor(
                 ContextCompat.getColor(
                     context,
@@ -77,5 +75,18 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
                 )
             )
         }
+    }
+
+    fun setBackgroundWithBorder(cardView: View) {
+        cardView.setBackgroundResource(R.drawable.card_view_border_search)
+    }
+
+    fun setBackgroundWithoutBorder(cardView: View) {
+        cardView.setBackgroundColor(
+            ContextCompat.getColor(
+                cardView.context,
+                R.color.aircasting_white
+            )
+        )
     }
 }
