@@ -394,5 +394,6 @@
     <string name="not_found">Pas trouvé</string>
     <string name="internal_error">Erreur Interne du Serveur</string>
     <string name="loading_measurements">Loading last measurements…</string>
+    <string name="redo_search_in_map">Refaire la recherche dans la carte</string>
 
 </resources>
