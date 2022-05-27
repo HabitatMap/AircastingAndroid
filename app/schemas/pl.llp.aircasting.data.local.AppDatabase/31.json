@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 31,
-    "identityHash": "318e4ea4396e7ca8178e25f03acb347c",
+    "identityHash": "10ddd05785b0d58324d51c50d386ccca",
     "entities": [
       {
         "tableName": "sessions",
@@ -165,7 +165,7 @@
       },
       {
         "tableName": "ext_sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `uuid` TEXT NOT NULL, `title` TEXT NOT NULL, `type` TEXT NOT NULL, `username` TEXT NOT NULL, `end_time_local` TEXT NOT NULL, `start_time_local` TEXT NOT NULL, `last_hour_average` REAL NOT NULL, `latitude` REAL NOT NULL, `longitude` TEXT NOT NULL, `is_indoor` INTEGER NOT NULL, `stream_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `uuid` TEXT NOT NULL, `title` TEXT NOT NULL, `type` TEXT NOT NULL, `username` TEXT NOT NULL, `end_time_local` TEXT NOT NULL, `start_time_local` TEXT NOT NULL, `last_hour_average` REAL NOT NULL, `latitude` REAL NOT NULL, `longitude` TEXT NOT NULL, `is_indoor` INTEGER NOT NULL, `stream_id` INTEGER NOT NULL, `followed_at` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -238,6 +238,12 @@
             "columnName": "stream_id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "followedAt",
+            "columnName": "followed_at",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -742,7 +748,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '318e4ea4396e7ca8178e25f03acb347c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '10ddd05785b0d58324d51c50d386ccca')"
     ]
   }
 }
