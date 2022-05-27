@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.local.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
 
@@ -14,5 +13,5 @@ interface ExtSessionDao {
     suspend fun delete(extSession: ExtSessionsDBObject)
 
     @Query("Select * from ext_sessions order by id ASC")
-    fun getAllFollowedSessions(): LiveData<List<ExtSessionsDBObject>>
+    suspend fun getAllFollowedSessions(): List<ExtSessionsDBObject>
 }
