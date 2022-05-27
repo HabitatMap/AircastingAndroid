@@ -507,4 +507,5 @@
     <!-- Search and Follow -->
     <string name="close">Close</string>
     <string name="loading_measurements">Loading last measurements…</string>
+    <string name="redo_search_in_map">Redo search in map</string>
 </resources>

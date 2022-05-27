@@ -15,13 +15,13 @@ interface ApiService {
     @GET(Constants.urlDownloadSession)
     fun downloadSessionWithMeasurements(
         @Query("uuid") uuid: String,
-        @Query("stream_measurements") stream_measurements: Boolean = true
+        @Query("stream_measurements") streamMeasurements: Boolean = true
     ): Call<SessionWithMeasurementsResponse>
 
     @GET(Constants.urlDownloadFixedMeasurements)
     fun downloadFixedMeasurements(
         @Query("uuid") uuid: String,
-        @Query("last_measurement_sync") last_measurement_sync: String
+        @Query("last_measurement_sync") lastMeasurementSync: String
     ): Call<SessionWithMeasurementsResponse>
 
     @GET(Constants.urlLogin)
@@ -39,8 +39,9 @@ interface ApiService {
     @GET(Constants.urlStreamOfGivenSession)
     suspend fun getStreamOfGivenSession(
         @Path("sessionID") sessionID: Long,
-        @Query("sensor_name") sensor_name: String
-    ): StreamOfGivenSessionResponse
+        @Query("sensor_name") sensorName: String,
+        @Query("measurements_limit") measurementsLimit: Int = 1
+        ): StreamOfGivenSessionResponse
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
