@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "ext_session")
-data class ExtSessionDBObject(
+@Entity(tableName = "ext_sessions")
+data class ExtSessionsDBObject(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "uuid") val uuid: String,
     @ColumnInfo(name = "title") val title: String,

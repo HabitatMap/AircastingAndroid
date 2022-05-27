@@ -14,7 +14,7 @@ import pl.llp.aircasting.util.converters.*
 
 @Database(
     entities = [SessionDBObject::class,
-        ExtSessionDBObject::class,
+        ExtSessionsDBObject::class,
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
