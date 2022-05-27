@@ -1,19 +1,13 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 28,
-    "identityHash": "3b45815ce88b8dd4e1b0ee787abfebd1",
+    "version": 30,
+    "identityHash": "dee905de55d574bdb991b06c8701b990",
     "entities": [
       {
         "tableName": "sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL, `session_order` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL, `session_order` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "uuid",
             "columnName": "uuid",
@@ -133,6 +127,12 @@
             "columnName": "session_order",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -148,7 +148,8 @@
             "columnNames": [
               "device_id"
             ],
-            "createSql": "CREATE  INDEX `index_sessions_device_id` ON `${TABLE_NAME}` (`device_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sessions_device_id` ON `${TABLE_NAME}` (`device_id`)"
           },
           {
             "name": "index_sessions_session_order",
@@ -156,21 +157,16 @@
             "columnNames": [
               "session_order"
             ],
-            "createSql": "CREATE  INDEX `index_sessions_session_order` ON `${TABLE_NAME}` (`session_order`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sessions_session_order` ON `${TABLE_NAME}` (`session_order`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "measurement_streams",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session_id` INTEGER NOT NULL, `sensor_package_name` TEXT NOT NULL, `sensor_name` TEXT NOT NULL, `measurement_type` TEXT NOT NULL, `measurement_short_type` TEXT NOT NULL, `unit_name` TEXT NOT NULL, `unit_symbol` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER NOT NULL, `sensor_package_name` TEXT NOT NULL, `sensor_name` TEXT NOT NULL, `measurement_type` TEXT NOT NULL, `measurement_short_type` TEXT NOT NULL, `unit_name` TEXT NOT NULL, `unit_symbol` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "sessionId",
             "columnName": "session_id",
@@ -248,6 +244,12 @@
             "columnName": "deleted",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -263,7 +265,8 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE  INDEX `index_measurement_streams_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_measurement_streams_session_id` ON `${TABLE_NAME}` (`session_id`)"
           }
         ],
         "foreignKeys": [
@@ -282,14 +285,8 @@
       },
       {
         "tableName": "measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`measurement_stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `averaging_frequency` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`measurement_stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "measurementStreamId",
             "columnName": "measurement_stream_id",
@@ -331,6 +328,12 @@
             "columnName": "averaging_frequency",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -346,7 +349,8 @@
             "columnNames": [
               "measurement_stream_id"
             ],
-            "createSql": "CREATE  INDEX `index_measurements_measurement_stream_id` ON `${TABLE_NAME}` (`measurement_stream_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_measurements_measurement_stream_id` ON `${TABLE_NAME}` (`measurement_stream_id`)"
           },
           {
             "name": "index_measurements_session_id",
@@ -354,7 +358,19 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE  INDEX `index_measurements_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_measurements_session_id` ON `${TABLE_NAME}` (`session_id`)"
+          },
+          {
+            "name": "index_measurements_session_id_measurement_stream_id_time",
+            "unique": true,
+            "columnNames": [
+              "session_id",
+              "measurement_stream_id",
+              "time"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_measurements_session_id_measurement_stream_id_time` ON `${TABLE_NAME}` (`session_id`, `measurement_stream_id`, `time`)"
           }
         ],
         "foreignKeys": [
@@ -373,14 +389,8 @@
       },
       {
         "tableName": "sensor_thresholds",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sensor_name` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sensor_name` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "sensorName",
             "columnName": "sensor_name",
@@ -416,6 +426,12 @@
             "columnName": "threshold_very_high",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -431,21 +447,16 @@
             "columnNames": [
               "sensor_name"
             ],
-            "createSql": "CREATE  INDEX `index_sensor_thresholds_sensor_name` ON `${TABLE_NAME}` (`sensor_name`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sensor_thresholds_sensor_name` ON `${TABLE_NAME}` (`sensor_name`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session_id` INTEGER NOT NULL, `date` INTEGER NOT NULL, `text` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `number` INTEGER NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER NOT NULL, `date` INTEGER NOT NULL, `text` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `number` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "sessionId",
             "columnName": "session_id",
@@ -481,6 +492,12 @@
             "columnName": "number",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -496,7 +513,8 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE  INDEX `index_notes_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_session_id` ON `${TABLE_NAME}` (`session_id`)"
           }
         ],
         "foreignKeys": [
@@ -515,14 +533,8 @@
       },
       {
         "tableName": "active_sessions_measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stream_id` INTEGER NOT NULL, `session_id` INTEGER NOT NULL, `value` REAL NOT NULL, `time` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "streamId",
             "columnName": "stream_id",
@@ -558,6 +570,12 @@
             "columnName": "longitude",
             "affinity": "REAL",
             "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -573,7 +591,8 @@
             "columnNames": [
               "stream_id"
             ],
-            "createSql": "CREATE  INDEX `index_active_sessions_measurements_stream_id` ON `${TABLE_NAME}` (`stream_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_active_sessions_measurements_stream_id` ON `${TABLE_NAME}` (`stream_id`)"
           },
           {
             "name": "index_active_sessions_measurements_session_id",
@@ -581,7 +600,19 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE  INDEX `index_active_sessions_measurements_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_active_sessions_measurements_session_id` ON `${TABLE_NAME}` (`session_id`)"
+          },
+          {
+            "name": "index_active_sessions_measurements_session_id_stream_id_time",
+            "unique": true,
+            "columnNames": [
+              "session_id",
+              "stream_id",
+              "time"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_active_sessions_measurements_session_id_stream_id_time` ON `${TABLE_NAME}` (`session_id`, `stream_id`, `time`)"
           }
         ],
         "foreignKeys": [
@@ -610,9 +641,10 @@
         ]
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3b45815ce88b8dd4e1b0ee787abfebd1\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dee905de55d574bdb991b06c8701b990')"
     ]
   }
 }
