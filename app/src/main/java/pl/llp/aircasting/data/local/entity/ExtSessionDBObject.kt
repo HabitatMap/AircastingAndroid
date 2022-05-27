@@ -18,5 +18,5 @@ data class ExtSessionDBObject(
     @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "longitude") val longitude: String,
     @ColumnInfo(name = "isIndoor") val isIndoor: Boolean,
-    @ColumnInfo(name = "streams") val streams: Streams,
+    //@ColumnInfo(name = "streams") val streams: Streams,
 )
