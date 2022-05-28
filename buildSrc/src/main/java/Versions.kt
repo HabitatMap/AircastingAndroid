@@ -18,6 +18,8 @@ object Versions {
     const val recyclerView = "1.2.1"
     const val groupie = "2.9.0"
     const val material = "1.6.0"
+    const val guava = "29.0-android"
+    const val eventBus = "3.2.0"
     const val dagger = "2.41"
     const val retrofit = "2.9.0"
     const val loggingInterceptor = "5.0.0-alpha.7"
@@ -42,7 +44,7 @@ object Versions {
 
     // TODO: we have many testing libraries in there, why?
     //test
-    const val junit = "4.12"
+    const val junit = "4.13.2"
     const val extJunit = "1.1.1"
     const val espresso = "3.2.0"
     const val mockito = "4.0.0"
