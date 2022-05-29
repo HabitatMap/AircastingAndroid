@@ -3,7 +3,7 @@ object Versions {
     const val kotlin = "1.6.21"
     const val navigation = "2.4.2"
     const val googleServices = "4.3.10"
-    const val crashlytics = "2.8.1"
+    const val crashlytics = "2.9.0"
 
     //libs
     const val coroutines = "1.6.1"
@@ -35,7 +35,7 @@ object Versions {
     const val places = "2.6.0"
     const val playServicesGCM = "17.0.0"
     const val autoAnnotations = "1.9" // check this later
-    const val firebaseBom = "30.0.2"
+    const val firebaseBom = "30.1.0"
 
     const val roomDB = "2.4.2"
 
