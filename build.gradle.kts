@@ -1,6 +1,4 @@
 buildscript {
-    val kotlinVersion = "1.6.21"
-    val navVersion = "2.4.2"
 
     repositories {
         google()
@@ -8,11 +6,11 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("com.google.gms:google-services:4.3.10")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.8.1")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion")
+        classpath("com.android.tools.build:gradle:${Versions.gradle}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
+        classpath("com.google.gms:google-services:${Versions.googleServices}")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:${Versions.crashlytics}")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}")
     }
 }
 
