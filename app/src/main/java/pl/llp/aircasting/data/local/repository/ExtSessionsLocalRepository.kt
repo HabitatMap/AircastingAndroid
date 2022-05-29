@@ -6,15 +6,10 @@ import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
 class ExtSessionsLocalRepository {
     private val mDatabase = DatabaseProvider.get().extSession()
 
-    suspend fun insert(extSession: ExtSessionsDBObject) {
-        mDatabase.insert(extSession)
-    }
+    suspend fun insert(extSession: ExtSessionsDBObject) = mDatabase.insert(extSession)
 
-    suspend fun deleteFollowedSession(extSession: ExtSessionsDBObject) {
+    suspend fun deleteFollowedSession(extSession: ExtSessionsDBObject) =
         mDatabase.delete(extSession)
-    }
 
-    suspend fun getAllFollowedExtSessions() {
-        mDatabase.getAllFollowedSessions()
-    }
+    suspend fun getAllFollowedExtSessions() = mDatabase.getAllFollowedSessions()
 }
