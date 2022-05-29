@@ -23,7 +23,7 @@ android {
         versionCode = AppConfig.versionCode
         versionName = AppConfig.versionName
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
-        resourceConfigurations.add("en")
+        resConfigs("en", "fr", "sp")
 
         val secureProps = Properties().apply {
             val file = file("../secure.properties")
