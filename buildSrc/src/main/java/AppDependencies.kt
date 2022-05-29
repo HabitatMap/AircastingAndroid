@@ -27,11 +27,12 @@ object AppDependencies {
     private const val swipRefreshLayout =
         "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefresh}"
     private const val recycleView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
-
     private const val materialDesign = "com.google.android.material:material:${Versions.material}"
-    private const val groupie = "com.xwray:groupie:${Versions.groupie}"
+
+    private const val groupie = "com.github.lisawray.groupie:groupie:${Versions.groupie}"
     private const val groupieAndroidExtension =
-        "com.xwray:groupie-kotlin-android-extensions:${Versions.groupie}"
+        "com.github.lisawray.groupie:groupie-kotlin-android-extensions:${Versions.groupie}"
+
     private const val guava = "com.google.guava:guava:${Versions.guava}"
     private const val eventBus = "org.greenrobot:eventbus:${Versions.eventBus}"
     private const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
@@ -48,6 +49,7 @@ object AppDependencies {
     private const val okHttp3MockWebServerTest =
         "com.squareup.okhttp3:mockwebserver:${Versions.mockServerWeb}"
     private const val gson = "com.google.code.gson:gson:${Versions.gson}"
+
     private const val openCV = "com.opencsv:opencsv:${Versions.openCv}"
 
     /* Google Play */
@@ -62,19 +64,23 @@ object AppDependencies {
     private const val autoAnnotations =
         "com.google.auto.value:auto-value-annotations:${Versions.autoAnnotations}"
 
-    private const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
-    private const val crashlytics = "com.google.firebase:firebase-crashlytics-ktx"
-    private const val analyticsKTX = "com.google.firebase:firebase-analytics-ktx"
+    /* Firebase */
+    const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
+    private const val crashlyticsKTX = "com.google.firebase:firebase-crashlytics-ktx"
+    const val analyticsKTX = "com.google.firebase:firebase-analytics-ktx"
 
     /* Room DB */
     private const val roomDB = "androidx.room:room-runtime:${Versions.roomDB}"
     private const val roomDBCompiler = "androidx.room:room-compiler:${Versions.roomDB}"
+
+    /* Miscellaneous */
     private const val commonsCodec = "commons-codec:commons-codec:${Versions.commonsCodec}"
     private const val androidBle = "no.nordicsemi.android:ble:${Versions.androidBle}"
     private const val mpAndroidChart =
         "com.github.PhilJay:MPAndroidChart:${Versions.mpAndroidChart}"
 
     val appLibraries = arrayListOf<String>().apply {
+        add(kotlinStdLib)
         add(kotlinStdLib)
         add(legacySupport)
         add(coroutinesCore)
@@ -110,8 +116,7 @@ object AppDependencies {
         add(mapsPlaces)
         add(playServicesGCM)
         add(autoAnnotations)
-        add(firebaseBom)
-        add(crashlytics)
+        add(crashlyticsKTX)
         add(analyticsKTX)
         add(roomDB)
         add(commonsCodec)
@@ -120,11 +125,16 @@ object AppDependencies {
     }
     val kaptLibraries = arrayListOf<String>().apply {
         add(daggerCompiler)
-        add(roomDB)
         add(roomDBCompiler)
     }
     val kaptTestLibraries = arrayListOf<String>().apply {
         add(daggerCompilerTest)
+    }
+}
+
+fun DependencyHandler.implementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("implementation", dependency)
     }
 }
 
@@ -134,9 +144,11 @@ fun DependencyHandler.kapt(list: List<String>) {
     }
 }
 
-fun DependencyHandler.implementation(list: List<String>) {
+fun DependencyHandler.kaptAndroidTest(list: List<String>) {
     list.forEach { dependency ->
-        add("implementation", dependency)
+        add("kaptAndroidTest", dependency)
     }
 }
+
+
 
