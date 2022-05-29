@@ -1,3 +1,7 @@
+
+import java.io.FileInputStream
+import java.util.*
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -11,20 +15,22 @@ plugins {
 android {
     compileSdk = AppConfig.compileSdk
     buildToolsVersion = AppConfig.buildToolsVersion
+
     defaultConfig {
         applicationId = "pl.llp.aircasting"
         minSdk = AppConfig.minSdk
         targetSdk = AppConfig.targetSdk
         versionCode = AppConfig.versionCode
         versionName = AppConfig.versionName
-
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
-        resConfigs("en", "es, fr")
+        resourceConfigurations.add("en")
 
-        val secureProps = project.properties
-        if (file("../secure.properties").exists()) file("../secure.properties").inputStream().use {
-            secureProps.apply { it }
+        val secureProps = Properties().apply {
+            val file = file("../secure.properties")
+            if (file.exists()) load(FileInputStream(File(rootProject.rootDir, "secure.properties")))
         }
+        resValue("string", "maps_api_key", secureProps.getProperty("MAPS_API_KEY") ?: "")
+        buildConfigField("String", "PLACES_API_KEY", secureProps.getProperty("PLACES_API_KEY") ?: "\"\"")
     }
 
     buildTypes {
@@ -32,7 +38,7 @@ android {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             manifestPlaceholders["crashlyticsCollectionEnabled"] = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -44,10 +50,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 
     lint {
@@ -78,9 +80,10 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
+    implementation(platform(AppDependencies.firebaseBom))
     implementation(AppDependencies.appLibraries)
     kapt(AppDependencies.kaptLibraries)
-    kapt(AppDependencies.kaptTestLibraries)
+    kaptAndroidTest(AppDependencies.kaptTestLibraries)
 
     // Tests
     testImplementation("junit:junit:${Versions.junit}")
