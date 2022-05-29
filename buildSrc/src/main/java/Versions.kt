@@ -1,7 +1,9 @@
 object Versions {
-    //app level
     const val gradle = "7.2.1"
     const val kotlin = "1.6.21"
+    const val navigation = "2.4.2"
+    const val googleServices = "4.3.10"
+    const val crashlytics = "2.8.1"
 
     //libs
     const val coroutines = "1.6.1"
@@ -30,7 +32,7 @@ object Versions {
 
     const val playServicesLocation = "19.0.1"
     const val playServicesMaps = "18.0.2"
-    const val places = "2.0.6"
+    const val places = "2.6.0"
     const val playServicesGCM = "17.0.0"
     const val autoAnnotations = "1.9" // check this later
     const val firebaseBom = "30.0.2"
@@ -42,10 +44,7 @@ object Versions {
 
     const val mpAndroidChart = "v3.1.0"
 
-    // TODO: we have many testing libraries in there, why?
-    //test
+    // Tests
     const val junit = "4.13.2"
-    const val extJunit = "1.1.1"
-    const val espresso = "3.2.0"
-    const val mockito = "4.0.0"
+    const val mockitoVersion = "4.0.0"
 }
