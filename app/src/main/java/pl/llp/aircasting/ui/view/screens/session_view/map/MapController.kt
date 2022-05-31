@@ -7,7 +7,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
@@ -72,30 +72,30 @@ class MapController(
         LocationHelper.start()
     }
 
-    override fun addNoteClicked(localSession: LocalSession) {
-        AddNoteBottomSheet(this, localSession, rootActivity, mErrorHandler).show(fragmentManager)
+    override fun addNoteClicked(session: Session) {
+        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler).show(fragmentManager)
     }
 
-    override fun onFinishSessionConfirmed(localSession: LocalSession) {
-        val event = StopRecordingEvent(localSession.uuid)
+    override fun onFinishSessionConfirmed(session: Session) {
+        val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
         rootActivity.finish()
     }
 
-    override fun onSessionDisconnectClicked(localSession: LocalSession) {
-        EventBus.getDefault().post(StandaloneModeEvent(localSession.uuid))
-        airBeamReconnector.disconnect(localSession)
+    override fun onSessionDisconnectClicked(session: Session) {
+        EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
+        airBeamReconnector.disconnect(session)
         rootActivity.finish()
     }
 
-    override fun addNotePressed(localSession: LocalSession, note: Note) {
-        val event = NoteCreatedEvent(localSession, note)
+    override fun addNotePressed(session: Session, note: Note) {
+        val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
         mViewMvc?.addNote(note)
     }
 
-    override fun deleteNotePressed(note: Note?, localSession: LocalSession?) { // Delete session on EditNoteBottomSheet pressed
-        super.deleteNotePressed(note, localSession)
+    override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
+        super.deleteNotePressed(note, session)
         if (note != null) {
             mViewMvc?.deleteNote(note)
         }

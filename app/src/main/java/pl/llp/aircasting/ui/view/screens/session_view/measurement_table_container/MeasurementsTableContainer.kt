@@ -13,7 +13,7 @@ import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.setAppearance
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
 
@@ -95,14 +95,14 @@ abstract class MeasurementsTableContainer {
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
         mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
 
-        val session = mSessionPresenter?.localSession
+        val session = mSessionPresenter?.session
         if (session != null && session.activeStreams.count() > 0) {
             resetMeasurementsView()
             bindMeasurements()
             stretchTableLayout()
         }
 
-        if (session?.status == LocalSession.Status.DISCONNECTED && session.type == LocalSession.Type.MOBILE) {
+        if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE) {
             mMeasurementsTable?.visibility = View.GONE
         } else {
             mMeasurementsTable?.visibility = View.VISIBLE
@@ -126,7 +126,7 @@ abstract class MeasurementsTableContainer {
     }
 
     private fun bindMeasurements() {
-        val session = mSessionPresenter?.localSession
+        val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             if (stream.isMeasurementTypeTemperature())
                 TemperatureConverter.setAppropriateDetailedType(stream)
@@ -137,7 +137,7 @@ abstract class MeasurementsTableContainer {
     }
 
     private fun stretchTableLayout() {
-        val session = mSessionPresenter?.localSession
+        val session = mSessionPresenter?.session
         if (session != null && session.activeStreams.size > 1) {
             mMeasurementsTable?.isStretchAllColumns = true
         }

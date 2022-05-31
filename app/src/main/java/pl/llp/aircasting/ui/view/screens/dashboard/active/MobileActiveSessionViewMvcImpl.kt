@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
@@ -71,7 +71,7 @@ class MobileActiveSessionViewMvcImpl(
     }
 
     override fun addNotePressed() {
-        val session = mSessionPresenter?.localSession ?: return
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
             listener.addNoteClicked(session)
         }
@@ -79,22 +79,22 @@ class MobileActiveSessionViewMvcImpl(
     }
 
     override fun disconnectSessionPressed() {
-        val session = mSessionPresenter?.localSession ?: return
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
             listener.onSessionDisconnectClicked(session)
         }
         dismissBottomSheet()
     }
 
-    override fun onSessionReconnectClicked(localSession: LocalSession) {
-        val session = mSessionPresenter?.localSession ?: return
+    override fun onSessionReconnectClicked(session: Session) {
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
             listener.onSessionReconnectClicked(session)
         }
     }
 
-    override fun onFinishSessionConfirmed(localSession: LocalSession) {
-        val session = mSessionPresenter?.localSession ?: return
+    override fun onFinishSessionConfirmed(session: Session) {
+        val session = mSessionPresenter?.session ?: return
 
         for (listener in listeners) {
             listener.onFinishSessionConfirmed(session)
@@ -103,8 +103,8 @@ class MobileActiveSessionViewMvcImpl(
         dismissBottomSheet()
     }
 
-    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
-        val session = mSessionPresenter?.localSession ?: return
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+        val session = mSessionPresenter?.session ?: return
 
         for (listener in listeners) {
             listener.onFinishAndSyncSessionConfirmed(session)

@@ -1,12 +1,12 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
 interface SessionCardListener {
-    fun onExpandSessionCard(localSession: LocalSession)
-    fun onFollowButtonClicked(localSession: LocalSession)
-    fun onUnfollowButtonClicked(localSession: LocalSession)
-    fun onMapButtonClicked(localSession: LocalSession, measurementStream: MeasurementStream?)
-    fun onGraphButtonClicked(localSession: LocalSession, measurementStream: MeasurementStream?)
+    fun onExpandSessionCard(session: Session)
+    fun onFollowButtonClicked(session: Session)
+    fun onUnfollowButtonClicked(session: Session)
+    fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?)
+    fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?)
 }

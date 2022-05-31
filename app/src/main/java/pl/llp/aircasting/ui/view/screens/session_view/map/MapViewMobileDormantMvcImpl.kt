@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
 class MapViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
@@ -20,7 +20,7 @@ class MapViewMobileDormantMvcImpl(
         return false
     }
 
-    override fun getSessionType(): LocalSession.Type {
-        return LocalSession.Type.MOBILE
+    override fun getSessionType(): Session.Type {
+        return Session.Type.MOBILE
     }
 }

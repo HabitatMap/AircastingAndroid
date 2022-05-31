@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
 import kotlinx.android.synthetic.main.activity_graph.view.*
@@ -49,15 +49,15 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
     }
 
     override fun addNotePressed() {
-        val session = mSessionPresenter?.localSession ?: return
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
             listener.addNoteClicked(session)
         }
         dismissBottomSheet()
     }
 
-    override fun onFinishSessionConfirmed(localSession: LocalSession) {
-        val session = mSessionPresenter?.localSession ?: return
+    override fun onFinishSessionConfirmed(session: Session) {
+        val session = mSessionPresenter?.session ?: return
 
         for (listener in listeners) {
             listener.onFinishSessionConfirmed(session)
@@ -66,18 +66,18 @@ class GraphViewMobileActiveMvcImpl : GraphViewMvcImpl,
     }
 
     override fun disconnectSessionPressed() {
-        val session = mSessionPresenter?.localSession ?: return
+        val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
             listener.onSessionDisconnectClicked(session)
         }
         dismissBottomSheet()
     }
 
-    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
     }
 
-    override fun getSessionType(): LocalSession.Type {
-        return LocalSession.Type.MOBILE
+    override fun getSessionType(): Session.Type {
+        return Session.Type.MOBILE
     }
 }

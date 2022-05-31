@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.MobileDormantSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
@@ -36,18 +36,18 @@ class MobileDormantController(
     }
 
     override fun onRecordNewSessionClicked() {
-        startNewSession(LocalSession.Type.MOBILE)
+        startNewSession(Session.Type.MOBILE)
     }
 
     override fun onExploreNewSessionsClicked() {
       // do nothing
     }
 
-    override fun onFinishSessionConfirmed(localSession: LocalSession) {
+    override fun onFinishSessionConfirmed(session: Session) {
         // do nothing
     }
 
-    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
+    override fun onFinishAndSyncSessionConfirmed(session: Session) {
         // do nothing
     }
 

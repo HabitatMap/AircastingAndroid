@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.BitmapHelper
 import pl.llp.aircasting.util.styleGoogleMap
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 
@@ -25,11 +25,11 @@ abstract class ConfirmationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?,
-    localSession: LocalSession,
+    session: Session,
     protected val areMapsDisabled: Boolean
 ) : BaseObservableViewMvc<ConfirmationViewMvc.Listener>(), ConfirmationViewMvc,
     OnMapReadyCallback {
-    protected var localSession: LocalSession? = localSession
+    protected var session: Session? = session
 
     val DEFAULT_ZOOM = 16f
 
@@ -88,7 +88,7 @@ abstract class ConfirmationViewMvcImpl(
 
     private fun onStartRecordingClicked() {
         for (listener in listeners) {
-            localSession?.let { listener.onStartRecordingClicked(it) }
+            session?.let { listener.onStartRecordingClicked(it) }
         }
     }
 
@@ -99,11 +99,11 @@ abstract class ConfirmationViewMvcImpl(
         return SpannableStringBuilder()
             .append(getString(R.string.session_confirmation_description_part1))
             .append(" ")
-            .color(blueColor) { bold { append(localSession?.displayedType) } }
+            .color(blueColor) { bold { append(session?.displayedType) } }
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part2))
             .append(" ")
-            .color(blueColor) { bold { append(localSession?.name) } }
+            .color(blueColor) { bold { append(session?.name) } }
             .append(" ")
             .append(getString(R.string.session_confirmation_description_part3))
     }
@@ -122,7 +122,7 @@ abstract class ConfirmationViewMvcImpl(
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val sessionLocation = localSession?.location ?: return
+        val sessionLocation = session?.location ?: return
 
         mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
 

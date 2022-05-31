@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.fixed
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 
 
@@ -24,11 +24,11 @@ class FixedRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun prepareSession(localSession: LocalSession, expanded: Boolean): LocalSession {
+    override fun prepareSession(session: Session, expanded: Boolean): Session {
         if (!expanded) {
-            return localSession
+            return session
         }
 
-        return reloadSessionFromDB(localSession)
+        return reloadSessionFromDB(session)
     }
 }

@@ -3,7 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor
 import android.bluetooth.BluetoothAdapter
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.safeRegister
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -33,7 +33,7 @@ abstract class AirBeamConnector {
     protected abstract fun start(deviceItem: DeviceItem)
     protected abstract fun stop()
     protected abstract fun sendAuth(sessionUUID: String)
-    protected abstract fun configureSession(localSession: LocalSession, wifiSSID: String?, wifiPassword: String?)
+    protected abstract fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mDeviceItem = deviceItem
@@ -109,7 +109,7 @@ abstract class AirBeamConnector {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: ConfigureSession) {
-        configureSession(event.localSession, event.wifiSSID, event.wifiPassword)
+        configureSession(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

@@ -32,7 +32,7 @@ class Chart(context: Context, rootView: View?) {
     fun bindChart(
         sessionPresenter: SessionPresenter?
     ) {
-        val session = sessionPresenter?.localSession
+        val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
         setEntries(sessionPresenter)

@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.params.SessionParams
 import pl.llp.aircasting.data.api.params.UpdateSessionBody
 import pl.llp.aircasting.data.api.response.UpdateSessionResponse
@@ -14,8 +14,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class UpdateSessionService(private val apiService: ApiService, private val errorHandler: ErrorHandler, private val context: Context) {
-    fun update(localSession: LocalSession, successCallback: (() -> Unit)) {
-        val sessionParams = SessionParams(localSession)
+    fun update(session: Session, successCallback: (() -> Unit)) {
+        val sessionParams = SessionParams(session)
 
         val gson = Gson()
         val jsonData = gson.toJson(sessionParams)

@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
@@ -48,7 +48,7 @@ class NewSessionController(
     private val bluetoothManager: BluetoothManager,
     private val sessionBuilder: SessionBuilder,
     private val settings: Settings,
-    private val localSessionType: LocalSession.Type
+    private val sessionType: Session.Type
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -99,7 +99,7 @@ class NewSessionController(
         if (mContextActivity.areLocationServicesOn()) {
             startNewSessionWizard()
         } else {
-            wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), localSessionType)
+            wizardNavigator.goToTurnOnLocationServices(this, areMapsDisabled(), sessionType)
         }
     }
 
@@ -109,9 +109,9 @@ class NewSessionController(
 
     private fun startNewSessionWizard() {
         LocationHelper.start()
-        when (localSessionType) {
-            LocalSession.Type.FIXED -> onFixedSessionSelected()
-            LocalSession.Type.MOBILE -> onMobileSessionSelected()
+        when (sessionType) {
+            Session.Type.FIXED -> onFixedSessionSelected()
+            Session.Type.MOBILE -> onMobileSessionSelected()
         }
     }
 
@@ -119,15 +119,15 @@ class NewSessionController(
         LocationHelper.checkLocationServicesSettings(mContextActivity)
     }
 
-    override fun onTurnOffLocationServicesOkClicked(localSession: LocalSession?) {
+    override fun onTurnOffLocationServicesOkClicked(session: Session?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(mContextActivity, intent, null)
 
-        wizardNavigator.goToConfirmation(localSession, this)
+        wizardNavigator.goToConfirmation(session, this)
     }
 
-    override fun onSkipClicked(localSession: LocalSession?) {
-        wizardNavigator.goToConfirmation(localSession, this)
+    override fun onSkipClicked(session: Session?) {
+        wizardNavigator.goToConfirmation(session, this)
     }
 
     private fun requestBluetoothEnable() {
@@ -138,7 +138,7 @@ class NewSessionController(
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
             if (bluetoothManager.isBluetoothEnabled()) {
-                wizardNavigator.goToTurnOnAirBeam(localSessionType, this)
+                wizardNavigator.goToTurnOnAirBeam(sessionType, this)
                 return
             }
         } catch (exception: BluetoothNotSupportedException) {
@@ -166,8 +166,8 @@ class NewSessionController(
 
     private fun goToCreateMicSession() {
         wizardNavigator.goToSessionDetails(
-            LocalSession.generateUUID(),
-            LocalSession.Type.MOBILE,
+            Session.generateUUID(),
+            Session.Type.MOBILE,
             MicrophoneDeviceItem(),
             this
         )
@@ -231,7 +231,7 @@ class NewSessionController(
             )
 
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> if (resultCode == RESULT_OK) wizardNavigator.goToTurnOnAirBeam(
-                localSessionType,
+                sessionType,
                 this
             ) else errorHandler.showError(R.string.errors_bluetooth_required)
 
@@ -264,8 +264,8 @@ class NewSessionController(
 
     private fun connectToAirBeam(deviceItem: DeviceItem) {
         wizardNavigator.goToConnectingAirBeam()
-        val localSessionUUID = LocalSession.generateUUID()
-        AirBeamRecordSessionService.startService(mContextActivity, deviceItem, localSessionUUID)
+        val sessionUUID = Session.generateUUID()
+        AirBeamRecordSessionService.startService(mContextActivity, deviceItem, sessionUUID)
     }
 
     override fun onAirBeamConnectedContinueClicked(
@@ -282,25 +282,25 @@ class NewSessionController(
     override fun onSessionDetailsContinueClicked(
         sessionUUID: String,
         deviceItem: DeviceItem,
-        localSessionType: LocalSession.Type,
+        sessionType: Session.Type,
         sessionName: String,
         sessionTags: ArrayList<String>,
         indoor: Boolean,
-        streamingMethod: LocalSession.StreamingMethod?,
+        streamingMethod: Session.StreamingMethod?,
         wifiSSID: String?,
         wifiPassword: String?
     ) {
 
         val currentLocation =
-            LocalSession.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
+            Session.Location.get(LocationHelper.lastLocation(), areMapsDisabled())
 
-        val localSession = sessionBuilder.build(
+        val session = sessionBuilder.build(
             sessionUUID,
             deviceItem,
-            localSessionType,
+            sessionType,
             sessionName,
             sessionTags,
-            LocalSession.Status.NEW,
+            Session.Status.NEW,
             indoor,
             streamingMethod,
             currentLocation,
@@ -309,21 +309,21 @@ class NewSessionController(
 
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
-        if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && localSessionType == LocalSession.Type.MOBILE) {
-            wizardNavigator.goToTurnOffLocationServices(localSession, this)
-        } else if (localSessionType == LocalSession.Type.MOBILE || indoor) {
-            wizardNavigator.goToConfirmation(localSession, this)
+        if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
+            wizardNavigator.goToTurnOffLocationServices(session, this)
+        } else if (sessionType == Session.Type.MOBILE || indoor) {
+            wizardNavigator.goToConfirmation(session, this)
         } else {
-            wizardNavigator.goToChooseLocation(localSession, this, errorHandler)
+            wizardNavigator.goToChooseLocation(session, this, errorHandler)
         }
     }
 
-    override fun onContinueClicked(localSession: LocalSession) {
-        wizardNavigator.goToConfirmation(localSession, this)
+    override fun onContinueClicked(session: Session) {
+        wizardNavigator.goToConfirmation(session, this)
     }
 
-    override fun onStartRecordingClicked(localSession: LocalSession) {
-        val event = StartRecordingEvent(localSession, wifiSSID, wifiPassword)
+    override fun onStartRecordingClicked(session: Session) {
+        val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
@@ -339,7 +339,7 @@ class NewSessionController(
         deviceItem ?: return
 
         EventBus.getDefault().post(SendSessionAuth(sessionUUID))
-        wizardNavigator.goToSessionDetails(sessionUUID, localSessionType, deviceItem, this)
+        wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
 
     @Subscribe

@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.pm.PackageManager
 import no.nordicsemi.android.ble.observer.ConnectionObserver
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.BLENotSupported
@@ -51,8 +51,8 @@ open class AirBeam3Connector(
         airBeam3Configurator.close()
     }
 
-    override fun configureSession(localSession: LocalSession, wifiSSID: String?, wifiPassword: String?) {
-        airBeam3Configurator.configure(localSession, wifiSSID, wifiPassword)
+    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        airBeam3Configurator.configure(session, wifiSSID, wifiPassword)
     }
 
     override fun sendAuth(sessionUUID: String) {

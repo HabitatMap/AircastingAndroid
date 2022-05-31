@@ -15,7 +15,7 @@ import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class DownloadMeasurementsCallback(
     private val sessionId: Long,
-    private val localSession: LocalSession,
+    private val session: Session,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
@@ -101,7 +101,7 @@ class DownloadMeasurementsCallback(
         // Because of that when we launch the app after some time of inactivity we have to insert all
         // new measurements for following session to active_measurements_table apart from the basic measurements db table
 
-        if (localSession.isFixed() && localSession.followedAt != null) {
+        if (session.isFixed() && session.followedAt != null) {
             val downloadedLastMeasurementTime =
                 measurementsRepository.lastMeasurementTime(sessionId, streamId)
             val chartLastMeasurementTime =
@@ -158,8 +158,8 @@ class DownloadMeasurementsCallback(
     }
 
     private fun updateSessionEndTime(endTimeString: String?) {
-        if (endTimeString != null) localSession.endTime = DateConverter.fromString(endTimeString)
-        sessionsRepository.update(localSession)
+        if (endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
+        sessionsRepository.update(session)
     }
 
     @Subscribe

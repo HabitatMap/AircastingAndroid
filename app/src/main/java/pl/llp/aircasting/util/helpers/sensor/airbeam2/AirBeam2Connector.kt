@@ -1,7 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam2
 
 import android.bluetooth.BluetoothSocket
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.*
@@ -35,8 +35,8 @@ open class AirBeam2Connector(
         mThread?.sendAuth(sessionUUID)
     }
 
-    override fun configureSession(localSession: LocalSession, wifiSSID: String?, wifiPassword: String?) {
-        mThread?.configureSession(localSession, wifiSSID, wifiPassword)
+    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+        mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
     override fun reconnectMobileSession() {
@@ -98,9 +98,9 @@ open class AirBeam2Connector(
             }
         }
 
-        fun configureSession(localSession: LocalSession, wifiSSID: String?, wifiPassword: String?) {
+        fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
             try {
-                mAirBeamConfigurator.configure(localSession, wifiSSID, wifiPassword, mOutputStream)
+                mAirBeamConfigurator.configure(session, wifiSSID, wifiPassword, mOutputStream)
             } catch (e: IOException) {
                 mErrorHandler.handle(AirBeam2ConfiguringFailed(e))
             }

@@ -1,10 +1,10 @@
 package pl.llp.aircasting.data.api.params
 
 import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 
-class SessionParams(localSession: LocalSession) {
+class SessionParams(session: Session) {
     companion object {
         const val MOBILE_SESSION_TYPE = "MobileSession"
         const val FIXED_SESSION_TYPE = "FixedSession"
@@ -26,24 +26,24 @@ class SessionParams(localSession: LocalSession) {
     val longitude: Double?
 
     init {
-        this.uuid = localSession.uuid
-        this.type = when(localSession.type) {
-            LocalSession.Type.FIXED -> FIXED_SESSION_TYPE
-            LocalSession.Type.MOBILE -> MOBILE_SESSION_TYPE
+        this.uuid = session.uuid
+        this.type = when(session.type) {
+            Session.Type.FIXED -> FIXED_SESSION_TYPE
+            Session.Type.MOBILE -> MOBILE_SESSION_TYPE
         }
-        this.contribute = localSession.contribute
-        this.title = localSession.name
-        this.start_time = DateConverter.toDateString(localSession.startTime)
-        this.end_time = localSession.endTime?.let { DateConverter.toDateString(it) }
-        this.tag_list = localSession.tags.joinToString(TAGS_SEPARATOR)
-        this.version = localSession.version
-        this.is_indoor = localSession.indoor
-        this.latitude = localSession.location?.latitude
-        this.longitude = localSession.location?.longitude
-        localSession.streams.forEach { stream ->
+        this.contribute = session.contribute
+        this.title = session.name
+        this.start_time = DateConverter.toDateString(session.startTime)
+        this.end_time = session.endTime?.let { DateConverter.toDateString(it) }
+        this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
+        this.version = session.version
+        this.is_indoor = session.indoor
+        this.latitude = session.location?.latitude
+        this.longitude = session.location?.longitude
+        session.streams.forEach { stream ->
             streams[stream.sensorName] =
                 MeasurementStreamParams(stream)
         }
-        notes = localSession.notes.map { note -> NoteParams(note) }
+        notes = session.notes.map { note -> NoteParams(note) }
     }
 }

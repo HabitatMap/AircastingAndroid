@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
@@ -31,21 +31,21 @@ class MobileDormantViewMvcImpl(
         )
     }
 
-    override fun onSessionEditClicked(localSession: LocalSession) {
+    override fun onSessionEditClicked(session: Session) {
         for (listener in listeners) {
-            listener.onEditSessionClicked(localSession)
+            listener.onEditSessionClicked(session)
         }
     }
 
-    override fun onSessionShareClicked(localSession: LocalSession) {
+    override fun onSessionShareClicked(session: Session) {
         for (listener in listeners) {
-            listener.onShareSessionClicked(localSession)
+            listener.onShareSessionClicked(session)
         }
     }
 
-    override fun onSessionDeleteClicked(localSession: LocalSession) {
+    override fun onSessionDeleteClicked(session: Session) {
         for (listener in listeners) {
-            listener.onDeleteSessionClicked(localSession)
+            listener.onDeleteSessionClicked(session)
         }
     }
 

@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.dormant
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 
 
@@ -24,8 +24,8 @@ class MobileDormantRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun prepareSession(localSession: LocalSession, expanded: Boolean): LocalSession {
+    override fun prepareSession(session: Session, expanded: Boolean): Session {
         // We only have to reload measurements for fixed tab for expanded sessions and following tab. Mobile dormant sessions are not reloaded anymore
-        return localSession
+        return session
     }
 }

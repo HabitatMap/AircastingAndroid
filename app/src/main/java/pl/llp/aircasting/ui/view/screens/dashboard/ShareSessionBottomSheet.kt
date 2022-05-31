@@ -14,7 +14,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.util.isValidEmail
 import pl.llp.aircasting.util.setAppearance
@@ -22,12 +22,12 @@ import pl.llp.aircasting.util.showToast
 
 class ShareSessionBottomSheet(
     private val mListener: Listener,
-    val localSession: LocalSession,
+    val session: Session,
     private val mContext: Context?
 ) : BottomSheet() {
     interface Listener {
-        fun onShareLinkPressed(localSession: LocalSession, sensor: String)
-        fun onShareFilePressed(localSession: LocalSession, emailInput: String)
+        fun onShareLinkPressed(session: Session, sensor: String)
+        fun onShareFilePressed(session: Session, emailInput: String)
     }
 
     class CurrentSessionStreams(
@@ -71,7 +71,7 @@ class ShareSessionBottomSheet(
             dismiss()
         }
 
-        if (localSession.locationless) {
+        if (session.locationless) {
             radioGroup?.visibility = View.GONE
             shareLinkButton?.visibility = View.GONE
             selectStreamTextView?.visibility = View.GONE
@@ -92,13 +92,13 @@ class ShareSessionBottomSheet(
 
     private fun shareFilePressed() {
         val emailInput = emailInput?.text.toString().trim()
-        if (!localSession.locationless) {
+        if (!session.locationless) {
             if (!isValidEmail(emailInput)) {
                 showError()
                 return
             }
         }
-        mListener.onShareFilePressed(localSession, emailInput)
+        mListener.onShareFilePressed(session, emailInput)
         dismiss()
     }
 
@@ -108,13 +108,13 @@ class ShareSessionBottomSheet(
     }
 
     fun shareLinkPressed() {
-        mListener.onShareLinkPressed(localSession, chosenSensor)
+        mListener.onShareLinkPressed(session, chosenSensor)
         dismiss()
     }
 
     private fun setRadioButtonsForChosenSession() {
         fieldValues.clear()
-        val currentSessionStreams = localSession.activeStreams
+        val currentSessionStreams = session.activeStreams
         currentSessionStreams.forEach { stream ->
             setRadioButtonProperties(stream)
         }

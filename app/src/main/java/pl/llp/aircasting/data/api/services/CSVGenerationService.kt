@@ -6,13 +6,13 @@ import android.net.Uri
 import pl.llp.aircasting.util.exceptions.CSVGenerationError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.CSVHelper
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.response.SyncResponse
 import retrofit2.Call
 import java.io.IOException
 
 class CSVGenerationService(
-    private val localSession: LocalSession,
+    private val session: Session,
     private val context: Context,
     private val csvHelper: CSVHelper,
     private val errorHandler: ErrorHandler
@@ -55,7 +55,7 @@ class CSVGenerationService(
 
             private fun prepareAndShare(): Uri? {
                 return try {
-                    csvHelper.prepareCSV(context, localSession)
+                    csvHelper.prepareCSV(context, session)
                 } catch (e: IOException) {
                     errorHandler.handleAndDisplay(CSVGenerationError())
                     null

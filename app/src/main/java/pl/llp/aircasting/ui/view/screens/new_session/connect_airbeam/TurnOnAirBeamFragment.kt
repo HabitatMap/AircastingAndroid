@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseFragment
 
 class TurnOnAirBeamFragment : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBeamController>() {
     var listener: TurnOnAirBeamViewMvc.Listener? = null
-    lateinit var localSessionType: LocalSession.Type
+    lateinit var sessionType: Session.Type
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,7 +20,7 @@ class TurnOnAirBeamFragment : BaseFragment<TurnOnAirBeamViewMvcImpl, TurnOnAirBe
             TurnOnAirBeamViewMvcImpl(
                 layoutInflater,
                 null,
-                localSessionType
+                sessionType
             )
         controller =
             TurnOnAirBeamController(

@@ -5,7 +5,7 @@ import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.NoteResponseParser
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.data.api.params.SessionParams
 import pl.llp.aircasting.data.api.response.SessionResponse
@@ -22,7 +22,7 @@ class SessionDownloadService(
 
     fun download(
         uuid: String,
-        successCallback: (LocalSession) -> Unit?,
+        successCallback: (Session) -> Unit?,
         finallyCallback: (() -> Unit?)? = null
     ) {
         val call = apiService.downloadSession(uuid)
@@ -46,21 +46,21 @@ class SessionDownloadService(
         })
     }
 
-    fun sessionFromResponse(sessionResponse: SessionResponse): LocalSession? {
+    fun sessionFromResponse(sessionResponse: SessionResponse): Session? {
         val startTime = DateConverter.fromString(sessionResponse.start_time) ?: return null
 
         val streams = sessionResponse.streams.values.map { stream ->
             MeasurementStream(stream)
         }
 
-        val localSession = LocalSession(
+        val session = Session(
             sessionResponse.uuid,
             null,
             null,
             sessionType(sessionResponse.type),
             sessionResponse.title,
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
-            LocalSession.Status.FINISHED,
+            Session.Status.FINISHED,
             startTime,
             DateConverter.fromString(sessionResponse.end_time),
             sessionResponse.version,
@@ -74,20 +74,20 @@ class SessionDownloadService(
         )
 
         if (sessionResponse.latitude != null && sessionResponse.longitude != null) {
-            localSession.location = LocalSession.Location(sessionResponse.latitude, sessionResponse.longitude)
+            session.location = Session.Location(sessionResponse.latitude, sessionResponse.longitude)
         }
 
-        localSession.notes = sessionResponse.notes.map { noteResponse ->
+        session.notes = sessionResponse.notes.map { noteResponse ->
             noteResponseParser.noteFromResponse(noteResponse)
         }.toMutableList()
 
-        return localSession
+        return session
     }
 
-    private fun sessionType(type: String): LocalSession.Type {
+    private fun sessionType(type: String): Session.Type {
         return when (type) {
-            SessionParams.FIXED_SESSION_TYPE -> LocalSession.Type.FIXED
-            else -> return LocalSession.Type.MOBILE
+            SessionParams.FIXED_SESSION_TYPE -> Session.Type.FIXED
+            else -> return Session.Type.MOBILE
         }
     }
 }

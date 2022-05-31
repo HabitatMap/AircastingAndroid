@@ -139,7 +139,7 @@ abstract class SessionDetailsViewMvcImpl(
     override fun centerMap(location: Location) {}
 
     private fun bindSessionDetails() {
-        val session = mSessionPresenter?.localSession
+        val session = mSessionPresenter?.session
         session ?: return
 
         mSessionDateTextView?.text =
@@ -173,11 +173,11 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     protected open fun onNoteAdded(note: Note) {
-        mSessionPresenter?.localSession?.notes?.add(note)
+        mSessionPresenter?.session?.notes?.add(note)
     }
 
     protected open fun onNoteDeleted(note: Note) {
-        mSessionPresenter?.localSession?.notes?.remove(note)
+        mSessionPresenter?.session?.notes?.remove(note)
     }
 
     override fun onSensorThresholdChangedFromDialog(sensorThreshold: SensorThreshold) {

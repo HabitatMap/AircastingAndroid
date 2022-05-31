@@ -3,23 +3,23 @@ package pl.llp.aircasting.ui.view.screens.dashboard.charts
 import com.github.mikephil.charting.data.Entry
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.services.AveragedMeasurementsService
 import java.util.*
 
 class ChartData(
-    var localSession: LocalSession
+    var session: Session
 ) {
     var entriesStartTime: String = ""
     var entriesEndTime: String = ""
 
-    private var mSession = localSession
+    private var mSession = session
     private lateinit var mEndTime: Date
     private lateinit var mEntriesPerStream: HashMap<String, List<Entry>>
     private var mMaxEntriesCount: Int = 0
     private lateinit var mMeasurementStreams: MutableList<MeasurementStream>
-    private var mChartRefreshService = ChartRefreshService(localSession)
+    private var mChartRefreshService = ChartRefreshService(session)
 
     init {
         initData()
@@ -33,10 +33,10 @@ class ChartData(
         return mEntriesPerStream[streamKey(stream)]
     }
 
-    fun refresh(localSession: LocalSession) {
-        val hourChanged = mSession.endTime?.hours != localSession.endTime?.hours
+    fun refresh(session: Session) {
+        val hourChanged = mSession.endTime?.hours != session.endTime?.hours
 
-        mSession = localSession
+        mSession = session
         mEndTime = mSession.endTime ?: Date()
         if(mChartRefreshService.isTimeToRefresh() || hourChanged) {
             initData()
@@ -55,8 +55,8 @@ class ChartData(
 
     private fun averageFrequency(): Int {
         return when (mSession.type) {
-            LocalSession.Type.MOBILE -> Calendar.MINUTE
-            LocalSession.Type.FIXED -> Calendar.HOUR
+            Session.Type.MOBILE -> Calendar.MINUTE
+            Session.Type.FIXED -> Calendar.HOUR
         }
     }
 
@@ -85,8 +85,8 @@ class ChartData(
 
     private fun timeToDisplay(time: Date): Date {
         return when(mSession.type) {
-            LocalSession.Type.FIXED -> DateUtils.truncate(time, Calendar.HOUR)
-            LocalSession.Type.MOBILE -> time
+            Session.Type.FIXED -> DateUtils.truncate(time, Calendar.HOUR)
+            Session.Type.MOBILE -> time
         }
     }
 
@@ -120,8 +120,8 @@ class ChartData(
 
         stream?.let { stream ->
             entries =  when (mSession.type) {
-                LocalSession.Type.MOBILE -> {
-                    val averagedMeasurementsService = AveragedMeasurementsService(localSession.uuid)
+                Session.Type.MOBILE -> {
+                    val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
                     val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
                     if (measurementsOverSecondThreshold.isNullOrEmpty()) {
                         ChartAveragesCreator().getMobileEntries(stream)
@@ -129,7 +129,7 @@ class ChartData(
                         ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(measurementsOverSecondThreshold)
                     }
                 }
-                LocalSession.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
+                Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
             }
         }
         return entries

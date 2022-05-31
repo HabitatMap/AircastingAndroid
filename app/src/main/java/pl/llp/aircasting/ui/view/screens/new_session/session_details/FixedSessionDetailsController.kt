@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.TurnOnWifiDialog
 
@@ -58,8 +58,8 @@ class FixedSessionDetailsController(
     }
 
 
-    override fun onStreamingMethodChanged(streamingMethod: LocalSession.StreamingMethod) {
-        if (streamingMethod != LocalSession.StreamingMethod.WIFI) return
+    override fun onStreamingMethodChanged(streamingMethod: Session.StreamingMethod) {
+        if (streamingMethod != Session.StreamingMethod.WIFI) return
 
         if (mWifiManager?.isWifiEnabled == true) {
             scanForNetworks()

@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
 class SessionsViewModel : ViewModel() {
     private val mDatabase = DatabaseProvider.get()
@@ -25,7 +25,7 @@ class SessionsViewModel : ViewModel() {
 
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
-            LocalSession.Type.MOBILE, listOf(LocalSession.Status.RECORDING.value, LocalSession.Status.DISCONNECTED.value))
+            Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
     }
 
     fun loadLiveDataCompleteSessionBySessionUUID(sessionUUID: String): LiveData<CompleteSessionDBObject?> {
@@ -38,24 +38,24 @@ class SessionsViewModel : ViewModel() {
 
     fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatus(
-            LocalSession.Type.MOBILE,
-            LocalSession.Status.FINISHED
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
         )
     }
 
     fun loadMobileDormantSessionsWithMeasurementsAndNotes(): LiveData<List<SessionWithStreamsAndNotesDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithNotes(
-            LocalSession.Type.MOBILE,
-            LocalSession.Status.FINISHED
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
         )
     }
 
     fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions().loadAllByType(LocalSession.Type.FIXED)
+        return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
-    fun findOrCreateSensorThresholds(localSession: LocalSession): List<SensorThreshold> {
-        return findOrCreateSensorThresholds(localSession.streams)
+    fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
+        return findOrCreateSensorThresholds(session.streams)
     }
 
     fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
@@ -98,8 +98,8 @@ class SessionsViewModel : ViewModel() {
         )
     }
 
-    fun updateFollowedAt(localSession: LocalSession) {
-        mDatabase.sessions().updateFollowedAt(localSession.uuid, localSession.followedAt)
+    fun updateFollowedAt(session: Session) {
+        mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
 
     fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {

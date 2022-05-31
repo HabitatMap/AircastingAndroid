@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationFragment
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
@@ -51,29 +51,29 @@ class NewSessionWizardNavigator(
     fun goToTurnOnLocationServices(
         listener: TurnOnLocationServicesViewMvc.Listener,
         areMapsDisabled: Boolean,
-        localSessionType: LocalSession.Type
+        sessionType: Session.Type
     ) {
         incrementStepProgress()
-        val useDetailedExplanation = (areMapsDisabled && localSessionType == LocalSession.Type.MOBILE)
+        val useDetailedExplanation = (areMapsDisabled && sessionType == Session.Type.MOBILE)
         val fragment = TurnOnLocationServicesFragment(useDetailedExplanation, areMapsDisabled)
         fragment.listener = listener
         goToFragment(fragment)
     }
 
-    fun goToTurnOffLocationServices(localSession: LocalSession, listener: TurnOffLocationServicesViewMvc.Listener) {
+    fun goToTurnOffLocationServices(session: Session, listener: TurnOffLocationServicesViewMvc.Listener) {
         incrementStepProgress()
         val fragment = TurnOffLocationServicesFragment()
         fragment.listener = listener
-        fragment.localSession = localSession
+        fragment.session = session
         goToFragment(fragment)
     }
 
-    fun goToTurnOnAirBeam(localSessionType: LocalSession.Type, listener: TurnOnAirBeamViewMvc.Listener) {
+    fun goToTurnOnAirBeam(sessionType: Session.Type, listener: TurnOnAirBeamViewMvc.Listener) {
         incrementStepProgress()
 
         val fragment = TurnOnAirBeamFragment()
         fragment.listener = listener
-        fragment.localSessionType = localSessionType
+        fragment.sessionType = sessionType
         unregisterBackPressedListener()
         goToFragment(fragment)
     }
@@ -95,32 +95,32 @@ class NewSessionWizardNavigator(
         goToFragment(fragment)
     }
 
-    fun goToSessionDetails(sessionUUID: String, localSessionType: LocalSession.Type, deviceItem: DeviceItem, listener: SessionDetailsViewMvc.Listener) {
+    fun goToSessionDetails(sessionUUID: String, sessionType: Session.Type, deviceItem: DeviceItem, listener: SessionDetailsViewMvc.Listener) {
         incrementStepProgress()
         val fragment = SessionDetailsFragment()
         fragment.listener = listener
         fragment.deviceItem = deviceItem
         fragment.sessionUUID = sessionUUID
-        fragment.localSessionType = localSessionType
+        fragment.sessionType = sessionType
         goToFragment(fragment)
     }
 
-    fun goToChooseLocation(localSession: LocalSession, listener: ChooseLocationViewMvc.Listener, errorHandler: ErrorHandler) {
+    fun goToChooseLocation(session: Session, listener: ChooseLocationViewMvc.Listener, errorHandler: ErrorHandler) {
         incrementStepProgress()
         val fragment = ChooseLocationFragment()
-        fragment.localSession = localSession
+        fragment.session = session
         fragment.listener = listener
         fragment.errorHandler = errorHandler
         goToFragment(fragment)
     }
 
-    fun goToConfirmation(localSession: LocalSession?, listener: ConfirmationViewMvc.Listener) {
-        localSession ?: return
+    fun goToConfirmation(session: Session?, listener: ConfirmationViewMvc.Listener) {
+        session ?: return
 
         incrementStepProgress()
         val fragment = ConfirmationFragment()
         fragment.listener = listener
-        fragment.localSession = localSession
+        fragment.session = session
         goToFragment(fragment)
     }
 }

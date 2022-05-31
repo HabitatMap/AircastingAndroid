@@ -16,7 +16,7 @@ import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.DurationStringHelper
 import pl.llp.aircasting.util.TouchDelegateComposite
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
@@ -186,7 +186,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun bindSessionDetails() {
-        val session = mSessionPresenter?.localSession
+        val session = mSessionPresenter?.session
 
         mDateTextView.text = DurationStringHelper().durationString(
             session?.startTime!!,
@@ -198,7 +198,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.localSession?.status == LocalSession.Status.DISCONNECTED && !sessionPresenter.isFixed()) {
+        if (sessionPresenter.session?.status == Session.Status.DISCONNECTED && !sessionPresenter.isFixed()) {
             mMeasurementsDescription?.visibility = View.GONE
         } else if (sessionPresenter.expanded) {
             mMeasurementsDescription?.visibility = View.VISIBLE
@@ -301,7 +301,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun onFollowButtonClicked() {
-        mSessionPresenter?.localSession?.let { session ->
+        mSessionPresenter?.session?.let { session ->
             session.follow()
             bindFollowButtons(mSessionPresenter!!)
 
@@ -312,7 +312,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun onUnfollowButtonClicked() {
-        mSessionPresenter?.localSession?.let { session ->
+        mSessionPresenter?.session?.let { session ->
             session.unfollow()
             bindFollowButtons(mSessionPresenter!!)
 
@@ -323,7 +323,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun onMapButtonClicked() {
-        mSessionPresenter?.localSession?.let {
+        mSessionPresenter?.session?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onMapButtonClicked(
                     it,
@@ -334,7 +334,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun onGraphButtonClicked() {
-        mSessionPresenter?.localSession?.let {
+        mSessionPresenter?.session?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onGraphButtonClicked(
                     it,
@@ -347,7 +347,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     private fun onExpandSessionCardClicked() {
         mSessionPresenter?.expanded = true
 
-        mSessionPresenter?.localSession?.let {
+        mSessionPresenter?.session?.let {
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onExpandSessionCard(it)
             }

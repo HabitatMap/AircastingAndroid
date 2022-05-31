@@ -17,7 +17,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -30,7 +30,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var sessionUUID: String
     private var deviceItem: DeviceItem
     private var indoor = true
-    private var streamingMethod = LocalSession.StreamingMethod.WIFI
+    private var streamingMethod = Session.StreamingMethod.WIFI
     private var streamingMethodChangedListener: FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener? = null
     private var networksHeaderView: TextView? = null
     private var refreshNetworksListButton: Button? = null
@@ -79,7 +79,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
         val cellularButton = rootView?.findViewById<Button>(R.id.cellular_button)
         cellularButton?.setOnClickListener {
-            streamingMethod = LocalSession.StreamingMethod.CELLULAR
+            streamingMethod = Session.StreamingMethod.CELLULAR
             hideNetworksList()
 
             streamingMethodChangedListener?.onStreamingMethodChanged(streamingMethod)
@@ -87,7 +87,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
         val wifiButton = rootView?.findViewById<Button>(R.id.wifi_button)
         wifiButton?.setOnClickListener {
-            streamingMethod = LocalSession.StreamingMethod.WIFI
+            streamingMethod = Session.StreamingMethod.WIFI
             showNetworksList()
 
             streamingMethodChangedListener?.onStreamingMethodChanged(streamingMethod)
@@ -185,7 +185,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         networksRecyclerViewAdapter.addAll(networkItems)
 
         networkListLoaded = true
-        if (streamingMethod == LocalSession.StreamingMethod.WIFI) {
+        if (streamingMethod == Session.StreamingMethod.WIFI) {
             showNetworksList()
         }
     }
@@ -232,7 +232,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
             listener.onSessionDetailsContinueClicked(
                 sessionUUID,
                 deviceItem,
-                LocalSession.Type.FIXED,
+                Session.Type.FIXED,
                 sessionName,
                 sessionTags,
                 indoor,
@@ -254,7 +254,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
             return getString(R.string.session_name_required)
         }
 
-        if (streamingMethod == LocalSession.StreamingMethod.WIFI && (wifiName.isEmpty() || wifiPassword.isEmpty())) {
+        if (streamingMethod == Session.StreamingMethod.WIFI && (wifiName.isEmpty() || wifiPassword.isEmpty())) {
             return getString(R.string.session_wifi_credentials_required)
         }
 

@@ -3,7 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import java.io.File
 
 class SDCardMobileSessionsProcessor(
@@ -27,31 +27,31 @@ class SDCardMobileSessionsProcessor(
         csvSession ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
-        val localSession: LocalSession?
+        val session: Session?
         val sessionId: Long
 
         if (dbSession == null) {
-            localSession = csvSession.toSession(deviceId) ?: return
-            sessionId = mSessionsRepository.insert(localSession)
+            session = csvSession.toSession(deviceId) ?: return
+            sessionId = mSessionsRepository.insert(session)
         } else {
-            localSession = LocalSession(dbSession)
+            session = Session(dbSession)
             sessionId = dbSession.id
         }
 
-        if (localSession.isDisconnected()) {
+        if (session.isDisconnected()) {
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
             }
 
-            finishSession(sessionId, localSession)
+            finishSession(sessionId, session)
             mProcessedSessionsIds.add(sessionId)
         }
     }
 
-    private fun finishSession(sessionId: Long, localSession: LocalSession) {
+    private fun finishSession(sessionId: Long, session: Session) {
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
-        localSession.stopRecording(lastMeasurementTime)
-        mSessionsRepository.update(localSession)
+        session.stopRecording(lastMeasurementTime)
+        mSessionsRepository.update(session)
     }
 
     override fun filterMeasurements(

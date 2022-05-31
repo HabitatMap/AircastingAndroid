@@ -1,8 +1,8 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
 interface FinishSessionListener {
-    fun onFinishSessionConfirmed(localSession: LocalSession)
-    fun onFinishAndSyncSessionConfirmed(localSession: LocalSession)
+    fun onFinishSessionConfirmed(session: Session)
+    fun onFinishAndSyncSessionConfirmed(session: Session)
 }

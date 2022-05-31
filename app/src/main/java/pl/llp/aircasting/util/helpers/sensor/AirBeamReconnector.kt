@@ -8,7 +8,7 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.isIgnoringBatteryOptimizations
@@ -25,12 +25,12 @@ class AirBeamReconnector(
     private val mAirBeamDiscoveryService: AirBeamDiscoveryService
 ) {
     interface Listener {
-        fun beforeReconnection(localSession: LocalSession)
+        fun beforeReconnection(session: Session)
         fun errorCallback()
-        fun finallyCallback(localSession: LocalSession)
+        fun finallyCallback(session: Session)
     }
 
-    private var mLocalSession: LocalSession? = null
+    private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
     private var mListener: Listener? = null
@@ -48,14 +48,14 @@ class AirBeamReconnector(
         mListener = listener
     }
 
-    fun disconnect(localSession: LocalSession) {
+    fun disconnect(session: Session) {
         mStandaloneMode.set(true)
-        sendDisconnectedEvent(localSession)
-        updateSessionStatus(localSession, LocalSession.Status.DISCONNECTED)
+        sendDisconnectedEvent(session)
+        updateSessionStatus(session, Session.Status.DISCONNECTED)
     }
 
     fun reconnect(
-        localSession: LocalSession,
+        session: Session,
         deviceItem: DeviceItem?,
         errorCallback: () -> Unit,
         finallyCallback: () -> Unit
@@ -70,34 +70,34 @@ class AirBeamReconnector(
             }
         } else {
             // disconnecting first to make sure the connector thread is stopped correctly etc
-            sendDisconnectedEvent(localSession)
+            sendDisconnectedEvent(session)
         }
 
-        mLocalSession = localSession
+        mSession = session
         mErrorCallback = errorCallback
         mFinallyCallback = finallyCallback
 
         if (deviceItem?.type == DeviceItem.Type.AIRBEAM3) {
-            reconnect(localSession.deviceId, deviceItem)
+            reconnect(session.deviceId, deviceItem)
         } else {
             mAirBeamDiscoveryService.find(
-                deviceSelector = { deviceItem -> deviceItem.id == localSession.deviceId },
+                deviceSelector = { deviceItem -> deviceItem.id == session.deviceId },
                 onDiscoverySuccessful = { deviceItem -> reconnect(deviceItem.id, deviceItem) },
                 onDiscoveryFailed = { onDiscoveryFailed() }
             )
         }
     }
 
-    fun initReconnectionTries(localSession: LocalSession, deviceItem: DeviceItem?) {
+    fun initReconnectionTries(session: Session, deviceItem: DeviceItem?) {
         if (mStandaloneMode.get()) return
         if (mReconnectionTriesNumber != null) return
-        mListener?.beforeReconnection(localSession)
+        mListener?.beforeReconnection(session)
         mReconnectionTriesNumber = 1
         reconnect(
-            localSession,
+            session,
             deviceItem,
             { mListener?.errorCallback() },
-            { mListener?.finallyCallback(localSession) })
+            { mListener?.finallyCallback(session) })
     }
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
@@ -114,7 +114,7 @@ class AirBeamReconnector(
                 mContext,
                 deviceId,
                 deviceItem,
-                mLocalSession?.uuid
+                mSession?.uuid
             )
 
         } catch (e: Exception) {
@@ -126,23 +126,23 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-            if (mLocalSession != null && mErrorCallback != null && mFinallyCallback != null) {
-                reconnect(mLocalSession!!, null, mErrorCallback!!, mFinallyCallback!!)
+            if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
+                reconnect(mSession!!, null, mErrorCallback!!, mFinallyCallback!!)
             }
         } else {
             mFinallyCallback?.invoke()
         }
     }
 
-    private fun sendDisconnectedEvent(localSession: LocalSession) {
-        val deviceId = localSession.deviceId
+    private fun sendDisconnectedEvent(session: Session) {
+        val deviceId = session.deviceId
         deviceId?.let {
-            EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, localSession.uuid))
+            EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid))
         }
     }
 
-    private fun updateSessionStatus(localSession: LocalSession?, status: LocalSession.Status) {
-        localSession?.let { session ->
+    private fun updateSessionStatus(session: Session?, status: Session.Status) {
+        session?.let { session ->
             DatabaseProvider.runQuery {
                 mSessionsRepository.updateSessionStatus(session, status)
             }
@@ -154,7 +154,7 @@ class AirBeamReconnector(
         resetTriesNumberWithDelay()
         mAirBeamDiscoveryService.reset()
 
-        updateSessionStatus(mLocalSession, LocalSession.Status.RECORDING)
+        updateSessionStatus(mSession, Session.Status.RECORDING)
 
         mFinallyCallback?.invoke()
         unregisterFromEventBus()

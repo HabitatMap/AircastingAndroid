@@ -2,7 +2,7 @@ package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.GzippedParams
 import pl.llp.aircasting.data.api.params.CreateSessionBody
 import pl.llp.aircasting.data.api.params.SessionParams
@@ -12,8 +12,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MobileSessionUploadService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    fun upload(localSession: LocalSession, successCallback: (response: Response<UploadSessionResponse>) -> Unit) {
-        val sessionParams = SessionParams(localSession)
+    fun upload(session: Session, successCallback: (response: Response<UploadSessionResponse>) -> Unit) {
+        val sessionParams = SessionParams(session)
         val sessionBody = CreateSessionBody(
             GzippedParams.get(sessionParams, SessionParams::class.java)
         )

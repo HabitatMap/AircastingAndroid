@@ -9,7 +9,7 @@ import java.util.*
 
 val TAGS_SEPARATOR = " "
 
-open class LocalSession(
+open class Session(
     val uuid: String,
     val deviceId: String?,
     val deviceType: DeviceItem.Type?,
@@ -267,8 +267,8 @@ open class LocalSession(
             }
         }
 
-    fun copy(): LocalSession {
-        return LocalSession(
+    fun copy(): Session {
+        return Session(
             this.uuid,
             this.deviceId,
             this.deviceType,
@@ -332,16 +332,16 @@ open class LocalSession(
         return measurementsCount() > 0
     }
 
-    fun hasChangedFrom(localSession: LocalSession?): Boolean {
-        return localSession?.name != name ||
-                localSession.tags != tags ||
-                localSession.followed != followed ||
-                localSession.streams.size != streams.size ||
-                localSession.measurementsCount() != measurementsCount() ||
-                localSession.status != status ||
-                localSession.endTime != endTime ||
-                localSession.notes.size != notes.size ||
-                (localSession.measurementsCount() > 0 && localSession.lastMeasurement()?.time != lastMeasurement()?.time)
+    fun hasChangedFrom(session: Session?): Boolean {
+        return session?.name != name ||
+                session.tags != tags ||
+                session.followed != followed ||
+                session.streams.size != streams.size ||
+                session.measurementsCount() != measurementsCount() ||
+                session.status != status ||
+                session.endTime != endTime ||
+                session.notes.size != notes.size ||
+                (session.measurementsCount() > 0 && session.lastMeasurement()?.time != lastMeasurement()?.time)
     }
 
     fun streamsSortedByDetailedType(): List<MeasurementStream> {

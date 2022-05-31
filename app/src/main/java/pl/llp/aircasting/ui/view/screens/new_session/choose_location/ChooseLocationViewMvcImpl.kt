@@ -15,7 +15,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.util.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.styleGoogleMap
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 
@@ -23,7 +23,7 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
     ChooseLocationViewMvc,
     OnMapReadyCallback {
 
-    private val localSession: LocalSession
+    private val session: Session
 
     private val MAX_ZOOM = 20.0f
     private val MIN_ZOOM = 5.0f
@@ -40,16 +40,16 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
         inflater: LayoutInflater,
         parent: ViewGroup?,
         supportFragmentManager: FragmentManager?,
-        localSession: LocalSession,
+        session: Session,
         errorHandler: ErrorHandler
     ) : super() {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
-        this.localSession = localSession
+        this.session = session
         this.mSupportFragmentManager = supportFragmentManager
 
-        mDefaultLatitude = localSession.location?.latitude ?: LocalSession.Location.DEFAULT_LOCATION.latitude
+        mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
         mDefaultLongitude =
-            localSession.location?.longitude ?: LocalSession.Location.DEFAULT_LOCATION.longitude
+            session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
 
         val autocompleteFragment =
             supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
@@ -109,11 +109,11 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
             val target = map.cameraPosition.target
             val latitude = target.latitude
             val longitude = target.longitude
-            localSession.location = LocalSession.Location(latitude, longitude)
+            session.location = Session.Location(latitude, longitude)
         }
 
         for (listener in listeners) {
-            listener.onContinueClicked(localSession)
+            listener.onContinueClicked(session)
         }
     }
 

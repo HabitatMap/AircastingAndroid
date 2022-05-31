@@ -8,7 +8,7 @@ import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.util.AnimatedLoader
@@ -16,11 +16,11 @@ import pl.llp.aircasting.util.showToast
 
 class EditSessionBottomSheet(
     private val mListener: Listener,
-    private var mLocalSession: LocalSession,
+    private var mSession: Session,
     private val mContext: Context?
 ) : BottomSheet() {
     interface Listener {
-        fun onEditDataPressed(localSession: LocalSession, name: String, tags: ArrayList<String>)
+        fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>)
     }
 
     private var sessionNameInputLayout: TextInputLayout? = null
@@ -39,10 +39,10 @@ class EditSessionBottomSheet(
         sessionNameInputLayout = contentView?.session_name
 
         sessionNameInput = contentView?.session_name_input
-        sessionNameInput?.setText(mLocalSession.name)
+        sessionNameInput?.setText(mSession.name)
 
         tagsInput = contentView?.tags_input
-        tagsInput?.setText(mLocalSession.tags.joinToString(TAGS_SEPARATOR))
+        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
 
         val editDataButton = contentView?.edit_data_button
         editDataButton?.setOnClickListener {
@@ -62,10 +62,10 @@ class EditSessionBottomSheet(
         showLoader()
     }
 
-    fun reload(localSession: LocalSession) {
-        mLocalSession = localSession
-        sessionNameInput?.setText(mLocalSession.name)
-        tagsInput?.setText(mLocalSession.tags.joinToString(TAGS_SEPARATOR))
+    fun reload(session: Session) {
+        mSession = session
+        sessionNameInput?.setText(mSession.name)
+        tagsInput?.setText(mSession.tags.joinToString(TAGS_SEPARATOR))
     }
 
     fun showLoader() {
@@ -94,7 +94,7 @@ class EditSessionBottomSheet(
         val tagList = ArrayList(tags.split(TAGS_SEPARATOR))
 
         dismiss()
-        mListener.onEditDataPressed(mLocalSession, name, tagList)
+        mListener.onEditDataPressed(mSession, name, tagList)
     }
 
     private fun showError() {

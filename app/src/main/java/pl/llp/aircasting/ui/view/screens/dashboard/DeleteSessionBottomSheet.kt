@@ -9,13 +9,13 @@ import androidx.core.widget.TextViewCompat
 import kotlinx.android.synthetic.main.delete_session_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 
 
-class DeleteSessionBottomSheet(private val mListener: Listener, private val localSession: LocalSession): BottomSheet() {
+class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheet() {
     interface Listener {
-        fun onDeleteStreamsPressed(localSession: LocalSession)
+        fun onDeleteStreamsPressed(session: Session)
     }
     private var mStreamsOptionsContainer: LinearLayout? = null
     private var checkBoxMap: HashMap<CheckBox, DeleteStreamOption> = HashMap()
@@ -45,7 +45,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val loca
         }
 
         deleteStreamsButton?.setOnClickListener {
-            mListener.onDeleteStreamsPressed(localSession)
+            mListener.onDeleteStreamsPressed(session)
         }
 
         mStreamsOptionsContainer = contentView?.streams_options_container
@@ -88,7 +88,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val loca
         mStreamsOptionsContainer?.addView(wholeSessionCheckboxView)
         mStreamsOptionsContainer?.addView(separatingLineView)
 
-        val sessionStreams = localSession.activeStreams
+        val sessionStreams = session.activeStreams
         sessionStreams.forEach { stream ->
             val singleStreamCheckboxTitle = stream.detailedType
             val streamCheckbox = CheckBox(context)

@@ -10,7 +10,7 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
@@ -192,14 +192,14 @@ class SyncController(
         }
     }
 
-    override fun onTurnOffLocationServicesOkClicked(localSession: LocalSession?) {
+    override fun onTurnOffLocationServicesOkClicked(session: Session?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         ContextCompat.startActivity(mContextActivity, intent, null)
 
         mContextActivity.finish()
     }
 
-    override fun onSkipClicked(localSession: LocalSession?) {
+    override fun onSkipClicked(session: Session?) {
         mContextActivity.finish()
     }
 

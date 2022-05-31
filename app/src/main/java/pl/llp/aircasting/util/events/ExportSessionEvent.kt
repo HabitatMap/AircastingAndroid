@@ -1,5 +1,5 @@
 package pl.llp.aircasting.util.events
 
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
-class ExportSessionEvent(val localSession: LocalSession, val email: String)
+class ExportSessionEvent(val session: Session, val email: String)

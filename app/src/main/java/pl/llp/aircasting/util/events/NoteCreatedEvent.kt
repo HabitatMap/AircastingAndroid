@@ -1,6 +1,6 @@
 package pl.llp.aircasting.util.events
 
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
-class NoteCreatedEvent(val localSession: LocalSession, val note: Note)
+class NoteCreatedEvent(val session: Session, val note: Note)

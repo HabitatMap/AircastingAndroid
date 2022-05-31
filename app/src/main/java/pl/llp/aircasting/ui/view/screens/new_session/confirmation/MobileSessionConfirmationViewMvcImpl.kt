@@ -4,15 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
 class MobileSessionConfirmationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?,
-    localSession: LocalSession,
+    session: Session,
     areMapsDisabled: Boolean
-) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, localSession, areMapsDisabled) {
+) : ConfirmationViewMvcImpl(inflater, parent, supportFragmentManager, session, areMapsDisabled) {
     override fun layoutId(): Int {
         return R.layout.fragment_mobile_session_confirmation
     }

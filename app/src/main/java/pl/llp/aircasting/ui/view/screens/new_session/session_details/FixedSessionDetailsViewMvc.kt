@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.new_session.session_details
 
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
 
 interface FixedSessionDetailsViewMvc: SessionDetailsViewMvc {
@@ -9,7 +9,7 @@ interface FixedSessionDetailsViewMvc: SessionDetailsViewMvc {
     fun bindNetworks(networks: List<Network>)
 
     interface OnStreamingMethodChangedListener {
-        fun onStreamingMethodChanged(streamingMethod: LocalSession.StreamingMethod)
+        fun onStreamingMethodChanged(streamingMethod: Session.StreamingMethod)
     }
 
     interface OnRefreshNetworksListener {

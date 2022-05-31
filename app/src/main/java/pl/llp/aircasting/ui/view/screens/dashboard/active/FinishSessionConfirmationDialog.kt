@@ -9,14 +9,14 @@ import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseDialog
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 
 open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
     protected val mListener: FinishSessionListener,
-    protected val mLocalSession: LocalSession
+    protected val mSession: Session
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
@@ -42,7 +42,7 @@ open class FinishSessionConfirmationDialog(
         return SpannableStringBuilder()
             .append(getString(R.string.dialog_finish_recording_header_part1))
             .append(" ")
-            .color(blueColor(), { bold { append(mLocalSession.name) } })
+            .color(blueColor(), { bold { append(mSession.name) } })
             .append(getString(R.string.dialog_finish_recording_header_part3))
     }
 
@@ -60,7 +60,7 @@ open class FinishSessionConfirmationDialog(
     }
 
     protected open fun finishSessionConfirmed() {
-        mListener.onFinishSessionConfirmed(mLocalSession)
+        mListener.onFinishSessionConfirmed(mSession)
         dismiss()
     }
 

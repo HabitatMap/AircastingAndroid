@@ -6,7 +6,7 @@ import android.content.Context
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.AirBeam3ConfiguringFailed
@@ -64,17 +64,17 @@ class AirBeam3Configurator(
     }
 
     fun configure(
-        localSession: LocalSession,
+        session: Session,
         wifiSSID: String?,
         wifiPassword: String?
     ){
-        val location = localSession.sharableLocation() ?: return
+        val location = session.sharableLocation() ?: return
         val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
 
-        if (localSession.isFixed()) {
-            when (localSession.streamingMethod) {
-                LocalSession.StreamingMethod.WIFI -> configureFixedWifi(location, dateString, wifiSSID, wifiPassword)
-                LocalSession.StreamingMethod.CELLULAR -> configureFixedCellular(location, dateString)
+        if (session.isFixed()) {
+            when (session.streamingMethod) {
+                Session.StreamingMethod.WIFI -> configureFixedWifi(location, dateString, wifiSSID, wifiPassword)
+                Session.StreamingMethod.CELLULAR -> configureFixedCellular(location, dateString)
             }
         } else {
             configureMobileSession(location, dateString)
@@ -110,7 +110,7 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    private fun configureMobileSession(location: LocalSession.Location, dateString: String) {
+    private fun configureMobileSession(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -124,7 +124,7 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    private fun configureFixedWifi(location: LocalSession.Location, dateString: String, wifiSSID: String?, wifiPassword: String?) {
+    private fun configureFixedWifi(location: Session.Location, dateString: String, wifiSSID: String?, wifiPassword: String?) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         wifiSSID ?: return
@@ -139,7 +139,7 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    private fun configureFixedCellular(location: LocalSession.Location, dateString: String) {
+    private fun configureFixedCellular(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -273,7 +273,7 @@ class AirBeam3Configurator(
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("current time", status)) }
     }
 
-    private fun sendLocationConfiguration(location: LocalSession.Location): WriteRequest {
+    private fun sendLocationConfiguration(location: Session.Location): WriteRequest {
         return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude))
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
     }

@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +19,7 @@ abstract class SessionObserver<Type>(
     private var mObserver: Observer<Type?> = Observer { sessionDBObject ->
         sessionDBObject?.let {
             val session = buildSession(sessionDBObject)
-            if (session.hasChangedFrom(mSessionPresenter.localSession)) {
+            if (session.hasChangedFrom(mSessionPresenter.session)) {
                 onSessionChanged(session)
             }
         }
@@ -33,10 +33,10 @@ abstract class SessionObserver<Type>(
     }
 
     abstract fun sessionLiveData(): LiveData<Type?>?
-    abstract fun buildSession(dbSession: Type): LocalSession
+    abstract fun buildSession(dbSession: Type): Session
 
-    private fun onSessionChanged(localSession: LocalSession) {
-        mSessionPresenter.localSession = localSession
+    private fun onSessionChanged(session: Session) {
+        mSessionPresenter.session = session
 
         DatabaseProvider.runQuery { coroutineScope ->
             var selectedSensorName = mSessionPresenter.initialSensorName
@@ -45,10 +45,10 @@ abstract class SessionObserver<Type>(
             }
 
             val measurementStream =
-                localSession.streams.firstOrNull { it.sensorName == selectedSensorName }
+                session.streams.firstOrNull { it.sensorName == selectedSensorName }
             mSessionPresenter.selectedStream = measurementStream
 
-            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(localSession)
+            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
             mSessionPresenter.setSensorThresholds(sensorThresholds)
 
             onSessionChangedCallback.invoke(coroutineScope)

@@ -1,12 +1,12 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import pl.llp.aircasting.data.api.Constants
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 
-class ChartRefreshService(localSession: LocalSession?) {
+class ChartRefreshService(session: Session?) {
     private var mLastRefreshTime: Long? = null
     private var mRefreshFrequency: Int
-    private val mLocalSession: LocalSession? = localSession
+    private val mSession: Session? = session
 
     init {
         mRefreshFrequency = getRefreshFrequency()
@@ -25,9 +25,9 @@ class ChartRefreshService(localSession: LocalSession?) {
     }
 
     private fun getRefreshFrequency(): Int {
-        return when (mLocalSession?.type) {
-            LocalSession.Type.MOBILE -> Constants.MILLIS_IN_MINUTE
-            LocalSession.Type.FIXED -> Constants.MILLIS_IN_HOUR
+        return when (mSession?.type) {
+            Session.Type.MOBILE -> Constants.MILLIS_IN_MINUTE
+            Session.Type.FIXED -> Constants.MILLIS_IN_HOUR
             else -> Constants.MILLIS_IN_MINUTE
         }
     }

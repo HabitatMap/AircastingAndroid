@@ -21,7 +21,7 @@ import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
@@ -225,14 +225,14 @@ class FixedSessionTest {
         val measurementStreamRepository = MeasurementStreamsRepository()
         val measurementsRepository = MeasurementsRepository()
 
-        val localSession = LocalSession(
-            LocalSession.generateUUID(),
+        val session = Session(
+            Session.generateUUID(),
             "device_id",
             DeviceItem.Type.AIRBEAM2,
-            LocalSession.Type.FIXED,
+            Session.Type.FIXED,
             "New session to follow",
             ArrayList<String>(),
-            LocalSession.Status.FINISHED
+            Session.Status.FINISHED
         )
         val stream = MeasurementStream(
             "AirBeam2:0018961070D6",
@@ -251,7 +251,7 @@ class FixedSessionTest {
         val measurements = listOf(Measurement(70.0, Date()))
 
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRepository.insert(localSession)
+            val sessionId = sessionsRepository.insert(session)
             val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
             measurementsRepository.insertAll(streamId, sessionId, measurements)
         }

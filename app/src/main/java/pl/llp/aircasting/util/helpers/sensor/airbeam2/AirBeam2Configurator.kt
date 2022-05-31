@@ -1,6 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam2
 
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import java.io.OutputStream
@@ -15,14 +15,14 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     }
 
     fun configure(
-        localSession: LocalSession,
+        session: Session,
         wifiSSID: String?,
         wifiPassword: String?,
         outputStream: OutputStream
     ){
-        when(localSession.type) {
-            LocalSession.Type.MOBILE -> configureMobileSession(outputStream)
-            LocalSession.Type.FIXED -> configureFixedSession(localSession, wifiSSID, wifiPassword, outputStream)
+        when(session.type) {
+            Session.Type.MOBILE -> configureMobileSession(outputStream)
+            Session.Type.FIXED -> configureFixedSession(session, wifiSSID, wifiPassword, outputStream)
         }
     }
 
@@ -35,13 +35,13 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     }
 
     private fun configureFixedSession(
-        localSession: LocalSession,
+        session: Session,
         wifiSSID: String?,
         wifiPassword: String?,
         outputStream: OutputStream
     ) {
-        val location = localSession.location
-        val streamingMethod = localSession.streamingMethod
+        val location = session.location
+        val streamingMethod = session.streamingMethod
 
         location ?: return
         streamingMethod ?: return
@@ -68,14 +68,14 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     }
 
     private fun configureStreamingMethod(
-        streamingMethod: LocalSession.StreamingMethod,
+        streamingMethod: Session.StreamingMethod,
         wifiSSID: String?,
         wifiPassword: String?,
         outputStream: OutputStream
     ) {
         val streamingMethodMessage = when (streamingMethod) {
-            LocalSession.StreamingMethod.CELLULAR -> mHexMessagesBuilder.cellularConfigurationMessage
-            LocalSession.StreamingMethod.WIFI -> mHexMessagesBuilder.wifiConfigurationMessage(wifiSSID!!, wifiPassword!!)
+            Session.StreamingMethod.CELLULAR -> mHexMessagesBuilder.cellularConfigurationMessage
+            Session.StreamingMethod.WIFI -> mHexMessagesBuilder.wifiConfigurationMessage(wifiSSID!!, wifiPassword!!)
         }
 
         sendMessage(streamingMethodMessage, outputStream)

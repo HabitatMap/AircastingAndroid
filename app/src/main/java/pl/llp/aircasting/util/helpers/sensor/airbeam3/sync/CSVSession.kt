@@ -1,6 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import java.util.*
@@ -72,32 +72,32 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
             )
     }
 
-    fun toSession(deviceId: String): LocalSession? {
+    fun toSession(deviceId: String): Session? {
         val startTime = startTime() ?: return null
 
-        val localSession = LocalSession(
+        val session = Session(
             uuid,
             deviceId,
             DeviceItem.Type.AIRBEAM3,
-            LocalSession.Type.MOBILE,
+            Session.Type.MOBILE,
             DEFAULT_NAME,
             ArrayList(),
-            LocalSession.Status.DISCONNECTED,
+            Session.Status.DISCONNECTED,
             startTime
         )
 
         val latitude = latitude()
         val longitude = longitude()
         if (latitude != null && longitude != null) {
-            val location = LocalSession.Location(latitude, longitude)
-            localSession.location = location
+            val location = Session.Location(latitude, longitude)
+            session.location = location
 
-            if (location == LocalSession.Location.FAKE_LOCATION) {
-                localSession.locationless = true
+            if (location == Session.Location.FAKE_LOCATION) {
+                session.locationless = true
             }
         }
 
-        return localSession
+        return session
     }
 
     private fun getValueFor(line: Array<String>, header: SDCardCSVFileFactory.Header): Double? {

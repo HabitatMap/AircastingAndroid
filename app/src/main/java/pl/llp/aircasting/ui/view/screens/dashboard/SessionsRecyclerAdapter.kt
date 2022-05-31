@@ -9,7 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.data.model.LocalSession
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
@@ -28,7 +28,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     protected var mSessionPresenters: HashMap<String, SessionPresenter> = hashMapOf()
     lateinit var mItemTouchHelper: ItemTouchHelper
 
-    abstract fun prepareSession(localSession: LocalSession, expanded: Boolean): LocalSession
+    abstract fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val uuid = mSessionUUIDS[position]
@@ -51,13 +51,13 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             }
     }
 
-    fun bindSessions(localSessions: List<LocalSession>, sensorThresholds: HashMap<String, SensorThreshold>) {
-        mSessionUUIDS = localSessions.map { session -> session.uuid }.toMutableList()
+    fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
+        mSessionUUIDS = sessions.map { session -> session.uuid }.toMutableList()
         removeObsoleteSessions()
-        localSessions.forEach { session ->
+        sessions.forEach { session ->
             if (mSessionPresenters.containsKey(session.uuid)) {
                 val sessionPresenter = mSessionPresenters[session.uuid]
-                sessionPresenter!!.localSession = prepareSession(session, sessionPresenter.expanded)
+                sessionPresenter!!.session = prepareSession(session, sessionPresenter.expanded)
                 // TODO: Take conditions that ask about refreshing here
                 sessionPresenter.chartData?.refresh(session)
             } else {
@@ -69,61 +69,61 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         notifyDataSetChanged()
     }
 
-    fun showLoaderFor(localSession: LocalSession) {
-        val sessionPresenter = mSessionPresenters[localSession.uuid]
+    fun showLoaderFor(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = true
 
         notifyDataSetChanged()
     }
 
     fun hideLoaderFor(deviceId: String) {
-        val sessionPresenter = mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.localSession?.deviceId == deviceId }
+        val sessionPresenter = mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.session?.deviceId == deviceId }
         sessionPresenter?.loading = false
 
         notifyDataSetChanged()
     }
 
-    fun hideLoaderFor(localSession: LocalSession) {
-        val sessionPresenter = mSessionPresenters[localSession.uuid]
+    fun hideLoaderFor(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = false
 
         notifyDataSetChanged()
     }
 
-    fun showReconnectingLoaderFor(localSession: LocalSession) {
-        val sessionPresenter = mSessionPresenters[localSession.uuid]
+    fun showReconnectingLoaderFor(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.reconnecting = true
 
         notifyDataSetChanged()
     }
 
-    fun hideReconnectingLoaderFor(localSession: LocalSession) {
-        val sessionPresenter = mSessionPresenters[localSession.uuid]
+    fun hideReconnectingLoaderFor(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
 
         sessionPresenter?.reconnecting = false
         notifyDataSetChanged()
     }
 
-    fun reloadSession(localSession: LocalSession) {
-        val sessionPresenter = mSessionPresenters[localSession.uuid]
-        sessionPresenter?.localSession = localSession
+    fun reloadSession(session: Session) {
+        val sessionPresenter = mSessionPresenters[session.uuid]
+        sessionPresenter?.session = session
 
         notifyDataSetChanged()
     }
 
-    protected fun reloadSessionFromDB(localSession: LocalSession): LocalSession {
-        var reloadedLocalSession: LocalSession? = null
+    protected fun reloadSessionFromDB(session: Session): Session {
+        var reloadedSession: Session? = null
 
         runBlocking {
             val query = GlobalScope.async(Dispatchers.IO) {
-                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(localSession.uuid)
+                val dbSessionWithMeasurements = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
                 dbSessionWithMeasurements?.let {
-                    reloadedLocalSession = LocalSession(dbSessionWithMeasurements)
+                    reloadedSession = Session(dbSessionWithMeasurements)
                 }
             }
             query.await()
         }
 
-        return reloadedLocalSession ?: localSession
+        return reloadedSession ?: session
     }
 }
