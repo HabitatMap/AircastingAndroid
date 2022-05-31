@@ -35,7 +35,7 @@ class FollowingController(
 ),
     SessionsViewMvc.Listener {
 
-    private var mSessionsObserver =
+    private var mLocalSessionsObserver =
         ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onResume() {
@@ -44,11 +44,12 @@ class FollowingController(
     }
 
     override fun registerSessionsObserver() {
-        mSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
+        // TODO: Here could be another observer for new sessions, to download them from DB
+        mLocalSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
     }
 
     override fun unregisterSessionsObserver() {
-        mSessionsObserver.stop()
+        mLocalSessionsObserver.stop()
     }
 
     override fun onRecordNewSessionClicked() {
