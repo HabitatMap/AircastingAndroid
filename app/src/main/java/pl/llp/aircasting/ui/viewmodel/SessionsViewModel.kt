@@ -23,6 +23,11 @@ class SessionsViewModel : ViewModel() {
         return mDatabase.sessions().loadFollowingWithMeasurements()
     }
 
+    fun loadExternalSessionsWithMeasurements(): LiveData<List<ExtSessionsDBObject>> {
+        // For now we are only getting all the sessions - without measurements
+        return mDatabase.extSession().getAllFollowedSessions()
+    }
+
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
             Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
