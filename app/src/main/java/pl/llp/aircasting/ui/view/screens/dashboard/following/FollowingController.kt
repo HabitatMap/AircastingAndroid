@@ -9,6 +9,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
+import pl.llp.aircasting.data.model.observers.ExternalSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
@@ -37,6 +38,9 @@ class FollowingController(
 
     private var mLocalSessionsObserver =
         ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+
+    private val mExternalSessionObserver =
+        ExternalSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onResume() {
         super.onResume()
