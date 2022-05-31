@@ -12,7 +12,7 @@ import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.DBInsertException
@@ -50,7 +50,7 @@ class SessionManager(
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
-        startRecording(event.session, event.wifiSSID, event.wifiPassword)
+        startRecording(event.localSession, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
@@ -122,7 +122,7 @@ class SessionManager(
 
     @Subscribe
     fun onMessageEvent(event: DeleteStreamsEvent) {
-        deleteStreams(event.session, event.streamsToDelete)
+        deleteStreams(event.localSession, event.streamsToDelete)
     }
 
     fun onStart() {
@@ -177,7 +177,7 @@ class SessionManager(
         val lon: Double?
 
         if (locationless) {
-            val fakeLocation = Session.Location.FAKE_LOCATION
+            val fakeLocation = LocalSession.Location.FAKE_LOCATION
             lat = fakeLocation.latitude
             lon = fakeLocation.longitude
         } else {
@@ -208,22 +208,22 @@ class SessionManager(
         }
     }
 
-    private fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
+    private fun startRecording(localSession: LocalSession, wifiSSID: String?, wifiPassword: String?) {
         var DBsessionId: Long? = null
 
-        EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
+        EventBus.getDefault().post(ConfigureSession(localSession, wifiSSID, wifiPassword))
 
-        session.startRecording()
+        localSession.startRecording()
 
-        if (session.isFixed()) {
-            session.follow()
+        if (localSession.isFixed()) {
+            localSession.follow()
             settings.increaseFollowedSessionsNumber()
-            fixedSessionUploadService.upload(session)
+            fixedSessionUploadService.upload(localSession)
         }
 
         DatabaseProvider.runQuery {
-            DBsessionId = sessionsRespository.insert(session)
-            if (session.isMobile()) {
+            DBsessionId = sessionsRespository.insert(localSession)
+            if (localSession.isMobile()) {
                 DBsessionId?.let {
                     val averagingService = AveragingService.get(it)
 
@@ -272,7 +272,7 @@ class SessionManager(
     }
 
     private fun updateSession(event: UpdateSessionEvent) {
-        val session = event.session.copy()
+        val session = event.localSession.copy()
         session.name = event.name
         session.tags = event.tags
         sessionUpdateService.update(session) {
@@ -283,7 +283,7 @@ class SessionManager(
     }
 
     private fun exportSession(event: ExportSessionEvent) {
-        exportSessionService.export(event.email, event.session.uuid) {
+        exportSessionService.export(event.email, event.localSession.uuid) {
             mContext.apply {
                 showToast(
                     getString(R.string.exported_session_service_success),
@@ -302,27 +302,27 @@ class SessionManager(
         }
     }
 
-    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
-        markForRemoval(session, streamsToDelete) {
-            updateSession(session)
+    private fun deleteStreams(localSession: LocalSession, streamsToDelete: List<MeasurementStream>?) {
+        markForRemoval(localSession, streamsToDelete) {
+            updateSession(localSession)
         }
     }
 
     private fun markForRemoval(
-        session: Session,
+        localSession: LocalSession,
         streamsToDelete: List<MeasurementStream>?,
         callback: () -> Unit
     ) {
         mCallback = callback
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
+            val sessionId = sessionsRespository.getSessionIdByUUID(localSession.uuid)
             measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
             mCallback?.invoke()
         }
     }
 
-    private fun updateSession(session: Session) {
-        val reloadedSession = sessionsRespository.loadSessionForUpload(session.uuid)
+    private fun updateSession(localSession: LocalSession) {
+        val reloadedSession = sessionsRespository.loadSessionForUpload(localSession.uuid)
 
         if (reloadedSession != null) {
             sessionUpdateService.update(reloadedSession) {
@@ -340,7 +340,7 @@ class SessionManager(
 
     private fun addNote(event: NoteCreatedEvent) {
         DatabaseProvider.runQuery {
-            val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+            val sessionId = sessionsRespository.getSessionIdByUUID(event.localSession.uuid)
             sessionId?.let {
                 noteRepository.insert(sessionId, event.note)
             }
@@ -349,25 +349,25 @@ class SessionManager(
 
     private fun editNote(event: NoteEditedEvent) {
         DatabaseProvider.runQuery {
-            event.session?.let {
-                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+            event.localSession?.let {
+                val sessionId = sessionsRespository.getSessionIdByUUID(event.localSession.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.update(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let { session -> updateSession(session) }
+            if (event.localSession?.endTime != null) event.localSession.let { session -> updateSession(session) }
         }
     }
 
     private fun deleteNote(event: NoteDeletedEvent) {
         DatabaseProvider.runQuery {
-            event.session?.let {
-                val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
+            event.localSession?.let {
+                val sessionId = sessionsRespository.getSessionIdByUUID(event.localSession.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.delete(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let { session ->
+            if (event.localSession?.endTime != null) event.localSession.let { session ->
                 updateSession(session)
             }
         }

@@ -14,7 +14,7 @@ import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
@@ -88,12 +88,12 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     override fun showSessionsView(
-        sessions: List<Session>,
+        localSessions: List<LocalSession>,
         sensorThresholds: HashMap<String, SensorThreshold>
     ) {
         if (recyclerViewCanBeUpdated()) {
             // TODO: Here we rebind all sessions while we could only rebind data from specific session which data has been changed
-            mAdapter.bindSessions(sessions, sensorThresholds)
+            mAdapter.bindSessions(localSessions, sensorThresholds)
             mEmptyView?.visibility = View.INVISIBLE
             mDidYouKnowBox?.visibility = View.INVISIBLE
             mRecyclerSessions?.visibility = View.VISIBLE
@@ -110,28 +110,28 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
     }
 
-    override fun showLoaderFor(session: Session) {
-        mAdapter.showLoaderFor(session)
+    override fun showLoaderFor(localSession: LocalSession) {
+        mAdapter.showLoaderFor(localSession)
     }
 
-    override fun hideLoaderFor(session: Session) {
-        mAdapter.hideLoaderFor(session)
+    override fun hideLoaderFor(localSession: LocalSession) {
+        mAdapter.hideLoaderFor(localSession)
     }
 
     override fun hideLoaderFor(deviceId: String) {
         mAdapter.hideLoaderFor(deviceId)
     }
 
-    override fun showReconnectingLoaderFor(session: Session) {
-        mAdapter.showReconnectingLoaderFor(session)
+    override fun showReconnectingLoaderFor(localSession: LocalSession) {
+        mAdapter.showReconnectingLoaderFor(localSession)
     }
 
-    override fun hideReconnectingLoaderFor(session: Session) {
-        mAdapter.hideReconnectingLoaderFor(session)
+    override fun hideReconnectingLoaderFor(localSession: LocalSession) {
+        mAdapter.hideReconnectingLoaderFor(localSession)
     }
 
-    override fun reloadSession(session: Session) {
-        mAdapter.reloadSession(session)
+    override fun reloadSession(localSession: LocalSession) {
+        mAdapter.reloadSession(localSession)
     }
 
     override fun showLoader() {
@@ -156,33 +156,33 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
     }
 
-    fun onExpandSessionCard(session: Session) {
+    fun onExpandSessionCard(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.onExpandSessionCard(session)
+            listener.onExpandSessionCard(localSession)
         }
     }
 
-    fun onFollowButtonClicked(session: Session) {
+    fun onFollowButtonClicked(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.onFollowButtonClicked(session)
+            listener.onFollowButtonClicked(localSession)
         }
     }
 
-    fun onUnfollowButtonClicked(session: Session) {
+    fun onUnfollowButtonClicked(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.onUnfollowButtonClicked(session)
+            listener.onUnfollowButtonClicked(localSession)
         }
     }
 
-    fun onMapButtonClicked(session: Session, measurementStream: MeasurementStream?) {
+    fun onMapButtonClicked(localSession: LocalSession, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
-            listener.onMapButtonClicked(session, measurementStream?.sensorName)
+            listener.onMapButtonClicked(localSession, measurementStream?.sensorName)
         }
     }
 
-    fun onGraphButtonClicked(session: Session, measurementStream: MeasurementStream?) {
+    fun onGraphButtonClicked(localSession: LocalSession, measurementStream: MeasurementStream?) {
         for (listener in listeners) {
-            listener.onGraphButtonClicked(session, measurementStream?.sensorName)
+            listener.onGraphButtonClicked(localSession, measurementStream?.sensorName)
         }
     }
 }

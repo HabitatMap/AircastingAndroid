@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.active
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 
 class MobileActiveRecyclerAdapter(
@@ -23,8 +23,8 @@ class MobileActiveRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun prepareSession(session: Session, expanded: Boolean): Session {
+    override fun prepareSession(localSession: LocalSession, expanded: Boolean): LocalSession {
         // We only have to reload measurements for fixed tab for expanded sessions and following tab. Mobile active sessions have measurements fetched anyway
-        return session
+        return localSession
     }
 }

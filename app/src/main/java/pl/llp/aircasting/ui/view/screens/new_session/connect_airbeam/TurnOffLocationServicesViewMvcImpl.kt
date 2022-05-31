@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.fragment_turn_off_location_services.view.*
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
 class TurnOffLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOffLocationServicesViewMvc.Listener>, TurnOffLocationServicesViewMvc {
-    var session: Session?
+    var localSession: LocalSession?
 
     constructor(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        session: Session?
+        localSession: LocalSession?
     ): super(){
         this.rootView = inflater.inflate(R.layout.fragment_turn_off_location_services, parent, false)
 
-        this.session = session
+        this.localSession = localSession
 
         val okButton = rootView?.turn_off_location_services_ok_button
         okButton?.setOnClickListener {
@@ -32,13 +32,13 @@ class TurnOffLocationServicesViewMvcImpl: BaseObservableViewMvc<TurnOffLocationS
 
     private fun onOkClicked() {
         for (listener in listeners) {
-            listener.onTurnOffLocationServicesOkClicked(session)
+            listener.onTurnOffLocationServicesOkClicked(localSession)
         }
     }
 
     private fun onSkipClicked() {
         for (listener in listeners) {
-            listener.onSkipClicked(session)
+            listener.onSkipClicked(localSession)
         }
     }
 }

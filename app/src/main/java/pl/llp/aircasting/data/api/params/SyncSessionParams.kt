@@ -1,12 +1,12 @@
 package pl.llp.aircasting.data.api.params
 
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
 class SyncSessionParams {
-    constructor(session: Session) {
-        this.uuid = session.uuid
-        this.deleted = session.deleted
-        this.version = session.version
+    constructor(localSession: LocalSession) {
+        this.uuid = localSession.uuid
+        this.deleted = localSession.deleted
+        this.version = localSession.version
     }
 
     val uuid: String

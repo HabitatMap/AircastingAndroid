@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
@@ -37,31 +37,31 @@ class NewSessionActivity : BaseActivity() {
         private var fixedLauncher: ActivityResultLauncher<Intent>? = null
         private var mobileLauncher: ActivityResultLauncher<Intent>? = null
 
-        fun register(rootActivity: FragmentActivity?, sessionType: Session.Type) {
+        fun register(rootActivity: FragmentActivity?, localSessionType: LocalSession.Type) {
             rootActivity?.let {
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                        if (it.resultCode == RESULT_OK) when (sessionType) {
-                            Session.Type.FIXED -> goToFollowingTab(rootActivity)
-                            Session.Type.MOBILE -> goToActiveTab(rootActivity)
+                        if (it.resultCode == RESULT_OK) when (localSessionType) {
+                            LocalSession.Type.FIXED -> goToFollowingTab(rootActivity)
+                            LocalSession.Type.MOBILE -> goToActiveTab(rootActivity)
                         }
                     }
 
-                when (sessionType) {
-                    Session.Type.FIXED -> fixedLauncher = launcher
-                    Session.Type.MOBILE -> mobileLauncher = launcher
+                when (localSessionType) {
+                    LocalSession.Type.FIXED -> fixedLauncher = launcher
+                    LocalSession.Type.MOBILE -> mobileLauncher = launcher
                 }
             }
         }
 
-        fun start(rootActivity: FragmentActivity?, sessionType: Session.Type) {
+        fun start(rootActivity: FragmentActivity?, localSessionType: LocalSession.Type) {
             rootActivity?.let {
                 val intent = Intent(it, NewSessionActivity::class.java)
-                intent.putExtra(SESSION_TYPE_KEY, sessionType)
+                intent.putExtra(SESSION_TYPE_KEY, localSessionType)
 
-                when (sessionType) {
-                    Session.Type.FIXED -> fixedLauncher?.launch(intent)
-                    Session.Type.MOBILE -> mobileLauncher?.launch(intent)
+                when (localSessionType) {
+                    LocalSession.Type.FIXED -> fixedLauncher?.launch(intent)
+                    LocalSession.Type.MOBILE -> mobileLauncher?.launch(intent)
                 }
 
             }
@@ -89,7 +89,7 @@ class NewSessionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as Session.Type
+        val localSessionType = intent.extras?.get(SESSION_TYPE_KEY) as LocalSession.Type
 
         val app = application as AircastingApplication
         val appComponent = app.appComponent
@@ -104,7 +104,7 @@ class NewSessionActivity : BaseActivity() {
             bluetoothManager,
             sessionBuilder,
             settings,
-            sessionType
+            localSessionType
         )
         controller?.onCreate()
 

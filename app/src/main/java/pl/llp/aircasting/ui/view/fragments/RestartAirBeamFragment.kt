@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamController
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.RestartAirBeamViewMvc
@@ -12,7 +12,7 @@ import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.
 
 class RestartAirBeamFragment : BaseFragment<RestartAirBeamViewMvcImpl, RestartAirBeamController>() {
     var listener: RestartAirBeamViewMvc.Listener? = null
-    lateinit var sessionType: Session.Type
+    lateinit var localSessionType: LocalSession.Type
 
     override fun onCreateView(
         inflater: LayoutInflater,

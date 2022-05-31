@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +15,7 @@ abstract class SessionsObserver<Type>(
     private val mSessionsViewModel: SessionsViewModel,
     private val mViewMvc: SessionsViewMvc?
 ) {
-    private var mSessions = hashMapOf<String, Session>()
+    private var mSessions = hashMapOf<String, LocalSession>()
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
     private var mSessionsLiveData: LiveData<List<Type>>? = null
@@ -31,7 +31,7 @@ abstract class SessionsObserver<Type>(
         }
     }
 
-    abstract fun buildSession(dbSession: Type): Session
+    abstract fun buildSession(dbSession: Type): LocalSession
 
     fun observe(sessionsLiveData: LiveData<List<Type>>) {
         mSessionsLiveData = sessionsLiveData
@@ -43,19 +43,19 @@ abstract class SessionsObserver<Type>(
         mSessionsLiveData = null
     }
 
-    private fun onSessionsChanged(coroutineScope: CoroutineScope, sessions: List<Session>, sensorThresholds: List<SensorThreshold>) {
-        if (sessions.isNotEmpty()) {
+    private fun onSessionsChanged(coroutineScope: CoroutineScope, localSessions: List<LocalSession>, sensorThresholds: List<SensorThreshold>) {
+        if (localSessions.isNotEmpty()) {
             updateSensorThresholds(sensorThresholds)
-            showSessionsView(coroutineScope, sessions)
+            showSessionsView(coroutineScope, localSessions)
         } else {
             showEmptyView(coroutineScope)
         }
 
-        updateSessionsCache(sessions)
+        updateSessionsCache(localSessions)
     }
 
-    private fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {
-        val streams = sessions.flatMap { it.streams }.distinctBy { it.sensorName }
+    private fun getSensorThresholds(localSessions: List<LocalSession>): List<SensorThreshold> {
+        val streams = localSessions.flatMap { it.streams }.distinctBy { it.sensorName }
         return mSessionsViewModel.findOrCreateSensorThresholds(streams)
     }
 
@@ -65,9 +65,9 @@ abstract class SessionsObserver<Type>(
         }
     }
 
-    private fun showSessionsView(coroutineScope: CoroutineScope, sessions: List<Session>) {
+    private fun showSessionsView(coroutineScope: CoroutineScope, localSessions: List<LocalSession>) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc?.showSessionsView(sessions, mSensorThresholds)
+            mViewMvc?.showSessionsView(localSessions, mSensorThresholds)
         }
     }
 
@@ -86,13 +86,13 @@ abstract class SessionsObserver<Type>(
         sensorThresholds.forEach { mSensorThresholds[it.sensorName] = it }
     }
 
-    private fun anySessionChanged(sessions: List<Session>): Boolean {
+    private fun anySessionChanged(localSessions: List<LocalSession>): Boolean {
         return mSessions.isEmpty() ||
-                mSessions.size != sessions.size ||
-                sessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
+                mSessions.size != localSessions.size ||
+                localSessions.any { session -> session.hasChangedFrom(mSessions[session.uuid]) }
     }
 
-    private fun updateSessionsCache(sessions: List<Session>) {
-        sessions.forEach { session -> mSessions[session.uuid] = session }
+    private fun updateSessionsCache(localSessions: List<LocalSession>) {
+        localSessions.forEach { session -> mSessions[session.uuid] = session }
     }
 }

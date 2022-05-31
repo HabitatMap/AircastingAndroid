@@ -44,7 +44,7 @@ abstract class SessionDetailsViewController(
 ) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
-    private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {
+    private val mLocalSessionObserver = if (mViewMvc?.getSessionType() == LocalSession.Type.FIXED) {
         FixedSessionObserver(
             rootActivity,
             mSessionsViewModel,
@@ -72,7 +72,7 @@ abstract class SessionDetailsViewController(
         EventBus.getDefault().safeRegister(this)
         mViewMvc?.registerListener(this)
 
-        mSessionObserver.observe()
+        mLocalSessionObserver.observe()
     }
 
     open fun onResume() {
@@ -120,36 +120,36 @@ abstract class SessionDetailsViewController(
         mViewMvc = null
     }
 
-    override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        val onDownloadSuccess = { session: Session ->
+    override fun noteMarkerClicked(localSession: LocalSession?, noteNumber: Int) {
+        val onDownloadSuccess = { localSession: LocalSession ->
             DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
+                mSessionRepository.update(localSession)
             }
-            editNoteDialog?.reload(session)
+            editNoteDialog?.reload(localSession)
         }
 
         val finallyCallback = {
             editNoteDialog?.hideLoader()
         }
 
-        startEditNoteDialog(session, noteNumber)
-        session?.let {
-            mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+        startEditNoteDialog(localSession, noteNumber)
+        localSession?.let {
+            mDownloadService.download(localSession.uuid, onDownloadSuccess, finallyCallback)
         }
     }
 
-    fun startEditNoteDialog(session: Session?, noteNumber: Int) {
-        editNoteDialog = EditNoteBottomSheet(this, session, noteNumber)
+    fun startEditNoteDialog(localSession: LocalSession?, noteNumber: Int) {
+        editNoteDialog = EditNoteBottomSheet(this, localSession, noteNumber)
         editNoteDialog?.show(fragmentManager)
     }
 
-    override fun saveChangesNotePressed(note: Note?, session: Session?) {
-        val event = NoteEditedEvent(note, session)
+    override fun saveChangesNotePressed(note: Note?, localSession: LocalSession?) {
+        val event = NoteEditedEvent(note, localSession)
         EventBus.getDefault().post(event)
     }
 
-    override fun deleteNotePressed(note: Note?, session: Session?) {
-        val event = NoteDeletedEvent(note, session)
+    override fun deleteNotePressed(note: Note?, localSession: LocalSession?) {
+        val event = NoteDeletedEvent(note, localSession)
         EventBus.getDefault().post(event)
     }
 
@@ -171,7 +171,7 @@ abstract class SessionDetailsViewController(
     }
 
     private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
-        mSessionPresenter.session?.streams?.forEach { stream ->
+        mSessionPresenter.localSession?.streams?.forEach { stream ->
             measurements[stream.sensorName]?.let { streamMeasurements ->
                 stream.setMeasurements(streamMeasurements)
             }
@@ -190,13 +190,13 @@ abstract class SessionDetailsViewController(
 
         sessionDBObject?.let { session ->
             mSessionPresenter.selectedStream?.let { selectedStream ->
-                val isSessionDormant =
-                    (session.type == Session.Type.MOBILE && session.status == Session.Status.FINISHED)
+                val isLocalSessionDormant =
+                    (session.type == LocalSession.Type.MOBILE && session.status == LocalSession.Status.FINISHED)
                 measurements = loadMeasurementsForStreams(
                     session.id,
-                    mSessionPresenter.session?.streams,
+                    mSessionPresenter.localSession?.streams,
                     selectedStream,
-                    isSessionDormant
+                    isLocalSessionDormant
                 )
             }
         }

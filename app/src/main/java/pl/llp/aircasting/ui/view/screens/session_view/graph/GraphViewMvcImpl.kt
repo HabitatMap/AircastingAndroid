@@ -37,7 +37,7 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     open fun notes(): List<Note> {
-        return mSessionPresenter?.session?.notes ?: listOf<Note>()
+        return mSessionPresenter?.localSession?.notes ?: listOf<Note>()
     }
 
     override fun layoutId(): Int {

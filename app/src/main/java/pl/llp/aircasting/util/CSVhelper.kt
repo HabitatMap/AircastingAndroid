@@ -7,7 +7,7 @@ import com.google.common.io.Closer
 import com.opencsv.CSVWriter
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,23 +49,23 @@ class CSVHelper {
     val closer = Closer.create()
 
     @Throws(IOException::class)
-    fun prepareCSV(context: Context, session: Session): Uri {
+    fun prepareCSV(context: Context, localSession: LocalSession): Uri {
         return try {
             val storage = context.filesDir
             val dir = File(storage, "aircasting_sessions")
             dir.mkdirs()
-            val file = File(dir, fileName(session.name) + ZIP_EXTENSION)
+            val file = File(dir, fileName(localSession.name) + ZIP_EXTENSION)
             val outputStream: OutputStream = FileOutputStream(file)
             closer.register(outputStream)
             val zippedOutputStream =
                 ZipOutputStream(outputStream)
-            zippedOutputStream.putNextEntry(ZipEntry(fileName(session.name) + CSV_EXTENSION))
+            zippedOutputStream.putNextEntry(ZipEntry(fileName(localSession.name) + CSV_EXTENSION))
             val writer: Writer = OutputStreamWriter(zippedOutputStream)
             val csvWriter = CSVWriter(writer, ',',
                 CSVWriter.NO_QUOTE_CHARACTER,
                 CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                 CSVWriter.DEFAULT_LINE_END)
-            write(session).toWriter(csvWriter)
+            write(localSession).toWriter(csvWriter)
             csvWriter.flush()
             csvWriter.close()
 
@@ -95,8 +95,8 @@ class CSVHelper {
         return if (result.length > MINIMUM_SESSION_NAME_LENGTH) result.toString() else SESSION_FALLBACK_FILE
     }
 
-    private fun write(session: Session): SessionWriter {
-        return SessionWriter(session)
+    private fun write(localSession: LocalSession): SessionWriter {
+        return SessionWriter(localSession)
     }
 
     companion object {
@@ -109,15 +109,15 @@ class CSVHelper {
     }
 }
 
-internal class SessionWriter(session: Session) {
+internal class SessionWriter(localSession: LocalSession) {
     val TIMESTAMP_FORMAT =
         SimpleDateFormat(CSVHelper.TIMESTAMP_FORMAT)
-    var session: Session
+    var localSession: LocalSession
 
     @Throws(IOException::class)
     fun toWriter(writer: CSVWriter) {
         val streams: Iterable<MeasurementStream> =
-            session.activeStreams
+            localSession.activeStreams
         for (stream in streams) {
             writeSensorHeader(writer)
             writeSensor(stream, writer)
@@ -164,6 +164,6 @@ internal class SessionWriter(session: Session) {
     }
 
     init {
-        this.session = session
+        this.localSession = localSession
     }
 }

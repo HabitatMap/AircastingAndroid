@@ -13,7 +13,7 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.response.SyncResponse
@@ -157,18 +157,18 @@ class SessionsSyncService private constructor(
 
     private fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val onDownloadSuccess = { session: Session ->
+            val onDownloadSuccess = { localSession: LocalSession ->
                 DatabaseProvider.runQuery {
                     if (mCall?.isCanceled != true) {
                         try {
-                            val sessionId = sessionRepository.updateOrCreate(session)
+                            val sessionId = sessionRepository.updateOrCreate(localSession)
                             sessionId?.let {
                                 measurementStreamsRepository.insert(
                                     sessionId,
-                                    session.streams
+                                    localSession.streams
                                 )
                             }
-                            for (note in session.notes) {
+                            for (note in localSession.notes) {
                                 sessionId?.let { sessionId ->
                                     noteRepository.insert(sessionId, note)
                                 }
@@ -183,8 +183,8 @@ class SessionsSyncService private constructor(
         }
     }
 
-    private fun isUploadable(session: Session): Boolean {
-        return !(session.locationless && session.isMobile())
+    private fun isUploadable(localSession: LocalSession): Boolean {
+        return !(localSession.locationless && localSession.isMobile())
     }
 
     private fun handleSyncError(

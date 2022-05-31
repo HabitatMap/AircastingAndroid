@@ -21,7 +21,7 @@ import pl.llp.aircasting.util.styleGoogleMap
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
@@ -116,7 +116,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurements = measurementsWithLocations(mSessionPresenter?.selectedStream)
-        mNotes = mSessionPresenter?.session?.notes!!
+        mNotes = mSessionPresenter?.localSession?.notes!!
 
         if (mSessionPresenter?.isFixed() == true) {
             drawFixedMeasurement()
@@ -232,7 +232,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         mMap?.setOnMarkerClickListener {
             val noteNumber = mMarkers?.get(it.id)
             if (noteNumber != null) {
-                mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
+                mListener?.noteMarkerClicked(mSessionPresenter?.localSession, noteNumber)
             }
             false
         }
@@ -257,7 +257,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     private fun animateCameraToFixedSession() {
         if (mMeasurements.isEmpty()) return
-        val session = mSessionPresenter?.session
+        val session = mSessionPresenter?.localSession
         val location = session?.location
 
         location ?: return
@@ -270,7 +270,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         centerMap(position)
     }
 
-    private fun centerMap(location: Session.Location) {
+    private fun centerMap(location: LocalSession.Location) {
         val position = LatLng(location.latitude, location.longitude)
         centerMap(position)
     }
@@ -326,13 +326,13 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     private fun locate() {
-        if (mSessionPresenter?.session?.location?.latitude != 0.0 || mSessionPresenter?.session?.location?.longitude != 0.0) {
+        if (mSessionPresenter?.localSession?.location?.latitude != 0.0 || mSessionPresenter?.localSession?.location?.longitude != 0.0) {
             if (mSessionPresenter?.isMobileActive() == true) mListener?.locateRequested() else
-                mSessionPresenter?.session?.location?.let { centerMap(it) }
+                mSessionPresenter?.localSession?.location?.let { centerMap(it) }
         } else {
             if (mMeasurements.isNotEmpty()) mMeasurements.apply {
                 centerMap(
-                    Session.Location(
+                    LocalSession.Location(
                         first().latitude!!,
                         first().longitude!!
                     )
@@ -399,7 +399,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     private fun shouldDrawLastMeasurement(): Boolean {
-        return mSessionPresenter?.session?.tab != SessionsTab.MOBILE_DORMANT
+        return mSessionPresenter?.localSession?.tab != SessionsTab.MOBILE_DORMANT
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

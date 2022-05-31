@@ -1,5 +1,5 @@
 package pl.llp.aircasting.util.events
 
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
-class ConfigureSession(val session: Session, val wifiSSID: String?, val wifiPassword: String?)
+class ConfigureSession(val localSession: LocalSession, val wifiSSID: String?, val wifiPassword: String?)

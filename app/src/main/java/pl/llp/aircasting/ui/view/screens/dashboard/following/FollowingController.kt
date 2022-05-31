@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
@@ -63,27 +63,27 @@ class FollowingController(
         mContext?.startActivity(intent)
     }
 
-    override fun onEditSessionClicked(session: Session) {
+    override fun onEditSessionClicked(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onShareSessionClicked(session: Session) {
+    override fun onShareSessionClicked(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onDeleteStreamsPressed(session: Session) {
+    override fun onDeleteStreamsPressed(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onExpandSessionCard(session: Session) {
+    override fun onExpandSessionCard(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onFinishSessionConfirmed(session: Session) {
+    override fun onFinishSessionConfirmed(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
         // do nothing
     }
 }

@@ -45,7 +45,7 @@ open class FollowingSessionViewMvcImpl(
     }
 
     override fun bindMeasurementsTable() {
-        val session = mSessionPresenter?.session
+        val session = mSessionPresenter?.localSession
         if (session == null || session.measurementsCount() > 0) {
             hideNoMeasurementsInfo()
             mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)

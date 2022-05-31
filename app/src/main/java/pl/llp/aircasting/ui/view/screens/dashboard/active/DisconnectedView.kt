@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.AnimatedLoader
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import kotlinx.android.synthetic.main.disconnected_view.view.*
 
@@ -38,7 +38,7 @@ class DisconnectedView {
     }
 
     fun show(sessionPresenter: SessionPresenter) {
-        val session = sessionPresenter.session
+        val session = sessionPresenter.localSession
         session ?: return
 
         if (session.isAirBeam3()) {
@@ -64,26 +64,26 @@ class DisconnectedView {
         }
     }
 
-    private fun bindBluetoothDevice(session: Session) {
+    private fun bindBluetoothDevice(localSession: LocalSession) {
         mHeader?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_header)
         mDescription?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_description)
         mPrimaryButton?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_reconnect_button)
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_finish_button)
 
-        mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(session) }
-        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show() }
+        mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(localSession) }
+        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, localSession).show() }
     }
 
-    private fun bindAirBeam3(session: Session) {
+    private fun bindAirBeam3(localSession: LocalSession) {
         mHeader?.text = mContext.getString(R.string.disconnected_view_airbeam3_header)
         mDescription?.text = mContext.getString(R.string.disconnected_view_airbeam3_description)
         mPrimaryButton?.text = mContext.getString(R.string.disconnected_view_airbeam3_sync_button)
         mSecondaryButton?.text = mContext.getString(R.string.disconnected_view_airbeam3_finish_button)
 
         mPrimaryButton?.setOnClickListener {
-            FinishAndSyncSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
+            FinishAndSyncSessionConfirmationDialog(mSupportFragmentManager, mListener, localSession).show()
         }
-        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show() }
+        mSecondaryButton?.setOnClickListener { FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, localSession).show() }
     }
 
     private fun showReconnectingLoader() {

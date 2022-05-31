@@ -39,7 +39,7 @@ class MobileDormantSessionViewMvcImpl(
     override fun showChart() = false
 
     override fun editSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
 
         for(listener in listeners) {
             listener.onSessionEditClicked(session)
@@ -48,7 +48,7 @@ class MobileDormantSessionViewMvcImpl(
     }
 
     override fun shareSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
 
         for(listener in listeners){
             listener.onSessionShareClicked(session)
@@ -57,7 +57,7 @@ class MobileDormantSessionViewMvcImpl(
     }
 
     override fun deleteSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
 
         for (listener in listeners) {
             listener.onSessionDeleteClicked(session)

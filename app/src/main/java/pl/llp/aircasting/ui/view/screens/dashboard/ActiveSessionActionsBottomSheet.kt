@@ -2,11 +2,11 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.active_session_actions.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
-import kotlinx.android.synthetic.main.active_session_actions.view.*
 
 open class ActiveSessionActionsBottomSheet(
     private val mListener: Listener,
@@ -43,7 +43,7 @@ open class ActiveSessionActionsBottomSheet(
 
     private fun setupStopButton() {
         val stopButton = contentView?.stop_session_button
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
         stopButton?.setOnClickListener {
             dismiss()
             FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
@@ -52,7 +52,7 @@ open class ActiveSessionActionsBottomSheet(
 
     private fun setupAddNoteButton() {
         val addNoteButton = contentView?.add_note_button
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
         addNoteButton?.setOnClickListener {
             mListener.addNotePressed()
         }

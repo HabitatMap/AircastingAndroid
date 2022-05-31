@@ -1,9 +1,7 @@
 package pl.llp.aircasting.data.local.entity
 
 import androidx.room.*
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
-import pl.llp.aircasting.data.local.entity.NoteDBObject
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*
 
@@ -16,7 +14,7 @@ import java.util.*
 )
 data class SessionDBObject(
     @ColumnInfo(name = "uuid") val uuid: String,
-    @ColumnInfo(name = "type") val type: Session.Type,
+    @ColumnInfo(name = "type") val type: LocalSession.Type,
     @ColumnInfo(name = "device_id") val deviceId: String?,
     @ColumnInfo(name = "device_type") val deviceType: DeviceItem.Type?,
     @ColumnInfo(name = "name") val name: String,
@@ -25,7 +23,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "end_time") val endTime: Date?,
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?,
-    @ColumnInfo(name = "status") val status: Session.Status = Session.Status.NEW,
+    @ColumnInfo(name = "status") val status: LocalSession.Status = LocalSession.Status.NEW,
     @ColumnInfo(name = "version") val version: Int = 0,
     @ColumnInfo(name = "deleted") val deleted: Boolean = false,
     @ColumnInfo(name = "followed_at") val followedAt: Date? = null,
@@ -39,26 +37,26 @@ data class SessionDBObject(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    constructor(session: Session) :
+    constructor(localSession: LocalSession) :
             this(
-                session.uuid,
-                session.type,
-                session.deviceId,
-                session.deviceType,
-                session.name,
-                session.tags,
-                session.startTime,
-                session.endTime,
-                session.location?.latitude,
-                session.location?.longitude,
-                session.status,
-                session.version,
-                session.deleted,
-                session.followedAt,
-                session.contribute,
-                session.locationless,
-                session.urlLocation,
-                session.indoor
+                localSession.uuid,
+                localSession.type,
+                localSession.deviceId,
+                localSession.deviceType,
+                localSession.name,
+                localSession.tags,
+                localSession.startTime,
+                localSession.endTime,
+                localSession.location?.latitude,
+                localSession.location?.longitude,
+                localSession.status,
+                localSession.version,
+                localSession.deleted,
+                localSession.followedAt,
+                localSession.contribute,
+                localSession.locationless,
+                localSession.urlLocation,
+                localSession.indoor
             )
 }
 

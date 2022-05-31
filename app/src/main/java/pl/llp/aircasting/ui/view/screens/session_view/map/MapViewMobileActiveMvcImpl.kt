@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
 import kotlinx.android.synthetic.main.activity_map.view.*
@@ -45,15 +45,15 @@ class MapViewMobileActiveMvcImpl: MapViewMvcImpl,
     }
 
     override fun addNotePressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
         for (listener in listeners) {
             listener.addNoteClicked(session)
         }
         dismissBottomSheet()
     }
 
-    override fun onFinishSessionConfirmed(session: Session) {
-        val session = mSessionPresenter?.session ?: return
+    override fun onFinishSessionConfirmed(localSession: LocalSession) {
+        val session = mSessionPresenter?.localSession ?: return
 
         for (listener in listeners) {
             listener.onFinishSessionConfirmed(session)
@@ -62,19 +62,19 @@ class MapViewMobileActiveMvcImpl: MapViewMvcImpl,
     }
 
     override fun disconnectSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
         for (listener in listeners) {
             listener.onSessionDisconnectClicked(session)
         }
         dismissBottomSheet()
     }
 
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun getSessionType(): Session.Type {
-        return Session.Type.MOBILE
+    override fun getSessionType(): LocalSession.Type {
+        return LocalSession.Type.MOBILE
     }
 }
 

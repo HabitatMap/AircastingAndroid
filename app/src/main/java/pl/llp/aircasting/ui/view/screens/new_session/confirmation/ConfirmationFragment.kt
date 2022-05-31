@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import javax.inject.Inject
 
 class ConfirmationFragment : BaseFragment<ConfirmationViewMvcImpl, ConfirmationController>() {
     lateinit var listener: ConfirmationViewMvc.Listener
-    lateinit var session: Session
+    lateinit var localSession: LocalSession
 
     @Inject
     lateinit var settings: Settings
@@ -25,7 +25,7 @@ class ConfirmationFragment : BaseFragment<ConfirmationViewMvcImpl, ConfirmationC
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
+        view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, localSession, settings.areMapsDisabled())
         controller = ConfirmationController(view, settings)
         return view?.rootView
     }

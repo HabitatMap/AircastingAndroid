@@ -2,7 +2,7 @@ package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -62,15 +62,15 @@ class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService
         private fun downloadMeasurements() {
             val dbSessions = sessionsRepository.fixedSessions()
             dbSessions.forEach { dbSession ->
-                val session = Session(dbSession)
-                downloadMeasurements(dbSession.id, session)
+                val localSession = LocalSession(dbSession)
+                downloadMeasurements(dbSession.id, localSession)
             }
         }
 
-        private fun downloadMeasurements(sessionId: Long, session: Session) {
+        private fun downloadMeasurements(sessionId: Long, localSession: LocalSession) {
             GlobalScope.launch(Dispatchers.IO) {
                 call =
-                    downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(sessionId, session)
+                    downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(sessionId, localSession)
             }
         }
     }

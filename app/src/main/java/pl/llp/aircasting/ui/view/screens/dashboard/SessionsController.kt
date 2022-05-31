@@ -12,7 +12,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
@@ -79,8 +79,8 @@ abstract class SessionsController(
         context = null
     }
 
-    protected fun startNewSession(sessionType: Session.Type) {
-        NewSessionActivity.start(mRootActivity, sessionType)
+    protected fun startNewSession(localSessionType: LocalSession.Type) {
+        NewSessionActivity.start(mRootActivity, localSessionType)
     }
 
     override fun onSwipeToRefreshTriggered() {
@@ -90,98 +90,98 @@ abstract class SessionsController(
         )
     }
 
-    override fun onFollowButtonClicked(session: Session) {
-        updateFollowedAt(session)
+    override fun onFollowButtonClicked(localSession: LocalSession) {
+        updateFollowedAt(localSession)
 
-        addFollowedSessionMeasurementsToActiveTable(session)
+        addFollowedSessionMeasurementsToActiveTable(localSession)
         mSettings.increaseFollowedSessionsNumber()
     }
 
-    override fun onUnfollowButtonClicked(session: Session) {
-        updateFollowedAt(session)
+    override fun onUnfollowButtonClicked(localSession: LocalSession) {
+        updateFollowedAt(localSession)
 
-        clearUnfollowedSessionMeasurementsFromActiveTable(session)
+        clearUnfollowedSessionMeasurementsFromActiveTable(localSession)
         mSettings.decreaseFollowedSessionsNumber()
     }
 
-    private fun updateFollowedAt(session: Session) {
+    private fun updateFollowedAt(localSession: LocalSession) {
         DatabaseProvider.runQuery {
-            mSessionsViewModel.updateFollowedAt(session)
-            mSessionsViewModel.updateOrder(session.uuid, mSettings.getFollowedSessionsNumber())
+            mSessionsViewModel.updateFollowedAt(localSession)
+            mSessionsViewModel.updateOrder(localSession.uuid, mSettings.getFollowedSessionsNumber())
         }
     }
 
-    override fun onMapButtonClicked(session: Session, sensorName: String?) {
-        MapActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
+    override fun onMapButtonClicked(localSession: LocalSession, sensorName: String?) {
+        MapActivity.start(mRootActivity, sensorName, localSession.uuid, localSession.tab)
     }
 
-    override fun onGraphButtonClicked(session: Session, sensorName: String?) {
-        GraphActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
+    override fun onGraphButtonClicked(localSession: LocalSession, sensorName: String?) {
+        GraphActivity.start(mRootActivity, sensorName, localSession.uuid, localSession.tab)
     }
 
-    private fun reloadSession(session: Session) {
+    private fun reloadSession(localSession: LocalSession) {
         DatabaseProvider.runQuery { scope ->
             val dbSessionWithMeasurements =
-                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                mSessionsViewModel.reloadSessionWithMeasurements(localSession.uuid)
             dbSessionWithMeasurements?.let {
-                val reloadedSession = Session(dbSessionWithMeasurements)
+                val reloadedLocalSession = LocalSession(dbSessionWithMeasurements)
 
                 DatabaseProvider.backToUIThread(scope) {
-                    mViewMvc?.reloadSession(reloadedSession)
-                    mViewMvc?.hideLoaderFor(session)
+                    mViewMvc?.reloadSession(reloadedLocalSession)
+                    mViewMvc?.hideLoaderFor(localSession)
                 }
             }
         }
     }
 
-    override fun onDisconnectSessionClicked(session: Session) {}
-    override fun addNoteClicked(session: Session) {}
-    override fun onReconnectSessionClicked(session: Session) {}
+    override fun onDisconnectSessionClicked(localSession: LocalSession) {}
+    override fun addNoteClicked(localSession: LocalSession) {}
+    override fun onReconnectSessionClicked(localSession: LocalSession) {}
 
-    override fun onExpandSessionCard(session: Session) {
-        mViewMvc?.showLoaderFor(session)
-        val finallyCallback = { reloadSession(session) }
-        mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
+    override fun onExpandSessionCard(localSession: LocalSession) {
+        mViewMvc?.showLoaderFor(localSession)
+        val finallyCallback = { reloadSession(localSession) }
+        mDownloadMeasurementsService.downloadMeasurements(localSession, finallyCallback)
     }
 
     override fun onEditDataPressed(
-        session: Session,
+        localSession: LocalSession,
         name: String,
         tags: ArrayList<String>
     ) { // handling buttons in EditSessionBottomSheet
-        val event = UpdateSessionEvent(session, name, tags)
+        val event = UpdateSessionEvent(localSession, name, tags)
         EventBus.getDefault().post(event)
     }
 
     override fun onShareLinkPressed(
-        session: Session,
+        localSession: LocalSession,
         sensor: String
     ) { // handling button in ShareSessionBottomSheet
-        if (session.urlLocation != null) {
-            openShareIntentChooser(session, sensor)
+        if (localSession.urlLocation != null) {
+            openShareIntentChooser(localSession, sensor)
         } else {
             mErrorHandler.handleAndDisplay(SessionUploadPendingError())
         }
     }
 
     override fun onShareFilePressed(
-        session: Session,
+        localSession: LocalSession,
         emailInput: String
     ) { // handling button in ShareSessionBottomSheet
-        if (session.locationless) {
-            shareLocalFile(session)
+        if (localSession.locationless) {
+            shareLocalFile(localSession)
         } else {
-            val event = ExportSessionEvent(session, emailInput)
+            val event = ExportSessionEvent(localSession, emailInput)
             EventBus.getDefault().post(event)
         }
     }
 
-    private fun shareLocalFile(session: Session) {
-        CSVGenerationService(session, context!!, CSVHelper(), mErrorHandler).start()
+    private fun shareLocalFile(localSession: LocalSession) {
+        CSVGenerationService(localSession, context!!, CSVHelper(), mErrorHandler).start()
     }
 
 
-    override fun onEditSessionClicked(session: Session) {
+    override fun onEditSessionClicked(localSession: LocalSession) {
         if (!ConnectivityManager.isConnected(context)) {
             context?.apply {
                 showToast(
@@ -191,31 +191,31 @@ abstract class SessionsController(
             }
             return
         }
-        val onDownloadSuccess = { session: Session ->
+        val onDownloadSuccess = { localSession: LocalSession ->
             DatabaseProvider.runQuery {
-                mSessionRepository.update(session)
+                mSessionRepository.update(localSession)
             }
-            editDialog?.reload(session)
+            editDialog?.reload(localSession)
         }
         val finallyCallback = {
             editDialog?.hideLoader()
         }
-        startEditSessionBottomSheet(session)
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+        startEditSessionBottomSheet(localSession)
+        mDownloadService.download(localSession.uuid, onDownloadSuccess, finallyCallback)
     }
 
-    override fun onShareSessionClicked(session: Session) {
-        var reloadedSession: Session?
+    override fun onShareSessionClicked(localSession: LocalSession) {
+        var reloadedLocalSession: LocalSession?
         DatabaseProvider.runQuery { scope ->
-            val dbSession = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            val dbSession = mSessionsViewModel.reloadSessionWithMeasurements(localSession.uuid)
             dbSession?.let {
-                reloadedSession = Session(dbSession)
-                startShareSessionBottomSheet(reloadedSession ?: session)
+                reloadedLocalSession = LocalSession(dbSession)
+                startShareSessionBottomSheet(reloadedLocalSession ?: localSession)
             }
         }
     }
 
-    override fun onDeleteSessionClicked(session: Session) {
+    override fun onDeleteSessionClicked(localSession: LocalSession) {
         if (!ConnectivityManager.isConnected(context)) {
             context?.apply {
                 showToast(
@@ -226,25 +226,25 @@ abstract class SessionsController(
             return
         }
 
-        startDeleteSessionBottomSheet(session)
+        startDeleteSessionBottomSheet(localSession)
     }
 
-    override fun onDeleteStreamsPressed(session: Session) {
+    override fun onDeleteStreamsPressed(localSession: LocalSession) {
         val allStreamsBoxSelected: Boolean = (deleteSessionDialog?.allStreamsBoxSelected() == true)
         val streamsToDelete = deleteSessionDialog?.getStreamsToDelete()
         if (deleteAllStreamsSelected(
                 allStreamsBoxSelected,
                 streamsToDelete?.size,
-                session.streams.size
+                localSession.streams.size
             )
         ) {
             ConfirmationDeleteSessionDialog(this.fragmentManager) {
-                deleteSession(session.uuid)
+                deleteSession(localSession.uuid)
             }
                 .show()
         } else {
             ConfirmationDeleteSessionDialog(this.fragmentManager) {
-                deleteStreams(session, streamsToDelete)
+                deleteStreams(localSession, streamsToDelete)
             }
                 .show()
         }
@@ -256,8 +256,8 @@ abstract class SessionsController(
         deleteSessionDialog?.dismiss()
     }
 
-    private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
-        val event = DeleteStreamsEvent(session, streamsToDelete)
+    private fun deleteStreams(localSession: LocalSession, streamsToDelete: List<MeasurementStream>?) {
+        val event = DeleteStreamsEvent(localSession, streamsToDelete)
         EventBus.getDefault().post(event)
         deleteSessionDialog?.dismiss()
     }
@@ -270,25 +270,25 @@ abstract class SessionsController(
         return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
     }
 
-    private fun startEditSessionBottomSheet(session: Session) {
-        editDialog = EditSessionBottomSheet(this, session, context)
+    private fun startEditSessionBottomSheet(localSession: LocalSession) {
+        editDialog = EditSessionBottomSheet(this, localSession, context)
         editDialog?.show(fragmentManager)
     }
 
-    private fun startShareSessionBottomSheet(session: Session) {
-        shareDialog = ShareSessionBottomSheet(this, session, context)
+    private fun startShareSessionBottomSheet(localSession: LocalSession) {
+        shareDialog = ShareSessionBottomSheet(this, localSession, context)
         shareDialog?.show(fragmentManager)
     }
 
-    private fun startDeleteSessionBottomSheet(session: Session) {
-        deleteSessionDialog = DeleteSessionBottomSheet(this, session)
+    private fun startDeleteSessionBottomSheet(localSession: LocalSession) {
+        deleteSessionDialog = DeleteSessionBottomSheet(this, localSession)
         deleteSessionDialog?.show(fragmentManager, "Session delete")
     }
 
-    private fun openShareIntentChooser(session: Session, chosenSensor: String) {
+    private fun openShareIntentChooser(localSession: LocalSession, chosenSensor: String) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor, context))
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(localSession, chosenSensor, context))
             putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
             type = "text/plain"
         }
@@ -296,22 +296,22 @@ abstract class SessionsController(
         context?.startActivity(chooser)
     }
 
-    private fun addFollowedSessionMeasurementsToActiveTable(session: Session) {
+    private fun addFollowedSessionMeasurementsToActiveTable(localSession: LocalSession) {
         DatabaseProvider.runQuery {
-            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            val sessionId = mSessionRepository.getSessionIdByUUID(localSession.uuid)
             sessionId?.let {
                 mActiveSessionsRepository.loadMeasurementsForStreams(
                     it,
-                    session.streams,
+                    localSession.streams,
                     ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
                 )
             }
         }
     }
 
-    private fun clearUnfollowedSessionMeasurementsFromActiveTable(session: Session) {
+    private fun clearUnfollowedSessionMeasurementsFromActiveTable(localSession: LocalSession) {
         DatabaseProvider.runQuery {
-            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            val sessionId = mSessionRepository.getSessionIdByUUID(localSession.uuid)
             mActiveSessionsRepository.deleteBySessionId(sessionId)
         }
     }

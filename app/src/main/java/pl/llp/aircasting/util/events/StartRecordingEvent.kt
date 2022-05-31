@@ -1,5 +1,5 @@
 package pl.llp.aircasting.util.events
 
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
-class StartRecordingEvent(val session: Session, val wifiSSID: String?, val wifiPassword: String?)
+class StartRecordingEvent(val localSession: LocalSession, val wifiSSID: String?, val wifiPassword: String?)

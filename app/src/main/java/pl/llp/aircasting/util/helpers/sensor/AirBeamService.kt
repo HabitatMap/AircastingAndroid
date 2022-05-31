@@ -6,7 +6,7 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
@@ -79,9 +79,9 @@ abstract class AirBeamService: SensorService(),
             DatabaseProvider.runQuery { scope ->
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
                 sessionDBObject?.let { sessionDBObject ->
-                    val session = Session(sessionDBObject)
-                    if (session.type == Session.Type.MOBILE && session.deviceId == event.sessionDeviceId) {
-                        airbeamReconnector.initReconnectionTries(session, event.device)
+                    val localSession = LocalSession(sessionDBObject)
+                    if (localSession.type == LocalSession.Type.MOBILE && localSession.deviceId == event.sessionDeviceId) {
+                        airbeamReconnector.initReconnectionTries(localSession, event.device)
                     }
                 }
             }

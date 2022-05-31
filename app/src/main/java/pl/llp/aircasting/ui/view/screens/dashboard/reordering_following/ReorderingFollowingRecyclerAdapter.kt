@@ -71,11 +71,11 @@ class ReorderingFollowingRecyclerAdapter (
             .filter { uuid -> !mSessionUUIDS.contains(uuid) }
             .forEach { uuid ->
                 val sessionPresenter = mSessionPresenters[uuid]
-                sessionPresenter?.session?.unfollow()
-                sessionPresenter?.session?.let { mListener.onUnfollowButtonClicked(it) }
-                if (sessionPresenter?.session != null) {
+                sessionPresenter?.localSession?.unfollow()
+                sessionPresenter?.localSession?.let { mListener.onUnfollowButtonClicked(it) }
+                if (sessionPresenter?.localSession != null) {
                     DatabaseProvider.runQuery {
-                        mSessionsViewModel.updateFollowedAt(sessionPresenter.session!!)
+                        mSessionsViewModel.updateFollowedAt(sessionPresenter.localSession!!)
                     }
                 }
                 mSessionPresenters.remove(uuid)

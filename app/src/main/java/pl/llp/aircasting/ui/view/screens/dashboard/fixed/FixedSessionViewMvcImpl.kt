@@ -41,7 +41,7 @@ class FixedSessionViewMvcImpl(
     override fun showChart() = false
 
     override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.session?.followed == true) {
+        if (sessionPresenter.localSession?.followed == true) {
             mFollowButton.visibility = View.GONE
             mUnfollowButton.visibility = View.VISIBLE
         } else {
@@ -51,7 +51,7 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun editSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
 
         for (listener in listeners) {
             listener.onSessionEditClicked(session)
@@ -60,7 +60,7 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun shareSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
 
         for (listener in listeners) {
             listener.onSessionShareClicked(session)
@@ -69,7 +69,7 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun deleteSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
+        val session = mSessionPresenter?.localSession ?: return
 
         for (listener in listeners) {
             listener.onSessionDeleteClicked(session)

@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
@@ -87,7 +87,7 @@ class GraphContainer(
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
-        mNotes = mSessionPresenter?.session?.notes
+        mNotes = mSessionPresenter?.localSession?.notes
         if (mGraph?.isFullyZoomedOut == true) mVisibleEntriesNumber = mMeasurementsSample.size
 
         drawSession()
@@ -283,7 +283,7 @@ class GraphContainer(
                         }
                     }
                 }
-                mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
+                mListener?.noteMarkerClicked(mSessionPresenter?.localSession, noteNumber)
             }
 
             override fun onNothingSelected() {
@@ -368,7 +368,7 @@ class GraphContainer(
     }
 
     private fun sessionMeasurementsFrequency(): Int {
-        return if (mSessionPresenter?.session?.type == Session.Type.MOBILE)
+        return if (mSessionPresenter?.localSession?.type == LocalSession.Type.MOBILE)
             MOBILE_SESSION_MEASUREMENT_FREQUENCY
         else
             FIXED_SESSION_MEASUREMENT_FREQUENCY

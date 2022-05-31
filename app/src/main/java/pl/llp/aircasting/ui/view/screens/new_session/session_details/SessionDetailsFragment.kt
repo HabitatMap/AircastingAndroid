@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class SessionDetailsFragment : Fragment() {
     lateinit var listener: SessionDetailsViewMvc.Listener
     lateinit var deviceItem: DeviceItem
     lateinit var sessionUUID: String
-    lateinit var sessionType: Session.Type
+    lateinit var localSessionType: LocalSession.Type
 
     @Inject
     lateinit var sessionDetailsControllerFactory: SessionDetailsControllerFactory
@@ -29,8 +29,8 @@ class SessionDetailsFragment : Fragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, sessionType)
-        controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
+        view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, localSessionType)
+        controller = sessionDetailsControllerFactory.get(activity, view, localSessionType, childFragmentManager)
         controller?.onCreate()
 
         return view?.rootView

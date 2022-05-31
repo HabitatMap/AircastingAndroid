@@ -14,8 +14,8 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
@@ -72,68 +72,68 @@ class MobileActiveController(
     }
 
     override fun onRecordNewSessionClicked() {
-        startNewSession(Session.Type.MOBILE)
+        startNewSession(LocalSession.Type.MOBILE)
     }
 
     override fun onExploreNewSessionsClicked() {
         // Do nothing
     }
 
-    override fun onEditSessionClicked(session: Session) {
+    override fun onEditSessionClicked(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onShareSessionClicked(session: Session) {
+    override fun onShareSessionClicked(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onDeleteStreamsPressed(session: Session) {
+    override fun onDeleteStreamsPressed(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onExpandSessionCard(session: Session) {
+    override fun onExpandSessionCard(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onDisconnectSessionClicked(session: Session) {
+    override fun onDisconnectSessionClicked(localSession: LocalSession) {
         if (isSDKLessOrEqualToNMR1()) {
             SyncUnavailableDialog(this.fragmentManager)
                 .show()
         } else {
-            EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
-            airBeamReconnector.disconnect(session)
+            EventBus.getDefault().post(StandaloneModeEvent(localSession.uuid))
+            airBeamReconnector.disconnect(localSession)
         }
     }
 
-    override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, mContext, mErrorHandler).show(fragmentManager)
+    override fun addNoteClicked(localSession: LocalSession) {
+        AddNoteBottomSheet(this, localSession, mContext, mErrorHandler).show(fragmentManager)
     }
 
-    override fun onReconnectSessionClicked(session: Session) {
-        mViewMvc?.showReconnectingLoaderFor(session)
-        airBeamReconnector.reconnect(session,
+    override fun onReconnectSessionClicked(localSession: LocalSession) {
+        mViewMvc?.showReconnectingLoaderFor(localSession)
+        airBeamReconnector.reconnect(localSession,
             deviceItem = null,
             errorCallback = { errorCallback() },
-            finallyCallback = { finallyCallback(session) }
+            finallyCallback = { finallyCallback(localSession) }
         )
     }
 
-    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
+    override fun onEditDataPressed(localSession: LocalSession, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
         // do nothing
     }
 
-    override fun onFinishSessionConfirmed(session: Session) {
-        val event = StopRecordingEvent(session.uuid)
+    override fun onFinishSessionConfirmed(localSession: LocalSession) {
+        val event = StopRecordingEvent(localSession.uuid)
         EventBus.getDefault().post(event)
         goToDormantTab()
     }
 
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
         SyncActivity.start(mRootActivity)
     }
 
-    override fun addNotePressed(session: Session, note: Note) {
-        val event = NoteCreatedEvent(session, note)
+    override fun addNotePressed(localSession: LocalSession, note: Note) {
+        val event = NoteCreatedEvent(localSession, note)
         EventBus.getDefault().post(event)
     }
 
@@ -152,9 +152,9 @@ class MobileActiveController(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    override fun beforeReconnection(session: Session) {
+    override fun beforeReconnection(localSession: LocalSession) {
         GlobalScope.launch(Dispatchers.Main) {
-            mViewMvc?.showReconnectingLoaderFor(session)
+            mViewMvc?.showReconnectingLoaderFor(localSession)
         }
     }
 
@@ -166,9 +166,9 @@ class MobileActiveController(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    override fun finallyCallback(session: Session) {
+    override fun finallyCallback(localSession: LocalSession) {
         GlobalScope.launch(Dispatchers.Main) {
-            mViewMvc?.hideReconnectingLoaderFor(session)
+            mViewMvc?.hideReconnectingLoaderFor(localSession)
         }
     }
 }

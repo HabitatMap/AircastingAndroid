@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
@@ -30,35 +30,35 @@ class MobileActiveViewMvcImpl(
         )
     }
 
-    override fun onSessionDisconnectClicked(session: Session) {
+    override fun onSessionDisconnectClicked(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.onDisconnectSessionClicked(session)
+            listener.onDisconnectSessionClicked(localSession)
         }
     }
 
-    override fun addNoteClicked(session: Session) {
+    override fun addNoteClicked(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.addNoteClicked(session)
+            listener.addNoteClicked(localSession)
         }
     }
 
-    override fun onSessionReconnectClicked(session: Session) {
+    override fun onSessionReconnectClicked(localSession: LocalSession) {
         for (listener in listeners) {
-            session.deviceId?.let { deviceId ->
-                listener.onReconnectSessionClicked(session)
+            localSession.deviceId?.let { deviceId ->
+                listener.onReconnectSessionClicked(localSession)
             }
         }
     }
 
-    override fun onFinishSessionConfirmed(session: Session) {
+    override fun onFinishSessionConfirmed(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.onFinishSessionConfirmed(session)
+            listener.onFinishSessionConfirmed(localSession)
         }
     }
 
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
         for (listener in listeners) {
-            listener.onFinishAndSyncSessionConfirmed(session)
+            listener.onFinishAndSyncSessionConfirmed(localSession)
         }
     }
 

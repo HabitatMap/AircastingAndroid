@@ -1,5 +1,5 @@
 package pl.llp.aircasting.util.events
 
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
-class UpdateSessionEvent(val session: Session, val name: String, val tags: ArrayList<String>)
+class UpdateSessionEvent(val localSession: LocalSession, val name: String, val tags: ArrayList<String>)

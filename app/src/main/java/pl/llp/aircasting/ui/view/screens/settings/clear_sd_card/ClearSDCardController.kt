@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
@@ -185,14 +185,14 @@ class ClearSDCardController(
         }
     }
 
-    override fun onTurnOffLocationServicesOkClicked(session: Session?) {
+    override fun onTurnOffLocationServicesOkClicked(localSession: LocalSession?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         ContextCompat.startActivity(mContextActivity, intent, null)
 
         mContextActivity.finish()
     }
 
-    override fun onSkipClicked(session: Session?) {
+    override fun onSkipClicked(localSession: LocalSession?) {
         mContextActivity.finish()
     }
 }

@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
@@ -60,11 +60,11 @@ class FixedController(
         mContext?.startActivity(intent)
     }
 
-    override fun onFinishSessionConfirmed(session: Session) {
+    override fun onFinishSessionConfirmed(localSession: LocalSession) {
         // do nothing
     }
 
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
+    override fun onFinishAndSyncSessionConfirmed(localSession: LocalSession) {
         // do nothing
     }
 

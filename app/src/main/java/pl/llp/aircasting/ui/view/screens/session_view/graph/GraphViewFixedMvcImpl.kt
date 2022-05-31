@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
 open class GraphViewFixedMvcImpl(
     inflater: LayoutInflater,
@@ -22,7 +22,7 @@ open class GraphViewFixedMvcImpl(
         return mSessionPresenter?.selectedStream?.getLastMeasurements(MEASUREMENTS_SAMPLE_SIZE) ?: listOf<Measurement>()
     }
 
-    override fun getSessionType(): Session.Type {
-        return Session.Type.FIXED
+    override fun getSessionType(): LocalSession.Type {
+        return LocalSession.Type.FIXED
     }
 }

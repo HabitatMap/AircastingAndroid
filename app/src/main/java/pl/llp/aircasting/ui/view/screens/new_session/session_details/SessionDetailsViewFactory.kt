@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.new_session.session_details
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 
 class SessionDetailsViewFactory {
@@ -14,11 +14,11 @@ class SessionDetailsViewFactory {
             fragmentManager: FragmentManager,
             deviceItem: DeviceItem,
             sessionUUID: String,
-            sessionType: Session.Type
+            localSessionType: LocalSession.Type
         ): SessionDetailsViewMvc {
-            return when(sessionType) {
-                Session.Type.MOBILE -> MobileSessionDetailsViewMvcImpl(inflater, parent, sessionUUID, deviceItem)
-                Session.Type.FIXED -> FixedSessionDetailsViewMvcImpl(inflater, parent, fragmentManager, sessionUUID, deviceItem)
+            return when(localSessionType) {
+                LocalSession.Type.MOBILE -> MobileSessionDetailsViewMvcImpl(inflater, parent, sessionUUID, deviceItem)
+                LocalSession.Type.FIXED -> FixedSessionDetailsViewMvcImpl(inflater, parent, fragmentManager, sessionUUID, deviceItem)
             }
         }
     }

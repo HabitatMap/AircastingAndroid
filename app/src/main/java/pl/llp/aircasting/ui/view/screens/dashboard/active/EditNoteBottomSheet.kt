@@ -8,19 +8,19 @@ import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.showToast
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
-    private var mSession: Session?,
+    private var mLocalSession: LocalSession?,
     private val noteNumber: Int
 ) : BottomSheet() {
     interface Listener {
-        fun saveChangesNotePressed(note: Note?, session: Session?)
-        fun deleteNotePressed(note: Note?, session: Session?)
+        fun saveChangesNotePressed(note: Note?, localSession: LocalSession?)
+        fun deleteNotePressed(note: Note?, localSession: LocalSession?)
     }
 
     private var mNote: Note? = null
@@ -29,7 +29,7 @@ class EditNoteBottomSheet(
 
     override fun setup() {
         noteInput = contentView?.note_input
-        mNote = mSession?.notes?.find { note -> note.number == noteNumber }
+        mNote = mLocalSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
         mLoader = contentView?.edit_note_loader
 
@@ -71,19 +71,19 @@ class EditNoteBottomSheet(
 
         val noteText = noteInput?.text.toString().trim()
         mNote?.text = noteText
-        mListener.saveChangesNotePressed(mNote, mSession)
+        mListener.saveChangesNotePressed(mNote, mLocalSession)
     }
 
     private fun deleteNote() {
-        mListener.deleteNotePressed(mNote, mSession)
+        mListener.deleteNotePressed(mNote, mLocalSession)
     }
 
     override fun layoutId(): Int {
         return R.layout.edit_note_bottom_sheet
     }
 
-    fun reload(session: Session) {
-        mSession = session
+    fun reload(localSession: LocalSession) {
+        mLocalSession = localSession
         noteInput?.setText(mNote?.text)
     }
 

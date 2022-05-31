@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.new_session.confirmation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
 class ConfirmationViewFactory {
     companion object {
@@ -11,14 +11,14 @@ class ConfirmationViewFactory {
             inflater: LayoutInflater,
             container: ViewGroup?,
             supportFragmentManager: FragmentManager?,
-            session: Session,
+            localSession: LocalSession,
             areMapsDisabled: Boolean
         ): ConfirmationViewMvcImpl {
-            return when(session.type) {
-                Session.Type.MOBILE -> MobileSessionConfirmationViewMvcImpl(
-                    inflater, container, supportFragmentManager, session, areMapsDisabled)
-                Session.Type.FIXED -> FixedSessionConfirmationViewMvcImpl(
-                    inflater, container, supportFragmentManager, session, areMapsDisabled)
+            return when(localSession.type) {
+                LocalSession.Type.MOBILE -> MobileSessionConfirmationViewMvcImpl(
+                    inflater, container, supportFragmentManager, localSession, areMapsDisabled)
+                LocalSession.Type.FIXED -> FixedSessionConfirmationViewMvcImpl(
+                    inflater, container, supportFragmentManager, localSession, areMapsDisabled)
             }
         }
     }

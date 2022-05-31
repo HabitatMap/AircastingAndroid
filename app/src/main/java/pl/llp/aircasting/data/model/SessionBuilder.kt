@@ -7,23 +7,23 @@ class SessionBuilder {
     fun build(
         sessionUUID: String,
         deviceItem: DeviceItem,
-        type: Session.Type,
+        type: LocalSession.Type,
         name: String,
         tags: ArrayList<String>,
-        status: Session.Status,
+        status: LocalSession.Status,
         indoor: Boolean,
-        streamingMethod: Session.StreamingMethod?,
-        currentLocation: Session.Location?,
+        streamingMethod: LocalSession.StreamingMethod?,
+        currentLocation: LocalSession.Location?,
         settings: Settings
-    ): Session {
+    ): LocalSession {
         val location = calculateLocation(type, indoor, currentLocation)
         val contribute = when(type) {
-            Session.Type.FIXED -> true
-            Session.Type.MOBILE -> settings.isCrowdMapEnabled()
+            LocalSession.Type.FIXED -> true
+            LocalSession.Type.MOBILE -> settings.isCrowdMapEnabled()
         }
         val locationless = settings.areMapsDisabled()
 
-        return Session(
+        return LocalSession(
             sessionUUID,
             deviceItem.id,
             deviceItem.type,
@@ -39,9 +39,9 @@ class SessionBuilder {
         )
     }
 
-    private fun calculateLocation(type: Session.Type, indoor: Boolean?, currentLocation: Session.Location?): Session.Location? {
-        if (type == Session.Type.FIXED && indoor == true) {
-            return Session.Location.FAKE_LOCATION
+    private fun calculateLocation(type: LocalSession.Type, indoor: Boolean?, currentLocation: LocalSession.Location?): LocalSession.Location? {
+        if (type == LocalSession.Type.FIXED && indoor == true) {
+            return LocalSession.Location.FAKE_LOCATION
         }
 
         // mobile or outdoor

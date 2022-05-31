@@ -3,7 +3,7 @@ package pl.llp.aircasting.data.api.services
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import java.util.*
 
 class RemoveOldMeasurementsService {
@@ -19,7 +19,7 @@ class RemoveOldMeasurementsService {
         // We know that we have 60 measurements per hour,
         // so we take 1440 last measurements for each stream in fixed sessions
         // and we remove older than the first of them.
-        val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
+        val fixedSessionsIds = sessionRepository.sessionsIdsByType(LocalSession.Type.FIXED)
         val streamsForFixedSessionsIds = measurementStreamsRepository.getStreamsIdsBySessionIds(fixedSessionsIds)
 
         streamsForFixedSessionsIds.forEach { streamId ->

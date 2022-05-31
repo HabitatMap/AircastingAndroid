@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -55,7 +55,7 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
 
     private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(sessionUUID, deviceItem, Session.Type.MOBILE, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(sessionUUID, deviceItem, LocalSession.Type.MOBILE, sessionName, sessionTags)
         }
     }
 

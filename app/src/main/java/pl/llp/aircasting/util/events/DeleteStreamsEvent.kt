@@ -1,7 +1,7 @@
 package pl.llp.aircasting.util.events
 
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
-class DeleteStreamsEvent(val session: Session, val streamsToDelete: List<MeasurementStream>?)
+class DeleteStreamsEvent(val localSession: LocalSession, val streamsToDelete: List<MeasurementStream>?)
 

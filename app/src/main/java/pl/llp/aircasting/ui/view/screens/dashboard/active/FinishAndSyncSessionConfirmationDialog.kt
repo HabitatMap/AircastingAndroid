@@ -5,19 +5,19 @@ import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 
 class FinishAndSyncSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
     mListener: FinishSessionListener,
-    mSession: Session
-) : FinishSessionConfirmationDialog(mFragmentManager, mListener, mSession) {
+    mLocalSession: LocalSession
+) : FinishSessionConfirmationDialog(mFragmentManager, mListener, mLocalSession) {
 
     override fun buildHeader(): SpannableStringBuilder {
         return SpannableStringBuilder()
             .append(getString(R.string.dialog_finish_and_sync_recording_header_part1))
             .append(" ")
-            .color(blueColor(), { bold { append(mSession.name) } })
+            .color(blueColor(), { bold { append(mLocalSession.name) } })
             .append(" ")
             .append(getString(R.string.dialog_finish_and_sync_recording_header_part3))
     }
@@ -38,7 +38,7 @@ class FinishAndSyncSessionConfirmationDialog(
     }
 
     override fun finishSessionConfirmed() {
-        mListener.onFinishAndSyncSessionConfirmed(mSession)
+        mListener.onFinishAndSyncSessionConfirmed(mLocalSession)
         dismiss()
     }
 }

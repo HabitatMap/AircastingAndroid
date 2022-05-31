@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.following
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 
@@ -24,8 +24,8 @@ open class FollowingRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun prepareSession(session: Session, expanded: Boolean): Session {
-        return reloadSessionFromDB(session)
+    override fun prepareSession(localSession: LocalSession, expanded: Boolean): LocalSession {
+        return reloadSessionFromDB(localSession)
     }
 
 }

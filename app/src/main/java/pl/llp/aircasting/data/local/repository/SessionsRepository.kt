@@ -3,25 +3,25 @@ package pl.llp.aircasting.data.local.repository
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*
 
 class SessionsRepository {
     private val mDatabase = DatabaseProvider.get()
 
-    fun insert(session: Session): Long {
+    fun insert(localSession: LocalSession): Long {
         val sessionDBObject =
-            SessionDBObject(session)
+            SessionDBObject(localSession)
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
     fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId,
-            Session.Status.RECORDING, Session.Type.MOBILE)
+        val localSessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId,
+            LocalSession.Status.RECORDING, LocalSession.Type.MOBILE)
 
-        if (sessionDBObject != null) {
-            return sessionDBObject.id
+        if (localSessionDBObject != null) {
+            return localSessionDBObject.id
         } else {
             return null
         }
@@ -43,70 +43,70 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)?.id
     }
 
-    fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
+    fun loadSessionAndMeasurementsByUUID(uuid: String): LocalSession? {
         val sessionDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
 
         if (sessionDBObject != null) {
-            return Session(sessionDBObject)
+            return LocalSession(sessionDBObject)
         } else {
             return null
         }
     }
 
-    fun loadSessionForUpload(uuid: String): Session? {
+    fun loadSessionForUpload(uuid: String): LocalSession? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
 
         if (sessionForUploadDBObject != null) {
-            return Session(sessionForUploadDBObject)
+            return LocalSession(sessionForUploadDBObject)
         } else {
             return null
         }
 
     }
 
-    fun update(session: Session) {
-        session.endTime?.let {
-            mDatabase.sessions().update(session.uuid, session.name, session.tags,
-                it, session.status, session.version, session.urlLocation)
+    fun update(localSession: LocalSession) {
+        localSession.endTime?.let {
+            mDatabase.sessions().update(localSession.uuid, localSession.name, localSession.tags,
+                it, localSession.status, localSession.version, localSession.urlLocation)
         }
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, LocalSession.Status.RECORDING, LocalSession.Type.MOBILE) != null ||
+                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, LocalSession.Status.DISCONNECTED, LocalSession.Type.MOBILE) != null
     }
 
     fun isMicrophoneSessionAlreadyRecording(): Boolean {
-        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(Session.Status.RECORDING, Session.Type.MOBILE, DeviceItem.Type.MIC) != null
+        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(LocalSession.Status.RECORDING, LocalSession.Type.MOBILE, DeviceItem.Type.MIC) != null
     }
 
     fun mobileActiveSessionExists(): Boolean {
-        return mDatabase.sessions().loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByStatusAndType(Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+        return mDatabase.sessions().loadSessionByStatusAndType(LocalSession.Status.RECORDING, LocalSession.Type.MOBILE) != null ||
+                mDatabase.sessions().loadSessionByStatusAndType(LocalSession.Status.DISCONNECTED, LocalSession.Type.MOBILE) != null
     }
 
     fun disconnectMobileBluetoothSessions() {
-        mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().disconnectSessions(LocalSession.Status.DISCONNECTED, DeviceItem.Type.MIC, LocalSession.Type.MOBILE, LocalSession.Status.RECORDING)
     }
 
     fun finishMobileMicSessions() {
-        mDatabase.sessions().finishSessions(Session.Status.FINISHED, Date(), DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().finishSessions(LocalSession.Status.FINISHED, Date(), DeviceItem.Type.MIC, LocalSession.Type.MOBILE, LocalSession.Status.RECORDING)
     }
 
     fun disconnectSession(deviceId: String) {
-        mDatabase.sessions().disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
+        mDatabase.sessions().disconnectSession(LocalSession.Status.DISCONNECTED, deviceId, LocalSession.Status.RECORDING)
     }
 
-    fun finishedSessions(): List<Session> {
-        return mDatabase.sessions().byStatus(Session.Status.FINISHED)
-            .map { dbObject -> Session(dbObject) }
+    fun finishedSessions(): List<LocalSession> {
+        return mDatabase.sessions().byStatus(LocalSession.Status.FINISHED)
+            .map { dbObject -> LocalSession(dbObject) }
     }
 
     fun fixedSessions(): List<SessionDBObject> {
-        return mDatabase.sessions().byType(Session.Type.FIXED)
+        return mDatabase.sessions().byType(LocalSession.Type.FIXED)
     }
 
-    fun sessionsIdsByType(type: Session.Type): List<Long> {
+    fun sessionsIdsByType(type: LocalSession.Type): List<Long> {
         return mDatabase.sessions().loadSessionUuidsByType(type)
     }
 
@@ -124,22 +124,22 @@ class SessionsRepository {
         mDatabase.sessions().deleteMarkedForRemoval()
     }
 
-    fun updateOrCreate(session: Session): Long? {
-        val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
+    fun updateOrCreate(localSession: LocalSession): Long? {
+        val sessionDbObject = mDatabase.sessions().loadSessionByUUID(localSession.uuid)
         return if (sessionDbObject == null) {
-            insert(session)
+            insert(localSession)
         } else {
-            update(session)
+            update(localSession)
             null
         }
     }
 
-    fun updateSessionStatus(session: Session, status: Session.Status) {
-        mDatabase.sessions().updateStatus(session.uuid, status)
+    fun updateSessionStatus(localSession: LocalSession, status: LocalSession.Status) {
+        mDatabase.sessions().updateStatus(localSession.uuid, status)
     }
 
-    fun updateUrlLocation(session: Session, urlLocation: String?) {
-        mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
+    fun updateUrlLocation(localSession: LocalSession, urlLocation: String?) {
+        mDatabase.sessions().updateUrlLocation(localSession.uuid, urlLocation)
     }
 
     fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {

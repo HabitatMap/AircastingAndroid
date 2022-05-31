@@ -7,7 +7,7 @@ import pl.llp.aircasting.util.events.LocationChanged
 import pl.llp.aircasting.util.KeyboardHelper
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.safeRegister
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.common.BaseController
 
 class ConfirmationController(
@@ -35,7 +35,7 @@ class ConfirmationController(
         mViewMvc?.onDestroy()
     }
 
-    override fun onStartRecordingClicked(session: Session) {
+    override fun onStartRecordingClicked(localSession: LocalSession) {
         // do nothing
     }
 

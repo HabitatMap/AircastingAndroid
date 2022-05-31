@@ -2,12 +2,12 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.LocalSession
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartData
 import java.util.*
 
 class SessionPresenter() {
-    var session: Session? = null
+    var localSession: LocalSession? = null
     var selectedStream: MeasurementStream? = null
     var sensorThresholds: HashMap<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
@@ -20,28 +20,28 @@ class SessionPresenter() {
     var shouldHideMap: Boolean = false
 
     constructor(
-        session: Session,
+        localSession: LocalSession,
         sensorThresholds: HashMap<String, SensorThreshold>,
         selectedStream: MeasurementStream? = null,
         expanded: Boolean = false,
         loading: Boolean = false
     ): this() {
-        this.session = session
-        this.selectedStream = selectedStream ?: defaultStream(session)
+        this.localSession = localSession
+        this.selectedStream = selectedStream ?: defaultStream(localSession)
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-        if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE) {
-            this.chartData = ChartData(session)
+        if (localSession.tab == SessionsTab.FOLLOWING || localSession.tab == SessionsTab.MOBILE_ACTIVE) {
+            this.chartData = ChartData(localSession)
         }
-        if (session.tab == SessionsTab.MOBILE_ACTIVE || session.tab == SessionsTab.MOBILE_DORMANT) {
-            this.shouldHideMap = session.locationless
+        if (localSession.tab == SessionsTab.MOBILE_ACTIVE || localSession.tab == SessionsTab.MOBILE_DORMANT) {
+            this.shouldHideMap = localSession.locationless
         }
-        if (session.tab == SessionsTab.FIXED || session.tab == SessionsTab.FOLLOWING) {
-            this.shouldHideMap = session.indoor
+        if (localSession.tab == SessionsTab.FIXED || localSession.tab == SessionsTab.FOLLOWING) {
+            this.shouldHideMap = localSession.indoor
         }
 
-        if (session.tab == SessionsTab.MOBILE_ACTIVE) {
+        if (localSession.tab == SessionsTab.MOBILE_ACTIVE) {
             this.loading = true
         }
     }
@@ -63,11 +63,11 @@ class SessionPresenter() {
     }
 
     fun setDefaultStream() {
-        selectedStream = defaultStream(session)
+        selectedStream = defaultStream(localSession)
     }
 
     fun isFixed(): Boolean {
-        return session?.isFixed() == true
+        return localSession?.isFixed() == true
     }
 
     fun isMobileDormant(): Boolean {
@@ -79,15 +79,15 @@ class SessionPresenter() {
     }
 
     fun isRecording(): Boolean {
-        return session?.isRecording() == true
+        return localSession?.isRecording() == true
     }
 
     fun isDisconnected(): Boolean {
-        return session?.isDisconnected() == true
+        return localSession?.isDisconnected() == true
     }
 
     fun isDisconnectable(): Boolean {
-        return session?.isAirBeam3() == true
+        return localSession?.isAirBeam3() == true
     }
 
     fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {
@@ -100,8 +100,8 @@ class SessionPresenter() {
     }
 
     companion object {
-        fun defaultStream(session: Session?): MeasurementStream? {
-            return session?.streamsSortedByDetailedType()?.firstOrNull()
+        fun defaultStream(localSession: LocalSession?): MeasurementStream? {
+            return localSession?.streamsSortedByDetailedType()?.firstOrNull()
         }
     }
 }
