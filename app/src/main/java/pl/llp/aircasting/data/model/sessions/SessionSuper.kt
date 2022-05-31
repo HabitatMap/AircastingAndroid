@@ -3,7 +3,7 @@ package pl.llp.aircasting.data.model.sessions
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import java.util.*
 
-open class Session(
+open class SessionSuper(
     open val type: Type = Type.FIXED,
     open var followedAt: Date? = null,
     open var locationless: Boolean = false,
