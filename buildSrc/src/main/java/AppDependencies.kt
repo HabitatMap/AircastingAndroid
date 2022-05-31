@@ -72,7 +72,6 @@ object AppDependencies {
     /* Room DB */
     private const val roomDB = "androidx.room:room-runtime:${Versions.roomDB}"
     private const val roomDBCompiler = "androidx.room:room-compiler:${Versions.roomDB}"
-    private const val roomKTX = "androidx.room:room-ktx:${Versions.roomDB}"
 
     /* Miscellaneous */
     private const val commonsCodec = "commons-codec:commons-codec:${Versions.commonsCodec}"
@@ -120,7 +119,6 @@ object AppDependencies {
         add(crashlyticsKTX)
         add(analyticsKTX)
         add(roomDB)
-        add(roomKTX)
         add(commonsCodec)
         add(androidBle)
         add(mpAndroidChart)
