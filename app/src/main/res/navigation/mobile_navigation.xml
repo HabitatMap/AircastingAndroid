@@ -10,7 +10,6 @@
         app:destination="@+id/navigation_dashboard">
         <argument
             android:name="tabId"
-            android:defaultValue="0"
             app:argType="integer" />
     </action>
 
