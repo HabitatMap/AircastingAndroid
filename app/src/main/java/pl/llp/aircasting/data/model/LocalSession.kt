@@ -3,13 +3,14 @@ package pl.llp.aircasting.data.model
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.text.SimpleDateFormat
 import java.util.*
 
 val TAGS_SEPARATOR = " "
 
-class LocalSession(
+open class LocalSession(
     val uuid: String,
     val deviceId: String?,
     val deviceType: DeviceItem.Type?,
@@ -31,7 +32,7 @@ class LocalSession(
     var averagingFrequency: Int = 1,
     var order: Int? = null
 ) {
-    constructor(sessionDBObject: SessionDBObject): this(
+    constructor(sessionDBObject: SessionDBObject) : this(
         sessionDBObject.uuid,
         sessionDBObject.deviceId,
         sessionDBObject.deviceType,
@@ -67,7 +68,7 @@ class LocalSession(
         location: Location?,
         contribute: Boolean,
         locationless: Boolean
-    ): this(sessionUUID, deviceId, deviceType, mType, mName, mTags, mStatus) {
+    ) : this(sessionUUID, deviceId, deviceType, mType, mName, mTags, mStatus) {
         this.mIndoor = indoor
         this.mStreamingMethod = streamingMethod
         this.location = location
@@ -75,38 +76,39 @@ class LocalSession(
         this.locationless = locationless
     }
 
-    constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject):
+    constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject) :
             this(sessionWithStreamsDBObject.session) {
         this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
 
-    constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject):
+    constructor(sessionWithStreamsDBObject: SessionWithStreamsDBObject) :
             this(sessionWithStreamsDBObject.session) {
         this.mStreams = sessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
             MeasurementStream(streamWithMeasurementsDBObject)
         }
     }
 
-    constructor(sessionWithNotesDBObject: SessionWithNotesDBObject):
+    constructor(sessionWithNotesDBObject: SessionWithNotesDBObject) :
             this(sessionWithNotesDBObject.session) {
         this.mNotes = sessionWithNotesDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }.toMutableList()
     }
 
-    constructor(sessionWithStreamsAndNotesDBObject: SessionWithStreamsAndNotesDBObject):
+    constructor(sessionWithStreamsAndNotesDBObject: SessionWithStreamsAndNotesDBObject) :
             this(sessionWithStreamsAndNotesDBObject.session) {
         this.mNotes = sessionWithStreamsAndNotesDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }.toMutableList()
-        this.mStreams = sessionWithStreamsAndNotesDBObject.streams.map { measurementStreamDBObject ->
-            MeasurementStream(measurementStreamDBObject)
-        }
+        this.mStreams =
+            sessionWithStreamsAndNotesDBObject.streams.map { measurementStreamDBObject ->
+                MeasurementStream(measurementStreamDBObject)
+            }
     }
 
-    constructor(completeSessionDBObject: CompleteSessionDBObject):
+    constructor(completeSessionDBObject: CompleteSessionDBObject) :
             this(completeSessionDBObject.session) {
         this.mNotes = completeSessionDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
@@ -116,15 +118,29 @@ class LocalSession(
         }
     }
 
-    constructor(sessionWithStreamsAndLastMeasurementsDBObject: SessionWithStreamsAndLastMeasurementsDBObject):
+    constructor(sessionWithStreamsAndLastMeasurementsDBObject: SessionWithStreamsAndLastMeasurementsDBObject) :
             this(sessionWithStreamsAndLastMeasurementsDBObject.session) {
-        this.mStreams = sessionWithStreamsAndLastMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
-            MeasurementStream(streamWithMeasurementsDBObject)
-        }
+        this.mStreams =
+            sessionWithStreamsAndLastMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
+                MeasurementStream(streamWithMeasurementsDBObject)
+            }
         this.mNotes = sessionWithStreamsAndLastMeasurementsDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }.toMutableList()
     }
+
+    protected constructor(extSessionsDBObject: ExtSessionsDBObject) : this(
+        uuid = extSessionsDBObject.uuid,
+        deviceId = null,
+        deviceType = null,
+        mType = Type.FIXED,
+        mName = extSessionsDBObject.title,
+        mTags = arrayListOf(),
+        mStatus = Status.RECORDING,
+        mStartTime = DateConverter.fromString(extSessionsDBObject.startTimeLocal) ?: Date(),
+        endTime = DateConverter.fromString(extSessionsDBObject.endTimeLocal) ?: Date(),
+        followedAt = extSessionsDBObject.followedAt
+    )
 
     companion object {
         fun generateUUID(): String {
@@ -132,7 +148,7 @@ class LocalSession(
         }
     }
 
-    enum class Type(val value: Int){
+    enum class Type(val value: Int) {
         MOBILE(0),
         FIXED(1);
 
@@ -141,7 +157,7 @@ class LocalSession(
         }
     }
 
-    enum class Status(val value: Int){
+    enum class Status(val value: Int) {
         NEW(-1),
         RECORDING(0),
         FINISHED(1),
@@ -169,7 +185,7 @@ class LocalSession(
                 if (locationless) {
                     return FAKE_LOCATION
                 }
-                
+
                 if (location == null) {
                     return DEFAULT_LOCATION
                 }
@@ -186,11 +202,17 @@ class LocalSession(
     }
 
     val type get() = mType
-    var name get() = mName
-        set(value) {mName = value}
+    var name
+        get() = mName
+        set(value) {
+            mName = value
+        }
 
-    var tags get() = mTags
-        set(value) {mTags = value}
+    var tags
+        get() = mTags
+        set(value) {
+            mTags = value
+        }
 
     val startTime get() = mStartTime
 
@@ -199,8 +221,11 @@ class LocalSession(
 
     val status get() = mStatus
     val streams get() = mStreams
-    var notes get() = mNotes
-        set(value) {mNotes = value}
+    var notes
+        get() = mNotes
+        set(value) {
+            mNotes = value
+        }
 
     val indoor get() = mIndoor
     val streamingMethod get() = mStreamingMethod
@@ -208,44 +233,46 @@ class LocalSession(
     val activeStreams get() = mStreams.filter { stream -> !stream.deleted }
 
     // TODO: this was changed quite quick to add spanish translation to displayedType, maybe it should be written in cleaner way
-    val displayedType get() = when (Locale.getDefault().language) {
-        "en" -> {
-            when(type) {
-                Type.MOBILE -> "mobile"
-                Type.FIXED -> "fixed"
+    val displayedType
+        get() = when (Locale.getDefault().language) {
+            "en" -> {
+                when (type) {
+                    Type.MOBILE -> "mobile"
+                    Type.FIXED -> "fixed"
+                }
             }
-        }
-        "es" -> {
-            when(type) {
-                Type.MOBILE -> "móvil"
-                Type.FIXED -> "fijo"
+            "es" -> {
+                when (type) {
+                    Type.MOBILE -> "móvil"
+                    Type.FIXED -> "fijo"
+                }
             }
-        }
-        "fr" -> {
-            when(type) {
-                Type.MOBILE -> "mobile"
-                Type.FIXED -> "fixé"
+            "fr" -> {
+                when (type) {
+                    Type.MOBILE -> "mobile"
+                    Type.FIXED -> "fixé"
+                }
             }
-        }
-        else -> {
-            when (type) {
-                Type.MOBILE -> "mobile"
-                Type.FIXED -> "fixed"
-            }
-        }
-    }
-
-    val tab get() = run {
-        if (followed) SessionsTab.FOLLOWING else {
-            if (isFixed()) SessionsTab.FIXED else {
-                when(status) {
-                    Status.FINISHED -> SessionsTab.MOBILE_DORMANT
-                    Status.RECORDING -> SessionsTab.MOBILE_ACTIVE
-                    else -> SessionsTab.MOBILE_DORMANT
+            else -> {
+                when (type) {
+                    Type.MOBILE -> "mobile"
+                    Type.FIXED -> "fixed"
                 }
             }
         }
-    }
+
+    val tab
+        get() = run {
+            if (followed) SessionsTab.FOLLOWING else {
+                if (isFixed()) SessionsTab.FIXED else {
+                    when (status) {
+                        Status.FINISHED -> SessionsTab.MOBILE_DORMANT
+                        Status.RECORDING -> SessionsTab.MOBILE_ACTIVE
+                        else -> SessionsTab.MOBILE_DORMANT
+                    }
+                }
+            }
+        }
 
     fun copy(): LocalSession {
         return LocalSession(
@@ -342,7 +369,7 @@ class LocalSession(
             }
         }
 
-       return packageNames.distinct().joinToString(", ")
+        return packageNames.distinct().joinToString(", ")
     }
 
     fun measurementsCount(): Int {
