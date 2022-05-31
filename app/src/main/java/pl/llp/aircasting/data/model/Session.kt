@@ -128,7 +128,7 @@ open class Session(
         }.toMutableList()
     }
 
-    protected constructor(extSessionsDBObject: ExtSessionsDBObject) : this(
+    constructor(extSessionsDBObject: ExtSessionsDBObject) : this(
         uuid = extSessionsDBObject.uuid,
         deviceId = null,
         deviceType = null,
@@ -197,6 +197,12 @@ open class Session(
             if (other == null || other !is Location) return false
 
             return latitude == other.latitude && longitude == other.longitude
+        }
+
+        override fun hashCode(): Int {
+            var result = latitude.hashCode()
+            result = 31 * result + longitude.hashCode()
+            return result
         }
     }
 
