@@ -5,7 +5,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
-import java.text.SimpleDateFormat
 import java.util.*
 
 val TAGS_SEPARATOR = " "
@@ -235,12 +234,6 @@ open class LocalSession(
     // TODO: this was changed quite quick to add spanish translation to displayedType, maybe it should be written in cleaner way
     val displayedType
         get() = when (Locale.getDefault().language) {
-            "en" -> {
-                when (type) {
-                    Type.MOBILE -> "mobile"
-                    Type.FIXED -> "fixed"
-                }
-            }
             "es" -> {
                 when (type) {
                     Type.MOBILE -> "móvil"
@@ -359,12 +352,12 @@ open class LocalSession(
         return "${displayedType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}: ${sensorPackageNamesString()}"
     }
 
-    fun sensorPackageNamesString(): String? {
-        val PHONE_MIC_SENSOR_PACKAGE_NAME = "Phone Mic"
+    fun sensorPackageNamesString(): String {
+        val phoneMicSensorPackageName = "Phone Mic"
         val packageNames = mStreams.mapNotNull { s ->
             val name = s.sensorPackageName.split(":", "-").firstOrNull()
             when (name) {
-                MicrophoneDeviceItem.DEFAULT_ID -> PHONE_MIC_SENSOR_PACKAGE_NAME
+                MicrophoneDeviceItem.DEFAULT_ID -> phoneMicSensorPackageName
                 else -> name
             }
         }
@@ -386,11 +379,5 @@ open class LocalSession(
 
     fun lastMeasurement(): Measurement? {
         return streams.first().lastMeasurement()
-    }
-
-    private fun dateTimeFormatter(dateTimeFormat: String): SimpleDateFormat {
-        val formatter = SimpleDateFormat(dateTimeFormat, Locale.getDefault())
-        formatter.timeZone = TimeZone.getDefault()
-        return formatter
     }
 }
