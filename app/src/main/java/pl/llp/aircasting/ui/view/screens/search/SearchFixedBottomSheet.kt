@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
+import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -54,6 +55,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                     DatabaseProvider.get().extSession().insert(
                         ExtSessionsDBObject(
                             selectedSession
+                        )
+                    )
+                    DatabaseProvider.get().measurementStreams().insert(
+                        MeasurementStreamDBObject(
+                            selectedSession.streams.sensor
                         )
                     )
                 }
