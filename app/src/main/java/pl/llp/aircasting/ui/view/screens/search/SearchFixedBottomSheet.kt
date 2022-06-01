@@ -65,6 +65,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                 }
             }.start()
         }
+        // Testing
 
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
