@@ -45,6 +45,7 @@ data class MeasurementStreamDBObject(
 
     constructor(sessionId: Long, measurementStream: MeasurementStream) : this(
         sessionId,
+        null,
         measurementStream.sensorPackageName,
         measurementStream.sensorName,
         measurementStream.measurementType,
@@ -60,6 +61,7 @@ data class MeasurementStreamDBObject(
     )
 
     constructor(sensor: Sensor) : this(
+        null,
         sensor.sessionId.toLong(),
         sensor.sensorPackageName,
         sensor.sensorName,
