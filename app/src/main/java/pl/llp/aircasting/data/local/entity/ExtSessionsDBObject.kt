@@ -2,21 +2,12 @@ package pl.llp.aircasting.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import pl.llp.aircasting.data.api.response.search.Session
 import java.util.*
 
 @Entity(
-    tableName = "ext_sessions",
-    foreignKeys = [
-        ForeignKey(
-            entity = MeasurementStreamDBObject::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("stream_id"),
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+    tableName = "ext_sessions"
 )
 data class ExtSessionsDBObject(
     @PrimaryKey val id: Int,
@@ -30,7 +21,6 @@ data class ExtSessionsDBObject(
     @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "longitude") val longitude: Double,
     @ColumnInfo(name = "is_indoor") val isIndoor: Boolean,
-    @ColumnInfo(name = "stream_id") val streamId: Int,
     @ColumnInfo(name = "followed_at") val followedAt: Date? = null
 ) {
     constructor(apiSession: Session) : this(
@@ -45,6 +35,5 @@ data class ExtSessionsDBObject(
         latitude = apiSession.latitude,
         longitude = apiSession.longitude,
         isIndoor = apiSession.isIndoor,
-        streamId = apiSession.streams.sensor.id
     )
 }
