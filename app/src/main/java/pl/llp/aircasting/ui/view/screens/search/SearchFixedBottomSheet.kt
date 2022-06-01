@@ -9,6 +9,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
@@ -45,7 +46,19 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding?.followBtn?.setOnClickListener { /*onFollowSessionClicked()*/ }
+        // Testing
+        binding?.followBtn?.setOnClickListener { /*onFollowSessionClicked()*/
+            val selectedSession = searchFollowViewModel.selectedSession.value
+            Thread {
+                if (selectedSession != null) {
+                    DatabaseProvider.get().extSession().insert(
+                        ExtSessionsDBObject(
+                            selectedSession
+                        )
+                    )
+                }
+            }.start()
+        }
 
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
