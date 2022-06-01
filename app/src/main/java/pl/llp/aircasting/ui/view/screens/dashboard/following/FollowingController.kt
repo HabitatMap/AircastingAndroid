@@ -48,7 +48,6 @@ class FollowingController(
     }
 
     override fun registerSessionsObserver() {
-        // TODO: Here could be another observer for new sessions, to download them from DB
         mLocalSessionsObserver.observe(mSessionsViewModel.loadFollowingSessionsWithMeasurements())
         mExternalSessionObserver.observe(mSessionsViewModel.loadExternalSessionsWithMeasurements())
     }
