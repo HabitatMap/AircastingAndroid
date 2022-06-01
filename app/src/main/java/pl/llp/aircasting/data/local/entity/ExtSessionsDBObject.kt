@@ -1,8 +1,6 @@
 package pl.llp.aircasting.data.local.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import pl.llp.aircasting.data.api.response.search.Session
 import java.util.*
 
@@ -36,4 +34,28 @@ data class ExtSessionsDBObject(
         longitude = apiSession.longitude,
         isIndoor = apiSession.isIndoor,
     )
+
+}
+class ExternalSessionWithStreamsDBObject {
+    @Embedded
+    lateinit var session: ExtSessionsDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<MeasurementStreamDBObject>
+}
+
+class ExternalSessionWithStreamsAndMeasurementsDBObject {
+    @Embedded
+    lateinit var session: ExtSessionsDBObject
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "session_id",
+        entity = MeasurementStreamDBObject::class
+    )
+    lateinit var streams: List<StreamWithMeasurementsDBObject>
 }
