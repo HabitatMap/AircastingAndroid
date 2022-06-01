@@ -32,3 +32,5 @@ data class ExtSessionsDBObject(
     @ColumnInfo(name = "stream_id") val streamId: Int,
     @ColumnInfo(name = "followed_at") val followedAt: Date? = null
 )
+
+// TODO: Add extension for ExtSessionsDBObject with measurements
