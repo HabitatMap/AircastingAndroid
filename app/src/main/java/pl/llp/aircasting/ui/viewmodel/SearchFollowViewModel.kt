@@ -9,13 +9,16 @@ import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
 import pl.llp.aircasting.data.local.repository.ExtSessionsLocalRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.model.GeoSquare
+import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
     private val activeFixedRepo: ActiveFixedSessionsInRegionRepository,
+    private val measurementsRepository: MeasurementsRepository,
     private val extSessionRepo: ExtSessionsLocalRepository
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<Session>()
@@ -81,4 +84,16 @@ class SearchFollowViewModel @Inject constructor(
             )
             emit(stream)
         }
+
+    fun insertMeasurements(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        measurementsRepository.insertAll(
+            measurementStreamId,
+            sessionId,
+            measurements
+        )
+    }
 }
