@@ -227,8 +227,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onMarkerClick(marker: Marker): Boolean {
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
-        binding.recyclerFixedFollow.scrollToPosition(position)
 
+        binding.recyclerFixedFollow.scrollToPosition(position)
+        adapter.addCardBorder(position)
         return true
     }
 
