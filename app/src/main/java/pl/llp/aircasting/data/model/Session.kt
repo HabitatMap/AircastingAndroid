@@ -141,6 +141,22 @@ open class Session(
         followedAt = extSessionsDBObject.followedAt
     )
 
+    constructor(externalSessionWithStreamsDBObject: ExternalSessionWithStreamsDBObject) : this(
+        externalSessionWithStreamsDBObject.session
+    ) {
+        this.mStreams = externalSessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
+            MeasurementStream(streamWithMeasurementsDBObject)
+        }
+    }
+
+    constructor(externalSessionWithStreamsAndMeasurementsDBObject: ExternalSessionWithStreamsAndMeasurementsDBObject) : this(
+        externalSessionWithStreamsAndMeasurementsDBObject.session
+    ) {
+        this.mStreams = externalSessionWithStreamsAndMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
+            MeasurementStream(streamWithMeasurementsDBObject)
+        }
+    }
+
     companion object {
         fun generateUUID(): String {
             return UUID.randomUUID().toString()
