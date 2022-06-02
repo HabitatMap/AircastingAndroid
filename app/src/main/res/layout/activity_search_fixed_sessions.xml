@@ -83,6 +83,7 @@
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="@string/particulate_matter"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -130,7 +131,7 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/open_aq_chip"
+                android:id="@+id/openAQFirstChip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -145,6 +146,30 @@
                 android:text="@string/purpleair"
                 app:layout_constraintEnd_toStartOf="@id/ozone_chip" />
 
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupThirdLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginTop="@dimen/keyline_5"
+            android:layout_marginEnd="@dimen/keyline_7"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitleSensor"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/openAQSecondChip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/openaq"
+                app:layout_constraintEnd_toEndOf="parent" />
         </com.google.android.material.chip.ChipGroup>
 
         <Button

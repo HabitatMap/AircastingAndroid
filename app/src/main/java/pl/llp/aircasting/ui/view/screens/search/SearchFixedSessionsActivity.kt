@@ -37,7 +37,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
-    private var txtSelectedParameter: String? = null
+    private var txtSelectedParameter: String = ParticulateMatter.AIRBEAM.getMeasurementType()
     private var txtSelectedSensor: String? = null
     private var address: String? = null
 
@@ -53,25 +53,30 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, checkedIds ->
-            txtSelectedParameter = if (chipGroup.checkedChipId == binding.ozoneChip.id) {
-                binding.airbeamChip.gone()
-                binding.purpleAirChip.gone()
-                Ozone.OPEN_AQ.getMeasurementType()
-            } else {
-                binding.airbeamChip.visible()
-                binding.purpleAirChip.visible()
-                ParticulateMatter.AIRBEAM.getMeasurementType()
+        binding.chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
+            if (chipGroup.checkedChipId == binding.ozoneChip.id) binding.apply {
+                chipGroupSecondLevel.gone()
+                chipGroupThirdLevel.visible()
+            } else binding.apply {
+                chipGroupSecondLevel.visible()
+                chipGroupThirdLevel.gone()
             }
         }
-        binding.chipGroupSecondLevel.setOnCheckedStateChangeListener { chipGroup, checkedIds ->
+        binding.chipGroupSecondLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
+            txtSelectedParameter = ParticulateMatter.AIRBEAM.getMeasurementType()
             when (chipGroup.checkedChipId) {
                 binding.airbeamChip.id -> txtSelectedSensor =
                     ParticulateMatter.AIRBEAM.getSensorName()
-                binding.openAqChip.id -> txtSelectedSensor =
+                binding.openAQFirstChip.id -> txtSelectedSensor =
                     ParticulateMatter.OPEN_AQ.getSensorName()
                 binding.purpleAirChip.id -> txtSelectedSensor =
                     ParticulateMatter.PURPLE_AIR.getSensorName()
+            }
+        }
+        binding.chipGroupThirdLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
+            if (chipGroup.checkedChipId == binding.openAQSecondChip.id) {
+                txtSelectedParameter = Ozone.OPEN_AQ.getMeasurementType()
+                txtSelectedSensor = Ozone.OPEN_AQ.getSensorName()
             }
         }
     }
