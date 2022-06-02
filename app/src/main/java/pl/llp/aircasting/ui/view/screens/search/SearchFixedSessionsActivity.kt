@@ -55,14 +55,14 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
         binding.chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
             if (chipGroup.checkedChipId == binding.ozoneChip.id) binding.apply {
-                chipGroupSecondLevel.gone()
-                chipGroupThirdLevel.visible()
+                chipGroupSecondLevelOne.gone()
+                chipGroupSecondLevelTwo.visible()
             } else binding.apply {
-                chipGroupSecondLevel.visible()
-                chipGroupThirdLevel.gone()
+                chipGroupSecondLevelOne.visible()
+                chipGroupSecondLevelTwo.gone()
             }
         }
-        binding.chipGroupSecondLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
+        binding.chipGroupSecondLevelOne.setOnCheckedStateChangeListener { chipGroup, _ ->
             txtSelectedParameter = ParticulateMatter.AIRBEAM.getMeasurementType()
             when (chipGroup.checkedChipId) {
                 binding.airbeamChip.id -> txtSelectedSensor =
@@ -73,7 +73,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                     ParticulateMatter.PURPLE_AIR.getSensorName()
             }
         }
-        binding.chipGroupThirdLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
+        binding.chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
             if (chipGroup.checkedChipId == binding.openAQSecondChip.id) {
                 txtSelectedParameter = Ozone.OPEN_AQ.getMeasurementType()
                 txtSelectedSensor = Ozone.OPEN_AQ.getSensorName()
@@ -132,11 +132,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             })
 
             binding.btnContinue.setOnClickListener {
-                if (lat != null &&
-                    long != null &&
-                    txtSelectedParameter != null &&
-                    txtSelectedSensor != null
-                ) goToSearchResult(
+                if (lat != null && long != null && txtSelectedSensor != null) goToSearchResult(
                     lat.toString(),
                     long.toString()
                 )

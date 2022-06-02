@@ -109,7 +109,7 @@
             app:layout_constraintTop_toBottomOf="@+id/chipGroupFirstLevel" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupSecondLevel"
+            android:id="@+id/chipGroupSecondLevelOne"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_7"
@@ -149,7 +149,7 @@
         </com.google.android.material.chip.ChipGroup>
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupThirdLevel"
+            android:id="@+id/chipGroupSecondLevelTwo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_7"
