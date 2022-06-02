@@ -53,7 +53,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.chipGroupFirst.setOnCheckedStateChangeListener { chipGroup, checkedIds ->
+        binding.chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, checkedIds ->
             txtSelectedParameter = if (chipGroup.checkedChipId == binding.ozoneChip.id) {
                 binding.airbeamChip.gone()
                 binding.purpleAirChip.gone()
@@ -64,7 +64,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 ParticulateMatter.AIRBEAM.getMeasurementType()
             }
         }
-        binding.chipGroupSensors.setOnCheckedStateChangeListener { chipGroup, checkedIds ->
+        binding.chipGroupSecondLevel.setOnCheckedStateChangeListener { chipGroup, checkedIds ->
             when (chipGroup.checkedChipId) {
                 binding.airbeamChip.id -> txtSelectedSensor =
                     ParticulateMatter.AIRBEAM.getSensorName()

@@ -65,7 +65,7 @@
             app:layout_constraintTop_toBottomOf="@+id/layoutContainer" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_first"
+            android:id="@+id/chipGroupFirstLevel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_7"
@@ -105,10 +105,10 @@
             android:text="@string/which_sensor_are_you_interested_in"
             android:textAppearance="@style/TextAppearance.Aircasting.Body1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chip_group_first" />
+            app:layout_constraintTop_toBottomOf="@+id/chipGroupFirstLevel" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupSensors"
+            android:id="@+id/chipGroupSecondLevel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_7"
