@@ -12,7 +12,6 @@ import pl.llp.aircasting.data.local.repository.ExtSessionsLocalRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -25,7 +24,6 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
-    private var mSessionPresenter: SessionPresenter? = null
 
     val selectedSession: LiveData<Session> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
