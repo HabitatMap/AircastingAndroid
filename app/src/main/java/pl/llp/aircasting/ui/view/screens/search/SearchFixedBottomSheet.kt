@@ -47,7 +47,22 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding?.followBtn?.setOnClickListener { /*onFollowSessionClicked()*/ }
+        binding?.followBtn?.setOnClickListener {
+            val selectedSession = searchFollowViewModel.selectedSession.value
+            if (selectedSession != null) onFollowClicked(ExtSessionsDBObject(selectedSession))
+
+            it.context.showToast("Session followed!")
+            it.gone()
+            binding?.unfollowBtn?.visible()
+        }
+        binding?.unfollowBtn?.setOnClickListener {
+            val selectedSession = searchFollowViewModel.selectedSession.value
+            if (selectedSession != null) onUnfollowClicked(ExtSessionsDBObject(selectedSession))
+
+            it.context.showToast("Session Unfollowed!")
+            it.gone()
+            binding?.followBtn?.visible()
+        }
 
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
@@ -102,6 +117,10 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun onFollowClicked(extSession: ExtSessionsDBObject) {
         searchFollowViewModel.onFollowSessionClicked(extSession)
+    }
+
+    private fun onUnfollowClicked(extSession: ExtSessionsDBObject) {
+        searchFollowViewModel.onUnfollowSessionClicked(extSession)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
