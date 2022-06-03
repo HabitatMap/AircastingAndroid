@@ -123,6 +123,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/mapViewBottomSheet" />
 
+                <Button
+                    android:id="@+id/unfollowBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_5"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:text="@string/unfollow_session"
+                    android:backgroundTint="@color/quantum_orange"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mapViewBottomSheet" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
