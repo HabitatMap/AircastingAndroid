@@ -47,25 +47,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        // Testing
-        binding?.followBtn?.setOnClickListener { /*onFollowSessionClicked()*/
-            val selectedSession = searchFollowViewModel.selectedSession.value
-            Thread {
-                if (selectedSession != null) {
-                    DatabaseProvider.get().extSession().insert(
-                        ExtSessionsDBObject(
-                            selectedSession
-                        )
-                    )
-                    DatabaseProvider.get().measurementStreams().insert(
-                        MeasurementStreamDBObject(
-                            selectedSession.streams.sensor
-                        )
-                    )
-                }
-            }.start()
-        }
-        // Testing
+        binding?.followBtn?.setOnClickListener { /*onFollowSessionClicked()*/ }
 
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
