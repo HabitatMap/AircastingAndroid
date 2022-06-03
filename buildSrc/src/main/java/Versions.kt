@@ -43,8 +43,4 @@ object Versions {
     const val androidBle = "2.2.4"
 
     const val mpAndroidChart = "v3.1.0"
-
-    // Tests
-    const val junit = "4.13.2"
-    const val mockitoVersion = "4.0.0"
 }
