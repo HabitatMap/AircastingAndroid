@@ -6,10 +6,10 @@ import org.apache.commons.lang3.time.DateUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.Constants
-import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.api.repository.MeasurementsRepository
-import pl.llp.aircasting.data.api.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
 import pl.llp.aircasting.data.local.DatabaseProvider

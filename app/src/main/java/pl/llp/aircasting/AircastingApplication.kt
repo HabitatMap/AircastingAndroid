@@ -8,12 +8,14 @@ import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 import pl.llp.aircasting.di.AppComponent
 import pl.llp.aircasting.di.DaggerAppComponent
 import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.util.Settings
 
 class AircastingApplication : Application() {
     lateinit var appComponent: AppComponent
     lateinit var permissionsModule: PermissionsModule
+    lateinit var databaseModule: DatabaseModule
     private var mSettings: Settings? = null
 
     override fun onCreate() {
@@ -27,10 +29,12 @@ class AircastingApplication : Application() {
         ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         permissionsModule = PermissionsModule()
+        databaseModule = DatabaseModule()
 
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .permissionsModule(permissionsModule)
+            .databaseModule(databaseModule)
             .build()
         appComponent.inject(this)
 

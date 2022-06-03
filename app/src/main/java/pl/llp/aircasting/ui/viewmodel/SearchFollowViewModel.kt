@@ -3,20 +3,23 @@ package pl.llp.aircasting.ui.viewmodel
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
-import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
+import pl.llp.aircasting.data.local.repository.ExtSessionsLocalRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.model.GeoSquare
+import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
     private val activeFixedRepo: ActiveFixedSessionsInRegionRepository,
-    private val mApp: AircastingApplication
+    private val measurementsRepository: MeasurementsRepository,
+    private val extSessionRepo: ExtSessionsLocalRepository
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<Session>()
     private val mutableLat = MutableLiveData<Double>()
@@ -45,9 +48,15 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSession() = viewModelScope.launch(Dispatchers.IO) {
-        //
-    }
+    fun onFollowSessionClicked(extSession: ExtSessionsDBObject) =
+        viewModelScope.launch(Dispatchers.IO) {
+            extSessionRepo.insert(extSession)
+        }
+
+    fun onUnfollowSessionClicked(extSession: ExtSessionsDBObject) =
+        viewModelScope.launch(Dispatchers.IO) {
+            extSessionRepo.deleteFollowedSession(extSession)
+        }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
         liveData(Dispatchers.IO) {
@@ -75,4 +84,16 @@ class SearchFollowViewModel @Inject constructor(
             )
             emit(stream)
         }
+
+    fun insertMeasurements(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        measurementsRepository.insertAll(
+            measurementStreamId,
+            sessionId,
+            measurements
+        )
+    }
 }

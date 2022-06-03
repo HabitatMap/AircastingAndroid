@@ -9,7 +9,7 @@ data class StreamOfGivenSessionResponse(
     val longitude: Double,
     val maxLatitude: Double,
     val maxLongitude: Double,
-    val measurements: List<Measurement>,
+    val measurements: List<MeasurementResponse>,
     val minLatitude: Double,
     val minLongitude: Double,
     val notes: List<Any>,

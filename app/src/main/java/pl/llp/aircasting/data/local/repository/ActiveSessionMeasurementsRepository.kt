@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.api.repository
+package pl.llp.aircasting.data.local.repository
 
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.api.Constants

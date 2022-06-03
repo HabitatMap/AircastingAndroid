@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.view.*
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab

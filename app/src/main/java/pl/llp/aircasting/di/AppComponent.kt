@@ -30,6 +30,7 @@ import javax.inject.Singleton
     modules = [
         AppModule::class,
         ApiModule::class,
+        DatabaseModule::class,
         NetworkModule::class,
         SettingsModule::class,
         PermissionsModule::class,

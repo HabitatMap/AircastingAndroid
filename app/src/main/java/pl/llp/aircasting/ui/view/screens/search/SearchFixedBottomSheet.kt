@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -10,6 +9,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
+import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -33,37 +35,76 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun setup() {
         super.setup()
         binding = contentView?.let { SearchFollowBottomSheetBinding.bind(it) }
-
-
         binding?.model = searchFollowViewModel
+
         setupUI()
         getLatlngObserver()
         observeLastMeasurementsValue()
+    }
+
+    private fun setupUI() {
+        mapFragment =
+            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+
+        // Testing
+        binding?.followBtn?.setOnClickListener { /*onFollowSessionClicked()*/
+            val selectedSession = searchFollowViewModel.selectedSession.value
+            Thread {
+                if (selectedSession != null) {
+                    DatabaseProvider.get().extSession().insert(
+                        ExtSessionsDBObject(
+                            selectedSession
+                        )
+                    )
+                    DatabaseProvider.get().measurementStreams().insert(
+                        MeasurementStreamDBObject(
+                            selectedSession.streams.sensor
+                        )
+                    )
+                }
+            }.start()
+        }
+        // Testing
+
+        val loaderImage =
+            binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
+        loader = AnimatedLoader(loaderImage)
+    }
+
+    private fun getLatlngObserver() {
+        searchFollowViewModel.apply {
+            myLat.observe(requireActivity()) {
+                txtLat = it
+            }
+            myLng.observe(requireActivity()) {
+                txtLng = it
+            }
+        }
     }
 
     private fun observeLastMeasurementsValue() {
         val sessionId = searchFollowViewModel.selectedSession.value?.id?.toLong()
         val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
-            searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName).observe(this) {
-                when (it.status) {
-                    Status.SUCCESS -> {
-                        loader.stop()
+            searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName)
+                .observe(this) {
+                    when (it.status) {
+                        Status.SUCCESS -> {
+                            val value = it.data?.lastMeasurementValue ?: 0.0
+                            binding?.lastMeasurement = value.roundToInt().toString()
 
-                        val value = it.data?.lastMeasurementValue ?: 0.0
-                        binding?.lastMeasurement = value.roundToInt().toString()
+                            setThresholdColour(value)
+                            loader.stop()
+                        }
+                        Status.LOADING -> loader.start()
 
-                        setThresholdColour(value)
-                    }
-                    Status.LOADING -> {
-                        loader.start()
-                    }
-                    Status.ERROR -> {
-                        loader.stop()
-                        context?.showToast(it.message.toString())
+                        Status.ERROR -> {
+                            loader.stop()
+                            context?.showToast(it.message.toString())
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -77,34 +118,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
     }
 
-    private fun setupUI() {
-        mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
-
-        binding?.followBtn?.setOnClickListener { onFollowClicked() }
-
-        val loaderImage = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
-        loader = AnimatedLoader(loaderImage)
-    }
-
-    /** TODO: using the old implementation is not recommended!
-     * The followed sessions are being shown on the following tab from the DB all the time. This causes lots of memory waste for doing DB operations.
-     * We may have to change the way the followed sessions are being shown on the following tab after using MVVM.
-     * */
-    private fun onFollowClicked() {
-        searchFollowViewModel.onFollowSession()
-    }
-
-    private fun getLatlngObserver() {
-        searchFollowViewModel.apply {
-            myLat.observe(requireActivity()) {
-                txtLat = it
-            }
-            myLng.observe(requireActivity()) {
-                txtLng = it
-            }
-        }
+    private fun onFollowClicked(extSession: ExtSessionsDBObject) {
+        searchFollowViewModel.onFollowSessionClicked(extSession)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

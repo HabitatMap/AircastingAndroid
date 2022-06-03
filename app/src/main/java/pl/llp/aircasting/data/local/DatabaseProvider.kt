@@ -14,7 +14,7 @@ import pl.llp.aircasting.util.converters.*
 
 @Database(
     entities = [SessionDBObject::class,
-        ExtSessionDBObject::class,
+        ExtSessionsDBObject::class,
         MeasurementStreamDBObject::class,
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
@@ -72,7 +72,8 @@ class DatabaseProvider {
                         MIGRATION_25_26,
                         MIGRATION_26_27,
                         MIGRATION_27_28,
-                        MIGRATION_28_29
+                        MIGRATION_28_29,
+                        MIGRATION_30_31,
                     )
                     .build()
             }

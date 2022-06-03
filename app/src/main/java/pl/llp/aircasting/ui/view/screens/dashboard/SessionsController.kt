@@ -7,8 +7,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.api.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.MeasurementStream
