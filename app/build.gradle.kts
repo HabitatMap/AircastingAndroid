@@ -46,7 +46,7 @@ android {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             manifestPlaceholders["crashlyticsCollectionEnabled"] = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
