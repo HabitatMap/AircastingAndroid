@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.login
 
 import pl.llp.aircasting.data.api.response.UserResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.util.ResponseHandler
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.InternalAPIError
@@ -25,16 +26,20 @@ class LoginService(
 
         call.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                when {
-                    response.isSuccessful -> {
-                        val body = response.body()
-                        body?.let {
-                            mSettings.login(body.email, body.authentication_token)
+                try {
+                    when {
+                        response.isSuccessful -> {
+                            val body = response.body()
+                            body?.let {
+                                mSettings.login(body.email, body.authentication_token)
+                            }
+                            successCallback()
                         }
-                        successCallback()
+                        response.code() == 401 -> errorCallback()
+                        else -> mErrorHandler.handleAndDisplay(InternalAPIError())
                     }
-                    response.code() == 401 -> errorCallback()
-                    else -> mErrorHandler.handleAndDisplay(InternalAPIError())
+                } catch (e: Exception) {
+                   mErrorHandler.handleAndDisplay(InternalAPIError())
                 }
             }
 
