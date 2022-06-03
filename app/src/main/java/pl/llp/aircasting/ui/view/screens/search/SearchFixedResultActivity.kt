@@ -48,6 +48,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private val options = MarkerOptions()
     private var txtParameter: String? = null
     private var txtSensor: String? = null
+    private var address: String? = null
     private var lat: String? = null
     private var lng: String? = null
 
@@ -76,6 +77,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         lng = intent.getStringExtra("long")
         txtParameter = intent.getStringExtra("txtParameter")
         txtSensor = intent.getStringExtra("txtSensor")
+        address = intent.getStringExtra("address")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
@@ -88,12 +90,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun setupSearchLayout() {
         val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
+            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
 
         autocompleteFragment?.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    setText(intent.getStringExtra("address"))
+                    setText(address)
                     textSize = 15.0f
                     setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
                 }
@@ -227,8 +229,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onMarkerClick(marker: Marker): Boolean {
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
-        binding.recyclerFixedFollow.scrollToPosition(position)
 
+        binding.recyclerFixedFollow.scrollToPosition(position)
+        adapter.addCardBorder(position)
         return true
     }
 
