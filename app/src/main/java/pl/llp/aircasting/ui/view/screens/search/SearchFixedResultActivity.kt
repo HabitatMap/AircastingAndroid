@@ -31,7 +31,7 @@ import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -206,12 +206,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val north = mMap.projection.visibleRegion.farLeft.latitude
-        val west = mMap.projection.visibleRegion.farLeft.longitude
-        val south = mMap.projection.visibleRegion.nearRight.latitude
-        val east = mMap.projection.visibleRegion.nearRight.longitude
-        getMapVisibleArea(north, south, east, west)
-
         styleGoogleMap(mMap, this)
 
         val selectedLat = lat?.toDouble()
@@ -224,6 +218,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
+        mMap.setOnCameraIdleListener(this)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -237,6 +232,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onCameraMoveStarted(p0: Int) {
         binding.btnRedo.visible()
+    }
+
+    override fun onCameraIdle() {
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
+        getMapVisibleArea(north, south, east, west)
     }
 
     override fun onSupportNavigateUp(): Boolean {
