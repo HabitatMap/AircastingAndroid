@@ -129,7 +129,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                         }
                         binding.txtSessions.text =
                             getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
-                        renderData(sessions)
+                        refreshAdapterDataSet(sessions)
                     }
                 }
                 Status.ERROR -> {
@@ -141,8 +141,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun renderData(mySessions: List<Session>) {
-        adapter.addData(mySessions)
+    private fun refreshAdapterDataSet(mySessions: List<Session>) {
+        adapter.refresh(mySessions)
         adapter.notifyDataSetChanged()
     }
 
