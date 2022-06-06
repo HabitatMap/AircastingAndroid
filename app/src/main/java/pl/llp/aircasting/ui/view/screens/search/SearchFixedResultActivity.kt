@@ -147,12 +147,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun resetTheSearch() {
-        val selectedLat = lat?.toDouble()
-        val selectedLng = lng?.toDouble()
-        if (selectedLat != null && selectedLng != null) {
-            val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
-        }
+        searchSessionsInMapArea()
+
         binding.btnRedo.gone()
     }
 
@@ -227,7 +223,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
-        mMap.setOnCameraIdleListener(this)
+
+        searchSessionsInMapArea()
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
