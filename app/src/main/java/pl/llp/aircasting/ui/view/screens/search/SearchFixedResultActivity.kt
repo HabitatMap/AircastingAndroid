@@ -109,7 +109,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         binding.recyclerFixedFollow.adapter = adapter
     }
 
-    private fun setupObserver(square: GeoSquare, sensorInfo: SensorInformation) {
+    private fun setupObserverForApiCallWithCoordinatesAndSensor(
+        square: GeoSquare,
+        sensorInfo: SensorInformation
+    ) {
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -158,7 +161,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val south = mMap.projection.visibleRegion.nearRight.latitude
         val east = mMap.projection.visibleRegion.nearRight.longitude
 
-        getMapVisibleArea(north, south, east, west)
+        val square = GeoSquare(north, south, east, west)
+        val sensorInfo = getSensorInfo()
+
+        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
     private fun showBottomSheetDialog(session: Session) {
@@ -175,17 +181,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun getMapVisibleArea(north: Double, south: Double, east: Double, west: Double) {
-        val square = GeoSquare(north, south, east, west)
-        var sensorInfo: SensorInformation? = null
-
-        when (txtSensor) {
-            "airbeam2-pm2.5" -> sensorInfo = ParticulateMatter.AIRBEAM
-            "openaq-pm2.5" -> sensorInfo = ParticulateMatter.OPEN_AQ
-            "purpleair-pm2.5" -> sensorInfo = ParticulateMatter.PURPLE_AIR
-            "openaq-o3" -> sensorInfo = Ozone.OPEN_AQ
+    private fun getSensorInfo(): SensorInformation {
+        return when (txtSensor) {
+            "airbeam2-pm2.5" -> ParticulateMatter.AIRBEAM
+            "openaq-pm2.5" -> ParticulateMatter.OPEN_AQ
+            "purpleair-pm2.5" -> ParticulateMatter.PURPLE_AIR
+            "openaq-o3" -> Ozone.OPEN_AQ
+            else -> ParticulateMatter.AIRBEAM
         }
-        sensorInfo?.let { setupObserver(square, it) }
     }
 
     private fun createMarkers(lat: Double, lng: Double, uuid: String): Marker? {
