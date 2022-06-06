@@ -31,7 +31,7 @@ import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -232,14 +232,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onCameraMoveStarted(p0: Int) {
         binding.btnRedo.visible()
-    }
-
-    override fun onCameraIdle() {
-        val north = mMap.projection.visibleRegion.farLeft.latitude
-        val west = mMap.projection.visibleRegion.farLeft.longitude
-        val south = mMap.projection.visibleRegion.nearRight.latitude
-        val east = mMap.projection.visibleRegion.nearRight.longitude
-        getMapVisibleArea(north, south, east, west)
     }
 
     override fun onSupportNavigateUp(): Boolean {
