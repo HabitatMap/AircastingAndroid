@@ -121,12 +121,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                         val sessions = data.sessions
                         val count = data.fetchableSessionsCount
 
-                        for (i in sessions.indices) {
-                            val getLats = sessions[i].latitude
-                            val getLngs = sessions[i].longitude
-                            val uuid = sessions[i].uuid
-                            createMarkers(getLats, getLngs, uuid)
-                        }
+                        setupMapMarkers(sessions)
                         binding.txtSessions.text =
                             getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
                         refreshAdapterDataSet(sessions)
@@ -138,6 +133,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 }
                 Status.LOADING -> binding.progressBar.visible()
             }
+        }
+    }
+
+    private fun setupMapMarkers(sessions: List<Session>) {
+        for (i in sessions.indices) {
+            val getLats = sessions[i].latitude
+            val getLngs = sessions[i].longitude
+            val uuid = sessions[i].uuid
+            drawMarkerOnMap(getLats, getLngs, uuid)
         }
     }
 
@@ -183,7 +187,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         sensorInfo?.let { setupObserver(square, it) }
     }
 
-    private fun createMarkers(lat: Double, lng: Double, uuid: String): Marker? {
+    private fun drawMarkerOnMap(lat: Double, lng: Double, uuid: String): Marker? {
         return mMap.addMarker(
             options
                 .position(LatLng(lat, lng))
