@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.Session
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -113,19 +114,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.apply {
-                        progressBar.inVisible()
-                        txtSessions.visible()
-                    }
-                    it.data?.let { data ->
-                        val sessions = data.sessions
-                        val count = data.fetchableSessionsCount
-
-                        setupMapMarkers(sessions)
-                        binding.txtSessions.text =
-                            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
-                        refreshAdapterDataSet(sessions)
-                    }
+                    updateUI(it)
                 }
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
@@ -134,6 +123,28 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 Status.LOADING -> binding.progressBar.visible()
             }
         }
+    }
+
+    private fun updateUI(it: Resource<SessionsInRegionsRes>) {
+        binding.apply {
+            progressBar.inVisible()
+            txtShowingSessionsNumber.visible()
+        }
+        it.data?.let { data ->
+            val sessions = data.sessions
+            val count = data.fetchableSessionsCount
+
+            setupMapMarkers(sessions)
+
+            updateText(count)
+
+            refreshAdapterDataSet(sessions)
+        }
+    }
+
+    private fun updateText(count: Int) {
+        binding.txtShowingSessionsNumber.text =
+            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
     }
 
     private fun setupMapMarkers(sessions: List<Session>) {
