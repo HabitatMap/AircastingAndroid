@@ -151,7 +151,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val selectedLng = lng?.toDouble()
         if (selectedLat != null && selectedLng != null) {
             val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 8f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
         }
         binding.btnRedo.gone()
     }

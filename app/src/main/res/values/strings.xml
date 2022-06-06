@@ -494,7 +494,7 @@
     <string name="finished">Finished</string>
     <string name="showing_results_for" translatable="false">Results for:</string>
     <string name="which_sensor_are_you_interested_in" translatable="false">Which sensor are you interested in?</string>
-    <string name="airbeam" translatable="false">Airbeam</string>
+    <string name="airbeam" translatable="false">AirBeam</string>
     <string name="openaq" translatable="false">OpenAQ</string>
     <string name="purpleair" translatable="false">PurpleAir</string>
     <string name="using_txt">using:</string>
