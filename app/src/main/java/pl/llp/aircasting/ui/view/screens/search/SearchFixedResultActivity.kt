@@ -156,6 +156,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         binding.btnRedo.gone()
     }
 
+    private fun searchSessionsInMapArea() {
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
+
+        getMapVisibleArea(north, south, east, west)
+    }
+
     private fun showBottomSheetDialog(session: Session) {
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
