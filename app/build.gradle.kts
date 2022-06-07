@@ -41,16 +41,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             manifestPlaceholders["crashlyticsCollectionEnabled"] = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -58,12 +54,6 @@ android {
             )
         }
     }
-
-    lint {
-        abortOnError = false
-    }
-
-    buildFeatures.dataBinding = true
 
     sourceSets {
         this.getByName("main") {
@@ -76,6 +66,10 @@ android {
             this.java.srcDir("src/test/res")
         }
     }
+    
+    kotlinOptions.jvmTarget = "1.8"
+    lint.abortOnError = false
+    buildFeatures.dataBinding = true
 }
 
 dependencies {

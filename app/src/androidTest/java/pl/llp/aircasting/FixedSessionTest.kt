@@ -12,9 +12,9 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.api.repository.MeasurementsRepository
-import pl.llp.aircasting.data.api.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.di.mocks.FakeFixedSessionDetailsController
 import pl.llp.aircasting.helpers.*

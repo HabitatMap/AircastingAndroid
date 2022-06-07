@@ -1,12 +1,12 @@
 package pl.llp.aircasting.data.model
 
 import com.google.common.collect.Lists
-import pl.llp.aircasting.data.api.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithLastMeasurementsDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithMeasurementsDBObject
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
@@ -27,7 +27,7 @@ open class MeasurementStream(
     private var mMeasurements: List<Measurement> = listOf()
 
 ) {
-    constructor(measurementEvent: NewMeasurementEvent): this(
+    constructor(measurementEvent: NewMeasurementEvent) : this(
         measurementEvent.packageName,
         measurementEvent.sensorName,
         measurementEvent.measurementType,
@@ -42,7 +42,7 @@ open class MeasurementStream(
         false
     )
 
-    constructor(streamDbObject: MeasurementStreamDBObject): this(
+    constructor(streamDbObject: MeasurementStreamDBObject) : this(
         streamDbObject.sensorPackageName,
         streamDbObject.sensorName,
         streamDbObject.measurementType,
@@ -57,21 +57,23 @@ open class MeasurementStream(
         streamDbObject.deleted
     )
 
-    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject):
+    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject) :
             this(streamWithMeasurementsDBObject.stream) {
-        this.mMeasurements = streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
-            Measurement(measurementDBObject)
-        }
+        this.mMeasurements =
+            streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
+                Measurement(measurementDBObject)
+            }
     }
 
-    constructor(streamWithLastMeasurementsDBObject: StreamWithLastMeasurementsDBObject):
+    constructor(streamWithLastMeasurementsDBObject: StreamWithLastMeasurementsDBObject) :
             this(streamWithLastMeasurementsDBObject.stream) {
-        this.mMeasurements = streamWithLastMeasurementsDBObject.measurements.map { measurementDBObject ->
-            Measurement(measurementDBObject)
-        }.sortedWith(compareBy { it.time })
+        this.mMeasurements =
+            streamWithLastMeasurementsDBObject.measurements.map { measurementDBObject ->
+                Measurement(measurementDBObject)
+            }.sortedWith(compareBy { it.time })
     }
 
-    constructor(sessionStreamResponse: SessionStreamResponse): this(
+    constructor(sessionStreamResponse: SessionStreamResponse) : this(
         sessionStreamResponse.sensor_package_name,
         sessionStreamResponse.sensor_name,
         sessionStreamResponse.measurement_type,
@@ -88,10 +90,11 @@ open class MeasurementStream(
 
     constructor(
         sessionStreamWithMeasurementsResponse: SessionStreamWithMeasurementsResponse
-    ): this(sessionStreamWithMeasurementsResponse as SessionStreamResponse) {
-        this.mMeasurements = sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
-            Measurement(measurementResponse)
-        }
+    ) : this(sessionStreamWithMeasurementsResponse as SessionStreamResponse) {
+        this.mMeasurements =
+            sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
+                Measurement(measurementResponse)
+            }
     }
 
     var detailedType: String?
@@ -104,7 +107,7 @@ open class MeasurementStream(
     companion object {
         private const val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
     }
-    
+
     enum class AirBeamSensorName(val detailedType: String) {
         F("F"),
         PM("PM"),
@@ -114,7 +117,8 @@ open class MeasurementStream(
         RH("RH");
 
         companion object {
-            fun fromString(detailedType: String?) = values().firstOrNull { it.detailedType == detailedType }
+            fun fromString(detailedType: String?) =
+                values().firstOrNull { it.detailedType == detailedType }
         }
     }
 
@@ -129,7 +133,7 @@ open class MeasurementStream(
             0
         }
     }
-    
+
     private fun buildDetailedType(): String? {
         return when (sensorPackageName) {
             MicrophoneDeviceItem.DEFAULT_ID -> MicrophoneDeviceItem.DETAILED_TYPE
@@ -166,7 +170,7 @@ open class MeasurementStream(
     }
 
     fun getMeasurementsForTimeSpan(timeSpan: ClosedRange<Date>): List<Measurement> {
-        return measurements.filter { it.time in timeSpan}
+        return measurements.filter { it.time in timeSpan }
     }
 
     fun getLastMeasurements(amount: Int = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER): MutableList<Measurement> {
@@ -184,7 +188,7 @@ open class MeasurementStream(
     }
 
     fun getAvgMeasurement(): Double? {
-        if(measurements.isEmpty()) return null
+        if (measurements.isEmpty()) return null
         return calculateSum() / measurements.size
     }
 
@@ -207,7 +211,8 @@ open class MeasurementStream(
     }
 
     fun lastMeasurementsByAveragingFrequency(amount: Int, threshold: Int): List<Measurement> {
-        val filteredMeasurements = measurements.filter { measurement ->  measurement.averagingFrequency == threshold}
+        val filteredMeasurements =
+            measurements.filter { measurement -> measurement.averagingFrequency == threshold }
         val measurementsSize = filteredMeasurements.size
 
         if (amount >= measurementsSize) return filteredMeasurements
@@ -225,5 +230,23 @@ open class MeasurementStream(
 
     fun isDetailedTypeCelsius(): Boolean {
         return detailedType == "C"
+    }
+
+    override fun hashCode(): Int {
+        var result = sensorPackageName.hashCode()
+        result = 31 * result + sensorName.hashCode()
+        result = 31 * result + measurementType.hashCode()
+        result = 31 * result + measurementShortType.hashCode()
+        result = 31 * result + unitName.hashCode()
+        result = 31 * result + unitSymbol.hashCode()
+        result = 31 * result + thresholdVeryLow
+        result = 31 * result + thresholdLow
+        result = 31 * result + thresholdMedium
+        result = 31 * result + thresholdHigh
+        result = 31 * result + thresholdVeryHigh
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + mMeasurements.hashCode()
+        result = 31 * result + (detailedType?.hashCode() ?: 0)
+        return result
     }
 }

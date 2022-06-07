@@ -1,9 +1,9 @@
 package pl.llp.aircasting.util.helpers.services
 
 import android.util.Log
-import pl.llp.aircasting.data.api.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.api.repository.MeasurementsRepository
-import pl.llp.aircasting.data.api.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.model.Measurement

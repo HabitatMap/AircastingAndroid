@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.api.repository
+package pl.llp.aircasting.data.local.repository
 
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject

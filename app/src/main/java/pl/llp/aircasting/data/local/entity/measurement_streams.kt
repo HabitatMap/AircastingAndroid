@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.entity
 
 import androidx.room.*
+import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.model.MeasurementStream
 
 @Entity(
@@ -11,6 +12,12 @@ import pl.llp.aircasting.data.model.MeasurementStream
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("session_id"),
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ExtSessionsDBObject::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("session_id"),
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
@@ -18,7 +25,8 @@ import pl.llp.aircasting.data.model.MeasurementStream
     ]
 )
 data class MeasurementStreamDBObject(
-    @ColumnInfo(name = "session_id") val sessionId: Long,
+    @ColumnInfo(name = "session_id") val sessionId: Long?,
+    @ColumnInfo(name = "external_session_id") val externalSessionId: Long?,
     @ColumnInfo(name = "sensor_package_name") val sensorPackageName: String,
     @ColumnInfo(name = "sensor_name") val sensorName: String,
     @ColumnInfo(name = "measurement_type") val measurementType: String,
@@ -37,6 +45,7 @@ data class MeasurementStreamDBObject(
 
     constructor(sessionId: Long, measurementStream: MeasurementStream) : this(
         sessionId,
+        null,
         measurementStream.sensorPackageName,
         measurementStream.sensorName,
         measurementStream.measurementType,
@@ -49,5 +58,22 @@ data class MeasurementStreamDBObject(
         measurementStream.thresholdHigh,
         measurementStream.thresholdVeryHigh,
         measurementStream.deleted
+    )
+
+    constructor(sensor: Sensor) : this(
+        null,
+        sensor.sessionId.toLong(),
+        sensor.sensorPackageName,
+        sensor.sensorName,
+        sensor.measurementType,
+        sensor.measurementShortType,
+        sensor.unitName,
+        sensor.unitSymbol,
+        sensor.thresholdVeryLow,
+        sensor.thresholdLow,
+        sensor.thresholdMedium,
+        sensor.thresholdHigh,
+        sensor.thresholdVeryHigh,
+        false
     )
 }
