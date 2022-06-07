@@ -27,7 +27,9 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
                 setOnClickListener { onItemClicked(bindingAdapterPosition) }
                 cardView = this
 
-                if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setBackgroundWithoutBorder(cardView)
+                if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setBackgroundWithoutBorder(
+                    cardView
+                )
             }
         }
     }
@@ -54,6 +56,10 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
     fun refresh(list: List<Session>) {
         sessions.clear()
         sessions.addAll(list)
+    }
+
+    fun clearAdapter() {
+        sessions.clear()
     }
 
     fun getSessionPositionBasedOnId(uid: String): Int {
