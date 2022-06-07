@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +16,15 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.*
+import okhttp3.Address
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
@@ -42,6 +49,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
+    private var placesClient: PlacesClient? = null
     private lateinit var mMap: GoogleMap
 
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
@@ -63,6 +71,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
+        setupAutoComplete()
         passLatLng()
     }
 
@@ -105,6 +114,54 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
+    private fun setupAutoComplete() {
+        if (!Places.isInitialized()) Places.initialize(
+            applicationContext,
+            BuildConfig.PLACES_API_KEY
+        )
+        placesClient = Places.createClient(this)
+
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
+
+        autocompleteFragment?.apply {
+            view?.apply {
+                findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
+                    setText(getString(R.string.search_session_query_hint))
+                    textSize = 15.0f
+                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                }
+                findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
+            }
+
+            setPlaceFields(
+                listOf(
+                    Place.Field.ID,
+                    Place.Field.ADDRESS,
+                    Place.Field.LAT_LNG
+                )
+            )
+
+            val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
+            setOnPlaceSelectedListener(object : PlaceSelectionListener {
+                override fun onPlaceSelected(place: Place) {
+                    address = place.address?.toString()
+                    val  lat = "${place.latLng?.latitude}"
+                    val long = "${place.latLng?.longitude}"
+
+                    if (address != null) {
+                        etPlace.hint = address
+                        secondSearchSetup(address, lat, long)
+                    }
+                }
+
+                override fun onError(status: com.google.android.gms.common.api.Status) {
+                    Log.d("onError", status.statusMessage.toString())
+                }
+            })
+        }
+    }
+
     private fun setupRecyclerView() {
         adapter = FixedFollowAdapter(this::showBottomSheetDialog)
         binding.recyclerFixedFollow.adapter = adapter
@@ -116,9 +173,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     ) {
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
-                Status.SUCCESS -> {
-                    updateUI(it)
-                }
+                Status.SUCCESS -> updateUI(it)
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
                     showToast(it.message.toString())
@@ -214,6 +269,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 .snippet(uuid)
                 .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
         )
+    }
+
+    private fun secondSearchSetup(address: String?, lat: String, long: String) {
+        mMap.clear()
+        adapter.clearAdapter()
+        searchSessionsInMapArea()
+
+        //todo
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
