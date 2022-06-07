@@ -38,7 +38,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = ParticulateMatter.AIRBEAM.getMeasurementType()
-    private var txtSelectedSensor: String? = null
+    private var txtSelectedSensor: String = ParticulateMatter.OPEN_AQ.getSensorName()
     private var address: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,13 +64,11 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         }
         binding.chipGroupSecondLevelOne.setOnCheckedStateChangeListener { chipGroup, _ ->
             txtSelectedParameter = ParticulateMatter.AIRBEAM.getMeasurementType()
-            when (chipGroup.checkedChipId) {
-                binding.airbeamChip.id -> txtSelectedSensor =
-                    ParticulateMatter.AIRBEAM.getSensorName()
-                binding.openAQFirstChip.id -> txtSelectedSensor =
-                    ParticulateMatter.OPEN_AQ.getSensorName()
-                binding.purpleAirChip.id -> txtSelectedSensor =
-                    ParticulateMatter.PURPLE_AIR.getSensorName()
+            txtSelectedSensor = when (chipGroup.checkedChipId) {
+                binding.airbeamChip.id -> ParticulateMatter.AIRBEAM.getSensorName()
+                binding.openAQFirstChip.id -> ParticulateMatter.OPEN_AQ.getSensorName()
+                binding.purpleAirChip.id -> ParticulateMatter.PURPLE_AIR.getSensorName()
+                else -> ParticulateMatter.OPEN_AQ.getSensorName()
             }
         }
         binding.chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
