@@ -6,6 +6,6 @@ object AppConfig {
     const val versionName = "2.0.49"
     const val buildToolsVersion = "30.0.3"
 
-    const val androidTestInstrumentation = "androidx.test.runner.AndroidJUnitRunner"
+    const val androidTestInstrumentation = "pl.llp.aircasting.helpers.EspressoRunner"
     const val proguardConsumerRules = "consumer-rules.pro"
 }
