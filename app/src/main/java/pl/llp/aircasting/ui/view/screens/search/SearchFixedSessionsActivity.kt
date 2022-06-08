@@ -80,11 +80,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     }
 
     private fun setupAutoComplete() {
-        if (!Places.isInitialized()) Places.initialize(
-            applicationContext,
-            BuildConfig.PLACES_API_KEY
-        )
-        placesClient = Places.createClient(this)
+        initialisePlacesClient()
 
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
@@ -136,6 +132,14 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun initialisePlacesClient() {
+        if (!Places.isInitialized()) Places.initialize(
+            applicationContext,
+            BuildConfig.PLACES_API_KEY
+        )
+        placesClient = Places.createClient(this)
     }
 
     private fun goToSearchResult(lat: String, long: String) {
