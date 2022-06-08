@@ -22,6 +22,7 @@ import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.util.gone
+import pl.llp.aircasting.util.initializePlacesApi
 import pl.llp.aircasting.util.visible
 
 class SearchFixedSessionsActivity : AppCompatActivity() {
@@ -135,10 +136,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     }
 
     private fun initialisePlacesClient() {
-        if (!Places.isInitialized()) Places.initialize(
-            applicationContext,
-            BuildConfig.PLACES_API_KEY
-        )
+        initializePlacesApi(this)
         placesClient = Places.createClient(this)
     }
 
