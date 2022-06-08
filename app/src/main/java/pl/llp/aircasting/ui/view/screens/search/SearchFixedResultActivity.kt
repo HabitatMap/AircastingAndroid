@@ -90,7 +90,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         address = intent.getStringExtra("address")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
-        binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
+        binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
 
@@ -250,6 +250,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             "purpleair-pm2.5" -> ParticulateMatter.PURPLE_AIR
             "openaq-o3" -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM
+        }
+    }
+
+    private fun getSensor(): String {
+        return when (txtSensor) {
+            "airbeam2-pm2.5" -> "AirBeam"
+            "openaq-pm2.5" -> "OpenAQ"
+            "purpleair-pm2.5" -> "PurpleAir"
+            "openaq-o3" -> "Ozone"
+            else -> "AirBeam"
         }
     }
 
