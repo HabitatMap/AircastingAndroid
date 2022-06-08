@@ -114,11 +114,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupAutoComplete() {
-        if (!Places.isInitialized()) Places.initialize(
-            applicationContext,
-            BuildConfig.PLACES_API_KEY
-        )
-        placesClient = Places.createClient(this)
+        initialisePlacesClient()
 
         autocompleteFragment.apply {
 
@@ -148,6 +144,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 }
             })
         }
+    }
+
+    private fun initialisePlacesClient() {
+        if (!Places.isInitialized()) Places.initialize(
+            applicationContext,
+            BuildConfig.PLACES_API_KEY
+        )
+        placesClient = Places.createClient(this)
     }
 
     private fun setupRecyclerView() {
