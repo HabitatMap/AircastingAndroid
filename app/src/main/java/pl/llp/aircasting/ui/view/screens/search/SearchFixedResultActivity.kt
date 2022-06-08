@@ -99,7 +99,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupSearchLayout() {
-        autocompleteFragment = supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
+        autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
         autocompleteFragment.apply {
             view?.apply {
@@ -127,23 +128,29 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             )
 
             val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
-            setOnPlaceSelectedListener(object : PlaceSelectionListener {
-                override fun onPlaceSelected(place: Place) {
-                    address = place.address?.toString()
-                    val lat = "${place.latLng?.latitude}".toDouble()
-                    val long = "${place.latLng?.longitude}".toDouble()
-
-                    if (address != null) {
-                        etPlace.hint = address
-                        secondSearchSetup(lat, long)
-                    }
-                }
-
-                override fun onError(status: com.google.android.gms.common.api.Status) {
-                    Log.d("onError", status.statusMessage.toString())
-                }
-            })
+            setupOnPlaceSelectedListener(etPlace)
         }
+    }
+
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(
+        etPlace: EditText
+    ) {
+        setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                address = place.address?.toString()
+                val lat = "${place.latLng?.latitude}".toDouble()
+                val long = "${place.latLng?.longitude}".toDouble()
+
+                if (address != null) {
+                    etPlace.hint = address
+                    secondSearchSetup(lat, long)
+                }
+            }
+
+            override fun onError(status: com.google.android.gms.common.api.Status) {
+                Log.d("onError", status.statusMessage.toString())
+            }
+        })
     }
 
     private fun initialisePlacesClient() {
