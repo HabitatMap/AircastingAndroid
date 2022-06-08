@@ -17,9 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
@@ -138,3 +136,20 @@ fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescri
         BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }
+
+fun GoogleMap.drawMarkerOnMap(
+    mContext: Context,
+    options: MarkerOptions,
+    lat: Double,
+    lng: Double,
+    uuid: String?
+): Marker? {
+    return addMarker(
+        options
+            .position(LatLng(lat, lng))
+            .anchor(0.5f, 0.5f)
+            .snippet(uuid)
+            .icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_dot_20))
+    )
+}
+
