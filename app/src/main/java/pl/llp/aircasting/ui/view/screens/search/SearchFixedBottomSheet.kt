@@ -7,11 +7,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -129,12 +128,18 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
         if (txtLat != null && txtLng != null) {
             val myLocation = LatLng(txtLat!!, txtLng!!)
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(myLocation)
-            )
+            drawMarkerOnMap(txtLat!!, txtLng!!)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
         }
+    }
+
+    private fun drawMarkerOnMap(lat: Double, lng: Double): Marker? {
+        return mMap.addMarker(
+            MarkerOptions()
+                .position(LatLng(lat, lng))
+                .anchor(0.5f, 0.5f)
+                .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.ic_dot_20))
+        )
     }
 
     override fun onDestroyView() {
