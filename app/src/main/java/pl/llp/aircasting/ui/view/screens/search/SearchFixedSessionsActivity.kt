@@ -126,7 +126,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             })
 
             binding.btnContinue.setOnClickListener {
-                if (lat != null && long != null && txtSelectedSensor != null) goToSearchResult(
+                if (lat != null && long != null) goToSearchResult(
                     lat.toString(),
                     long.toString()
                 )
