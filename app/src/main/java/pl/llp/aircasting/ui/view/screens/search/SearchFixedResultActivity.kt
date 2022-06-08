@@ -22,7 +22,6 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.*
-import okhttp3.Address
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
@@ -146,12 +145,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             setOnPlaceSelectedListener(object : PlaceSelectionListener {
                 override fun onPlaceSelected(place: Place) {
                     address = place.address?.toString()
-                    val  lat = "${place.latLng?.latitude}"
-                    val long = "${place.latLng?.longitude}"
+                    val lat = "${place.latLng?.latitude}".toDouble()
+                    val long = "${place.latLng?.longitude}".toDouble()
 
                     if (address != null) {
                         etPlace.hint = address
-                        secondSearchSetup(address, lat, long)
+                        secondSearchSetup(lat, long)
                     }
                 }
 
@@ -271,12 +270,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         )
     }
 
-    private fun secondSearchSetup(address: String?, lat: String, long: String) {
+    private fun secondSearchSetup(lat: Double, long: Double) {
         mMap.clear()
         adapter.clearAdapter()
-        searchSessionsInMapArea()
 
-        //todo
+        val theLocation = LatLng(lat, long)
+        mMap.addMarker(options.position(theLocation))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+
+        searchSessionsInMapArea()
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
