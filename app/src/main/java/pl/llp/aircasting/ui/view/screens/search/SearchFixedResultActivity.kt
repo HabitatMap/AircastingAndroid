@@ -202,7 +202,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             val getLats = sessions[i].latitude
             val getLngs = sessions[i].longitude
             val uuid = sessions[i].uuid
-            drawMarkerOnMap(getLats, getLngs, uuid)
+            mMap.drawMarkerOnMap(this, options, getLats, getLngs, uuid)
         }
     }
 
@@ -245,32 +245,22 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            "airbeam2-pm2.5" -> ParticulateMatter.AIRBEAM
-            "openaq-pm2.5" -> ParticulateMatter.OPEN_AQ
-            "purpleair-pm2.5" -> ParticulateMatter.PURPLE_AIR
-            "openaq-o3" -> Ozone.OPEN_AQ
+            ParticulateMatter.AIRBEAM.getSensorName() -> ParticulateMatter.AIRBEAM
+            ParticulateMatter.OPEN_AQ.getSensorName() -> ParticulateMatter.OPEN_AQ
+            ParticulateMatter.PURPLE_AIR.getSensorName() -> ParticulateMatter.PURPLE_AIR
+            Ozone.OPEN_AQ.getSensorName() -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            "airbeam2-pm2.5" -> "AirBeam"
-            "openaq-pm2.5" -> "OpenAQ"
-            "purpleair-pm2.5" -> "PurpleAir"
-            "openaq-o3" -> "Ozone"
+            ParticulateMatter.AIRBEAM.getSensorName() -> "AirBeam"
+            ParticulateMatter.OPEN_AQ.getSensorName() -> "OpenAQ"
+            ParticulateMatter.PURPLE_AIR.getSensorName() -> "PurpleAir"
+            Ozone.OPEN_AQ.getSensorName() -> "Ozone"
             else -> "AirBeam"
         }
-    }
-
-    private fun drawMarkerOnMap(lat: Double, lng: Double, uuid: String): Marker? {
-        return mMap.addMarker(
-            options
-                .position(LatLng(lat, lng))
-                .anchor(0.5f, 0.5f)
-                .snippet(uuid)
-                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
-        )
     }
 
     private fun secondSearchSetup(lat: Double, long: Double) {
