@@ -23,6 +23,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private var mapFragment: SupportMapFragment? = null
     private lateinit var mMap: GoogleMap
+    private val options = MarkerOptions()
     private var txtLat: Double? = null
     private var txtLng: Double? = null
     private lateinit var loader: AnimatedLoader
@@ -128,18 +129,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
         if (txtLat != null && txtLng != null) {
             val myLocation = LatLng(txtLat!!, txtLng!!)
-            drawMarkerOnMap(txtLat!!, txtLng!!)
+            mMap.drawMarkerOnMap(requireActivity(), options, txtLat!!, txtLng!!, null)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
         }
-    }
-
-    private fun drawMarkerOnMap(lat: Double, lng: Double): Marker? {
-        return mMap.addMarker(
-            MarkerOptions()
-                .position(LatLng(lat, lng))
-                .anchor(0.5f, 0.5f)
-                .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.ic_dot_20))
-        )
     }
 
     override fun onDestroyView() {
