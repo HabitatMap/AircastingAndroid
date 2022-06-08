@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.Session
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -31,7 +32,7 @@ import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -109,28 +110,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         binding.recyclerFixedFollow.adapter = adapter
     }
 
-    private fun setupObserver(square: GeoSquare, sensorInfo: SensorInformation) {
+    private fun setupObserverForApiCallWithCoordinatesAndSensor(
+        square: GeoSquare,
+        sensorInfo: SensorInformation
+    ) {
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding.apply {
-                        progressBar.inVisible()
-                        txtSessions.visible()
-                    }
-                    it.data?.let { data ->
-                        val sessions = data.sessions
-                        val count = data.fetchableSessionsCount
-
-                        for (i in sessions.indices) {
-                            val getLats = sessions[i].latitude
-                            val getLngs = sessions[i].longitude
-                            val uuid = sessions[i].uuid
-                            createMarkers(getLats, getLngs, uuid)
-                        }
-                        binding.txtSessions.text =
-                            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
-                        renderData(sessions)
-                    }
+                    updateUI(it)
                 }
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
@@ -141,19 +128,58 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun renderData(mySessions: List<Session>) {
-        adapter.addData(mySessions)
+    private fun updateUI(it: Resource<SessionsInRegionsRes>) {
+        binding.apply {
+            progressBar.inVisible()
+            txtShowingSessionsNumber.visible()
+        }
+        it.data?.let { data ->
+            val sessions = data.sessions
+            val count = data.fetchableSessionsCount
+
+            setupMapMarkers(sessions)
+
+            updateText(count)
+
+            refreshAdapterDataSet(sessions)
+        }
+    }
+
+    private fun updateText(count: Int) {
+        binding.txtShowingSessionsNumber.text =
+            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+    }
+
+    private fun setupMapMarkers(sessions: List<Session>) {
+        for (i in sessions.indices) {
+            val getLats = sessions[i].latitude
+            val getLngs = sessions[i].longitude
+            val uuid = sessions[i].uuid
+            drawMarkerOnMap(getLats, getLngs, uuid)
+        }
+    }
+
+    private fun refreshAdapterDataSet(mySessions: List<Session>) {
+        adapter.refresh(mySessions)
         adapter.notifyDataSetChanged()
     }
 
     private fun resetTheSearch() {
-        val selectedLat = lat?.toDouble()
-        val selectedLng = lng?.toDouble()
-        if (selectedLat != null && selectedLng != null) {
-            val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
-        }
+        searchSessionsInMapArea()
+
         binding.btnRedo.gone()
+    }
+
+    private fun searchSessionsInMapArea() {
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
+
+        val square = GeoSquare(north, south, east, west)
+        val sensorInfo = getSensorInfo()
+
+        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
     private fun showBottomSheetDialog(session: Session) {
@@ -170,20 +196,17 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun getMapVisibleArea(north: Double, south: Double, east: Double, west: Double) {
-        val square = GeoSquare(north, south, east, west)
-        var sensorInfo: SensorInformation? = null
-
-        when (txtSensor) {
-            "airbeam2-pm2.5" -> sensorInfo = ParticulateMatter.AIRBEAM
-            "openaq-pm2.5" -> sensorInfo = ParticulateMatter.OPEN_AQ
-            "purpleair-pm2.5" -> sensorInfo = ParticulateMatter.PURPLE_AIR
-            "openaq-o3" -> sensorInfo = Ozone.OPEN_AQ
+    private fun getSensorInfo(): SensorInformation {
+        return when (txtSensor) {
+            "airbeam2-pm2.5" -> ParticulateMatter.AIRBEAM
+            "openaq-pm2.5" -> ParticulateMatter.OPEN_AQ
+            "purpleair-pm2.5" -> ParticulateMatter.PURPLE_AIR
+            "openaq-o3" -> Ozone.OPEN_AQ
+            else -> ParticulateMatter.AIRBEAM
         }
-        sensorInfo?.let { setupObserver(square, it) }
     }
 
-    private fun createMarkers(lat: Double, lng: Double, uuid: String): Marker? {
+    private fun drawMarkerOnMap(lat: Double, lng: Double, uuid: String): Marker? {
         return mMap.addMarker(
             options
                 .position(LatLng(lat, lng))
@@ -213,12 +236,13 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         if (selectedLat != null && selectedLng != null) {
             val theLocation = LatLng(selectedLat, selectedLng)
             mMap.addMarker(options.position(theLocation))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 13f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
         }
 
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
-        mMap.setOnCameraIdleListener(this)
+
+        searchSessionsInMapArea()
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -232,14 +256,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onCameraMoveStarted(p0: Int) {
         binding.btnRedo.visible()
-    }
-
-    override fun onCameraIdle() {
-        val north = mMap.projection.visibleRegion.farLeft.latitude
-        val west = mMap.projection.visibleRegion.farLeft.longitude
-        val south = mMap.projection.visibleRegion.nearRight.latitude
-        val east = mMap.projection.visibleRegion.nearRight.longitude
-        getMapVisibleArea(north, south, east, west)
     }
 
     override fun onSupportNavigateUp(): Boolean {

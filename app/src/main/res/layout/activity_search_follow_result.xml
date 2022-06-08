@@ -121,7 +121,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/txtShowing" />
 
                 <TextView
-                    android:id="@+id/txtSessions"
+                    android:id="@+id/txtShowingSessionsNumber"
                     style="@style/TextAppearance.Aircasting.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

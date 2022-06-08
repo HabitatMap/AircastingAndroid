@@ -51,7 +51,8 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
         holder.bind(sessions[position])
 
-    fun addData(list: List<Session>) {
+    fun refresh(list: List<Session>) {
+        sessions.clear()
         sessions.addAll(list)
     }
 
