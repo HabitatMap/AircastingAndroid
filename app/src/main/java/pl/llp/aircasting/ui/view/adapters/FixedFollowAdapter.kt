@@ -54,7 +54,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
         holder.bind(sessions[position])
 
     fun refresh(list: List<Session>) {
-        sessions.clear()
+        clearAdapter()
         sessions.addAll(list)
     }
 
