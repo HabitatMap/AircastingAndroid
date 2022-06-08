@@ -1,8 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -30,6 +27,7 @@ import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.api.util.SensorNames
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -99,7 +97,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupSearchLayout() {
-        autocompleteFragment = supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
+        autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
         autocompleteFragment.apply {
             view?.apply {
@@ -255,11 +254,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM.getSensorName() -> "AirBeam"
-            ParticulateMatter.OPEN_AQ.getSensorName() -> "OpenAQ"
-            ParticulateMatter.PURPLE_AIR.getSensorName() -> "PurpleAir"
-            Ozone.OPEN_AQ.getSensorName() -> "Ozone"
-            else -> "AirBeam"
+            ParticulateMatter.AIRBEAM.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
+            ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
+            ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
+            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OZONE.getSensorName()
+            else -> SensorNames.AIRBEAM.getSensorName()
         }
     }
 
