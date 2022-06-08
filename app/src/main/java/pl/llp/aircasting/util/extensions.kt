@@ -149,7 +149,7 @@ fun GoogleMap.drawMarkerOnMap(
             .position(LatLng(lat, lng))
             .anchor(0.5f, 0.5f)
             .snippet(uuid)
-            .icon(bitmapDescriptorFromVector(mContext, R.drawable.ic_dot_20))
+            .icon(bitmapDescriptorFromVector(mContext, R.drawable.map_dot_with_circle_inside))
     )
 }
 
