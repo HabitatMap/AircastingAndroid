@@ -48,6 +48,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
+    private lateinit var autocompleteFragment: AutocompleteSupportFragment
     private var placesClient: PlacesClient? = null
     private lateinit var mMap: GoogleMap
 
@@ -98,10 +99,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupSearchLayout() {
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
+        autocompleteFragment = supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
-        autocompleteFragment?.apply {
+        autocompleteFragment.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
                     setText(address)
@@ -120,18 +120,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         )
         placesClient = Places.createClient(this)
 
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
-
-        autocompleteFragment?.apply {
-            view?.apply {
-                findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    setText(getString(R.string.search_session_query_hint))
-                    textSize = 15.0f
-                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
-                }
-                findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
-            }
+        autocompleteFragment.apply {
 
             setPlaceFields(
                 listOf(
