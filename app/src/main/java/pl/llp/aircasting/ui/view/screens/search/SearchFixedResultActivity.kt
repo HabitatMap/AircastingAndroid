@@ -270,9 +270,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun moveMapToSelectedLocationAndRefresh(lat: Double, long: Double) {
         mMap.clear()
 
-        val theLocation = LatLng(lat, long)
-        mMap.addMarker(options.position(theLocation))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+        val selectedLocation = LatLng(lat, long)
+        mMap.addMarker(options.position(selectedLocation))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 10f))
 
         searchSessionsInMapArea()
     }
