@@ -50,7 +50,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             val selectedSession = searchFollowViewModel.selectedSession.value
             if (selectedSession != null) onFollowClicked(ExtSessionsDBObject(selectedSession))
 
-            it.context.showToast("Session followed!")
+            it.context.showToast(getString(R.string.session_followed))
             it.gone()
             binding?.unfollowBtn?.visible()
         }
@@ -58,7 +58,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             val selectedSession = searchFollowViewModel.selectedSession.value
             if (selectedSession != null) onUnfollowClicked(ExtSessionsDBObject(selectedSession))
 
-            it.context.showToast("Session Unfollowed!")
+            it.context.showToast(getString(R.string.session_unfollowed))
             it.gone()
             binding?.followBtn?.visible()
         }
