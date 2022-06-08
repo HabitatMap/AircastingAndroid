@@ -54,12 +54,8 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
         holder.bind(sessions[position])
 
     fun refresh(list: List<Session>) {
-        clearAdapter()
-        sessions.addAll(list)
-    }
-
-    fun clearAdapter() {
         sessions.clear()
+        sessions.addAll(list)
     }
 
     fun getSessionPositionBasedOnId(uid: String): Int {

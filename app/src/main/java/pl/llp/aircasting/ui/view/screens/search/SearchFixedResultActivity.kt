@@ -261,7 +261,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun secondSearchSetup(lat: Double, long: Double) {
         mMap.clear()
-        adapter.clearAdapter()
 
         val theLocation = LatLng(lat, long)
         mMap.addMarker(options.position(theLocation))
