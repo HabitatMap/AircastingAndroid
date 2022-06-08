@@ -267,20 +267,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap.clear()
 
         val theLocation = LatLng(lat, long)
-        mMap.addMarker(options.position(theLocation))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
 
         searchSessionsInMapArea()
-    }
-
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-        return ContextCompat.getDrawable(context, vectorResId)?.run {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap =
-                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-            draw(Canvas(bitmap))
-            BitmapDescriptorFactory.fromBitmap(bitmap)
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -292,7 +281,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val selectedLng = lng?.toDouble()
         if (selectedLat != null && selectedLng != null) {
             val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.addMarker(options.position(theLocation))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
         }
 
