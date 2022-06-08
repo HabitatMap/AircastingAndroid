@@ -143,7 +143,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
                 if (address != null) {
                     etPlace.hint = address
-                    secondSearchSetup(lat, long)
+                    moveMapToSelectedLocationAndRefresh(lat, long)
                 }
             }
 
@@ -267,7 +267,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         )
     }
 
-    private fun secondSearchSetup(lat: Double, long: Double) {
+    private fun moveMapToSelectedLocationAndRefresh(lat: Double, long: Double) {
         mMap.clear()
 
         val theLocation = LatLng(lat, long)
