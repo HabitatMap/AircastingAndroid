@@ -396,5 +396,7 @@
     <string name="loading_measurements">Loading last measurements…</string>
     <string name="redo_search_in_map">Refaire la recherche dans la carte</string>
     <string name="unfollow_session">Ne plus suivre la session</string>
+    <string name="session_followed">Séance suivie !</string>
+    <string name="session_unfollowed">Session non suivie !</string>
 
 </resources>

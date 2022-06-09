@@ -7,11 +7,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -24,6 +23,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private var mapFragment: SupportMapFragment? = null
     private lateinit var mMap: GoogleMap
+    private val options = MarkerOptions()
     private var txtLat: Double? = null
     private var txtLng: Double? = null
     private lateinit var loader: AnimatedLoader
@@ -51,7 +51,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             val selectedSession = searchFollowViewModel.selectedSession.value
             if (selectedSession != null) onFollowClicked(ExtSessionsDBObject(selectedSession))
 
-            it.context.showToast("Session followed!")
+            it.context.showToast(getString(R.string.session_followed))
             it.gone()
             binding?.unfollowBtn?.visible()
         }
@@ -59,7 +59,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             val selectedSession = searchFollowViewModel.selectedSession.value
             if (selectedSession != null) onUnfollowClicked(ExtSessionsDBObject(selectedSession))
 
-            it.context.showToast("Session Unfollowed!")
+            it.context.showToast(getString(R.string.session_unfollowed))
             it.gone()
             binding?.followBtn?.visible()
         }
@@ -129,10 +129,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
         if (txtLat != null && txtLng != null) {
             val myLocation = LatLng(txtLat!!, txtLng!!)
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(myLocation)
-            )
+            mMap.drawMarkerOnMap(requireActivity(), options, txtLat!!, txtLng!!, null)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
         }
     }

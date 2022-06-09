@@ -2,6 +2,9 @@ package pl.llp.aircasting.util
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -12,9 +15,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.prominent_app_bar.*
@@ -127,6 +133,32 @@ val Context.isConnected: Boolean
             }
         }
     }
+
+fun MarkerOptions.icon(context: Context, @DrawableRes vectorDrawable: Int): MarkerOptions {
+    this.icon(ContextCompat.getDrawable(context, vectorDrawable)?.run {
+        setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+        draw(Canvas(bitmap))
+        BitmapDescriptorFactory.fromBitmap(bitmap)
+    })
+    return this
+}
+
+fun GoogleMap.drawMarkerOnMap(
+    mContext: Context,
+    options: MarkerOptions,
+    lat: Double,
+    lng: Double,
+    uuid: String?
+): Marker? {
+    return addMarker(
+        options
+            .position(LatLng(lat, lng))
+            .anchor(0.5f, 0.5f)
+            .snippet(uuid)
+            .icon(mContext, R.drawable.map_dot_with_circle_inside)
+    )
+}
 
 fun initializePlacesApi(appContext: Context) {
     if (!Places.isInitialized()) Places.initialize(
