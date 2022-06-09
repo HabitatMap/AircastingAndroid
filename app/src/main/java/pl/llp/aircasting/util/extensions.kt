@@ -3,6 +3,7 @@ package pl.llp.aircasting.util
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.location.LocationManager
 import android.net.ConnectivityManager
@@ -14,6 +15,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -132,14 +134,14 @@ val Context.isConnected: Boolean
         }
     }
 
-fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-    return ContextCompat.getDrawable(context, vectorResId)?.run {
+fun MarkerOptions.icon(context: Context, @DrawableRes vectorDrawable: Int): MarkerOptions {
+    this.icon(ContextCompat.getDrawable(context, vectorDrawable)?.run {
         setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        val bitmap =
-            Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
         draw(Canvas(bitmap))
         BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
+    })
+    return this
 }
 
 fun GoogleMap.drawMarkerOnMap(
@@ -154,7 +156,7 @@ fun GoogleMap.drawMarkerOnMap(
             .position(LatLng(lat, lng))
             .anchor(0.5f, 0.5f)
             .snippet(uuid)
-            .icon(bitmapDescriptorFromVector(mContext, R.drawable.map_dot_with_circle_inside))
+            .icon(mContext, R.drawable.map_dot_with_circle_inside)
     )
 }
 
