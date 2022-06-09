@@ -7,9 +7,8 @@ import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionReposito
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
-import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
-import pl.llp.aircasting.data.local.repository.ExtSessionsLocalRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.util.Resource
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class SearchFollowViewModel @Inject constructor(
     private val activeFixedRepo: ActiveFixedSessionsInRegionRepository,
     private val measurementsRepository: MeasurementsRepository,
-    private val extSessionRepo: ExtSessionsLocalRepository
+    private val sessionsRepository: SessionsRepository
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<Session>()
     private val mutableLat = MutableLiveData<Double>()
