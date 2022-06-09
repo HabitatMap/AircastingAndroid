@@ -46,14 +46,15 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(extSession: ExtSessionsDBObject) =
+    fun onFollowSessionClicked(session: Session) {
         viewModelScope.launch(Dispatchers.IO) {
-            extSessionRepo.insert(extSession)
+            sessionsRepository.insert(session)
         }
+    }
 
-    fun onUnfollowSessionClicked(extSession: ExtSessionsDBObject) =
+    fun onUnfollowSessionClicked(session: Session) =
         viewModelScope.launch(Dispatchers.IO) {
-            extSessionRepo.deleteFollowedSession(extSession)
+            sessionsRepository.delete(listOf(session.uuid))
         }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
