@@ -1,8 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -30,6 +27,7 @@ import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.api.util.SensorNames
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -90,7 +88,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         address = intent.getStringExtra("address")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
-        binding.txtUsing.text = getString(R.string.using_txt) + " " + txtSensor
+        binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
 
@@ -206,7 +204,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             val getLats = sessions[i].latitude
             val getLngs = sessions[i].longitude
             val uuid = sessions[i].uuid
-            drawMarkerOnMap(getLats, getLngs, uuid)
+            mMap.drawMarkerOnMap(this, options, getLats, getLngs, uuid)
         }
     }
 
@@ -249,42 +247,31 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            "airbeam2-pm2.5" -> ParticulateMatter.AIRBEAM
-            "openaq-pm2.5" -> ParticulateMatter.OPEN_AQ
-            "purpleair-pm2.5" -> ParticulateMatter.PURPLE_AIR
-            "openaq-o3" -> Ozone.OPEN_AQ
+            ParticulateMatter.AIRBEAM.getSensorName() -> ParticulateMatter.AIRBEAM
+            ParticulateMatter.OPEN_AQ.getSensorName() -> ParticulateMatter.OPEN_AQ
+            ParticulateMatter.PURPLE_AIR.getSensorName() -> ParticulateMatter.PURPLE_AIR
+            Ozone.OPEN_AQ.getSensorName() -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM
         }
     }
 
-    private fun drawMarkerOnMap(lat: Double, lng: Double, uuid: String): Marker? {
-        return mMap.addMarker(
-            options
-                .position(LatLng(lat, lng))
-                .anchor(0.5f, 0.5f)
-                .snippet(uuid)
-                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
-        )
+    private fun getSensor(): String {
+        return when (txtSensor) {
+            ParticulateMatter.AIRBEAM.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
+            ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
+            ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
+            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OZONE.getSensorName()
+            else -> SensorNames.AIRBEAM.getSensorName()
+        }
     }
 
     private fun moveMapToSelectedLocationAndRefresh(lat: Double, long: Double) {
         mMap.clear()
 
         val selectedLocation = LatLng(lat, long)
-        mMap.addMarker(options.position(selectedLocation))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 10f))
 
         searchSessionsInMapArea()
-    }
-
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-        return ContextCompat.getDrawable(context, vectorResId)?.run {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap =
-                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-            draw(Canvas(bitmap))
-            BitmapDescriptorFactory.fromBitmap(bitmap)
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -296,7 +283,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val selectedLng = lng?.toDouble()
         if (selectedLat != null && selectedLng != null) {
             val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.addMarker(options.position(theLocation))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
         }
 
