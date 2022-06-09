@@ -73,7 +73,9 @@ data class SessionDBObject(
         longitude = apiSession.longitude,
         is_indoor = apiSession.isIndoor,
         deviceId = null,
-        deviceType = null
+        deviceType = null,
+        isExternal = true,
+        followedAt = Date()
     )
 }
 
