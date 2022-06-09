@@ -12,11 +12,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseActivity
 
@@ -98,8 +102,8 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT){
-    Toast.makeText(this, message , duration).show()
+fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
 }
 
 val Context.isConnected: Boolean
@@ -123,3 +127,10 @@ val Context.isConnected: Boolean
             }
         }
     }
+
+fun initializePlacesApi(appContext: Context) {
+    if (!Places.isInitialized()) Places.initialize(
+        appContext,
+        BuildConfig.PLACES_API_KEY
+    )
+}
