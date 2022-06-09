@@ -60,6 +60,20 @@ data class SessionDBObject(
                 session.urlLocation,
                 session.indoor
             )
+
+    constructor(apiSession: pl.llp.aircasting.data.api.response.search.Session) : this(
+        uuid = apiSession.uuid,
+        name = apiSession.title,
+        type = Session.Type.FIXED,
+        username = apiSession.username,
+        endTime = DateConverter.fromString(apiSession.endTimeLocal),
+        startTime = DateConverter.fromString(apiSession.startTimeLocal) ?: Date(),
+        latitude = apiSession.latitude,
+        longitude = apiSession.longitude,
+        is_indoor = apiSession.isIndoor,
+        deviceId = null,
+        deviceType = null
+    )
 }
 
 class SessionWithStreamsDBObject {
