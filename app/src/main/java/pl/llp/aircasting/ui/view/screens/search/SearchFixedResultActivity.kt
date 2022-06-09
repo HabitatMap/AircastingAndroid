@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +16,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
@@ -42,6 +48,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var adapter: FixedFollowAdapter
 
     private lateinit var binding: ActivitySearchFollowResultBinding
+    private lateinit var autocompleteFragment: AutocompleteSupportFragment
+    private var placesClient: PlacesClient? = null
     private lateinit var mMap: GoogleMap
 
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
@@ -63,6 +71,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
+        setupAutoComplete()
         passLatLng()
     }
 
@@ -90,10 +99,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun setupSearchLayout() {
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
+        autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
-        autocompleteFragment?.apply {
+        autocompleteFragment.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
                     setText(address)
@@ -103,6 +112,50 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }
         }
+    }
+
+    private fun setupAutoComplete() {
+        initialisePlacesClient()
+
+        autocompleteFragment.apply {
+
+            setPlaceFields(
+                listOf(
+                    Place.Field.ID,
+                    Place.Field.ADDRESS,
+                    Place.Field.LAT_LNG
+                )
+            )
+
+            val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
+            setupOnPlaceSelectedListener(etPlace)
+        }
+    }
+
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(
+        etPlace: EditText
+    ) {
+        setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                address = place.address?.toString()
+                val lat = "${place.latLng?.latitude}".toDouble()
+                val long = "${place.latLng?.longitude}".toDouble()
+
+                if (address != null) {
+                    etPlace.hint = address
+                    moveMapToSelectedLocationAndRefresh(lat, long)
+                }
+            }
+
+            override fun onError(status: com.google.android.gms.common.api.Status) {
+                Log.d("onError", status.statusMessage.toString())
+            }
+        })
+    }
+
+    private fun initialisePlacesClient() {
+        initializePlacesApi(this)
+        placesClient = Places.createClient(this)
     }
 
     private fun setupRecyclerView() {
@@ -116,9 +169,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     ) {
         searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
             when (it.status) {
-                Status.SUCCESS -> {
-                    updateUI(it)
-                }
+                Status.SUCCESS -> updateUI(it)
                 Status.ERROR -> {
                     binding.progressBar.inVisible()
                     showToast(it.message.toString())
@@ -214,6 +265,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 .snippet(uuid)
                 .icon(bitmapDescriptorFromVector(this, R.drawable.ic_dot_20))
         )
+    }
+
+    private fun moveMapToSelectedLocationAndRefresh(lat: Double, long: Double) {
+        mMap.clear()
+
+        val selectedLocation = LatLng(lat, long)
+        mMap.addMarker(options.position(selectedLocation))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 10f))
+
+        searchSessionsInMapArea()
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
