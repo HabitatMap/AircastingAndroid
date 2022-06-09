@@ -3,7 +3,6 @@ package pl.llp.aircasting.data.model
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
@@ -29,7 +28,8 @@ open class Session(
     var urlLocation: String? = null,
     private var mNotes: MutableList<Note> = mutableListOf(),
     var averagingFrequency: Int = 1,
-    var order: Int? = null
+    var order: Int? = null,
+    var isExternal: Boolean = false
 ) {
     constructor(sessionDBObject: SessionDBObject) : this(
         sessionDBObject.uuid,
@@ -46,7 +46,8 @@ open class Session(
         sessionDBObject.followedAt,
         sessionDBObject.contribute,
         sessionDBObject.locationless,
-        sessionDBObject.is_indoor
+        sessionDBObject.is_indoor,
+        isExternal = sessionDBObject.isExternal
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
@@ -126,35 +127,6 @@ open class Session(
         this.mNotes = sessionWithStreamsAndLastMeasurementsDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }.toMutableList()
-    }
-
-    constructor(extSessionsDBObject: ExtSessionsDBObject) : this(
-        uuid = extSessionsDBObject.uuid,
-        deviceId = null,
-        deviceType = null,
-        mType = Type.FIXED,
-        mName = extSessionsDBObject.title,
-        mTags = arrayListOf(),
-        mStatus = Status.RECORDING,
-        mStartTime = DateConverter.fromString(extSessionsDBObject.startTimeLocal) ?: Date(),
-        endTime = DateConverter.fromString(extSessionsDBObject.endTimeLocal) ?: Date(),
-        followedAt = extSessionsDBObject.followedAt
-    )
-
-    constructor(externalSessionWithStreamsDBObject: ExternalSessionWithStreamsDBObject) : this(
-        externalSessionWithStreamsDBObject.session
-    ) {
-        this.mStreams = externalSessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
-            MeasurementStream(streamWithMeasurementsDBObject)
-        }
-    }
-
-    constructor(externalSessionWithStreamsAndMeasurementsDBObject: ExternalSessionWithStreamsAndMeasurementsDBObject) : this(
-        externalSessionWithStreamsAndMeasurementsDBObject.session
-    ) {
-        this.mStreams = externalSessionWithStreamsAndMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
-            MeasurementStream(streamWithMeasurementsDBObject)
-        }
     }
 
     companion object {
