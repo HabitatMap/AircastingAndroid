@@ -16,6 +16,12 @@ class SessionsRepository {
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
+    fun insert(session: pl.llp.aircasting.data.api.response.search.Session): Long {
+        val sessionDBObject =
+            SessionDBObject(session)
+        return mDatabase.sessions().insert(sessionDBObject)
+    }
+
     fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
         val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId,
             Session.Status.RECORDING, Session.Type.MOBILE)
