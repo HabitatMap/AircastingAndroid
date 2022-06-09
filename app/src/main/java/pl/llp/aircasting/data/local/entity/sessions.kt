@@ -62,6 +62,7 @@ data class SessionDBObject(
                 session.indoor
             )
 
+    // TODO: Move this to Session model class
     constructor(apiSession: pl.llp.aircasting.data.api.response.search.Session) : this(
         uuid = apiSession.uuid,
         name = apiSession.title,

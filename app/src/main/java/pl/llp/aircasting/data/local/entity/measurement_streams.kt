@@ -52,6 +52,7 @@ data class MeasurementStreamDBObject(
         measurementStream.deleted
     )
 
+    // TODO: Move this to MeasurementStream model class
     constructor(sensor: Sensor) : this(
         sensor.sessionId.toLong(),
         sensor.sensorPackageName,
