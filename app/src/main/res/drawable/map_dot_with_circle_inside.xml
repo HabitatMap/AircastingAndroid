@@ -2,30 +2,35 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
-        <shape
-            android:shape="oval"
-            android:tint="@color/aircasting_blue_400">
-
-            <size
-                android:width="100dp"
-                android:height="100dp" />
+        <shape android:shape="oval">
             <padding
                 android:bottom="20dp"
                 android:left="20dp"
                 android:right="20dp"
                 android:top="20dp" />
-
+            <size
+                android:width="100dp"
+                android:height="100dp" />
+            <stroke
+                android:width="20dp"
+                android:color="@color/aircasting_blue_400" />
         </shape>
     </item>
 
+    <item android:drawable="@drawable/ic_dot_20" />
+
     <item>
         <shape android:shape="oval">
+            <padding
+                android:bottom="10dp"
+                android:left="10dp"
+                android:right="10dp"
+                android:top="10dp" />
             <size
-                android:width="5dp"
-                android:height="5dp" />
-
+                android:width="100dp"
+                android:height="100dp" />
             <stroke
-                android:width="5dp"
+                android:width="10dp"
                 android:color="@color/aircasting_white" />
         </shape>
     </item>
