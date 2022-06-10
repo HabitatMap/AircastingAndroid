@@ -1,22 +1,27 @@
 package pl.llp.aircasting.ui.viewmodel
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.Session
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
     private val activeFixedRepo: ActiveFixedSessionsInRegionRepository,
     private val measurementsRepository: MeasurementsRepository,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<Session>()
@@ -45,9 +50,16 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(session: Session) {
-        viewModelScope.launch(Dispatchers.IO) {
-            sessionsRepository.insert(session)
+    fun onFollowSessionClicked(session: Session, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
+            val sessionId = viewModelScope.async(dispatcher) {
+                sessionsRepository.insert(session)
+            }
+
+            measurementStreamsRepository.insert(
+                sessionId.await(),
+                MeasurementStream(session.streams.sensor)
+            )
         }
     }
 
