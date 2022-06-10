@@ -8,17 +8,17 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.di.TestApiModule
-import pl.llp.aircasting.di.TestSettingsModule
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestSettingsModule
+import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.di.modules.PermissionsModule
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
+import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
@@ -57,6 +57,8 @@ class OnboardingTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.get_started_button)).perform(click())
+
+        onView(withId(R.id.continue_button)).perform(click())
 
         onView(withId(R.id.continue_button)).perform(click())
 

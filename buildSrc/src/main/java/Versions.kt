@@ -24,11 +24,12 @@ object Versions {
     const val eventBus = "3.2.0"
     const val dagger = "2.41"
     const val retrofit = "2.9.0"
-    const val loggingInterceptor = "5.0.0-alpha.7"
 
-    const val mockServerWeb = "4.9.3"
+    const val okhttp3 = "4.9.3"
     const val gson = "2.8.9"
     const val openCv = "4.6" // check this later
+
+    const val espresso = "3.4.0"
 
     const val playServicesLocation = "19.0.1"
     const val playServicesMaps = "18.0.2"
