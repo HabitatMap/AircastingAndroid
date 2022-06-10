@@ -3,6 +3,7 @@ package pl.llp.aircasting.data.model
 import com.google.common.collect.Lists
 import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
+import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithLastMeasurementsDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithMeasurementsDBObject
@@ -40,6 +41,20 @@ open class MeasurementStream(
         measurementEvent.thresholdHigh,
         measurementEvent.thresholdVeryHigh,
         false
+    )
+
+    constructor(sensor: Sensor) : this(
+        sensor.sensorPackageName,
+        sensor.sensorName,
+        sensor.measurementType,
+        sensor.measurementShortType,
+        sensor.unitName,
+        sensor.unitSymbol,
+        sensor.thresholdVeryLow,
+        sensor.thresholdLow,
+        sensor.thresholdMedium,
+        sensor.thresholdHigh,
+        sensor.thresholdVeryHigh,
     )
 
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
