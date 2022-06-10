@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.local.repository
 
-import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -9,7 +8,7 @@ class MeasurementStreamsRepository {
     private val mDatabase = DatabaseProvider.get()
 
     fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
-        val streamDBObject = mDatabase.measurementStreams().
+        var streamDBObject = mDatabase.measurementStreams().
         loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
 
         return streamDBObject?.id
@@ -33,10 +32,6 @@ class MeasurementStreamsRepository {
             val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
             mDatabase.measurementStreams().insert(streamDBObject)
         }
-    }
-
-    fun insert(sensor: Sensor) {
-        mDatabase.measurementStreams().insert(MeasurementStreamDBObject(sensor))
     }
 
     fun markForRemoval(sessionId: Long?, streamsToDelete: List<MeasurementStream>?) {
