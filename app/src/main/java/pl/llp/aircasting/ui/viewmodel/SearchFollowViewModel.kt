@@ -15,6 +15,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -53,7 +54,7 @@ class SearchFollowViewModel @Inject constructor(
     fun onFollowSessionClicked(session: SessionInRegionResponse, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
         viewModelScope.launch(dispatcher) {
             val sessionId = viewModelScope.async(dispatcher) {
-                sessionsRepository.insert(session)
+                sessionsRepository.insert(Session(session))
             }
 
             measurementStreamsRepository.insert(
