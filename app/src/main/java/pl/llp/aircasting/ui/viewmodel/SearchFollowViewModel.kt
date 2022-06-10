@@ -57,13 +57,13 @@ class SearchFollowViewModel @Inject constructor(
     ) {
         viewModelScope.launch(dispatcher) {
             val sessionId =
-                insertSessionToDB(dispatcher, session)
+                saveSession(dispatcher, session)
 
-            insertMeasurementStreamToDB(sessionId, session)
+            saveMeasurementStream(sessionId, session)
         }
     }
 
-    private suspend fun insertSessionToDB(
+    private suspend fun saveSession(
         dispatcher: CoroutineDispatcher,
         session: SessionInRegionResponse
     ): Long {
@@ -73,7 +73,7 @@ class SearchFollowViewModel @Inject constructor(
         return sessionId.await()
     }
 
-    private fun insertMeasurementStreamToDB(
+    private fun saveMeasurementStream(
         sessionId: Long,
         session: SessionInRegionResponse
     ) {
