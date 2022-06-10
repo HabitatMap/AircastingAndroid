@@ -63,10 +63,14 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    fun onUnfollowSessionClicked(session: Session) =
-        viewModelScope.launch(Dispatchers.IO) {
+    fun onUnfollowSessionClicked(
+        session: Session,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
+    ) {
+        viewModelScope.launch(dispatcher) {
             sessionsRepository.delete(listOf(session.uuid))
         }
+    }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
         liveData(Dispatchers.IO) {
