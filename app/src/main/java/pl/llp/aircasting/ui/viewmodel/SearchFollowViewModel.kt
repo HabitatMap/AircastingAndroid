@@ -51,17 +51,36 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(session: SessionInRegionResponse, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
+    fun onFollowSessionClicked(
+        session: SessionInRegionResponse,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
+    ) {
         viewModelScope.launch(dispatcher) {
-            val sessionId = viewModelScope.async(dispatcher) {
-                sessionsRepository.insert(Session(session))
-            }
+            val sessionId =
+                insertSessionToDB(dispatcher, session)
 
-            measurementStreamsRepository.insert(
-                sessionId.await(),
-                MeasurementStream(session.streams.sensor)
-            )
+            insertMeasurementStreamToDB(sessionId, session)
         }
+    }
+
+    private suspend fun insertSessionToDB(
+        dispatcher: CoroutineDispatcher,
+        session: SessionInRegionResponse
+    ): Long {
+        val sessionId = viewModelScope.async(dispatcher) {
+            sessionsRepository.insert(Session(session))
+        }
+        return sessionId.await()
+    }
+
+    private fun insertMeasurementStreamToDB(
+        sessionId: Long,
+        session: SessionInRegionResponse
+    ) {
+        measurementStreamsRepository.insert(
+            sessionId,
+            MeasurementStream(session.streams.sensor)
+        )
     }
 
     fun onUnfollowSessionClicked(
