@@ -8,15 +8,15 @@ class MeasurementStreamsRepository {
     private val mDatabase = DatabaseProvider.get()
 
     fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
-        val streamDBObject = mDatabase.measurementStreams().
-        loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
+        val streamDBObject = mDatabase.measurementStreams()
+            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
 
         return streamDBObject?.id
     }
 
     fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStream): Long {
-        var streamDBObject = mDatabase.measurementStreams().
-            loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
+        var streamDBObject = mDatabase.measurementStreams()
+            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
 
         if (streamDBObject != null) return streamDBObject.id
 
@@ -32,6 +32,11 @@ class MeasurementStreamsRepository {
             val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
             mDatabase.measurementStreams().insert(streamDBObject)
         }
+    }
+
+    fun insert(sessionId: Long, stream: MeasurementStream) {
+        val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
+        mDatabase.measurementStreams().insert(streamDBObject)
     }
 
     fun markForRemoval(sessionId: Long?, streamsToDelete: List<MeasurementStream>?) {
