@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -12,8 +14,7 @@
             type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/dialog_background">
@@ -90,7 +91,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintStart_toStartOf="@id/session_type"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/session_type">
 
                     <include
@@ -121,21 +124,46 @@
                     android:text="@string/follow_session"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/mapViewBottomSheet" />
+                    app:layout_constraintTop_toBottomOf="@id/btnMap" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/unfollowBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_5"
                     android:layout_marginEnd="@dimen/keyline_6"
+                    android:backgroundTint="@color/aircasting_white"
                     android:text="@string/unfollow_session"
-                    android:backgroundTint="@color/quantum_orange"
+                    android:textColor="@color/aircasting_blue_400"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/mapViewBottomSheet" />
+                    app:layout_constraintTop_toBottomOf="@id/btnMap"
+                    app:rippleColor="#33AAAAAA"
+                    app:strokeColor="@color/aircasting_blue_400"
+                    app:strokeWidth="2dp" />
+
+                <Button
+                    android:id="@+id/btnMap"
+                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/keyline_2"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/map_button"
+                    app:layout_constraintEnd_toStartOf="@+id/btnChart"
+                    app:layout_constraintTop_toBottomOf="@+id/mapViewBottomSheet" />
+
+                <Button
+                    android:id="@+id/btnChart"
+                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/keyline_2"
+                    android:text="@string/chart"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mapViewBottomSheet" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
