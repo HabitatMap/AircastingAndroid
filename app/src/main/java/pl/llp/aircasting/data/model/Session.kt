@@ -78,7 +78,7 @@ open class Session(
         this.locationless = locationless
     }
 
-    constructor(apiSession: pl.llp.aircasting.data.api.response.search.Session) : this(
+    constructor(apiSession: pl.llp.aircasting.data.api.response.search.SessionInRegionResponse) : this(
         uuid = apiSession.uuid,
         mName = apiSession.title,
         mType = Type.FIXED,

@@ -8,5 +8,5 @@ data class SessionsInRegionsRes(
     @SerializedName("fetchableSessionsCount")
     val fetchableSessionsCount: Int,
     @SerializedName("sessions")
-    val sessions: List<Session>
+    val sessions: List<SessionInRegionResponse>
 )

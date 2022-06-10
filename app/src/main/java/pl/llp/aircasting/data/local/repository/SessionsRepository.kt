@@ -16,7 +16,7 @@ class SessionsRepository {
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
-    fun insert(session: pl.llp.aircasting.data.api.response.search.Session): Long {
+    fun insert(session: pl.llp.aircasting.data.api.response.search.SessionInRegionResponse): Long {
         val sessionDBObject =
             SessionDBObject(session)
         return mDatabase.sessions().insert(sessionDBObject)

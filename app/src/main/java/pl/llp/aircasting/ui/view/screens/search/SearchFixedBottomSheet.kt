@@ -7,10 +7,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.response.search.Session
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -115,11 +114,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
     }
 
-    private fun onFollowClicked(session: Session) {
+    private fun onFollowClicked(session: SessionInRegionResponse) {
         searchFollowViewModel.onFollowSessionClicked(session)
     }
 
-    private fun onUnfollowClicked(session: Session) {
+    private fun onUnfollowClicked(session: SessionInRegionResponse) {
         searchFollowViewModel.onUnfollowSessionClicked(session)
     }
 

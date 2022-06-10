@@ -20,9 +20,8 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.response.search.Session
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
@@ -199,7 +198,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
     }
 
-    private fun setupMapMarkers(sessions: List<Session>) {
+    private fun setupMapMarkers(sessions: List<SessionInRegionResponse>) {
         for (i in sessions.indices) {
             val getLats = sessions[i].latitude
             val getLngs = sessions[i].longitude
@@ -208,7 +207,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun refreshAdapterDataSet(mySessions: List<Session>) {
+    private fun refreshAdapterDataSet(mySessions: List<SessionInRegionResponse>) {
         adapter.refresh(mySessions)
         adapter.notifyDataSetChanged()
     }
@@ -231,7 +230,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
-    private fun showBottomSheetDialog(session: Session) {
+    private fun showBottomSheetDialog(session: SessionInRegionResponse) {
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
     }

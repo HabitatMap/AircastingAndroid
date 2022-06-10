@@ -6,20 +6,20 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.response.search.Session
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 
-class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Unit) :
+class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegionResponse) -> Unit) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
-    private val sessions: ArrayList<Session> = ArrayList()
-    private var selectedSession: Session? = null
+    private val sessions: ArrayList<SessionInRegionResponse> = ArrayList()
+    private var selectedSession: SessionInRegionResponse? = null
     private lateinit var cardView: View
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,
         private val onItemClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(session: Session) {
+        fun bind(session: SessionInRegionResponse) {
             binding.mySessions = session
             binding.executePendingBindings()
 
@@ -53,7 +53,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (Session) -> Uni
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
         holder.bind(sessions[position])
 
-    fun refresh(list: List<Session>) {
+    fun refresh(list: List<SessionInRegionResponse>) {
         sessions.clear()
         sessions.addAll(list)
     }

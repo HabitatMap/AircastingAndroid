@@ -7,7 +7,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
-import pl.llp.aircasting.data.api.response.search.Session
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
@@ -24,17 +24,17 @@ class SearchFollowViewModel @Inject constructor(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository
 ) : ViewModel() {
-    private val mutableSelectedSession = MutableLiveData<Session>()
+    private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
 
-    val selectedSession: LiveData<Session> get() = mutableSelectedSession
+    val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
 
-    fun selectSession(session: Session) {
+    fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
     }
 
@@ -50,7 +50,7 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(session: Session, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
+    fun onFollowSessionClicked(session: SessionInRegionResponse, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
         viewModelScope.launch(dispatcher) {
             val sessionId = viewModelScope.async(dispatcher) {
                 sessionsRepository.insert(session)
@@ -64,7 +64,7 @@ class SearchFollowViewModel @Inject constructor(
     }
 
     fun onUnfollowSessionClicked(
-        session: Session,
+        session: SessionInRegionResponse,
         dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) {
         viewModelScope.launch(dispatcher) {
