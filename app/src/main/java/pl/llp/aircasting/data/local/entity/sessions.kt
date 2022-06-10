@@ -33,7 +33,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
     @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
     @ColumnInfo(name = "session_order") val session_order: Int? = null,
-    @ColumnInfo(name = "username") val username: String? = null, // difference
+    @ColumnInfo(name = "username") val username: String? = null,
     @ColumnInfo(name = "is_external") val isExternal: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
