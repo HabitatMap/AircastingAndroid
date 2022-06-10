@@ -124,7 +124,7 @@
                     android:text="@string/follow_session"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btnMap" />
+                    app:layout_constraintTop_toBottomOf="@id/chipGroupType" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/unfollowBtn"
@@ -139,31 +139,40 @@
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btnMap"
+                    app:layout_constraintTop_toBottomOf="@id/chipGroupType"
                     app:rippleColor="#33AAAAAA"
                     app:strokeColor="@color/aircasting_blue_400"
                     app:strokeWidth="2dp" />
 
-                <Button
-                    android:id="@+id/btnMap"
-                    style="@style/Widget.Aircasting.ExpandedCardButtons"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/map_button"
-                    app:layout_constraintEnd_toStartOf="@+id/btnChart"
-                    app:layout_constraintTop_toBottomOf="@+id/mapViewBottomSheet" />
-
-                <Button
-                    android:id="@+id/btnChart"
-                    style="@style/Widget.Aircasting.ExpandedCardButtons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_2"
-                    android:text="@string/chart"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/mapViewBottomSheet" />
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintTop_toBottomOf="@+id/mapViewBottomSheet"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/mapChip"
+                        style="@style/Widget.Aircasting.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/map_button"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chartChip"
+                        style="@style/Widget.Aircasting.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                </com.google.android.material.chip.ChipGroup>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
