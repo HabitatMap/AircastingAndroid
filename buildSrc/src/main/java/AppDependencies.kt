@@ -36,18 +36,26 @@ object AppDependencies {
     private const val guava = "com.google.guava:guava:${Versions.guava}"
     private const val eventBus = "org.greenrobot:eventbus:${Versions.eventBus}"
     private const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
+
+    /* Dagger */
     private const val dagger = "com.google.dagger:dagger:${Versions.dagger}"
     private const val daggerCompiler = "com.google.dagger:dagger-compiler:${Versions.dagger}"
-    private const val daggerCompilerTest = "com.google.dagger:dagger-compiler:${Versions.dagger}"
+    private const val daggerAndroid = "com.google.dagger:dagger-android:${Versions.dagger}"
+    private const val daggerAndroidSupport = "com.google.dagger:dagger-android-support:${Versions.dagger}"
+    private const val daggerAndroidProcessor = "com.google.dagger:dagger-android-processor:${Versions.dagger}"
+
+    /* Espresso */
+    private const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
+    private const val espressoIntents = "androidx.test.espresso:espresso-intents:${Versions.espresso}"
 
     /* Networking */
     private const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     private const val retrofitMock = "com.squareup.retrofit2:retrofit-mock:${Versions.retrofit}"
     private const val converterGSON = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
-    private const val logginIntercepter =
-        "com.squareup.okhttp3:logging-interceptor:${Versions.loggingInterceptor}"
+    private const val loggingInterceptor =
+        "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp3}"
     private const val okHttp3MockWebServerTest =
-        "com.squareup.okhttp3:mockwebserver:${Versions.mockServerWeb}"
+        "com.squareup.okhttp3:mockwebserver:${Versions.okhttp3}"
     private const val gson = "com.google.code.gson:gson:${Versions.gson}"
 
     private const val openCV = "com.opencsv:opencsv:${Versions.openCv}"
@@ -72,6 +80,7 @@ object AppDependencies {
     /* Room DB */
     private const val roomDB = "androidx.room:room-runtime:${Versions.roomDB}"
     private const val roomDBCompiler = "androidx.room:room-compiler:${Versions.roomDB}"
+    private const val roomDBTest = "androidx.room:room-testing:${Versions.roomDB}"
 
     /* Miscellaneous */
     private const val commonsCodec = "commons-codec:commons-codec:${Versions.commonsCodec}"
@@ -104,10 +113,12 @@ object AppDependencies {
         add(eventBus)
         add(processPhoenix)
         add(dagger)
+        add(daggerAndroid)
+        add(daggerAndroidSupport)
         add(retrofit)
         add(retrofitMock)
         add(converterGSON)
-        add(logginIntercepter)
+        add(loggingInterceptor)
         add(okHttp3MockWebServerTest)
         add(gson)
         add(openCV)
@@ -126,9 +137,19 @@ object AppDependencies {
     val kaptLibraries = arrayListOf<String>().apply {
         add(daggerCompiler)
         add(roomDBCompiler)
+        add(daggerAndroidProcessor)
     }
-    val kaptTestLibraries = arrayListOf<String>().apply {
-        add(daggerCompilerTest)
+    val kaptAndroidTestLibraries = arrayListOf<String>().apply {
+        add(roomDBCompiler)
+        add(roomDBTest)
+        add(daggerCompiler)
+        add(daggerAndroidProcessor)
+    }
+    val androidTestImplementation = arrayListOf<String>().apply {
+        add(roomDBCompiler)
+        add(roomDBTest)
+        add(espressoCore)
+        add(espressoIntents)
     }
 }
 
@@ -147,6 +168,12 @@ fun DependencyHandler.kapt(list: List<String>) {
 fun DependencyHandler.kaptAndroidTest(list: List<String>) {
     list.forEach { dependency ->
         add("kaptAndroidTest", dependency)
+    }
+}
+
+fun DependencyHandler.androidTestImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("androidTestImplementation", dependency)
     }
 }
 
