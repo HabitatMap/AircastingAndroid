@@ -3,6 +3,7 @@ package pl.llp.aircasting.data.model
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
@@ -29,7 +30,8 @@ open class Session(
     private var mNotes: MutableList<Note> = mutableListOf(),
     var averagingFrequency: Int = 1,
     var order: Int? = null,
-    var isExternal: Boolean = false
+    var isExternal: Boolean = false,
+    var username: String? = null
 ) {
     constructor(sessionDBObject: SessionDBObject) : this(
         sessionDBObject.uuid,
@@ -74,6 +76,24 @@ open class Session(
         this.location = location
         this.contribute = contribute
         this.locationless = locationless
+    }
+
+    constructor(apiSession: pl.llp.aircasting.data.api.response.search.Session) : this(
+        uuid = apiSession.uuid,
+        mName = apiSession.title,
+        mType = Type.FIXED,
+        username = apiSession.username,
+        endTime = DateConverter.fromString(apiSession.endTimeLocal),
+        mStartTime = DateConverter.fromString(apiSession.startTimeLocal) ?: Date(),
+        mIndoor = apiSession.isIndoor,
+        deviceId = null,
+        deviceType = null,
+        isExternal = true,
+        followedAt = Date(),
+        mTags = arrayListOf(),
+        mStatus = Status.RECORDING
+    ) {
+        location = Location(apiSession.latitude, apiSession.longitude)
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject) :

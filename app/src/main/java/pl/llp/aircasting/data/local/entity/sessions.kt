@@ -3,7 +3,6 @@ package pl.llp.aircasting.data.local.entity
 import androidx.room.*
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.DateConverter
 import java.util.*
 
 @Entity(
@@ -62,22 +61,7 @@ data class SessionDBObject(
                 session.indoor
             )
 
-    // TODO: Move this to Session model class
-    constructor(apiSession: pl.llp.aircasting.data.api.response.search.Session) : this(
-        uuid = apiSession.uuid,
-        name = apiSession.title,
-        type = Session.Type.FIXED,
-        username = apiSession.username,
-        endTime = DateConverter.fromString(apiSession.endTimeLocal),
-        startTime = DateConverter.fromString(apiSession.startTimeLocal) ?: Date(),
-        latitude = apiSession.latitude,
-        longitude = apiSession.longitude,
-        is_indoor = apiSession.isIndoor,
-        deviceId = null,
-        deviceType = null,
-        isExternal = true,
-        followedAt = Date()
-    )
+
 }
 
 class SessionWithStreamsDBObject {
