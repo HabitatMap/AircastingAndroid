@@ -8,7 +8,7 @@ class MeasurementStreamsRepository {
     private val mDatabase = DatabaseProvider.get()
 
     fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
-        var streamDBObject = mDatabase.measurementStreams().
+        val streamDBObject = mDatabase.measurementStreams().
         loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
 
         return streamDBObject?.id
