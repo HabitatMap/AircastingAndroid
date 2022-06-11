@@ -8,6 +8,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
@@ -64,18 +65,26 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
 
         binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
-            if (chipGroup.checkedChipId == binding?.chartChip?.id) {
-                mapFragment?.view?.inVisible()
-                binding?.chartView?.visible()
-            } else {
-                mapFragment?.view?.visible()
-                binding?.chartView?.inVisible()
-            }
+            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
         }
 
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
         loader = AnimatedLoader(loaderImage)
+    }
+
+    private fun isChartChipSelected(chipGroup: ChipGroup): Boolean {
+        return chipGroup.checkedChipId == binding?.chartChip?.id
+    }
+
+    private fun toggleChart() {
+        mapFragment?.view?.inVisible()
+        binding?.chartView?.visible()
+    }
+
+    private fun toggleMap() {
+        mapFragment?.view?.visible()
+        binding?.chartView?.inVisible()
     }
 
     private fun getLatlngObserver() {
