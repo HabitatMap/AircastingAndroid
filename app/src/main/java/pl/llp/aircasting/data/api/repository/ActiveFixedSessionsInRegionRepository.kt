@@ -59,10 +59,11 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
 
     suspend fun getStreamOfGivenSession(
         sessionId: Long,
-        sensorName: String
+        sensorName: String,
+        measurementLimit: Int = 1
     ): Resource<StreamOfGivenSessionResponse> {
         return try {
-            val response = apiService.getStreamOfGivenSession(sessionId, sensorName)
+            val response = apiService.getStreamOfGivenSession(sessionId, sensorName, measurementLimit)
             responseHandler.handleSuccess(response)
         } catch (e: Exception) {
             responseHandler.handleException(e)
