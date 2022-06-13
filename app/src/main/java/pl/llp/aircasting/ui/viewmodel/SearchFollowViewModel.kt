@@ -92,14 +92,18 @@ class SearchFollowViewModel @Inject constructor(
         return sessionId.await()
     }
 
-    private fun saveMeasurementStream(
+    private suspend fun saveMeasurementStream(
+        dispatcher: CoroutineDispatcher,
         sessionId: Long,
-        session: SessionInRegionResponse
-    ) {
-        measurementStreamsRepository.insert(
-            sessionId,
-            MeasurementStream(session.streams.sensor)
-        )
+        measurementStream: MeasurementStream
+    ): Long {
+        val measurementStreamId = viewModelScope.async(dispatcher) {
+            measurementStreamsRepository.insert(
+                sessionId,
+                measurementStream
+            )
+        }
+        return measurementStreamId.await()
     }
 
     fun onUnfollowSessionClicked(
