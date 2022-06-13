@@ -142,15 +142,29 @@ class SearchFollowViewModel @Inject constructor(
             emit(stream)
         }
 
-    fun insertMeasurements(
-        measurementStreamId: Long,
-        sessionId: Long,
-        measurements: List<Measurement>
-    ) {
-        measurementsRepository.insertAll(
-            measurementStreamId,
-            sessionId,
-            measurements
-        )
+    private suspend fun getMeasurementsFromSelectedSession(dispatcher: CoroutineDispatcher): List<Measurement> {
+        val sessionId = selectedSession.value?.id?.toLong()
+        val sensorName = selectedSession.value?.streams?.sensor?.sensorName
+        val measurementLimit = 540
+
+        if (sensorName != null && sessionId != null) {
+            val response = viewModelScope.async(dispatcher) {
+                activeFixedRepo.getStreamOfGivenSession(
+                    sessionId,
+                    sensorName,
+                    measurementLimit
+                )
+            }
+            val measurementsFromResponse = response.await().data?.measurements
+            return convertFromResponseToModel(measurementsFromResponse)
+        }
+        return listOf()
     }
+
+    private fun convertFromResponseToModel(measurementsFromResponse: List<MeasurementOfStreamResponse>?) =
+        measurementsFromResponse?.let { list ->
+            list.map {
+                Measurement(it)
+            }
+        } ?: listOf()
 }
