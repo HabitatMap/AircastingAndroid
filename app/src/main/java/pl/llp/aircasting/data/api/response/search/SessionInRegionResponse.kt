@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class Session(
+data class SessionInRegionResponse(
     @SerializedName("end_time_local")
     val endTimeLocal: String,
     @SerializedName("id")

@@ -7,7 +7,7 @@
 
         <variable
             name="mySessions"
-            type="pl.llp.aircasting.data.api.response.search.Session" />
+            type="pl.llp.aircasting.data.api.response.search.SessionInRegionResponse" />
 
     </data>
 
