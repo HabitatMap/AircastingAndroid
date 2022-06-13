@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -145,7 +146,7 @@ class SearchFollowViewModel @Inject constructor(
     private suspend fun getMeasurementsFromSelectedSession(dispatcher: CoroutineDispatcher): List<Measurement> {
         val sessionId = selectedSession.value?.id?.toLong()
         val sensorName = selectedSession.value?.streams?.sensor?.sensorName
-        val measurementLimit = 540
+        val measurementLimit = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
 
         if (sensorName != null && sessionId != null) {
             val response = viewModelScope.async(dispatcher) {
