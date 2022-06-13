@@ -1,10 +1,12 @@
 package pl.llp.aircasting.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
 import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class SearchFollowViewModel @Inject constructor(
     private val activeFixedRepo: ActiveFixedSessionsInRegionRepository,
     private val measurementsRepository: MeasurementsRepository,
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository
 ) : ViewModel() {
@@ -70,6 +73,18 @@ class SearchFollowViewModel @Inject constructor(
                 )
             measurements = getMeasurementsFromSelectedSession(dispatcher)
             saveMeasurements(dispatcher, streamId, sessionId, measurements)
+            saveMeasurementsToActiveTable(dispatcher, streamId, sessionId, measurements)
+        }
+    }
+
+    private fun saveMeasurementsToActiveTable(
+        dispatcher: CoroutineDispatcher,
+        streamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        viewModelScope.launch(dispatcher) {
+            activeSessionMeasurementsRepository.insertAll(streamId, sessionId, measurements)
         }
     }
 
@@ -147,7 +162,7 @@ class SearchFollowViewModel @Inject constructor(
     private suspend fun getMeasurementsFromSelectedSession(dispatcher: CoroutineDispatcher): List<Measurement> {
         val sessionId = selectedSession.value?.id?.toLong()
         val sensorName = selectedSession.value?.streams?.sensor?.sensorName
-        val measurementLimit = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
+        val measurementLimit = Constants.MEASUREMENTS_IN_HOUR * 24
 
         if (sensorName != null && sessionId != null) {
             val response = viewModelScope.async(dispatcher) {
