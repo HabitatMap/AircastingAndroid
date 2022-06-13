@@ -398,5 +398,7 @@
     <string name="unfollow_session">Ne plus suivre la session</string>
     <string name="session_followed">Séance suivie !</string>
     <string name="session_unfollowed">Session non suivie !</string>
+    <string name="chart">graphique</string>
+    <string name="finish">Finir</string>
 
 </resources>

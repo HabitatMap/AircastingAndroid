@@ -8,6 +8,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
@@ -63,9 +64,27 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             binding?.followBtn?.visible()
         }
 
+        binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
+            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
+        }
+
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
         loader = AnimatedLoader(loaderImage)
+    }
+
+    private fun isChartChipSelected(chipGroup: ChipGroup): Boolean {
+        return chipGroup.checkedChipId == binding?.chartChip?.id
+    }
+
+    private fun toggleChart() {
+        mapFragment?.view?.inVisible()
+        binding?.chartView?.visible()
+    }
+
+    private fun toggleMap() {
+        mapFragment?.view?.visible()
+        binding?.chartView?.inVisible()
     }
 
     private fun getLatlngObserver() {
@@ -81,7 +100,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun observeLastMeasurementsValue() {
         val sessionId = searchFollowViewModel.selectedSession.value?.id?.toLong()
-        val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
+        val sensorName =
+            searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
             searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName)
                 .observe(this) {

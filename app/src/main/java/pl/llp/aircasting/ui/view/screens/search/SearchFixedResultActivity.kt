@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -12,13 +13,16 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.*
+import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
@@ -30,6 +34,7 @@ import pl.llp.aircasting.data.api.util.SensorNames
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import javax.inject.Inject
@@ -76,6 +81,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        binding.include.finishView.visible()
+
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
@@ -90,6 +97,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
+        binding.include.finishView.setOnClickListener { goToDashboard() }
 
         setupRecyclerView()
         setupSearchLayout()
@@ -153,6 +161,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun initialisePlacesClient() {
         initializePlacesApi(this)
         placesClient = Places.createClient(this)
+    }
+
+    private fun goToDashboard() {
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     private fun setupRecyclerView() {
