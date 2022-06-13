@@ -162,7 +162,7 @@ class SearchFollowViewModel @Inject constructor(
     private suspend fun getMeasurementsFromSelectedSession(dispatcher: CoroutineDispatcher): List<Measurement> {
         val sessionId = selectedSession.value?.id?.toLong()
         val sensorName = selectedSession.value?.streams?.sensor?.sensorName
-        val measurementLimit = ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
+        val measurementLimit = Constants.MEASUREMENTS_IN_HOUR * 24
 
         if (sensorName != null && sessionId != null) {
             val response = viewModelScope.async(dispatcher) {
