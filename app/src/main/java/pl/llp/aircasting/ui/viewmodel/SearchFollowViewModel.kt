@@ -31,6 +31,7 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
+    private lateinit var measurements: List<Measurement>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -67,7 +68,7 @@ class SearchFollowViewModel @Inject constructor(
                     sessionId,
                     MeasurementStream(session.streams.sensor)
                 )
-            val measurements = getMeasurementsFromSelectedSession(dispatcher)
+            measurements = getMeasurementsFromSelectedSession(dispatcher)
             saveMeasurements(dispatcher, streamId, sessionId, measurements)
         }
     }
