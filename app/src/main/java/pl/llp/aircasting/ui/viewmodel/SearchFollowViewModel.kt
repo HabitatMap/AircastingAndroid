@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
+import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -59,7 +60,25 @@ class SearchFollowViewModel @Inject constructor(
             val sessionId =
                 saveSession(dispatcher, session)
 
-            saveMeasurementStream(sessionId, session)
+            val streamId =
+                saveMeasurementStream(
+                    dispatcher,
+                    sessionId,
+                    MeasurementStream(session.streams.sensor)
+                )
+            val measurements = getMeasurementsFromSelectedSession(dispatcher)
+            saveMeasurements(dispatcher, streamId, sessionId, measurements)
+        }
+    }
+
+    private fun saveMeasurements(
+        dispatcher: CoroutineDispatcher,
+        streamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
+        viewModelScope.launch(dispatcher) {
+            measurementsRepository.insertAll(streamId, sessionId, measurements)
         }
     }
 
