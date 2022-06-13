@@ -10,17 +10,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.di.TestApiModule
-import pl.llp.aircasting.di.TestSettingsModule
-import pl.llp.aircasting.helpers.JsonBody
-import pl.llp.aircasting.helpers.MockWebServerDispatcher
-import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
-import pl.llp.aircasting.helpers.getMockWebServerFrom
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import okhttp3.mockwebserver.MockResponse
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -28,6 +17,17 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestSettingsModule
+import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.di.modules.PermissionsModule
+import pl.llp.aircasting.helpers.JsonBody
+import pl.llp.aircasting.helpers.MockWebServerDispatcher
+import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
+import pl.llp.aircasting.helpers.getMockWebServerFrom
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
+import pl.llp.aircasting.util.Settings
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
@@ -90,6 +90,8 @@ class LoginTest {
         )
 
         testRule.launchActivity(null)
+
+        settings.onboardingAccepted()
 
         onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("ania@example.org"))
         Espresso.closeSoftKeyboard()

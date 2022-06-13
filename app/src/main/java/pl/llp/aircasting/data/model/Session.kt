@@ -29,7 +29,9 @@ open class Session(
     var urlLocation: String? = null,
     private var mNotes: MutableList<Note> = mutableListOf(),
     var averagingFrequency: Int = 1,
-    var order: Int? = null
+    var order: Int? = null,
+    var isExternal: Boolean = false,
+    var username: String? = null
 ) {
     constructor(sessionDBObject: SessionDBObject) : this(
         sessionDBObject.uuid,
@@ -46,7 +48,8 @@ open class Session(
         sessionDBObject.followedAt,
         sessionDBObject.contribute,
         sessionDBObject.locationless,
-        sessionDBObject.is_indoor
+        sessionDBObject.is_indoor,
+        isExternal = sessionDBObject.isExternal
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)
@@ -73,6 +76,24 @@ open class Session(
         this.location = location
         this.contribute = contribute
         this.locationless = locationless
+    }
+
+    constructor(apiSession: pl.llp.aircasting.data.api.response.search.SessionInRegionResponse) : this(
+        uuid = apiSession.uuid,
+        mName = apiSession.title,
+        mType = Type.FIXED,
+        username = apiSession.username,
+        endTime = DateConverter.fromString(apiSession.endTimeLocal),
+        mStartTime = DateConverter.fromString(apiSession.startTimeLocal) ?: Date(),
+        mIndoor = apiSession.isIndoor,
+        deviceId = null,
+        deviceType = null,
+        isExternal = true,
+        followedAt = Date(),
+        mTags = arrayListOf(),
+        mStatus = Status.RECORDING
+    ) {
+        location = Location(apiSession.latitude, apiSession.longitude)
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject) :
@@ -126,35 +147,6 @@ open class Session(
         this.mNotes = sessionWithStreamsAndLastMeasurementsDBObject.notes.map { noteDBObject ->
             Note(noteDBObject)
         }.toMutableList()
-    }
-
-    constructor(extSessionsDBObject: ExtSessionsDBObject) : this(
-        uuid = extSessionsDBObject.uuid,
-        deviceId = null,
-        deviceType = null,
-        mType = Type.FIXED,
-        mName = extSessionsDBObject.title,
-        mTags = arrayListOf(),
-        mStatus = Status.RECORDING,
-        mStartTime = DateConverter.fromString(extSessionsDBObject.startTimeLocal) ?: Date(),
-        endTime = DateConverter.fromString(extSessionsDBObject.endTimeLocal) ?: Date(),
-        followedAt = extSessionsDBObject.followedAt
-    )
-
-    constructor(externalSessionWithStreamsDBObject: ExternalSessionWithStreamsDBObject) : this(
-        externalSessionWithStreamsDBObject.session
-    ) {
-        this.mStreams = externalSessionWithStreamsDBObject.streams.map { streamWithMeasurementsDBObject ->
-            MeasurementStream(streamWithMeasurementsDBObject)
-        }
-    }
-
-    constructor(externalSessionWithStreamsAndMeasurementsDBObject: ExternalSessionWithStreamsAndMeasurementsDBObject) : this(
-        externalSessionWithStreamsAndMeasurementsDBObject.session
-    ) {
-        this.mStreams = externalSessionWithStreamsAndMeasurementsDBObject.streams.map { streamWithMeasurementsDBObject ->
-            MeasurementStream(streamWithMeasurementsDBObject)
-        }
     }
 
     companion object {

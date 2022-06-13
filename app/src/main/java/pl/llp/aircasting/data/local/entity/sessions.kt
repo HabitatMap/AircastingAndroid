@@ -1,8 +1,6 @@
 package pl.llp.aircasting.data.local.entity
 
 import androidx.room.*
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
-import pl.llp.aircasting.data.local.entity.NoteDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*
@@ -34,7 +32,9 @@ data class SessionDBObject(
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
     @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
-    @ColumnInfo(name = "session_order") val session_order: Int? = null
+    @ColumnInfo(name = "session_order") val session_order: Int? = null,
+    @ColumnInfo(name = "username") val username: String? = null,
+    @ColumnInfo(name = "is_external") val isExternal: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
@@ -60,6 +60,8 @@ data class SessionDBObject(
                 session.urlLocation,
                 session.indoor
             )
+
+
 }
 
 class SessionWithStreamsDBObject {

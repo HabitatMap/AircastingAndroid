@@ -56,15 +56,16 @@ android {
     }
 
     sourceSets {
-        this.getByName("main") {
+        getByName("main") {
             this.java.apply {
                 srcDir("src/main/assets")
                 srcDir("src/main/res")
             }
         }
-        this.getByName("test") {
+        getByName("test") {
             this.java.srcDir("src/test/res")
         }
+        getByName("androidTest").assets.srcDirs(files("$projectDir/schemas"))
     }
     
     kotlinOptions.jvmTarget = "1.8"
@@ -78,15 +79,14 @@ dependencies {
     implementation(platform(AppDependencies.firebaseBom))
     implementation(AppDependencies.appLibraries)
     kapt(AppDependencies.kaptLibraries)
-    kaptAndroidTest(AppDependencies.kaptTestLibraries)
-
+    kaptAndroidTest(AppDependencies.kaptAndroidTestLibraries)
+    androidTestImplementation(AppDependencies.androidTestImplementation)
     // Tests
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.6.20")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("org.robolectric:robolectric:4.8.1")
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.7")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")

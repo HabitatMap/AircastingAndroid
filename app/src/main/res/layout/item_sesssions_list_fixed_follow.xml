@@ -7,7 +7,7 @@
 
         <variable
             name="mySessions"
-            type="pl.llp.aircasting.data.api.response.search.Session" />
+            type="pl.llp.aircasting.data.api.response.search.SessionInRegionResponse" />
 
     </data>
 
@@ -31,9 +31,11 @@
                 android:maxLines="3"
                 android:text="@{mySessions.title}"
                 android:textColor="@color/aircasting_dark_blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Krakow, poland, 445454, fdgdad, poland, 445454, fdgdad" />
+                tools:text="Krakow, poland, 445454, fdgdad, poland, 445454, fdgdad poland, 445454, fdgdad" />
 
             <TextView
                 android:id="@+id/textView2"

@@ -8,10 +8,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.entity.ExtSessionsDBObject
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -24,6 +23,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private var mapFragment: SupportMapFragment? = null
     private lateinit var mMap: GoogleMap
+    private val options = MarkerOptions()
     private var txtLat: Double? = null
     private var txtLng: Double? = null
     private lateinit var loader: AnimatedLoader
@@ -49,24 +49,42 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
         binding?.followBtn?.setOnClickListener {
             val selectedSession = searchFollowViewModel.selectedSession.value
-            if (selectedSession != null) onFollowClicked(ExtSessionsDBObject(selectedSession))
+            if (selectedSession != null) onFollowClicked(selectedSession)
 
-            it.context.showToast("Session followed!")
+            it.context.showToast(getString(R.string.session_followed))
             it.gone()
             binding?.unfollowBtn?.visible()
         }
         binding?.unfollowBtn?.setOnClickListener {
             val selectedSession = searchFollowViewModel.selectedSession.value
-            if (selectedSession != null) onUnfollowClicked(ExtSessionsDBObject(selectedSession))
+            if (selectedSession != null) onUnfollowClicked(selectedSession)
 
-            it.context.showToast("Session Unfollowed!")
+            it.context.showToast(getString(R.string.session_unfollowed))
             it.gone()
             binding?.followBtn?.visible()
+        }
+
+        binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
+            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
         }
 
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
         loader = AnimatedLoader(loaderImage)
+    }
+
+    private fun isChartChipSelected(chipGroup: ChipGroup): Boolean {
+        return chipGroup.checkedChipId == binding?.chartChip?.id
+    }
+
+    private fun toggleChart() {
+        mapFragment?.view?.inVisible()
+        binding?.chartView?.visible()
+    }
+
+    private fun toggleMap() {
+        mapFragment?.view?.visible()
+        binding?.chartView?.inVisible()
     }
 
     private fun getLatlngObserver() {
@@ -82,7 +100,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun observeLastMeasurementsValue() {
         val sessionId = searchFollowViewModel.selectedSession.value?.id?.toLong()
-        val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
+        val sensorName =
+            searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
             searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName)
                 .observe(this) {
@@ -115,12 +134,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
     }
 
-    private fun onFollowClicked(extSession: ExtSessionsDBObject) {
-        searchFollowViewModel.onFollowSessionClicked(extSession)
+    private fun onFollowClicked(session: SessionInRegionResponse) {
+        searchFollowViewModel.onFollowSessionClicked(session)
     }
 
-    private fun onUnfollowClicked(extSession: ExtSessionsDBObject) {
-        searchFollowViewModel.onUnfollowSessionClicked(extSession)
+    private fun onUnfollowClicked(session: SessionInRegionResponse) {
+        searchFollowViewModel.onUnfollowSessionClicked(session)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -129,10 +148,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
         if (txtLat != null && txtLng != null) {
             val myLocation = LatLng(txtLat!!, txtLng!!)
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(myLocation)
-            )
+            mMap.drawMarkerOnMap(requireActivity(), options, txtLat!!, txtLng!!, null)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
         }
     }

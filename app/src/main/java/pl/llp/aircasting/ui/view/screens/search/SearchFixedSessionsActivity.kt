@@ -16,7 +16,6 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.*
-import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
@@ -127,7 +126,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             })
 
             binding.btnContinue.setOnClickListener {
-                if (lat != null && long != null && txtSelectedSensor != null) goToSearchResult(
+                if (lat != null && long != null) goToSearchResult(
                     lat.toString(),
                     long.toString()
                 )

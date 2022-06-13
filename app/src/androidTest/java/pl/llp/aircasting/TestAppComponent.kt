@@ -15,7 +15,8 @@ import javax.inject.Singleton
         PermissionsModule::class,
         SensorsModule::class,
         NewSessionWizardModule::class,
-        ViewModelModule::class
+        ViewModelModule::class,
+        DatabaseModule::class,
     ]
 )
 interface TestAppComponent: AppComponent {
