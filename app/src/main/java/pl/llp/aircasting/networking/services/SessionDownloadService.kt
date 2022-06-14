@@ -58,7 +58,7 @@ class SessionDownloadService(
             null,
             null,
             sessionType(sessionResponse.type),
-            sessionResponse.title ?: "",
+            sessionResponse.title ?: "Unnamed session",
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
             startTime,
