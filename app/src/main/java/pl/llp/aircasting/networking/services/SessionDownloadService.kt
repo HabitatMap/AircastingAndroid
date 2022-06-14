@@ -58,7 +58,7 @@ class SessionDownloadService(
             null,
             null,
             sessionType(sessionResponse.type),
-            sessionResponse.title,
+            sessionResponse.title ?: "",
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
             startTime,
