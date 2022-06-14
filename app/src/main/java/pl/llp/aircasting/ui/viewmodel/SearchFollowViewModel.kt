@@ -1,9 +1,7 @@
 package pl.llp.aircasting.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.Constants
@@ -20,6 +18,7 @@ import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -28,7 +27,8 @@ class SearchFollowViewModel @Inject constructor(
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
-    private val sessionsRepository: SessionsRepository
+    private val sessionsRepository: SessionsRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
@@ -59,62 +59,56 @@ class SearchFollowViewModel @Inject constructor(
 
     fun onFollowSessionClicked(
         session: SessionInRegionResponse,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(ioDispatcher) {
             val sessionId =
-                saveSession(dispatcher, session)
+                saveSession(session)
 
             val streamId =
                 saveMeasurementStream(
-                    dispatcher,
                     sessionId,
                     MeasurementStream(session.streams.sensor)
                 )
-            measurements = getMeasurementsFromSelectedSession(dispatcher)
-            saveMeasurements(dispatcher, streamId, sessionId, measurements)
-            saveMeasurementsToActiveTable(dispatcher, streamId, sessionId, measurements)
+            measurements = getMeasurementsFromSelectedSession()
+            saveMeasurements(streamId, sessionId, measurements)
+            saveMeasurementsToActiveTable(streamId, sessionId, measurements)
         }
     }
 
     private fun saveMeasurementsToActiveTable(
-        dispatcher: CoroutineDispatcher,
         streamId: Long,
         sessionId: Long,
         measurements: List<Measurement>
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(ioDispatcher) {
             activeSessionMeasurementsRepository.insertAll(streamId, sessionId, measurements)
         }
     }
 
     private fun saveMeasurements(
-        dispatcher: CoroutineDispatcher,
         streamId: Long,
         sessionId: Long,
         measurements: List<Measurement>
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(ioDispatcher) {
             measurementsRepository.insertAll(streamId, sessionId, measurements)
         }
     }
 
     private suspend fun saveSession(
-        dispatcher: CoroutineDispatcher,
         session: SessionInRegionResponse
     ): Long {
-        val sessionId = viewModelScope.async(dispatcher) {
+        val sessionId = viewModelScope.async(ioDispatcher) {
             sessionsRepository.insert(Session(session))
         }
         return sessionId.await()
     }
 
     private suspend fun saveMeasurementStream(
-        dispatcher: CoroutineDispatcher,
         sessionId: Long,
         measurementStream: MeasurementStream
     ): Long {
-        val measurementStreamId = viewModelScope.async(dispatcher) {
+        val measurementStreamId = viewModelScope.async(ioDispatcher) {
             measurementStreamsRepository.insert(
                 sessionId,
                 measurementStream
@@ -125,15 +119,14 @@ class SearchFollowViewModel @Inject constructor(
 
     fun onUnfollowSessionClicked(
         session: SessionInRegionResponse,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(listOf(session.uuid))
         }
     }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
-        liveData(Dispatchers.IO) {
+        liveData(ioDispatcher) {
             emit(Resource.loading(null))
 
             try {
@@ -149,7 +142,7 @@ class SearchFollowViewModel @Inject constructor(
         sessionId: Long,
         sensorName: String
     ): LiveData<Resource<StreamOfGivenSessionResponse>> =
-        liveData(Dispatchers.IO) {
+        liveData(ioDispatcher) {
             emit(Resource.loading(null))
 
             val stream = activeFixedRepo.getStreamOfGivenSession(
@@ -159,13 +152,13 @@ class SearchFollowViewModel @Inject constructor(
             emit(stream)
         }
 
-    private suspend fun getMeasurementsFromSelectedSession(dispatcher: CoroutineDispatcher): List<Measurement> {
+    private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
         val sessionId = selectedSession.value?.id?.toLong()
         val sensorName = selectedSession.value?.streams?.sensor?.sensorName
         val measurementLimit = Constants.MEASUREMENTS_IN_HOUR * 24
 
         if (sensorName != null && sessionId != null) {
-            val response = viewModelScope.async(dispatcher) {
+            val response = viewModelScope.async(ioDispatcher) {
                 activeFixedRepo.getStreamOfGivenSession(
                     sessionId,
                     sensorName,
