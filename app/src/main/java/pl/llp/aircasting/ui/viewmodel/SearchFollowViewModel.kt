@@ -9,6 +9,7 @@ import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionReposito
 import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
+import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -74,8 +75,6 @@ class SearchFollowViewModel @Inject constructor(
             saveMeasurementsToActiveTable(streamId, sessionId, measurements)
         }
     }
-
-
 
     private fun saveMeasurementsToActiveTable(
         streamId: Long,
@@ -152,6 +151,20 @@ class SearchFollowViewModel @Inject constructor(
                 sensorName
             )
             emit(stream)
+        }
+
+    fun getSessionWithStreamsAndMeasurements(
+        sessionId: Long,
+        measurementLimit: Int = 1
+    ): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
+        liveData(ioDispatcher) {
+            emit(Resource.loading(null))
+
+            val session = activeFixedRepo.getSessionWithStreamsAndMeasurements(
+                sessionId,
+                measurementLimit
+            )
+            emit(session)
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
