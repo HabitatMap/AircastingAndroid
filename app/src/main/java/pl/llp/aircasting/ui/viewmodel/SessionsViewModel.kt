@@ -61,52 +61,16 @@ class SessionsViewModel @Inject constructor(
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
-    // TODO: Use the method to create sensor threshold
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
-        return findOrCreateSensorThresholds(session.streams)
+        return thresholdsRepository.findOrCreateSensorThresholds(session)
     }
 
     fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
-        val existingThresholds = findSensorThresholds(streams)
-        val newThresholds = insertNewSensorThresholds(streams, existingThresholds)
-
-        val thresholds = mutableListOf<SensorThreshold>()
-        thresholds.addAll(existingThresholds)
-        thresholds.addAll(newThresholds)
-
-        return thresholds
-    }
-
-    private fun findSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
-        val sensorNames = streams.map { it.sensorName }
-        return mDatabase.sensorThresholds()
-            .allBySensorNames(sensorNames)
-            .map { SensorThreshold(it) }
-    }
-
-    private fun insertNewSensorThresholds(
-        streams: List<MeasurementStream>,
-        existingThresholds: List<SensorThreshold>
-    ): List<SensorThreshold> {
-        val existingSensorNames = existingThresholds.map { it.sensorName }
-        val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
-
-        return toCreate.map { stream ->
-            val sensorThresholdDBObject = SensorThresholdDBObject(stream)
-            mDatabase.sensorThresholds().insert(sensorThresholdDBObject)
-            SensorThreshold(sensorThresholdDBObject)
-        }
+        return thresholdsRepository.findOrCreateSensorThresholds(streams)
     }
 
     fun updateSensorThreshold(sensorThreshold: SensorThreshold) {
-        mDatabase.sensorThresholds().update(
-            sensorThreshold.sensorName,
-            sensorThreshold.thresholdVeryLow,
-            sensorThreshold.thresholdLow,
-            sensorThreshold.thresholdMedium,
-            sensorThreshold.thresholdHigh,
-            sensorThreshold.thresholdVeryHigh
-        )
+        thresholdsRepository.updateSensorThreshold(sensorThreshold)
     }
 
     fun updateFollowedAt(session: Session) {

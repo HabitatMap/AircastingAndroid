@@ -8,7 +8,7 @@ import pl.llp.aircasting.data.model.Session
 
 class ThresholdsRepository {
     private val mDatabase = DatabaseProvider.get()
-    // TODO: Use the method to create sensor threshold
+
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
         return findOrCreateSensorThresholds(session.streams)
     }
