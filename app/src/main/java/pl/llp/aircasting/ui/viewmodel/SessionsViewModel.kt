@@ -54,6 +54,7 @@ class SessionsViewModel : ViewModel() {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
+    // TODO: Use the method to create sensor threshold
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
         return findOrCreateSensorThresholds(session.streams)
     }
@@ -76,8 +77,8 @@ class SessionsViewModel : ViewModel() {
             .map { SensorThreshold(it) }
     }
 
-    private fun createSensorThresholds(streams: List<MeasurementStream>, existingThreshols: List<SensorThreshold>): List<SensorThreshold> {
-        val existingSensorNames = existingThreshols.map { it.sensorName }
+    private fun createSensorThresholds(streams: List<MeasurementStream>, existingThresholds: List<SensorThreshold>): List<SensorThreshold> {
+        val existingSensorNames = existingThresholds.map { it.sensorName }
         val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
 
         return toCreate.map { stream ->
