@@ -32,19 +32,29 @@ class SearchFollowViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
+    private val mutableSelectedFullSession =
+        MutableLiveData<SessionWithStreamsAndMeasurementsResponse?>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var measurements: List<Measurement>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
+    val selectedFullSession: LiveData<SessionWithStreamsAndMeasurementsResponse?> get() = mutableSelectedFullSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
+
+        mutableSelectedFullSession.value = downloadFullSession(session)
     }
+
+    private fun downloadFullSession(session: SessionInRegionResponse) =
+        getSessionWithStreamsAndMeasurements(
+            session.id
+        ).value?.data
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
@@ -153,9 +163,9 @@ class SearchFollowViewModel @Inject constructor(
             emit(stream)
         }
 
-    fun getSessionWithStreamsAndMeasurements(
+    private fun getSessionWithStreamsAndMeasurements(
         sessionId: Long,
-        measurementLimit: Int = 1
+        measurementLimit: Int = Constants.MEASUREMENTS_IN_HOUR * 24
     ): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
@@ -168,7 +178,7 @@ class SearchFollowViewModel @Inject constructor(
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
-        val sessionId = selectedSession.value?.id?.toLong()
+        val sessionId = selectedSession.value?.id
         val sensorName = selectedSession.value?.streams?.sensor?.sensorName
         val measurementLimit = Constants.MEASUREMENTS_IN_HOUR * 24
 

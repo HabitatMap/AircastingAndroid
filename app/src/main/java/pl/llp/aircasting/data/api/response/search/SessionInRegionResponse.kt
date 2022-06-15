@@ -8,7 +8,7 @@ data class SessionInRegionResponse(
     @SerializedName("end_time_local")
     val endTimeLocal: String,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("is_indoor")
     val isIndoor: Boolean,
     @SerializedName("last_hour_average")
