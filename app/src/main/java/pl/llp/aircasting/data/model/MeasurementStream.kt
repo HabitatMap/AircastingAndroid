@@ -57,6 +57,20 @@ open class MeasurementStream(
         sensor.thresholdVeryHigh,
     )
 
+    constructor(sensor: Sensor, sensorThreshold: SensorThreshold) : this(
+        sensor.sensorPackageName,
+        sensor.sensorName,
+        sensor.measurementType,
+        sensor.measurementShortType,
+        sensor.unitName,
+        sensor.unitSymbol,
+        sensorThreshold.thresholdVeryLow,
+        sensorThreshold.thresholdLow,
+        sensorThreshold.thresholdMedium,
+        sensorThreshold.thresholdHigh,
+        sensorThreshold.thresholdVeryHigh,
+    )
+
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
         streamDbObject.sensorPackageName,
         streamDbObject.sensorName,
