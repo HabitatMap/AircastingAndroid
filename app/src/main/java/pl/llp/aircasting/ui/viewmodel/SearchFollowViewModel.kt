@@ -178,7 +178,7 @@ class SearchFollowViewModel @Inject constructor(
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
-        val sessionId = selectedSession.value?.id?.toLong()
+        val sessionId = selectedSession.value?.id
         val sensorName = selectedSession.value?.streams?.sensor?.sensorName
         val measurementLimit = Constants.MEASUREMENTS_IN_HOUR * 24
 
