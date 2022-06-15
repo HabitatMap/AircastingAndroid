@@ -26,7 +26,6 @@ open class MeasurementStream(
     val thresholdVeryHigh: Int,
     var deleted: Boolean = false,
     private var mMeasurements: List<Measurement> = listOf()
-
 ) {
     constructor(measurementEvent: NewMeasurementEvent) : this(
         measurementEvent.packageName,
@@ -57,6 +56,22 @@ open class MeasurementStream(
         sensor.thresholdVeryHigh,
     )
 
+    constructor(sensor: Sensor, myMeasurements: List<Measurement>) : this(
+        sensor.sensorPackageName,
+        sensor.sensorName,
+        sensor.measurementType,
+        sensor.measurementShortType,
+        sensor.unitName,
+        sensor.unitSymbol,
+        sensor.thresholdVeryLow,
+        sensor.thresholdLow,
+        sensor.thresholdMedium,
+        sensor.thresholdHigh,
+        sensor.thresholdVeryHigh
+    ) {
+        this.mMeasurements = myMeasurements
+    }
+
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
         streamDbObject.sensorPackageName,
         streamDbObject.sensorName,
@@ -72,8 +87,9 @@ open class MeasurementStream(
         streamDbObject.deleted
     )
 
-    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject) :
-            this(streamWithMeasurementsDBObject.stream) {
+    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject) : this(
+        streamWithMeasurementsDBObject.stream
+    ) {
         this.mMeasurements =
             streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
                 Measurement(measurementDBObject)
