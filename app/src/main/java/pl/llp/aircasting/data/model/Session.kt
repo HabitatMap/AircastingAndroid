@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.model
 
+import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -7,7 +8,7 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
-val TAGS_SEPARATOR = " "
+const val TAGS_SEPARATOR = " "
 
 open class Session(
     val uuid: String,
@@ -78,13 +79,13 @@ open class Session(
         this.locationless = locationless
     }
 
-    constructor(apiSession: pl.llp.aircasting.data.api.response.search.SessionInRegionResponse) : this(
-        uuid = apiSession.uuid,
+    constructor(apiSession: SessionWithStreamsAndMeasurementsResponse) : this(
+        uuid = apiSession.id.toString(),
         mName = apiSession.title,
         mType = Type.FIXED,
         username = apiSession.username,
-        endTime = DateConverter.fromString(apiSession.endTimeLocal),
-        mStartTime = DateConverter.fromString(apiSession.startTimeLocal) ?: Date(),
+        endTime = DateConverter.fromString(apiSession.endTime.toString()),
+        mStartTime = DateConverter.fromString(apiSession.startTime.toString()) ?: Date(),
         mIndoor = apiSession.isIndoor,
         deviceId = null,
         deviceType = null,
