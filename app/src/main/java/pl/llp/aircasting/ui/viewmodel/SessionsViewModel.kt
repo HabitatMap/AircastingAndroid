@@ -61,7 +61,7 @@ class SessionsViewModel : ViewModel() {
 
     fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
         val existingThresholds = findSensorThresholds(streams)
-        val newThresholds = createSensorThresholds(streams, existingThresholds)
+        val newThresholds = insertNewSensorThresholds(streams, existingThresholds)
 
         val thresholds = mutableListOf<SensorThreshold>()
         thresholds.addAll(existingThresholds)
@@ -77,7 +77,7 @@ class SessionsViewModel : ViewModel() {
             .map { SensorThreshold(it) }
     }
 
-    private fun createSensorThresholds(streams: List<MeasurementStream>, existingThresholds: List<SensorThreshold>): List<SensorThreshold> {
+    private fun insertNewSensorThresholds(streams: List<MeasurementStream>, existingThresholds: List<SensorThreshold>): List<SensorThreshold> {
         val existingSensorNames = existingThresholds.map { it.sensorName }
         val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
 
