@@ -2,14 +2,11 @@ package pl.llp.aircasting.di.modules
 
 import dagger.Module
 import dagger.Provides
-import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
-import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.*
 import javax.inject.Singleton
 
 @Module
-class DatabaseModule() {
+class DatabaseModule {
     @Provides
     @Singleton
     fun providesSessionsRepository(): SessionsRepository = SessionsRepository()
@@ -26,4 +23,8 @@ class DatabaseModule() {
     @Provides
     @Singleton
     fun providesActiveSessionRepository(): ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository()
+
+    @Provides
+    @Singleton
+    fun providesThresholdsRepository(): ThresholdsRepository = ThresholdsRepository()
 }
