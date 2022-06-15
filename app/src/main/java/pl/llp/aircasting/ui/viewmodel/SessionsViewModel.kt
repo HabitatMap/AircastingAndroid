@@ -4,12 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.*
+import pl.llp.aircasting.data.local.repository.ThresholdsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
+import javax.inject.Inject
 
-class SessionsViewModel : ViewModel() {
+class SessionsViewModel @Inject constructor(
+    private val thresholdsRepository: ThresholdsRepository
+) : ViewModel() {
     private val mDatabase = DatabaseProvider.get()
+
 
     fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
@@ -25,7 +30,9 @@ class SessionsViewModel : ViewModel() {
 
     fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
-            Session.Type.MOBILE, listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value))
+            Session.Type.MOBILE,
+            listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value)
+        )
     }
 
     fun loadLiveDataCompleteSessionBySessionUUID(sessionUUID: String): LiveData<CompleteSessionDBObject?> {
@@ -77,7 +84,10 @@ class SessionsViewModel : ViewModel() {
             .map { SensorThreshold(it) }
     }
 
-    private fun insertNewSensorThresholds(streams: List<MeasurementStream>, existingThresholds: List<SensorThreshold>): List<SensorThreshold> {
+    private fun insertNewSensorThresholds(
+        streams: List<MeasurementStream>,
+        existingThresholds: List<SensorThreshold>
+    ): List<SensorThreshold> {
         val existingSensorNames = existingThresholds.map { it.sensorName }
         val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
 
