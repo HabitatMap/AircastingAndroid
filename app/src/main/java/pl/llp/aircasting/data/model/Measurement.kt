@@ -1,10 +1,11 @@
 package pl.llp.aircasting.data.model
 
+import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
+import pl.llp.aircasting.data.api.response.MeasurementResponse
 import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
-import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.data.api.response.MeasurementResponse
+import pl.llp.aircasting.util.events.NewMeasurementEvent
 import java.util.*
 
 class Measurement(
@@ -36,6 +37,13 @@ class Measurement(
     constructor(measurementResponse: MeasurementResponse): this(
         measurementResponse.value,
         DateConverter.fromString(measurementResponse.time) ?: Date(),
+        measurementResponse.latitude,
+        measurementResponse.longitude
+    )
+
+    constructor(measurementResponse: MeasurementOfStreamResponse): this(
+        measurementResponse.value,
+        Date(measurementResponse.time),
         measurementResponse.latitude,
         measurementResponse.longitude
     )

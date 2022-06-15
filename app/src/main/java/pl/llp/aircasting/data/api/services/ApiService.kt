@@ -40,7 +40,7 @@ interface ApiService {
     suspend fun getStreamOfGivenSession(
         @Path("sessionID") sessionID: Long,
         @Query("sensor_name") sensorName: String,
-        @Query("measurements_limit") measurementsLimit: Int = 1
+        @Query("measurements_limit") measurementsLimit: Int
         ): StreamOfGivenSessionResponse
 
     /* POST Requests */
