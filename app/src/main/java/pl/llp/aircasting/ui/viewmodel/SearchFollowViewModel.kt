@@ -10,10 +10,7 @@ import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
-import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
-import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -28,6 +25,7 @@ class SearchFollowViewModel @Inject constructor(
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
+    private val thresholdsRepository: ThresholdsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
