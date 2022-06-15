@@ -50,7 +50,6 @@ interface ApiService {
         @Query("measurements_limit") measurementsLimit: Int
     ): SessionWithStreamsAndMeasurementsResponse
 
-
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
     fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>

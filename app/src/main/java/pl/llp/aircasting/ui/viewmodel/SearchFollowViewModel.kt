@@ -75,6 +75,8 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
+
+
     private fun saveMeasurementsToActiveTable(
         streamId: Long,
         sessionId: Long,
