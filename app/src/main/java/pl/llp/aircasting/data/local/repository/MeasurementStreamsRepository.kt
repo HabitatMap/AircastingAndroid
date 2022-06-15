@@ -34,9 +34,9 @@ class MeasurementStreamsRepository {
         }
     }
 
-    fun insert(sessionId: Long, stream: MeasurementStream) {
+    fun insert(sessionId: Long, stream: MeasurementStream): Long {
         val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
-        mDatabase.measurementStreams().insert(streamDBObject)
+        return mDatabase.measurementStreams().insert(streamDBObject)
     }
 
     fun markForRemoval(sessionId: Long?, streamsToDelete: List<MeasurementStream>?) {
