@@ -135,11 +135,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun onFollowClicked(session: SessionInRegionResponse) {
-        searchFollowViewModel.onFollowSessionClicked(session)
+        searchFollowViewModel.saveSession(session)
     }
 
     private fun onUnfollowClicked(session: SessionInRegionResponse) {
-        searchFollowViewModel.onUnfollowSessionClicked(session)
+        searchFollowViewModel.deleteSession(session)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

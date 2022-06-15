@@ -57,15 +57,15 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(
+    fun saveSession(
         session: SessionInRegionResponse,
     ) {
         viewModelScope.launch(ioDispatcher) {
             val sessionId =
-                saveSession(session)
+                saveSessionToDB(session)
 
             val streamId =
-                saveMeasurementStream(
+                saveMeasurementStreamToDB(
                     sessionId,
                     MeasurementStream(session.streams.sensor)
                 )
@@ -95,7 +95,7 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSession(
+    private suspend fun saveSessionToDB(
         session: SessionInRegionResponse
     ): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
@@ -104,7 +104,7 @@ class SearchFollowViewModel @Inject constructor(
         return sessionId.await()
     }
 
-    private suspend fun saveMeasurementStream(
+    private suspend fun saveMeasurementStreamToDB(
         sessionId: Long,
         measurementStream: MeasurementStream
     ): Long {
@@ -117,7 +117,7 @@ class SearchFollowViewModel @Inject constructor(
         return measurementStreamId.await()
     }
 
-    fun onUnfollowSessionClicked(
+    fun deleteSession(
         session: SessionInRegionResponse,
     ) {
         viewModelScope.launch(ioDispatcher) {
@@ -166,12 +166,12 @@ class SearchFollowViewModel @Inject constructor(
                 )
             }
             val measurementsFromResponse = response.await().data?.measurements
-            return convertFromResponseToModel(measurementsFromResponse)
+            return convertResponseToModel(measurementsFromResponse)
         }
         return listOf()
     }
 
-    private fun convertFromResponseToModel(measurementsFromResponse: List<MeasurementOfStreamResponse>?) =
+    private fun convertResponseToModel(measurementsFromResponse: List<MeasurementOfStreamResponse>?) =
         measurementsFromResponse?.let { list ->
             list.map {
                 Measurement(it)
