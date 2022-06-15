@@ -4,6 +4,7 @@ import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.params.*
 import pl.llp.aircasting.data.api.response.*
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -42,6 +43,12 @@ interface ApiService {
         @Query("sensor_name") sensorName: String,
         @Query("measurements_limit") measurementsLimit: Int
         ): StreamOfGivenSessionResponse
+
+    @GET(Constants.urlSessionWithStreamsAndMeasurements)
+    suspend fun getSessionWithStreamsAndMeasurements(
+        @Path("sessionID") sessionID: Long,
+        @Query("measurements_limit") measurementsLimit: Int
+    ): SessionWithStreamsAndMeasurementsResponse
 
     /* POST Requests */
     @POST(Constants.urlCreateMobileSession)
