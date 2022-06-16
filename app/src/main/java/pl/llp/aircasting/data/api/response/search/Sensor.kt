@@ -16,7 +16,7 @@ data class Sensor(
     @SerializedName("sensor_name")
     val sensorName: String,
     @SerializedName("sensor_package_name")
-    val sensorPackageName: String,
+    val sensorPackageName: String?,
     @SerializedName("session_id")
     val sessionId: Int,
     @SerializedName("threshold_high")
