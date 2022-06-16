@@ -30,7 +30,7 @@ data class Sensor(
     val thresholdVeryLow: Int,
     @SerializedName("unit_name")
     val unitName: String,
-    @SerializedName("unit_symbol", alternate = ["sensor_unit", "unit_symbol"])
+    @SerializedName("unit_symbol", alternate = ["sensor_unit"])
     val unitSymbol: String,
     @SerializedName("measurements")
     val measurements: List<MeasurementOfStreamResponse>?,
