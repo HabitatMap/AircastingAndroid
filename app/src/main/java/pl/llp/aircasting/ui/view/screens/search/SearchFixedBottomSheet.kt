@@ -48,8 +48,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
 
         binding?.followBtn?.setOnClickListener {
-            val selectedSession = searchFollowViewModel.selectedSession.value
-            if (selectedSession != null) onFollowClicked(selectedSession)
+            onFollowClicked()
 
             it.context.showToast(getString(R.string.session_followed))
             it.gone()
@@ -134,8 +133,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
     }
 
-    private fun onFollowClicked(session: SessionInRegionResponse) {
-        searchFollowViewModel.saveSession(session)
+    private fun onFollowClicked() {
+        searchFollowViewModel.saveSession()
     }
 
     private fun onUnfollowClicked(session: SessionInRegionResponse) {
