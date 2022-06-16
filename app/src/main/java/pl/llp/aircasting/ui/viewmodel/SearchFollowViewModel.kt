@@ -37,7 +37,8 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var measurements: List<Measurement>
-    private lateinit var selectedFullSession: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    private lateinit var selectedFullSessionResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    private lateinit var selectedFullSession: Session
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -47,7 +48,8 @@ class SearchFollowViewModel @Inject constructor(
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
-        selectedFullSession = downloadFullSessionAsync(session)
+        selectedFullSessionResponse = downloadFullSessionAsync(session)
+
     }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
@@ -167,7 +169,7 @@ class SearchFollowViewModel @Inject constructor(
     fun getSessionWithStreamsAndMeasurements(): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
-            emit(selectedFullSession.await())
+            emit(selectedFullSessionResponse.await())
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
