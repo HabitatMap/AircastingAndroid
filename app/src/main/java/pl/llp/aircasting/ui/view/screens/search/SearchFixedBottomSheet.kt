@@ -11,8 +11,14 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
+import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
+import pl.llp.aircasting.data.model.MeasurementStream
+import pl.llp.aircasting.data.model.SensorThreshold
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import kotlin.math.roundToInt
@@ -20,13 +26,13 @@ import kotlin.math.roundToInt
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
     private var binding: SearchFollowBottomSheetBinding? = null
-
     private var mapFragment: SupportMapFragment? = null
-    private lateinit var mMap: GoogleMap
     private val options = MarkerOptions()
     private var txtLat: Double? = null
     private var txtLng: Double? = null
     private lateinit var loader: AnimatedLoader
+    private lateinit var mMap: GoogleMap
+    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -96,6 +102,17 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                 txtLng = it
             }
         }
+    }
+
+    private fun bindChartData(
+        session: SessionWithStreamsAndMeasurementsResponse,
+        sensorThresholds: HashMap<String, SensorThreshold>,
+        selectedStream: MeasurementStream?
+    ) {
+        val sessionPresenter = SessionPresenter(Session(session), sensorThresholds, selectedStream)
+
+        val chart = Chart(requireActivity(), this.view)
+        chart.bindChart(sessionPresenter)
     }
 
     private fun observeLastMeasurementsValue() {
