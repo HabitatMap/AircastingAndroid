@@ -8,13 +8,10 @@ import pl.llp.aircasting.data.local.repository.ThresholdsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
-import javax.inject.Inject
 
-class SessionsViewModel @Inject constructor(
-    private val thresholdsRepository: ThresholdsRepository
-) : ViewModel() {
+class SessionsViewModel : ViewModel() {
     private val mDatabase = DatabaseProvider.get()
-
+    private val thresholdsRepository: ThresholdsRepository = ThresholdsRepository()
 
     fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
