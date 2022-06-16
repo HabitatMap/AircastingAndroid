@@ -1,7 +1,6 @@
 package pl.llp.aircasting.data.model
 
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
-import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -9,7 +8,7 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
-const val TAGS_SEPARATOR = " "
+val TAGS_SEPARATOR = " "
 
 open class Session(
     val uuid: String,
@@ -80,8 +79,8 @@ open class Session(
         this.locationless = locationless
     }
 
-    constructor(apiSession: SessionInRegionResponse) : this(
-        uuid = apiSession.id.toString(),
+    constructor(apiSession: SessionInRegionResponse, streams: List<MeasurementStream>) : this(
+        uuid = apiSession.uuid,
         mName = apiSession.title,
         mType = Type.FIXED,
         username = apiSession.username,
@@ -93,27 +92,10 @@ open class Session(
         isExternal = true,
         followedAt = Date(),
         mTags = arrayListOf(),
-        mStatus = Status.RECORDING
+        mStatus = Status.RECORDING,
+        mStreams = streams
     ) {
         location = Location(apiSession.latitude, apiSession.longitude)
-    }
-
-    constructor(session: SessionWithStreamsAndMeasurementsResponse) : this(
-        uuid = session.id.toString(),
-        mName = session.title,
-        mType = Type.FIXED,
-        username = session.username,
-        endTime = Date(session.endTime),
-        mStartTime = Date(session.startTime),
-        mIndoor = session.isIndoor,
-        deviceId = null,
-        deviceType = null,
-        isExternal = true,
-        followedAt = Date(),
-        mTags = arrayListOf(),
-        mStatus = Status.RECORDING
-    ) {
-        location = Location(session.latitude, session.longitude)
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject) :
