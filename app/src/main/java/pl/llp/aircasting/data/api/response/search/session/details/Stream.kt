@@ -3,7 +3,7 @@ package pl.llp.aircasting.data.api.response.search.session.details
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
-import pl.llp.aircasting.data.api.response.MeasurementResponse
+import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 
 @Keep
 data class Stream(
@@ -18,7 +18,7 @@ data class Stream(
     @SerializedName("measurement_type")
     val measurementType: String,
     @SerializedName("measurements")
-    val measurements: List<MeasurementResponse>,
+    val measurements: List<MeasurementOfStreamResponse>,
     @SerializedName("min_latitude")
     val minLatitude: Double,
     @SerializedName("min_longitude")
