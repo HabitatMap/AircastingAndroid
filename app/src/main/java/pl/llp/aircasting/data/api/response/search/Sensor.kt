@@ -3,6 +3,7 @@ package pl.llp.aircasting.data.api.response.search
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 
 @Keep
 data class Sensor(
@@ -30,6 +31,8 @@ data class Sensor(
     val thresholdVeryLow: Int,
     @SerializedName("unit_name")
     val unitName: String,
-    @SerializedName("unit_symbol")
+    @SerializedName("unit_symbol", alternate = ["sensor_unit", "unit_symbol"])
     val unitSymbol: String,
+    @SerializedName("measurements")
+    val measurements: List<MeasurementOfStreamResponse>?,
 )
