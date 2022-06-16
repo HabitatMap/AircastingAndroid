@@ -1,22 +1,15 @@
 package pl.llp.aircasting.ui.viewmodel
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import pl.llp.aircasting.data.api.Constants
+import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
-import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
-import pl.llp.aircasting.data.model.GeoSquare
-import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.*
+import pl.llp.aircasting.di.modules.DefaultDispatcher
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
@@ -28,13 +21,13 @@ class SearchFollowViewModel @Inject constructor(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
-    private lateinit var measurements: List<Measurement>
     private lateinit var selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
     private lateinit var selectedFullSession: Deferred<Session?>
 
