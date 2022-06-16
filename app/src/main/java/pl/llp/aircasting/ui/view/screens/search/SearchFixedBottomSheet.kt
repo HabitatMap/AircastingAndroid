@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.util.Log
 import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -11,9 +10,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
-import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -107,44 +105,24 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun getSessionWithAllData() {
-        searchFollowViewModel.getSessionWithStreamsAndMeasurements().observe(this) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    val session = it.data
-                    val streams = it.data?.sensors
+        val sessionInRegionResponse = searchFollowViewModel.selectedSession.value
+        searchFollowViewModel.getStreams().observe(this) { streams ->
+            if (sessionInRegionResponse != null && streams != null) {
+                val session = Session(sessionInRegionResponse, streams)
 
-                    try {
-                        streams?.forEach { sensors ->
-                            val measurement = sensors.measurements
-                            mSensorThresholds[sensors.sensorName] = SensorThreshold(sensors)
+                try {
 
-                            val measurementList = getTheMeasurementsList(measurement)
+                    streams.forEach { sensor ->
+                        mSensorThresholds[sensor.sensorName] =
+                            SensorThreshold(SensorThresholdDBObject(sensor))
 
-                            if (session != null) bindChartData(
-                                Session(session),
-                                mSensorThresholds,
-                                MeasurementStream(sensors, measurementList!!)
-                            )
-
-                        }
-                    } catch (e: Exception) {
-                        Log.d("test", e.message.toString())
+                        bindChartData(session, mSensorThresholds, sensor)
                     }
-                }
-                Status.LOADING -> loader.start()
-                Status.ERROR -> {
-                    loader.stop()
-                    context?.showToast(it.message.toString())
+                } catch (e: Exception) {
+                    requireActivity().showToast(e.message.toString())
                 }
             }
         }
-    }
-
-    private fun getTheMeasurementsList(measurement: List<MeasurementOfStreamResponse>?): List<Measurement>? {
-        val measurementList = measurement?.map { measurements ->
-            Measurement(measurements)
-        }
-        return measurementList
     }
 
     private fun bindChartData(
