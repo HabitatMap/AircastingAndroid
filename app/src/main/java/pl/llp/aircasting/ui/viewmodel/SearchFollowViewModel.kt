@@ -32,29 +32,19 @@ class SearchFollowViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
-    private val mutableSelectedFullSession =
-        MutableLiveData<SessionWithStreamsAndMeasurementsResponse?>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var measurements: List<Measurement>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
-    val selectedFullSession: LiveData<SessionWithStreamsAndMeasurementsResponse?> get() = mutableSelectedFullSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
-
-        mutableSelectedFullSession.value = downloadFullSession(session)
     }
-
-    private fun downloadFullSession(session: SessionInRegionResponse) =
-        getSessionWithStreamsAndMeasurements(
-            session.id
-        ).value?.data
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
@@ -68,18 +58,13 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(
-        session: SessionInRegionResponse,
-    ) {
+    fun onFollowSessionClicked(session: SessionInRegionResponse) {
         viewModelScope.launch(ioDispatcher) {
-            val sessionId =
-                saveSession(session)
+            val sessionId = saveSession(session)
 
             val streamId =
-                saveMeasurementStream(
-                    sessionId,
-                    MeasurementStream(session.streams.sensor)
-                )
+                saveMeasurementStream(sessionId, MeasurementStream(session.streams.sensor))
+
             measurements = getMeasurementsFromSelectedSession()
             saveMeasurements(streamId, sessionId, measurements)
             saveMeasurementsToActiveTable(streamId, sessionId, measurements)
@@ -106,9 +91,7 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSession(
-        session: SessionInRegionResponse
-    ): Long {
+    private suspend fun saveSession(session: SessionInRegionResponse): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
             sessionsRepository.insert(Session(session))
         }
@@ -128,9 +111,7 @@ class SearchFollowViewModel @Inject constructor(
         return measurementStreamId.await()
     }
 
-    fun onUnfollowSessionClicked(
-        session: SessionInRegionResponse,
-    ) {
+    fun onUnfollowSessionClicked(session: SessionInRegionResponse) {
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(listOf(session.uuid))
         }
@@ -163,19 +144,19 @@ class SearchFollowViewModel @Inject constructor(
             emit(stream)
         }
 
-    private fun getSessionWithStreamsAndMeasurements(
+    fun getSessionWithStreamsAndMeasurements(
         sessionId: Long,
         measurementLimit: Int = Constants.MEASUREMENTS_IN_HOUR * 24
-    ): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
-        liveData(ioDispatcher) {
-            emit(Resource.loading(null))
+    ) = liveData(ioDispatcher) {
 
-            val session = activeFixedRepo.getSessionWithStreamsAndMeasurements(
-                sessionId,
-                measurementLimit
-            )
-            emit(session)
-        }
+        emit(Resource.loading(null))
+
+        val session = activeFixedRepo.getSessionWithStreamsAndMeasurements(
+            sessionId,
+            measurementLimit
+        )
+        emit(session)
+    }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
         val sessionId = selectedSession.value?.id
