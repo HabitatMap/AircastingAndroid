@@ -43,7 +43,7 @@ open class MeasurementStream(
     )
 
     constructor(sensor: Sensor) : this(
-        sensor.sensorPackageName,
+        sensor.sensorPackageName ?: sensor.sensorName,
         sensor.sensorName,
         sensor.measurementType,
         sensor.measurementShortType,
@@ -57,7 +57,7 @@ open class MeasurementStream(
     )
 
     constructor(sensor: Sensor, sensorThreshold: SensorThreshold) : this(
-        sensor.sensorPackageName,
+        sensor.sensorPackageName ?: sensor.sensorName,
         sensor.sensorName,
         sensor.measurementType,
         sensor.measurementShortType,
@@ -70,8 +70,8 @@ open class MeasurementStream(
         sensorThreshold.thresholdVeryHigh,
     )
 
-    constructor(sensor: Sensor, measurements: List<Measurement>) : this(
-        sensor.sensorPackageName,
+    constructor(sensor: Sensor, measurements: List<Measurement>?) : this(
+        sensor.sensorPackageName ?: sensor.sensorName,
         sensor.sensorName,
         sensor.measurementType,
         sensor.measurementShortType,
@@ -81,10 +81,9 @@ open class MeasurementStream(
         sensor.thresholdLow,
         sensor.thresholdMedium,
         sensor.thresholdHigh,
-        sensor.thresholdVeryHigh
-    ) {
-        this.mMeasurements = measurements
-    }
+        sensor.thresholdVeryHigh,
+        mMeasurements = measurements ?: listOf()
+    )
 
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
         streamDbObject.sensorPackageName,
