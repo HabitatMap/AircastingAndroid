@@ -53,7 +53,7 @@ open class MeasurementStream(
         sensor.thresholdLow,
         sensor.thresholdMedium,
         sensor.thresholdHigh,
-        sensor.thresholdVeryHigh,
+        sensor.thresholdVeryHigh
     )
 
     constructor(sensor: Sensor, myMeasurements: List<Measurement>) : this(
