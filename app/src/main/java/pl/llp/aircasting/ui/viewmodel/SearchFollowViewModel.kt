@@ -48,6 +48,7 @@ class SearchFollowViewModel @Inject constructor(
             val response = selectedSessionWithStreamsResponse.await().data
             val streams = getStreamsWithMeasurementsFromResponse(response)
             val sessionInRegionResponse = selectedSession.value
+
             if (sessionInRegionResponse != null && streams != null) {
                 return@async Session(sessionInRegionResponse, streams)
             }
@@ -55,7 +56,7 @@ class SearchFollowViewModel @Inject constructor(
         }
 
     private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
-        response?.streams?.map { stream ->
+        response?.sensors?.map { stream ->
             val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
             MeasurementStream(stream, measurements)
         }
@@ -66,6 +67,13 @@ class SearchFollowViewModel @Inject constructor(
                 session.id
             )
         }
+
+    fun getStreams() = liveData(ioDispatcher) {
+        val response = selectedSessionWithStreamsResponse.await().data
+        val streams = getStreamsWithMeasurementsFromResponse(response)
+
+        emit(streams)
+    }
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
