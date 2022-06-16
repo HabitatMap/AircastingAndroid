@@ -110,9 +110,7 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun prepareDataSet(): LineDataSet {
-        if (mEntries == null || mEntries.isEmpty()) {
-            return LineDataSet(listOf(), "")
-        }
+        if (mEntries.isEmpty()) return LineDataSet(listOf(), "")
 
         val dataSet: LineDataSet =
             if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true
