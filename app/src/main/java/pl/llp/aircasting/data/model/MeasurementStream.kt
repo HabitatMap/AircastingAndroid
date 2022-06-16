@@ -19,11 +19,11 @@ open class MeasurementStream(
     val measurementShortType: String,
     val unitName: String,
     val unitSymbol: String,
-    val thresholdVeryLow: Int,
-    val thresholdLow: Int,
-    val thresholdMedium: Int,
-    val thresholdHigh: Int,
-    val thresholdVeryHigh: Int,
+    var thresholdVeryLow: Int,
+    var thresholdLow: Int,
+    var thresholdMedium: Int,
+    var thresholdHigh: Int,
+    var thresholdVeryHigh: Int,
     var deleted: Boolean = false,
     private var mMeasurements: List<Measurement> = listOf()
 ) {
