@@ -57,7 +57,7 @@ open class MeasurementStream(
     )
 
     constructor(sensor: Sensor, myMeasurements: List<Measurement>) : this(
-        sensor.sensorPackageName,
+        sensor.sensorName,
         sensor.sensorName,
         sensor.measurementType,
         sensor.measurementShortType,
