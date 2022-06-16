@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.viewmodel
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.Constants
@@ -36,6 +37,7 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var measurements: List<Measurement>
+    private lateinit var selectedFullSession: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -44,7 +46,16 @@ class SearchFollowViewModel @Inject constructor(
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
+
+        selectedFullSession = downloadFullSessionAsync(session)
     }
+
+    private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
+        viewModelScope.async(ioDispatcher) {
+            activeFixedRepo.getSessionWithStreamsAndMeasurements(
+                session.id
+            )
+        }
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
@@ -58,13 +69,18 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(session: SessionInRegionResponse) {
+    fun onFollowSessionClicked(
+        session: SessionInRegionResponse,
+    ) {
         viewModelScope.launch(ioDispatcher) {
-            val sessionId = saveSession(session)
+            val sessionId =
+                saveSession(session)
 
             val streamId =
-                saveMeasurementStream(sessionId, MeasurementStream(session.streams.sensor))
-
+                saveMeasurementStream(
+                    sessionId,
+                    MeasurementStream(session.streams.sensor)
+                )
             measurements = getMeasurementsFromSelectedSession()
             saveMeasurements(streamId, sessionId, measurements)
             saveMeasurementsToActiveTable(streamId, sessionId, measurements)
@@ -91,7 +107,9 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSession(session: SessionInRegionResponse): Long {
+    private suspend fun saveSession(
+        session: SessionInRegionResponse
+    ): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
             sessionsRepository.insert(Session(session))
         }
@@ -111,7 +129,9 @@ class SearchFollowViewModel @Inject constructor(
         return measurementStreamId.await()
     }
 
-    fun onUnfollowSessionClicked(session: SessionInRegionResponse) {
+    fun onUnfollowSessionClicked(
+        session: SessionInRegionResponse,
+    ) {
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(listOf(session.uuid))
         }
@@ -144,19 +164,11 @@ class SearchFollowViewModel @Inject constructor(
             emit(stream)
         }
 
-    fun getSessionWithStreamsAndMeasurements(
-        sessionId: Long,
-        measurementLimit: Int = Constants.MEASUREMENTS_IN_HOUR * 24
-    ) = liveData(ioDispatcher) {
-
-        emit(Resource.loading(null))
-
-        val session = activeFixedRepo.getSessionWithStreamsAndMeasurements(
-            sessionId,
-            measurementLimit
-        )
-        emit(session)
-    }
+    fun getSessionWithStreamsAndMeasurements(): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
+        liveData(ioDispatcher) {
+            emit(Resource.loading(null))
+            emit(selectedFullSession.await())
+        }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
         val sessionId = selectedSession.value?.id
