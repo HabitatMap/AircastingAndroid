@@ -164,18 +164,10 @@ class SearchFollowViewModel @Inject constructor(
             emit(stream)
         }
 
-    private fun getSessionWithStreamsAndMeasurements(
-        sessionId: Long,
-        measurementLimit: Int = Constants.MEASUREMENTS_IN_HOUR * 24
-    ): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
+    fun getSessionWithStreamsAndMeasurements(): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
-
-            val session = activeFixedRepo.getSessionWithStreamsAndMeasurements(
-                sessionId,
-                measurementLimit
-            )
-            emit(session)
+            emit(selectedFullSession.await())
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
