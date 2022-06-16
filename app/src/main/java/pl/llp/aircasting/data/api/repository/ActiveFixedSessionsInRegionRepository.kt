@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.api.repository
 
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
@@ -74,7 +75,7 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
 
     suspend fun getSessionWithStreamsAndMeasurements(
         sessionId: Long,
-        measurementLimit: Int = 1
+        measurementLimit: Int = Constants.MEASUREMENTS_IN_HOUR * 24
     ): Resource<SessionWithStreamsAndMeasurementsResponse> {
         return try {
             val response =
