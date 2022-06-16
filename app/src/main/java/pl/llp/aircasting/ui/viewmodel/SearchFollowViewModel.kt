@@ -1,25 +1,15 @@
 package pl.llp.aircasting.ui.viewmodel
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import pl.llp.aircasting.data.api.Constants
+import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
-import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
-import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
-import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.GeoSquare
-import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.local.repository.*
+import pl.llp.aircasting.data.model.*
+import pl.llp.aircasting.di.modules.DefaultDispatcher
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
@@ -30,15 +20,16 @@ class SearchFollowViewModel @Inject constructor(
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val thresholdsRepository: ThresholdsRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
-    private lateinit var measurements: List<Measurement>
-    private lateinit var selectedFullSessionResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
-    private lateinit var selectedFullSession: Session
+    private lateinit var selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    private lateinit var selectedFullSession: Deferred<Session?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -48,8 +39,20 @@ class SearchFollowViewModel @Inject constructor(
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
-        selectedFullSessionResponse = downloadFullSessionAsync(session)
+        selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
+        selectedFullSession = initializeModelFromResponseAsync()
+    }
 
+    private fun initializeModelFromResponseAsync(): Deferred<Session?> = viewModelScope.async(ioDispatcher) {
+        val response = selectedSessionWithStreamsResponse.await().data
+        val streams = response?.streams?.map { stream ->
+            MeasurementStream(stream)
+        }
+        val sessionInRegionResponse = selectedSession.value
+        if (sessionInRegionResponse != null && streams != null) {
+            return@async Session(sessionInRegionResponse, streams)
+        }
+        return@async null
     }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
@@ -71,15 +74,15 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(
+    fun saveSession(
         session: SessionInRegionResponse,
     ) {
         viewModelScope.launch(ioDispatcher) {
             val sessionId =
-                saveSession(session)
+                saveSessionToDB(session)
 
             val streamId =
-                saveMeasurementStream(
+                saveMeasurementStreamToDB(
                     sessionId,
                     MeasurementStream(session.streams.sensor)
                 )
@@ -109,7 +112,7 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSession(
+    private suspend fun saveSessionToDB(
         session: SessionInRegionResponse
     ): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
@@ -118,7 +121,7 @@ class SearchFollowViewModel @Inject constructor(
         return sessionId.await()
     }
 
-    private suspend fun saveMeasurementStream(
+    private suspend fun saveMeasurementStreamToDB(
         sessionId: Long,
         measurementStream: MeasurementStream
     ): Long {
@@ -131,7 +134,7 @@ class SearchFollowViewModel @Inject constructor(
         return measurementStreamId.await()
     }
 
-    fun onUnfollowSessionClicked(
+    fun deleteSession(
         session: SessionInRegionResponse,
     ) {
         viewModelScope.launch(ioDispatcher) {
@@ -169,7 +172,7 @@ class SearchFollowViewModel @Inject constructor(
     fun getSessionWithStreamsAndMeasurements(): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
-            emit(selectedFullSessionResponse.await())
+            emit(selectedSessionWithStreamsResponse.await())
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
@@ -186,12 +189,12 @@ class SearchFollowViewModel @Inject constructor(
                 )
             }
             val measurementsFromResponse = response.await().data?.measurements
-            return convertFromResponseToModel(measurementsFromResponse)
+            return convertResponseToModel(measurementsFromResponse)
         }
         return listOf()
     }
 
-    private fun convertFromResponseToModel(measurementsFromResponse: List<MeasurementOfStreamResponse>?) =
+    private fun convertResponseToModel(measurementsFromResponse: List<MeasurementOfStreamResponse>?) =
         measurementsFromResponse?.let { list ->
             list.map {
                 Measurement(it)
