@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -118,11 +119,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                             val measurement = sensors.measurements
                             mSensorThresholds[sensors.sensorName] = SensorThreshold(sensors)
 
-                            val measurementList = measurement.map { Measurement(it) }
+                            val measurementList = getTheMeasurementsList(measurement)
+
                             if (session != null) bindChartData(
                                 Session(session),
                                 mSensorThresholds,
-                                MeasurementStream(sensors, measurementList)
+                                MeasurementStream(sensors, measurementList!!)
                             )
 
                         }
@@ -137,6 +139,13 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                 }
             }
         }
+    }
+
+    private fun getTheMeasurementsList(measurement: List<MeasurementOfStreamResponse>?): List<Measurement>? {
+        val measurementList = measurement?.map { measurements ->
+            Measurement(measurements)
+        }
+        return measurementList
     }
 
     private fun bindChartData(
@@ -197,6 +206,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         styleGoogleMap(mMap, requireActivity())
+
+        mMap.uiSettings.setAllGesturesEnabled(false)
 
         if (txtLat != null && txtLng != null) {
             val myLocation = LatLng(txtLat!!, txtLng!!)
