@@ -37,8 +37,8 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var measurements: List<Measurement>
-    private lateinit var selectedFullSessionResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
-    private lateinit var selectedFullSession: Session
+    private lateinit var selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    private lateinit var selectedFullSession: Deferred<Session?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -48,8 +48,20 @@ class SearchFollowViewModel @Inject constructor(
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
-        selectedFullSessionResponse = downloadFullSessionAsync(session)
+        selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
+        selectedFullSession = initializeModelFromResponseAsync()
+    }
 
+    private fun initializeModelFromResponseAsync(): Deferred<Session?> = viewModelScope.async(ioDispatcher) {
+        val response = selectedSessionWithStreamsResponse.await().data
+        val streams = response?.streams?.map { stream ->
+            MeasurementStream(stream)
+        }
+        val sessionInRegionResponse = selectedSession.value
+        if (sessionInRegionResponse != null && streams != null) {
+            return@async Session(sessionInRegionResponse, streams)
+        }
+        return@async null
     }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
@@ -169,7 +181,7 @@ class SearchFollowViewModel @Inject constructor(
     fun getSessionWithStreamsAndMeasurements(): LiveData<Resource<SessionWithStreamsAndMeasurementsResponse>> =
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
-            emit(selectedFullSessionResponse.await())
+            emit(selectedSessionWithStreamsResponse.await())
         }
 
     private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
