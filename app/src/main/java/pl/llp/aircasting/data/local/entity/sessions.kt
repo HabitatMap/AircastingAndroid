@@ -58,10 +58,9 @@ data class SessionDBObject(
                 session.contribute,
                 session.locationless,
                 session.urlLocation,
-                session.indoor
+                session.indoor,
+                isExternal = session.isExternal
             )
-
-
 }
 
 class SessionWithStreamsDBObject {
