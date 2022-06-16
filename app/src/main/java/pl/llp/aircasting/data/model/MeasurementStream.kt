@@ -70,7 +70,7 @@ open class MeasurementStream(
         sensorThreshold.thresholdVeryHigh,
     )
 
-    constructor(sensor: Sensor, myMeasurements: List<Measurement>) : this(
+    constructor(sensor: Sensor, measurements: List<Measurement>) : this(
         sensor.sensorPackageName,
         sensor.sensorName,
         sensor.measurementType,
@@ -83,7 +83,7 @@ open class MeasurementStream(
         sensor.thresholdHigh,
         sensor.thresholdVeryHigh
     ) {
-        this.mMeasurements = myMeasurements
+        this.mMeasurements = measurements
     }
 
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
