@@ -110,16 +110,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             if (sessionInRegionResponse != null && streams != null) {
                 val session = Session(sessionInRegionResponse, streams)
 
-                try {
+                streams.forEach { sensor ->
+                    mSensorThresholds[sensor.sensorName] =
+                        SensorThreshold(SensorThresholdDBObject(sensor))
 
-                    streams.forEach { sensor ->
-                        mSensorThresholds[sensor.sensorName] =
-                            SensorThreshold(SensorThresholdDBObject(sensor))
-
-                        bindChartData(session, mSensorThresholds, sensor)
-                    }
-                } catch (e: Exception) {
-                    requireActivity().showToast(e.message.toString())
+                    bindChartData(session, mSensorThresholds, sensor)
                 }
             }
         }
