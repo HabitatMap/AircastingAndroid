@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.model
 
-import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.local.entity.*
@@ -104,8 +103,8 @@ open class Session(
         mName = session.title,
         mType = Type.FIXED,
         username = session.username,
-        endTime = DateConverter.fromString(session.endTime.toString()),
-        mStartTime = DateConverter.fromString(session.startTime.toString()) ?: Date(),
+        endTime = Date(session.endTime),
+        mStartTime = Date(session.startTime),
         mIndoor = session.isIndoor,
         deviceId = null,
         deviceType = null,
