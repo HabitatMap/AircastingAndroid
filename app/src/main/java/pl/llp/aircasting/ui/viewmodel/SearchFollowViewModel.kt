@@ -43,17 +43,22 @@ class SearchFollowViewModel @Inject constructor(
         selectedFullSession = initializeModelFromResponseAsync()
     }
 
-    private fun initializeModelFromResponseAsync(): Deferred<Session?> = viewModelScope.async(ioDispatcher) {
-        val response = selectedSessionWithStreamsResponse.await().data
-        val streams = response?.streams?.map { stream ->
-            MeasurementStream(stream)
+    private fun initializeModelFromResponseAsync(): Deferred<Session?> =
+        viewModelScope.async(defaultDispatcher) {
+            val response = selectedSessionWithStreamsResponse.await().data
+            val streams = getStreamsWithMeasurementsFromResponse(response)
+            val sessionInRegionResponse = selectedSession.value
+            if (sessionInRegionResponse != null && streams != null) {
+                return@async Session(sessionInRegionResponse, streams)
+            }
+            return@async null
         }
-        val sessionInRegionResponse = selectedSession.value
-        if (sessionInRegionResponse != null && streams != null) {
-            return@async Session(sessionInRegionResponse, streams)
+
+    private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
+        response?.streams?.map { stream ->
+            val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
+            MeasurementStream(stream, measurements)
         }
-        return@async null
-    }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
         viewModelScope.async(ioDispatcher) {
