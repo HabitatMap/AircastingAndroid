@@ -17,8 +17,10 @@ class SessionsRepository {
     }
 
     fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId,
-            Session.Status.RECORDING, Session.Type.MOBILE)
+        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+            deviceId,
+            Session.Status.RECORDING, Session.Type.MOBILE
+        )
 
         if (sessionDBObject != null) {
             return sessionDBObject.id
@@ -66,35 +68,65 @@ class SessionsRepository {
 
     fun update(session: Session) {
         session.endTime?.let {
-            mDatabase.sessions().update(session.uuid, session.name, session.tags,
-                it, session.status, session.version, session.urlLocation)
+            mDatabase.sessions().update(
+                session.uuid, session.name, session.tags,
+                it, session.status, session.version, session.urlLocation
+            )
         }
     }
 
     fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
-        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(deviceId, Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+        return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+            deviceId,
+            Session.Status.RECORDING,
+            Session.Type.MOBILE
+        ) != null ||
+                mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+                    deviceId,
+                    Session.Status.DISCONNECTED,
+                    Session.Type.MOBILE
+                ) != null
     }
 
     fun isMicrophoneSessionAlreadyRecording(): Boolean {
-        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(Session.Status.RECORDING, Session.Type.MOBILE, DeviceItem.Type.MIC) != null
+        return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(
+            Session.Status.RECORDING,
+            Session.Type.MOBILE,
+            DeviceItem.Type.MIC
+        ) != null
     }
 
     fun mobileActiveSessionExists(): Boolean {
-        return mDatabase.sessions().loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByStatusAndType(Session.Status.DISCONNECTED, Session.Type.MOBILE) != null
+        return mDatabase.sessions()
+            .loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
+                mDatabase.sessions().loadSessionByStatusAndType(
+                    Session.Status.DISCONNECTED,
+                    Session.Type.MOBILE
+                ) != null
     }
 
     fun disconnectMobileBluetoothSessions() {
-        mDatabase.sessions().disconnectSessions(Session.Status.DISCONNECTED, DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().disconnectSessions(
+            Session.Status.DISCONNECTED,
+            DeviceItem.Type.MIC,
+            Session.Type.MOBILE,
+            Session.Status.RECORDING
+        )
     }
 
     fun finishMobileMicSessions() {
-        mDatabase.sessions().finishSessions(Session.Status.FINISHED, Date(), DeviceItem.Type.MIC, Session.Type.MOBILE, Session.Status.RECORDING)
+        mDatabase.sessions().finishSessions(
+            Session.Status.FINISHED,
+            Date(),
+            DeviceItem.Type.MIC,
+            Session.Type.MOBILE,
+            Session.Status.RECORDING
+        )
     }
 
     fun disconnectSession(deviceId: String) {
-        mDatabase.sessions().disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
+        mDatabase.sessions()
+            .disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }
 
     fun finishedSessions(): List<Session> {
@@ -114,6 +146,10 @@ class SessionsRepository {
         if (uuids.isNotEmpty()) {
             mDatabase.sessions().delete(uuids)
         }
+    }
+
+    fun delete(uuid: String) {
+        mDatabase.sessions().delete(uuid)
     }
 
     fun markForRemoval(uuids: List<String>) {

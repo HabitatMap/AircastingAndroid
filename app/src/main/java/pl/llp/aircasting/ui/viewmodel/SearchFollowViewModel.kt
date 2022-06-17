@@ -49,14 +49,13 @@ class SearchFollowViewModel @Inject constructor(
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
-        val isFollowed = viewModelScope.async(ioDispatcher) {
+        return viewModelScope.async(ioDispatcher) {
             selectedSession.value?.uuid?.let {
                 sessionsRepository.getSessionByUUID(
                     it
                 )
             } != null
         }
-        return isFollowed
     }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
@@ -179,7 +178,7 @@ class SearchFollowViewModel @Inject constructor(
         session: SessionInRegionResponse,
     ) {
         viewModelScope.launch(ioDispatcher) {
-            sessionsRepository.delete(listOf(session.uuid))
+            sessionsRepository.delete(session.uuid)
         }
     }
 
