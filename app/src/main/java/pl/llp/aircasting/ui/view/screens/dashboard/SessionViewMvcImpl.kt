@@ -111,15 +111,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
         mGraphButton.setOnClickListener {
             onGraphButtonClicked()
         }
-        setupActionsButton()
-        mLoader = rootView?.findViewById(R.id.loader)
-    }
-
-    private fun setupActionsButton() {
-        if (mSessionPresenter?.isExternal() == true) mActionsButton.visibility = View.GONE
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
         }
+        mLoader = rootView?.findViewById(R.id.loader)
     }
 
     protected abstract fun showMeasurementsTableValues(): Boolean

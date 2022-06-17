@@ -25,6 +25,7 @@ class FixedSessionViewMvcImpl(
 
     override fun bindExpanded(sessionPresenter: SessionPresenter) {
         if (sessionPresenter.isExternal()) mActionsButton.visibility = View.GONE
+        super.bindExpanded(sessionPresenter)
     }
 
     override fun showExpandedMeasurementsTableValues() = true
