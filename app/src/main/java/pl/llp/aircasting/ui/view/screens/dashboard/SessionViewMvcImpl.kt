@@ -12,9 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.AnimatedLoader
-import pl.llp.aircasting.util.DurationStringHelper
-import pl.llp.aircasting.util.TouchDelegateComposite
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
@@ -22,6 +19,9 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
+import pl.llp.aircasting.util.AnimatedLoader
+import pl.llp.aircasting.util.DurationStringHelper
+import pl.llp.aircasting.util.TouchDelegateComposite
 
 
 abstract class SessionViewMvcImpl<ListenerType>(
@@ -111,10 +111,15 @@ abstract class SessionViewMvcImpl<ListenerType>(
         mGraphButton.setOnClickListener {
             onGraphButtonClicked()
         }
+        setupActionsButton()
+        mLoader = rootView?.findViewById(R.id.loader)
+    }
+
+    private fun setupActionsButton() {
+        if (mSessionPresenter?.isExternal() == true) mActionsButton.visibility = View.GONE
         mActionsButton.setOnClickListener {
             actionsButtonClicked()
         }
-        mLoader = rootView?.findViewById(R.id.loader)
     }
 
     protected abstract fun showMeasurementsTableValues(): Boolean
