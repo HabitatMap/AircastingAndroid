@@ -37,12 +37,26 @@ class SearchFollowViewModel @Inject constructor(
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
+    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
+        isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
+
         selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync()
+    }
+
+    private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
+        val isFollowed = viewModelScope.async(ioDispatcher) {
+            selectedSession.value?.uuid?.let {
+                sessionsRepository.getSessionByUUID(
+                    it
+                )
+            } != null
+        }
+        return isFollowed
     }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
