@@ -18,22 +18,22 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) AND is_external=0 ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) AND is_external=0 ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithLastMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) AND is_external=0  ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusForComplete(type: Session.Type, statuses: List<Int>): LiveData<List<CompleteSessionDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status AND is_external=0 ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithNotes(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndNotesDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status AND is_external=0  ORDER BY start_time DESC")
     fun loadAllByTypeAndStatus(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND is_external=0 ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY session_order ASC")
@@ -60,10 +60,10 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithStreamsAndNotesDBObject?>
 
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0 AND is_external=0")
     fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
 
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0 AND is_external=0")
     fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
