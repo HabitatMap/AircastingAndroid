@@ -47,13 +47,23 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding?.followBtn?.setOnClickListener {
-            onFollowClicked()
+        setupFollowButton()
+        setupUnfollowButton()
 
-            it.context.showToast(getString(R.string.session_followed))
-            it.gone()
-            binding?.unfollowBtn?.visible()
+        setupChipsBehaviour()
+
+        val loaderImage =
+            binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
+        loader = AnimatedLoader(loaderImage)
+    }
+
+    private fun setupChipsBehaviour() {
+        binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
+            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
         }
+    }
+
+    private fun setupUnfollowButton() {
         binding?.unfollowBtn?.setOnClickListener {
             val selectedSession = searchFollowViewModel.selectedSession.value
             if (selectedSession != null) onUnfollowClicked(selectedSession)
@@ -62,14 +72,16 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             it.gone()
             binding?.followBtn?.visible()
         }
+    }
 
-        binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
-            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
+    private fun setupFollowButton() {
+        binding?.followBtn?.setOnClickListener {
+            onFollowClicked()
+
+            it.context.showToast(getString(R.string.session_followed))
+            it.gone()
+            binding?.unfollowBtn?.visible()
         }
-
-        val loaderImage =
-            binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
-        loader = AnimatedLoader(loaderImage)
     }
 
     private fun isChartChipSelected(chipGroup: ChipGroup): Boolean {
