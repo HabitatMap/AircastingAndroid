@@ -11,6 +11,7 @@ import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.DefaultDispatcher
 import pl.llp.aircasting.di.modules.IoDispatcher
+import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -22,7 +23,8 @@ class SearchFollowViewModel @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    @MainDispatcher val mainDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
