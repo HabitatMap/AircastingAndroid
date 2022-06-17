@@ -43,6 +43,13 @@ class SearchFollowViewModel @Inject constructor(
         selectedFullSession = initializeModelFromResponseAsync()
     }
 
+    private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
+        viewModelScope.async(ioDispatcher) {
+            activeFixedRepo.getSessionWithStreamsAndMeasurements(
+                session.id
+            )
+        }
+
     private fun initializeModelFromResponseAsync(): Deferred<Session?> =
         viewModelScope.async(defaultDispatcher) {
             val response = selectedSessionWithStreamsResponse.await().data
@@ -60,12 +67,6 @@ class SearchFollowViewModel @Inject constructor(
             MeasurementStream(stream, measurements)
         }
 
-    private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
-        viewModelScope.async(ioDispatcher) {
-            activeFixedRepo.getSessionWithStreamsAndMeasurements(
-                session.id
-            )
-        }
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
