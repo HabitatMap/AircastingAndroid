@@ -158,7 +158,7 @@ class SearchFollowViewModel @Inject constructor(
     }
 
     fun deleteSession(
-        session: SessionInRegionResponse,
+        session: SessionInRegionResponse
     ) {
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(listOf(session.uuid))
