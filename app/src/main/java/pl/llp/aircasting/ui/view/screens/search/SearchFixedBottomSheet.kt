@@ -11,7 +11,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
-import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -33,6 +32,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private lateinit var loader: AnimatedLoader
     private lateinit var mMap: GoogleMap
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
+    private lateinit var mChart: Chart
+    private lateinit var mSessionPresenter: SessionPresenter
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -74,6 +75,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
         }
 
+        mChart = Chart(requireActivity(), binding?.root)
+
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
         loader = AnimatedLoader(loaderImage)
@@ -85,12 +88,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun toggleChart() {
         mapFragment?.view?.inVisible()
-        binding?.chartView?.visible()
+        binding?.chartContainer?.visible()
     }
 
     private fun toggleMap() {
         mapFragment?.view?.visible()
-        binding?.chartView?.inVisible()
+        binding?.chartContainer?.inVisible()
     }
 
     private fun getLatlngObserver() {
@@ -110,11 +113,18 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             if (sessionInRegionResponse != null && streams != null) {
                 val session = Session(sessionInRegionResponse, streams)
 
-                streams.forEach { sensor ->
-                    mSensorThresholds[sensor.sensorName] =
-                        SensorThreshold(SensorThresholdDBObject(sensor))
+                streams.map {
+                    val sensorThreshold = SensorThreshold(
+                        it.sensorName,
+                        it.thresholdVeryLow,
+                        it.thresholdLow,
+                        it.thresholdMedium,
+                        it.thresholdHigh,
+                        it.thresholdVeryHigh
+                    )
 
-                    bindChartData(session, mSensorThresholds, sensor)
+                    mSensorThresholds[it.sensorName] = sensorThreshold
+                    bindChartData(session, mSensorThresholds, it)
                 }
             }
         }
@@ -125,10 +135,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         sensorThresholds: HashMap<String, SensorThreshold>,
         selectedStream: MeasurementStream
     ) {
-        val sessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
-
-        val chart = Chart(requireActivity(), this.view)
-        chart.bindChart(sessionPresenter)
+        mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
+        mChart.bindChart(mSessionPresenter)
     }
 
     private fun observeLastMeasurementsValue() {
