@@ -47,11 +47,4 @@ object BindingAdapter {
 
     }
 
-    @SuppressLint("SetTextI18n")
-    @JvmStatic
-    @BindingAdapter("setSelectedSensorName", requireAll = true)
-    fun TextView.setSelectedSensorNameAndType(name: String) {
-        val type = this.context.getString(R.string.dashboard_tabs_fixed)
-        this.text = "$type, $name"
-    }
 }
