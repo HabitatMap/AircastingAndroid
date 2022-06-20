@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.api.response.search
+package pl.llp.aircasting.data.api.response.search.session.details
 
 
 import androidx.annotation.Keep
@@ -6,19 +6,29 @@ import com.google.gson.annotations.SerializedName
 import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 
 @Keep
-data class Sensor(
-    @SerializedName("id")
-    val id: Int,
+data class Stream(
+    @SerializedName("last_measurement_value")
+    val lastMeasurementValue: Double,
+    @SerializedName("max_latitude")
+    val maxLatitude: Double,
+    @SerializedName("max_longitude")
+    val maxLongitude: Double,
     @SerializedName("measurement_short_type")
     val measurementShortType: String,
     @SerializedName("measurement_type")
     val measurementType: String,
+    @SerializedName("measurements")
+    val measurements: List<MeasurementOfStreamResponse>,
+    @SerializedName("min_latitude")
+    val minLatitude: Double,
+    @SerializedName("min_longitude")
+    val minLongitude: Double,
     @SerializedName("sensor_name")
     val sensorName: String,
-    @SerializedName("sensor_package_name")
-    val sensorPackageName: String?,
-    @SerializedName("session_id")
-    val sessionId: Int,
+    @SerializedName("sensor_unit")
+    val sensorUnit: String,
+    @SerializedName("stream_id")
+    val streamId: Int,
     @SerializedName("threshold_high")
     val thresholdHigh: Int,
     @SerializedName("threshold_low")
@@ -30,9 +40,5 @@ data class Sensor(
     @SerializedName("threshold_very_low")
     val thresholdVeryLow: Int,
     @SerializedName("unit_name")
-    val unitName: String,
-    @SerializedName("unit_symbol", alternate = ["sensor_unit"])
-    val unitSymbol: String,
-    @SerializedName("measurements")
-    val measurements: List<MeasurementOfStreamResponse>?,
+    val unitName: String
 )

@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.search
 
 import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -9,6 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
@@ -47,30 +49,66 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        binding?.followBtn?.setOnClickListener {
-            val selectedSession = searchFollowViewModel.selectedSession.value
-            if (selectedSession != null) onFollowClicked(selectedSession)
+        setupFollowButton()
+        setupUnfollowButton()
 
-            it.context.showToast(getString(R.string.session_followed))
-            it.gone()
-            binding?.unfollowBtn?.visible()
-        }
+        toggleCorrectButton()
+
+        setupChipsBehaviour()
+
+        setupLoader()
+    }
+
+
+
+    private fun setupUnfollowButton() {
         binding?.unfollowBtn?.setOnClickListener {
             val selectedSession = searchFollowViewModel.selectedSession.value
             if (selectedSession != null) onUnfollowClicked(selectedSession)
 
             it.context.showToast(getString(R.string.session_unfollowed))
-            it.gone()
-            binding?.followBtn?.visible()
+            toggleFollowButton()
         }
+    }
 
-        binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
-            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
+    private fun setupFollowButton() {
+        binding?.followBtn?.setOnClickListener {
+            onFollowClicked()
+
+            it.context.showToast(getString(R.string.session_followed))
+            toggleUnFollowButton()
         }
+    }
 
+    private fun toggleCorrectButton() {
+        searchFollowViewModel.viewModelScope.launch(searchFollowViewModel.mainDispatcher) {
+            if (searchFollowViewModel.isSelectedSessionFollowed.await())
+                toggleUnFollowButton()
+            else
+                toggleFollowButton()
+        }
+    }
+
+    private fun toggleFollowButton() {
+        binding?.followBtn?.visible()
+        binding?.unfollowBtn?.gone()
+    }
+
+    private fun toggleUnFollowButton() {
+        binding?.followBtn?.gone()
+        binding?.unfollowBtn?.visible()
+    }
+
+    private fun setupLoader() {
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
         loader = AnimatedLoader(loaderImage)
+    }
+
+    private fun setupChipsBehaviour() {
+        binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
+            if (isChartChipSelected(chipGroup)) toggleChart() else toggleMap()
+        }
     }
 
     private fun isChartChipSelected(chipGroup: ChipGroup): Boolean {
@@ -134,12 +172,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
     }
 
-    private fun onFollowClicked(session: SessionInRegionResponse) {
-        searchFollowViewModel.onFollowSessionClicked(session)
+    private fun onFollowClicked() {
+        searchFollowViewModel.saveSession()
     }
 
     private fun onUnfollowClicked(session: SessionInRegionResponse) {
-        searchFollowViewModel.onUnfollowSessionClicked(session)
+        searchFollowViewModel.deleteSession(session)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

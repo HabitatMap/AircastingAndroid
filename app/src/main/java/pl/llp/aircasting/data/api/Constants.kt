@@ -6,6 +6,7 @@ object Constants {
     /* GET Requests */
     const val urlSessionInGivenLocation = "/api/fixed/active/sessions.json"
     const val urlStreamOfGivenSession = "/api/fixed/sessions/{sessionID}.json"
+    const val urlSessionWithStreamsAndMeasurements = "/api/fixed/sessions/{sessionID}/streams.json"
     const val urlDownloadSession = "/api/user/sessions/empty.json"
     const val urlDownloadFixedMeasurements = "/api/realtime/sync_measurements.json"
     const val urlLogin = "/api/user.json"

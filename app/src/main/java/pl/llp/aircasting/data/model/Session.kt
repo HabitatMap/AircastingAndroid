@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.model
 
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -78,22 +79,23 @@ open class Session(
         this.locationless = locationless
     }
 
-    constructor(apiSession: pl.llp.aircasting.data.api.response.search.SessionInRegionResponse) : this(
-        uuid = apiSession.uuid,
-        mName = apiSession.title,
+    constructor(sessionInRegion: SessionInRegionResponse, streams: List<MeasurementStream>) : this(
+        uuid = sessionInRegion.uuid,
+        mName = sessionInRegion.title,
         mType = Type.FIXED,
-        username = apiSession.username,
-        endTime = DateConverter.fromString(apiSession.endTimeLocal),
-        mStartTime = DateConverter.fromString(apiSession.startTimeLocal) ?: Date(),
-        mIndoor = apiSession.isIndoor,
+        username = sessionInRegion.username,
+        endTime = DateConverter.fromString(sessionInRegion.endTimeLocal),
+        mStartTime = DateConverter.fromString(sessionInRegion.startTimeLocal) ?: Date(),
+        mIndoor = sessionInRegion.isIndoor,
         deviceId = null,
         deviceType = null,
         isExternal = true,
         followedAt = Date(),
         mTags = arrayListOf(),
-        mStatus = Status.RECORDING
+        mStatus = Status.RECORDING,
+        mStreams = streams
     ) {
-        location = Location(apiSession.latitude, apiSession.longitude)
+        location = Location(sessionInRegion.latitude, sessionInRegion.longitude)
     }
 
     constructor(sessionWithStreamsDBObject: SessionWithStreamsAndMeasurementsDBObject) :

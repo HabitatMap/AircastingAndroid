@@ -19,14 +19,13 @@ open class MeasurementStream(
     val measurementShortType: String,
     val unitName: String,
     val unitSymbol: String,
-    val thresholdVeryLow: Int,
-    val thresholdLow: Int,
-    val thresholdMedium: Int,
-    val thresholdHigh: Int,
-    val thresholdVeryHigh: Int,
+    var thresholdVeryLow: Int,
+    var thresholdLow: Int,
+    var thresholdMedium: Int,
+    var thresholdHigh: Int,
+    var thresholdVeryHigh: Int,
     var deleted: Boolean = false,
     private var mMeasurements: List<Measurement> = listOf()
-
 ) {
     constructor(measurementEvent: NewMeasurementEvent) : this(
         measurementEvent.packageName,
@@ -44,7 +43,7 @@ open class MeasurementStream(
     )
 
     constructor(sensor: Sensor) : this(
-        sensor.sensorPackageName,
+        sensor.sensorPackageName ?: sensor.sensorName,
         sensor.sensorName,
         sensor.measurementType,
         sensor.measurementShortType,
@@ -55,6 +54,35 @@ open class MeasurementStream(
         sensor.thresholdMedium,
         sensor.thresholdHigh,
         sensor.thresholdVeryHigh,
+    )
+
+    constructor(sensor: Sensor, sensorThreshold: SensorThreshold) : this(
+        sensor.sensorPackageName ?: sensor.sensorName,
+        sensor.sensorName,
+        sensor.measurementType,
+        sensor.measurementShortType,
+        sensor.unitName,
+        sensor.unitSymbol,
+        sensorThreshold.thresholdVeryLow,
+        sensorThreshold.thresholdLow,
+        sensorThreshold.thresholdMedium,
+        sensorThreshold.thresholdHigh,
+        sensorThreshold.thresholdVeryHigh,
+    )
+
+    constructor(sensor: Sensor, measurements: List<Measurement>?) : this(
+        sensor.sensorPackageName ?: sensor.sensorName,
+        sensor.sensorName,
+        sensor.measurementType,
+        sensor.measurementShortType,
+        sensor.unitName,
+        sensor.unitSymbol,
+        sensor.thresholdVeryLow,
+        sensor.thresholdLow,
+        sensor.thresholdMedium,
+        sensor.thresholdHigh,
+        sensor.thresholdVeryHigh,
+        mMeasurements = measurements ?: listOf()
     )
 
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
@@ -72,8 +100,9 @@ open class MeasurementStream(
         streamDbObject.deleted
     )
 
-    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject) :
-            this(streamWithMeasurementsDBObject.stream) {
+    constructor(streamWithMeasurementsDBObject: StreamWithMeasurementsDBObject) : this(
+        streamWithMeasurementsDBObject.stream
+    ) {
         this.mMeasurements =
             streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
                 Measurement(measurementDBObject)
