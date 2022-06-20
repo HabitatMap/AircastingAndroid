@@ -168,9 +168,12 @@
                     android:layout_marginTop="@dimen/keyline_5"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:text="@string/follow_session"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/chipGroupType" />
+                    app:layout_constraintTop_toBottomOf="@id/chipGroupType"
+                    tools:visibility="visible"
+                    />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/unfollowBtn"
@@ -182,13 +185,16 @@
                     android:backgroundTint="@color/aircasting_white"
                     android:text="@string/unfollow_session"
                     android:textColor="@color/aircasting_blue_400"
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/chipGroupType"
                     app:rippleColor="#33AAAAAA"
                     app:strokeColor="@color/aircasting_blue_400"
-                    app:strokeWidth="2dp" />
+                    app:strokeWidth="2dp"
+                    tools:visibility="invisible"
+                    />
+
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupType"

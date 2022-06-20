@@ -9,8 +9,8 @@ import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStr
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
-import pl.llp.aircasting.di.modules.DefaultDispatcher
 import pl.llp.aircasting.di.modules.IoDispatcher
+import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -22,29 +22,51 @@ class SearchFollowViewModel @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @MainDispatcher val mainDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
-    private lateinit var selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
     private lateinit var selectedFullSession: Deferred<Session?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
+    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
-        selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
-        selectedFullSession = initializeModelFromResponseAsync()
+        isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
+
+        val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
+        selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
     }
 
-    private fun initializeModelFromResponseAsync(): Deferred<Session?> =
-        viewModelScope.async(defaultDispatcher) {
+    private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
+        return viewModelScope.async(ioDispatcher) {
+            selectedSession.value?.uuid?.let {
+                sessionsRepository.getSessionByUUID(
+                    it
+                )
+            } != null
+        }
+    }
+
+    private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
+        viewModelScope.async(ioDispatcher) {
+            activeFixedRepo.getSessionWithStreamsAndMeasurements(
+                session.id
+            )
+        }
+
+    private fun initializeModelFromResponseAsync(
+        selectedSessionWithStreamsResponse
+        : Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    ): Deferred<Session?> =
+        viewModelScope.async {
             val response = selectedSessionWithStreamsResponse.await().data
             val streams = getStreamsWithMeasurementsFromResponse(response)
             val sessionInRegionResponse = selectedSession.value
@@ -61,12 +83,6 @@ class SearchFollowViewModel @Inject constructor(
             MeasurementStream(stream, measurements)
         }
 
-    private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
-        viewModelScope.async(ioDispatcher) {
-            activeFixedRepo.getSessionWithStreamsAndMeasurements(
-                session.id
-            )
-        }
 
     fun getStreams() = liveData(ioDispatcher) {
         val response = selectedSessionWithStreamsResponse.await().data
@@ -167,10 +183,10 @@ class SearchFollowViewModel @Inject constructor(
     }
 
     fun deleteSession(
-        session: SessionInRegionResponse,
+        session: SessionInRegionResponse
     ) {
         viewModelScope.launch(ioDispatcher) {
-            sessionsRepository.delete(listOf(session.uuid))
+            sessionsRepository.delete(session.uuid)
         }
     }
 

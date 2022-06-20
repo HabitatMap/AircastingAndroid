@@ -26,7 +26,7 @@ import pl.llp.aircasting.util.showToast
 
 class SessionManager(
     private val mContext: Context,
-    private val apiService: ApiService,
+    apiService: ApiService,
     private val settings: Settings
 ) {
     private val errorHandler = ErrorHandler(mContext)
@@ -142,13 +142,13 @@ class SessionManager(
         unregisterFromEventBus()
     }
 
-    fun onAppToForeground() {
+    private fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
         sessionsSyncService.resume()
         periodicallySyncSessionsService.resume()
     }
 
-    fun onAppToBackground() {
+    private fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
         sessionsSyncService.pause()
         periodicallySyncSessionsService.pause()

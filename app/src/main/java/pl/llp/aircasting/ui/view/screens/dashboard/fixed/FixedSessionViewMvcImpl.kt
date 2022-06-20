@@ -14,14 +14,18 @@ class FixedSessionViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup,
     supportFragmentManager: FragmentManager
-):
+) :
     SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     FixedSessionViewMvc,
-    SessionActionsBottomSheet.Listener
-{
+    SessionActionsBottomSheet.Listener {
 
     override fun showMeasurementsTableValues(): Boolean {
         return false
+    }
+
+    override fun bindExpanded(sessionPresenter: SessionPresenter) {
+        if (sessionPresenter.isExternal()) mActionsButton.visibility = View.GONE
+        super.bindExpanded(sessionPresenter)
     }
 
     override fun showExpandedMeasurementsTableValues() = true
@@ -31,7 +35,8 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun bindExpandedMeasurementsDescription() {
-        mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
+        mMeasurementsDescription?.text =
+            context.getString(R.string.session_last_min_measurements_description)
     }
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
