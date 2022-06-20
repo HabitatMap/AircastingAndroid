@@ -7,13 +7,13 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingSessionViewMvcImpl
 
-class ReorderingFollowingSessionViewMvcImpl: FollowingSessionViewMvcImpl {
+class ReorderingFollowingSessionViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    supportFragmentManager: FragmentManager
+) : FollowingSessionViewMvcImpl(inflater, parent, supportFragmentManager) {
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup,
-        supportFragmentManager: FragmentManager
-    ): super(inflater, parent, supportFragmentManager) {
+    init {
         mReorderSessionButton = findViewById(R.id.reorder_session_button)
     }
 
