@@ -271,7 +271,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ParticulateMatter.AIRBEAM.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
             ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
             ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
-            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OZONE.getSensorName()
+            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
             else -> SensorNames.AIRBEAM.getSensorName()
         }
     }
