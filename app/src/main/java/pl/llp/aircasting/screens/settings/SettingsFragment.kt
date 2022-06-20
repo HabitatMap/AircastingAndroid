@@ -23,7 +23,7 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
             .appComponent.inject(this)
 
         view = SettingsViewMvcImpl(inflater, container, settings)
-        controller = SettingsController(activity, context, view, settings, childFragmentManager)
+        controller = SettingsController(activity, requireContext(), view, settings, childFragmentManager)
 
         return view?.rootView
     }
