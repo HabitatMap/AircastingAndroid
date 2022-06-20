@@ -96,13 +96,14 @@ class ChartAveragesCreator {
 
         if (measurements.isEmpty()) return entries
 
-        val periodData = measurements.chunked(NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE)
+        //val periodData = measurements.chunked(NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE)
+        val periodData = measurements.groupBy { it.time.hours }
 
         if (periodData.isNotEmpty()) {
             for (dataChunk in periodData) {
                 if (xValue > MAX_AVERAGES_AMOUNT) return entries
 
-                val yValue = getAverage(dataChunk)
+                val yValue = getAverage(dataChunk.value)
                 entries.add(
                     Entry(
                         xValue.toFloat(),
