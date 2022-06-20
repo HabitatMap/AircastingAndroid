@@ -56,6 +56,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mapFragment =
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+        mChart = Chart(requireActivity(), binding?.root)
 
         setupFollowButton()
         setupUnfollowButton()
@@ -141,7 +142,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun getSessionWithAllData() {
         val sessionInRegionResponse = searchFollowViewModel.selectedSession.value
-        searchFollowViewModel.getStreams().observe(this) { streams ->
+        searchFollowViewModel.getStreams().observe(this) { response ->
+            val streams = response?.streams
+
             if (sessionInRegionResponse != null && streams != null) {
                 val session = Session(sessionInRegionResponse, streams)
 
