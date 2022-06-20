@@ -9,7 +9,6 @@ import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStr
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
-import pl.llp.aircasting.di.modules.DefaultDispatcher
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
@@ -23,14 +22,12 @@ class SearchFollowViewModel @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     @MainDispatcher val mainDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
-    private lateinit var selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
     private lateinit var selectedFullSession: Deferred<Session?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
@@ -44,8 +41,8 @@ class SearchFollowViewModel @Inject constructor(
 
         isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
 
-        selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
-        selectedFullSession = initializeModelFromResponseAsync()
+        val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
+        selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
@@ -65,8 +62,11 @@ class SearchFollowViewModel @Inject constructor(
             )
         }
 
-    private fun initializeModelFromResponseAsync(): Deferred<Session?> =
-        viewModelScope.async(defaultDispatcher) {
+    private fun initializeModelFromResponseAsync(
+        selectedSessionWithStreamsResponse
+        : Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    ): Deferred<Session?> =
+        viewModelScope.async {
             val response = selectedSessionWithStreamsResponse.await().data
             val streams = getStreamsWithMeasurementsFromResponse(response)
             val sessionInRegionResponse = selectedSession.value
@@ -175,7 +175,7 @@ class SearchFollowViewModel @Inject constructor(
     }
 
     fun deleteSession(
-        session: SessionInRegionResponse,
+        session: SessionInRegionResponse
     ) {
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(session.uuid)
