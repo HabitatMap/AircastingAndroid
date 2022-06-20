@@ -17,10 +17,21 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/reorder_buttons_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end">
+
+            <Button
+                android:id="@+id/finished_reordering_session_button"
+                style="@style/Widget.Aircasting.ExpandedCardButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/finished"
+                android:textColor="@color/aircasting_blue_400"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/reorder_sessions_button"
@@ -45,22 +56,11 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/reorder_sessions_button"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_search_group"
                 app:tint="@color/aircasting_blue_400" />
-
-            <Button
-                android:id="@+id/finished_reordering_session_button"
-                style="@style/Widget.Aircasting.ExpandedCardButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/finished"
-                android:textColor="@color/aircasting_blue_400"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.MaterialToolbar>
