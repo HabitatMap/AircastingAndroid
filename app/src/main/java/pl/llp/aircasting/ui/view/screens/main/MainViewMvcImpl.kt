@@ -59,26 +59,11 @@ class MainViewMvcImpl(
 
     fun appBarSetup() {
         rootActivity.setSupportActionBar(topAppBar)
-        topAppBar?.setNavigationOnClickListener {
-            rootActivity.onBackPressed()
-        }
+        topAppBar?.setNavigationOnClickListener { rootActivity.onBackPressed() }
 
-        mReorderSessionsButton?.setOnClickListener {
-            mNavController?.navigate(R.id.navigation_reordering_dashboard)
-            showReorderSessionsButton()
-        }
-
-        mFinishedReorderingSessionsButton?.setOnClickListener {
-            val action =
-                MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-            mNavController?.navigate(action)
-            showFinishedReorderingSessionsButtonClicked()
-        }
-
-        mSearchIcon?.setOnClickListener {
-            val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
-            rootActivity.startActivity(intent)
-        }
+        mReorderSessionsButton?.setOnClickListener { showReorderSessionsButton() }
+        mFinishedReorderingSessionsButton?.setOnClickListener { showFinishedReorderingSessionsButtonClicked() }
+        mSearchIcon?.setOnClickListener { onSearchIconClicked() }
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
@@ -129,13 +114,24 @@ class MainViewMvcImpl(
     }
 
     private fun showReorderSessionsButton() {
+        mSearchIcon?.gone()
+        mReorderSessionsButton?.gone()
         mFinishedReorderingSessionsButton?.visible()
-        mReorderSessionsButton?.inVisible()
+        mNavController?.navigate(R.id.navigation_reordering_dashboard)
     }
 
     private fun showFinishedReorderingSessionsButtonClicked() {
-        mFinishedReorderingSessionsButton?.inVisible()
+        mSearchIcon?.visible()
         mReorderSessionsButton?.visible()
+        mFinishedReorderingSessionsButton?.gone()
+        val action =
+            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
+        mNavController?.navigate(action)
+    }
+
+    private fun onSearchIconClicked() {
+        val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
+        rootActivity.startActivity(intent)
     }
 
     override fun showLoader() {
@@ -143,8 +139,7 @@ class MainViewMvcImpl(
         loader?.visible()
     }
 
-    // Considering delay as the last resort sync data is being bound into RecyclerView after some time.
-    // The performance and the binding section can be improved.
+    // TODO: Consider improving the RecyclerView and using Data binding if possible!
     override fun hideLoader() {
         Handler(Looper.getMainLooper()).postDelayed({
             AnimatedLoader(loader).stop()
