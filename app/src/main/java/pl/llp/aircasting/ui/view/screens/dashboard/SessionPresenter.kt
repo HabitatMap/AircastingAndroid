@@ -82,6 +82,8 @@ class SessionPresenter() {
         return session?.isRecording() == true
     }
 
+    fun isExternal(): Boolean = session?.isExternal == true
+
     fun isDisconnected(): Boolean {
         return session?.isDisconnected() == true
     }

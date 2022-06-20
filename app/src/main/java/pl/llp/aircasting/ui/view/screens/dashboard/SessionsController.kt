@@ -7,10 +7,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
@@ -98,10 +98,19 @@ abstract class SessionsController(
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
-        updateFollowedAt(session)
+        if (session.isExternal) delete(session)
+        else {
+            updateFollowedAt(session)
 
-        clearUnfollowedSessionMeasurementsFromActiveTable(session)
-        mSettings.decreaseFollowedSessionsNumber()
+            clearUnfollowedSessionMeasurementsFromActiveTable(session)
+            mSettings.decreaseFollowedSessionsNumber()
+        }
+    }
+
+    private fun delete(session: Session) {
+        DatabaseProvider.runQuery {
+           mSessionRepository.delete(session.uuid)
+        }
     }
 
     private fun updateFollowedAt(session: Session) {

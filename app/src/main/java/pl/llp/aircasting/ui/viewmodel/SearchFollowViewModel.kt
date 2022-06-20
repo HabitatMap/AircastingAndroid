@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
+import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -20,7 +21,8 @@ class SearchFollowViewModel @Inject constructor(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @MainDispatcher val mainDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
@@ -32,12 +34,25 @@ class SearchFollowViewModel @Inject constructor(
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
+    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
+        isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
+
         val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
+    }
+
+    private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
+        return viewModelScope.async(ioDispatcher) {
+            selectedSession.value?.uuid?.let {
+                sessionsRepository.getSessionByUUID(
+                    it
+                )
+            } != null
+        }
     }
 
     private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
@@ -163,7 +178,7 @@ class SearchFollowViewModel @Inject constructor(
         session: SessionInRegionResponse
     ) {
         viewModelScope.launch(ioDispatcher) {
-            sessionsRepository.delete(listOf(session.uuid))
+            sessionsRepository.delete(session.uuid)
         }
     }
 
