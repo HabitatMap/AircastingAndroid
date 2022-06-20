@@ -1,23 +1,14 @@
 package pl.llp.aircasting.ui.viewmodel
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import pl.llp.aircasting.data.api.Constants
+import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
-import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
+import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
-import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
-import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.GeoSquare
-import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.local.repository.*
+import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
@@ -28,13 +19,14 @@ class SearchFollowViewModel @Inject constructor(
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
+    private val thresholdsRepository: ThresholdsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
-    private lateinit var measurements: List<Measurement>
+    private lateinit var selectedFullSession: Deferred<Session?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
@@ -43,7 +35,38 @@ class SearchFollowViewModel @Inject constructor(
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
+
+        val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
+        selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
     }
+
+    private fun downloadFullSessionAsync(session: SessionInRegionResponse) =
+        viewModelScope.async(ioDispatcher) {
+            activeFixedRepo.getSessionWithStreamsAndMeasurements(
+                session.id
+            )
+        }
+
+    private fun initializeModelFromResponseAsync(
+        selectedSessionWithStreamsResponse
+        : Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
+    ): Deferred<Session?> =
+        viewModelScope.async {
+            val response = selectedSessionWithStreamsResponse.await().data
+            val streams = getStreamsWithMeasurementsFromResponse(response)
+            val sessionInRegionResponse = selectedSession.value
+            if (sessionInRegionResponse != null && streams != null) {
+                return@async Session(sessionInRegionResponse, streams)
+            }
+            return@async null
+        }
+
+    private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
+        response?.streams?.map { stream ->
+            val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
+            MeasurementStream(stream, measurements)
+        }
+
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
@@ -57,68 +80,87 @@ class SearchFollowViewModel @Inject constructor(
         mutableLng.value = lng
     }
 
-    fun onFollowSessionClicked(
-        session: SessionInRegionResponse,
-    ) {
+    fun saveSession() {
         viewModelScope.launch(ioDispatcher) {
-            val sessionId =
-                saveSession(session)
+            val session = selectedFullSession.await()
+            if (session != null) {
+                val thresholds = thresholdsRepository.findOrCreateSensorThresholds(session)
 
-            val streamId =
-                saveMeasurementStream(
+                setSessionThresholdsAccordingToUserSettings(session, thresholds)
+
+                val sessionId = saveSessionToDB(session)
+
+                saveStreamsAndTheirMeasurements(
                     sessionId,
-                    MeasurementStream(session.streams.sensor)
+                    session.streams
                 )
-            measurements = getMeasurementsFromSelectedSession()
-            saveMeasurements(streamId, sessionId, measurements)
-            saveMeasurementsToActiveTable(streamId, sessionId, measurements)
+            }
         }
     }
 
-    private fun saveMeasurementsToActiveTable(
-        streamId: Long,
-        sessionId: Long,
-        measurements: List<Measurement>
+    private fun setSessionThresholdsAccordingToUserSettings(
+        session: Session,
+        thresholds: List<SensorThreshold>
     ) {
-        viewModelScope.launch(ioDispatcher) {
-            activeSessionMeasurementsRepository.insertAll(streamId, sessionId, measurements)
+        session.streams.forEach { stream ->
+            val threshold = thresholds.find { it.sensorName == stream.sensorName }
+            if (threshold != null)
+                updateStreamThresholds(stream, threshold)
         }
     }
 
-    private fun saveMeasurements(
-        streamId: Long,
-        sessionId: Long,
-        measurements: List<Measurement>
+    private fun updateStreamThresholds(
+        stream: MeasurementStream,
+        threshold: SensorThreshold
     ) {
-        viewModelScope.launch(ioDispatcher) {
-            measurementsRepository.insertAll(streamId, sessionId, measurements)
+        stream.apply {
+            thresholdLow = threshold.thresholdLow
+            thresholdMedium = threshold.thresholdMedium
+            thresholdHigh = threshold.thresholdHigh
+            thresholdVeryHigh = threshold.thresholdVeryHigh
         }
     }
 
-    private suspend fun saveSession(
-        session: SessionInRegionResponse
+    private suspend fun saveSessionToDB(
+        session: Session
     ): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
-            sessionsRepository.insert(Session(session))
+            sessionsRepository.insert(session)
         }
         return sessionId.await()
     }
 
-    private suspend fun saveMeasurementStream(
+    private suspend fun saveStreamsAndTheirMeasurements(
         sessionId: Long,
-        measurementStream: MeasurementStream
-    ): Long {
-        val measurementStreamId = viewModelScope.async(ioDispatcher) {
-            measurementStreamsRepository.insert(
-                sessionId,
-                measurementStream
-            )
+        streams: List<MeasurementStream>
+    ) {
+        streams.forEach { stream ->
+            val streamId = insertStreamToDB(sessionId, stream)
+            insertMeasurementsToDB(streamId, sessionId, stream)
         }
-        return measurementStreamId.await()
     }
 
-    fun onUnfollowSessionClicked(
-        session: SessionInRegionResponse,
+    private suspend fun insertStreamToDB(
+        sessionId: Long,
+        stream: MeasurementStream
+    ) = withContext(viewModelScope.coroutineContext + ioDispatcher) {
+        measurementStreamsRepository.insert(
+            sessionId,
+            stream
+        )
+    }
+
+    private fun insertMeasurementsToDB(
+        streamId: Long,
+        sessionId: Long,
+        stream: MeasurementStream
+    ) {
+        measurementsRepository.insertAll(streamId, sessionId, stream.measurements)
+        activeSessionMeasurementsRepository.insertAll(streamId, sessionId, stream.measurements)
+    }
+
+    fun deleteSession(
+        session: SessionInRegionResponse
     ) {
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(listOf(session.uuid))
@@ -151,30 +193,4 @@ class SearchFollowViewModel @Inject constructor(
             )
             emit(stream)
         }
-
-    private suspend fun getMeasurementsFromSelectedSession(): List<Measurement> {
-        val sessionId = selectedSession.value?.id?.toLong()
-        val sensorName = selectedSession.value?.streams?.sensor?.sensorName
-        val measurementLimit = Constants.MEASUREMENTS_IN_HOUR * 24
-
-        if (sensorName != null && sessionId != null) {
-            val response = viewModelScope.async(ioDispatcher) {
-                activeFixedRepo.getStreamOfGivenSession(
-                    sessionId,
-                    sensorName,
-                    measurementLimit
-                )
-            }
-            val measurementsFromResponse = response.await().data?.measurements
-            return convertFromResponseToModel(measurementsFromResponse)
-        }
-        return listOf()
-    }
-
-    private fun convertFromResponseToModel(measurementsFromResponse: List<MeasurementOfStreamResponse>?) =
-        measurementsFromResponse?.let { list ->
-            list.map {
-                Measurement(it)
-            }
-        } ?: listOf()
 }

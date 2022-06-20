@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.model
 
+import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -78,7 +79,7 @@ open class Session(
         this.locationless = locationless
     }
 
-    constructor(apiSession: pl.llp.aircasting.data.api.response.search.SessionInRegionResponse) : this(
+    constructor(apiSession: SessionInRegionResponse, streams: List<MeasurementStream>) : this(
         uuid = apiSession.uuid,
         mName = apiSession.title,
         mType = Type.FIXED,
@@ -91,7 +92,8 @@ open class Session(
         isExternal = true,
         followedAt = Date(),
         mTags = arrayListOf(),
-        mStatus = Status.RECORDING
+        mStatus = Status.RECORDING,
+        mStreams = streams
     ) {
         location = Location(apiSession.latitude, apiSession.longitude)
     }
