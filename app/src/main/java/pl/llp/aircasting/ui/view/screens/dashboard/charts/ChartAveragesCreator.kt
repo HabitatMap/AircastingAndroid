@@ -87,16 +87,15 @@ class ChartAveragesCreator {
     }
 
     fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
-        val timeLimit = Calendar.getInstance()
-        setMeasurementsAllowedTimeLimit(stream, timeLimit)
+        val calendar = Calendar.getInstance()
+        setAllowedTimeLimitToCalendar(stream, calendar)
 
-        val measurements = getMeasurementsAfterAllowedTimeLimit(stream, timeLimit)
+        val measurements = getMeasurementsAfterAllowedTimeLimit(stream, calendar)
         var xValue = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
 
         if (measurements.isEmpty()) return entries
 
-        val calendar = Calendar.getInstance()
         val periodData = groupMeasurementsByHours(measurements, calendar)
         if (periodData.isNotEmpty()) {
             // From time to time we still get 10 entries, so this is another check
@@ -122,7 +121,7 @@ class ChartAveragesCreator {
         boundary: Calendar
     ) = stream.measurements.sortedBy { it.time }.filter { it.time > boundary.time }
 
-    private fun setMeasurementsAllowedTimeLimit(
+    private fun setAllowedTimeLimitToCalendar(
         stream: MeasurementStream,
         calendar: Calendar
     ) {
