@@ -168,9 +168,13 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     ) {
         mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
 
+        setDataAfterSessionPresenterInitialized()
+        mChart.bindChart(mSessionPresenter)
+    }
+
+    private fun setDataAfterSessionPresenterInitialized() {
         binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.measurementHeader?.text =
             mSessionPresenter.selectedStream?.detailedType
-        mChart.bindChart(mSessionPresenter)
     }
 
     private fun observeLastMeasurementsValue() {
