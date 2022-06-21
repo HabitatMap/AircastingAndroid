@@ -117,6 +117,28 @@ class ChartAveragesCreator {
         return entries
     }
 
+    private fun getMeasurementsAfterAllowedTimeBoundary(
+        stream: MeasurementStream,
+        boundary: Calendar
+    ) = stream.measurements.sortedBy { it.time }.filter { it.time > boundary.time }
+
+    private fun setMeasurementsAllowedTimeBoundary(
+        stream: MeasurementStream,
+        calendar: Calendar
+    ) {
+        val latestTime = stream.measurements.maxOf { it.time }
+        calendar.time = latestTime
+        calendar.add(Calendar.HOUR_OF_DAY, -9)
+    }
+
+    private fun groupMeasurementsByHours(
+        measurements: List<Measurement>,
+        calendar: Calendar
+    ) = measurements.groupBy {
+        calendar.time = it.time
+        calendar.get(Calendar.HOUR_OF_DAY)
+    }
+
     private fun getTolerance(measurementsInPeriod: Double): Double {
         return 0.1 * measurementsInPeriod
     }
