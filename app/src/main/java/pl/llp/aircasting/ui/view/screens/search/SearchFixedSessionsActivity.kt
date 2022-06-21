@@ -42,6 +42,9 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     private var txtSelectedSensor: String = ParticulateMatter.OPEN_AQ.getSensorName()
     private var address: String? = null
 
+    private lateinit var mLat: String
+    private lateinit var mLng: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search_fixed_sessions)
@@ -63,6 +66,8 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         binding.chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
             onChipGroupSecondLevelTwoSelected(chipGroup)
         }
+
+        binding.btnContinue.setOnClickListener { goToSearchResult(mLat, mLat) }
     }
 
     private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
@@ -101,52 +106,45 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
 
         autocompleteFragment?.apply {
-            view?.apply {
-                findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    hint = getString(R.string.search_session_query_hint)
-                    textSize = 15.0f
-                    setHintTextColor(ContextCompat.getColor(context, R.color.black_color))
-                }
-                findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
+            val searchInputEditText =
+                view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
+            findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
+
+            searchInputEditText?.apply {
+                hint = getString(R.string.search_session_query_hint)
+                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
+                textSize = 15.0f
             }
 
-            setPlaceFields(
-                listOf(
-                    Place.Field.ID,
-                    Place.Field.ADDRESS,
-                    Place.Field.LAT_LNG
-                )
-            )
+            setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
 
-            val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
-
-            var lat: String? = null
-            var long: String? = null
-
-            setOnPlaceSelectedListener(object : PlaceSelectionListener {
-                override fun onPlaceSelected(place: Place) {
-                    address = place.address?.toString()
-                    lat = "${place.latLng?.latitude}"
-                    long = "${place.latLng?.longitude}"
-
-                    if (address != null) {
-                        binding.btnContinue.visible()
-                        etPlace.hint = address
-                    }
-                }
-
-                override fun onError(status: Status) {
-                    Log.d("onError", status.statusMessage.toString())
-                }
-            })
-
-            binding.btnContinue.setOnClickListener {
-                if (lat != null && long != null) goToSearchResult(
-                    lat.toString(),
-                    long.toString()
-                )
-            }
+            onPlaceSelectedListener(searchInputEditText)
         }
+    }
+
+    private fun AutocompleteSupportFragment.onPlaceSelectedListener(searchInputEditText: EditText?) {
+        setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                address = place.address?.toString()
+                mLat = "${place.latLng?.latitude}"
+                mLng = "${place.latLng?.longitude}"
+
+                if (address != null) {
+                    binding.btnContinue.visible()
+                    searchInputEditText?.hint = address
+                    searchInputEditText?.setHintTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.black_color
+                        )
+                    )
+                }
+            }
+
+            override fun onError(status: Status) {
+                Log.d("onError", status.statusMessage.toString())
+            }
+        })
     }
 
     private fun initialisePlacesClient() {
