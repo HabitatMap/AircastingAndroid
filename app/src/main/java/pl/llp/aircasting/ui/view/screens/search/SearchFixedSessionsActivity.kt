@@ -103,9 +103,9 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         autocompleteFragment?.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    setText(getString(R.string.search_session_query_hint))
+                    hint = getString(R.string.search_session_query_hint)
                     textSize = 15.0f
-                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                    setHintTextColor(ContextCompat.getColor(context, R.color.black_color))
                 }
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }

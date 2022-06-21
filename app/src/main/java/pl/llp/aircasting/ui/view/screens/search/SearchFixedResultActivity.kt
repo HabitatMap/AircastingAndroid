@@ -112,12 +112,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
                     hint = address
                     textSize = 15.0f
-                    setHintTextColor(
-                        ContextCompat.getColor(
-                            this.context,
-                            R.color.aircasting_black_overlay
-                        )
-                    )
+                    setHintTextColor(ContextCompat.getColor(context, R.color.black_color))
                 }
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }
@@ -128,7 +123,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         initialisePlacesClient()
 
         autocompleteFragment.apply {
-
             setPlaceFields(
                 listOf(
                     Place.Field.ID,
