@@ -11,10 +11,9 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-
 
 class Chart(context: Context, rootView: View?) {
     private val mContext: Context = context
@@ -29,9 +28,7 @@ class Chart(context: Context, rootView: View?) {
     private var mDataSet: LineDataSet? = null
     private var mSessionPresenter: SessionPresenter? = null
 
-    fun bindChart(
-        sessionPresenter: SessionPresenter?
-    ) {
+    fun bindChart(sessionPresenter: SessionPresenter?) {
         val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
@@ -113,13 +110,12 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun prepareDataSet(): LineDataSet {
-        if (mEntries == null || mEntries.isEmpty()) {
-            return LineDataSet(listOf(), "")
-        }
+        if (mEntries.isEmpty()) return LineDataSet(listOf(), "")
 
         val dataSet: LineDataSet =
             if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true
-                && TemperatureConverter.isCelsiusToggleEnabled()) {
+                && TemperatureConverter.isCelsiusToggleEnabled()
+            ) {
                 val celsiusEntries: List<Entry> = mEntries.map { entry ->
                     Entry(entry.x, TemperatureConverter.fahrenheitToCelsius(entry.y))
                 }

@@ -25,7 +25,7 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("setLayoutColors", requireAll = true)
+    @BindingAdapter("setLayoutColors")
     fun LinearLayout.setLayoutColors(colorData: LiveData<Int>) {
         findViewTreeLifecycleOwner()?.let { lifecycleOwner ->
             colorData.observe(lifecycleOwner) {

@@ -13,8 +13,13 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
+import pl.llp.aircasting.data.model.MeasurementStream
+import pl.llp.aircasting.data.model.SensorThreshold
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import kotlin.math.roundToInt
@@ -22,13 +27,15 @@ import kotlin.math.roundToInt
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
     private var binding: SearchFollowBottomSheetBinding? = null
-
     private var mapFragment: SupportMapFragment? = null
-    private lateinit var mMap: GoogleMap
     private val options = MarkerOptions()
     private var txtLat: Double? = null
     private var txtLng: Double? = null
     private lateinit var loader: AnimatedLoader
+    private lateinit var mMap: GoogleMap
+    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
+    private lateinit var mChart: Chart
+    private lateinit var mSessionPresenter: SessionPresenter
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -41,6 +48,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
         setupUI()
         getLatlngObserver()
+        getSessionWithAllData()
         observeLastMeasurementsValue()
     }
 
@@ -48,18 +56,14 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mapFragment =
             requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+        mChart = Chart(requireActivity(), binding?.root)
 
         setupFollowButton()
         setupUnfollowButton()
-
         toggleCorrectButton()
-
         setupChipsBehaviour()
-
         setupLoader()
     }
-
-
 
     private fun setupUnfollowButton() {
         binding?.unfollowBtn?.setOnClickListener {
@@ -117,12 +121,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun toggleChart() {
         mapFragment?.view?.inVisible()
-        binding?.chartView?.visible()
+        binding?.chartContainer?.visible()
     }
 
     private fun toggleMap() {
         mapFragment?.view?.visible()
-        binding?.chartView?.inVisible()
+        binding?.chartContainer?.inVisible()
     }
 
     private fun getLatlngObserver() {
@@ -136,8 +140,45 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         }
     }
 
+    private fun getSessionWithAllData() {
+        searchFollowViewModel.getStreams().observe(this) { session ->
+
+            session?.streams?.map { stream ->
+                mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
+                bindChartData(session, mSensorThresholds, stream)
+            }
+        }
+    }
+
+    private fun getSensorThresholds(stream: MeasurementStream): SensorThreshold {
+        return SensorThreshold(
+            stream.sensorName,
+            stream.thresholdVeryLow,
+            stream.thresholdLow,
+            stream.thresholdMedium,
+            stream.thresholdHigh,
+            stream.thresholdVeryHigh
+        )
+    }
+
+    private fun bindChartData(
+        session: Session,
+        sensorThresholds: HashMap<String, SensorThreshold>,
+        selectedStream: MeasurementStream
+    ) {
+        mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
+
+        setDataAfterSessionPresenterInitialized()
+        mChart.bindChart(mSessionPresenter)
+    }
+
+    private fun setDataAfterSessionPresenterInitialized() {
+        binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.measurementHeader?.text =
+            mSessionPresenter.selectedStream?.detailedType
+    }
+
     private fun observeLastMeasurementsValue() {
-        val sessionId = searchFollowViewModel.selectedSession.value?.id?.toLong()
+        val sessionId = searchFollowViewModel.selectedSession.value?.id
         val sensorName =
             searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
@@ -183,6 +224,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         styleGoogleMap(mMap, requireActivity())
+
+        mMap.uiSettings.setAllGesturesEnabled(false)
 
         if (txtLat != null && txtLng != null) {
             val myLocation = LatLng(txtLat!!, txtLng!!)

@@ -47,11 +47,7 @@ class SearchFollowViewModel @Inject constructor(
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
         return viewModelScope.async(ioDispatcher) {
-            selectedSession.value?.uuid?.let {
-                sessionsRepository.getSessionByUUID(
-                    it
-                )
-            } != null
+            selectedSession.value?.uuid?.let { sessionsRepository.getSessionByUUID(it) } != null
         }
     }
 
@@ -70,6 +66,7 @@ class SearchFollowViewModel @Inject constructor(
             val response = selectedSessionWithStreamsResponse.await().data
             val streams = getStreamsWithMeasurementsFromResponse(response)
             val sessionInRegionResponse = selectedSession.value
+
             if (sessionInRegionResponse != null && streams != null) {
                 return@async Session(sessionInRegionResponse, streams)
             }
@@ -77,11 +74,15 @@ class SearchFollowViewModel @Inject constructor(
         }
 
     private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
-        response?.streams?.map { stream ->
+        response?.sensors?.map { stream ->
             val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
             MeasurementStream(stream, measurements)
         }
 
+    fun getStreams() = liveData(ioDispatcher) {
+        val response = selectedFullSession.await()
+        emit(response)
+    }
 
     fun selectColor(color: Int) {
         mutableThresholdColor.value = color
