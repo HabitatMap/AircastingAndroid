@@ -31,7 +31,7 @@ class SessionPresenter() {
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-        if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE && session.isExternal) {
+        if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE || session.isExternal) {
             this.chartData = ChartData(session)
         }
         if (session.tab == SessionsTab.MOBILE_ACTIVE || session.tab == SessionsTab.MOBILE_DORMANT) {
@@ -46,6 +46,7 @@ class SessionPresenter() {
         }
 
     }
+    // TODO: Needs to be revised and rewritten with "when" later.
 
     constructor(sessionUUID: String, initialSensorName: String?) : this() {
         this.sessionUUID = sessionUUID
