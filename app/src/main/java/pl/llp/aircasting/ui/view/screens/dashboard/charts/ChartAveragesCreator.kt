@@ -10,10 +10,9 @@ import kotlin.math.roundToInt
 class ChartAveragesCreator {
     companion object {
         const val MAX_AVERAGES_AMOUNT = 9
-        const val NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE = 60
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private const val MAX_X_VALUE = 8.0
-        private const val MIN_X_VALUE = 0.0
+        private const val MIN_X_VALUE = 0
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
     }
 
@@ -88,19 +87,21 @@ class ChartAveragesCreator {
     }
 
     fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
-        val measurements: MutableList<Measurement>?
+        val boundary = Calendar.getInstance()
+        setMeasurementsAllowedTimeBoundary(stream, boundary)
+
+        val measurements = getMeasurementsAfterAllowedTimeBoundary(stream, boundary)
         var xValue = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
 
-        measurements = stream.getLastMeasurements()
-
         if (measurements.isEmpty()) return entries
 
-        //val periodData = measurements.chunked(NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE)
-        val periodData = measurements.groupBy { it.time.hours }
-
+        val calendar = Calendar.getInstance()
+        val periodData = groupMeasurementsByHours(measurements, calendar)
         if (periodData.isNotEmpty()) {
-            for (dataChunk in periodData) {
+            // From time to time we still get 10 entries, so this is another check
+            val lastNineHoursMeasurementGroups = periodData.entries.toList().takeLast(9)
+            for (dataChunk in lastNineHoursMeasurementGroups) {
                 if (xValue > MAX_AVERAGES_AMOUNT) return entries
 
                 val yValue = getAverage(dataChunk.value)
