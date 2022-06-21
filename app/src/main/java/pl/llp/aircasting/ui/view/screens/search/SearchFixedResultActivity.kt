@@ -110,9 +110,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         autocompleteFragment.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    setText(address)
+                    hint = address
                     textSize = 15.0f
-                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                    setHintTextColor(
+                        ContextCompat.getColor(
+                            this.context,
+                            R.color.aircasting_black_overlay
+                        )
+                    )
                 }
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }
@@ -137,9 +142,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(
-        etPlace: EditText
-    ) {
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 address = place.address?.toString()
@@ -206,8 +209,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun updateText(count: Int) {
-        binding.txtShowingSessionsNumber.text =
+        if (count != 0) binding.txtShowingSessionsNumber.text =
             getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+        else
+            binding.txtShowingSessionsNumber.apply {
+                text =
+                    getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+                setMargins(bottom = 50)
+            }
+
     }
 
     private fun setupMapMarkers(sessions: List<SessionInRegionResponse>) {
