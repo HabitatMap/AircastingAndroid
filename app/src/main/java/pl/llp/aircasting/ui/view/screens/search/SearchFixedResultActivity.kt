@@ -204,11 +204,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun updateText(count: Int) {
         if (count != 0) binding.txtShowingSessionsNumber.text =
-            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+            getString(R.string.txt_showing_sessions_number, count, count)
         else
             binding.txtShowingSessionsNumber.apply {
-                text =
-                    getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+                text = getString(R.string.txt_showing_sessions_number, count, count)
                 setMargins(bottom = 50)
             }
 

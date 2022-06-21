@@ -389,9 +389,7 @@
     <string name="finished">Acabada</string>
     <string name="close">Close</string>
     <string name="using_txt">utilizando:</string>
-    <string name="sessions_showing">Sesiones mostrando</string>
-    <string name="of">de</string>
-    <string name="results">resultados</string>
+
     <string name="unauth">No autorizado</string>
     <string name="not_found">Extraviado</string>
     <string name="internal_error">Error de servidor interno</string>
@@ -402,5 +400,6 @@
     <string name="session_unfollowed">¡Sesión no seguida!</string>
     <string name="chart">cuadro</string>
     <string name="finish">Finalizar</string>
+    <string name="txt_showing_sessions_number">Sessions showing %1$s of %2$s results</string>
 
 </resources>
