@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -35,6 +36,9 @@ class MainViewMvcImpl(
 
     private var topAppBar: MaterialToolbar? = null
     private var mNavController: NavController? = null
+    private var mReorderLayout: ConstraintLayout? = null
+    private var mFinishReorderLayout: ConstraintLayout? = null
+
     private var mReorderSessionsButton: ImageView? = null
     private var mFinishedReorderingSessionsButton: Button? = null
     private var mSearchIcon: ImageView? = null
@@ -46,10 +50,15 @@ class MainViewMvcImpl(
 
         rootView?.apply {
             topAppBar = findViewById(R.id.topAppBar)
-            mReorderSessionsButton = findViewById(R.id.reorder_sessions_button)
+
+            mReorderLayout = findViewById(R.id.reorder_buttons_group)
+            mFinishReorderLayout = findViewById(R.id.finishReorderLayout)
+
+            mReorderSessionsButton = findViewById(R.id.reorderButton)
+            mSearchIcon = findViewById(R.id.search_follow_icon)
+
             mFinishedReorderingSessionsButton =
                 findViewById(R.id.finished_reordering_session_button)
-            mSearchIcon = findViewById(R.id.search_follow_icon)
         }
     }
 
@@ -63,22 +72,28 @@ class MainViewMvcImpl(
             rootActivity.onBackPressed()
         }
 
-        mReorderSessionsButton?.setOnClickListener {
-            mNavController?.navigate(R.id.navigation_reordering_dashboard)
-            showReorderSessionsButton()
-        }
+        mReorderSessionsButton?.setOnClickListener { onReorderSessionsClicked() }
+        mFinishedReorderingSessionsButton?.setOnClickListener { showFinishedReorderingSessionsButtonClicked() }
+        mSearchIcon?.setOnClickListener { onSearchIconClicked() }
+    }
 
-        mFinishedReorderingSessionsButton?.setOnClickListener {
-            val action =
-                MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-            mNavController?.navigate(action)
-            showFinishedReorderingSessionsButtonClicked()
-        }
+    private fun onReorderSessionsClicked() {
+        mNavController?.navigate(R.id.navigation_reordering_dashboard)
+        mReorderLayout?.gone()
+        mFinishReorderLayout?.visible()
+    }
 
-        mSearchIcon?.setOnClickListener {
-            val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
-            rootActivity.startActivity(intent)
-        }
+    private fun onSearchIconClicked() {
+        val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
+        rootActivity.startActivity(intent)
+    }
+
+    private fun showFinishedReorderingSessionsButtonClicked() {
+        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
+        mNavController?.navigate(action)
+
+        mFinishReorderLayout?.gone()
+        mReorderLayout?.visible()
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
@@ -128,23 +143,12 @@ class MainViewMvcImpl(
         }
     }
 
-    private fun showReorderSessionsButton() {
-        mFinishedReorderingSessionsButton?.visible()
-        mReorderSessionsButton?.inVisible()
-    }
-
-    private fun showFinishedReorderingSessionsButtonClicked() {
-        mFinishedReorderingSessionsButton?.inVisible()
-        mReorderSessionsButton?.visible()
-    }
-
     override fun showLoader() {
         AnimatedLoader(loader).start()
         loader?.visible()
     }
 
-    // Considering delay as the last resort sync data is being bound into RecyclerView after some time.
-    // The performance and the binding section can be improved.
+    // TODO: The recyclerView needs to be improved later.
     override fun hideLoader() {
         Handler(Looper.getMainLooper()).postDelayed({
             AnimatedLoader(loader).stop()
