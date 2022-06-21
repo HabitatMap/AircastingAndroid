@@ -14,6 +14,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
+import pl.llp.aircasting.util.adjustMenuVisibility
 
 
 class SettingsController(
@@ -29,6 +30,7 @@ class SettingsController(
 
     fun onStart() {
         viewMvc?.registerListener(this)
+        mRootActivity?.let { adjustMenuVisibility(it, false) }
     }
 
     fun onStop() {

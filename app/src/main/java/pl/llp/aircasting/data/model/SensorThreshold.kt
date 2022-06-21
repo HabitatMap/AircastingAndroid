@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.model
 
+import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 
 class SensorThreshold(
@@ -10,7 +11,7 @@ class SensorThreshold(
     var thresholdHigh: Int,
     var thresholdVeryHigh: Int
 ) {
-    constructor(sensorThresholdDBObject: SensorThresholdDBObject): this(
+    constructor(sensorThresholdDBObject: SensorThresholdDBObject) : this(
         sensorThresholdDBObject.sensorName,
         sensorThresholdDBObject.thresholdVeryLow,
         sensorThresholdDBObject.thresholdLow,
@@ -19,10 +20,26 @@ class SensorThreshold(
         sensorThresholdDBObject.thresholdVeryHigh
     )
 
+    constructor(sensor: Sensor) : this(
+        sensor.sensorName,
+        sensor.thresholdVeryLow,
+        sensor.thresholdLow,
+        sensor.thresholdMedium,
+        sensor.thresholdHigh,
+        sensor.thresholdVeryHigh
+    )
+
     val from get() = thresholdVeryLow.toFloat()
     val to get() = thresholdVeryHigh.toFloat()
 
-    val levels get() = arrayOf(thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh)
+    val levels
+        get() = arrayOf(
+            thresholdVeryLow,
+            thresholdLow,
+            thresholdMedium,
+            thresholdHigh,
+            thresholdVeryHigh
+        )
 
     fun hasChangedFrom(sensorThreshold: SensorThreshold?): Boolean {
         return sensorThreshold?.sensorName != sensorName ||

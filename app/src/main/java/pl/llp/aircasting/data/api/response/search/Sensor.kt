@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.api.response.search
 
-
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import pl.llp.aircasting.data.api.response.MeasurementOfStreamResponse

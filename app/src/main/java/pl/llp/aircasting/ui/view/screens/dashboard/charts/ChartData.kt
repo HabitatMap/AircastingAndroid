@@ -8,9 +8,7 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.services.AveragedMeasurementsService
 import java.util.*
 
-class ChartData(
-    var session: Session
-) {
+class ChartData(var session: Session) {
     var entriesStartTime: String = ""
     var entriesEndTime: String = ""
 
@@ -38,7 +36,7 @@ class ChartData(
 
         mSession = session
         mEndTime = mSession.endTime ?: Date()
-        if(mChartRefreshService.isTimeToRefresh() || hourChanged) {
+        if (mChartRefreshService.isTimeToRefresh() || hourChanged) {
             initData()
             calculateAverages()
             calculateTimes()
@@ -61,30 +59,32 @@ class ChartData(
     }
 
     private fun averagesCount(): Int {
-        if (mMaxEntriesCount > 0) {
-                return -mMaxEntriesCount + 1
-            } else {
-                return -mMaxEntriesCount
-            }
+        return if (mMaxEntriesCount > 0) {
+            -mMaxEntriesCount + 1
+        } else {
+            -mMaxEntriesCount
+        }
     }
 
     private fun startTimeString(): String {
         val calendar = Calendar.getInstance()
         calendar.time = mEndTime
         calendar.add(averageFrequency(), averagesCount())
-        val startString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(calendar.time), TimeZone.getDefault())
+        val startString = DateConverter.get()
+            ?.toTimeStringForDisplay(timeToDisplay(calendar.time), TimeZone.getDefault())
 
         return startString ?: ""
     }
 
     private fun endTimeString(): String {
-        val endString = DateConverter.get()?.toTimeStringForDisplay(timeToDisplay(mEndTime), TimeZone.getDefault())
+        val endString = DateConverter.get()
+            ?.toTimeStringForDisplay(timeToDisplay(mEndTime), TimeZone.getDefault())
 
         return endString ?: ""
     }
 
     private fun timeToDisplay(time: Date): Date {
-        return when(mSession.type) {
+        return when (mSession.type) {
             Session.Type.FIXED -> DateUtils.truncate(time, Calendar.HOUR)
             Session.Type.MOBILE -> time
         }
@@ -102,7 +102,7 @@ class ChartData(
         for (stream in mMeasurementStreams) {
             val entries: MutableList<Entry>? = createEntries(stream)
             val entriesSize = entries?.size ?: 0
-            if(entriesSize > mMaxEntriesCount) {
+            if (entriesSize > mMaxEntriesCount) {
                 mMaxEntriesCount = entries?.size ?: 0
             }
 
@@ -115,18 +115,21 @@ class ChartData(
         }
     }
 
-    private fun createEntries(stream: MeasurementStream?): MutableList<Entry>?{
+    private fun createEntries(stream: MeasurementStream?): MutableList<Entry>? {
         var entries: MutableList<Entry>? = null
 
         stream?.let { stream ->
-            entries =  when (mSession.type) {
+            entries = when (mSession.type) {
                 Session.Type.MOBILE -> {
                     val averagedMeasurementsService = AveragedMeasurementsService(session.uuid)
-                    val measurementsOverSecondThreshold = averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
+                    val measurementsOverSecondThreshold =
+                        averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
                     if (measurementsOverSecondThreshold.isNullOrEmpty()) {
                         ChartAveragesCreator().getMobileEntries(stream)
                     } else {
-                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(measurementsOverSecondThreshold)
+                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
+                            measurementsOverSecondThreshold
+                        )
                     }
                 }
                 Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
