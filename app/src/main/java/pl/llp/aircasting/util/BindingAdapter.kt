@@ -1,6 +1,5 @@
 package pl.llp.aircasting.util
 
-import android.annotation.SuppressLint
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,7 +12,7 @@ import pl.llp.aircasting.util.SearchHelper.Companion.formatDate
 import pl.llp.aircasting.util.SearchHelper.Companion.formatTime
 
 object BindingAdapter {
-    @SuppressLint("SetTextI18n")
+
     @JvmStatic
     @BindingAdapter("formatDateStart", "formatDateEnd", requireAll = true)
     fun TextView.setFormatDate(startDateTimeLocal: String, endDateTimeLocal: String) {
@@ -43,5 +42,12 @@ object BindingAdapter {
         }
 
     }
+    // TODO: needs to be revised later.
 
+    @JvmStatic
+    @BindingAdapter("setSelectedSensorName", requireAll = true)
+    fun TextView.setSelectedSensorNameAndType(name: String) {
+        val type = this.context.getString(R.string.dashboard_tabs_fixed)
+        this.text = "$type, $name"
+    }
 }

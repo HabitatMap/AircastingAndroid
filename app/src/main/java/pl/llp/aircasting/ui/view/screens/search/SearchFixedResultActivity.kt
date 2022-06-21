@@ -110,9 +110,9 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         autocompleteFragment.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    setText(address)
+                    hint = address
                     textSize = 15.0f
-                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                    setHintTextColor(ContextCompat.getColor(context, R.color.black_color))
                 }
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }
@@ -123,7 +123,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         initialisePlacesClient()
 
         autocompleteFragment.apply {
-
             setPlaceFields(
                 listOf(
                     Place.Field.ID,
@@ -137,9 +136,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(
-        etPlace: EditText
-    ) {
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 address = place.address?.toString()
@@ -206,8 +203,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun updateText(count: Int) {
-        binding.txtShowingSessionsNumber.text =
-            getString(R.string.sessions_showing) + " " + count + " " + getString(R.string.of) + " " + count
+        if (count != 0) binding.txtShowingSessionsNumber.text =
+            getString(R.string.txt_showing_sessions_number, count, count)
+        else
+            binding.txtShowingSessionsNumber.apply {
+                text = getString(R.string.txt_showing_sessions_number, count, count)
+                setMargins(bottom = 50)
+            }
+
     }
 
     private fun setupMapMarkers(sessions: List<SessionInRegionResponse>) {
@@ -271,7 +274,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ParticulateMatter.AIRBEAM.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
             ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
             ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
-            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OZONE.getSensorName()
+            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
             else -> SensorNames.AIRBEAM.getSensorName()
         }
     }
