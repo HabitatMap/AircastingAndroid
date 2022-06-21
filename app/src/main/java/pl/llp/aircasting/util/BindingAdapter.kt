@@ -1,12 +1,9 @@
 package pl.llp.aircasting.util
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -29,7 +26,7 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("setLayoutColors", requireAll = true)
+    @BindingAdapter("setLayoutColors")
     fun LinearLayout.setLayoutColors(colorData: LiveData<Int>) {
         findViewTreeLifecycleOwner()?.let { lifecycleOwner ->
             colorData.observe(lifecycleOwner) {
