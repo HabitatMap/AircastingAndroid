@@ -3,7 +3,6 @@ package pl.llp.aircasting.util
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.location.LocationManager
 import android.net.ConnectivityManager
@@ -16,16 +15,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseActivity
@@ -75,11 +71,11 @@ fun adjustMenuVisibility(
     followingSessionsNumber: Int = 0
 ) {
     val visibility =
-        if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.INVISIBLE
+        if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.GONE
     activity.topAppBar?.apply {
-        findViewById<ImageView>(R.id.reorder_sessions_button)?.visibility = visibility
+        findViewById<ImageView>(R.id.reorderButton)?.visibility = visibility
         findViewById<ImageView>(R.id.search_follow_icon)?.visibility =
-            if (isFollowingTab && visibility == View.INVISIBLE) View.VISIBLE else View.INVISIBLE
+            if (isFollowingTab) View.VISIBLE else View.INVISIBLE
     }
 }
 
