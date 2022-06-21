@@ -77,10 +77,10 @@
                 <TextView
                     android:id="@+id/session_type"
                     style="@style/SessionDetailsTypeHeader"
-                    setSelectedSensorName="@{model.selectedSession.streams.sensor.sensorName}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
+                    android:text="@{model.selectedSession.streams.sensor.sensorName}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
                     tools:layout_editor_absoluteY="53dp"
@@ -114,16 +114,51 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/measurements_table_layout" />
 
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chartView"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/chart_container"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_marginTop="@dimen/keyline_5"
-                    android:minHeight="100dp"
+                    android:layout_height="wrap_content"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/measurements_table_layout" />
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table_layout">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:minHeight="100dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/chart_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/chart_view" />
+
+                    <TextView
+                        android:id="@+id/chart_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/chart_view" />
+
+                    <TextView
+                        android:id="@+id/chart_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Aircasting.ChartLabels"
+                        app:layout_constraintBaseline_toBaselineOf="@id/chart_start_time"
+                        app:layout_constraintEnd_toStartOf="@id/chart_end_time"
+                        app:layout_constraintStart_toEndOf="@id/chart_start_time" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <Button
                     android:id="@+id/followBtn"
@@ -137,8 +172,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/chipGroupType"
-                    tools:visibility="visible"
-                    />
+                    tools:visibility="visible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/unfollowBtn"
@@ -157,8 +191,7 @@
                     app:rippleColor="#33AAAAAA"
                     app:strokeColor="@color/aircasting_blue_400"
                     app:strokeWidth="2dp"
-                    tools:visibility="invisible"
-                    />
+                    tools:visibility="invisible" />
 
 
                 <com.google.android.material.chip.ChipGroup
