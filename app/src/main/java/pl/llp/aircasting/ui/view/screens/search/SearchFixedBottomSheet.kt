@@ -141,28 +141,24 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun getSessionWithAllData() {
-        val sessionInRegionResponse = searchFollowViewModel.selectedSession.value
-        searchFollowViewModel.getStreams().observe(this) { response ->
-            val streams = response?.streams
+        searchFollowViewModel.getStreams().observe(this) { session ->
 
-            if (sessionInRegionResponse != null && streams != null) {
-                val session = Session(sessionInRegionResponse, streams)
-
-                streams.map {
-                    val sensorThreshold = SensorThreshold(
-                        it.sensorName,
-                        it.thresholdVeryLow,
-                        it.thresholdLow,
-                        it.thresholdMedium,
-                        it.thresholdHigh,
-                        it.thresholdVeryHigh
-                    )
-
-                    mSensorThresholds[it.sensorName] = sensorThreshold
-                    bindChartData(session, mSensorThresholds, it)
-                }
+            session?.streams?.map { stream ->
+                mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
+                bindChartData(session, mSensorThresholds, stream)
             }
         }
+    }
+
+    private fun getSensorThresholds(stream: MeasurementStream): SensorThreshold {
+        return SensorThreshold(
+            stream.sensorName,
+            stream.thresholdVeryLow,
+            stream.thresholdLow,
+            stream.thresholdMedium,
+            stream.thresholdHigh,
+            stream.thresholdVeryHigh
+        )
     }
 
     private fun bindChartData(
@@ -171,6 +167,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         selectedStream: MeasurementStream
     ) {
         mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
+
+        binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.measurementHeader?.text =
+            mSessionPresenter.selectedStream?.detailedType
         mChart.bindChart(mSessionPresenter)
     }
 
