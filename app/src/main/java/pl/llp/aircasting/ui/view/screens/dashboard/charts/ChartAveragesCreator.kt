@@ -87,6 +87,8 @@ class ChartAveragesCreator {
     }
 
     fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
+        if (stream.measurements.isEmpty()) return mutableListOf()
+
         val calendar = Calendar.getInstance()
         setAllowedTimeLimitToCalendar(stream, calendar)
 
