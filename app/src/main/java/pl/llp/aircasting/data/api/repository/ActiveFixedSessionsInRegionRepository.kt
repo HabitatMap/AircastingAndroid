@@ -65,8 +65,7 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
         measurementLimit: Int = 1
     ): Resource<StreamOfGivenSessionResponse> {
         return try {
-            val response =
-                apiService.getStreamOfGivenSession(sessionId, sensorName, measurementLimit)
+            val response = apiService.getStreamOfGivenSession(sessionId, sensorName, measurementLimit)
             responseHandler.handleSuccess(response)
         } catch (e: Exception) {
             responseHandler.handleException(e)

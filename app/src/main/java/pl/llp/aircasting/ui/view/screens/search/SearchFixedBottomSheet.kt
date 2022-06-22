@@ -10,7 +10,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
@@ -185,10 +184,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun observeLastMeasurementsValue() {
         val sessionId = searchFollowViewModel.selectedSession.value?.id
-        val sensorName =
-            searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
+        val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
         if (sensorName != null && sessionId != null) {
-            searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName)
+            searchFollowViewModel.getMeasurementsFromTheCall(sessionId, sensorName)
                 .observe(this) {
                     when (it.status) {
                         Status.SUCCESS -> {
