@@ -74,20 +74,17 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
-        passLatLng()
     }
 
     private fun setupUI() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.include.finishView.visible()
-
-        val mapFragment =
-            supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+        setupMapView()
 
         getIntentsFromThePreviousActivity()
+
+        binding.include.finishView.visible()
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
@@ -97,6 +94,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         setupRecyclerView()
         setupSearchLayout()
+    }
+
+    private fun setupMapView() {
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
     }
 
     private fun getIntentsFromThePreviousActivity() {
@@ -122,12 +125,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             searchInputEditText?.apply {
                 setText(address)
                 textSize = 15.0f
-                setHintTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
             }
 
             initialisePlacesClient()
 
-            setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
+            setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
 
             setupOnPlaceSelectedListener(etPlace)
         }
@@ -230,26 +233,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         binding.btnRedo.gone()
     }
 
-    private fun searchSessionsInMapArea() {
-        val north = mMap.projection.visibleRegion.farLeft.latitude
-        val west = mMap.projection.visibleRegion.farLeft.longitude
-        val south = mMap.projection.visibleRegion.nearRight.latitude
-        val east = mMap.projection.visibleRegion.nearRight.longitude
-
-        val square = GeoSquare(north, south, east, west)
-        val sensorInfo = getSensorInfo()
-
-        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
-    }
-
     private fun showBottomSheetDialog(session: SessionInRegionResponse) {
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
+
+        passLatLng(session)
     }
 
-    private fun passLatLng() {
-        searchFollowViewModel.getLat(mLat.toDouble())
-        searchFollowViewModel.getLng(mLng.toDouble())
+    private fun passLatLng(session: SessionInRegionResponse) {
+        searchFollowViewModel.getLat(session.latitude)
+        searchFollowViewModel.getLng(session.longitude)
     }
 
     private fun getSensorInfo(): SensorInformation {
@@ -292,10 +285,22 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val theLocation = LatLng(lat, lng)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
 
+        searchSessionsInMapArea()
+
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
+    }
 
-        searchSessionsInMapArea()
+    private fun searchSessionsInMapArea() {
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
+
+        val square = GeoSquare(north, south, east, west)
+        val sensorInfo = getSensorInfo()
+
+        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
