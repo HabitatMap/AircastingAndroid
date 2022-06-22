@@ -2,18 +2,18 @@ package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
-import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 import kotlin.math.roundToInt
 
-class ChartAveragesCreator {
+open class ChartAveragesCreator {
     companion object {
         const val MAX_AVERAGES_AMOUNT = 9
+        const val NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE = 60
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private const val MAX_X_VALUE = 8.0
-        private const val MIN_X_VALUE = 0
+        const val MIN_X_VALUE = 0
         private val MOBILE_FREQUENCY_DIVISOR = 8 * 1000.toDouble()
     }
 
@@ -71,6 +71,10 @@ class ChartAveragesCreator {
         return reversedEntries
     }
 
+    private fun getTolerance(measurementsInPeriod: Double): Double {
+        return 0.1 * measurementsInPeriod
+    }
+
     fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
         val entries: MutableList<Entry> = mutableListOf()
         var xValue = MAX_X_VALUE
@@ -87,74 +91,38 @@ class ChartAveragesCreator {
         return entries
     }
 
-    fun getFixedEntries(stream: MeasurementStream): MutableList<Entry> {
-        if (stream.measurements.isEmpty()) return mutableListOf()
-
-        val calendar = Calendar.getInstance()
-        setAllowedTimeLimitToCalendar(stream, calendar)
-
-        val measurements = getMeasurementsAfterAllowedTimeLimit(stream, calendar)
-        var numberOfDots = MIN_X_VALUE
+    open fun getFixedEntries(
+        stream: MeasurementStream,
+        setStartEndTimeCallback: ((startTime: Date, endTime: Date) -> Unit)? = null
+    ): MutableList<Entry> {
+        val measurements: MutableList<Measurement>?
+        var xValue = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
+
+        measurements = stream.getLastMeasurements()
 
         if (measurements.isEmpty()) return entries
 
-        val periodData = groupMeasurementsByHours(measurements)
+        val periodData = measurements.chunked(NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE)
+
         if (periodData.isNotEmpty()) {
-            // From time to time we still get 10 entries, so this is another check
-            val lastNineHoursMeasurementGroups = periodData.entries.toList().takeLast(9)
-            val firstEntry = lastNineHoursMeasurementGroups[0]
+            for (dataChunk in periodData) {
+                if (xValue > MAX_AVERAGES_AMOUNT) return entries
 
-            for (dataChunk in lastNineHoursMeasurementGroups) {
-                if (numberOfDots > MAX_AVERAGES_AMOUNT) return entries
-
-                val yValue = getAverage(dataChunk.value).toFloat()
-                val xValue = getXvalueBasedOnTimeDifference(dataChunk, firstEntry)
+                val yValue = getAverage(dataChunk)
                 entries.add(
                     Entry(
-                        xValue,
-                        yValue
+                        xValue.toFloat(),
+                        yValue.toFloat()
                     )
                 )
-                numberOfDots++
+                xValue++
             }
         }
         return entries
     }
 
-    private fun getXvalueBasedOnTimeDifference(
-        dataChunk: Map.Entry<Date, List<Measurement>>,
-        firstEntry: Map.Entry<Date, List<Measurement>>
-    ): Float {
-        return ((dataChunk.key.time - firstEntry.key.time) / 1000 / 3600).toFloat()
-    }
-
-    private fun getMeasurementsAfterAllowedTimeLimit(
-        stream: MeasurementStream,
-        boundary: Calendar
-    ) = stream.measurements.sortedBy { it.time }.filter { it.time > boundary.time }
-
-    private fun setAllowedTimeLimitToCalendar(
-        stream: MeasurementStream,
-        calendar: Calendar
-    ) {
-        val latestTime = stream.measurements.maxOf { it.time }
-        calendar.time = latestTime
-        calendar.add(Calendar.HOUR_OF_DAY, -9)
-    }
-
-    private fun groupMeasurementsByHours(
-        measurements: List<Measurement>,
-    ) = measurements.groupBy {
-        DateUtils.truncate(it.time, Calendar.HOUR_OF_DAY)
-    }
-
-
-    private fun getTolerance(measurementsInPeriod: Double): Double {
-        return 0.1 * measurementsInPeriod
-    }
-
-    private fun getAverage(measurements: List<Measurement>?): Int {
+    protected fun getAverage(measurements: List<Measurement>?): Int {
         var sum = 0.0
         var lastIndex = 1
         val m: List<Measurement> = measurements ?: listOf()
