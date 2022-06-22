@@ -1,8 +1,11 @@
 package pl.llp.aircasting.data.api.util
 
 enum class ParticulateMatter : SensorInformation {
-    AIRBEAM {
+    AIRBEAM2 {
         override fun getSensorName(): String = "airbeam2-pm2.5"
+    },
+    AIRBEAM3 {
+        override fun getSensorName(): String = "airbeam3-pm2.5"
     },
     OPEN_AQ {
         override fun getSensorName(): String = "openaq-pm2.5"
