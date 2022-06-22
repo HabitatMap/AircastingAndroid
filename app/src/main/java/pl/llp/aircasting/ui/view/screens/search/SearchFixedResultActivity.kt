@@ -299,7 +299,27 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val square = GeoSquare(north, south, east, west)
         val sensorInfo = getSensorInfo()
 
-        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
+        if (getSensor() == Constants.airbeam) {
+            setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
+            setupSecondObserverCallForAirBeam3(square)
+        } else setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
+    }
+
+    private fun setupSecondObserverCallForAirBeam3(square: GeoSquare, sensorInfo: SensorInformation = ParticulateMatter.AIRBEAM3) {
+        searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    val data = it.data?.sessions
+
+
+                }
+                Status.ERROR -> {
+                    binding.progressBar.inVisible()
+                    showToast(it.message.toString())
+                }
+                Status.LOADING -> binding.progressBar.visible()
+            }
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
