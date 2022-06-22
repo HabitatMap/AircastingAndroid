@@ -57,17 +57,25 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
-            onFirstChipGroupSelected(chipGroup)
-        }
-        binding.chipGroupSecondLevelOne.setOnCheckedStateChangeListener { chipGroup, _ ->
-            onChipGroupSecondLevelSelected(chipGroup)
-        }
-        binding.chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
-            onChipGroupSecondLevelTwoSelected(chipGroup)
-        }
+        binding.apply {
+            chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
+                onFirstChipGroupSelected(
+                    chipGroup
+                )
+            }
+            chipGroupSecondLevelOne.setOnCheckedStateChangeListener { chipGroup, _ ->
+                onChipGroupSecondLevelSelected(
+                    chipGroup
+                )
+            }
+            chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
+                onChipGroupSecondLevelTwoSelected(
+                    chipGroup
+                )
+            }
 
-        binding.btnContinue.setOnClickListener { goToSearchResult(mLat, mLat) }
+            btnContinue.setOnClickListener { goToSearchResult() }
+        }
     }
 
     private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
@@ -126,8 +134,8 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 address = place.address?.toString()
-                mLat = "${place.latLng?.latitude}"
-                mLng = "${place.latLng?.longitude}"
+                mLat = place.latLng?.latitude.toString()
+                mLng = place.latLng?.longitude.toString()
 
                 if (address != null) {
                     binding.btnContinue.visible()
@@ -152,14 +160,14 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         placesClient = Places.createClient(this)
     }
 
-    private fun goToSearchResult(lat: String, long: String) {
+    private fun goToSearchResult() {
         val intent = Intent(this, SearchFixedResultActivity::class.java)
         intent.putExtra("address", address)
         intent.putExtra("txtParameter", txtSelectedParameter)
         intent.putExtra("txtSensor", txtSelectedSensor)
 
-        intent.putExtra("lat", lat)
-        intent.putExtra("long", long)
+        intent.putExtra("lat", mLat)
+        intent.putExtra("lng", mLng)
 
         startActivity(intent)
     }
