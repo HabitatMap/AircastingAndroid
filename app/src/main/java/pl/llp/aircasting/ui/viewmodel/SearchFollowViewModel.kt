@@ -10,7 +10,6 @@ import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
-import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -184,16 +183,11 @@ class SearchFollowViewModel @Inject constructor(
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
 
-            try {
-                val mSessions =
-                    activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
-                emit(mSessions)
-            } catch (e: Exception) {
-                emit(Resource.error(null, message = e.message.toString()))
-            }
+            val mSessions = activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
+            emit(mSessions)
         }
 
-    fun getLastStreamFromSelectedSession(
+    fun getMeasurementsFromTheCall(
         sessionId: Long,
         sensorName: String
     ): LiveData<Resource<StreamOfGivenSessionResponse>> =
@@ -204,6 +198,7 @@ class SearchFollowViewModel @Inject constructor(
                 sessionId,
                 sensorName
             )
+
             emit(stream)
         }
 }
