@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.api.response.search.session.details
 
-
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import pl.llp.aircasting.data.api.response.search.Sensor
@@ -22,7 +21,7 @@ data class SessionWithStreamsAndMeasurementsResponse(
     @SerializedName("start_time")
     val startTime: Long,
     @SerializedName("streams")
-    val streams: List<Sensor>,
+    val sensors: List<Sensor>,
     @SerializedName("title")
     val title: String,
     @SerializedName("username")

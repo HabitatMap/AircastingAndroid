@@ -15,6 +15,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.Ozone
@@ -54,28 +55,42 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
-            if (chipGroup.checkedChipId == binding.ozoneChip.id) binding.apply {
-                chipGroupSecondLevelOne.gone()
-                chipGroupSecondLevelTwo.visible()
-            } else binding.apply {
-                chipGroupSecondLevelOne.visible()
-                chipGroupSecondLevelTwo.gone()
-            }
+            onFirstChipGroupSelected(chipGroup)
         }
         binding.chipGroupSecondLevelOne.setOnCheckedStateChangeListener { chipGroup, _ ->
-            txtSelectedParameter = ParticulateMatter.AIRBEAM.getMeasurementType()
-            txtSelectedSensor = when (chipGroup.checkedChipId) {
-                binding.airbeamChip.id -> ParticulateMatter.AIRBEAM.getSensorName()
-                binding.openAQFirstChip.id -> ParticulateMatter.OPEN_AQ.getSensorName()
-                binding.purpleAirChip.id -> ParticulateMatter.PURPLE_AIR.getSensorName()
-                else -> ParticulateMatter.OPEN_AQ.getSensorName()
-            }
+            onChipGroupSecondLevelSelected(chipGroup)
         }
         binding.chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
-            if (chipGroup.checkedChipId == binding.openAQSecondChip.id) {
-                txtSelectedParameter = Ozone.OPEN_AQ.getMeasurementType()
-                txtSelectedSensor = Ozone.OPEN_AQ.getSensorName()
-            }
+            onChipGroupSecondLevelTwoSelected(chipGroup)
+        }
+    }
+
+    private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
+        if (chipGroup.checkedChipId == binding.ozoneChip.id) binding.apply {
+            chipGroupSecondLevelOne.gone()
+            chipGroupSecondLevelTwo.visible()
+            txtSelectedParameter = Ozone.OPEN_AQ.getMeasurementType()
+            txtSelectedSensor = Ozone.OPEN_AQ.getSensorName()
+        } else binding.apply {
+            chipGroupSecondLevelOne.visible()
+            chipGroupSecondLevelTwo.gone()
+        }
+    }
+
+    private fun onChipGroupSecondLevelSelected(chipGroup: ChipGroup) {
+        txtSelectedParameter = ParticulateMatter.AIRBEAM.getMeasurementType()
+        txtSelectedSensor = when (chipGroup.checkedChipId) {
+            binding.airbeamChip.id -> ParticulateMatter.AIRBEAM.getSensorName()
+            binding.openAQFirstChip.id -> ParticulateMatter.OPEN_AQ.getSensorName()
+            binding.purpleAirChip.id -> ParticulateMatter.PURPLE_AIR.getSensorName()
+            else -> ParticulateMatter.OPEN_AQ.getSensorName()
+        }
+    }
+
+    private fun onChipGroupSecondLevelTwoSelected(chipGroup: ChipGroup) {
+        if (chipGroup.checkedChipId == binding.openAQSecondChip.id) {
+            txtSelectedParameter = Ozone.OPEN_AQ.getMeasurementType()
+            txtSelectedSensor = Ozone.OPEN_AQ.getSensorName()
         }
     }
 
@@ -88,9 +103,9 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         autocompleteFragment?.apply {
             view?.apply {
                 findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    setText(getString(R.string.search_session_query_hint))
+                    hint = getString(R.string.search_session_query_hint)
                     textSize = 15.0f
-                    setTextColor(ContextCompat.getColor(context, R.color.aircasting_grey_300))
+                    setHintTextColor(ContextCompat.getColor(context, R.color.black_color))
                 }
                 findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
             }
