@@ -247,17 +247,17 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM.getSensorName() -> ParticulateMatter.AIRBEAM
+            ParticulateMatter.AIRBEAM2.getSensorName() -> ParticulateMatter.AIRBEAM2
             ParticulateMatter.OPEN_AQ.getSensorName() -> ParticulateMatter.OPEN_AQ
             ParticulateMatter.PURPLE_AIR.getSensorName() -> ParticulateMatter.PURPLE_AIR
             Ozone.OPEN_AQ.getSensorName() -> Ozone.OPEN_AQ
-            else -> ParticulateMatter.AIRBEAM
+            else -> ParticulateMatter.AIRBEAM2
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
+            ParticulateMatter.AIRBEAM2.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
             ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
             ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
             Ozone.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()

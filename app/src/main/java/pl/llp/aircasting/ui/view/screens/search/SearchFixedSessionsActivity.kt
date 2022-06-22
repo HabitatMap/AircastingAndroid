@@ -38,7 +38,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
-    private var txtSelectedParameter: String = ParticulateMatter.AIRBEAM.getMeasurementType()
+    private var txtSelectedParameter: String = ParticulateMatter.AIRBEAM2.getMeasurementType()
     private var txtSelectedSensor: String = ParticulateMatter.OPEN_AQ.getSensorName()
     private var address: String? = null
 
@@ -91,9 +91,9 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     }
 
     private fun onChipGroupSecondLevelSelected(chipGroup: ChipGroup) {
-        txtSelectedParameter = ParticulateMatter.AIRBEAM.getMeasurementType()
+        txtSelectedParameter = ParticulateMatter.AIRBEAM2.getMeasurementType()
         txtSelectedSensor = when (chipGroup.checkedChipId) {
-            binding.airbeamChip.id -> ParticulateMatter.AIRBEAM.getSensorName()
+            binding.airbeamChip.id -> ParticulateMatter.AIRBEAM2.getSensorName()
             binding.openAQFirstChip.id -> ParticulateMatter.OPEN_AQ.getSensorName()
             binding.purpleAirChip.id -> ParticulateMatter.PURPLE_AIR.getSensorName()
             else -> ParticulateMatter.OPEN_AQ.getSensorName()
