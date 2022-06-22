@@ -25,12 +25,12 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
-import pl.llp.aircasting.data.api.util.SensorNames
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -38,7 +38,6 @@ import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import javax.inject.Inject
-import kotlin.math.ln
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -234,10 +233,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun showBottomSheetDialog(session: SessionInRegionResponse) {
+        passLatLng(session)
+
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
-
-        passLatLng(session)
     }
 
     private fun passLatLng(session: SessionInRegionResponse) {
@@ -247,21 +246,21 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM2.getSensorName() -> ParticulateMatter.AIRBEAM2
-            ParticulateMatter.OPEN_AQ.getSensorName() -> ParticulateMatter.OPEN_AQ
-            ParticulateMatter.PURPLE_AIR.getSensorName() -> ParticulateMatter.PURPLE_AIR
-            Ozone.OPEN_AQ.getSensorName() -> Ozone.OPEN_AQ
+            Constants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
+            Constants.openAQsensorNamePM -> ParticulateMatter.OPEN_AQ
+            Constants.purpleAirSensorName -> ParticulateMatter.PURPLE_AIR
+            Constants.openAQsensorNameOzone -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM2
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM2.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
-            ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
-            ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
-            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
-            else -> SensorNames.AIRBEAM.getSensorName()
+            Constants.airbeam2sensorName -> Constants.airbeam
+            Constants.openAQsensorNamePM -> Constants.openAQ
+            Constants.purpleAirSensorName -> Constants.purpleAir
+            Constants.openAQsensorNameOzone -> Constants.openAQ
+            else -> Constants.airbeam
         }
     }
 
