@@ -41,4 +41,12 @@ object Constants {
 
     const val nanoGrammsPerCubicMeter = "µg/m³"
     const val partsPerBillion = "ppb"
+
+
+    /* Strings from responses */
+    const val responseAirbeam2SensorName = "AirBeam2-PM2.5"
+    const val responseAirbeam3SensorName = "AirBeam3-PM2.5"
+    const val responsePurpleAirSensorName = "PurpleAir-PM2.5"
+    const val responseOpenAQSensorNamePM = "OpenAQ-PM2.5"
+    const val responseOpenAQSensorNameOzone = "OpenAQ-O3"
 }
