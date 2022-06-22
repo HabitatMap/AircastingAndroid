@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
+import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
@@ -93,29 +94,39 @@ class ChartAveragesCreator {
         setAllowedTimeLimitToCalendar(stream, calendar)
 
         val measurements = getMeasurementsAfterAllowedTimeLimit(stream, calendar)
-        var xValue = MIN_X_VALUE
+        var numberOfDots = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
 
         if (measurements.isEmpty()) return entries
 
-        val periodData = groupMeasurementsByHours(measurements, calendar)
+        val periodData = groupMeasurementsByHours(measurements)
         if (periodData.isNotEmpty()) {
             // From time to time we still get 10 entries, so this is another check
             val lastNineHoursMeasurementGroups = periodData.entries.toList().takeLast(9)
-            for (dataChunk in lastNineHoursMeasurementGroups) {
-                if (xValue > MAX_AVERAGES_AMOUNT) return entries
+            val firstEntry = lastNineHoursMeasurementGroups[0]
 
-                val yValue = getAverage(dataChunk.value)
+            for (dataChunk in lastNineHoursMeasurementGroups) {
+                if (numberOfDots > MAX_AVERAGES_AMOUNT) return entries
+
+                val yValue = getAverage(dataChunk.value).toFloat()
+                val xValue = getXvalueBasedOnTimeDifference(dataChunk, firstEntry)
                 entries.add(
                     Entry(
-                        xValue.toFloat(),
-                        yValue.toFloat()
+                        xValue,
+                        yValue
                     )
                 )
-                xValue++
+                numberOfDots++
             }
         }
         return entries
+    }
+
+    private fun getXvalueBasedOnTimeDifference(
+        dataChunk: Map.Entry<Date, List<Measurement>>,
+        firstEntry: Map.Entry<Date, List<Measurement>>
+    ): Float {
+        return ((dataChunk.key.time - firstEntry.key.time) / 1000 / 3600).toFloat()
     }
 
     private fun getMeasurementsAfterAllowedTimeLimit(
@@ -134,11 +145,10 @@ class ChartAveragesCreator {
 
     private fun groupMeasurementsByHours(
         measurements: List<Measurement>,
-        calendar: Calendar
     ) = measurements.groupBy {
-        calendar.time = it.time
-        calendar.get(Calendar.HOUR_OF_DAY)
+        DateUtils.truncate(it.time, Calendar.HOUR_OF_DAY)
     }
+
 
     private fun getTolerance(measurementsInPeriod: Double): Double {
         return 0.1 * measurementsInPeriod
