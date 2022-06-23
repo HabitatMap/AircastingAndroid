@@ -56,7 +56,7 @@ class PurpleAirChartAveragesCreator : ChartAveragesCreator() {
         currentEntryTime: Date,
         firstEntryTime: Date
     ): Float {
-        return ((currentEntryTime.time - firstEntryTime.time) / 1000 / 3600).toFloat()
+        return ((currentEntryTime.time - firstEntryTime.time) / Constants.MILLIS_IN_HOUR).toFloat()
     }
 
     private fun getMeasurementsAfterAllowedTimeLimit(
