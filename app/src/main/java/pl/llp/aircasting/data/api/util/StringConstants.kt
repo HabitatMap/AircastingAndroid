@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.api
+package pl.llp.aircasting.data.api.util
 
 object StringConstants {
 
