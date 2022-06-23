@@ -15,14 +15,24 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         if (streamIsFromAirBeam(stream))
             return super.calculateEntriesAndTimestamps(stream)
 
-        return PurpleAirChartAveragesCreator().getFixedEntries(stream, this::setStartEndTime)
+        return PurpleAirChartAveragesCreator().getFixedEntries(stream, this::setStartEndTimeToDisplay)
     }
 
     private fun streamIsFromAirBeam(stream: MeasurementStream) =
         stream.sensorName.contains(Constants.AirBeam, true)
 
-    private fun setStartEndTime(start: Date, end: Date) {
-        mStartTime = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
-        mEndTime = DateConverter.get()?.toTimeStringForDisplay(end) ?: ""
+    private fun setStartEndTimeToDisplay(start: Date, end: Date) {
+        val calendar = Calendar.getInstance()
+
+        calendar.time = start
+        calendar.add(Calendar.HOUR_OF_DAY, 1)
+        val startTime = calendar.time
+        mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(startTime) ?: ""
+
+
+        calendar.time = end
+        calendar.add(Calendar.HOUR_OF_DAY, 1)
+        val endTime = calendar.time
+        mEndTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(endTime) ?: ""
     }
 }

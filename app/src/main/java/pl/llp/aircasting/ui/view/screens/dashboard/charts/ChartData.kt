@@ -16,8 +16,8 @@ class ChartData(private var mSession: Session) {
     private var mChartRefreshService = ChartRefreshService(mSession)
 
     init {
-        entriesStartTime = chartDataProvider.mStartTime
-        entriesEndTime = chartDataProvider.mEndTime
+        entriesStartTime = chartDataProvider.mStartTimeToDisplay
+        entriesEndTime = chartDataProvider.mEndTimeToDisplay
         mEntriesPerStream = chartDataProvider.mEntriesPerStream
 
         mChartRefreshService.setLastRefreshTime()
