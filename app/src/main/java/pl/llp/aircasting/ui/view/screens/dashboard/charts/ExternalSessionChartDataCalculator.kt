@@ -19,8 +19,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
     }
 
     private fun streamIsFromAirBeam(stream: MeasurementStream) =
-        stream.sensorName == Constants.responseAirbeam2SensorName
-                || stream.sensorName == Constants.responseAirbeam3SensorName
+        stream.sensorName.contains(Constants.AirBeam, true)
 
     private fun setStartEndTime(start: Date, end: Date) {
         mStartTime = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
