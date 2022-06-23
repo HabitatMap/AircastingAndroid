@@ -10,16 +10,41 @@ import java.util.*
 class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCalculator(session) {
 
     override fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry>? {
-        if (stream == null) return null
+        return when {
+            stream == null -> null
 
-        if (streamIsFromAirBeam(stream))
-            return super.calculateEntriesAndTimestamps(stream)
+            streamIsFromAirBeam(stream) -> ExternalChartAveragesCreator().getFixedEntries(stream, this::setStartEndTimeToDisplay)
 
-        return PurpleAirChartAveragesCreator().getFixedEntries(stream, this::setStartEndTimeToDisplay)
+            streamIsPMbyOpenAQ(stream) -> OpenAQpmChartAveragesCreator().getFixedEntries(
+                stream,
+                this::setStartEndTimeToDisplay
+            )
+
+            streamIsOzoneByOpenAQ(stream) -> OpenAQpmChartAveragesCreator().getFixedEntries(
+                stream,
+                this::setStartEndTimeToDisplay
+            )
+
+            else -> ExternalChartAveragesCreator().getFixedEntries(
+                stream,
+                this::setStartEndTimeToDisplay
+            )
+
+            //else -> null
+        }
     }
 
     private fun streamIsFromAirBeam(stream: MeasurementStream) =
         stream.sensorName.contains(Constants.AirBeam, true)
+
+    private fun streamIsPMbyPurpleAir(stream: MeasurementStream) =
+        stream.sensorName.contains(Constants.responsePurpleAirSensorName, true)
+
+    private fun streamIsPMbyOpenAQ(stream: MeasurementStream) =
+        stream.sensorName.contains(Constants.responseOpenAQSensorNamePM, true)
+
+    private fun streamIsOzoneByOpenAQ(stream: MeasurementStream) =
+        stream.sensorName.contains(Constants.responseOpenAQSensorNameOzone, true)
 
     private fun setStartEndTimeToDisplay(start: Date, end: Date) {
         mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
