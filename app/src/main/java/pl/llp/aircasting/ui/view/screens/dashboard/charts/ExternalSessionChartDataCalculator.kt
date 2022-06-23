@@ -22,17 +22,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         stream.sensorName.contains(Constants.AirBeam, true)
 
     private fun setStartEndTimeToDisplay(start: Date, end: Date) {
-        val calendar = Calendar.getInstance()
-
-        calendar.time = start
-        calendar.add(Calendar.HOUR_OF_DAY, 1)
-        val startTime = calendar.time
-        mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(startTime) ?: ""
-
-
-        calendar.time = end
-        calendar.add(Calendar.HOUR_OF_DAY, 1)
-        val endTime = calendar.time
-        mEndTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(endTime) ?: ""
+        mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
+        mEndTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(end) ?: ""
     }
 }
