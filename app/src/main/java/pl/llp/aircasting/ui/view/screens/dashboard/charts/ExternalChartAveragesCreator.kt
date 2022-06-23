@@ -1,12 +1,11 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
-import org.apache.commons.lang3.time.DateUtils
-import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 
-class PurpleAirChartAveragesCreator : ChartAveragesCreator() {
+open class ExternalChartAveragesCreator : ChartAveragesCreator() {
     override fun getFixedEntries(
         stream: MeasurementStream,
         setStartEndTimeCallback: ((startTime: Date, endTime: Date) -> Unit)?
@@ -26,8 +25,9 @@ class PurpleAirChartAveragesCreator : ChartAveragesCreator() {
         if (periodData.isNotEmpty()) {
             // From time to time we still get 10 entries, so this is another check
             val lastNineHoursMeasurementGroups = periodData.entries.toList().takeLast(9)
-            val firstEntryDate = lastNineHoursMeasurementGroups.first().key
-            val lastEntryDate = lastNineHoursMeasurementGroups.last().key
+
+            val firstEntryDate = getStartDateOfEntries(lastNineHoursMeasurementGroups)
+            val lastEntryDate = getEndDateForEntries(lastNineHoursMeasurementGroups)
 
             for (dataChunk in lastNineHoursMeasurementGroups) {
                 if (numberOfDots > MAX_AVERAGES_AMOUNT) return entries
@@ -46,7 +46,10 @@ class PurpleAirChartAveragesCreator : ChartAveragesCreator() {
             }
 
             if (setStartEndTimeCallback != null) {
-                setStartEndTimeCallback(firstEntryDate, lastEntryDate)
+                setStartEndTimeCallback(
+                    modifyHours(firstEntryDate),
+                    modifyHours(lastEntryDate)
+                )
             }
         }
         return entries
