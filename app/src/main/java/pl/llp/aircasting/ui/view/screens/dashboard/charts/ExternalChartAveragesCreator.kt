@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 
@@ -53,6 +54,19 @@ open class ExternalChartAveragesCreator : ChartAveragesCreator() {
             }
         }
         return entries
+    }
+
+    protected open fun getEndDateForEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
+        lastNineHoursMeasurementGroups.last().key
+
+    protected open fun getStartDateOfEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
+        lastNineHoursMeasurementGroups.first().key
+
+    protected open fun modifyHours(date: Date, hours: Int = 1): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.HOUR_OF_DAY, hours)
+        return calendar.time
     }
 
     private fun getXvalueBasedOnTimeDifference(
