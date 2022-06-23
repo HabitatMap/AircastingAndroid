@@ -38,7 +38,6 @@ import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import javax.inject.Inject
-import kotlin.math.ln
 
 class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -117,16 +116,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
         autocompleteFragment.apply {
-            val searchInputEditText =
-                view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
-            val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
+            val etPlace = view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            searchInputEditText?.apply {
-                setText(address)
-                textSize = 15.0f
-                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
-            }
+            setAddressOnTheEditText(address, etPlace)
 
             initialisePlacesClient()
 
@@ -141,23 +134,30 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         placesClient = Places.createClient(this)
     }
 
-    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText) {
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                address = place.address as String
+                address = place.address?.toString() ?: ""
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                etPlace.hint = address
-                if (lat != null && lng != null) {
-                    moveMapToSelectedLocationAndRefresh(lat, lng)
-                }
+                setAddressOnTheEditText(address, etPlace)
+
+                if (lat != null && lng != null) moveMapToSelectedLocationAndRefresh(lat, lng)
             }
 
             override fun onError(status: com.google.android.gms.common.api.Status) {
                 Log.d("onError", status.statusMessage.toString())
             }
         })
+    }
+
+    private fun setAddressOnTheEditText(address: String, etPlace: EditText?) {
+        etPlace?.apply {
+            hint = address
+            textSize = 15.0f
+            setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
+        }
     }
 
     private fun goToDashboard() {
