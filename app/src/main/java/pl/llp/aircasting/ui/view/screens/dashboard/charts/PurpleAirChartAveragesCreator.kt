@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 
-class ExternalChartAveragesCreator : ChartAveragesCreator() {
+class PurpleAirChartAveragesCreator : ChartAveragesCreator() {
     override fun getFixedEntries(
         stream: MeasurementStream,
         setStartEndTimeCallback: ((startTime: Date, endTime: Date) -> Unit)?
@@ -26,13 +26,16 @@ class ExternalChartAveragesCreator : ChartAveragesCreator() {
         if (periodData.isNotEmpty()) {
             // From time to time we still get 10 entries, so this is another check
             val lastNineHoursMeasurementGroups = periodData.entries.toList().takeLast(9)
-            val firstEntry = lastNineHoursMeasurementGroups[0]
+            val firstEntryDate = lastNineHoursMeasurementGroups.first().key
+            val lastEntryDate = lastNineHoursMeasurementGroups.last().key
 
             for (dataChunk in lastNineHoursMeasurementGroups) {
                 if (numberOfDots > MAX_AVERAGES_AMOUNT) return entries
 
+                val currentEntryDate = dataChunk.key
+
                 val yValue = getAverage(dataChunk.value).toFloat()
-                val xValue = getXvalueBasedOnTimeDifference(dataChunk, firstEntry)
+                val xValue = getXvalueBasedOnTimeDifference(currentEntryDate, firstEntryDate)
                 entries.add(
                     Entry(
                         xValue,
@@ -43,17 +46,17 @@ class ExternalChartAveragesCreator : ChartAveragesCreator() {
             }
 
             if (setStartEndTimeCallback != null) {
-                setStartEndTimeCallback(firstEntry.key, lastNineHoursMeasurementGroups.last().key)
+                setStartEndTimeCallback(firstEntryDate, lastEntryDate)
             }
         }
         return entries
     }
 
     private fun getXvalueBasedOnTimeDifference(
-        dataChunk: Map.Entry<Date, List<Measurement>>,
-        firstEntry: Map.Entry<Date, List<Measurement>>
+        currentEntryTime: Date,
+        firstEntryTime: Date
     ): Float {
-        return ((dataChunk.key.time - firstEntry.key.time) / 1000 / 3600).toFloat()
+        return ((currentEntryTime.time - firstEntryTime.time) / 1000 / 3600).toFloat()
     }
 
     private fun getMeasurementsAfterAllowedTimeLimit(

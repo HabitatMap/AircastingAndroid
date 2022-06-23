@@ -15,7 +15,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         if (streamIsFromAirBeam(stream))
             return super.calculateEntriesAndTimestamps(stream)
 
-        return ExternalChartAveragesCreator().getFixedEntries(stream, this::setStartEndTime)
+        return PurpleAirChartAveragesCreator().getFixedEntries(stream, this::setStartEndTime)
     }
 
     private fun streamIsFromAirBeam(stream: MeasurementStream) =
