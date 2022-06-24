@@ -15,6 +15,11 @@ class ExternalAirBeamChartAveragesCreator : ExternalChartAveragesCreator() {
         stream: MeasurementStream,
         boundary: Calendar
     ): List<Measurement> {
-        return super.getMeasurementsInAllowedTimeBoundaries(stream, boundary)
+        val withStartTimeBoundary = super.getMeasurementsInAllowedTimeBoundaries(stream, boundary)
+        return withStartTimeBoundary.filter { it.time < getAllowedEndTimeBoundary(stream) }
+    }
+
+    override fun modifyHours(date: Date, hours: Int): Date {
+        return super.modifyHours(date, -1)
     }
 }
