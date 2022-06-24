@@ -8,7 +8,7 @@ import java.util.*
 * This is used for external PurpleAir and AirBeam sessions.
 * As their last hour of measurements is not complete, we cut off all the measurements from it.
 *  */
-class ExternalPurpleAirAndAirBeamAveragesCreator : ExternalChartAveragesCreator() {
+class ExternalPurpleAirAndAirBeamAveragesCreator : ChartAveragesCreator() {
     override fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
         val lastMeasurementTime = super.getAllowedEndTimeBoundary(stream)
         val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)

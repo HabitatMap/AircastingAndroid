@@ -25,7 +25,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
                 this::setStartEndTimeToDisplay
             )
 
-            else -> ExternalChartAveragesCreator().getFixedEntries(
+            else -> ChartAveragesCreator().getFixedEntries(
                 stream,
                 this::setStartEndTimeToDisplay
             )

@@ -2,6 +2,8 @@ package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
 import com.google.common.collect.Lists
+import org.apache.commons.lang3.time.DateUtils
+import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
@@ -91,38 +93,101 @@ open class ChartAveragesCreator {
         return entries
     }
 
-    open fun getFixedEntries(
+    private lateinit var startTimeBoundary: Date
+    private lateinit var endTimeBoundary: Date
+
+    fun getFixedEntries(
         stream: MeasurementStream,
         setStartEndTimeCallback: ((startTime: Date, endTime: Date) -> Unit)? = null
     ): MutableList<Entry> {
-        val measurements: MutableList<Measurement>?
-        var xValue = MIN_X_VALUE
-        val entries: MutableList<Entry> = mutableListOf()
+        if (stream.measurements.isEmpty()) return mutableListOf()
 
-        measurements = stream.getLastMeasurements()
+        endTimeBoundary = getAllowedEndTimeBoundary(stream)
+        startTimeBoundary = getAllowedStartTimeBoundary()
+
+        val measurements = getMeasurementsInAllowedTimeBoundaries(stream)
+        var numberOfDots = MIN_X_VALUE
+        val entries: MutableList<Entry> = mutableListOf()
 
         if (measurements.isEmpty()) return entries
 
-        val periodData = measurements.chunked(NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE)
-
+        val periodData = groupMeasurementsByHours(measurements)
         if (periodData.isNotEmpty()) {
-            for (dataChunk in periodData) {
-                if (xValue > MAX_AVERAGES_AMOUNT) return entries
+            // From time to time we still get 10 entries, so this is another check
+            val lastNineHoursMeasurementGroups = periodData.entries.toList().takeLast(9)
 
-                val yValue = getAverage(dataChunk)
+            val firstEntryDate = getStartDateOfEntries(lastNineHoursMeasurementGroups)
+            val lastEntryDate = getEndDateForEntries(lastNineHoursMeasurementGroups)
+
+            for (dataChunk in lastNineHoursMeasurementGroups) {
+                if (numberOfDots > MAX_AVERAGES_AMOUNT) return entries
+
+                val currentEntryDate = dataChunk.key
+
+                val yValue = getAverage(dataChunk.value).toFloat()
+                val xValue = getXvalueBasedOnTimeDifference(currentEntryDate, firstEntryDate)
                 entries.add(
                     Entry(
-                        xValue.toFloat(),
-                        yValue.toFloat()
+                        xValue,
+                        yValue
                     )
                 )
-                xValue++
+                numberOfDots++
+            }
+
+            if (setStartEndTimeCallback != null) {
+                setStartEndTimeCallback(
+                    modifyHours(firstEntryDate),
+                    modifyHours(lastEntryDate)
+                )
             }
         }
         return entries
     }
 
-    protected fun getAverage(measurements: List<Measurement>?): Int {
+    private fun getEndDateForEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
+        lastNineHoursMeasurementGroups.last().key
+
+    private fun getStartDateOfEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
+        lastNineHoursMeasurementGroups.first().key
+
+    protected open fun modifyHours(date: Date, hours: Int = -2): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.HOUR_OF_DAY, hours)
+        return calendar.time
+    }
+
+    private fun getXvalueBasedOnTimeDifference(
+        current: Date,
+        first: Date
+    ): Float {
+        return ((current.time - first.time) / Constants.MILLIS_IN_HOUR).toFloat()
+    }
+
+    private fun getMeasurementsInAllowedTimeBoundaries(
+        stream: MeasurementStream
+    ) = stream.measurements.sortedBy { it.time }.filter {
+        it.time in startTimeBoundary..endTimeBoundary
+    }
+
+    private fun getAllowedStartTimeBoundary(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = endTimeBoundary
+        calendar.add(Calendar.HOUR_OF_DAY, -9)
+        return calendar.time
+    }
+
+    protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
+        return stream.measurements.maxOf { it.time }
+    }
+
+    private fun groupMeasurementsByHours(
+        measurements: List<Measurement>,
+    ) = measurements.groupBy {
+        DateUtils.truncate(it.time, Calendar.HOUR_OF_DAY)
+    }
+    private fun getAverage(measurements: List<Measurement>?): Int {
         var sum = 0.0
         var lastIndex = 1
         val m: List<Measurement> = measurements ?: listOf()
