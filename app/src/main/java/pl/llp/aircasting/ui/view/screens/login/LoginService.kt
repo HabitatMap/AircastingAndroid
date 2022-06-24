@@ -31,7 +31,11 @@ class LoginService(
                         response.isSuccessful -> {
                             val body = response.body()
                             body?.let {
-                                mSettings.login(body.email, body.authentication_token)
+                                mSettings.login(
+                                    body.username,
+                                    body.email,
+                                    body.authentication_token
+                                )
                             }
                             successCallback()
                         }
@@ -39,7 +43,7 @@ class LoginService(
                         else -> mErrorHandler.handleAndDisplay(InternalAPIError())
                     }
                 } catch (e: Exception) {
-                   mErrorHandler.handleAndDisplay(InternalAPIError())
+                    mErrorHandler.handleAndDisplay(InternalAPIError())
                 }
             }
 
