@@ -75,7 +75,7 @@ open class SessionChartDataCalculator(private var mSession: Session) {
                         )
                     }
                 }
-                Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
+                Session.Type.FIXED -> ExternalPurpleAirAndAirBeamAveragesCreator().getFixedEntries(stream)
             }
         }
 
