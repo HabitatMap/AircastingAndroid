@@ -12,7 +12,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -22,7 +24,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
-import kotlin.math.roundToInt
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
@@ -52,7 +53,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         setupUI()
         getLatlngObserver()
         getSessionWithAllData()
-        observeLastMeasurementsValue()
     }
 
     private fun setupUI() {
@@ -147,8 +147,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun getSessionWithAllData() {
         searchFollowViewModel.getStreams().observe(this) { session ->
-
-            session?.streams?.map { stream ->
+            val streams = session?.streams
+            streams?.map { stream ->
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
                 bindChartData(session, mSensorThresholds, stream)
             }
@@ -173,37 +173,47 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     ) {
         mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
 
-        setDataAfterSessionPresenterInitialized()
+        getMeasurementsFromTheSelectedSession()
         mChart.bindChart(mSessionPresenter)
     }
 
-    private fun setDataAfterSessionPresenterInitialized() {
-        binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.measurementHeader?.text =
-            mSessionPresenter.selectedStream?.detailedType
+    private fun getMeasurementsFromTheSelectedSession() {
+        val bindingInt = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue
+        loader.start()
+
+        searchFollowViewModel.getFullResponse().observe(this) { response ->
+            response?.sensors?.size?.let {
+                if (it == 0) {
+                    response.sensors[0].let { sensor ->
+                        val lastMeasurementValue = sensor.last_measurement_value.toString()
+                        bindingInt?.measurementValueTwoPointFive?.text = lastMeasurementValue
+                    }
+                } else setMeasurementsForAirBeamSessions(response.sensors)
+            }
+        }
+        loader.stop()
     }
 
-    private fun observeLastMeasurementsValue() {
-        val sessionId = searchFollowViewModel.selectedSession.value?.id
-        val sensorName = searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
-        if (sensorName != null && sessionId != null) {
-            searchFollowViewModel.getMeasurementsFromTheCall(sessionId, sensorName)
-                .observe(this) {
-                    when (it.status) {
-                        Status.SUCCESS -> {
-                            val value = it.data?.lastMeasurementValue ?: 0.0
-                            binding?.lastMeasurement = value.roundToInt().toString()
+    private fun setMeasurementsForAirBeamSessions(sensor: List<Sensor>?) {
+        val bindingInt = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue
 
-                            setThresholdColour(value)
-                            loader.stop()
-                        }
-                        Status.LOADING -> loader.start()
+        sensor?.forEach { sensors ->
+            val lastMeasurement = sensors.last_measurement_value.toString()
 
-                        Status.ERROR -> {
-                            loader.stop()
-                            context?.showToast(it.message.toString())
-                        }
-                    }
-                }
+            when (sensors.sensorName) {
+                StringConstants.responseAirBeam2_F -> bindingInt?.measurementValueF?.text =
+                    lastMeasurement
+                StringConstants.responseAirBeam2_RH -> bindingInt?.measurementValueRh?.text =
+                    lastMeasurement
+                StringConstants.responseAirBeamPM1 -> bindingInt?.measurementValuePmOne?.text =
+                    lastMeasurement
+
+                StringConstants.responseAirBeamPM2_5 -> bindingInt?.measurementValueTwoPointFive?.text =
+                    lastMeasurement
+
+                StringConstants.responseAirBeamPM10 -> bindingInt?.measurementValue10?.text =
+                    lastMeasurement
+            }
         }
     }
 
