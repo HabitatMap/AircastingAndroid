@@ -9,9 +9,6 @@
             name="model"
             type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
 
-        <variable
-            name="lastMeasurement"
-            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,7 +80,6 @@
                     android:text="@{model.selectedSession.streams.sensor.sensorName}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-                    tools:layout_editor_absoluteY="53dp"
                     tools:text="Fixed, AirBeam3" />
 
                 <LinearLayout
@@ -98,9 +94,7 @@
 
                     <include
                         android:id="@+id/measurements_table_binding"
-                        layout="@layout/measurements_table_binding"
-                        app:lastMeasurement="@{lastMeasurement}"
-                        app:model="@{model}" />
+                        layout="@layout/measurements_table_binding" />
 
                 </LinearLayout>
 
