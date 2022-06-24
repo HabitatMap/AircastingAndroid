@@ -9,8 +9,12 @@ import pl.llp.aircasting.util.helpers.services.AveragedMeasurementsService
 import java.util.*
 
 open class SessionChartDataCalculator(private var mSession: Session) {
+    interface OnAveragesCalculated {
+        fun setStartEndTimeToDisplay(start: Date, end: Date)
+    }
     var mStartTimeToDisplay: String = ""
     var mEndTimeToDisplay: String = ""
+    protected val timeSetter = TimeSetter()
     lateinit var mEntriesPerStream: HashMap<String, List<Entry>>
 
     private var mMaxEntriesCount: Int = 0
@@ -62,26 +66,33 @@ open class SessionChartDataCalculator(private var mSession: Session) {
         var entries: MutableList<Entry>? = null
 
         stream?.let { stream ->
-            entries = when (mSession.type) {
+            when (mSession.type) {
                 Session.Type.MOBILE -> {
                     val averagedMeasurementsService = AveragedMeasurementsService(mSession.uuid)
                     val measurementsOverSecondThreshold =
                         averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
-                    if (measurementsOverSecondThreshold.isNullOrEmpty()) {
+
+                    entries = if (measurementsOverSecondThreshold.isNullOrEmpty()) {
                         ChartAveragesCreator().getMobileEntries(stream)
                     } else {
                         ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
                             measurementsOverSecondThreshold
                         )
                     }
+                    calculateTimes()
                 }
-                Session.Type.FIXED -> ChartAveragesCreator().getFixedEntries(stream)
+                Session.Type.FIXED -> entries = ChartAveragesCreator().getFixedEntries(stream, timeSetter)
             }
         }
 
-        calculateTimes()
-
         return entries
+    }
+
+    inner class TimeSetter : OnAveragesCalculated {
+        override fun setStartEndTimeToDisplay(start: Date, end: Date) {
+            mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
+            mEndTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(end) ?: ""
+        }
     }
 
     private fun calculateTimes() {

@@ -12,7 +12,6 @@ import kotlin.math.roundToInt
 open class ChartAveragesCreator {
     companion object {
         const val MAX_AVERAGES_AMOUNT = 9
-        const val NUMBER_OF_MEASUREMENTS_IN_ONE_AVERAGE = 60
         private val MOBILE_INTERVAL_IN_SECONDS = 60
         private const val MAX_X_VALUE = 8.0
         const val MIN_X_VALUE = 0
@@ -98,7 +97,7 @@ open class ChartAveragesCreator {
 
     fun getFixedEntries(
         stream: MeasurementStream,
-        setStartEndTimeCallback: ((startTime: Date, endTime: Date) -> Unit)? = null
+        callback: SessionChartDataCalculator.OnAveragesCalculated
     ): MutableList<Entry> {
         if (stream.measurements.isEmpty()) return mutableListOf()
 
@@ -135,12 +134,10 @@ open class ChartAveragesCreator {
                 numberOfDots++
             }
 
-            if (setStartEndTimeCallback != null) {
-                setStartEndTimeCallback(
-                    modifyHours(firstEntryDate),
-                    modifyHours(lastEntryDate)
-                )
-            }
+            callback.setStartEndTimeToDisplay(
+                modifyHours(firstEntryDate),
+                modifyHours(lastEntryDate)
+            )
         }
         return entries
     }
@@ -179,7 +176,7 @@ open class ChartAveragesCreator {
     }
 
     /*
-    * This is used for PurpleAir and AirBeam sessions.
+    * This is used for PurpleAir and all AirBeam sessions.
     * As their last hour of measurements is not complete, we cut off all the measurements from it.
     *  */
     protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
