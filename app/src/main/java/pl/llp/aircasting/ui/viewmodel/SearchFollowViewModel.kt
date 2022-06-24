@@ -3,7 +3,6 @@ package pl.llp.aircasting.ui.viewmodel
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
-import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -27,11 +26,13 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var selectedFullSession: Deferred<Session?>
+    private lateinit var selectedFullSessionResponse: Deferred<SessionWithStreamsAndMeasurementsResponse?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
+
     lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     fun selectSession(session: SessionInRegionResponse) {
@@ -41,6 +42,7 @@ class SearchFollowViewModel @Inject constructor(
 
         val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
+        selectedFullSessionResponse = getFullResponseFromAsync(selectedSessionWithStreamsResponse)
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
@@ -56,10 +58,7 @@ class SearchFollowViewModel @Inject constructor(
             )
         }
 
-    private fun initializeModelFromResponseAsync(
-        selectedSessionWithStreamsResponse
-        : Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
-    ): Deferred<Session?> =
+    private fun initializeModelFromResponseAsync(selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>): Deferred<Session?> =
         viewModelScope.async {
             val response = selectedSessionWithStreamsResponse.await().data
             val streams = getStreamsWithMeasurementsFromResponse(response)
@@ -71,6 +70,11 @@ class SearchFollowViewModel @Inject constructor(
             return@async null
         }
 
+    private fun getFullResponseFromAsync(selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>): Deferred<SessionWithStreamsAndMeasurementsResponse?> =
+        viewModelScope.async {
+            return@async selectedSessionWithStreamsResponse.await().data
+        }
+
     private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
         response?.sensors?.map { stream ->
             val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
@@ -80,6 +84,11 @@ class SearchFollowViewModel @Inject constructor(
     fun getStreams() = liveData(ioDispatcher) {
         val response = selectedFullSession.await()
         emit(response)
+    }
+
+    fun getFullResponse() = liveData(ioDispatcher) {
+        val fullResponse = selectedFullSessionResponse.await()
+        emit(fullResponse)
     }
 
     fun selectColor(color: Int) {
@@ -135,9 +144,7 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSessionToDB(
-        session: Session
-    ): Long {
+    private suspend fun saveSessionToDB(session: Session): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
             sessionsRepository.insert(session)
         }
@@ -185,20 +192,5 @@ class SearchFollowViewModel @Inject constructor(
 
             val mSessions = activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
             emit(mSessions)
-        }
-
-    fun getMeasurementsFromTheCall(
-        sessionId: Long,
-        sensorName: String
-    ): LiveData<Resource<StreamOfGivenSessionResponse>> =
-        liveData(ioDispatcher) {
-            emit(Resource.loading(null))
-
-            val stream = activeFixedRepo.getStreamOfGivenSession(
-                sessionId,
-                sensorName
-            )
-
-            emit(stream)
         }
 }
