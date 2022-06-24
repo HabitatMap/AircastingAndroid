@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
@@ -116,12 +116,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
         autocompleteFragment.apply {
-            val searchInputEditText =
+            val etPlace =
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
-            val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            searchInputEditText?.apply {
+            etPlace?.apply {
                 setText(address)
                 textSize = 15.0f
                 setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
@@ -140,14 +139,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         placesClient = Places.createClient(this)
     }
 
-    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText) {
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 address = place.address as String
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                etPlace.hint = address
+                etPlace?.hint = address
                 if (lat != null && lng != null) {
                     moveMapToSelectedLocationAndRefresh(lat, lng)
                 }
@@ -209,7 +208,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 text = getString(R.string.txt_showing_sessions_number, count, count)
                 setMargins(bottom = 50)
             }
-
     }
 
     private fun setupMapMarkers(sessions: List<SessionInRegionResponse>) {
@@ -246,21 +244,21 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            Constants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
-            Constants.openAQsensorNamePM -> ParticulateMatter.OPEN_AQ
-            Constants.purpleAirSensorName -> ParticulateMatter.PURPLE_AIR
-            Constants.openAQsensorNameOzone -> Ozone.OPEN_AQ
+            StringConstants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
+            StringConstants.openAQsensorNamePM -> ParticulateMatter.OPEN_AQ
+            StringConstants.purpleAirSensorName -> ParticulateMatter.PURPLE_AIR
+            StringConstants.openAQsensorNameOzone -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM2
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            Constants.airbeam2sensorName -> Constants.airbeam
-            Constants.openAQsensorNamePM -> Constants.openAQ
-            Constants.purpleAirSensorName -> Constants.purpleAir
-            Constants.openAQsensorNameOzone -> Constants.openAQ
-            else -> Constants.airbeam
+            StringConstants.airbeam2sensorName -> StringConstants.airbeam
+            StringConstants.openAQsensorNamePM -> StringConstants.openAQ
+            StringConstants.purpleAirSensorName -> StringConstants.purpleAir
+            StringConstants.openAQsensorNameOzone -> StringConstants.openAQ
+            else -> StringConstants.airbeam
         }
     }
 
@@ -299,27 +297,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val square = GeoSquare(north, south, east, west)
         val sensorInfo = getSensorInfo()
 
-        if (getSensor() == Constants.airbeam) {
-            setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
-            setupSecondObserverCallForAirBeam3(square)
-        } else setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
-    }
-
-    private fun setupSecondObserverCallForAirBeam3(square: GeoSquare, sensorInfo: SensorInformation = ParticulateMatter.AIRBEAM3) {
-        searchFollowViewModel.getSessionsInRegion(square, sensorInfo).observe(this) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    val data = it.data?.sessions
-
-
-                }
-                Status.ERROR -> {
-                    binding.progressBar.inVisible()
-                    showToast(it.message.toString())
-                }
-                Status.LOADING -> binding.progressBar.visible()
-            }
-        }
+        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {

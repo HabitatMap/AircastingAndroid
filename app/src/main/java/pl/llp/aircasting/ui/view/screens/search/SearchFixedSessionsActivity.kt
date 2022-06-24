@@ -18,8 +18,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.Constants
-import pl.llp.aircasting.data.api.util.Ozone
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.util.gone
@@ -83,8 +82,8 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         if (chipGroup.checkedChipId == binding.ozoneChip.id) binding.apply {
             chipGroupSecondLevelOne.gone()
             chipGroupSecondLevelTwo.visible()
-            txtSelectedParameter = Constants.measurementTypeOzone
-            txtSelectedSensor = Constants.openAQsensorNameOzone
+            txtSelectedParameter = StringConstants.measurementTypeOzone
+            txtSelectedSensor = StringConstants.openAQsensorNameOzone
         } else binding.apply {
             chipGroupSecondLevelOne.visible()
             chipGroupSecondLevelTwo.gone()
@@ -92,19 +91,19 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     }
 
     private fun onChipGroupSecondLevelSelected(chipGroup: ChipGroup) {
-        txtSelectedParameter = Constants.measurementTypePM
+        txtSelectedParameter = StringConstants.measurementTypePM
         txtSelectedSensor = when (chipGroup.checkedChipId) {
-            binding.airbeamChip.id -> Constants.airbeam2sensorName
-            binding.openAQFirstChip.id -> Constants.openAQsensorNamePM
-            binding.purpleAirChip.id -> Constants.purpleAirSensorName
+            binding.airbeamChip.id -> StringConstants.airbeam2sensorName
+            binding.openAQFirstChip.id -> StringConstants.openAQsensorNamePM
+            binding.purpleAirChip.id -> StringConstants.purpleAirSensorName
             else -> ParticulateMatter.OPEN_AQ.getSensorName()
         }
     }
 
     private fun onChipGroupSecondLevelTwoSelected(chipGroup: ChipGroup) {
         if (chipGroup.checkedChipId == binding.openAQSecondChip.id) {
-            txtSelectedParameter = Constants.measurementTypeOzone
-            txtSelectedSensor = Constants.openAQsensorNameOzone
+            txtSelectedParameter = StringConstants.measurementTypeOzone
+            txtSelectedSensor = StringConstants.openAQsensorNameOzone
         }
     }
 
