@@ -13,8 +13,8 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         return when {
             stream == null -> null
 
-            streamIsPMbyOpenAQ(stream) || streamIsOzoneByOpenAQ(stream)
-            -> OpenAQpmChartAveragesCreator().getFixedEntries(
+            isFromOpenAQ(stream)
+            -> OpenAQChartAveragesCreator().getFixedEntries(
                 stream,
                 this::setStartEndTimeToDisplay
             )
@@ -26,17 +26,9 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         }
     }
 
-    private fun streamIsFromAirBeam(stream: MeasurementStream) =
-        stream.sensorName.contains(Constants.AirBeam, true)
-
-    private fun streamIsPMbyPurpleAir(stream: MeasurementStream) =
-        stream.sensorName.contains(Constants.responsePurpleAirSensorName, true)
-
-    private fun streamIsPMbyOpenAQ(stream: MeasurementStream) =
-        stream.sensorName.contains(Constants.responseOpenAQSensorNamePM, true)
-
-    private fun streamIsOzoneByOpenAQ(stream: MeasurementStream) =
-        stream.sensorName.contains(Constants.responseOpenAQSensorNameOzone, true)
+    private fun isFromOpenAQ(stream: MeasurementStream) =
+        stream.sensorName.contains(Constants.responseOpenAQSensorNamePM, true) ||
+                stream.sensorName.contains(Constants.responseOpenAQSensorNameOzone, true)
 
     private fun setStartEndTimeToDisplay(start: Date, end: Date) {
         mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
