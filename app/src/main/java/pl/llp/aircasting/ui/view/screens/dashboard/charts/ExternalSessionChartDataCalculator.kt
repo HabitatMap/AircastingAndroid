@@ -13,14 +13,15 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         return when {
             stream == null -> null
 
-            streamIsFromAirBeam(stream) -> ExternalChartAveragesCreator().getFixedEntries(stream, this::setStartEndTimeToDisplay)
-
-            streamIsPMbyOpenAQ(stream) -> OpenAQpmChartAveragesCreator().getFixedEntries(
+//            streamIsFromAirBeam(stream) ||
+             streamIsPMbyPurpleAir(stream)
+            -> ExternalAirBeamChartAveragesCreator().getFixedEntries(
                 stream,
                 this::setStartEndTimeToDisplay
             )
 
-            streamIsOzoneByOpenAQ(stream) -> OpenAQpmChartAveragesCreator().getFixedEntries(
+            streamIsPMbyOpenAQ(stream) || streamIsOzoneByOpenAQ(stream)
+            -> OpenAQpmChartAveragesCreator().getFixedEntries(
                 stream,
                 this::setStartEndTimeToDisplay
             )
@@ -29,8 +30,6 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
                 stream,
                 this::setStartEndTimeToDisplay
             )
-
-            //else -> null
         }
     }
 
