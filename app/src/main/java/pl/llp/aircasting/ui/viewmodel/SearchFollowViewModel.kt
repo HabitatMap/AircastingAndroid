@@ -12,6 +12,7 @@ import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
+import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
@@ -22,7 +23,8 @@ class SearchFollowViewModel @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @MainDispatcher val mainDispatcher: CoroutineDispatcher
+    @MainDispatcher val mainDispatcher: CoroutineDispatcher,
+    private val mSettings: Settings
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
@@ -35,14 +37,21 @@ class SearchFollowViewModel @Inject constructor(
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
     lateinit var isSelectedSessionFollowed: Deferred<Boolean>
+    private var isOwnSession: Boolean = false
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
+
+        if (session.username == mSettings.getProfileName()) isOwnSession = true
 
         isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
 
         val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
+    }
+
+    fun checkIfIsOwnSession(): Boolean {
+        return (isOwnSession)
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
