@@ -1,21 +1,19 @@
 package pl.llp.aircasting.data.api.util
 
-import pl.llp.aircasting.data.api.Constants
-
 enum class ParticulateMatter : SensorInformation {
     AIRBEAM2 {
-        override fun getSensorName(): String = Constants.airbeam2sensorName
+        override fun getSensorName(): String = StringConstants.airbeam2sensorName
     },
     AIRBEAM3 {
-        override fun getSensorName(): String = Constants.airbeam3sensorName
+        override fun getSensorName(): String = StringConstants.airbeam3sensorName
     },
     OPEN_AQ {
-        override fun getSensorName(): String = Constants.openAQsensorNamePM
+        override fun getSensorName(): String = StringConstants.openAQsensorNamePM
     },
     PURPLE_AIR {
-        override fun getSensorName(): String = Constants.purpleAirSensorName
+        override fun getSensorName(): String = StringConstants.purpleAirSensorName
     };
 
-    override fun getMeasurementType(): String = Constants.measurementTypePM
-    override fun getUnitSymbol() = Constants.nanoGrammsPerCubicMeter
+    override fun getMeasurementType(): String = StringConstants.measurementTypePM
+    override fun getUnitSymbol() = StringConstants.nanoGrammsPerCubicMeter
 }
