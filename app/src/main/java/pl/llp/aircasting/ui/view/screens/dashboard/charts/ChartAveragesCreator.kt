@@ -151,7 +151,7 @@ open class ChartAveragesCreator {
     private fun getStartDateOfEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
         lastNineHoursMeasurementGroups.first().key
 
-    protected open fun modifyHours(date: Date, hours: Int = -2): Date {
+    protected open fun modifyHours(date: Date, hours: Int = -1): Date {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.add(Calendar.HOUR_OF_DAY, hours)
@@ -178,8 +178,14 @@ open class ChartAveragesCreator {
         return calendar.time
     }
 
+    /*
+    * This is used for PurpleAir and AirBeam sessions.
+    * As their last hour of measurements is not complete, we cut off all the measurements from it.
+    *  */
     protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
-        return stream.measurements.maxOf { it.time }
+        val lastMeasurementTime = stream.measurements.maxOf { it.time }
+        val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
+        return Date(lastMeasurementHour.time - 1)
     }
 
     private fun groupMeasurementsByHours(
@@ -187,6 +193,7 @@ open class ChartAveragesCreator {
     ) = measurements.groupBy {
         DateUtils.truncate(it.time, Calendar.HOUR_OF_DAY)
     }
+
     private fun getAverage(measurements: List<Measurement>?): Int {
         var sum = 0.0
         var lastIndex = 1
