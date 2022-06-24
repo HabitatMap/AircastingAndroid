@@ -13,7 +13,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         return when {
             stream == null -> null
 
-//            streamIsFromAirBeam(stream) ||
+            streamIsFromAirBeam(stream) ||
              streamIsPMbyPurpleAir(stream)
             -> ExternalAirBeamChartAveragesCreator().getFixedEntries(
                 stream,
