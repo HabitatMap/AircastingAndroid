@@ -18,7 +18,7 @@ open class ExternalChartAveragesCreator : ChartAveragesCreator() {
         if (stream.measurements.isEmpty()) return mutableListOf()
 
         endTimeBoundary = getAllowedEndTimeBoundary(stream)
-        startTimeBoundary = getAllowedStartTimeBoundary(stream)
+        startTimeBoundary = getAllowedStartTimeBoundary()
 
         val measurements = getMeasurementsInAllowedTimeBoundaries(stream)
         var numberOfDots = MIN_X_VALUE
@@ -60,10 +60,10 @@ open class ExternalChartAveragesCreator : ChartAveragesCreator() {
         return entries
     }
 
-    protected open fun getEndDateForEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
+    private fun getEndDateForEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
         lastNineHoursMeasurementGroups.last().key
 
-    protected open fun getStartDateOfEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
+    private fun getStartDateOfEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
         lastNineHoursMeasurementGroups.first().key
 
     protected open fun modifyHours(date: Date, hours: Int = -2): Date {
@@ -74,21 +74,19 @@ open class ExternalChartAveragesCreator : ChartAveragesCreator() {
     }
 
     private fun getXvalueBasedOnTimeDifference(
-        currentEntryTime: Date,
-        firstEntryTime: Date
+        current: Date,
+        first: Date
     ): Float {
-        return ((currentEntryTime.time - firstEntryTime.time) / Constants.MILLIS_IN_HOUR).toFloat()
+        return ((current.time - first.time) / Constants.MILLIS_IN_HOUR).toFloat()
     }
 
-    protected open fun getMeasurementsInAllowedTimeBoundaries(
+    private fun getMeasurementsInAllowedTimeBoundaries(
         stream: MeasurementStream
     ) = stream.measurements.sortedBy { it.time }.filter {
         it.time in startTimeBoundary..endTimeBoundary
     }
 
-    protected open fun getAllowedStartTimeBoundary(
-        stream: MeasurementStream
-    ): Date {
+    private fun getAllowedStartTimeBoundary(): Date {
         val calendar = Calendar.getInstance()
         calendar.time = endTimeBoundary
         calendar.add(Calendar.HOUR_OF_DAY, -9)
