@@ -7,19 +7,20 @@ import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 
-// TODO: Works for openAQ
-// TODO: Does not work for PurpleAir and AirBeam External, as it requires to cut off the last hour
 open class ExternalChartAveragesCreator : ChartAveragesCreator() {
+    private lateinit var startTimeBoundary: Date
+    private lateinit var endTimeBoundary: Date
+
     override fun getFixedEntries(
         stream: MeasurementStream,
         setStartEndTimeCallback: ((startTime: Date, endTime: Date) -> Unit)?
     ): MutableList<Entry> {
         if (stream.measurements.isEmpty()) return mutableListOf()
 
-        val calendar = Calendar.getInstance()
-        val startTimeBoundary = getAllowedStartTimeBoundary(stream, calendar)
+        endTimeBoundary = getAllowedEndTimeBoundary(stream)
+        startTimeBoundary = getAllowedStartTimeBoundary(stream)
 
-        val measurements = getMeasurementsInAllowedTimeBoundaries(stream, calendar)
+        val measurements = getMeasurementsInAllowedTimeBoundaries(stream)
         var numberOfDots = MIN_X_VALUE
         val entries: MutableList<Entry> = mutableListOf()
 
@@ -80,17 +81,18 @@ open class ExternalChartAveragesCreator : ChartAveragesCreator() {
     }
 
     protected open fun getMeasurementsInAllowedTimeBoundaries(
-        stream: MeasurementStream,
-        boundary: Calendar
-    ) = stream.measurements.sortedBy { it.time }.filter { it.time > boundary.time }
+        stream: MeasurementStream
+    ) = stream.measurements.sortedBy { it.time }.filter {
+        it.time in startTimeBoundary..endTimeBoundary
+    }
 
     protected open fun getAllowedStartTimeBoundary(
-        stream: MeasurementStream,
-        calendar: Calendar
-    ) {
-        val latestTime = getAllowedEndTimeBoundary(stream)
-        calendar.time = latestTime
+        stream: MeasurementStream
+    ): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = endTimeBoundary
         calendar.add(Calendar.HOUR_OF_DAY, -9)
+        return calendar.time
     }
 
     protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
