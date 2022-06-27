@@ -34,6 +34,10 @@ class ChartData(private var mSession: Session) {
         if (mChartRefreshService.isTimeToRefresh() || hourChanged) {
             chartDataProvider.refresh(session)
             mChartRefreshService.setLastRefreshTime()
+
+            entriesStartTime = chartDataProvider.mStartTimeToDisplay
+            entriesEndTime = chartDataProvider.mEndTimeToDisplay
+            mEntriesPerStream = chartDataProvider.mEntriesPerStream
         }
     }
 }
