@@ -87,12 +87,12 @@ class SearchFollowViewModel @Inject constructor(
         mutableThresholdColor.value = color
     }
 
-    fun getLat(lat: Double) {
-        mutableLat.value = lat
+    fun getLat(setLat: Double) {
+        mutableLat.value = setLat
     }
 
-    fun getLng(lng: Double) {
-        mutableLng.value = lng
+    fun getLng(setLng: Double) {
+        mutableLng.value = setLng
     }
 
     fun saveSession() {
