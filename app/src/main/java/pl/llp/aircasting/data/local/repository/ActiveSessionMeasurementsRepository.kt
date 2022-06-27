@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
 import org.apache.commons.lang3.time.DateUtils
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
@@ -93,9 +93,10 @@ class ActiveSessionMeasurementsRepository {
             measurementsToLoad = measurements.takeLast(MAX_MEASUREMENTS_PER_STREAM_NUMBER)
         }
 
-        val numberOfMeasurementsToBePresentInTable = numberOfMeasurementsAlreadyInTable + measurementsToLoad.size
+        val numberOfMeasurementsToBePresentInTable =
+            numberOfMeasurementsAlreadyInTable + measurementsToLoad.size
 
-        if(numberOfMeasurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
+        if (numberOfMeasurementsToBePresentInTable > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             deleteAndInsert(measurementStreamId, sessionId, measurementsToLoad)
         } else insertAll(measurementStreamId, sessionId, measurementsToLoad)
     }
@@ -132,8 +133,10 @@ class ActiveSessionMeasurementsRepository {
                 MeasurementStreamsRepository().getId(sessionId, measurementStream)
 
             streamId?.let { streamId ->
-                val lastMeasurementTime = MeasurementsRepository().lastMeasurementTime(sessionId, streamId)
-                val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
+                val lastMeasurementTime =
+                    MeasurementsRepository().lastMeasurementTime(sessionId, streamId)
+                val lastMeasurementHour =
+                    DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
 
                 measurements =
                     measurementsList(
