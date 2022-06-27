@@ -29,7 +29,7 @@ data class Sensor(
     @SerializedName("threshold_very_low")
     val thresholdVeryLow: Int,
     @SerializedName("last_measurement_value")
-    val last_measurement_value: Int,
+    val last_measurement_value: Double,
     @SerializedName("unit_name")
     val unitName: String,
     @SerializedName("unit_symbol", alternate = ["sensor_unit"])
