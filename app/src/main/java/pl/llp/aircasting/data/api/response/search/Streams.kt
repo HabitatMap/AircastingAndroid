@@ -1,13 +1,20 @@
 package pl.llp.aircasting.data.api.response.search
 
-import com.google.gson.annotations.SerializedName
 import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
+import pl.llp.aircasting.data.api.Constants
 
 @Keep
 data class Streams(
     @SerializedName(
         "Sensor",
-        alternate = ["AirBeam2-PM2.5", "PurpleAir-PM2.5", "OpenAQ-PM2.5", "OpenAQ-O3"]
+        alternate = [
+            Constants.responseAirbeam2SensorName,
+            Constants.responseAirbeam3SensorName,
+            Constants.responsePurpleAirSensorName,
+            Constants.responseOpenAQSensorNamePM,
+            Constants.responseOpenAQSensorNameOzone
+        ]
     )
     val sensor: Sensor,
 )

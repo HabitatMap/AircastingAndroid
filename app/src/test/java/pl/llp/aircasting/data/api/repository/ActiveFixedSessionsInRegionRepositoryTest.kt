@@ -33,7 +33,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
         // when
-        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
         verify(mockApiService).getSessionsInRegion(anyOrNull())
@@ -45,7 +45,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             // given
             val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
                 testSquare,
-                ParticulateMatter.AIRBEAM
+                ParticulateMatter.AIRBEAM2
             )
             val jsonObject = JsonParser.parseString(json).asJsonObject
 
@@ -70,7 +70,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
 
         val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
             testSquare,
-            ParticulateMatter.AIRBEAM
+            ParticulateMatter.AIRBEAM2
         )
         val jsonObject = JsonParser.parseString(json).asJsonObject
 
@@ -89,7 +89,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val expectedSensorName = "airbeam2-pm2.5"
         val expectedUnitSymbol = "µg/m³"
         val expectedMeasurementType = "Particulate Matter"
-        val sensor = ParticulateMatter.AIRBEAM
+        val sensor = ParticulateMatter.AIRBEAM2
 
         // when
         val result =
@@ -172,7 +172,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         // when
         val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
             testSquare,
-            ParticulateMatter.AIRBEAM
+            ParticulateMatter.AIRBEAM2
         )
 
         // then
@@ -188,7 +188,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
         // when
-        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
         verify(mockApiService).getSessionsInRegion(
@@ -196,7 +196,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
                 equals(
                     ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
                         testSquare,
-                        ParticulateMatter.AIRBEAM
+                        ParticulateMatter.AIRBEAM2
                     )
                 )
             }
@@ -299,7 +299,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val expected = Status.SUCCESS
 
         // when
-        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
         assertEquals(expected, result.status)
@@ -317,7 +317,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
 
         // when
-        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
+        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
         assertNotNull(result.data)

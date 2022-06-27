@@ -75,7 +75,7 @@ class Chart(context: Context, rootView: View?) {
         xAxis?.setDrawAxisLine(false)
 
         // Chart will not stretch even if there are less than 9 entries
-        xAxis?.spaceMin = (ChartAveragesCreator.MAX_AVERAGES_AMOUNT - mEntries.size).toFloat()
+        //xAxis?.spaceMin = (ChartAveragesCreator.MAX_AVERAGES_AMOUNT - mEntries.size).toFloat()
 
         // Removing vertical lines
         xAxis?.gridColor = Color.TRANSPARENT
