@@ -26,6 +26,28 @@ object Constants {
     const val MILLIS_IN_MINUTE = 60 * 1000
     const val MILLIS_IN_SECOND = 1000
 
+    /* Strings for constructing requests */
+    const val airbeam2sensorName = "airbeam2-pm2.5"
+    const val airbeam3sensorName = "airbeam3-pm2.5"
+    const val openAQsensorNamePM = "openaq-pm2.5"
+    const val purpleAirSensorName = "purpleair-pm2.5"
+    const val openAQsensorNameOzone = "openaq-o3"
+
+    const val measurementTypePM = "Particulate Matter"
+    const val measurementTypeOzone = "Ozone"
+
+    const val nanoGrammsPerCubicMeter = "µg/m³"
+    const val partsPerBillion = "ppb"
+
+
+    /* Strings from responses */
+    const val responseAirbeam2SensorName = "AirBeam2-PM2.5"
+    const val responseAirbeam3SensorName = "AirBeam3-PM2.5"
+    const val responsePurpleAirSensorName = "PurpleAir-PM2.5"
+    const val responseOpenAQSensorNamePM = "OpenAQ-PM2.5"
+    const val responseOpenAQSensorNameOzone = "OpenAQ-O3"
+
     /* Miscellaneous */
     const val MEASUREMENTS_IN_HOUR = 60
+    const val AirBeam = "AirBeam"
 }
