@@ -11,8 +11,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         return when {
             stream == null -> null
 
-            isFromOpenAQ(stream)
-            -> OpenAQChartAveragesCreator().getFixedEntries(
+            isFromOpenAQ(stream) -> OpenAQChartAveragesCreator().getFixedEntries(
                 stream,
                 timeSetter
             )

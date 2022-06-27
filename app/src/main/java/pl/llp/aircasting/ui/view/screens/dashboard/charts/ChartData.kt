@@ -8,9 +8,10 @@ class ChartData(private var mSession: Session) {
     var entriesStartTime: String = ""
     var entriesEndTime: String = ""
 
-    private val chartDataProvider: SessionChartDataCalculator = if (mSession.isExternal)
-        ExternalSessionChartDataCalculator(mSession)
-    else SessionChartDataCalculator(mSession)
+    private val chartDataProvider: SessionChartDataCalculator =
+        if (mSession.isExternal)
+            ExternalSessionChartDataCalculator(mSession)
+        else SessionChartDataCalculator(mSession)
 
     private var mEntriesPerStream: HashMap<String, List<Entry>>
     private var mChartRefreshService = ChartRefreshService(mSession)
