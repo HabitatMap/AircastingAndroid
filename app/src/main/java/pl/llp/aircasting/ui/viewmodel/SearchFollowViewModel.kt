@@ -21,8 +21,7 @@ class SearchFollowViewModel @Inject constructor(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @MainDispatcher val mainDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
@@ -88,12 +87,12 @@ class SearchFollowViewModel @Inject constructor(
         mutableThresholdColor.value = color
     }
 
-    fun getLat(lat: Double) {
-        mutableLat.value = lat
+    fun getLat(setLat: Double) {
+        mutableLat.value = setLat
     }
 
-    fun getLng(lng: Double) {
-        mutableLng.value = lng
+    fun getLng(setLng: Double) {
+        mutableLng.value = setLng
     }
 
     fun saveSession() {
@@ -175,9 +174,7 @@ class SearchFollowViewModel @Inject constructor(
         activeSessionMeasurementsRepository.insertAll(streamId, sessionId, stream.measurements)
     }
 
-    fun deleteSession(
-        session: SessionInRegionResponse
-    ) {
+    fun deleteSession(session: SessionInRegionResponse) {
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(session.uuid)
         }

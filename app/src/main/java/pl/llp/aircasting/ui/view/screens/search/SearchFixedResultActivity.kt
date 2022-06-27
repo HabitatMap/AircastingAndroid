@@ -51,17 +51,17 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private lateinit var binding: ActivitySearchFollowResultBinding
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
-    private var placesClient: PlacesClient? = null
     private lateinit var mMap: GoogleMap
-
+    private var placesClient: PlacesClient? = null
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
+
+    private lateinit var address: String
+    private lateinit var mLat: String
+    private lateinit var mLng: String
 
     private val options = MarkerOptions()
     private var txtParameter: String? = null
     private var txtSensor: String? = null
-    private var address: String? = null
-    private var lat: String? = null
-    private var lng: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,25 +73,17 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
 
         setupUI()
-        setupAutoComplete()
-        passLatLng()
     }
 
     private fun setupUI() {
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        setupMapView()
+
+        getIntentsFromThePreviousActivity()
+
         binding.include.finishView.visible()
-
-        val mapFragment =
-            supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
-
-        lat = intent.getStringExtra("lat")
-        lng = intent.getStringExtra("long")
-        txtParameter = intent.getStringExtra("txtParameter")
-        txtSensor = intent.getStringExtra("txtSensor")
-        address = intent.getStringExtra("address")
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
@@ -103,50 +95,55 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         setupSearchLayout()
     }
 
+    private fun setupMapView() {
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+    }
+
+    private fun getIntentsFromThePreviousActivity() {
+        address = intent.getStringExtra("address").toString()
+
+        mLat = intent.getStringExtra("lat").toString()
+        mLng = intent.getStringExtra("lng").toString()
+
+        txtParameter = intent.getStringExtra("txtParameter")
+        txtSensor = intent.getStringExtra("txtSensor")
+    }
+
     private fun setupSearchLayout() {
         autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
         autocompleteFragment.apply {
-            view?.apply {
-                findViewById<EditText>(R.id.places_autocomplete_search_input)?.apply {
-                    hint = address
-                    textSize = 15.0f
-                    setHintTextColor(ContextCompat.getColor(context, R.color.black_color))
-                }
-                findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
-            }
-        }
-    }
+            val etPlace = view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
+            findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-    private fun setupAutoComplete() {
-        initialisePlacesClient()
+            setAddressOnTheEditText(address, etPlace)
 
-        autocompleteFragment.apply {
-            setPlaceFields(
-                listOf(
-                    Place.Field.ID,
-                    Place.Field.ADDRESS,
-                    Place.Field.LAT_LNG
-                )
-            )
+            initialisePlacesClient()
 
-            val etPlace = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
+            setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
+
             setupOnPlaceSelectedListener(etPlace)
         }
     }
 
-    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText) {
+    private fun initialisePlacesClient() {
+        initializePlacesApi(this)
+        placesClient = Places.createClient(this)
+    }
+
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                address = place.address?.toString()
-                val lat = "${place.latLng?.latitude}".toDouble()
-                val long = "${place.latLng?.longitude}".toDouble()
+                address = place.address?.toString() ?: ""
+                val lat = place.latLng?.latitude
+                val lng = place.latLng?.longitude
 
-                if (address != null) {
-                    etPlace.hint = address
-                    moveMapToSelectedLocationAndRefresh(lat, long)
-                }
+                setAddressOnTheEditText(address, etPlace)
+
+                if (lat != null && lng != null) moveMapToSelectedLocationAndRefresh(lat, lng)
             }
 
             override fun onError(status: com.google.android.gms.common.api.Status) {
@@ -155,9 +152,12 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         })
     }
 
-    private fun initialisePlacesClient() {
-        initializePlacesApi(this)
-        placesClient = Places.createClient(this)
+    private fun setAddressOnTheEditText(address: String, etPlace: EditText?) {
+        etPlace?.apply {
+            hint = address
+            textSize = 15.0f
+            setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
+        }
     }
 
     private fun goToDashboard() {
@@ -233,30 +233,16 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         binding.btnRedo.gone()
     }
 
-    private fun searchSessionsInMapArea() {
-        val north = mMap.projection.visibleRegion.farLeft.latitude
-        val west = mMap.projection.visibleRegion.farLeft.longitude
-        val south = mMap.projection.visibleRegion.nearRight.latitude
-        val east = mMap.projection.visibleRegion.nearRight.longitude
-
-        val square = GeoSquare(north, south, east, west)
-        val sensorInfo = getSensorInfo()
-
-        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
-    }
-
     private fun showBottomSheetDialog(session: SessionInRegionResponse) {
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
+
+        passLatLng(session)
     }
 
-    private fun passLatLng() {
-        val selectedLat = lat?.toDouble()
-        val selectedLng = lng?.toDouble()
-        if (selectedLat != null && selectedLng != null) {
-            searchFollowViewModel.getLat(selectedLat)
-            searchFollowViewModel.getLng(selectedLng)
-        }
+    private fun passLatLng(session: SessionInRegionResponse) {
+        searchFollowViewModel.getLat(session.latitude)
+        searchFollowViewModel.getLng(session.longitude)
     }
 
     private fun getSensorInfo(): SensorInformation {
@@ -293,17 +279,28 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         styleGoogleMap(mMap, this)
 
-        val selectedLat = lat?.toDouble()
-        val selectedLng = lng?.toDouble()
-        if (selectedLat != null && selectedLng != null) {
-            val theLocation = LatLng(selectedLat, selectedLng)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
-        }
+        val lat = mLat.toDouble()
+        val lng = mLng.toDouble()
+
+        val theLocation = LatLng(lat, lng)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+
+        searchSessionsInMapArea()
 
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
+    }
 
-        searchSessionsInMapArea()
+    private fun searchSessionsInMapArea() {
+        val north = mMap.projection.visibleRegion.farLeft.latitude
+        val west = mMap.projection.visibleRegion.farLeft.longitude
+        val south = mMap.projection.visibleRegion.nearRight.latitude
+        val east = mMap.projection.visibleRegion.nearRight.longitude
+
+        val square = GeoSquare(north, south, east, west)
+        val sensorInfo = getSensorInfo()
+
+        setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {

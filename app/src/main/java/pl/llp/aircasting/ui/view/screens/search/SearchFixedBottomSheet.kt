@@ -10,6 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
@@ -29,13 +30,16 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private var binding: SearchFollowBottomSheetBinding? = null
     private var mapFragment: SupportMapFragment? = null
     private val options = MarkerOptions()
-    private var txtLat: Double? = null
-    private var txtLng: Double? = null
+
+    private lateinit var txtLat: String
+    private lateinit var txtLng: String
     private lateinit var loader: AnimatedLoader
     private lateinit var mMap: GoogleMap
-    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
+
     private lateinit var mChart: Chart
     private lateinit var mSessionPresenter: SessionPresenter
+
+    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -85,11 +89,13 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun toggleCorrectButton() {
-        searchFollowViewModel.viewModelScope.launch(searchFollowViewModel.mainDispatcher) {
-            if (searchFollowViewModel.isSelectedSessionFollowed.await())
-                toggleUnFollowButton()
-            else
-                toggleFollowButton()
+        searchFollowViewModel.apply {
+            viewModelScope.launch {
+                if (isSelectedSessionFollowed.await())
+                    toggleUnFollowButton()
+                else
+                    toggleFollowButton()
+            }
         }
     }
 
@@ -131,11 +137,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun getLatlngObserver() {
         searchFollowViewModel.apply {
-            myLat.observe(requireActivity()) {
-                txtLat = it
+            myLat.observe(requireActivity()) { mLat ->
+                txtLat = mLat.toString()
             }
-            myLng.observe(requireActivity()) {
-                txtLng = it
+            myLng.observe(requireActivity()) { mLng ->
+                txtLng = mLng.toString()
             }
         }
     }
@@ -225,19 +231,17 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mMap = googleMap
         styleGoogleMap(mMap, requireActivity())
 
-        mMap.uiSettings.setAllGesturesEnabled(false)
+        val selectedLat = txtLat.toDouble()
+        val selectedLng = txtLng.toDouble()
 
-        if (txtLat != null && txtLng != null) {
-            val myLocation = LatLng(txtLat!!, txtLng!!)
-            mMap.drawMarkerOnMap(requireActivity(), options, txtLat!!, txtLng!!, null)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
-        }
+        val myLocation = LatLng(selectedLat, selectedLng)
+        mMap.drawMarkerOnMap(requireActivity(), options, selectedLat, selectedLng, null)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14f))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        if (mapFragment != null) parentFragmentManager.beginTransaction().remove(mapFragment!!)
-            .commit()
+        mapFragment?.let { parentFragmentManager.beginTransaction().remove(it).commit() }
     }
 }
