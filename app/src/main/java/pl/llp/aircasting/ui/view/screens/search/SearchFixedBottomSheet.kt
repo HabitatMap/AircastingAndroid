@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -12,9 +11,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
-import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -22,6 +19,8 @@ import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
+import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
+import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 
@@ -38,6 +37,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private lateinit var mChart: Chart
     private lateinit var mSessionPresenter: SessionPresenter
+    private var mMeasurementsTableContainer: MeasurementsTableContainer? = null
 
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
@@ -65,7 +65,17 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         setupUnfollowButton()
         toggleCorrectButton()
         setupChipsBehaviour()
-        setupLoader()
+        setupMeasurementTableLayout()
+    }
+
+    private fun setupMeasurementTableLayout() {
+        mMeasurementsTableContainer = SessionDetailsMeasurementsTableContainer(
+            requireActivity(),
+            this.layoutInflater,
+            binding?.root,
+            selectable = true,
+            displayValues = true
+        )
     }
 
     private fun setupUnfollowButton() {
@@ -108,11 +118,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         binding?.unfollowBtn?.visible()
     }
 
-    private fun setupLoader() {
+    /*private fun setupLoader() {
         val loaderImage =
             binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
         loader = AnimatedLoader(loaderImage)
-    }
+    }*/
 
     private fun setupChipsBehaviour() {
         binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
@@ -173,58 +183,20 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     ) {
         mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
 
-        getMeasurementsFromTheSelectedSession()
+        bindSession()
         mChart.bindChart(mSessionPresenter)
     }
 
-    private fun getMeasurementsFromTheSelectedSession() {
-        val bindingInt = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue
-        loader.start()
-
-        searchFollowViewModel.getFullResponse().observe(this) { response ->
-            response?.sensors?.size?.let {
-                if (it == 0) {
-                    response.sensors[0].let { sensor ->
-                        val lastMeasurementValue = sensor.last_measurement_value.toString()
-                        bindingInt?.measurementValueTwoPointFive?.text = lastMeasurementValue
-                    }
-                } else setMeasurementsForAirBeamSessions(response.sensors)
-            }
-        }
-        loader.stop()
+    private fun bindSession() {
+        mMeasurementsTableContainer?.bindSession(
+            mSessionPresenter,
+            this::onMeasurementStreamChanged
+        )
     }
 
-    private fun setMeasurementsForAirBeamSessions(sensor: List<Sensor>?) {
-        val bindingInt = binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue
-
-        sensor?.forEach { sensors ->
-            val lastMeasurement = sensors.last_measurement_value.toString()
-
-            when (sensors.sensorName) {
-                StringConstants.responseAirBeam2_F -> bindingInt?.measurementValueF?.text =
-                    lastMeasurement
-                StringConstants.responseAirBeam2_RH -> bindingInt?.measurementValueRh?.text =
-                    lastMeasurement
-                StringConstants.responseAirBeamPM1 -> bindingInt?.measurementValuePmOne?.text =
-                    lastMeasurement
-
-                StringConstants.responseAirBeamPM2_5 -> bindingInt?.measurementValueTwoPointFive?.text =
-                    lastMeasurement
-
-                StringConstants.responseAirBeamPM10 -> bindingInt?.measurementValue10?.text =
-                    lastMeasurement
-            }
-        }
-    }
-
-    private fun setThresholdColour(value: Double) {
-        val sensor = searchFollowViewModel.selectedSession.value?.streams?.sensor
-        if (sensor != null) {
-            searchFollowViewModel.selectColor(
-                SensorThresholdColorPicker(value, sensor)
-                    .getColor()
-            )
-        }
+    private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+        mSessionPresenter.selectedStream = measurementStream
+        bindSession()
     }
 
     private fun onFollowClicked() {
