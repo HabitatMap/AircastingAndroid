@@ -17,7 +17,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
 
-
 abstract class MeasurementsTableContainer {
     private val mContext: Context
     private val mRootView: View?
@@ -96,7 +95,7 @@ abstract class MeasurementsTableContainer {
         mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
 
         val session = mSessionPresenter?.session
-        if (session != null && session.activeStreams.count() > 0) {
+        if (session != null && session.activeStreams.isNotEmpty()) {
             resetMeasurementsView()
             bindMeasurements()
             stretchTableLayout()
