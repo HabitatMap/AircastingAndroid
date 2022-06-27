@@ -24,14 +24,12 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
-    private val mutableThresholdColor = MutableLiveData<Int>()
+
     private lateinit var selectedFullSession: Deferred<Session?>
-    private lateinit var selectedFullSessionResponse: Deferred<SessionWithStreamsAndMeasurementsResponse?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
-    val thresholdColor: LiveData<Int> get() = mutableThresholdColor
 
     lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
@@ -42,7 +40,6 @@ class SearchFollowViewModel @Inject constructor(
 
         val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
-        selectedFullSessionResponse = getFullResponseFromAsync(selectedSessionWithStreamsResponse)
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
@@ -70,11 +67,6 @@ class SearchFollowViewModel @Inject constructor(
             return@async null
         }
 
-    private fun getFullResponseFromAsync(selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>): Deferred<SessionWithStreamsAndMeasurementsResponse?> =
-        viewModelScope.async {
-            return@async selectedSessionWithStreamsResponse.await().data
-        }
-
     private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
         response?.sensors?.map { stream ->
             val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
@@ -84,15 +76,6 @@ class SearchFollowViewModel @Inject constructor(
     fun getStreams() = liveData(ioDispatcher) {
         val response = selectedFullSession.await()
         emit(response)
-    }
-
-    fun getFullResponse() = liveData(ioDispatcher) {
-        val fullResponse = selectedFullSessionResponse.await()
-        emit(fullResponse)
-    }
-
-    fun selectColor(color: Int) {
-        mutableThresholdColor.value = color
     }
 
     fun getLat(lat: Double) {
