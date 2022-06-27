@@ -14,12 +14,12 @@ class Measurement(
     val latitude: Double? = null,
     val longitude: Double? = null,
     var averagingFrequency: Int = 1
-    ) {
+) {
 
-    constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?):
+    constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?) :
             this(event.measuredValue, Date(event.creationTime), latitude, longitude)
 
-    constructor(measurementDBObject: MeasurementDBObject): this(
+    constructor(measurementDBObject: MeasurementDBObject) : this(
         measurementDBObject.value,
         measurementDBObject.time,
         measurementDBObject.latitude,
@@ -27,28 +27,28 @@ class Measurement(
         measurementDBObject.averaging_frequency
     )
 
-    constructor(activeSessionMeasurementDBObject: ActiveSessionMeasurementDBObject): this(
+    constructor(activeSessionMeasurementDBObject: ActiveSessionMeasurementDBObject) : this(
         activeSessionMeasurementDBObject.value,
         activeSessionMeasurementDBObject.time,
         activeSessionMeasurementDBObject.latitude,
         activeSessionMeasurementDBObject.longitude
     )
 
-    constructor(measurementResponse: MeasurementResponse): this(
+    constructor(measurementResponse: MeasurementResponse) : this(
         measurementResponse.value,
         DateConverter.fromString(measurementResponse.time) ?: Date(),
         measurementResponse.latitude,
         measurementResponse.longitude
     )
 
-    constructor(measurementResponse: MeasurementOfStreamResponse): this(
+    constructor(measurementResponse: MeasurementOfStreamResponse) : this(
         measurementResponse.value,
         Date(measurementResponse.time),
         measurementResponse.latitude,
         measurementResponse.longitude
     )
 
-    constructor(measurementResponse: MeasurementResponse, averagingFrequency: Int): this(
+    constructor(measurementResponse: MeasurementResponse, averagingFrequency: Int) : this(
         measurementResponse.value,
         DateConverter.fromString(measurementResponse.time) ?: Date(),
         measurementResponse.latitude,
