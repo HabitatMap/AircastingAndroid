@@ -14,8 +14,8 @@ import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import java.util.*
 
-class StatisticsContainer {
-    private val mContext: Context
+class StatisticsContainer(rootView: View?, context: Context) {
+    private val mContext: Context = context
 
     private val mStatisticsView: View?
 
@@ -35,15 +35,11 @@ class StatisticsContainer {
 
     private var mVisibleTimeSpan: ClosedRange<Date>? = null
 
-    constructor(rootView: View?, context: Context) {
-        mContext = context
-
+    init {
         mStatisticsView = rootView?.statistics_view
-
         mAvgValue = rootView?.avg_value
         mNowValue = rootView?.now_value
         mPeakValue = rootView?.peak_value
-
         mAvgCircleIndicator = rootView?.avg_circle_indicator
         mNowCircleIndicator = rootView?.now_circle_indicator
         mPeakCircleIndicator = rootView?.peak_circle_indicator

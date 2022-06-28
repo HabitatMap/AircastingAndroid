@@ -1,7 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import com.github.mikephil.charting.data.Entry
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 
@@ -24,6 +24,6 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
     }
 
     private fun isFromOpenAQ(stream: MeasurementStream) =
-        stream.sensorName.contains(Constants.responseOpenAQSensorNamePM, true) ||
-                stream.sensorName.contains(Constants.responseOpenAQSensorNameOzone, true)
+        stream.sensorName.contains(StringConstants.responseOpenAQSensorNamePM, true) ||
+                stream.sensorName.contains(StringConstants.responseOpenAQSensorNameOzone, true)
 }

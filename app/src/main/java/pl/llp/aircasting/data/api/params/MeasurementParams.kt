@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.api.params
 
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
 import java.util.*

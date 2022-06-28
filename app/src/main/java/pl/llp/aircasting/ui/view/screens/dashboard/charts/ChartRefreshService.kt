@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.model.Session
 
 class ChartRefreshService(session: Session?) {

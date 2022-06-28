@@ -59,8 +59,8 @@ abstract class SessionDetailsViewMvcImpl(
             context,
             inflater,
             this.rootView,
-            true,
-            true
+            selectable = true,
+            displayValues = true
         )
         mStatisticsContainer = if (shouldShowStatisticsContainer()) {
             StatisticsContainer(this.rootView, context)

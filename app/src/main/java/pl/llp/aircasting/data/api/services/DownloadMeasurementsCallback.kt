@@ -5,14 +5,14 @@ import android.util.Log
 import org.apache.commons.lang3.time.DateUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
+import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
+import pl.llp.aircasting.data.api.util.Constants
+import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
-import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
@@ -113,7 +113,11 @@ class DownloadMeasurementsCallback(
                 val lastMeasurementHour =
                     DateUtils.truncate(downloadedLastMeasurementTime, Calendar.HOUR_OF_DAY)
                 val newMeasurements =
-                    getNewMeasurementsForStreamStartingFromHour(streamId, timeDifference, lastMeasurementHour)
+                    getNewMeasurementsForStreamStartingFromHour(
+                        streamId,
+                        timeDifference,
+                        lastMeasurementHour
+                    )
 
                 activeSessionMeasurementsRepository.createOrReplaceMultipleRows(
                     streamId,
@@ -127,8 +131,8 @@ class DownloadMeasurementsCallback(
     private fun oneHourHasElapsed(timeDifference: Long?): Boolean {
         return if (timeDifference == null) false
         else
-            // Removing minute here to update on edge case when the minutes are the same, but
-                // the difference is less than hour e.g. 7:59:59 -> 8:59:00
+        // Removing minute here to update on edge case when the minutes are the same, but
+        // the difference is less than hour e.g. 7:59:59 -> 8:59:00
             timeDifference > (Constants.MILLIS_IN_HOUR - Constants.MILLIS_IN_MINUTE)
     }
 
