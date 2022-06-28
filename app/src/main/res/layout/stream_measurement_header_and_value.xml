@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
+    </data>
+
+    <merge>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/measurement_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/keyline_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                android:id="@+id/loader_image"
+                layout="@layout/loader_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp" />
+
+            <TextView
+                android:id="@+id/measurement_header_f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_5"
+                android:layout_marginTop="@dimen/keyline_2"
+                android:text="@string/f"
+                android:textAlignment="center"
+                android:textColor="@color/aircasting_grey_700"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/measurement_value_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_2"
+                android:clickable="false"
+                android:orientation="vertical"
+                android:padding="@dimen/keyline_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/measurement_header_f">
+
+                <ImageView
+                    android:id="@+id/circle_indicator"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginStart="@dimen/keyline_4"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_circle"
+                    app:tint="@color/aircasting_white" />
+
+                <TextView
+                    android:id="@+id/measurement_value_f"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/keyline_1"
+                    android:textColor="@color/aircasting_grey_700"
+                    android:textSize="@dimen/text_size_xs"
+                    tools:text="45" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/measurement_header_pm_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_9"
+                android:layout_marginTop="@dimen/keyline_2"
+                android:text="@string/pm1"
+                android:textAlignment="center"
+                android:textColor="@color/aircasting_grey_700"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintStart_toEndOf="@+id/measurement_header_f"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/measurement_value_container_pm_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_6"
+                android:clickable="false"
+                android:orientation="vertical"
+                android:padding="@dimen/keyline_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/measurement_value_container"
+                app:layout_constraintTop_toBottomOf="@+id/measurement_header_pm_one">
+
+                <ImageView
+                    android:id="@+id/circle_indicator_pm_one"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginStart="@dimen/keyline_4"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_circle"
+                    app:tint="@color/aircasting_white" />
+
+                <TextView
+                    android:id="@+id/measurement_value_pm_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/keyline_1"
+                    android:textColor="@color/aircasting_grey_700"
+                    android:textSize="@dimen/text_size_xs"
+                    tools:text="75" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/measurement_header_pm_2_point_five"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_9"
+                android:layout_marginTop="@dimen/keyline_2"
+                android:text="@string/pm2_5"
+                android:textAlignment="center"
+                android:textColor="@color/aircasting_grey_700"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintStart_toEndOf="@+id/measurement_header_pm_one"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/measurement_value_container_pm_two_point_five"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_10"
+                android:clickable="false"
+                android:orientation="vertical"
+                android:padding="@dimen/keyline_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/measurement_value_container_pm_one"
+                app:layout_constraintTop_toBottomOf="@+id/measurement_header_pm_2_point_five">
+
+                <ImageView
+                    android:id="@+id/circle_indicator_pm_two_point_five"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginStart="@dimen/keyline_4"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_circle"
+                    app:tint="@color/aircasting_white" />
+
+                <TextView
+                    android:id="@+id/measurement_value_two_point_five"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/keyline_1"
+                    android:textColor="@color/aircasting_grey_700"
+                    android:textSize="@dimen/text_size_xs"
+                    tools:text="75" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/measurement_header_pm10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_9"
+                android:layout_marginTop="@dimen/keyline_2"
+                android:text="@string/pm10"
+                android:textAlignment="center"
+                android:textColor="@color/aircasting_grey_700"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintStart_toEndOf="@+id/measurement_header_pm_2_point_five"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/measurement_value_container_pm_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="45dp"
+                android:clickable="false"
+                android:orientation="vertical"
+                android:padding="@dimen/keyline_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/measurement_value_container_pm_two_point_five"
+                app:layout_constraintTop_toBottomOf="@+id/measurement_header_pm_2_point_five">
+
+                <ImageView
+                    android:id="@+id/circle_indicator_pm_10"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginStart="@dimen/keyline_4"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_circle"
+                    app:tint="@color/aircasting_white" />
+
+                <TextView
+                    android:id="@+id/measurement_value_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/keyline_1"
+                    android:textColor="@color/aircasting_grey_700"
+                    android:textSize="@dimen/text_size_xs"
+                    tools:text="75" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/measurement_header_rh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_9"
+                android:layout_marginTop="@dimen/keyline_2"
+                android:layout_marginEnd="@dimen/keyline_5"
+                android:text="@string/rh"
+                android:textAlignment="center"
+                android:textColor="@color/aircasting_grey_700"
+                android:textSize="@dimen/text_size_xs"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/measurement_header_pm10"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/measurement_value_container_rh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/keyline_9"
+                android:layout_marginEnd="@dimen/keyline_5"
+                android:clickable="false"
+                android:orientation="vertical"
+                android:padding="@dimen/keyline_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/measurement_value_container_pm_10"
+                app:layout_constraintTop_toBottomOf="@+id/measurement_header_rh">
+
+                <ImageView
+                    android:id="@+id/circle_indicator_rh"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_marginStart="@dimen/keyline_4"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_circle"
+                    app:tint="@color/aircasting_white" />
+
+                <TextView
+                    android:id="@+id/measurement_value_rh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/keyline_1"
+                    android:textColor="@color/aircasting_grey_700"
+                    android:textSize="@dimen/text_size_xs"
+                    tools:text="14" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </merge>
+</layout>

@@ -2,7 +2,7 @@ package pl.llp.aircasting.utilities
 
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
-import pl.llp.aircasting.models.Measurement
+import pl.llp.aircasting.data.model.Measurement
 import java.io.File
 import java.io.FileReader
 import java.util.*
@@ -35,6 +35,12 @@ class StubData {
             }
 
             return measurements
+        }
+
+        fun getJson(path: String): String {
+            val uri = this.javaClass.classLoader.getResource(path)
+            val file = File(uri.path)
+            return String(file.readBytes())
         }
     }
 }

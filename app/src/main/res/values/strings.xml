@@ -30,7 +30,7 @@
     <!--  Dashboard -->
     <string name="title_settings">Settings</string>
     <string name="dashboard_empty_header">Ready to get started?</string>
-    <string name="dashboard_empty_text">Record a new session to monitor your health &amp; environment.</string>
+    <string name="dashboard_empty_text">Explore &amp; follow existing AirCasting sessions or use your own device to record a new session and monitor your health &amp; environment.</string>
     <string name="dashboard_tabs_following">Following</string>
     <string name="dashboard_tabs_mobile_active">Mobile active</string>
     <string name="dashboard_tabs_mobile_dormant">Mobile dormant</string>
@@ -79,7 +79,7 @@
     <string name="turn_on_wifi_dialog_ok_button">Turn on</string>
 
     <!-- Let's begin (new session start) -->
-    <string name="title_lets_start">Let\'s begin</string>
+    <string name="title_lets_begin">Let\'s begin</string>
     <string name="record_new_session_title">Record a new session</string>
     <string name="select_session_type_header">How would you like to add your session?</string>
     <string name="new_session_more_info"><u>more info</u></string>
@@ -480,5 +480,41 @@
     <string name="battery_desc">While you exit, the app uses foreground services to sync and have fresh data for the next time you open the app. In order to do that, we will need you to disable Battery Optimization in the settings.</string>
     <string name="running_background">Running on Background</string>
     <string name="battery_optimization_all_apps_aircasting_don_t_optimize" translatable="false"><![CDATA[Battery optimization -> All apps -> Aircasting -> Don\'t optimize]]></string>
+    <string name="follow_session">Follow session</string>
+    <string name="unfollow_session">Unfollow Session</string>
+    <string name="follow_description">search &amp; follow fixed sessions</string>
+    <string name="title_search_fixed_sessions">Search fixed sessions</string>
+    <string name="search_session_query_hint">Session location</string>
+    <string name="search_session_parameters_header">Which parameter are you interested in?</string>
+    <string name="ozone">Ozone</string>
+    <string name="humidity">Humidity</string>
+    <string name="temperature">Temperature</string>
+    <string name="particulate_matter">Particulate matter</string>
+    <string name="explore_existing_sessions">Explore existing sessions</string>
+    <string name="finished">Finished</string>
+    <string name="showing_results_for" translatable="false">Results for:</string>
+    <string name="which_sensor_are_you_interested_in" translatable="false">Which sensor are you interested in?</string>
+    <string name="airbeam" translatable="false">AirBeam</string>
+    <string name="openaq" translatable="false">OpenAQ</string>
+    <string name="purpleair" translatable="false">PurpleAir</string>
+    <string name="using_txt">using:</string>
+    <string name="unauth">Unauthorized</string>
+    <string name="not_found">Not found</string>
+    <string name="internal_error">Internal server error</string>
 
+    <!-- Search and Follow -->
+    <string name="close">Close</string>
+    <string name="loading_measurements">Loading last measurements…</string>
+    <string name="redo_search_in_map">Redo search in map</string>
+    <string name="session_followed">Session followed!</string>
+    <string name="session_unfollowed">Session Unfollowed!</string>
+    <string name="chart">chart</string>
+    <string name="finish">Finish</string>
+
+    <string name="txt_showing_sessions_number">Sessions showing %1$s of %2$s results</string>
+    <string name="f" translatable="false">F</string>
+    <string name="rh" translatable="false">RH</string>
+    <string name="pm1" translatable="false">PM1</string>
+    <string name="pm10" translatable="false">PM10</string>
+    <string name="pm2_5" translatable="false">PM2.5</string>
 </resources>

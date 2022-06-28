@@ -417,6 +417,15 @@
         <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
     </style>
 
+    <style name="Widget.Aircasting.Chip.Filter" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="checkedIconEnabled">false</item>
+        <item name="checkedIcon">@null</item>
+        <item name="chipBackgroundColor">@color/chip_background_selector</item>
+        <item name="android:textColor">@color/chip_text_selector</item>
+        <item name="android:fontFamily">@font/muli_semi_bold</item>
+        <item name="chipSpacingHorizontal">@dimen/keyline_10</item>
+    </style>
+
     <style name="Widget.Aircasting.ExpandedCardButtonUnfollow" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:translationX">0dp</item>
         <item name="android:backgroundTint">@color/aircasting_white</item>
@@ -578,6 +587,21 @@
     <style name="Widget.Aircasting.NewSessionDetails.WifiIcon" parent="">
         <item name="android:visibility">invisible</item>
         <item name="android:layout_marginStart">@dimen/keyline_4</item>
+    </style>
+
+    <style name="SessionDetailsNameHeader">
+        <item name="android:layout_marginTop">@dimen/keyline_2</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadline4</item>
+        <item name="android:textColor">@color/aircasting_dark_blue</item>
+        <item name="android:fontFamily">@font/moderat_trial_medium</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="SessionDetailsTypeHeader">
+        <item name="android:layout_marginTop">@dimen/keyline_2</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
+        <item name="android:textColor">@color/aircasting_dark_blue</item>
     </style>
 
 

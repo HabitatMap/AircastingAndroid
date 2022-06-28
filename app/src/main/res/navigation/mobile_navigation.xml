@@ -10,31 +10,30 @@
         app:destination="@+id/navigation_dashboard">
         <argument
             android:name="tabId"
-            android:defaultValue="0"
             app:argType="integer" />
     </action>
 
     <fragment
         android:id="@+id/navigation_reordering_dashboard"
-        android:name="pl.llp.aircasting.screens.dashboard.reordering_dashboard.ReorderingDashboardFragment"
+        android:name="pl.llp.aircasting.ui.view.fragments.ReorderingDashboardFragment"
         android:label="     "
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="pl.llp.aircasting.screens.dashboard.DashboardFragment"
+        android:name="pl.llp.aircasting.ui.view.fragments.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_lets_start"
-        android:name="pl.llp.aircasting.screens.lets_start.LetsStartFragment"
+        android:id="@+id/navigation_lets_begin"
+        android:name="pl.llp.aircasting.ui.view.fragments.LetsBeginFragment"
         android:label="     "
-        tools:layout="@layout/fragment_lets_start" />
+        tools:layout="@layout/fragment_lets_begin" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="pl.llp.aircasting.screens.settings.SettingsFragment"
+        android:name="pl.llp.aircasting.ui.view.fragments.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

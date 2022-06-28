@@ -9,7 +9,7 @@
         android:title="" />
 
     <item
-        android:id="@+id/navigation_lets_start"
+        android:id="@+id/navigation_lets_begin"
         android:icon="@drawable/ic_plus_black_24"
         android:menuCategory="secondary"
         android:title="" />

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="model"
+            type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
+    </data>
+
+    <merge>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/keyline_2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/session_measurements_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/session_measurements_description"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:visibility="@integer/visible_in_larger_screens"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/measurements_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
+
+                <include
+                    android:id="@+id/stream_measurement_header_and_value"
+                    layout="@layout/stream_measurement_header_and_value" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </merge>
+</layout>

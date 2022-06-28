@@ -11,14 +11,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
-import pl.llp.aircasting.bluetooth.BluetoothManager
-import pl.llp.aircasting.database.DatabaseProvider
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.helpers.*
-import pl.llp.aircasting.lib.Settings
-import pl.llp.aircasting.networking.services.ApiServiceFactory
-import pl.llp.aircasting.permissions.PermissionsManager
-import pl.llp.aircasting.screens.main.MainActivity
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import okhttp3.mockwebserver.MockResponse
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -27,7 +27,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import pl.llp.aircasting.di.modules.AppModule
 import java.net.HttpURLConnection
+import java.util.*
 import javax.inject.Inject
 
 
@@ -98,13 +100,13 @@ class MobileSessionTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
-        onView(withText(containsString(FakeDeviceItem.NAME.toUpperCase()))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -138,7 +140,7 @@ class MobileSessionTest {
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
 
-        onView(isRoot()).perform(pressBack());
+        onView(isRoot()).perform(pressBack())
 
         expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
@@ -153,7 +155,7 @@ class MobileSessionTest {
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
 
-        onView(isRoot()).perform(pressBack());
+        onView(isRoot()).perform(pressBack())
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
@@ -196,7 +198,7 @@ class MobileSessionTest {
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.navigation_lets_start), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
 
         onView(withId(R.id.mobile_session_start_card)).perform(click())
 
@@ -222,7 +224,7 @@ class MobileSessionTest {
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")));
+        onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")))
 
         onView(withId(R.id.session_actions_button)).perform(click())
 
