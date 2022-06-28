@@ -186,7 +186,7 @@ open class Settings(private val mApplication: Application) {
     }
 
     fun login(profileName: String, email: String, authToken: String) {
-        saveToSettings(PROFI_NAME_KEY, profileName)
+        saveToSettings(PROFILE_NAME_KEY, profileName)
         saveToSettings(EMAIL_KEY, email)
         saveToSettings(AUTH_TOKEN_KEY, authToken)
     }
