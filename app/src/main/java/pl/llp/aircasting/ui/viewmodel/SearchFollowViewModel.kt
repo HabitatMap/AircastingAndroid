@@ -113,6 +113,7 @@ class SearchFollowViewModel @Inject constructor(
                 )
             }
         }
+        mSettings.increaseFollowedSessionsNumber()
     }
 
     private fun setSessionThresholdsAccordingToUserSettings(
@@ -178,6 +179,7 @@ class SearchFollowViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(session.uuid)
         }
+
     }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
