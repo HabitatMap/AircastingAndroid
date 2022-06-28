@@ -1,10 +1,10 @@
 package pl.llp.aircasting.data.api.repository
 
-import pl.llp.aircasting.data.api.Constants
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Resource

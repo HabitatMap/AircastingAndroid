@@ -5,7 +5,7 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.ApiConstants
 import pl.llp.aircasting.data.api.services.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,7 +18,7 @@ class NetworkModule {
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
     @Provides
-    fun provideBaseUrl() = Constants.baseUrl
+    fun provideBaseUrl() = ApiConstants.baseUrl
 
     @Provides
     @Singleton

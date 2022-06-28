@@ -3,14 +3,12 @@ package pl.llp.aircasting.ui.viewmodel
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
-import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
-import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.util.Resource
 import javax.inject.Inject
 
@@ -26,13 +24,13 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
-    private val mutableThresholdColor = MutableLiveData<Int>()
+
     private lateinit var selectedFullSession: Deferred<Session?>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
-    val thresholdColor: LiveData<Int> get() = mutableThresholdColor
+
     lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     fun selectSession(session: SessionInRegionResponse) {
@@ -57,10 +55,7 @@ class SearchFollowViewModel @Inject constructor(
             )
         }
 
-    private fun initializeModelFromResponseAsync(
-        selectedSessionWithStreamsResponse
-        : Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>
-    ): Deferred<Session?> =
+    private fun initializeModelFromResponseAsync(selectedSessionWithStreamsResponse: Deferred<Resource<SessionWithStreamsAndMeasurementsResponse>>): Deferred<Session?> =
         viewModelScope.async {
             val response = selectedSessionWithStreamsResponse.await().data
             val streams = getStreamsWithMeasurementsFromResponse(response)
@@ -83,16 +78,12 @@ class SearchFollowViewModel @Inject constructor(
         emit(response)
     }
 
-    fun selectColor(color: Int) {
-        mutableThresholdColor.value = color
+    fun getLat(lat: Double) {
+        mutableLat.value = lat
     }
 
-    fun getLat(setLat: Double) {
-        mutableLat.value = setLat
-    }
-
-    fun getLng(setLng: Double) {
-        mutableLng.value = setLng
+    fun getLng(lng: Double) {
+        mutableLng.value = lng
     }
 
     fun saveSession() {
@@ -136,9 +127,7 @@ class SearchFollowViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSessionToDB(
-        session: Session
-    ): Long {
+    private suspend fun saveSessionToDB(session: Session): Long {
         val sessionId = viewModelScope.async(ioDispatcher) {
             sessionsRepository.insert(session)
         }
@@ -184,26 +173,7 @@ class SearchFollowViewModel @Inject constructor(
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
 
-            try {
-                val mSessions =
-                    activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
-                emit(mSessions)
-            } catch (e: Exception) {
-                emit(Resource.error(null, message = e.message.toString()))
-            }
-        }
-
-    fun getLastStreamFromSelectedSession(
-        sessionId: Long,
-        sensorName: String
-    ): LiveData<Resource<StreamOfGivenSessionResponse>> =
-        liveData(ioDispatcher) {
-            emit(Resource.loading(null))
-
-            val stream = activeFixedRepo.getStreamOfGivenSession(
-                sessionId,
-                sensorName
-            )
-            emit(stream)
+            val mSessions = activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
+            emit(mSessions)
         }
 }

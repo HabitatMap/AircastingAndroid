@@ -25,12 +25,12 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
-import pl.llp.aircasting.data.api.util.SensorNames
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -116,10 +116,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
 
         autocompleteFragment.apply {
-            val etPlace = view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
+            val etPlace =
+                view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            setAddressOnTheEditText(address, etPlace)
+            etPlace?.apply {
+                setText(address)
+                textSize = 15.0f
+                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
+            }
 
             initialisePlacesClient()
 
@@ -137,27 +142,20 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                address = place.address?.toString() ?: ""
+                address = place.address as String
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                setAddressOnTheEditText(address, etPlace)
-
-                if (lat != null && lng != null) moveMapToSelectedLocationAndRefresh(lat, lng)
+                etPlace?.hint = address
+                if (lat != null && lng != null) {
+                    moveMapToSelectedLocationAndRefresh(lat, lng)
+                }
             }
 
             override fun onError(status: com.google.android.gms.common.api.Status) {
                 Log.d("onError", status.statusMessage.toString())
             }
         })
-    }
-
-    private fun setAddressOnTheEditText(address: String, etPlace: EditText?) {
-        etPlace?.apply {
-            hint = address
-            textSize = 15.0f
-            setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
-        }
     }
 
     private fun goToDashboard() {
@@ -210,7 +208,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 text = getString(R.string.txt_showing_sessions_number, count, count)
                 setMargins(bottom = 50)
             }
-
     }
 
     private fun setupMapMarkers(sessions: List<SessionInRegionResponse>) {
@@ -234,10 +231,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun showBottomSheetDialog(session: SessionInRegionResponse) {
+        passLatLng(session)
+
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(supportFragmentManager)
-
-        passLatLng(session)
     }
 
     private fun passLatLng(session: SessionInRegionResponse) {
@@ -247,21 +244,21 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM2.getSensorName() -> ParticulateMatter.AIRBEAM2
-            ParticulateMatter.OPEN_AQ.getSensorName() -> ParticulateMatter.OPEN_AQ
-            ParticulateMatter.PURPLE_AIR.getSensorName() -> ParticulateMatter.PURPLE_AIR
-            Ozone.OPEN_AQ.getSensorName() -> Ozone.OPEN_AQ
+            StringConstants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
+            StringConstants.openAQsensorNamePM -> ParticulateMatter.OPEN_AQ
+            StringConstants.purpleAirSensorName -> ParticulateMatter.PURPLE_AIR
+            StringConstants.openAQsensorNameOzone -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM2
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            ParticulateMatter.AIRBEAM2.getSensorName() -> SensorNames.AIRBEAM.getSensorName()
-            ParticulateMatter.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
-            ParticulateMatter.PURPLE_AIR.getSensorName() -> SensorNames.PURPLE_AIR.getSensorName()
-            Ozone.OPEN_AQ.getSensorName() -> SensorNames.OPEN_AQ.getSensorName()
-            else -> SensorNames.AIRBEAM.getSensorName()
+            StringConstants.airbeam2sensorName -> StringConstants.airbeam
+            StringConstants.openAQsensorNamePM -> StringConstants.openAQ
+            StringConstants.purpleAirSensorName -> StringConstants.purpleAir
+            StringConstants.openAQsensorNameOzone -> StringConstants.openAQ
+            else -> StringConstants.airbeam
         }
     }
 

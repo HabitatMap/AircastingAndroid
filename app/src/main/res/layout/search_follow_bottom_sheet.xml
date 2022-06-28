@@ -9,9 +9,6 @@
             name="model"
             type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
 
-        <variable
-            name="lastMeasurement"
-            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,26 +80,22 @@
                     android:text="@{model.selectedSession.streams.sensor.sensorName}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-                    tools:layout_editor_absoluteY="53dp"
                     tools:text="Fixed, AirBeam3" />
 
-                <LinearLayout
-                    android:id="@+id/measurements_table_layout"
+                <TableLayout
+                    android:id="@+id/measurements_table"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/session_type">
+                    app:layout_constraintTop_toBottomOf="@+id/session_type">
 
-                    <include
-                        android:id="@+id/measurements_table_binding"
-                        layout="@layout/measurements_table_binding"
-                        app:lastMeasurement="@{lastMeasurement}"
-                        app:model="@{model}" />
-
-                </LinearLayout>
+                    <TableRow android:id="@+id/measurement_headers"/>
+                    <TableRow android:id="@+id/measurement_values" />
+                </TableLayout>
 
                 <fragment
                     android:id="@+id/mapViewBottomSheet"
@@ -112,7 +105,7 @@
                     android:layout_marginTop="@dimen/keyline_5"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/measurements_table_layout" />
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/chart_container"
@@ -121,7 +114,7 @@
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/measurements_table_layout">
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table">
 
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chart_view"

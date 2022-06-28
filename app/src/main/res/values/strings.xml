@@ -512,4 +512,9 @@
     <string name="finish">Finish</string>
 
     <string name="txt_showing_sessions_number">Sessions showing %1$s of %2$s results</string>
+    <string name="f" translatable="false">F</string>
+    <string name="rh" translatable="false">RH</string>
+    <string name="pm1" translatable="false">PM1</string>
+    <string name="pm10" translatable="false">PM10</string>
+    <string name="pm2_5" translatable="false">PM2.5</string>
 </resources>
