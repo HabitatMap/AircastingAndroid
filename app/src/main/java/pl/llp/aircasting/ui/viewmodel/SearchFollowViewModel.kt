@@ -30,27 +30,30 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLng = MutableLiveData<Double>()
     private val mutableThresholdColor = MutableLiveData<Int>()
     private lateinit var selectedFullSession: Deferred<Session?>
+    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
     val thresholdColor: LiveData<Int> get() = mutableThresholdColor
-    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
-    private var isOwnSession: Boolean = false
+    var isOwnSession: Boolean = false
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
-        if (session.username == mSettings.getProfileName()) isOwnSession = true
-
+        isOwnSession = checkIfUserOwnsSession(session)
         isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
 
         val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
     }
 
-    fun checkIfIsOwnSession(): Boolean {
-        return (isOwnSession)
+    private fun checkIfUserOwnsSession(session: SessionInRegionResponse): Boolean {
+        return session.username == mSettings.getProfileName()
+    }
+
+    fun userOwnsSession(): Boolean {
+        return isOwnSession
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {
