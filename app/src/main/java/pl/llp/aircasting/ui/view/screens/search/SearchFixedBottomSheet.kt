@@ -171,9 +171,24 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             val streams = session?.streams
             streams?.map { stream ->
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
-                bindChartData(session, mSensorThresholds, stream)
+
+                bindSessionPresenter(session, mSensorThresholds, stream)
+                bindChartData()
+                bindSession()
             }
         }
+    }
+
+    private fun bindSessionPresenter(
+        session: Session,
+        mSensorThresholds: HashMap<String, SensorThreshold>,
+        stream: MeasurementStream
+    ) {
+        mSessionPresenter = SessionPresenter(session, mSensorThresholds, stream)
+    }
+
+    private fun bindChartData() {
+        mChart.bindChart(mSessionPresenter)
     }
 
     private fun getSensorThresholds(stream: MeasurementStream): SensorThreshold {
@@ -185,17 +200,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             stream.thresholdHigh,
             stream.thresholdVeryHigh
         )
-    }
-
-    private fun bindChartData(
-        session: Session,
-        sensorThresholds: HashMap<String, SensorThreshold>,
-        selectedStream: MeasurementStream
-    ) {
-        mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
-
-        bindSession()
-        mChart.bindChart(mSessionPresenter)
     }
 
     private fun bindSession() {
