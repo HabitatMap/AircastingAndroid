@@ -33,10 +33,7 @@ class SearchFollowViewModel @Inject constructor(
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
-    val thresholdColor: LiveData<Int> get() = mutableThresholdColor
     var isOwnSession: Boolean = false
-
-    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
