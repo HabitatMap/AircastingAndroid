@@ -179,7 +179,7 @@ class SearchFollowViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             sessionsRepository.delete(session.uuid)
         }
-
+        mSettings.decreaseFollowedSessionsNumber()
     }
 
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
