@@ -153,13 +153,11 @@
                         app:layout_constraintStart_toEndOf="@id/chart_start_time" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/followBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_5"
-                    android:layout_marginEnd="@dimen/keyline_6"
                     android:text="@string/follow_session"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -171,9 +169,7 @@
                     android:id="@+id/unfollowBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_5"
-                    android:layout_marginEnd="@dimen/keyline_6"
                     android:backgroundTint="@color/aircasting_white"
                     android:text="@string/unfollow_session"
                     android:textColor="@color/aircasting_blue_400"
@@ -185,7 +181,6 @@
                     app:strokeColor="@color/aircasting_blue_400"
                     app:strokeWidth="2dp"
                     tools:visibility="invisible" />
-
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupType"

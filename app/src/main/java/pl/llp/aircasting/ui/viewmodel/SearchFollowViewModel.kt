@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
+import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
@@ -19,6 +20,7 @@ class SearchFollowViewModel @Inject constructor(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
+    private val mSettings: Settings,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
@@ -26,20 +28,29 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableLng = MutableLiveData<Double>()
 
     private lateinit var selectedFullSession: Deferred<Session?>
+    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
 
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
-
-    lateinit var isSelectedSessionFollowed: Deferred<Boolean>
+    var isOwnSession: Boolean = false
 
     fun selectSession(session: SessionInRegionResponse) {
         mutableSelectedSession.value = session
 
+        isOwnSession = checkIfUserOwnsSession(session)
         isSelectedSessionFollowed = checkIfSessionIsFollowedAsync()
 
         val selectedSessionWithStreamsResponse = downloadFullSessionAsync(session)
         selectedFullSession = initializeModelFromResponseAsync(selectedSessionWithStreamsResponse)
+    }
+
+    private fun checkIfUserOwnsSession(session: SessionInRegionResponse): Boolean {
+        return session.username == mSettings.getProfileName()
+    }
+
+    fun userOwnsSession(): Boolean {
+        return isOwnSession
     }
 
     private fun checkIfSessionIsFollowedAsync(): Deferred<Boolean> {

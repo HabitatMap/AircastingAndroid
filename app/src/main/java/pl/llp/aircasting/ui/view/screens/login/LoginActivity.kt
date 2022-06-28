@@ -17,7 +17,7 @@ class LoginActivity : BaseActivity() {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
-        val FROM_ONBOARDING_KEY = "fromOnboarding"
+        const val FROM_ONBOARDING_KEY = "fromOnboarding"
 
         fun start(
             contextActivity: AppCompatActivity?,

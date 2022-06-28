@@ -1,5 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.search
 
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -98,11 +100,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun toggleCorrectButton() {
         searchFollowViewModel.apply {
-            viewModelScope.launch {
-                if (isSelectedSessionFollowed.await())
-                    toggleUnFollowButton()
-                else
-                    toggleFollowButton()
+            if (userOwnsSession())
+                toggleOwnSessionButton() else {
+                viewModelScope.launch {
+                    if (isSelectedSessionFollowed.await()) toggleUnFollowButton()
+                    else toggleFollowButton()
+                }
             }
         }
     }
@@ -115,6 +118,21 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private fun toggleUnFollowButton() {
         binding?.followBtn?.gone()
         binding?.unfollowBtn?.visible()
+    }
+
+    private fun toggleOwnSessionButton() {
+        binding?.unfollowBtn?.inVisible()
+        binding?.followBtn?.apply {
+            visible()
+            isEnabled = false
+            text = "Your session"
+            setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.aircasting_grey_300
+                )
+            )
+        }
     }
 
     private fun setupChipsBehaviour() {

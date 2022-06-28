@@ -8,6 +8,7 @@ import pl.llp.aircasting.data.local.LogoutService
 open class Settings(private val mApplication: Application) {
     private val PRIVATE_MODE = 0
     private val PREFERENCES_NAME = "preferences"
+    private val PROFILE_NAME_KEY = "profile_name"
     private val EMAIL_KEY = "email"
     private val AUTH_TOKEN_KEY = "auth_token"
     private val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
@@ -50,6 +51,10 @@ open class Settings(private val mApplication: Application) {
 
     fun getEmail(): String? {
         return getStringFromSettings(EMAIL_KEY)
+    }
+
+    fun getProfileName(): String? {
+        return getStringFromSettings(PROFILE_NAME_KEY)
     }
 
     fun getCalibrationValue(): Int {
@@ -180,7 +185,8 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(DELETE_SESSION_IN_PROGERSS_KEY, deleteInProgress)
     }
 
-    fun login(email: String, authToken: String) {
+    fun login(profileName: String, email: String, authToken: String) {
+        saveToSettings(PROFILE_NAME_KEY, profileName)
         saveToSettings(EMAIL_KEY, email)
         saveToSettings(AUTH_TOKEN_KEY, authToken)
     }
