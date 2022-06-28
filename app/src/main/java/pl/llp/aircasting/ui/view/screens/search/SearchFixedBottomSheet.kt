@@ -32,7 +32,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private lateinit var txtLat: String
     private lateinit var txtLng: String
-    private lateinit var loader: AnimatedLoader
     private lateinit var mMap: GoogleMap
 
     private lateinit var mChart: Chart
@@ -117,12 +116,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         binding?.followBtn?.gone()
         binding?.unfollowBtn?.visible()
     }
-
-    /*private fun setupLoader() {
-        val loaderImage =
-            binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
-        loader = AnimatedLoader(loaderImage)
-    }*/
 
     private fun setupChipsBehaviour() {
         binding?.chipGroupType?.setOnCheckedStateChangeListener { chipGroup, _ ->
