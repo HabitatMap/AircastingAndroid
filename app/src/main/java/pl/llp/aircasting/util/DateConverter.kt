@@ -29,9 +29,9 @@ class DateConverter private constructor(settings: Settings) {
             return formatter.format(date)
         }
 
-        fun fromString(dateString: String, dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
+        fun fromString(dateString: String, timeZone: TimeZone = TimeZone.getDefault(), dateFormat: String = DEFAULT_DATE_FORMAT): Date? {
             val parser = SimpleDateFormat(dateFormat, Locale.getDefault())
-            parser.timeZone = TimeZone.getDefault()
+            parser.timeZone = timeZone
             return parser.parse(dateString)
         }
 

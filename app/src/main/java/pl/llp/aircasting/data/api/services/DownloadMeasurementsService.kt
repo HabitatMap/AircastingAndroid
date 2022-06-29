@@ -1,18 +1,20 @@
 package pl.llp.aircasting.data.api.services
 
+import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import retrofit2.Call
 
-class DownloadMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
+class DownloadMeasurementsService(
+    private val apiService: ApiService,
+    private val errorHandler: ErrorHandler
+) {
     private val sessionsRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val activeMeasurementsRepository = ActiveSessionMeasurementsRepository()
@@ -27,14 +29,30 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         }
     }
 
-    fun enqueueDownloadingMeasurements(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject, session: Session, finallyCallback: (() -> Unit)? = null): Call<SessionWithMeasurementsResponse>? {
+    fun enqueueDownloadingMeasurements(
+        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        session: Session,
+        finallyCallback: (() -> Unit)? = null
+    ): Call<SessionWithMeasurementsResponse>? {
         return when (session.type) {
-            Session.Type.MOBILE -> enqueueDownloadingMeasurementsForMobile(dbSessionWithMeasurements, session, finallyCallback)
-            Session.Type.FIXED -> enqueueDownloadingMeasurementsForFixed(dbSessionWithMeasurements, session, finallyCallback)
+            Session.Type.MOBILE -> enqueueDownloadingMeasurementsForMobile(
+                dbSessionWithMeasurements,
+                session,
+                finallyCallback
+            )
+            Session.Type.FIXED -> enqueueDownloadingMeasurementsForFixed(
+                dbSessionWithMeasurements,
+                session,
+                finallyCallback
+            )
         }
     }
 
-    fun enqueueDownloadingMeasurementsForMobile(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject, session: Session, finallyCallback: (() -> Unit)? = null): Call<SessionWithMeasurementsResponse>? {
+    fun enqueueDownloadingMeasurementsForMobile(
+        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        session: Session,
+        finallyCallback: (() -> Unit)? = null
+    ): Call<SessionWithMeasurementsResponse>? {
         if (hasMeasurements(dbSessionWithMeasurements)) {
             finallyCallback?.invoke()
             return null
@@ -46,8 +64,15 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
 
         call.enqueue(
             DownloadMeasurementsCallback(
-            sessionId, session, sessionsRepository, measurementStreamsRepository, activeMeasurementsRepository,
-            measurementsRepository, errorHandler, finallyCallback)
+                sessionId,
+                session,
+                sessionsRepository,
+                measurementStreamsRepository,
+                activeMeasurementsRepository,
+                measurementsRepository,
+                errorHandler,
+                finallyCallback
+            )
         )
 
         return call
@@ -57,11 +82,23 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         return Session(dbSessionWithMeasurements).hasMeasurements()
     }
 
-    fun enqueueDownloadingMeasurementsForFixed(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject, session: Session, finallyCallback: (() -> Unit)? = null): Call<SessionWithMeasurementsResponse> {
-        return enqueueDownloadingMeasurementsForFixed(dbSessionWithMeasurements.session.id, session, finallyCallback)
+    fun enqueueDownloadingMeasurementsForFixed(
+        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        session: Session,
+        finallyCallback: (() -> Unit)? = null
+    ): Call<SessionWithMeasurementsResponse> {
+        return enqueueDownloadingMeasurementsForFixed(
+            dbSessionWithMeasurements.session.id,
+            session,
+            finallyCallback
+        )
     }
 
-    fun enqueueDownloadingMeasurementsForFixed(sessionId: Long, session: Session, finallyCallback: (() -> Unit)? = null): Call<SessionWithMeasurementsResponse> {
+    fun enqueueDownloadingMeasurementsForFixed(
+        sessionId: Long,
+        session: Session,
+        finallyCallback: (() -> Unit)? = null
+    ): Call<SessionWithMeasurementsResponse> {
         val lastMeasurementSyncTimeString = lastMeasurementTimeString(sessionId, session)
 
         val call =
@@ -69,8 +106,15 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
 
         call.enqueue(
             DownloadMeasurementsCallback(
-            sessionId, session, sessionsRepository, measurementStreamsRepository, activeMeasurementsRepository,
-            measurementsRepository, errorHandler, finallyCallback)
+                sessionId,
+                session,
+                sessionsRepository,
+                measurementStreamsRepository,
+                activeMeasurementsRepository,
+                measurementsRepository,
+                errorHandler,
+                finallyCallback
+            )
         )
 
         return call
@@ -80,7 +124,8 @@ class DownloadMeasurementsService(private val apiService: ApiService, private va
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime =
             LastMeasurementSyncCalculator.calculate(session.endTime, lastMeasurementTime)
-        return DateConverter.toDateString(lastMeasurementSyncTime)
+
+        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, session.isExternal)
     }
 }
 
