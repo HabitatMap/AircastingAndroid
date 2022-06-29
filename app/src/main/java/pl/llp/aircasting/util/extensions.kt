@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Address
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -12,6 +13,7 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -176,5 +178,13 @@ fun View.setMargins(
 ) {
     layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
         setMargins(left, top, right, bottom)
+    }
+}
+
+fun setEditTextWithStyle(address: String, etPlace: EditText?) {
+    etPlace?.apply {
+        hint = address
+        textSize = 15.0f
+        setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
     }
 }
