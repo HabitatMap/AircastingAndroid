@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -152,14 +151,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("onError", status.statusMessage.toString())
             }
         })
-    }
-
-    private fun setEditTextWithStyle(address: String, etPlace: EditText?) {
-        etPlace?.apply {
-            this.hint = address
-            this.textSize = 15.0f
-            this.setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
-        }
     }
 
     private fun goToDashboard() {

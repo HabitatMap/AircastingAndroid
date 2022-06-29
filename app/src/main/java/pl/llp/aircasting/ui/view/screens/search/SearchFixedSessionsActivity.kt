@@ -23,6 +23,7 @@ import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.util.gone
 import pl.llp.aircasting.util.initializePlacesApi
+import pl.llp.aircasting.util.setEditTextWithStyle
 import pl.llp.aircasting.util.visible
 
 class SearchFixedSessionsActivity : AppCompatActivity() {
@@ -137,22 +138,14 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 mLat = place.latLng?.latitude.toString()
                 mLng = place.latLng?.longitude.toString()
 
-                setAddressOnTheEditText(address, etPlace)
+                setEditTextWithStyle(address, etPlace)
+                binding.btnContinue.visible()
             }
 
             override fun onError(status: Status) {
                 Log.d("onError", status.statusMessage.toString())
             }
         })
-    }
-
-    private fun setAddressOnTheEditText(address: String, etPlace: EditText?) {
-        etPlace?.apply {
-            hint = address
-            textSize = 15.0f
-            setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
-        }
-        binding.btnContinue.visible()
     }
 
     private fun initialisePlacesClient() {
