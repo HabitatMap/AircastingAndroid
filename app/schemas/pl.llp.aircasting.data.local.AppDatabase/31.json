@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 31,
-    "identityHash": "27d50aefe6ef2dc5ecc7fb37afc77841",
+    "identityHash": "1af2db6cc32699f601e8ae3c9d9ea1d9",
     "entities": [
       {
         "tableName": "sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL, `session_order` INTEGER, `username` TEXT, `is_external` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL, `session_order` INTEGER, `username` TEXT, `is_external` INTEGER DEFAULT 0, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uuid",
@@ -138,7 +138,8 @@
             "fieldPath": "isExternal",
             "columnName": "is_external",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "id",
@@ -177,13 +178,13 @@
       },
       {
         "tableName": "measurement_streams",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER, `sensor_package_name` TEXT NOT NULL, `sensor_name` TEXT NOT NULL, `measurement_type` TEXT NOT NULL, `measurement_short_type` TEXT NOT NULL, `unit_name` TEXT NOT NULL, `unit_symbol` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER NOT NULL, `sensor_package_name` TEXT NOT NULL, `sensor_name` TEXT NOT NULL, `measurement_type` TEXT NOT NULL, `measurement_short_type` TEXT NOT NULL, `unit_name` TEXT NOT NULL, `unit_symbol` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "sessionId",
             "columnName": "session_id",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "sensorPackageName",
@@ -656,7 +657,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '27d50aefe6ef2dc5ecc7fb37afc77841')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1af2db6cc32699f601e8ae3c9d9ea1d9')"
     ]
   }
 }
