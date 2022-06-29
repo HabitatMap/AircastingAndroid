@@ -39,7 +39,7 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
         val dateString = "${line[SDCardCSVFileFactory.Header.DATE.value]} ${line[SDCardCSVFileFactory.Header.TIME.value]}"
         val time = DateConverter.fromString(
             dateString,
-            DATE_FORMAT
+            dateFormat = DATE_FORMAT
         )
 
         val supportedStreamHeaders = CSVMeasurementStream.SUPPORTED_STREAMS.keys
