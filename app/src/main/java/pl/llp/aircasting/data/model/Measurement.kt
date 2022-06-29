@@ -48,9 +48,13 @@ class Measurement(
         measurementResponse.longitude
     )
 
-    constructor(measurementResponse: MeasurementResponse, averagingFrequency: Int) : this(
+    constructor(
+        measurementResponse: MeasurementResponse,
+        averagingFrequency: Int,
+        timeZone: TimeZone = TimeZone.getDefault()
+    ) : this(
         measurementResponse.value,
-        DateConverter.fromString(measurementResponse.time) ?: Date(),
+        DateConverter.fromString(measurementResponse.time, timeZone) ?: Date(),
         measurementResponse.latitude,
         measurementResponse.longitude,
         averagingFrequency
