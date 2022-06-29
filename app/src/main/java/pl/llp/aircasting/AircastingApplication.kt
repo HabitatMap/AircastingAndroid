@@ -24,7 +24,7 @@ class AircastingApplication : Application() {
         DatabaseProvider.setup(applicationContext)
 
         mSettings = Settings(this)
-        checkIfThemeChangeEnabled()
+        setCorrectAppTheme()
 
         permissionsModule = PermissionsModule()
         databaseModule = DatabaseModule()
@@ -41,7 +41,7 @@ class AircastingApplication : Application() {
             .addObserver(AppLifecycleObserver())
     }
 
-    private fun checkIfThemeChangeEnabled() {
+    private fun setCorrectAppTheme() {
         if (mSettings?.isThemeChangeEnabled() == true) AppCompatDelegate.setDefaultNightMode(
             AppCompatDelegate.MODE_NIGHT_YES
         ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
