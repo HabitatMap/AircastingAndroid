@@ -93,9 +93,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/session_type">
 
-                    <TableRow android:id="@+id/measurement_headers"/>
+                    <TableRow android:id="@+id/measurement_headers" />
+
                     <TableRow android:id="@+id/measurement_values" />
                 </TableLayout>
+
+                <ImageView
+                    android:id="@+id/loader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_loader"
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table"
+                    app:tint="@color/aircasting_blue_400" />
 
                 <fragment
                     android:id="@+id/mapViewBottomSheet"
@@ -105,7 +114,7 @@
                     android:layout_marginTop="@dimen/keyline_5"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/measurements_table" />
+                    app:layout_constraintTop_toBottomOf="@+id/loader" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/chart_container"

@@ -269,12 +269,12 @@ abstract class MeasurementsTableContainer {
 
         valueView.background = null
         val inflater: LayoutInflater = LayoutInflater.from(mContext)
-        var containerLayout: LinearLayout =
+        val containerLayout: LinearLayout =
             inflater.inflate(R.layout.measurement_table_container_layout, null) as LinearLayout
-        containerLayout.setOnClickListener {
-            changeSelectedStream(stream)
+        containerLayout.apply {
+            setOnClickListener { changeSelectedStream(stream) }
+            addView(valueView)
         }
-        containerLayout.addView(valueView)
 
         return containerLayout
     }

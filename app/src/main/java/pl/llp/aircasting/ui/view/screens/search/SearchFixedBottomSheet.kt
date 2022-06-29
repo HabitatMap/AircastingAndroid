@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
@@ -67,6 +66,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         toggleCorrectButton()
         setupChipsBehaviour()
         setupMeasurementTableLayout()
+        showLoader()
     }
 
     private fun setupMeasurementTableLayout() {
@@ -171,9 +171,24 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             val streams = session?.streams
             streams?.map { stream ->
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
-                bindChartData(session, mSensorThresholds, stream)
+
+                bindSessionPresenter(session, mSensorThresholds, stream)
+                bindChartData()
+                bindSession()
             }
         }
+    }
+
+    private fun bindSessionPresenter(
+        session: Session,
+        mSensorThresholds: HashMap<String, SensorThreshold>,
+        stream: MeasurementStream
+    ) {
+        mSessionPresenter = SessionPresenter(session, mSensorThresholds, stream)
+    }
+
+    private fun bindChartData() {
+        mChart.bindChart(mSessionPresenter)
     }
 
     private fun getSensorThresholds(stream: MeasurementStream): SensorThreshold {
@@ -187,27 +202,17 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         )
     }
 
-    private fun bindChartData(
-        session: Session,
-        sensorThresholds: HashMap<String, SensorThreshold>,
-        selectedStream: MeasurementStream
-    ) {
-        mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
-
-        bindSession()
-        mChart.bindChart(mSessionPresenter)
-    }
-
     private fun bindSession() {
         mMeasurementsTableContainer?.bindSession(
             mSessionPresenter,
             this::onMeasurementStreamChanged
         )
+        hideLoader()
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter.selectedStream = measurementStream
-        bindSession()
+        bindChartData()
     }
 
     private fun onFollowClicked() {
@@ -216,6 +221,20 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun onUnfollowClicked(session: SessionInRegionResponse) {
         searchFollowViewModel.deleteSession(session)
+    }
+
+    private fun showLoader() {
+        binding?.loader?.apply {
+            visible()
+            AnimatedLoader(this).start()
+        }
+    }
+
+    private fun hideLoader() {
+        binding?.loader?.apply {
+            gone()
+            AnimatedLoader(this).stop()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
