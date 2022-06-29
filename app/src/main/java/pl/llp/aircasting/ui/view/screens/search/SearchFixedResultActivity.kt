@@ -25,12 +25,12 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -120,11 +120,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            etPlace?.apply {
-                setText(address)
-                textSize = 15.0f
-                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
-            }
+            setEditTextWithStyle(address, etPlace)
 
             initialisePlacesClient()
 
@@ -146,7 +142,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                etPlace?.hint = address
+                setEditTextWithStyle(address, etPlace)
                 if (lat != null && lng != null) {
                     moveMapToSelectedLocationAndRefresh(lat, lng)
                 }
@@ -156,6 +152,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("onError", status.statusMessage.toString())
             }
         })
+    }
+
+    private fun setEditTextWithStyle(address: String, etPlace: EditText?) {
+        etPlace?.apply {
+            this.hint = address
+            this.textSize = 15.0f
+            this.setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
+        }
     }
 
     private fun goToDashboard() {
@@ -268,6 +272,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val selectedLocation = LatLng(lat, long)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 10f))
 
+        binding.btnRedo.gone()
         searchSessionsInMapArea()
     }
 
