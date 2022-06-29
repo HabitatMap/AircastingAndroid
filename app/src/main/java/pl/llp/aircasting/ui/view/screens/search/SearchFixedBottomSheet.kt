@@ -211,7 +211,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
         mSessionPresenter.selectedStream = measurementStream
-        bindSession()
+        bindChartData()
     }
 
     private fun onFollowClicked() {
