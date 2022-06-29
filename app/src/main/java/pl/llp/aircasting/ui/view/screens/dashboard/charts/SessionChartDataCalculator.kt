@@ -80,7 +80,7 @@ open class SessionChartDataCalculator(private var mSession: Session) {
                     calculateTimes()
                 }
                 Session.Type.FIXED -> entries =
-                    LocalAirBeamChartAveragesCreator().getFixedEntries(stream, timeStampsSetter)
+                    ChartAveragesCreator().getFixedEntries(stream, timeStampsSetter)
             }
         }
 
