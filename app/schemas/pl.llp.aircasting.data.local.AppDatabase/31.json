@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 31,
-    "identityHash": "10ddd05785b0d58324d51c50d386ccca",
+    "identityHash": "27d50aefe6ef2dc5ecc7fb37afc77841",
     "entities": [
       {
         "tableName": "sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL, `session_order` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `type` INTEGER NOT NULL, `device_id` TEXT, `device_type` INTEGER, `name` TEXT NOT NULL, `tags` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `latitude` REAL, `longitude` REAL, `status` INTEGER NOT NULL, `version` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `followed_at` INTEGER, `contribute` INTEGER NOT NULL, `locationless` INTEGER NOT NULL, `url_location` TEXT, `is_indoor` INTEGER NOT NULL, `averaging_frequency` INTEGER NOT NULL, `session_order` INTEGER, `username` TEXT, `is_external` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uuid",
@@ -129,6 +129,18 @@
             "notNull": false
           },
           {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isExternal",
+            "columnName": "is_external",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
@@ -164,118 +176,14 @@
         "foreignKeys": []
       },
       {
-        "tableName": "ext_sessions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `uuid` TEXT NOT NULL, `title` TEXT NOT NULL, `type` TEXT NOT NULL, `username` TEXT NOT NULL, `end_time_local` TEXT NOT NULL, `start_time_local` TEXT NOT NULL, `last_hour_average` REAL NOT NULL, `latitude` REAL NOT NULL, `longitude` TEXT NOT NULL, `is_indoor` INTEGER NOT NULL, `stream_id` INTEGER NOT NULL, `followed_at` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`stream_id`) REFERENCES `measurement_streams`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "uuid",
-            "columnName": "uuid",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "title",
-            "columnName": "title",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "username",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "endTimeLocal",
-            "columnName": "end_time_local",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "startTimeLocal",
-            "columnName": "start_time_local",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lastHourAverage",
-            "columnName": "last_hour_average",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "latitude",
-            "columnName": "latitude",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "longitude",
-            "columnName": "longitude",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isIndoor",
-            "columnName": "is_indoor",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "streamId",
-            "columnName": "stream_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "followedAt",
-            "columnName": "followed_at",
-            "affinity": "INTEGER",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": [
-          {
-            "table": "measurement_streams",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "stream_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
-      },
-      {
         "tableName": "measurement_streams",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER NOT NULL, `sensor_package_name` TEXT NOT NULL, `sensor_name` TEXT NOT NULL, `measurement_type` TEXT NOT NULL, `measurement_short_type` TEXT NOT NULL, `unit_name` TEXT NOT NULL, `unit_symbol` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER, `sensor_package_name` TEXT NOT NULL, `sensor_name` TEXT NOT NULL, `measurement_type` TEXT NOT NULL, `measurement_short_type` TEXT NOT NULL, `unit_name` TEXT NOT NULL, `unit_symbol` TEXT NOT NULL, `threshold_very_low` INTEGER NOT NULL, `threshold_low` INTEGER NOT NULL, `threshold_medium` INTEGER NOT NULL, `threshold_high` INTEGER NOT NULL, `threshold_very_high` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`session_id`) REFERENCES `sessions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "sessionId",
             "columnName": "session_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "sensorPackageName",
@@ -748,7 +656,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '10ddd05785b0d58324d51c50d386ccca')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '27d50aefe6ef2dc5ecc7fb37afc77841')"
     ]
   }
 }
