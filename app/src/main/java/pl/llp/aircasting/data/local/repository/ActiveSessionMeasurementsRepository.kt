@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
-import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.util.Constants
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject

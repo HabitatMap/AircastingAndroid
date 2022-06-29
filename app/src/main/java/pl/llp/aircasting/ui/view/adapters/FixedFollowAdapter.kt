@@ -64,8 +64,8 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
     }
 
     fun addCardBorder(position: Int) {
-        selectedSession = sessions[position]
         removeBorderFromPreviousCard()
+        selectedSession = sessions[position]
         notifyItemChanged(position)
     }
 

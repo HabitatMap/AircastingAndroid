@@ -39,11 +39,11 @@ class CreateAccountService(
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
-                        mSettings.login(body.email, body.authentication_token)
+                        mSettings.login(body.username, body.email, body.authentication_token)
                     }
                     successCallback()
                 } else if (response.code() == 422) {
-                    val errorResponse = Gson().fromJson<CreateAccountErrorResponse>(response.errorBody()?.string(), CreateAccountErrorResponse::class.java)
+                    val errorResponse = Gson().fromJson(response.errorBody()?.string(), CreateAccountErrorResponse::class.java)
                     errorCallback(errorResponse)
                 } else {
                     mErrorHandler.handleAndDisplay(InternalAPIError())

@@ -136,7 +136,7 @@
                     android:id="@+id/recyclerFixedFollow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/keyline_2"
+                    android:layout_marginBottom="@dimen/keyline_6"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"

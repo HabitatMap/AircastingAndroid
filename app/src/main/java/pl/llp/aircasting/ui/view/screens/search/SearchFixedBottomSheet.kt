@@ -1,6 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.search
 
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -20,22 +21,26 @@ import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
+import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
+import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
-import kotlin.math.roundToInt
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
     private var binding: SearchFollowBottomSheetBinding? = null
     private var mapFragment: SupportMapFragment? = null
     private val options = MarkerOptions()
-    private var txtLat: Double? = null
-    private var txtLng: Double? = null
-    private lateinit var loader: AnimatedLoader
+
+    private lateinit var txtLat: String
+    private lateinit var txtLng: String
     private lateinit var mMap: GoogleMap
-    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
+
     private lateinit var mChart: Chart
     private lateinit var mSessionPresenter: SessionPresenter
+    private var mMeasurementsTableContainer: MeasurementsTableContainer? = null
+
+    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
 
     override fun layoutId(): Int {
         return R.layout.search_follow_bottom_sheet
@@ -49,7 +54,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         setupUI()
         getLatlngObserver()
         getSessionWithAllData()
-        observeLastMeasurementsValue()
     }
 
     private fun setupUI() {
@@ -62,7 +66,17 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         setupUnfollowButton()
         toggleCorrectButton()
         setupChipsBehaviour()
-        setupLoader()
+        setupMeasurementTableLayout()
+    }
+
+    private fun setupMeasurementTableLayout() {
+        mMeasurementsTableContainer = SessionDetailsMeasurementsTableContainer(
+            requireActivity(),
+            this.layoutInflater,
+            binding?.root,
+            selectable = true,
+            displayValues = true
+        )
     }
 
     private fun setupUnfollowButton() {
@@ -85,11 +99,14 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun toggleCorrectButton() {
-        searchFollowViewModel.viewModelScope.launch(searchFollowViewModel.mainDispatcher) {
-            if (searchFollowViewModel.isSelectedSessionFollowed.await())
-                toggleUnFollowButton()
-            else
-                toggleFollowButton()
+        searchFollowViewModel.apply {
+            if (userOwnsSession())
+                toggleOwnSessionButton() else {
+                viewModelScope.launch {
+                    if (isSelectedSessionFollowed.await()) toggleUnFollowButton()
+                    else toggleFollowButton()
+                }
+            }
         }
     }
 
@@ -103,10 +120,19 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         binding?.unfollowBtn?.visible()
     }
 
-    private fun setupLoader() {
-        val loaderImage =
-            binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.loaderImage as ImageView
-        loader = AnimatedLoader(loaderImage)
+    private fun toggleOwnSessionButton() {
+        binding?.unfollowBtn?.inVisible()
+        binding?.followBtn?.apply {
+            visible()
+            isEnabled = false
+            text = "Your session"
+            setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.aircasting_grey_300
+                )
+            )
+        }
     }
 
     private fun setupChipsBehaviour() {
@@ -131,19 +157,19 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun getLatlngObserver() {
         searchFollowViewModel.apply {
-            myLat.observe(requireActivity()) {
-                txtLat = it
+            myLat.observe(requireActivity()) { mLat ->
+                txtLat = mLat.toString()
             }
-            myLng.observe(requireActivity()) {
-                txtLng = it
+            myLng.observe(requireActivity()) { mLng ->
+                txtLng = mLng.toString()
             }
         }
     }
 
     private fun getSessionWithAllData() {
         searchFollowViewModel.getStreams().observe(this) { session ->
-
-            session?.streams?.map { stream ->
+            val streams = session?.streams
+            streams?.map { stream ->
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
                 bindChartData(session, mSensorThresholds, stream)
             }
@@ -168,49 +194,20 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     ) {
         mSessionPresenter = SessionPresenter(session, sensorThresholds, selectedStream)
 
-        setDataAfterSessionPresenterInitialized()
+        bindSession()
         mChart.bindChart(mSessionPresenter)
     }
 
-    private fun setDataAfterSessionPresenterInitialized() {
-        binding?.measurementsTableBinding?.streamMeasurementHeaderAndValue?.measurementHeader?.text =
-            mSessionPresenter.selectedStream?.detailedType
+    private fun bindSession() {
+        mMeasurementsTableContainer?.bindSession(
+            mSessionPresenter,
+            this::onMeasurementStreamChanged
+        )
     }
 
-    private fun observeLastMeasurementsValue() {
-        val sessionId = searchFollowViewModel.selectedSession.value?.id
-        val sensorName =
-            searchFollowViewModel.selectedSession.value?.streams?.sensor?.sensorName
-        if (sensorName != null && sessionId != null) {
-            searchFollowViewModel.getLastStreamFromSelectedSession(sessionId, sensorName)
-                .observe(this) {
-                    when (it.status) {
-                        Status.SUCCESS -> {
-                            val value = it.data?.lastMeasurementValue ?: 0.0
-                            binding?.lastMeasurement = value.roundToInt().toString()
-
-                            setThresholdColour(value)
-                            loader.stop()
-                        }
-                        Status.LOADING -> loader.start()
-
-                        Status.ERROR -> {
-                            loader.stop()
-                            context?.showToast(it.message.toString())
-                        }
-                    }
-                }
-        }
-    }
-
-    private fun setThresholdColour(value: Double) {
-        val sensor = searchFollowViewModel.selectedSession.value?.streams?.sensor
-        if (sensor != null) {
-            searchFollowViewModel.selectColor(
-                SensorThresholdColorPicker(value, sensor)
-                    .getColor()
-            )
-        }
+    private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
+        mSessionPresenter.selectedStream = measurementStream
+        bindSession()
     }
 
     private fun onFollowClicked() {
@@ -225,19 +222,17 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         mMap = googleMap
         styleGoogleMap(mMap, requireActivity())
 
-        mMap.uiSettings.setAllGesturesEnabled(false)
+        val selectedLat = txtLat.toDouble()
+        val selectedLng = txtLng.toDouble()
 
-        if (txtLat != null && txtLng != null) {
-            val myLocation = LatLng(txtLat!!, txtLng!!)
-            mMap.drawMarkerOnMap(requireActivity(), options, txtLat!!, txtLng!!, null)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
-        }
+        val myLocation = LatLng(selectedLat, selectedLng)
+        mMap.drawMarkerOnMap(requireActivity(), options, selectedLat, selectedLng, null)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14f))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        if (mapFragment != null) parentFragmentManager.beginTransaction().remove(mapFragment!!)
-            .commit()
+        mapFragment?.let { parentFragmentManager.beginTransaction().remove(it).commit() }
     }
 }

@@ -7,10 +7,6 @@
         <variable
             name="model"
             type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
-
-        <variable
-            name="lastMeasurement"
-            type="String" />
     </data>
 
     <merge>
@@ -18,8 +14,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_2"
             android:layout_gravity="start"
+            android:layout_marginTop="@dimen/keyline_2"
             android:orientation="vertical">
 
             <TextView
@@ -33,12 +29,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
             <LinearLayout
                 android:id="@+id/measurements_table"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/keyline_2"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,9 +41,7 @@
 
                 <include
                     android:id="@+id/stream_measurement_header_and_value"
-                    layout="@layout/stream_measurement_header_and_value"
-                    app:lastMeasurement="@{lastMeasurement}"
-                    app:model="@{model}" />
+                    layout="@layout/stream_measurement_header_and_value" />
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

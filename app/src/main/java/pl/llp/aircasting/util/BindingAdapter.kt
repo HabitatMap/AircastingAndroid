@@ -43,11 +43,4 @@ object BindingAdapter {
 
     }
     // TODO: needs to be revised later.
-
-    @JvmStatic
-    @BindingAdapter("setSelectedSensorName", requireAll = true)
-    fun TextView.setSelectedSensorNameAndType(name: String) {
-        val type = this.context.getString(R.string.dashboard_tabs_fixed)
-        this.text = "$type, $name"
-    }
 }
