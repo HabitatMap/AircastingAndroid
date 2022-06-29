@@ -18,8 +18,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.api.util.ParticulateMatter
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.util.gone
 import pl.llp.aircasting.util.initializePlacesApi
@@ -38,10 +38,10 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
-    private var txtSelectedParameter: String = ParticulateMatter.AIRBEAM2.getMeasurementType()
-    private var txtSelectedSensor: String = ParticulateMatter.OPEN_AQ.getSensorName()
-    private var address: String? = null
+    private var txtSelectedParameter: String = StringConstants.airbeam2sensorName
+    private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM
 
+    private lateinit var address: String
     private lateinit var mLat: String
     private lateinit var mLng: String
 
@@ -130,29 +130,29 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         }
     }
 
-    private fun AutocompleteSupportFragment.onPlaceSelectedListener(searchInputEditText: EditText?) {
+    private fun AutocompleteSupportFragment.onPlaceSelectedListener(etPlace: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                address = place.address?.toString()
+                address = place.address as String
                 mLat = place.latLng?.latitude.toString()
                 mLng = place.latLng?.longitude.toString()
 
-                if (address != null) {
-                    binding.btnContinue.visible()
-                    searchInputEditText?.hint = address
-                    searchInputEditText?.setHintTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.black_color
-                        )
-                    )
-                }
+                setAddressOnTheEditText(address, etPlace)
             }
 
             override fun onError(status: Status) {
                 Log.d("onError", status.statusMessage.toString())
             }
         })
+    }
+
+    private fun setAddressOnTheEditText(address: String, etPlace: EditText?) {
+        etPlace?.apply {
+            hint = address
+            textSize = 15.0f
+            setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
+        }
+        binding.btnContinue.visible()
     }
 
     private fun initialisePlacesClient() {
