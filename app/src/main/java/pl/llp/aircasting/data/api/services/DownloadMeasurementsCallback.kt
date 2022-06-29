@@ -6,6 +6,9 @@ import org.apache.commons.lang3.time.DateUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.Constants
+import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
+import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
+import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
@@ -92,9 +95,11 @@ class DownloadMeasurementsCallback(
             stream
         )
         val averagingFrequency = averagingService?.currentAveragingThreshold()?.windowSize ?: 1
-        val measurements = streamResponse.measurements.map { response ->
-            Measurement(response, averagingFrequency)
-        }
+        val measurements = MeasurementsFactory.get(
+            streamResponse.measurements,
+            averagingFrequency,
+            session.isExternal
+        )
         measurementsRepository.insertAll(streamId, sessionId, measurements)
 
         // We are using active_session_measurements table for following sessions to optimize the app's performance
