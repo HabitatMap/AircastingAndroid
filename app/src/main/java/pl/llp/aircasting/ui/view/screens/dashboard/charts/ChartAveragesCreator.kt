@@ -97,7 +97,7 @@ open class ChartAveragesCreator {
 
     fun getFixedEntries(
         stream: MeasurementStream,
-        callback: SessionChartDataCalculator.OnAveragesCalculated
+        timeSetterCallback: SessionChartDataCalculator.TimeStampsSetter
     ): MutableList<Entry> {
         if (stream.measurements.isEmpty()) return mutableListOf()
 
@@ -134,7 +134,7 @@ open class ChartAveragesCreator {
                 numberOfDots++
             }
 
-            callback.setStartEndTimeToDisplay(
+            timeSetterCallback.setStartEndTimeToDisplay(
                 modifyHours(firstEntryDate),
                 modifyHours(lastEntryDate)
             )
