@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.search
 
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
@@ -67,6 +66,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         toggleCorrectButton()
         setupChipsBehaviour()
         setupMeasurementTableLayout()
+        showLoader()
     }
 
     private fun setupMeasurementTableLayout() {
@@ -207,6 +207,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             mSessionPresenter,
             this::onMeasurementStreamChanged
         )
+        hideLoader()
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
@@ -220,6 +221,20 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun onUnfollowClicked(session: SessionInRegionResponse) {
         searchFollowViewModel.deleteSession(session)
+    }
+
+    private fun showLoader() {
+        binding?.loader?.apply {
+            visible()
+            AnimatedLoader(this).start()
+        }
+    }
+
+    private fun hideLoader() {
+        binding?.loader?.apply {
+            gone()
+            AnimatedLoader(this).stop()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
