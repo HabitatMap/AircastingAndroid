@@ -9,12 +9,8 @@ import pl.llp.aircasting.util.helpers.services.AveragedMeasurementsService
 import java.util.*
 
 open class SessionChartDataCalculator(private var mSession: Session) {
-    interface OnAveragesCalculated {
-        fun setStartEndTimeToDisplay(start: Date, end: Date)
-    }
     var mStartTimeToDisplay: String = ""
     var mEndTimeToDisplay: String = ""
-    protected val timeSetter = TimeSetter()
     lateinit var mEntriesPerStream: HashMap<String, List<Entry>>
 
     private var mMaxEntriesCount: Int = 0
@@ -65,6 +61,8 @@ open class SessionChartDataCalculator(private var mSession: Session) {
     protected open fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry>? {
         var entries: MutableList<Entry>? = null
 
+        val timeStampsSetter = TimeStampsSetter()
+
         stream?.let { stream ->
             when (mSession.type) {
                 Session.Type.MOBILE -> {
@@ -81,17 +79,22 @@ open class SessionChartDataCalculator(private var mSession: Session) {
                     }
                     calculateTimes()
                 }
-                Session.Type.FIXED -> entries = LocalAirBeamChartAveragesCreator().getFixedEntries(stream, timeSetter)
+                Session.Type.FIXED -> entries =
+                    ChartAveragesCreator().getFixedEntries(stream, timeStampsSetter)
             }
         }
 
         return entries
     }
 
-    inner class TimeSetter : OnAveragesCalculated {
-        override fun setStartEndTimeToDisplay(start: Date, end: Date) {
-            mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(start) ?: ""
-            mEndTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(end) ?: ""
+    open inner class TimeStampsSetter {
+        open fun setStartEndTimeToDisplay(
+            start: Date,
+            end: Date,
+            timeZone: TimeZone = TimeZone.getDefault()
+        ) {
+            mStartTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(start, timeZone) ?: ""
+            mEndTimeToDisplay = DateConverter.get()?.toTimeStringForDisplay(end, timeZone) ?: ""
         }
     }
 

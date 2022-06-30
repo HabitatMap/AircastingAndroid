@@ -96,10 +96,10 @@ open class ChartAveragesCreator {
     private lateinit var endTimeBoundary: Date
 
     fun getFixedEntries(
-        stream: MeasurementStream,
-        callback: SessionChartDataCalculator.OnAveragesCalculated
+        stream: MeasurementStream?,
+        timeSetterCallback: SessionChartDataCalculator.TimeStampsSetter
     ): MutableList<Entry> {
-        if (stream.measurements.isEmpty()) return mutableListOf()
+        if (stream == null || stream.measurements.isEmpty()) return mutableListOf()
 
         endTimeBoundary = getAllowedEndTimeBoundary(stream)
         startTimeBoundary = getAllowedStartTimeBoundary()
@@ -134,7 +134,7 @@ open class ChartAveragesCreator {
                 numberOfDots++
             }
 
-            callback.setStartEndTimeToDisplay(
+            timeSetterCallback.setStartEndTimeToDisplay(
                 modifyHours(firstEntryDate),
                 modifyHours(lastEntryDate)
             )
@@ -148,7 +148,10 @@ open class ChartAveragesCreator {
     private fun getStartDateOfEntries(lastNineHoursMeasurementGroups: List<Map.Entry<Date, List<Measurement>>>) =
         lastNineHoursMeasurementGroups.first().key
 
-    protected open fun modifyHours(date: Date, hours: Int = -1): Date {
+    /* We tweak the hours forward by one, as on UI they are supposed to represent the passed hour
+    * So measurements from 6:00:00 till 6:59:59 are represented on UI as 7:00 timestamp
+    *  */
+    protected open fun modifyHours(date: Date, hours: Int = 1): Date {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.add(Calendar.HOUR_OF_DAY, hours)
