@@ -43,7 +43,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/txtDate"
                     formatDateEnd="@{model.selectedSession.endTimeLocal}"
                     formatDateStart="@{model.selectedSession.startTimeLocal}"
                     android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                     android:textSize="@dimen/text_size_xl"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/date"
+                    app:layout_constraintTop_toBottomOf="@+id/txtDate"
                     app:lineHeight="@dimen/keyline_6"
                     tools:text="Neighborhood check" />
 

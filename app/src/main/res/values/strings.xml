@@ -517,4 +517,5 @@
     <string name="pm1" translatable="false">PM1</string>
     <string name="pm10" translatable="false">PM10</string>
     <string name="pm2_5" translatable="false">PM2.5</string>
+    <string name="your_session_text">Your session</string>
 </resources>
