@@ -206,9 +206,7 @@ fun EditText.setStyle(mHint: String, mHintColor: Int) {
     }
 }
 
-fun View.fireAndWait(listener: () -> Unit) {
-    listener.invoke()
-
+fun View.disableForASecond() {
     this.isEnabled = false
 
     postDelayed({
