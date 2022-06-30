@@ -147,6 +147,19 @@ fun MarkerOptions.icon(context: Context, @DrawableRes vectorDrawable: Int): Mark
     return this
 }
 
+fun getBitmapDescriptorFromVector(
+    context: Context,
+    @DrawableRes vectorDrawableResourceId: Int
+): BitmapDescriptor {
+    val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
+    val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+    vectorDrawable.draw(canvas)
+
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
 fun GoogleMap.drawMarkerOnMap(
     mContext: Context,
     options: MarkerOptions,
