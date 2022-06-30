@@ -19,6 +19,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.databinding.SearchFollowBottomSheetBinding
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.ui.view.screens.dashboard.charts.BottomSheetChartConfigurator
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
@@ -56,17 +57,28 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun setupUI() {
-        mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
-        mChart = Chart(requireActivity(), binding?.root)
-
+        setupMapFragment()
+        setupChart()
         setupFollowButton()
         setupUnfollowButton()
         toggleCorrectButton()
         setupChipsBehaviour()
         setupMeasurementTableLayout()
         showLoader()
+    }
+
+    private fun setupMapFragment() {
+        mapFragment =
+            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+    }
+
+    private fun setupChart() {
+        mChart = Chart(
+            requireActivity(),
+            binding?.root,
+            BottomSheetChartConfigurator(requireActivity())
+        )
     }
 
     private fun setupMeasurementTableLayout() {
