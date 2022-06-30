@@ -96,10 +96,10 @@ open class ChartAveragesCreator {
     private lateinit var endTimeBoundary: Date
 
     fun getFixedEntries(
-        stream: MeasurementStream,
+        stream: MeasurementStream?,
         timeSetterCallback: SessionChartDataCalculator.TimeStampsSetter
     ): MutableList<Entry> {
-        if (stream.measurements.isEmpty()) return mutableListOf()
+        if (stream == null || stream.measurements.isEmpty()) return mutableListOf()
 
         endTimeBoundary = getAllowedEndTimeBoundary(stream)
         startTimeBoundary = getAllowedStartTimeBoundary()

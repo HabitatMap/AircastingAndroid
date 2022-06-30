@@ -7,12 +7,10 @@ import pl.llp.aircasting.data.model.Session
 import java.util.*
 
 class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCalculator(session) {
-    override fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry>? {
+    override fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry> {
         val timeStampsSetter = UTCTimeStampsSetter()
 
         return when {
-            stream == null -> null
-
             isFromOpenAQ(stream) -> OpenAQChartAveragesCreator().getFixedEntries(
                 stream,
                 timeStampsSetter
@@ -25,9 +23,9 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         }
     }
 
-    private fun isFromOpenAQ(stream: MeasurementStream) =
-        stream.sensorName.contains(StringConstants.responseOpenAQSensorNamePM, true) ||
-                stream.sensorName.contains(StringConstants.responseOpenAQSensorNameOzone, true)
+    private fun isFromOpenAQ(stream: MeasurementStream?) =
+        stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNamePM, true) == true ||
+                stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNameOzone, true) == true
 
     inner class UTCTimeStampsSetter : TimeStampsSetter() {
         override fun setStartEndTimeToDisplay(start: Date, end: Date, timeZone: TimeZone) {
