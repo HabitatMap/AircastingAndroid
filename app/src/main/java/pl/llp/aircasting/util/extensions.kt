@@ -194,10 +194,10 @@ fun View.setMargins(
     }
 }
 
-fun setEditTextWithStyle(address: String, etPlace: EditText?) {
-    etPlace?.apply {
-        hint = address
+fun EditText.setStyle(mHint: String, mHintColor: Int){
+    this.apply {
+        hint = mHint
         textSize = 15.0f
-        setHintTextColor(ContextCompat.getColor(this.context, R.color.black_color))
+        setHintTextColor(ContextCompat.getColor(this.context, mHintColor))
     }
 }
