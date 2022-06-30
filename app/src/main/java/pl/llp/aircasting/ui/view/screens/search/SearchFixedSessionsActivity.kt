@@ -21,10 +21,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
-import pl.llp.aircasting.util.gone
-import pl.llp.aircasting.util.initializePlacesApi
-import pl.llp.aircasting.util.setEditTextWithStyle
-import pl.llp.aircasting.util.visible
+import pl.llp.aircasting.util.*
 
 class SearchFixedSessionsActivity : AppCompatActivity() {
 
@@ -115,19 +112,15 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
 
         autocompleteFragment?.apply {
-            val searchInputEditText =
+            val editTextInput =
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            searchInputEditText?.apply {
-                hint = getString(R.string.search_session_query_hint)
-                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
-                textSize = 15.0f
-            }
+            editTextInput?.setStyle(getString(R.string.search_session_query_hint), R.color.aircasting_grey_300)
 
             setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
 
-            onPlaceSelectedListener(searchInputEditText)
+            onPlaceSelectedListener(editTextInput)
         }
     }
 
@@ -138,7 +131,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
                 mLat = place.latLng?.latitude.toString()
                 mLng = place.latLng?.longitude.toString()
 
-                setEditTextWithStyle(address, etPlace)
+                etPlace?.setStyle(address, R.color.black_color)
                 binding.btnContinue.visible()
             }
 

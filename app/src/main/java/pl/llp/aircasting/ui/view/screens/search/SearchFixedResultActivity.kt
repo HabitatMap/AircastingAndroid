@@ -120,7 +120,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            setEditTextWithStyle(address, etPlace)
+            etPlace?.setStyle(address, R.color.black_color)
 
             initialisePlacesClient()
 
@@ -142,7 +142,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                setEditTextWithStyle(address, etPlace)
+                etPlace?.setStyle(address, R.color.black_color)
                 if (lat != null && lng != null) {
                     moveMapToSelectedLocationAndRefresh(lat, lng)
                 }
@@ -305,7 +305,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         marker.setIcon(getBitmapDescriptorFromVector(this, R.drawable.map_dot_selected))
     }
 
-    private fun selectTheSpecificCardView(marker: Marker) {
+    private fun selectCorrespondingCardView(marker: Marker) {
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
@@ -321,7 +321,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         mSelectedMarker = marker
         highlightMarkerIcon(marker)
 
-        selectTheSpecificCardView(marker)
+        selectCorrespondingCardView(marker)
         return false
     }
 
