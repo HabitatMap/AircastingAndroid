@@ -110,7 +110,7 @@ class FixedSessionTest {
 
     @Test
     fun testFixedOutdoorSessionRecording() {
-        settings.login("X", "TOKEN")
+        settings.login("X", "EMAIL", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -172,7 +172,7 @@ class FixedSessionTest {
 
     @Test
     fun testFixedIndoorSessionRecording() {
-        settings.login("X", "TOKEN")
+        settings.login("X", "EMAIL","TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -228,7 +228,7 @@ class FixedSessionTest {
 
 //    @Test
 //    fun testFollowAndUnfollow() {
-//        settings.login("X", "TOKEN")
+//        settings.login("X", "EMAIL", "TOKEN")
 //
 //        val session = Session(
 //            Session.generateUUID(),

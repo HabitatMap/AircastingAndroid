@@ -34,6 +34,11 @@ android {
             "PLACES_API_KEY",
             secureProps.getProperty("PLACES_API_KEY") ?: "\"\""
         )
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
     }
 
     compileOptions {

@@ -34,7 +34,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
     @ColumnInfo(name = "session_order") val session_order: Int? = null,
     @ColumnInfo(name = "username") val username: String? = null,
-    @ColumnInfo(name = "is_external") val isExternal: Boolean = false
+    @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean? = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0

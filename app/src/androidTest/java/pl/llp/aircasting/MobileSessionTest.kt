@@ -11,14 +11,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.di.*
-import pl.llp.aircasting.helpers.*
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import okhttp3.mockwebserver.MockResponse
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -27,7 +19,18 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestPermissionsModule
+import pl.llp.aircasting.di.TestSensorsModule
+import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.helpers.*
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.net.HttpURLConnection
 import java.util.*
 import javax.inject.Inject
@@ -91,7 +94,7 @@ class MobileSessionTest {
 
     @Test
     fun testBluetoothMobileSessionRecording() {
-        settings.login("X", "TOKEN")
+        settings.login("X", "EMAIL", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -191,7 +194,7 @@ class MobileSessionTest {
             getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
         )
 
-        settings.login("X", "TOKEN")
+        settings.login("X", "EMAIL", "TOKEN")
 
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
 
