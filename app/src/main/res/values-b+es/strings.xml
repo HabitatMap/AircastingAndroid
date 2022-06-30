@@ -401,5 +401,6 @@
     <string name="chart">cuadro</string>
     <string name="finish">Finalizar</string>
     <string name="txt_showing_sessions_number">Sessions showing %1$s of %2$s results</string>
+    <string name="your_session_text">tu sesión</string>
 
 </resources>

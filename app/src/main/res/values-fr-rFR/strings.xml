@@ -399,6 +399,7 @@
     <string name="chart">graphique</string>
     <string name="finish">Finir</string>
     <string name="txt_showing_sessions_number">Sessions showing %1$s of %2$s results</string>
+    <string name="your_session_text">Votre séance</string>
 
 
 </resources>

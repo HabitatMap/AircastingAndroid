@@ -125,7 +125,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
         binding?.followBtn?.apply {
             visible()
             isEnabled = false
-            text = "Your session"
+            text = context.getString(R.string.your_session_text)
             setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
