@@ -28,7 +28,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
-import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.isSDKLessThanN
@@ -65,7 +64,8 @@ class GraphContainer(
     private var mMeasurementsSample: List<Measurement> = listOf()
     private var mNotes: List<Note>? = notes
 
-    private var mNoteValueRanges: List<ClosedRange<Long>> = listOf() // When generating entries for graph I check which entries got their note icon, I keep here "Ranges" of values which I want to react graph click (ChartValueSelectedListener)
+    private var mNoteValueRanges: List<ClosedRange<Long>> =
+        listOf() // When generating entries for graph I check which entries got their note icon, I keep here "Ranges" of values which I want to react graph click (ChartValueSelectedListener)
 
     init {
         mGraph = rootView?.graph
@@ -122,7 +122,15 @@ class GraphContainer(
     }
 
     private fun generateData(): GraphDataGenerator.Result {
-        return mGraphDataGenerator.generate(mMeasurementsSample, mNotes, visibleMeasurementsSize = mVisibleEntriesNumber, averagingFrequency = AveragingService.getAveragingThreshold(mMeasurementsSample.firstOrNull(), mMeasurementsSample.lastOrNull()))
+        return mGraphDataGenerator.generate(
+            mMeasurementsSample,
+            mNotes,
+            visibleMeasurementsSize = mVisibleEntriesNumber,
+            averagingFrequency = AveragingService.getAveragingThreshold(
+                mMeasurementsSample.firstOrNull(),
+                mMeasurementsSample.lastOrNull()
+            )
+        )
     }
 
     private fun drawData(entries: List<Entry>) {
@@ -142,7 +150,7 @@ class GraphContainer(
         val span = last.x - first.x
         val zoomSpan: Float = mDefaultZoomSpan?.toFloat() ?: span
         val zoom = span / zoomSpan
-        val centerX = last.x - min(zoomSpan, span) /2
+        val centerX = last.x - min(zoomSpan, span) / 2
         val centerY = (last.y - first.y) / 2
 
         mGraph?.zoom(zoom, 1f, centerX, centerY)
@@ -181,14 +189,15 @@ class GraphContainer(
     }
 
     private fun dateString(date: Date): String {
-        return DateConverter.get()?.toTimeStringForDisplay(date, TimeZone.getDefault()) ?: ""
+        return GraphDateStringFactory.get(date, mSessionPresenter?.isExternal() ?: false)
     }
 
     private fun midnightPointLine(limit: Float): LimitLine {
         val line = LimitLine(limit, "")
         line.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
         mContext?.let { context ->
-            line.lineColor = ResourcesCompat.getColor(context.resources, R.color.aircasting_grey_700, null)
+            line.lineColor =
+                ResourcesCompat.getColor(context.resources, R.color.aircasting_grey_700, null)
         }
         line.lineWidth = 1f
         line.enableDashedLine(20f, 10f, 0f)
@@ -265,7 +274,8 @@ class GraphContainer(
                         return
                     }
                     1 -> {
-                        noteNumber = mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
+                        noteNumber =
+                            mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
                     }
                     else -> {
                         // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
@@ -276,9 +286,10 @@ class GraphContainer(
                                     ?.minus(range.start + ((range.endInclusive - range.start) / 2))
                                     ?: Long.MAX_VALUE
                             )
-                            if (rangeDistance < tempDistance ) {
+                            if (rangeDistance < tempDistance) {
                                 tempDistance = rangeDistance
-                                noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                                noteNumber =
+                                    mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
                             }
                         }
                     }
@@ -297,16 +308,32 @@ class GraphContainer(
         updateGraphOnGesture()
         drawSession()
     }
-    override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {}
+
+    override fun onChartGestureStart(
+        me: MotionEvent?,
+        lastPerformedGesture: ChartTouchListener.ChartGesture?
+    ) {
+    }
+
     override fun onChartLongPressed(me: MotionEvent?) {}
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartSingleTapped(me: MotionEvent?) {}
-    override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
+    override fun onChartFling(
+        me1: MotionEvent?,
+        me2: MotionEvent?,
+        velocityX: Float,
+        velocityY: Float
+    ) {
+    }
+
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
         updateGraphOnGesture()
     }
 
-    override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+    override fun onChartGestureEnd(
+        me: MotionEvent?,
+        lastPerformedGesture: ChartTouchListener.ChartGesture?
+    ) {
         updateGraphOnGesture()
     }
 
@@ -336,16 +363,18 @@ class GraphContainer(
     }
 
     private fun updateVisibleTimeSpan() {
-        mGraph?.let {graph ->
+        mGraph?.let { graph ->
             val from = graph.lowestVisibleX
             val to = graph.highestVisibleX
-            val timeSpan = mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
+            val timeSpan =
+                mGraphDataGenerator.dateFromFloat(from)..mGraphDataGenerator.dateFromFloat(to)
 
             // TODO: below code is not universal for all types of sensors, we should somehow count "measurement frequency" later on
             mVisibleEntriesNumber = if (!graph.isFullyZoomedOut) {
                 val fromDate = Date(from.toLong())
                 val toDate = Date(to.toLong())
-                val diff = (toDate.time - fromDate.time) / sessionMeasurementsFrequency() // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
+                val diff =
+                    (toDate.time - fromDate.time) / sessionMeasurementsFrequency() // count of measurements between these 2 dates in mobile session, division by 1000 because we need seconds instead of miliseconds
                 diff.toInt()
             } else {
                 mMeasurementsSample.size
