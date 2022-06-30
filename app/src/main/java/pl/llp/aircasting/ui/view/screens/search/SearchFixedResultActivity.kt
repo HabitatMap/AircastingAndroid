@@ -315,14 +315,14 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onMarkerClick(marker: Marker): Boolean {
         if (mSelectedMarker != null) {
-            setMarkerIconToDefault(mSelectedMarker!!)
+            mSelectedMarker?.let { setMarkerIconToDefault(it) }
             mSelectedMarker = null
         }
         mSelectedMarker = marker
         highlightMarkerIcon(marker)
 
         selectCorrespondingCardView(marker)
-        return false
+        return true
     }
 
     override fun onCameraMoveStarted(p0: Int) {

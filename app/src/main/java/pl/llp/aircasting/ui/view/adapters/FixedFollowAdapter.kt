@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.R
@@ -27,7 +28,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
                 setOnClickListener { onItemClicked(bindingAdapterPosition) }
                 cardView = this
 
-                if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setBackgroundWithoutBorder(
+                if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setCardViewToDefault(
                     cardView
                 )
             }
@@ -64,12 +65,12 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
     }
 
     fun addCardBorder(position: Int) {
-        removeBorderFromPreviousCard()
+        setCardViewToDefault(cardView)
         selectedSession = sessions[position]
         notifyItemChanged(position)
     }
 
-    private fun removeBorderFromPreviousCard() {
+    private fun setCardViewToDefault(cardView: View) {
         cardView.apply {
             setBackgroundColor(
                 ContextCompat.getColor(
@@ -82,14 +83,5 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
 
     private fun setBackgroundWithBorder(cardView: View) {
         cardView.setBackgroundResource(R.drawable.card_view_border_search)
-    }
-
-    private fun setBackgroundWithoutBorder(cardView: View) {
-        cardView.setBackgroundColor(
-            ContextCompat.getColor(
-                cardView.context,
-                R.color.aircasting_white
-            )
-        )
     }
 }
