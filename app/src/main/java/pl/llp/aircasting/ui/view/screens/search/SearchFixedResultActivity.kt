@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,12 +24,12 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -58,6 +57,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var address: String
     private lateinit var mLat: String
     private lateinit var mLng: String
+    private var mSelectedMarker: Marker? = null
 
     private val options = MarkerOptions()
     private var txtParameter: String? = null
@@ -120,11 +120,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            etPlace?.apply {
-                setText(address)
-                textSize = 15.0f
-                setHintTextColor(ContextCompat.getColor(this.context, R.color.aircasting_grey_300))
-            }
+            etPlace?.setStyle(address, R.color.black_color)
 
             initialisePlacesClient()
 
@@ -146,7 +142,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                etPlace?.hint = address
+                etPlace?.setStyle(address, R.color.black_color)
                 if (lat != null && lng != null) {
                     moveMapToSelectedLocationAndRefresh(lat, lng)
                 }
@@ -268,6 +264,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val selectedLocation = LatLng(lat, long)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 10f))
 
+        binding.btnRedo.gone()
         searchSessionsInMapArea()
     }
 
@@ -300,13 +297,32 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
-    override fun onMarkerClick(marker: Marker): Boolean {
+    private fun setMarkerIconToDefault(marker: Marker) {
+        marker.setIcon(getBitmapDescriptorFromVector(this, R.drawable.map_dot_with_circle_inside))
+    }
+
+    private fun highlightMarkerIcon(marker: Marker) {
+        marker.setIcon(getBitmapDescriptorFromVector(this, R.drawable.map_dot_selected))
+    }
+
+    private fun selectCorrespondingCardView(marker: Marker) {
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
         binding.recyclerFixedFollow.scrollToPosition(position)
         adapter.addCardBorder(position)
-        return true
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        if (mSelectedMarker != null) {
+            setMarkerIconToDefault(mSelectedMarker!!)
+            mSelectedMarker = null
+        }
+        mSelectedMarker = marker
+        highlightMarkerIcon(marker)
+
+        selectCorrespondingCardView(marker)
+        return false
     }
 
     override fun onCameraMoveStarted(p0: Int) {

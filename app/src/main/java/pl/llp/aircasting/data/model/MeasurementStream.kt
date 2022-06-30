@@ -203,7 +203,7 @@ open class MeasurementStream(
         return deltaSum / divisor
     }
 
-    fun getMeasurementsForPeriod(amount: Int, divisor: Double): MutableList<Measurement>? {
+    fun getMeasurementsForPeriod(amount: Int, divisor: Double): MutableList<Measurement> {
         val frequency = samplingFrequency(divisor)
         return try {
             val measurementsInPeriod = (60 / frequency).toInt() * amount

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Address
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -12,6 +13,7 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -145,6 +147,19 @@ fun MarkerOptions.icon(context: Context, @DrawableRes vectorDrawable: Int): Mark
     return this
 }
 
+fun getBitmapDescriptorFromVector(
+    context: Context,
+    @DrawableRes vectorDrawableResourceId: Int
+): BitmapDescriptor {
+    val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
+    val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+    vectorDrawable.draw(canvas)
+
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
 fun GoogleMap.drawMarkerOnMap(
     mContext: Context,
     options: MarkerOptions,
@@ -176,5 +191,13 @@ fun View.setMargins(
 ) {
     layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
         setMargins(left, top, right, bottom)
+    }
+}
+
+fun EditText.setStyle(mHint: String, mHintColor: Int){
+    this.apply {
+        hint = mHint
+        textSize = 15.0f
+        setHintTextColor(ContextCompat.getColor(this.context, mHintColor))
     }
 }

@@ -14,7 +14,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/keyline_2">
+        android:layout_margin="@dimen/keyline_2"
+        app:cardCornerRadius="@dimen/keyline_2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="250dp"
@@ -35,7 +36,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Krakow, poland, 445454, fdgdad, poland, 445454, fdgdad poland, 445454, fdgdad" />
+                tools:text="Krakow, poland, fdgdad, poland, fdgdad poland, fdgdad" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -44,13 +45,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_3"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/keyline_2"
                 android:layout_marginEnd="@dimen/keyline_3"
                 android:layout_marginBottom="@dimen/keyline_2"
                 android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
                 tools:text="1/02/2022 - 12:44 20/11/2022" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

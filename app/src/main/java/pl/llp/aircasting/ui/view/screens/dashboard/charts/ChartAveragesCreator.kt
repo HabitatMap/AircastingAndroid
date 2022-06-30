@@ -27,7 +27,7 @@ open class ChartAveragesCreator {
         var xValue = MAX_X_VALUE
         val measurementsInPeriod = (MOBILE_INTERVAL_IN_SECONDS / streamFrequency).toInt()
         val entries: MutableList<Entry> = mutableListOf()
-        val measurements: MutableList<Measurement>? =
+        val measurements: MutableList<Measurement> =
             stream.getMeasurementsForPeriod(MAX_AVERAGES_AMOUNT, MOBILE_FREQUENCY_DIVISOR)
 
         if (measurementsInPeriod == 0) return mutableListOf()
@@ -48,7 +48,7 @@ open class ChartAveragesCreator {
                         if (usePreviousEntry && entries.isNotEmpty()) {
                             yValue = entries[i - 1].y.toDouble()
                         } else if (usePreviousEntry && entries.isEmpty()) {
-                            yValue = measurements?.get(0)?.value as Double
+                            yValue = measurements[0].value
                         }
                         usePreviousEntry = false
                         entries.add(
