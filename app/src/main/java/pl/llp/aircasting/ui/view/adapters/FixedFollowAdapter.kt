@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
+import pl.llp.aircasting.util.disableForASecond
 
 class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegionResponse) -> Unit) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
@@ -25,7 +26,12 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
             binding.executePendingBindings()
 
             binding.root.apply {
-                setOnClickListener { onItemClicked(bindingAdapterPosition) }
+                setOnClickListener {
+                    onItemClicked(bindingAdapterPosition)
+
+                    // disable for a second to prevent double click
+                    disableForASecond()
+                }
                 cardView = this
 
                 if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setCardViewToDefault(

@@ -152,7 +152,11 @@ fun getBitmapDescriptorFromVector(
     @DrawableRes vectorDrawableResourceId: Int
 ): BitmapDescriptor {
     val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
-    val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val bitmap = Bitmap.createBitmap(
+        vectorDrawable!!.intrinsicWidth,
+        vectorDrawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888
+    )
     val canvas = Canvas(bitmap)
     vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
     vectorDrawable.draw(canvas)
@@ -194,10 +198,18 @@ fun View.setMargins(
     }
 }
 
-fun EditText.setStyle(mHint: String, mHintColor: Int){
+fun EditText.setStyle(mHint: String, mHintColor: Int) {
     this.apply {
         hint = mHint
         textSize = 15.0f
         setHintTextColor(ContextCompat.getColor(this.context, mHintColor))
     }
+}
+
+fun View.disableForASecond() {
+    this.isEnabled = false
+
+    postDelayed({
+        this.isEnabled = true
+    }, 1000)
 }
