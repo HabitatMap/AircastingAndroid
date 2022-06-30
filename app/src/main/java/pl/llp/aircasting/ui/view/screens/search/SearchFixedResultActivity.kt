@@ -57,6 +57,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var address: String
     private lateinit var mLat: String
     private lateinit var mLng: String
+    private var mSelectedMarker: Marker? = null
 
     private val options = MarkerOptions()
     private var txtParameter: String? = null
@@ -296,13 +297,32 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         setupObserverForApiCallWithCoordinatesAndSensor(square, sensorInfo)
     }
 
-    override fun onMarkerClick(marker: Marker): Boolean {
+    private fun setMarkerIconToDefault(marker: Marker) {
+        marker.setIcon(getBitmapDescriptorFromVector(this, R.drawable.map_dot_with_circle_inside))
+    }
+
+    private fun highlightMarkerIcon(marker: Marker) {
+        marker.setIcon(getBitmapDescriptorFromVector(this, R.drawable.map_dot_selected))
+    }
+
+    private fun selectTheSpecificCardView(marker: Marker) {
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
         binding.recyclerFixedFollow.scrollToPosition(position)
         adapter.addCardBorder(position)
-        return true
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        if (mSelectedMarker != null) {
+            setMarkerIconToDefault(mSelectedMarker!!)
+            mSelectedMarker = null
+        }
+        mSelectedMarker = marker
+        highlightMarkerIcon(marker)
+
+        selectTheSpecificCardView(marker)
+        return false
     }
 
     override fun onCameraMoveStarted(p0: Int) {
