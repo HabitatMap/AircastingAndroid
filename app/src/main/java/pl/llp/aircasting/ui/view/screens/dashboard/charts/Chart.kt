@@ -1,13 +1,11 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.charts
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
@@ -15,7 +13,11 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.TemperatureConverter
 
-class Chart(context: Context, rootView: View?) {
+class Chart(
+    context: Context,
+    rootView: View?,
+    private val configurator: ChartConfigurator = ChartConfigurator(context)
+) {
     private val mContext: Context = context
     private val mRootView: View? = rootView
     private val mChartStartTimeTextView: TextView? = mRootView?.chart_start_time
@@ -53,58 +55,7 @@ class Chart(context: Context, rootView: View?) {
     }
 
     private fun drawChart() {
-        // Horizontal grid and no Y Axis labels
-        val rightYAxis = mLineChart?.axisRight
-        rightYAxis?.gridColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_100)
-        rightYAxis?.setDrawLabels(false)
-        rightYAxis?.setDrawAxisLine(false)
-
-        // Drawing grid even on an empty chart
-        rightYAxis?.axisMinimum = 0f
-        rightYAxis?.axisMaximum = 100f
-
-        //Removing bottom "border" and Y values
-        val leftYAxis = mLineChart?.axisLeft
-        leftYAxis?.gridColor = Color.TRANSPARENT
-        leftYAxis?.setDrawAxisLine(false)
-        leftYAxis?.setDrawLabels(false)
-
-        // No labels on X Axis and no
-        val xAxis = mLineChart?.xAxis
-        xAxis?.setDrawLabels(false)
-        xAxis?.setDrawAxisLine(false)
-
-        // Chart will not stretch even if there are less than 9 entries
-        //xAxis?.spaceMin = (ChartAveragesCreator.MAX_AVERAGES_AMOUNT - mEntries.size).toFloat()
-
-        // Removing vertical lines
-        xAxis?.gridColor = Color.TRANSPARENT
-
-        // Remove borders
-        mLineChart?.setDrawBorders(false)
-        mLineChart?.setBorderColor(Color.TRANSPARENT)
-
-        // DATASET
-        val lineData = LineData(mDataSet)
-
-        // Formatting values on the chart (no decimal places)
-        lineData.setValueFormatter(ChartValueFormatter())
-
-        mLineChart?.clear()
-        mLineChart?.data = lineData
-
-        // Removing the legend for colors
-        mLineChart?.legend?.isEnabled = false
-
-        // Removing description on the down right
-        mLineChart?.description?.isEnabled = false
-
-        // Disabling chart scalability by pinching
-        mLineChart?.setScaleEnabled(false)
-
-        // Disabling chart touch event
-        mLineChart?.setTouchEnabled(false)
-
+        configurator.configure(mLineChart, mDataSet)
         // Refreshing the chart
         mLineChart?.invalidate()
     }
