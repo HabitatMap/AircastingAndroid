@@ -317,7 +317,7 @@
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
         <item name="android:paddingTop">@dimen/keyline_4</item>
         <item name="android:paddingBottom">@dimen/keyline_4</item>
-        <item name="cornerRadius">5dp</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
         <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
     </style>
 
