@@ -25,6 +25,8 @@ import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialogListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
+import pl.llp.aircasting.util.gone
+import pl.llp.aircasting.util.visible
 
 abstract class SessionDetailsViewMvcImpl(
     inflater: LayoutInflater,
@@ -199,11 +201,11 @@ abstract class SessionDetailsViewMvcImpl(
 
     fun showLoader(loader: ImageView?) {
         AnimatedLoader(loader).start()
-        loader?.visibility = View.VISIBLE
+        loader?.visible()
     }
 
     fun hideLoader(loader: ImageView?) {
         AnimatedLoader(loader).stop()
-        loader?.visibility = View.GONE
+        loader?.gone()
     }
 }

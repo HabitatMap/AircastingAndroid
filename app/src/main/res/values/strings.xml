@@ -505,7 +505,7 @@
     <!-- Search and Follow -->
     <string name="close">Close</string>
     <string name="loading_measurements">Loading last measurements…</string>
-    <string name="redo_search_in_map">Redo search in map</string>
+    <string name="redo_search_in_map">Redo Search in Map</string>
     <string name="session_followed">Session followed!</string>
     <string name="session_unfollowed">Session Unfollowed!</string>
     <string name="chart">chart</string>
