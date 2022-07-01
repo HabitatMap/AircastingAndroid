@@ -27,7 +27,7 @@ object Versions {
 
     const val okhttp3 = "4.9.3"
     const val gson = "2.8.9"
-    const val openCv = "4.6" // check this later
+    const val openCv = "4.6"
 
     const val espresso = "3.4.0"
 
@@ -35,7 +35,7 @@ object Versions {
     const val playServicesMaps = "18.0.2"
     const val places = "2.6.0"
     const val playServicesGCM = "17.0.0"
-    const val autoAnnotations = "1.9" // check this later
+    const val autoAnnotations = "1.9"
     const val firebaseBom = "30.1.0"
 
     const val roomDB = "2.4.2"
