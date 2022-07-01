@@ -73,6 +73,9 @@ class SettingsViewMvcImpl(
         }
         val versionValueTextView = rootView?.app_version_value_text_view
         versionValueTextView?.text = BuildConfig.VERSION_NAME
+
+        val txtUsername = rootView?.txtUsername
+        txtUsername?.text = mSettings.getProfileName()
     }
 
     private fun onToggleThemeChangeEnabled() {

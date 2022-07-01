@@ -8,23 +8,21 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.activity_myaccount.view.*
 
-class MyAccountViewMvcImpl : BaseObservableViewMvc<MyAccountViewMvc.Listener>, MyAccountViewMvc {
+class MyAccountViewMvcImpl(
+    context: Context,
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+) : BaseObservableViewMvc<MyAccountViewMvc.Listener>(), MyAccountViewMvc {
 
-    private val mContext: Context
+    private val mContext: Context = context
     private var headerTextView: TextView?
 
-    constructor(
-        context: Context,
-        inflater: LayoutInflater, parent: ViewGroup?
-    ) : super(){
+    init {
         this.rootView = inflater.inflate(R.layout.activity_myaccount, parent, false)
-        mContext = context
-
         val signOutButton = rootView?.sign_out_button
         signOutButton?.setOnClickListener {
             signOutClicked()
         }
-
         headerTextView = rootView?.header
     }
 

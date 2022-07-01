@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,16 +9,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/myAccount_Button"
-            style="@style/Widget.Aircasting.SettingsButtons"
+        <View
+            android:id="@+id/spacerFirst"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
-            android:text="@string/settings_my_account"
+            android:layout_height="@dimen/keyline_3"
+            android:background="@color/aircasting_grey_50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/firstLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/spacerFirst">
+
+            <Button
+                android:id="@+id/myAccount_Button"
+                style="@style/Widget.Aircasting.SettingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_baseline_chevron_right_black"
+                android:text="@string/settings_my_account"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtUsername"
+                style="@style/Widget.Aircasting.SettingsDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/keyline_8"
+                android:paddingEnd="@dimen/keyline_8"
+                android:paddingBottom="5dp"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myAccount_Button"
+                tools:text="HabitatMap" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/spacer"
@@ -26,7 +60,7 @@
             android:background="@color/aircasting_grey_50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/myAccount_Button" />
+            app:layout_constraintTop_toBottomOf="@id/firstLayout" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
