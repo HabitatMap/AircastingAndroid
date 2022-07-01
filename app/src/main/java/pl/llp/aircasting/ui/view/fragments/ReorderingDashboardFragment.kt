@@ -9,7 +9,8 @@ import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
 import pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard.ReorderingDashboardController
 import pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard.ReorderingDashboardPagerAdapter
 
-class ReorderingDashboardFragment : BaseFragment<DashboardViewMvcImpl, ReorderingDashboardController>() {
+class ReorderingDashboardFragment :
+    BaseFragment<DashboardViewMvcImpl, ReorderingDashboardController>() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -17,12 +18,11 @@ class ReorderingDashboardFragment : BaseFragment<DashboardViewMvcImpl, Reorderin
         savedInstanceState: Bundle?
     ): View? {
 
-        val pagerAdapter = context?.let { ReorderingDashboardPagerAdapter(it, childFragmentManager) }
-        view = pagerAdapter?.let {
-            DashboardViewMvcImpl(inflater, container, childFragmentManager,
-                it, ReorderingDashboardPagerAdapter.TABS_COUNT
-            )
-        }
+        val pagerAdapter = ReorderingDashboardPagerAdapter(childFragmentManager)
+        view = DashboardViewMvcImpl(
+            inflater, container, childFragmentManager,
+            pagerAdapter, ReorderingDashboardPagerAdapter.TABS_COUNT
+        )
 
         controller = ReorderingDashboardController(view)
 
