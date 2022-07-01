@@ -72,10 +72,17 @@ android {
         }
         getByName("androidTest").assets.srcDirs(files("$projectDir/schemas"))
     }
-    
+
     kotlinOptions.jvmTarget = "1.8"
     lint.abortOnError = false
     buildFeatures.dataBinding = true
+}
+
+configurations.forEach {
+    it.apply {
+        exclude(module = "commons-logging")
+        exclude(module = "httpclient")
+    }
 }
 
 dependencies {
