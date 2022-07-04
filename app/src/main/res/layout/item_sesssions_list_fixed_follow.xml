@@ -49,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_3"
                 android:layout_marginTop="@dimen/keyline_2"
+                style="@style/TextAppearance.AppCompat.Caption"
                 android:layout_marginEnd="@dimen/keyline_3"
                 android:layout_marginBottom="5dp"
                 android:maxLines="1"
