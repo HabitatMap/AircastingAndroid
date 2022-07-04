@@ -310,7 +310,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
         binding.recyclerFixedFollow.scrollToPosition(position)
-        adapter.addCardBorder(position)
+        adapter.scrollToSelectedCard(position)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
