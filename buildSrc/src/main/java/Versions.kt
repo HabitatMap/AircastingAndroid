@@ -57,4 +57,6 @@ object Versions {
     const val androidBle = "2.2.4"
 
     const val mpAndroidChart = "v3.1.0"
+    
+    const val settingsPreference = "1.2.0"
 }
