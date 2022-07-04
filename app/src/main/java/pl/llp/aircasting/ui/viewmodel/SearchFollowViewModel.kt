@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.viewmodel
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.repository.ActiveFixedSessionsInRegionRepository
+import pl.llp.aircasting.data.api.response.search.Sensor
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -11,6 +12,7 @@ import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Settings
+import java.util.*
 import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
@@ -80,9 +82,19 @@ class SearchFollowViewModel @Inject constructor(
 
     private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
         response?.sensors?.map { stream ->
-            val measurements = stream.measurements?.map { measurement -> Measurement(measurement) }
+            val twentyFourHoursBackFromLastMeasurementTime = lastMeasurementTimeMinus24Hours(stream)
+            val twentyFourHoursMeasurements = stream.measurements?.filter { it.time >= twentyFourHoursBackFromLastMeasurementTime }
+            val measurements = twentyFourHoursMeasurements?.map { measurement -> Measurement(measurement) }
             MeasurementStream(stream, measurements)
         }
+
+    private fun lastMeasurementTimeMinus24Hours(stream: Sensor): Long {
+        val lastMeasurementTime = stream.measurements?.maxOf { it.time }?.let { Date(it) } ?: Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = lastMeasurementTime
+        calendar.add(Calendar.HOUR_OF_DAY, -24)
+        return calendar.time.time
+    }
 
     fun getStreams() = liveData(ioDispatcher) {
         val response = selectedFullSession.await()
