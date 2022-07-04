@@ -50,6 +50,7 @@ open class FollowingSessionViewMvcImpl(
             hideNoMeasurementsInfo()
             mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
         } else {
+            // TODO: Shows here
             showNoMeasurementsInfo()
         }
     }
