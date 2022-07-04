@@ -26,9 +26,11 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
             binding.mySessions = session
             binding.executePendingBindings()
 
-            binding.cvSessions.apply {
+            binding.sessionCard.apply {
                 setOnClickListener {
                     onItemClicked(bindingAdapterPosition)
+
+                    //prevents duplicate fragment transaction for the bottom sheet.
                     disableForASecond()
                 }
                 cardView = this
