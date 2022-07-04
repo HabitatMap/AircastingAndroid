@@ -44,10 +44,6 @@ open class SessionChartDataCalculator(private var mSession: Session) {
     private fun calculateData() {
         for (stream in mMeasurementStreams) {
             val entries: MutableList<Entry>? = calculateEntriesAndTimestamps(stream)
-            val entriesSize = entries?.size ?: 0
-            if (entriesSize > mMaxEntriesCount) {
-                mMaxEntriesCount = entries?.size ?: 0
-            }
 
             entries?.toList()?.let {
                 mEntriesPerStream.put(
@@ -61,8 +57,6 @@ open class SessionChartDataCalculator(private var mSession: Session) {
     protected open fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry>? {
         var entries: MutableList<Entry>? = null
 
-        val timeStampsSetter = TimeStampsSetter()
-
         stream?.let { stream ->
             when (mSession.type) {
                 Session.Type.MOBILE -> {
@@ -70,21 +64,30 @@ open class SessionChartDataCalculator(private var mSession: Session) {
                     val measurementsOverSecondThreshold =
                         averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
 
-                    entries = if (measurementsOverSecondThreshold.isNullOrEmpty()) {
+                    entries = if (measurementsOverSecondThreshold.isEmpty())
                         ChartAveragesCreator().getMobileEntries(stream)
-                    } else {
+                    else
                         ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
                             measurementsOverSecondThreshold
                         )
-                    }
+                    setCount(entries)
                     calculateTimes()
                 }
-                Session.Type.FIXED -> entries =
-                    ChartAveragesCreator().getFixedEntries(stream, timeStampsSetter)
+                Session.Type.FIXED -> {
+                    val timeStampsSetter = TimeStampsSetter()
+                    entries = ChartAveragesCreator().getFixedEntries(stream, timeStampsSetter)
+                }
             }
         }
 
         return entries
+    }
+
+    private fun setCount(entries: MutableList<Entry>?) {
+        val entriesSize = entries?.size ?: 0
+        if (entriesSize > mMaxEntriesCount) {
+            mMaxEntriesCount = entries?.size ?: 0
+        }
     }
 
     open inner class TimeStampsSetter {
