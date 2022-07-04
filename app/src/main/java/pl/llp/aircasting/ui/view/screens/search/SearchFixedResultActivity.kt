@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -197,13 +198,19 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun updateText(count: Int) {
-        if (count != 0) binding.txtShowingSessionsNumber.text =
-            getString(R.string.txt_showing_sessions_number, count, count)
-        else
-            binding.txtShowingSessionsNumber.apply {
-                text = getString(R.string.txt_showing_sessions_number, count, count)
-                setMargins(bottom = 50)
-            }
+        val txtShowing = binding.txtShowingSessionsNumber
+
+        if (count != 0) txtShowing.text = HtmlCompat.fromHtml(
+            getString(R.string.txt_showing_sessions_number, count, count),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+        else txtShowing.apply {
+            text = HtmlCompat.fromHtml(
+                getString(R.string.txt_showing_sessions_number, count, count),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            setMargins(bottom = 50)
+        }
     }
 
     private fun setupMapMarkers(sessions: List<SessionInRegionResponse>) {
