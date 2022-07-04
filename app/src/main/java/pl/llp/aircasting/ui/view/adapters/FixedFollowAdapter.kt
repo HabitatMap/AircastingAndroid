@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
@@ -15,7 +16,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
     private val sessions: ArrayList<SessionInRegionResponse> = ArrayList()
     private var selectedSession: SessionInRegionResponse? = null
-    private lateinit var cardView: View
+    private lateinit var cardView: MaterialCardView
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,
@@ -25,19 +26,21 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
             binding.mySessions = session
             binding.executePendingBindings()
 
-            binding.root.apply {
+            binding.cvSessions.apply {
                 setOnClickListener {
                     onItemClicked(bindingAdapterPosition)
-
-                    // disable for a second to prevent double click
                     disableForASecond()
                 }
                 cardView = this
 
-                if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setCardViewToDefault(
-                    cardView
-                )
+                setCorrectLayoutForCard(session)
             }
+        }
+
+        private fun setCorrectLayoutForCard(session: SessionInRegionResponse) {
+            if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setCardViewToDefault(
+                cardView
+            )
         }
     }
 
@@ -70,24 +73,23 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
         return sessions.indexOf(session)
     }
 
-    fun addCardBorder(position: Int) {
+    fun scrollToSelectedCard(position: Int) {
         setCardViewToDefault(cardView)
         selectedSession = sessions[position]
         notifyItemChanged(position)
     }
 
-    private fun setCardViewToDefault(cardView: View) {
+    private fun setCardViewToDefault(cardView: MaterialCardView) {
         cardView.apply {
-            setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.aircasting_white
-                )
-            )
+            strokeWidth = 0
+            strokeColor = ContextCompat.getColor(context, R.color.aircasting_white)
         }
     }
 
-    private fun setBackgroundWithBorder(cardView: View) {
-        cardView.setBackgroundResource(R.drawable.card_view_border_search)
+    private fun setBackgroundWithBorder(cardView: MaterialCardView) {
+        cardView.apply {
+            strokeWidth = 4
+            strokeColor = ContextCompat.getColor(context, R.color.aircasting_blue_400)
+        }
     }
 }
