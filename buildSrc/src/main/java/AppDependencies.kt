@@ -83,6 +83,8 @@ object AppDependencies {
     private const val roomDBCompiler = "androidx.room:room-compiler:${Versions.roomDB}"
     private const val roomDBTest = "androidx.room:room-testing:${Versions.roomDB}"
 
+    private const val settingsPreference = "androidx.preference:preference-ktx:${Versions.settingsPreference}"
+
     /* Miscellaneous */
     private const val commonsCodec = "commons-codec:commons-codec:${Versions.commonsCodec}"
     private const val androidBle = "no.nordicsemi.android:ble:${Versions.androidBle}"
@@ -160,6 +162,7 @@ object AppDependencies {
         add(autoAnnotations)
         add(crashlyticsKTX)
         add(analyticsKTX)
+        add(settingsPreference)
         add(roomDB)
         add(commonsCodec)
         add(androidBle)
