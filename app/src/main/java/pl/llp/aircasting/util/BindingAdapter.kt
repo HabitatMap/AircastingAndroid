@@ -15,6 +15,6 @@ object BindingAdapter {
         val endDate = formatDate(endDateTimeLocal)
         val endTime = formatTime(endDateTimeLocal)
 
-        this.text = "$startDate $startTime - $endDate $endTime"
+        this.text = "$startDate, $startTime - $endDate, $endTime"
     }
 }
