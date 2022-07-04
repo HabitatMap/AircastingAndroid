@@ -268,23 +268,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         searchSessionsInMapArea()
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        styleGoogleMap(mMap, this)
-
-        val lat = mLat.toDouble()
-        val lng = mLng.toDouble()
-
-        val theLocation = LatLng(lat, lng)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
-
-        searchSessionsInMapArea()
-
-        mMap.setOnMarkerClickListener(this)
-        mMap.setOnCameraMoveStartedListener(this)
-    }
-
     private fun searchSessionsInMapArea() {
         val north = mMap.projection.visibleRegion.farLeft.latitude
         val west = mMap.projection.visibleRegion.farLeft.longitude
@@ -309,8 +292,25 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
-        binding.recyclerFixedFollow.scrollToPosition(position)
+        binding.recyclerFixedFollow.smoothScrollToPosition(position)
         adapter.scrollToSelectedCard(position)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        styleGoogleMap(mMap, this)
+
+        val lat = mLat.toDouble()
+        val lng = mLng.toDouble()
+
+        val theLocation = LatLng(lat, lng)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(theLocation, 10f))
+
+        searchSessionsInMapArea()
+
+        mMap.setOnMarkerClickListener(this)
+        mMap.setOnCameraMoveStartedListener(this)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
