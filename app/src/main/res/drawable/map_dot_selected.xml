@@ -5,36 +5,21 @@
         <shape android:shape="oval">
             <solid android:color="@color/aircasting_blue_400" />
             <size
-                android:width="34dp"
-                android:height="34dp" />
-        </shape>
-    </item>
-
-    <item>
-        <shape android:shape="oval">
-            <stroke
-                android:width="5dp"
-                android:color="@android:color/transparent" />
-            <solid android:color="@color/aircasting_blue_400" />
-            <size
-                android:width="5dp"
-                android:height="5dp" />
+                android:width="24dp"
+                android:height="24dp" />
         </shape>
     </item>
 
     <item
-        android:bottom="2dp"
-        android:left="2dp"
-        android:right="2dp"
-        android:top="2dp">
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp">
         <shape android:shape="oval">
             <stroke
-                android:width="7dp"
+                android:width="1dp"
                 android:color="@android:color/transparent" />
             <solid android:color="@color/aircasting_white" />
-            <size
-                android:width="5dp"
-                android:height="5dp" />
         </shape>
     </item>
 
@@ -45,12 +30,12 @@
         android:top="5dp">
         <shape android:shape="oval">
             <stroke
-                android:width="5dp"
+                android:width="2dp"
                 android:color="@android:color/transparent" />
             <solid android:color="@color/aircasting_blue_400" />
             <size
-                android:width="5dp"
-                android:height="5dp" />
+                android:width="10dp"
+                android:height="10dp" />
         </shape>
     </item>
 

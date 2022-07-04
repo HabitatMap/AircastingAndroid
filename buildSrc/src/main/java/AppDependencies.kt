@@ -75,7 +75,7 @@ object AppDependencies {
     /* Firebase */
     const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
     private const val crashlyticsKTX = "com.google.firebase:firebase-crashlytics-ktx"
-    const val analyticsKTX = "com.google.firebase:firebase-analytics-ktx"
+    private const val analyticsKTX = "com.google.firebase:firebase-analytics-ktx"
 
     /* Room DB */
     private const val roomDB = "androidx.room:room-runtime:${Versions.roomDB}"
