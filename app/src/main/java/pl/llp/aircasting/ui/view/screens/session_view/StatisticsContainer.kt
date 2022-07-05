@@ -161,6 +161,7 @@ class StatisticsContainer(rootView: View?, context: Context) {
         stream: MeasurementStream?
     ): Int {
         var mValue = value
+        // We are getting threshold color based on fahrenheit value
         if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
             mValue = TemperatureConverter.celsiusToFahrenheit(value!!)
         }
