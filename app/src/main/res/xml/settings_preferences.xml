@@ -2,80 +2,82 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        android:widgetLayout="@layout/settings_preference_space"
-        app:iconSpaceReserved="false" />
-
-    <Preference
         app:key="myAcc"
         app:summary="Habitat Map"
-        app:widgetLayout="@layout/my_account_settings_layout_preference"
+        app:allowDividerBelow="false"
+        app:icon="@drawable/baseline_account_circle_grey_500_36dp"
         app:title="@string/settings_my_account" />
 
-    <Preference
-        app:key="feedback"
-        app:summary="@string/microphone_settings_description"
-        app:title="@string/microphone_settings_title" />
+    <PreferenceCategory android:title="General">
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="dark_mode_key"
-        app:title="@string/use_dark_theme" />
+        <SwitchPreference
+            app:allowDividerBelow="true"
+            app:key="dark_mode_key"
+            app:title="@string/use_dark_theme" />
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="keep_screen_on"
-        app:title="@string/keep_screen_on" />
+        <SwitchPreference
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="true"
+            app:key="keep_screen_on"
+            app:title="@string/keep_screen_on" />
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="use_24_hour"
-        app:title="@string/use_24_hour_format" />
+        <SwitchPreference
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="true"
+            app:key="use_24_hour"
+            app:title="@string/use_24_hour_format" />
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="use_celsius"
-        app:title="@string/use_celsius_scale" />
+        <SwitchPreference
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="true"
+            app:key="use_celsius"
+            app:title="@string/use_celsius_scale" />
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="satellite_switch"
-        app:title="@string/satellite_map_settings" />
+        <SwitchPreference
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="true"
+            app:key="satellite_switch"
+            app:title="@string/satellite_map_settings" />
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="settings_contribute"
-        app:summary="@string/settings_contribute_to_crowdmap_description"
-        app:title="@string/settings_contribute_to_crowdmap" />
+        <PreferenceCategory android:title="Extra">
 
-    <SwitchPreference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="disable_mapping"
-        app:summary="@string/map_enable_description"
-        app:title="@string/disable_mapping" />
+            <Preference
+                app:key="feedback"
+                app:summary="@string/microphone_settings_description"
+                app:title="@string/microphone_settings_title" />
 
-    <Preference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="backend_settings"
-        app:title="@string/settings_backend_settings" />
+            <SwitchPreference
+                app:allowDividerAbove="true"
+                app:allowDividerBelow="true"
+                app:key="settings_contribute"
+                app:summary="@string/settings_contribute_to_crowdmap_description"
+                app:title="@string/settings_contribute_to_crowdmap" />
 
-    <Preference
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:key="app_version"
-        app:summary="@string/version"
-        app:title="Application version" />
+            <SwitchPreference
+                app:allowDividerAbove="true"
+                app:allowDividerBelow="true"
+                app:key="disable_mapping"
+                app:summary="@string/map_enable_description"
+                app:title="@string/disable_mapping" />
 
-    <Preference
-        app:key="your_privacy"
-        app:allowDividerAbove="true"
-        app:title="@string/your_privacy" />
+            <PreferenceCategory android:title="Other">
+                <Preference
+                    app:allowDividerBelow="true"
+                    app:key="backend_settings"
+                    app:title="@string/settings_backend_settings" />
 
+                <Preference
+                    app:allowDividerAbove="true"
+                    app:allowDividerBelow="true"
+                    app:key="app_version"
+                    app:summary="@string/version"
+                    app:title="Application version" />
+
+                <Preference
+                    app:allowDividerAbove="true"
+                    app:key="your_privacy"
+                    app:title="@string/your_privacy" />
+            </PreferenceCategory>
+        </PreferenceCategory>
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
