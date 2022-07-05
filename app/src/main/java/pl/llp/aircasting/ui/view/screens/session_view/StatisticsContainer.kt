@@ -134,16 +134,12 @@ class StatisticsContainer(rootView: View?, context: Context) {
             mPeak = calculatePeak(stream)
         }
 
-        var peak = if (mVisibleTimeSpan == null) {
-            mPeak
-        } else {
-            stream?.let { calculatePeak(it) }
-        }
-
+        val peak =
         if (stream?.isMeasurementTypeTemperature() == true
             && TemperatureConverter.isCelsiusToggleEnabled()
         )
-            peak = peak?.let { TemperatureConverter.fahrenheitToCelsius(it) }
+            TemperatureConverter.fahrenheitToCelsius(mPeak ?: 0.0)
+        else mPeak
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
