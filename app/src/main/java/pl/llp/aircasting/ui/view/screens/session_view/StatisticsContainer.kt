@@ -176,14 +176,8 @@ class StatisticsContainer(rootView: View?, context: Context) {
         return values.maxOrNull() ?: 0.0
     }
 
-    private fun streamMeasurementsValues(stream: MeasurementStream): List<Double>? {
-        val measurementsValues = if (mVisibleTimeSpan != null) {
-            measurementsValuesForSpan(stream, mVisibleTimeSpan!!)
-        } else {
-            setMeasurementsValues(stream)
-            mMeasurementsValues
-        }
-        return measurementsValues?.filterNotNull()
+    private fun streamMeasurementsValues(stream: MeasurementStream): List<Double> {
+        return measurementsValuesForSpan(stream, mVisibleTimeSpan)
     }
 
     private fun setMeasurementsValues(stream: MeasurementStream?) {
@@ -200,11 +194,15 @@ class StatisticsContainer(rootView: View?, context: Context) {
 
     private fun measurementsValuesForSpan(
         stream: MeasurementStream?,
-        visibleTimeSpan: ClosedRange<Date>
+        visibleTimeSpan: ClosedRange<Date>?
     ): List<Double> {
         if (stream == null) return listOf()
 
-        return stream.getMeasurementsForTimeSpan(visibleTimeSpan).map { it.value }
+        val measurements = if (visibleTimeSpan != null)
+            stream.getMeasurementsForTimeSpan(visibleTimeSpan)
+        else stream.getLast24HoursOfMeasurements()
+
+        return measurements.map { it.value }
     }
 
     private fun getNowValue(stream: MeasurementStream?): Double? {
