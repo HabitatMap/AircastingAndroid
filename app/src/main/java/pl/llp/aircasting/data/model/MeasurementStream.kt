@@ -8,6 +8,8 @@ import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithLastMeasurementsDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.util.addHours
+import pl.llp.aircasting.util.calendar
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
@@ -225,6 +227,12 @@ open class MeasurementStream(
         if (amount >= measurementsSize) return allMeasurements
 
         return allMeasurements.subList(measurementsSize - amount, measurementsSize)
+    }
+
+    fun getLast24HoursOfMeasurements(): List<Measurement> {
+        val end = measurements.last().time
+        val start = calendar().addHours(end, -24)
+        return measurements.filter { it.time in start..end }
     }
 
     fun getLastMeasurementValue(): Double {
