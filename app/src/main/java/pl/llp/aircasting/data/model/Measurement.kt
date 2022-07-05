@@ -92,10 +92,10 @@ class Measurement(
         }
 
         fun formatValue(value: Double?): String {
-            if (value == null) {
-                return "-"
+            return if (value == null) {
+                "-"
             } else {
-                return "%.0f".format(value)
+                "%.0f".format(value)
             }
         }
     }

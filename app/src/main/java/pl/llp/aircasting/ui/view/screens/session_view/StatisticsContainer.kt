@@ -6,12 +6,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.util.MeasurementColor
+import pl.llp.aircasting.util.TemperatureConverter
 import java.util.*
 
 class StatisticsContainer(rootView: View?, context: Context) {
@@ -107,13 +107,12 @@ class StatisticsContainer(rootView: View?, context: Context) {
         if (stream == null) return 0.0
         val values = streamMeasurementsValues(stream)
 
-        return values?.sum() ?: 0.0
+        return values.sum()
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
         if (mNow == null && stream != null) {
             mNow = getNowValue(stream)
-
         }
         if (stream?.isMeasurementTypeTemperature() == true
             && TemperatureConverter.isCelsiusToggleEnabled()
@@ -134,16 +133,12 @@ class StatisticsContainer(rootView: View?, context: Context) {
             mPeak = calculatePeak(stream)
         }
 
-        var peak = if (mVisibleTimeSpan == null) {
-            mPeak
-        } else {
-            stream?.let { calculatePeak(it) }
-        }
-
-        if (stream?.isMeasurementTypeTemperature() == true
-            && TemperatureConverter.isCelsiusToggleEnabled()
-        )
-            peak = peak?.let { TemperatureConverter.fahrenheitToCelsius(it) }
+        val peak =
+            if (stream?.isMeasurementTypeTemperature() == true
+                && TemperatureConverter.isCelsiusToggleEnabled()
+            )
+                TemperatureConverter.fahrenheitToCelsius(mPeak)
+            else mPeak
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
@@ -155,33 +150,36 @@ class StatisticsContainer(rootView: View?, context: Context) {
         circleIndicator: ImageView?,
         radius: Float = StatisticsValueBackground.CORNER_RADIUS
     ) {
-        var mValue = value
         valueView?.text = Measurement.formatValue(value)
-        if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
-            mValue = TemperatureConverter.celsiusToFahrenheit(value!!)
-        }
-        val color = MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
+        val color = getThresholdColor(value, stream)
         valueView?.background = StatisticsValueBackground(color, radius)
         circleIndicator?.setColorFilter(color)
     }
 
+    private fun getThresholdColor(
+        value: Double?,
+        stream: MeasurementStream?
+    ): Int {
+        // We are getting threshold color based on fahrenheit value
+        val mValue =
+            if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius())
+                TemperatureConverter.celsiusToFahrenheit(value)
+            else value
+
+        return MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
+    }
+
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
-        return streamMeasurementsValues(stream)?.size ?: 0
+        return streamMeasurementsValues(stream).size
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         val values = streamMeasurementsValues(stream)
-        return values?.maxOrNull() ?: 0.0
+        return values.maxOrNull() ?: 0.0
     }
 
-    private fun streamMeasurementsValues(stream: MeasurementStream): List<Double>? {
-        val measurementsValues = if (mVisibleTimeSpan != null) {
-            measurementsValuesForSpan(stream, mVisibleTimeSpan!!)
-        } else {
-            setMeasurementsValues(stream)
-            mMeasurementsValues
-        }
-        return measurementsValues?.filterNotNull()
+    private fun streamMeasurementsValues(stream: MeasurementStream): List<Double> {
+        return measurementsValuesForSpan(stream, mVisibleTimeSpan)
     }
 
     private fun setMeasurementsValues(stream: MeasurementStream?) {
@@ -198,11 +196,15 @@ class StatisticsContainer(rootView: View?, context: Context) {
 
     private fun measurementsValuesForSpan(
         stream: MeasurementStream?,
-        visibleTimeSpan: ClosedRange<Date>
+        visibleTimeSpan: ClosedRange<Date>?
     ): List<Double> {
         if (stream == null) return listOf()
 
-        return stream.getMeasurementsForTimeSpan(visibleTimeSpan).map { it.value }
+        val measurements = if (visibleTimeSpan != null)
+            stream.getMeasurementsForTimeSpan(visibleTimeSpan)
+        else stream.getLast24HoursOfMeasurements()
+
+        return measurements.map { it.value }
     }
 
     private fun getNowValue(stream: MeasurementStream?): Double? {
