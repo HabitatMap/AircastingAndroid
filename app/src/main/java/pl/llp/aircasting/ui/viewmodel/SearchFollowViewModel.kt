@@ -12,6 +12,8 @@ import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.addHours
+import pl.llp.aircasting.util.calendar
 import java.util.*
 import javax.inject.Inject
 
@@ -90,10 +92,7 @@ class SearchFollowViewModel @Inject constructor(
 
     private fun lastMeasurementTimeMinus24Hours(stream: Sensor): Long {
         val lastMeasurementTime = stream.measurements?.maxOf { it.time }?.let { Date(it) } ?: Date()
-        val calendar = Calendar.getInstance()
-        calendar.time = lastMeasurementTime
-        calendar.add(Calendar.HOUR_OF_DAY, -24)
-        return calendar.time.time
+        return calendar().addHours(lastMeasurementTime, -24).time
     }
 
     fun getStreams() = liveData(ioDispatcher) {
