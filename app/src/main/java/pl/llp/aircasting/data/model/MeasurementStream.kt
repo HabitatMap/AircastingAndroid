@@ -232,7 +232,9 @@ open class MeasurementStream(
     fun getLast24HoursOfMeasurements(): List<Measurement> {
         val end = measurements.last().time
         val start = calendar().addHours(end, -24)
-        return measurements.filter { it.time in start..end }
+        val range = start..end
+
+        return measurements.filter { it.time in range }
     }
 
     fun getLastMeasurementValue(): Double {
