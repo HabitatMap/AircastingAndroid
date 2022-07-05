@@ -137,7 +137,7 @@ class StatisticsContainer(rootView: View?, context: Context) {
             if (stream?.isMeasurementTypeTemperature() == true
                 && TemperatureConverter.isCelsiusToggleEnabled()
             )
-                TemperatureConverter.fahrenheitToCelsius(mPeak ?: 0.0)
+                TemperatureConverter.fahrenheitToCelsius(mPeak)
             else mPeak
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
@@ -160,11 +160,12 @@ class StatisticsContainer(rootView: View?, context: Context) {
         value: Double?,
         stream: MeasurementStream?
     ): Int {
-        var mValue = value
         // We are getting threshold color based on fahrenheit value
-        if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
-            mValue = TemperatureConverter.celsiusToFahrenheit(value!!)
-        }
+        val mValue =
+            if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius())
+                TemperatureConverter.celsiusToFahrenheit(value)
+            else value
+
         return MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
     }
 
