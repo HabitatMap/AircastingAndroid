@@ -6,12 +6,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.session_details_statistics_view.view.*
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.util.MeasurementColor
+import pl.llp.aircasting.util.TemperatureConverter
 import java.util.*
 
 class StatisticsContainer(rootView: View?, context: Context) {
@@ -107,13 +107,12 @@ class StatisticsContainer(rootView: View?, context: Context) {
         if (stream == null) return 0.0
         val values = streamMeasurementsValues(stream)
 
-        return values?.sum() ?: 0.0
+        return values.sum()
     }
 
     private fun bindNowStatistics(stream: MeasurementStream?) {
         if (mNow == null && stream != null) {
             mNow = getNowValue(stream)
-
         }
         if (stream?.isMeasurementTypeTemperature() == true
             && TemperatureConverter.isCelsiusToggleEnabled()
@@ -135,11 +134,11 @@ class StatisticsContainer(rootView: View?, context: Context) {
         }
 
         val peak =
-        if (stream?.isMeasurementTypeTemperature() == true
-            && TemperatureConverter.isCelsiusToggleEnabled()
-        )
-            TemperatureConverter.fahrenheitToCelsius(mPeak ?: 0.0)
-        else mPeak
+            if (stream?.isMeasurementTypeTemperature() == true
+                && TemperatureConverter.isCelsiusToggleEnabled()
+            )
+                TemperatureConverter.fahrenheitToCelsius(mPeak ?: 0.0)
+            else mPeak
 
         bindStatisticValues(stream, peak, mPeakValue, mPeakCircleIndicator)
     }
@@ -162,12 +161,12 @@ class StatisticsContainer(rootView: View?, context: Context) {
     }
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
-        return streamMeasurementsValues(stream)?.size ?: 0
+        return streamMeasurementsValues(stream).size
     }
 
     private fun calculatePeak(stream: MeasurementStream): Double {
         val values = streamMeasurementsValues(stream)
-        return values?.maxOrNull() ?: 0.0
+        return values.maxOrNull() ?: 0.0
     }
 
     private fun streamMeasurementsValues(stream: MeasurementStream): List<Double>? {
