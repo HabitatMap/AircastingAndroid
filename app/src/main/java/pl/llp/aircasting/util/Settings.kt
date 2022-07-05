@@ -6,6 +6,7 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import pl.llp.aircasting.data.local.LogoutService
 
 open class Settings(private val mApplication: Application) {
+    // test
     private val PRIVATE_MODE = 0
     private val PREFERENCES_NAME = "preferences"
     private val PROFILE_NAME_KEY = "profile_name"
