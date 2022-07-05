@@ -1,8 +1,14 @@
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:widgetLayout="@layout/settings_preference_space"
+        app:iconSpaceReserved="false" />
 
     <Preference
         app:key="myAcc"
         app:summary="Habitat Map"
+        app:widgetLayout="@layout/my_account_settings_layout_preference"
         app:title="@string/settings_my_account" />
 
     <Preference
@@ -69,6 +75,7 @@
 
     <Preference
         app:key="your_privacy"
+        app:allowDividerAbove="true"
         app:title="@string/your_privacy" />
 
 </androidx.preference.PreferenceScreen>
