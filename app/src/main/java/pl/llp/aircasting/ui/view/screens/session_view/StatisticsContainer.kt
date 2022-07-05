@@ -150,14 +150,21 @@ class StatisticsContainer(rootView: View?, context: Context) {
         circleIndicator: ImageView?,
         radius: Float = StatisticsValueBackground.CORNER_RADIUS
     ) {
-        var mValue = value
         valueView?.text = Measurement.formatValue(value)
+        val color = getThresholdColor(value, stream)
+        valueView?.background = StatisticsValueBackground(color, radius)
+        circleIndicator?.setColorFilter(color)
+    }
+
+    private fun getThresholdColor(
+        value: Double?,
+        stream: MeasurementStream?
+    ): Int {
+        var mValue = value
         if (stream?.isMeasurementTypeTemperature() == true && stream.isDetailedTypeCelsius()) {
             mValue = TemperatureConverter.celsiusToFahrenheit(value!!)
         }
-        val color = MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
-        valueView?.background = StatisticsValueBackground(color, radius)
-        circleIndicator?.setColorFilter(color)
+        return MeasurementColor.forMap(mContext, mValue, mSensorThreshold)
     }
 
     private fun calculateMeasurementsSize(stream: MeasurementStream): Int {
