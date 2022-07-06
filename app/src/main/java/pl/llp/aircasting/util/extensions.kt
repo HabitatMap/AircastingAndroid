@@ -169,7 +169,7 @@ fun GoogleMap.drawMarkerOnMap(
     options: MarkerOptions,
     lat: Double,
     lng: Double,
-    sessionID: Long?
+    sessionID: String?
 ): Marker? {
     return addMarker(
         options

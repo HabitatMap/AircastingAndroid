@@ -218,8 +218,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         for (i in sessions.indices) {
             val getLats = sessions[i].latitude
             val getLngs = sessions[i].longitude
-            val sessionID = sessions[i].id
-            val markers = mMap.drawMarkerOnMap(this, options, getLats, getLngs, sessionID)
+            val sessionUUID = sessions[i].uuid
+            val markers = mMap.drawMarkerOnMap(this, options, getLats, getLngs, sessionUUID)
 
             markers?.let { mMarkerArray.add(it) }
         }
@@ -299,18 +299,18 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun selectCorrespondingCardView(marker: Marker) {
-        val id = marker.snippet.toString()
-        val position = adapter.getSessionPositionBasedOnId(id.toLong())
+        val uuid = marker.snippet.toString()
+        val position = adapter.getSessionPositionBasedOnId(uuid)
 
         binding.recyclerFixedFollow.smoothScrollToPosition(position)
         adapter.scrollToSelectedCard(position)
     }
 
-    fun highlightTheSelectedDot(sessionID: String) {
+    fun highlightTheSelectedDot(sessionUUID: String) {
         for (i in mMarkerArray.indices) {
             val marker = mMarkerArray[i]
 
-            if (sessionID == marker.snippet)
+            if (sessionUUID == marker.snippet)
                 highlightMarkerIcon(marker)
             else setMarkerIconToDefault(marker)
         }

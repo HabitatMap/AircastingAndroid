@@ -34,7 +34,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
                     //prevents duplicate fragment transaction for the bottom sheet.
                     disableForASecond()
 
-                    setBorderAndDotToSelectedSessionCard(bindingAdapterPosition, session.id)
+                    scrollToSelectedItemAndHighlightItsMarker(bindingAdapterPosition, session.uuid)
                 }
 
                 setCorrectLayoutForCard(session)
@@ -42,7 +42,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
         }
 
         private fun setCorrectLayoutForCard(session: SessionInRegionResponse) {
-            if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setCardViewToDefault(
+            if (selectedSession?.uuid == session.uuid) setBackgroundWithBorder(cardView) else setCardViewToDefault(
                 cardView
             )
         }
@@ -72,8 +72,8 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
         sessions.addAll(list)
     }
 
-    fun getSessionPositionBasedOnId(id: Long): Int {
-        val session = sessions.first { it.id == id }
+    fun getSessionPositionBasedOnId(uuid: String): Int {
+        val session = sessions.first { it.uuid == uuid }
         return sessions.indexOf(session)
     }
 
@@ -97,9 +97,9 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
         }
     }
 
-    private fun setBorderAndDotToSelectedSessionCard(position: Int, sessionID: Long) {
+    private fun scrollToSelectedItemAndHighlightItsMarker(position: Int, sessionUUID: String) {
         scrollToSelectedCard(position)
 
-        (cardView.context as SearchFixedResultActivity).highlightTheSelectedDot(sessionID.toString())
+        (cardView.context as SearchFixedResultActivity).highlightTheSelectedDot(sessionUUID)
     }
 }
