@@ -74,12 +74,4 @@ class FollowingController(
     override fun onDeleteStreamsPressed(session: Session) {
         // do nothing
     }
-
-    override fun onExpandSessionCard(session: Session) {
-        mSettings.addExpandedSession(session.uuid)
-    }
-
-    override fun onCollapseSessionCard(session: Session) {
-        mSettings.removeExpandedSession(session.uuid)
-    }
 }
