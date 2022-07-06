@@ -212,7 +212,7 @@
                         style="@style/Widget.Aircasting.SettingsButtons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Use Celsius scale"
+                        android:text="@string/use_celsius_scale"
                         app:layout_constraintBottom_toTopOf="@id/separator3"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
