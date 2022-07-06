@@ -76,14 +76,10 @@ class FollowingController(
     }
 
     override fun onExpandSessionCard(session: Session) {
-        // do nothing
+        mSettings.addExpandedSession(session.uuid)
     }
 
-    override fun onFinishSessionConfirmed(session: Session) {
-        // do nothing
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        // do nothing
+    override fun onCollapseSessionCard(session: Session) {
+        mSettings.removeExpandedSession(session.uuid)
     }
 }
