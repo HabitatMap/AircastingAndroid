@@ -13,11 +13,8 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_map.view.*
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.BitmapHelper
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.SessionBoundingBox
-import pl.llp.aircasting.util.styleGoogleMap
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
@@ -25,6 +22,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
+import pl.llp.aircasting.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) :
@@ -54,6 +52,8 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     private var mAircastingHeatmap: AircastingHeatmap? = null
 
     private val status = AtomicInteger(Status.INIT.value)
+    private var mSettings: Settings
+    private var mApplication: AircastingApplication
 
     enum class Status(val value: Int) {
         INIT(0),
@@ -63,6 +63,10 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     init {
         mMapFragment = SupportMapFragment.newInstance(mapOptions())
+
+        mApplication = context.applicationContext as AircastingApplication
+        mSettings = Settings(mApplication)
+
         mMapFragment?.let {
             mSupportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
         }
@@ -403,9 +407,8 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-
         mMap = googleMap
-        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+        mContext?.let { mMap?.checkIfSatelliteViewIsEnabled(mSettings, it) }
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {
