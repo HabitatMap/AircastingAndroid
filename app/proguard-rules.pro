@@ -38,3 +38,9 @@
 -keep class pl.llp.aircasting.data.api.response.* { <fields>; }
 -keep class pl.llp.aircasting.data.model.* { <fields>; }
 -keep class com.google.gson.stream.** { *; }
+
+-keepattributes *Annotation*
+-keepclassmembers class * {
+   @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
