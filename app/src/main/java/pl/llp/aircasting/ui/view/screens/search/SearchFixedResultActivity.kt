@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -309,8 +310,6 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     fun highlightTheSelectedDot(sessionUUID: String) {
-        mSelectedMarker = mMarkerArray.find { it.snippet == sessionUUID }
-
         for (i in mMarkerArray.indices) {
             val marker = mMarkerArray[i]
 
@@ -318,12 +317,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
                 highlightMarkerIcon(marker)
             else setMarkerIconToDefault(marker)
         }
+
+        mSelectedMarker = mMarkerArray.find { it.snippet == sessionUUID }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         mMap.setMapType(mSettings, this)
+        setTextStyleBasedOnSatelliteSettings()
 
         val lat = mLat.toDouble()
         val lng = mLng.toDouble()
@@ -335,6 +337,15 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
 
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
+    }
+
+    private fun setTextStyleBasedOnSatelliteSettings() {
+        if (mSettings.isUsingSatelliteView()) binding.txtShowingSessionsNumber.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.aircasting_white
+            )
+        )
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
