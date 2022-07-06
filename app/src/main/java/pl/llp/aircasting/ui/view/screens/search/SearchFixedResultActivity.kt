@@ -309,6 +309,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     fun highlightTheSelectedDot(sessionUUID: String) {
+        mSelectedMarker = mMarkerArray.find { it.snippet == sessionUUID }
+
         for (i in mMarkerArray.indices) {
             val marker = mMarkerArray[i]
 
