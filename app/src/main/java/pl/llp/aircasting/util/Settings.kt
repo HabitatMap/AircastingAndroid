@@ -23,6 +23,7 @@ open class Settings(private val mApplication: Application) {
     private val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
     private val THEME_SET_TO_DARK_KEY = "theme_dark"
     private val KEEP_SCREEN_ON_KEY = "keep_screen_on"
+    private val USE_SATELLITE_VIEW = "use_satellite_view"
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
@@ -114,6 +115,15 @@ open class Settings(private val mApplication: Application) {
 
     fun getFollowedSessionsNumber(): Int {
         return getIntFromSettings(FOLLOWED_SESSIONS_NUMBER_KEY, DEFAULT_FOLLOWED_SESSIONS_NUMBER)
+    }
+
+    fun isUsingSatelliteView(): Boolean {
+        return getBooleanFromSettings(USE_SATELLITE_VIEW, false)
+    }
+
+    fun toggleUsingSatelliteView() {
+        val enabled = !isUsingSatelliteView()
+        saveToSettings(USE_SATELLITE_VIEW, enabled)
     }
 
     fun toggleUse24HourFormatEnabled() {

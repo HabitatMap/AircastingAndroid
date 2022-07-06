@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.new_session.choose_location
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +12,24 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.exceptions.ChooseAirBeamLocationSelectingPlaceError
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.styleGoogleMap
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.exceptions.ChooseAirBeamLocationSelectingPlaceError
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.setMapType
 
-
-class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Listener>,
+class ChooseLocationViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager?,
+    private val session: Session,
+    errorHandler: ErrorHandler
+) : BaseObservableViewMvc<ChooseLocationViewMvc.Listener>(),
     ChooseLocationViewMvc,
     OnMapReadyCallback {
-
-    private val session: Session
 
     private val MAX_ZOOM = 20.0f
     private val MIN_ZOOM = 5.0f
@@ -34,27 +40,24 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
 
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
-    private var mSupportFragmentManager: FragmentManager?
+    private var mSupportFragmentManager: FragmentManager? = supportFragmentManager
+    private var mSettings: Settings
+    private var mApplication: AircastingApplication
+    private var mContext: Context
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?,
-        session: Session,
-        errorHandler: ErrorHandler
-    ) : super() {
+    init {
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
-        this.session = session
-        this.mSupportFragmentManager = supportFragmentManager
+        mApplication = context.applicationContext as AircastingApplication
+
+        mSettings = Settings(mApplication)
+        mContext = context
 
         mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
         mDefaultLongitude =
             session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
-
         val autocompleteFragment =
             supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
                     as AutocompleteSupportFragment
-
         autocompleteFragment.setPlaceFields(
             listOf(
                 Place.Field.ID,
@@ -62,7 +65,6 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
                 Place.Field.LAT_LNG
             )
         )
-
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 place.latLng?.let {
@@ -74,7 +76,6 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
                 errorHandler.handle(ChooseAirBeamLocationSelectingPlaceError())
             }
         })
-
         autocompleteFragment.requireView()
             .findViewById<View>(R.id.places_autocomplete_clear_button)
             .setOnClickListener { view ->
@@ -82,13 +83,11 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
                 view.visibility = View.GONE
                 resetMapToDefaults()
             }
-
         mMapFragment = SupportMapFragment.newInstance(mapOptions())
         mMapFragment?.let {
             supportFragmentManager.beginTransaction().replace(R.id.map, it).commit()
         }
         mMapFragment?.getMapAsync(this)
-
         val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
         continueButton?.setOnClickListener {
             onContinueClicked()
@@ -143,10 +142,9 @@ class ChooseLocationViewMvcImpl : BaseObservableViewMvc<ChooseLocationViewMvc.Li
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+        mMap?.setMapType(mSettings, mContext)
 
         setZoomPreferences()
         resetMapToDefaults()
     }
-
 }

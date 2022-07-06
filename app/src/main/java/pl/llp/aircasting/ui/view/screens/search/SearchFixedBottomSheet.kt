@@ -35,6 +35,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private lateinit var txtLat: String
     private lateinit var txtLng: String
     private lateinit var mMap: GoogleMap
+    private val mSettings: Settings by lazy { Settings(requireActivity().application) }
 
     private lateinit var mChart: Chart
     private lateinit var mSessionPresenter: SessionPresenter
@@ -251,7 +252,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        styleGoogleMap(mMap, requireActivity())
+        mMap.setMapType(mSettings, requireContext())
 
         val selectedLat = txtLat.toDouble()
         val selectedLng = txtLng.toDouble()

@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.new_session.confirmation
 
+import android.content.Context
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +15,13 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.BitmapHelper
-import pl.llp.aircasting.util.styleGoogleMap
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.util.BitmapHelper
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.setMapType
 
 
 abstract class ConfirmationViewMvcImpl(
@@ -37,9 +40,18 @@ abstract class ConfirmationViewMvcImpl(
     var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
     private var mSupportFragmentManager: FragmentManager? = supportFragmentManager
+    private var mSettings: Settings
+    private var mApplication: AircastingApplication
+    private var mContext: Context
 
     init {
         this.rootView = inflater.inflate(layoutId(), parent, false)
+
+        mApplication = context.applicationContext as AircastingApplication
+
+        mSettings = Settings(mApplication)
+        mContext = context
+
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
         initMap(mSupportFragmentManager)
@@ -124,7 +136,7 @@ abstract class ConfirmationViewMvcImpl(
         mMap = googleMap
         val sessionLocation = session?.location ?: return
 
-        mMapFragment?.context?.let { styleGoogleMap(mMap!!, it) }
+        mMap?.setMapType(mSettings, mContext)
 
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
@@ -134,4 +146,6 @@ abstract class ConfirmationViewMvcImpl(
         mMarker = googleMap.addMarker(marker)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM))
     }
+
+
 }
