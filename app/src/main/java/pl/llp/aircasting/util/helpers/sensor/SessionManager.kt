@@ -149,6 +149,7 @@ class SessionManager(
     }
 
     private fun onAppToBackground() {
+        settings.saveExpandedSessionsUUIDs()
         fixedSessionDownloadMeasurementsService.pause()
         sessionsSyncService.pause()
         periodicallySyncSessionsService.pause()
