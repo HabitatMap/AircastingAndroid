@@ -73,6 +73,10 @@ class SettingsController(
         mSettings.toggleMapSettingsEnabled()
     }
 
+    override fun onToggleSatelliteViewEnabled() {
+        mSettings.toggleUsingSatelliteView()
+    }
+
     override fun onClearSDCardClicked() {
         ClearSDCardActivity.start(mRootActivity)
     }
@@ -100,7 +104,7 @@ class SettingsController(
         MicrophoneSettingsDialog(fragmentManager, calibration, this).show()
     }
 
-    fun startBackendSettingsDialog() {
+    private fun startBackendSettingsDialog() {
         val url = mSettings.getBackendUrl()
         val port = mSettings.getBackendPort()
         BackendSettingsDialog(fragmentManager, url, port, this, mContext).show()
