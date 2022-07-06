@@ -518,4 +518,6 @@
     <string name="pm10" translatable="false">PM10</string>
     <string name="pm2_5" translatable="false">PM2.5</string>
     <string name="your_session_text">Your session</string>
+    <string name="use_satellite_view">Use Satellite view</string>
+    <string name="use_celsius_scale">Use Celsius scale</string>
 </resources>

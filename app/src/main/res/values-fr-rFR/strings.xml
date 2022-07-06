@@ -400,6 +400,8 @@
     <string name="finish">Finir</string>
     <string name="txt_showing_sessions_number"><![CDATA[<b>Sessions</b> affichant %1$s sur %2$s résultats]]></string>
     <string name="your_session_text">Votre séance</string>
+    <string name="use_satellite_view">Utiliser la vue satellite</string>
+    <string name="use_celsius_scale">Utiliser l\'échelle Celsius</string>
 
 
 </resources>
