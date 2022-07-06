@@ -64,6 +64,8 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private var txtParameter: String? = null
     private var txtSensor: String? = null
 
+    private val mSettings: Settings by lazy { Settings(this.application) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search_follow_result)
@@ -306,7 +308,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        styleGoogleMap(mMap, this)
+        mMap.checkIfSatelliteViewIsEnabled(mSettings, this)
 
         val lat = mLat.toDouble()
         val lng = mLng.toDouble()
