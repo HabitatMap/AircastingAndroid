@@ -42,6 +42,9 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_KEEP_SCREEN_ON = false
     private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
 
+    private val EXPANDED_SESSION_CARDS = "expanded_session_cards"
+    private val expandedSessionsUUIDs = mutableSetOf<String>()
+
     private val sharedPreferences: SharedPreferences =
         mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
 
@@ -199,6 +202,14 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() - 1)
     }
 
+    fun addExpandedSession(uuid: String) {
+        expandedSessionsUUIDs.add(uuid)
+    }
+
+    fun removeExpandedSession(uuid: String) {
+        expandedSessionsUUIDs.remove(uuid)
+    }
+
     open fun logout() {
         deleteFromSettings()
     }
@@ -230,6 +241,12 @@ open class Settings(private val mApplication: Application) {
     protected open fun saveToSettings(key: String, value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
+        editor.apply()
+    }
+
+    fun saveExpandedSessionsUUIDs() {
+        val editor = sharedPreferences.edit()
+        editor.putStringSet(EXPANDED_SESSION_CARDS, expandedSessionsUUIDs)
         editor.apply()
     }
 
