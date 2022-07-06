@@ -80,7 +80,7 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
     fun scrollToSelectedCard(position: Int) {
         setCardViewToDefault(cardView)
         selectedSession = sessions[position]
-        notifyItemChanged(position)
+        notifyDataSetChanged()
     }
 
     private fun setCardViewToDefault(cardView: MaterialCardView) {
