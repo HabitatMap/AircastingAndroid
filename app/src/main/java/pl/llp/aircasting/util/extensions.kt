@@ -230,3 +230,8 @@ fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
     this.mapType = GoogleMap.MAP_TYPE_NORMAL
     styleGoogleMap(this, mContext)
 }
+
+fun GoogleMap.checkIfSatelliteViewIsEnabled(mSettings: Settings, mContext: Context) {
+    if (mSettings.isUsingSatelliteView()) this.setMapTypeToSatellite()
+    else this.setMapTypeToNormalWithStyle(mContext)
+}
