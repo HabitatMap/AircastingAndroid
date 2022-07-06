@@ -21,6 +21,7 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
         fun onToggleCelsiusScaleEnabled()
         fun onToggleCrowdMapEnabled()
         fun onToggleMapsEnabled()
+        fun onToggleSatelliteViewEnabled()
         fun onClearSDCardClicked()
         fun onMicrophoneSettingsClicked()
         fun yourPrivacyClicked()
