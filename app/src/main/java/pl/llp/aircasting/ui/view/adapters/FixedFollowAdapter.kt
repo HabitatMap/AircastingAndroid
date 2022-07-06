@@ -1,15 +1,14 @@
 package pl.llp.aircasting.ui.view.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity
 import pl.llp.aircasting.util.disableForASecond
 
 class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegionResponse) -> Unit) :
@@ -27,20 +26,23 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
             binding.executePendingBindings()
 
             binding.sessionCard.apply {
+                cardView = this
+
                 setOnClickListener {
                     onItemClicked(bindingAdapterPosition)
 
                     //prevents duplicate fragment transaction for the bottom sheet.
                     disableForASecond()
+
+                    scrollToSelectedItemAndHighlightItsMarker(bindingAdapterPosition, session.uuid)
                 }
-                cardView = this
 
                 setCorrectLayoutForCard(session)
             }
         }
 
         private fun setCorrectLayoutForCard(session: SessionInRegionResponse) {
-            if (selectedSession?.id == session.id) setBackgroundWithBorder(cardView) else setCardViewToDefault(
+            if (selectedSession?.uuid == session.uuid) setBackgroundWithBorder(cardView) else setCardViewToDefault(
                 cardView
             )
         }
@@ -70,8 +72,8 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
         sessions.addAll(list)
     }
 
-    fun getSessionPositionBasedOnId(uid: String): Int {
-        val session = sessions.first { it.uuid == uid }
+    fun getSessionPositionBasedOnId(uuid: String): Int {
+        val session = sessions.first { it.uuid == uuid }
         return sessions.indexOf(session)
     }
 
@@ -93,5 +95,11 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
             strokeWidth = 4
             strokeColor = ContextCompat.getColor(context, R.color.aircasting_blue_400)
         }
+    }
+
+    private fun scrollToSelectedItemAndHighlightItsMarker(position: Int, sessionUUID: String) {
+        scrollToSelectedCard(position)
+
+        (cardView.context as SearchFixedResultActivity).highlightTheSelectedDot(sessionUUID)
     }
 }

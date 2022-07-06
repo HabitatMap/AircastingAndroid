@@ -169,13 +169,13 @@ fun GoogleMap.drawMarkerOnMap(
     options: MarkerOptions,
     lat: Double,
     lng: Double,
-    uuid: String?
+    sessionID: String?
 ): Marker? {
     return addMarker(
         options
             .position(LatLng(lat, lng))
             .anchor(0.5f, 0.5f)
-            .snippet(uuid)
+            .snippet(sessionID.toString())
             .icon(mContext, R.drawable.map_dot_with_circle_inside)
     )
 }
