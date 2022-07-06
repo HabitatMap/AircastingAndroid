@@ -231,7 +231,7 @@ fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
     styleGoogleMap(this, mContext)
 }
 
-fun GoogleMap.checkIfSatelliteViewIsEnabled(mSettings: Settings, mContext: Context) {
+fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
     if (mSettings.isUsingSatelliteView()) this.setMapTypeToSatellite()
     else this.setMapTypeToNormalWithStyle(mContext)
 }

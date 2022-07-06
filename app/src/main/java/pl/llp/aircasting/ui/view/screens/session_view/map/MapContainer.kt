@@ -408,7 +408,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mContext?.let { mMap?.checkIfSatelliteViewIsEnabled(mSettings, it) }
+        mContext?.let { mMap?.setMapType(mSettings, it) }
 
         // sometimes onMapReady is invoked earlier than bindStream
         if (status.get() == Status.SESSION_LOADED.value) {

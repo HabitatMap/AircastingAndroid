@@ -252,7 +252,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.checkIfSatelliteViewIsEnabled(mSettings, requireContext())
+        mMap.setMapType(mSettings, requireContext())
 
         val selectedLat = txtLat.toDouble()
         val selectedLng = txtLng.toDouble()

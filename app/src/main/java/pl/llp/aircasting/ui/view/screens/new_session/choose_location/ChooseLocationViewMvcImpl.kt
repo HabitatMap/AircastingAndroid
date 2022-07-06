@@ -17,9 +17,9 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.checkIfSatelliteViewIsEnabled
 import pl.llp.aircasting.util.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.setMapType
 
 class ChooseLocationViewMvcImpl(
     inflater: LayoutInflater,
@@ -142,7 +142,7 @@ class ChooseLocationViewMvcImpl(
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap?.checkIfSatelliteViewIsEnabled(mSettings, mContext)
+        mMap?.setMapType(mSettings, mContext)
 
         setZoomPreferences()
         resetMapToDefaults()

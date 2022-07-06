@@ -308,7 +308,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        mMap.checkIfSatelliteViewIsEnabled(mSettings, this)
+        mMap.setMapType(mSettings, this)
 
         val lat = mLat.toDouble()
         val lng = mLng.toDouble()

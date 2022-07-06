@@ -21,7 +21,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.BitmapHelper
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.checkIfSatelliteViewIsEnabled
+import pl.llp.aircasting.util.setMapType
 
 
 abstract class ConfirmationViewMvcImpl(
@@ -136,7 +136,7 @@ abstract class ConfirmationViewMvcImpl(
         mMap = googleMap
         val sessionLocation = session?.location ?: return
 
-        mMap?.checkIfSatelliteViewIsEnabled(mSettings, mContext)
+        mMap?.setMapType(mSettings, mContext)
 
         val location = LatLng(sessionLocation.latitude, sessionLocation.longitude)
         val icon = BitmapHelper.bitmapFromVector(context, R.drawable.ic_dot_20)
