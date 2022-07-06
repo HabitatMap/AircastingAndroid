@@ -59,6 +59,7 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var mLat: String
     private lateinit var mLng: String
     private var mSelectedMarker: Marker? = null
+    private val mMarkerArray: ArrayList<Marker> = arrayListOf()
 
     private val options = MarkerOptions()
     private var txtParameter: String? = null
@@ -217,8 +218,10 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
         for (i in sessions.indices) {
             val getLats = sessions[i].latitude
             val getLngs = sessions[i].longitude
-            val uuid = sessions[i].uuid
-            mMap.drawMarkerOnMap(this, options, getLats, getLngs, uuid)
+            val sessionID = sessions[i].id
+            val markers = mMap.drawMarkerOnMap(this, options, getLats, getLngs, sessionID)
+
+            markers?.let { mMarkerArray.add(it) }
         }
     }
 
@@ -296,11 +299,21 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun selectCorrespondingCardView(marker: Marker) {
-        val uuid = marker.snippet.toString()
-        val position = adapter.getSessionPositionBasedOnId(uuid)
+        val id = marker.snippet.toString()
+        val position = adapter.getSessionPositionBasedOnId(id.toLong())
 
         binding.recyclerFixedFollow.smoothScrollToPosition(position)
         adapter.scrollToSelectedCard(position)
+    }
+
+    fun highlightTheSelectedDot(sessionID: String) {
+        for (i in mMarkerArray.indices) {
+            val marker = mMarkerArray[i]
+
+            if (sessionID == marker.snippet)
+                highlightMarkerIcon(marker)
+            else setMarkerIconToDefault(marker)
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
