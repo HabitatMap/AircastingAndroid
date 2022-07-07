@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -105,7 +106,7 @@ class SessionPresenter() {
 
     companion object {
         fun defaultStream(session: Session?): MeasurementStream? {
-            return session?.streamsSortedByDetailedType()?.firstOrNull()
+            return session?.streamsSortedByDetailedType()?.find { it.detailedType == StringConstants.pmTwoPointFive }
         }
     }
 }
