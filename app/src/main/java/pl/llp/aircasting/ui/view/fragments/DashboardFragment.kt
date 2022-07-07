@@ -91,14 +91,14 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
 
                     if (isEnabled && mTabPosition == 0) {
                         isEnabled = false
-                        checkIfBatteryOptimizationShouldBeShown()
+                        showBatteryOptimizationDialogIfNeeded()
                     } else it.onBackPressed()
 
                 }
         }
     }
 
-    private fun checkIfBatteryOptimizationShouldBeShown() {
+    private fun showBatteryOptimizationDialogIfNeeded() {
         if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(requireContext())) showBatteryOptimizationHelperDialog(
             requireActivity()
         )
