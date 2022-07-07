@@ -221,3 +221,5 @@ fun Calendar.addHours(time: Date, hours: Int): Date {
 }
 
 fun calendar(): Calendar = Calendar.getInstance()
+
+fun expandedCards(): ExpandedCardsRepository? = ExpandedCardsRepository.getInstance()
