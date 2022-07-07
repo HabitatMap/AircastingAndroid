@@ -173,11 +173,12 @@ open class MeasurementStream(
     }
 
     fun sensorNameOrder(): Int? {
-        return if (sensorName.contains(AIRBEAM_SENSOR_NAME_REGEX, true)) {
-            AirBeamSensorName.fromString(detailedType)?.ordinal
-        } else {
-            0
-        }
+        return if (sensorName.contains(
+                AIRBEAM_SENSOR_NAME_REGEX,
+                true
+            )
+        ) AirBeamSensorName.fromString(detailedType)?.ordinal
+        else 0
     }
 
     private fun buildDetailedType(): String? {
