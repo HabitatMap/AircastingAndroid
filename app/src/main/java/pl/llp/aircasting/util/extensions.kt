@@ -223,7 +223,7 @@ fun Calendar.addHours(time: Date, hours: Int): Date {
 fun calendar(): Calendar = Calendar.getInstance()
 
 fun GoogleMap.setMapTypeToSatellite() {
-    this.mapType = GoogleMap.MAP_TYPE_SATELLITE
+    this.mapType = GoogleMap.MAP_TYPE_HYBRID
 }
 
 fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
