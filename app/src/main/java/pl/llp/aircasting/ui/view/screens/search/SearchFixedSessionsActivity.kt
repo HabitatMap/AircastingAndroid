@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.Status
@@ -21,7 +20,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.gone
+import pl.llp.aircasting.util.initializePlacesApi
+import pl.llp.aircasting.util.setStyle
+import pl.llp.aircasting.util.visible
 
 class SearchFixedSessionsActivity : AppCompatActivity() {
 
@@ -36,7 +38,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
-    private var txtSelectedParameter: String = StringConstants.airbeam2sensorName
+    private var txtSelectedParameter: String = StringConstants.measurementTypePM
     private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM
 
     private lateinit var address: String
