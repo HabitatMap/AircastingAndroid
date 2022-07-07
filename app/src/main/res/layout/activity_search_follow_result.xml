@@ -101,7 +101,7 @@
                     style="@style/TextAppearance.Aircasting.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_7"
+                    android:layout_marginTop="@dimen/keyline_9"
                     android:text="@string/redo_search_in_map"
                     android:textAllCaps="false"
                     android:textSize="12sp"
