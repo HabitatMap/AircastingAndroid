@@ -3,8 +3,6 @@ package pl.llp.aircasting.ui.view.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -15,20 +13,17 @@ import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.exceptions.AircastingUncaughtExceptionHandler
-import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.isIgnoringBatteryOptimizations
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
-import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.util.DateConverter
+import pl.llp.aircasting.util.TemperatureConverter
+import pl.llp.aircasting.util.exceptions.AircastingUncaughtExceptionHandler
+import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     private var controller: MainController? = null
     private var view: MainViewMvcImpl? = null
-    private var isBackButtonPressed = false
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -105,20 +100,5 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
             Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")
             Renderer.LEGACY -> Log.d("MapsDemo", "The legacy version of the renderer is used.")
         }
-    }
-
-    override fun onBackPressed() {
-        if (isBackButtonPressed) {
-            super.onBackPressed()
-            return
-        }
-        isBackButtonPressed = true
-
-        // show explanation about background task and let the user disable the battery optimization
-        if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(applicationContext)) controller?.showBatteryOptimizationHelperDialog()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            isBackButtonPressed = false
-        }, 2000)
     }
 }
