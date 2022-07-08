@@ -142,15 +142,19 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
+        <ImageView
+            android:id="@+id/search_loader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:layout_marginTop="@dimen/keyline_2"
+            android:layout_marginEnd="@dimen/keyline_4"
+            android:elevation="10dp"
+            android:src="@drawable/ic_loader"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/aircasting_blue_400" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
