@@ -148,9 +148,14 @@ abstract class SessionsController(
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
+        mSettings.addExpandedSession(session.uuid)
         mViewMvc?.showLoaderFor(session)
         val finallyCallback = { reloadSession(session) }
         mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
+    }
+
+    override fun onCollapseSessionCard(session: Session) {
+        mSettings.removeExpandedSession(session.uuid)
     }
 
     override fun onEditDataPressed(

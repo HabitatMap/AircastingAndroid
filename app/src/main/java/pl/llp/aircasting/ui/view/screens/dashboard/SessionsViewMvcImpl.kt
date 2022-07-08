@@ -162,6 +162,12 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
     }
 
+    fun onCollapseSessionCard(session: Session) {
+        for (listener in listeners) {
+            listener.onCollapseSessionCard(session)
+        }
+    }
+
     fun onFollowButtonClicked(session: Session) {
         for (listener in listeners) {
             listener.onFollowButtonClicked(session)

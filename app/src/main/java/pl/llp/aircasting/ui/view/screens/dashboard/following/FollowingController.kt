@@ -74,16 +74,4 @@ class FollowingController(
     override fun onDeleteStreamsPressed(session: Session) {
         // do nothing
     }
-
-    override fun onExpandSessionCard(session: Session) {
-        // do nothing
-    }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        // do nothing
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        // do nothing
-    }
 }
