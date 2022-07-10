@@ -237,16 +237,16 @@ fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
     else this.setMapTypeToNormalWithStyle(mContext)
 }
 
-fun ImageView.animateLoader(): Animatable {
+fun ImageView.animatable(): Animatable {
     return drawable as Animatable
 }
 
 fun ImageView.startAnimation() {
     this.visible()
-    animateLoader().start()
+    animatable().start()
 }
 
 fun ImageView.stopAnimation() {
     this.inVisible()
-    animateLoader().stop()
+    animatable().stop()
 }
