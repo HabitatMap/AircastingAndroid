@@ -185,11 +185,11 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun showLoader() {
-        AnimatedLoader(binding.searchLoader).start()
+        binding.searchLoader.startAnimation()
     }
 
     private fun stopLoader() {
-        AnimatedLoader(binding.searchLoader).stop()
+        binding.searchLoader.stopAnimation()
     }
 
     private fun updateUI(it: Resource<SessionsInRegionsRes>) {

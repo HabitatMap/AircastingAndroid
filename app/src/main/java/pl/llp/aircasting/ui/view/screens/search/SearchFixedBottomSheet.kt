@@ -237,17 +237,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun showLoader() {
-        binding?.loader?.apply {
-            visible()
-            AnimatedLoader(this).start()
-        }
+        binding?.loader?.startAnimation()
     }
 
     private fun hideLoader() {
-        binding?.loader?.apply {
-            gone()
-            AnimatedLoader(this).stop()
-        }
+        binding?.loader?.stopAnimation()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
