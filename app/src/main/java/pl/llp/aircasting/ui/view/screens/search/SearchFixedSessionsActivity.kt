@@ -79,14 +79,22 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
     }
 
     private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
-        if (chipGroup.checkedChipId == binding.ozoneChip.id) binding.apply {
-            chipGroupSecondLevelOne.gone()
-            chipGroupSecondLevelTwo.visible()
+        if (chipGroup.checkedChipId == binding.ozoneChip.id) {
+            binding.apply {
+                chipGroupSecondLevelOne.gone()
+                chipGroupSecondLevelTwo.visible()
+            }
+
             txtSelectedParameter = StringConstants.measurementTypeOzone
             txtSelectedSensor = StringConstants.openAQsensorNameOzone
-        } else binding.apply {
-            chipGroupSecondLevelOne.visible()
-            chipGroupSecondLevelTwo.gone()
+        } else {
+            binding.apply {
+                chipGroupSecondLevelOne.visible()
+                chipGroupSecondLevelTwo.gone()
+            }
+
+            txtSelectedParameter = StringConstants.measurementTypePM
+            txtSelectedSensor = StringConstants.openAQsensorNameOzone
         }
     }
 
