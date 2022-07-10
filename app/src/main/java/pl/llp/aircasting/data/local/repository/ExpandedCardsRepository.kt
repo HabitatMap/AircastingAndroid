@@ -1,4 +1,6 @@
-package pl.llp.aircasting.util
+package pl.llp.aircasting.data.local.repository
+
+import pl.llp.aircasting.util.Settings
 
 class ExpandedCardsRepository private constructor(
     private val settings: Settings

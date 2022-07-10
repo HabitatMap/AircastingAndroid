@@ -10,7 +10,7 @@ import pl.llp.aircasting.di.DaggerAppComponent
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.util.ExpandedCardsRepository
+import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.util.Settings
 
 class AircastingApplication : Application() {

@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.prominent_app_bar.*
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import java.util.*
 
