@@ -154,11 +154,11 @@ class SessionManager(
         periodicallySyncSessionsService.pause()
     }
 
-    private fun registerToEventBus() {
+     fun registerToEventBus() {
         EventBus.getDefault().safeRegister(this)
     }
 
-    private fun unregisterFromEventBus() {
+     fun unregisterFromEventBus() {
         EventBus.getDefault().unregister(this)
     }
 
