@@ -17,8 +17,9 @@ import kotlinx.android.synthetic.main.select_device_item.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.label
 import kotlinx.coroutines.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.util.startAnimation
+import pl.llp.aircasting.util.stopAnimation
 import java.util.*
 
 class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
@@ -97,8 +98,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
 
         @OptIn(DelicateCoroutinesApi::class)
         fun showLoader() {
-            AnimatedLoader(mLoader).start()
-            mLoader?.visibility = View.VISIBLE
+            mLoader?.startAnimation()
             hideRefreshButton()
 
             // There is no way to actually know when the device list is ready
@@ -112,8 +112,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
 
         fun hideLoader() {
-            AnimatedLoader(mLoader).stop()
-            mLoader?.visibility = View.INVISIBLE
+            mLoader?.stopAnimation()
             showRefreshButton()
         }
     }

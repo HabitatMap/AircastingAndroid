@@ -7,9 +7,8 @@ import android.widget.Button
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
-import pl.llp.aircasting.util.adjustMenuVisibility
+import pl.llp.aircasting.util.Settings
 
 class SettingsViewMvcImpl(
     inflater: LayoutInflater,
@@ -76,6 +75,12 @@ class SettingsViewMvcImpl(
 
         val txtUsername = rootView?.txtUsername
         txtUsername?.text = mSettings.getProfileName()
+
+        val satelliteSwitch = rootView?.use_satellite_view_switch
+        satelliteSwitch?.isChecked = mSettings.isUsingSatelliteView()
+        satelliteSwitch?.setOnCheckedChangeListener { _, _ ->
+            onToggleSatelliteView()
+        }
     }
 
     private fun onToggleThemeChangeEnabled() {
@@ -123,6 +128,12 @@ class SettingsViewMvcImpl(
     private fun onToggleMapsEnabled(){
         for(listener in listeners){
             listener.onToggleMapsEnabled()
+        }
+    }
+
+    private fun onToggleSatelliteView(){
+        for(listener in listeners){
+            listener.onToggleSatelliteViewEnabled()
         }
     }
 

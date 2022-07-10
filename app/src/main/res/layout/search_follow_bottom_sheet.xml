@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="model"
             type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
@@ -85,7 +84,7 @@
                 <TableLayout
                     android:id="@+id/measurements_table"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -120,8 +119,8 @@
                     android:id="@+id/chart_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/measurements_table">
 
@@ -166,7 +165,7 @@
                     android:id="@+id/followBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_5"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:text="@string/follow_session"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -178,7 +177,7 @@
                     android:id="@+id/unfollowBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_5"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:backgroundTint="@color/aircasting_white"
                     android:text="@string/unfollow_session"
                     android:textColor="@color/aircasting_blue_400"
@@ -195,7 +194,7 @@
                     android:id="@+id/chipGroupType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_2"
+                    android:layout_marginTop="@dimen/keyline_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintTop_toBottomOf="@+id/mapViewBottomSheet"

@@ -5,7 +5,9 @@ import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.Constants
+import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
+import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
@@ -52,12 +54,38 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
     ): Resource<SessionsInRegionsRes> {
         return try {
             val response =
-                apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
+                /* This is a temporary workaround, as AB3 sensorInfo has not been provided here
+                * The class should not care about sensor names, they should be provided to it from the ViewModel
+                *  */
+                if (sensorIsAirBeam(sensorInfo)) {
+                    val ab2 =
+                        apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
+                    val ab3 = apiService.getSessionsInRegion(
+                        constructAndGetJsonWith(
+                            square,
+                            ParticulateMatter.AIRBEAM3
+                        )
+                    )
+                    combineResponses(ab2, ab3)
+                } else
+                    apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
             responseHandler.handleSuccess(response)
         } catch (e: Exception) {
             responseHandler.handleException(e)
         }
     }
+
+    private fun combineResponses(
+        ab2: SessionsInRegionsRes,
+        ab3: SessionsInRegionsRes
+    ) =
+        SessionsInRegionsRes(
+            ab2.fetchableSessionsCount + ab3.fetchableSessionsCount,
+            ab2.sessions + ab3.sessions
+        )
+
+    private fun sensorIsAirBeam(sensorInfo: SensorInformation) =
+        sensorInfo.getSensorName().contains(StringConstants.airbeam, true)
 
     suspend fun getStreamOfGivenSession(
         sessionId: Long,

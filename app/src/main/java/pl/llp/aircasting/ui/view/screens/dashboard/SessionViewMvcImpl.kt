@@ -19,9 +19,10 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
-import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.DurationStringHelper
 import pl.llp.aircasting.util.TouchDelegateComposite
+import pl.llp.aircasting.util.startAnimation
+import pl.llp.aircasting.util.stopAnimation
 
 
 abstract class SessionViewMvcImpl<ListenerType>(
@@ -284,14 +285,12 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     override fun showLoader() {
-        AnimatedLoader(mLoader).start()
-        mLoader?.visibility = View.VISIBLE
+        mLoader?.startAnimation()
         mFollowButton.isEnabled = false
     }
 
     override fun hideLoader() {
-        AnimatedLoader(mLoader).stop()
-        mLoader?.visibility = View.GONE
+        mLoader?.stopAnimation()
         mFollowButton.isEnabled = true
     }
 
