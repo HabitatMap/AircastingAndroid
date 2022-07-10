@@ -154,20 +154,6 @@ open class MeasurementStream(
         private const val AIRBEAM_SENSOR_NAME_REGEX = "airbeam"
     }
 
-    enum class AirBeamSensorName(val detailedType: String) {
-        F("F"),
-        PM("PM"),
-        PM1("PM1"),
-        PM2_5("PM2.5"),
-        PM10("PM10"),
-        RH("RH");
-
-        companion object {
-            fun fromString(detailedType: String?) =
-                values().firstOrNull { it.detailedType == detailedType }
-        }
-    }
-
     fun setMeasurements(measurements: List<Measurement>) {
         mMeasurements = measurements
     }
@@ -177,7 +163,7 @@ open class MeasurementStream(
                 AIRBEAM_SENSOR_NAME_REGEX,
                 true
             )
-        ) AirBeamSensorName.fromString(detailedType)?.ordinal
+        ) SensorName.fromString(detailedType)?.ordinal
         else 0
     }
 
