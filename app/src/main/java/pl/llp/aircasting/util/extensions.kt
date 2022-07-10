@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.Animatable
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -234,4 +235,18 @@ fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
 fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
     if (mSettings.isUsingSatelliteView()) this.setMapTypeToSatellite()
     else this.setMapTypeToNormalWithStyle(mContext)
+}
+
+fun ImageView.animateLoader(): Animatable {
+    return drawable as Animatable
+}
+
+fun ImageView.startAnimation() {
+    this.visible()
+    animateLoader().start()
+}
+
+fun ImageView.stopAnimation() {
+    this.inVisible()
+    animateLoader().stop()
 }
