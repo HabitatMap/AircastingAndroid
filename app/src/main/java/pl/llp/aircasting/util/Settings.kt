@@ -27,6 +27,7 @@ open class Settings(private val mApplication: Application) {
 
     private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
     private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
+    private val EXPANDED_SESSION_CARDS = "expanded_session_cards"
 
     private val DEFAULT_DELETE_SESSION_IN_PROGRESS = false
     private val DEFAULT_SESSIONS_TO_REMOVE = false
@@ -42,6 +43,7 @@ open class Settings(private val mApplication: Application) {
     private val DEFAULT_THEME_VALUE = false
     private val DEFAULT_KEEP_SCREEN_ON = false
     private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
+
 
     private val sharedPreferences: SharedPreferences =
         mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
@@ -209,8 +211,19 @@ open class Settings(private val mApplication: Application) {
         saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() - 1)
     }
 
+    fun saveExpandedSessionsUUIDs(uuids: Set<String>) {
+        saveToSettings(EXPANDED_SESSION_CARDS, uuids)
+    }
+
+    fun getExpandedSessionsUUIDs() =
+        getStringSetFromSettings(EXPANDED_SESSION_CARDS)?.toMutableSet() ?: mutableSetOf()
+
     open fun logout() {
         deleteFromSettings()
+    }
+
+    open fun getStringSetFromSettings(key: String, default: Set<String>? = null): Set<String>? {
+        return sharedPreferences.getStringSet(key, default)
     }
 
     open fun getStringFromSettings(key: String, default: String? = null): String? {
@@ -240,6 +253,12 @@ open class Settings(private val mApplication: Application) {
     protected open fun saveToSettings(key: String, value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
+        editor.apply()
+    }
+
+    protected open fun saveToSettings(key: String, value: Set<String>) {
+        val editor = sharedPreferences.edit()
+        editor.putStringSet(key, value)
         editor.apply()
     }
 

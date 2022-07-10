@@ -10,13 +10,14 @@ import pl.llp.aircasting.di.DaggerAppComponent
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.di.modules.PermissionsModule
+import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.util.Settings
 
 class AircastingApplication : Application() {
     lateinit var appComponent: AppComponent
     lateinit var permissionsModule: PermissionsModule
     lateinit var databaseModule: DatabaseModule
-    private var mSettings: Settings? = null
+    lateinit var mSettings: Settings
 
     override fun onCreate() {
         super.onCreate()
@@ -24,6 +25,7 @@ class AircastingApplication : Application() {
         DatabaseProvider.setup(applicationContext)
 
         mSettings = Settings(this)
+        ExpandedCardsRepository.setup(mSettings)
         setCorrectAppTheme()
 
         permissionsModule = PermissionsModule()
@@ -42,7 +44,7 @@ class AircastingApplication : Application() {
     }
 
     private fun setCorrectAppTheme() {
-        if (mSettings?.isThemeChangeEnabled() == true) AppCompatDelegate.setDefaultNightMode(
+        if (mSettings.isThemeChangeEnabled()) AppCompatDelegate.setDefaultNightMode(
             AppCompatDelegate.MODE_NIGHT_YES
         ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }

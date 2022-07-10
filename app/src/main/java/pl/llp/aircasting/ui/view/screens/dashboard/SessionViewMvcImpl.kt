@@ -355,6 +355,11 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     private fun onCollapseSessionCardClicked() {
         mSessionPresenter?.expanded = false
+        mSessionPresenter?.session?.let {
+            for (listener in listeners) {
+                (listener as? SessionCardListener)?.onCollapseSessionCard(it)
+            }
+        }
     }
 
     private fun getExpandedTouchDelegate(child: View): TouchDelegate {
