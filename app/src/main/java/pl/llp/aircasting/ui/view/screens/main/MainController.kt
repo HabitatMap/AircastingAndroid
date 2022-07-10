@@ -14,7 +14,6 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
@@ -104,14 +103,6 @@ class MainController(
             MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_DORMANT.value)
         Navigation.findNavController(rootActivity, R.id.nav_host_fragment)
             .navigate(action)
-    }
-
-    fun showBatteryOptimizationHelperDialog() {
-        BatteryAlertDialog(
-            mFragmentManager,
-            rootActivity.getString(R.string.running_background),
-            rootActivity.getString(R.string.battery_desc)
-        ).show()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

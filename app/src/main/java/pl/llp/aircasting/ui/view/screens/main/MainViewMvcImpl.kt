@@ -18,8 +18,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.view.*
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
@@ -144,15 +144,13 @@ class MainViewMvcImpl(
     }
 
     override fun showLoader() {
-        AnimatedLoader(loader).start()
-        loader?.visible()
+        loader?.startAnimation()
     }
 
     // TODO: The recyclerView needs to be improved later.
     override fun hideLoader() {
         Handler(Looper.getMainLooper()).postDelayed({
-            AnimatedLoader(loader).stop()
-            loader?.gone()
+            loader?.stopAnimation()
         }, 10000)
     }
 }

@@ -34,16 +34,20 @@ class NewSessionActivity : BaseActivity() {
 
     companion object {
         const val SESSION_TYPE_KEY = "sessionType"
+        private lateinit var navHostFragment: NavHostFragment
         private var fixedLauncher: ActivityResultLauncher<Intent>? = null
         private var mobileLauncher: ActivityResultLauncher<Intent>? = null
 
         fun register(rootActivity: FragmentActivity?, sessionType: Session.Type) {
             rootActivity?.let {
+                navHostFragment =
+                    it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                         if (it.resultCode == RESULT_OK) when (sessionType) {
-                            Session.Type.FIXED -> goToFollowingTab(rootActivity)
-                            Session.Type.MOBILE -> goToActiveTab(rootActivity)
+                            Session.Type.FIXED -> goToFollowingTab()
+                            Session.Type.MOBILE -> goToActiveTab()
                         }
                     }
 
@@ -67,18 +71,14 @@ class NewSessionActivity : BaseActivity() {
             }
         }
 
-        private fun goToActiveTab(rootActivity: FragmentActivity?) {
-            val navHostFragment =
-                rootActivity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        private fun goToActiveTab() {
             val action = MobileNavigationDirections.actionGlobalDashboard(
                 SessionsTab.MOBILE_ACTIVE.value
             )
             navHostFragment.navController.navigate(action)
         }
 
-        private fun goToFollowingTab(rootActivity: FragmentActivity?) {
-            val navHostFragment =
-                rootActivity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        private fun goToFollowingTab() {
             val action = MobileNavigationDirections.actionGlobalDashboard(
                 SessionsTab.FOLLOWING.value
             )

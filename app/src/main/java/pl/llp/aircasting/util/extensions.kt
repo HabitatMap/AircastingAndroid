@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.Animatable
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -170,13 +171,13 @@ fun GoogleMap.drawMarkerOnMap(
     options: MarkerOptions,
     lat: Double,
     lng: Double,
-    uuid: String?
+    sessionID: String?
 ): Marker? {
     return addMarker(
         options
             .position(LatLng(lat, lng))
             .anchor(0.5f, 0.5f)
-            .snippet(uuid)
+            .snippet(sessionID.toString())
             .icon(mContext, R.drawable.map_dot_with_circle_inside)
     )
 }
@@ -224,3 +225,31 @@ fun Calendar.addHours(time: Date, hours: Int): Date {
 fun calendar(): Calendar = Calendar.getInstance()
 
 fun expandedCards(): ExpandedCardsRepository? = ExpandedCardsRepository.getInstance()
+
+fun GoogleMap.setMapTypeToSatellite() {
+    this.mapType = GoogleMap.MAP_TYPE_HYBRID
+}
+
+fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
+    this.mapType = GoogleMap.MAP_TYPE_NORMAL
+    styleGoogleMap(this, mContext)
+}
+
+fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
+    if (mSettings.isUsingSatelliteView()) this.setMapTypeToSatellite()
+    else this.setMapTypeToNormalWithStyle(mContext)
+}
+
+fun ImageView.animatable(): Animatable {
+    return drawable as Animatable
+}
+
+fun ImageView.startAnimation() {
+    this.visible()
+    animatable().start()
+}
+
+fun ImageView.stopAnimation() {
+    this.inVisible()
+    animatable().stop()
+}

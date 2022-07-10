@@ -6,11 +6,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.disconnected_view.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import kotlinx.android.synthetic.main.disconnected_view.view.*
+import pl.llp.aircasting.util.startAnimation
+import pl.llp.aircasting.util.stopAnimation
 
 class DisconnectedView {
     private val mContext: Context
@@ -87,13 +88,13 @@ class DisconnectedView {
     }
 
     private fun showReconnectingLoader() {
-        AnimatedLoader(mReconnectingLoader).start()
+        mReconnectingLoader?.startAnimation()
         mReconnectingLoader?.visibility = View.VISIBLE
         mPrimaryButton?.isEnabled = false
     }
 
     private fun hideReconnectingLoader() {
-        AnimatedLoader(mReconnectingLoader).stop()
+        mReconnectingLoader?.stopAnimation()
         mReconnectingLoader?.visibility = View.GONE
         mPrimaryButton?.isEnabled = true
     }

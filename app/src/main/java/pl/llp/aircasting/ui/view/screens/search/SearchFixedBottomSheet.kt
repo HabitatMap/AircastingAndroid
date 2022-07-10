@@ -35,6 +35,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private lateinit var txtLat: String
     private lateinit var txtLng: String
     private lateinit var mMap: GoogleMap
+    private val mSettings: Settings by lazy { Settings(requireActivity().application) }
 
     private lateinit var mChart: Chart
     private lateinit var mSessionPresenter: SessionPresenter
@@ -185,10 +186,15 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
 
                 bindSessionPresenter(session, mSensorThresholds, stream)
+                bindSelectedStream()
                 bindChartData()
                 bindSession()
             }
         }
+    }
+
+    private fun bindSelectedStream() {
+        mSessionPresenter.setDefaultStream()
     }
 
     private fun bindSessionPresenter(
@@ -236,22 +242,16 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun showLoader() {
-        binding?.loader?.apply {
-            visible()
-            AnimatedLoader(this).start()
-        }
+        binding?.loader?.startAnimation()
     }
 
     private fun hideLoader() {
-        binding?.loader?.apply {
-            gone()
-            AnimatedLoader(this).stop()
-        }
+        binding?.loader?.stopAnimation()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        styleGoogleMap(mMap, requireActivity())
+        mMap.setMapType(mSettings, requireContext())
 
         val selectedLat = txtLat.toDouble()
         val selectedLng = txtLng.toDouble()

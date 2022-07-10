@@ -12,8 +12,6 @@ import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
-import pl.llp.aircasting.util.AnimatedLoader
-import pl.llp.aircasting.util.DurationStringHelper
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
@@ -25,8 +23,9 @@ import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialogListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
-import pl.llp.aircasting.util.gone
-import pl.llp.aircasting.util.visible
+import pl.llp.aircasting.util.DurationStringHelper
+import pl.llp.aircasting.util.startAnimation
+import pl.llp.aircasting.util.stopAnimation
 
 abstract class SessionDetailsViewMvcImpl(
     inflater: LayoutInflater,
@@ -200,12 +199,10 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     fun showLoader(loader: ImageView?) {
-        AnimatedLoader(loader).start()
-        loader?.visible()
+        loader?.startAnimation()
     }
 
     fun hideLoader(loader: ImageView?) {
-        AnimatedLoader(loader).stop()
-        loader?.gone()
+        loader?.stopAnimation()
     }
 }
