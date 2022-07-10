@@ -17,16 +17,13 @@ import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.CSVHelper
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.ShareHelper
+import pl.llp.aircasting.util.*
 import pl.llp.aircasting.util.events.DeleteSessionEvent
 import pl.llp.aircasting.util.events.DeleteStreamsEvent
 import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.events.UpdateSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.util.showToast
 
 
 abstract class SessionsController(
@@ -148,14 +145,14 @@ abstract class SessionsController(
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {
-        mSettings.addExpandedSession(session.uuid)
+        expandedCards()?.add(session.uuid)
         mViewMvc?.showLoaderFor(session)
         val finallyCallback = { reloadSession(session) }
         mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
     }
 
     override fun onCollapseSessionCard(session: Session) {
-        mSettings.removeExpandedSession(session.uuid)
+        expandedCards()?.remove(session.uuid)
     }
 
     override fun onEditDataPressed(
