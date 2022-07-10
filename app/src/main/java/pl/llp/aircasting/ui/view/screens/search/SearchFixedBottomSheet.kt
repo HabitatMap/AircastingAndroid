@@ -186,10 +186,15 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
 
                 bindSessionPresenter(session, mSensorThresholds, stream)
+                bindSelectedStream()
                 bindChartData()
                 bindSession()
             }
         }
+    }
+
+    private fun bindSelectedStream() {
+        mSessionPresenter.setDefaultStream()
     }
 
     private fun bindSessionPresenter(

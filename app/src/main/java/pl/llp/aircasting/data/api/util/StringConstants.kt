@@ -27,6 +27,13 @@ object StringConstants {
     const val purpleAir = "PurpleAir"
     const val openAQ = "OpenAQ"
 
+    const val F = "F"
+    const val PM = "PM"
+    const val PM1 = "PM1"
+    const val PM2_5 = "PM2.5"
+    const val PM10 = "PM10"
+    const val RH = "RH"
+
     /* Sensors names from Response */
     const val responseAirBeam2_F = "AirBeam2-F"
     const val responseAirBeam2_RH = "AirBeam2-RH"
