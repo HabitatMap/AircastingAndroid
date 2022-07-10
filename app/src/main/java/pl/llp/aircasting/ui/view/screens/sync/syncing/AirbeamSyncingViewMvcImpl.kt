@@ -7,10 +7,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
-import pl.llp.aircasting.util.AnimatedLoader
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
+import pl.llp.aircasting.util.startAnimation
 
 class AirbeamSyncingViewMvcImpl(
     inflater: LayoutInflater,
@@ -40,7 +40,7 @@ class AirbeamSyncingViewMvcImpl(
 
     private fun startLoader() {
         val loader = rootView?.findViewById<ImageView>(R.id.loader)
-        AnimatedLoader(loader).start()
+        loader?.startAnimation()
     }
 
     override fun updateProgress(step: SDCardReader.Step, linesRead: Int) {

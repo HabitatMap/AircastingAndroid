@@ -176,17 +176,25 @@ class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
             when (it.status) {
                 Status.SUCCESS -> updateUI(it)
                 Status.ERROR -> {
-                    binding.progressBar.inVisible()
+                    stopLoader()
                     showToast(it.message.toString())
                 }
-                Status.LOADING -> binding.progressBar.visible()
+                Status.LOADING -> showLoader()
             }
         }
     }
 
+    private fun showLoader() {
+        binding.searchLoader.startAnimation()
+    }
+
+    private fun stopLoader() {
+        binding.searchLoader.stopAnimation()
+    }
+
     private fun updateUI(it: Resource<SessionsInRegionsRes>) {
         binding.apply {
-            progressBar.inVisible()
+            stopLoader()
             txtShowingSessionsNumber.visible()
         }
         it.data?.let { data ->
