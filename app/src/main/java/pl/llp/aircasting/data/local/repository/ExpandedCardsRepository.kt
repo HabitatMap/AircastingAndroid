@@ -5,8 +5,6 @@ import pl.llp.aircasting.util.Settings
 class ExpandedCardsRepository private constructor(
     private val settings: Settings
 ) {
-    private val uuids: MutableSet<String> = settings.getExpandedSessionsUUIDs()
-
     companion object {
         private var instance: ExpandedCardsRepository? = null
         fun getInstance(): ExpandedCardsRepository? {
@@ -20,18 +18,19 @@ class ExpandedCardsRepository private constructor(
     }
 
     fun add(uuid: String) {
+        val uuids = settings.getExpandedSessionsUUIDs()
         uuids.add(uuid)
         settings.saveExpandedSessionsUUIDs(uuids)
     }
 
     fun remove(uuid: String) {
+        val uuids = settings.getExpandedSessionsUUIDs()
         uuids.remove(uuid)
         settings.saveExpandedSessionsUUIDs(uuids)
     }
 
-    fun clear() {
-        uuids.clear()
+    fun contains(uuid: String): Boolean {
+        val uuids = settings.getExpandedSessionsUUIDs()
+        return uuids.contains(uuid)
     }
-
-    fun contains(uuid: String) = uuids.contains(uuid)
 }

@@ -17,7 +17,6 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.expandedCards
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
@@ -106,7 +105,6 @@ class SessionManager(
 
     @Subscribe
     fun onMessageEvent(event: LogoutEvent) {
-        expandedCards()?.clear()
         fixedSessionDownloadMeasurementsService.stop()
         periodicallySyncSessionsService.stop()
         SessionsSyncService.destroy()
