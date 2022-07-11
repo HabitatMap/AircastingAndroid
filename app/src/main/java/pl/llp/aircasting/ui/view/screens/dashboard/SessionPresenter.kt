@@ -106,7 +106,12 @@ class SessionPresenter() {
 
     companion object {
         fun defaultStream(session: Session?): MeasurementStream? {
-            return session?.streamsSortedByDetailedType()?.find { it.detailedType == SensorName.PM2_5.detailedType }
+            val sortedByDetailedType = session?.streamsSortedByDetailedType()
+            val pm2point5 =
+                sortedByDetailedType?.find { it.detailedType == SensorName.PM2_5.detailedType }
+            val firstStream = sortedByDetailedType?.firstOrNull()
+
+            return pm2point5 ?: firstStream
         }
     }
 }
