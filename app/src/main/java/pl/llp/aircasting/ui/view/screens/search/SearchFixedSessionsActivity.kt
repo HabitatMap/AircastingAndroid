@@ -17,7 +17,6 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.util.gone
@@ -80,21 +79,17 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
 
     private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
         if (chipGroup.checkedChipId == binding.ozoneChip.id) {
-            binding.apply {
-                chipGroupSecondLevelOne.gone()
-                chipGroupSecondLevelTwo.visible()
-            }
+            binding.chipGroupSecondLevelOne.gone()
+            binding.chipGroupSecondLevelTwo.visible()
 
             txtSelectedParameter = StringConstants.measurementTypeOzone
             txtSelectedSensor = StringConstants.openAQsensorNameOzone
         } else {
-            binding.apply {
-                chipGroupSecondLevelOne.visible()
-                chipGroupSecondLevelTwo.gone()
-            }
+            binding.chipGroupSecondLevelOne.visible()
+            binding.chipGroupSecondLevelTwo.gone()
 
             txtSelectedParameter = StringConstants.measurementTypePM
-            txtSelectedSensor = StringConstants.openAQsensorNameOzone
+            txtSelectedSensor = StringConstants.openAQsensorNamePM
         }
     }
 
@@ -104,7 +99,7 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
             binding.airbeamChip.id -> StringConstants.airbeam2sensorName
             binding.openAQFirstChip.id -> StringConstants.openAQsensorNamePM
             binding.purpleAirChip.id -> StringConstants.purpleAirSensorName
-            else -> ParticulateMatter.OPEN_AQ.getSensorName()
+            else -> StringConstants.openAQsensorNamePM
         }
     }
 
