@@ -250,6 +250,6 @@ fun ImageView.startAnimation() {
 }
 
 fun ImageView.stopAnimation() {
-    this.inVisible()
+    this.gone()
     animatable().stop()
 }
