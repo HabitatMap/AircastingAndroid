@@ -107,7 +107,7 @@ class GraphDataGenerator(
     }
 
     private fun convertDateToFloat(date: Date): Float {
-        // we need to substract startTime because
+        // we need to subtract startTime because
         // otherwise we lose precision while converting Long to Float
         // and Float is needed for the MPAndroidChart library
         return (date.time - startTime.time).toFloat()
@@ -119,7 +119,7 @@ class GraphDataGenerator(
         count += 1
 
         val measurementDate = Date(measurement.time.time)
-        if (hasNote != true && notes != null) {
+        if (!hasNote && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
                     AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(note, measurementDate)) hasNote = true
