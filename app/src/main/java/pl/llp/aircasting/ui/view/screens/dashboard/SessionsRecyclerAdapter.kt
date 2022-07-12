@@ -11,7 +11,6 @@ import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.expandedCards
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
@@ -61,17 +60,21 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
                 // TODO: Take conditions that ask about refreshing here
                 sessionPresenter.chartData?.refresh(session)
             } else {
-                val sessionPresenter = SessionPresenter(
-                    session,
-                    sensorThresholds,
-                    expanded = expandedCards()?.contains(session.uuid) ?: false
-                )
+                val sessionPresenter = initSessionPresenter(session, sensorThresholds)
                 mSessionPresenters[session.uuid] = sessionPresenter
             }
         }
 
         notifyDataSetChanged()
     }
+
+    protected open fun initSessionPresenter(
+        session: Session,
+        sensorThresholds: HashMap<String, SensorThreshold>
+    ) = SessionPresenter(
+        session,
+        sensorThresholds
+    )
 
     fun showLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
