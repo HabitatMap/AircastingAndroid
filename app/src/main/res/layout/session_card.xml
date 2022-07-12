@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Aircasting.Cards"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -20,98 +20,98 @@
             android:id="@+id/session_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4"
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="@color/aircasting_grey_300"
-            android:paddingTop="@dimen/keyline_4"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/session_actions_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/session_actions_button" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="23/22/10211" />
 
         <ImageView
             android:id="@+id/session_actions_button"
             style="@style/Widget.AppCompat.ActionButton"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_more_horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/session_date"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_more_horizontal"
             app:tint="@color/aircasting_grey_700" />
 
         <TextView
             android:id="@+id/session_name"
+            style="@style/SessionDetailsNameHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/session_date"
+            app:layout_constraintEnd_toStartOf="@+id/session_actions_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/expand_session_button"
-            style="@style/SessionDetailsNameHeader" />
+            app:layout_constraintTop_toBottomOf="@+id/session_date"
+            tools:text="gdgdgdgsdfdsfsd" />
 
         <ImageView
             android:id="@+id/expand_session_button"
             style="@style/Widget.AppCompat.ActionButton"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_chevron_down"
-            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
-            app:layout_constraintStart_toEndOf="@+id/session_name"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:tint="@color/aircasting_dark_blue" />
 
         <ImageView
             android:id="@+id/collapse_session_button"
             style="@style/Widget.AppCompat.ActionButton"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_chevron_up"
             android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
-            app:layout_constraintStart_toEndOf="@+id/session_name"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:tint="@color/aircasting_dark_blue" />
 
         <ImageView
             android:id="@+id/reorder_session_button"
             style="@style/Widget.AppCompat.ActionButton"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_draggable_icon"
             android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
-            app:layout_constraintStart_toEndOf="@+id/session_name"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/session_actions_button"
             app:tint="@color/aircasting_dark_blue" />
 
         <TextView
             android:id="@+id/session_info"
+            style="@style/SessionDetailsTypeHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/session_name"
+            app:layout_constraintEnd_toStartOf="@+id/expand_session_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            style="@style/SessionDetailsTypeHeader" />
+            app:layout_constraintTop_toBottomOf="@+id/session_name"
+            tools:text="This is just a description of what to do  here..." />
 
-        <include android:id="@+id/no_measurements_view"
+        <include
+            android:id="@+id/no_measurements_view"
             layout="@layout/no_measurements_view" />
 
         <TextView
             android:id="@+id/session_measurements_description"
-            android:text="@string/session_measurements_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_2"
+            android:text="@string/session_measurements_description"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintTop_toBottomOf="@+id/session_info"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/session_info" />
 
         <TableLayout
             android:id="@+id/measurements_table"
@@ -120,7 +120,8 @@
             android:layout_marginTop="@dimen/keyline_2"
             app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
 
-            <TableRow android:id="@+id/measurement_headers"/>
+            <TableRow android:id="@+id/measurement_headers" />
+
             <TableRow android:id="@+id/measurement_values" />
         </TableLayout>
 
@@ -130,9 +131,9 @@
             android:id="@+id/loader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_loader"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginBottom="@dimen/keyline_8"
+            android:src="@drawable/ic_loader"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/session_measurements_description"
             app:tint="@color/aircasting_blue_400" />
@@ -140,10 +141,10 @@
         <include
             android:id="@+id/expanded_session_view"
             layout="@layout/expanded_session_view"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_6"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/measurements_table" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
