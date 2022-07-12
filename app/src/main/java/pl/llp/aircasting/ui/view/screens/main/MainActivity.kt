@@ -11,13 +11,13 @@ import com.google.android.gms.maps.MapsInitializer.Renderer
 import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.exceptions.AircastingUncaughtExceptionHandler
+import pl.llp.aircasting.util.getMetaData
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
         //New map renderer
         MapsInitializer.initialize(applicationContext, Renderer.LATEST, this)
-        Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
+        Places.initialize(applicationContext, getMetaData(this, "PLACES_API_KEY"))
 
         view = MainViewMvcImpl(layoutInflater, null, this)
         controller =
