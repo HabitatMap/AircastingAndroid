@@ -19,7 +19,6 @@
 aircasting-ad-hoc.keystore
 aircasting.keystore
 app/google-services.json
-secure.properties
 app/release
 app/experimentalRelease
 private_key.pepk
