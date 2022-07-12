@@ -7,10 +7,12 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.util.ItemTouchHelperAdapter
+import pl.llp.aircasting.data.model.SensorThreshold
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingRecyclerAdapter
-
+import pl.llp.aircasting.util.ItemTouchHelperAdapter
 import java.util.*
 
 class ReorderingFollowingRecyclerAdapter (
@@ -45,6 +47,13 @@ class ReorderingFollowingRecyclerAdapter (
             }
         }
         notifyItemMoved(fromPosition, toPosition)
+    }
+
+    override fun initSessionPresenter(
+        session: Session,
+        sensorThresholds: HashMap<String, SensorThreshold>
+    ): SessionPresenter {
+        return SessionPresenter(session, sensorThresholds, expanded = false)
     }
 
     private fun updateSessionsOrder(firstPosition: Int, secondPosition: Int) {
