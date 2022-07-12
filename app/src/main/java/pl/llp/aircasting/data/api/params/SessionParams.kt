@@ -1,8 +1,9 @@
 package pl.llp.aircasting.data.api.params
 
-import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
+import pl.llp.aircasting.util.DateConverter
+import java.util.*
 
 class SessionParams(session: Session) {
     companion object {
@@ -15,7 +16,7 @@ class SessionParams(session: Session) {
     val title: String
     val tag_list: String
     val start_time: String
-    val end_time: String?
+    val end_time: String
     val contribute: Boolean
     val is_indoor: Boolean
     val notes: List<NoteParams>
@@ -34,7 +35,7 @@ class SessionParams(session: Session) {
         this.contribute = session.contribute
         this.title = session.name
         this.start_time = DateConverter.toDateString(session.startTime)
-        this.end_time = session.endTime?.let { DateConverter.toDateString(it) }
+        this.end_time = DateConverter.toDateString(session.endTime ?: Date())
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor
