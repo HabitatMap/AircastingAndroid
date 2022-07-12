@@ -10,6 +10,8 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.util.gone
+import pl.llp.aircasting.util.visible
 
 open class FollowingSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -24,7 +26,7 @@ open class FollowingSessionViewMvcImpl(
 
     init {
         val actionsView = this.rootView?.findViewById<ImageView>(R.id.session_actions_button)
-        actionsView?.visibility = View.GONE
+        actionsView?.gone()
         noMeasurementsIcon = this.rootView?.findViewById(R.id.session_no_measurements_icon)
         noMeasurementsLabels = this.rootView?.findViewById(R.id.session_no_measurements_labels)
     }
@@ -36,8 +38,8 @@ open class FollowingSessionViewMvcImpl(
     override fun showExpandedMeasurementsTableValues() = true
       
     override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
-        mUnfollowButton.visibility = View.VISIBLE
-        mFollowButton.visibility = View.GONE
+        mUnfollowButton.visible()
+        mFollowButton.gone()
     }
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
@@ -46,33 +48,36 @@ open class FollowingSessionViewMvcImpl(
 
     override fun bindMeasurementsTable() {
         val session = mSessionPresenter?.session
-        if (session == null || session.measurementsCount() > 0) {
+        val hasMeasurements = session?.hasMeasurements()
+
+        if (hasMeasurements == true) {
             hideNoMeasurementsInfo()
-            mMeasurementsTableContainer.bindSession(mSessionPresenter, this::onMeasurementStreamChanged)
-        } else {
-            showNoMeasurementsInfo()
-        }
+            mMeasurementsTableContainer.bindSession(
+                mSessionPresenter,
+                this::onMeasurementStreamChanged
+            )
+        } else showNoMeasurementsInfo()
     }
 
     override fun bindCollapsedMeasurementsDescription() {
-        mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
+        mMeasurementsDescription?.text =
+            context.getString(R.string.session_last_min_measurements_description)
     }
 
     override fun bindExpandedMeasurementsDescription() {
-        mMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
-    }
-
-    private fun showNoMeasurementsInfo() {
-        mMeasurementsDescription?.visibility = View.GONE
-        noMeasurementsIcon?.visibility = View.VISIBLE
-        noMeasurementsLabels?.visibility = View.VISIBLE
-        setExpandCollapseButton()
+        mMeasurementsDescription?.text =
+            context.getString(R.string.session_last_min_measurements_description)
     }
 
     private fun hideNoMeasurementsInfo() {
-        mMeasurementsDescription?.visibility = View.VISIBLE
-        noMeasurementsIcon?.visibility = View.GONE
-        noMeasurementsLabels?.visibility = View.GONE
-        setExpandCollapseButton()
+        mMeasurementsDescription?.visible()
+        noMeasurementsIcon?.gone()
+        noMeasurementsLabels?.gone()
+    }
+
+    private fun showNoMeasurementsInfo() {
+        mMeasurementsDescription?.gone()
+        noMeasurementsIcon?.visible()
+        noMeasurementsLabels?.visible()
     }
 }
