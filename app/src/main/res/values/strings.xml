@@ -520,4 +520,6 @@
     <string name="your_session_text">Your session</string>
     <string name="use_satellite_view">Use Satellite view</string>
     <string name="use_celsius_scale">Use Celsius scale</string>
+    <string name="from">from</string>
+    <string name="to">to</string>
 </resources>
