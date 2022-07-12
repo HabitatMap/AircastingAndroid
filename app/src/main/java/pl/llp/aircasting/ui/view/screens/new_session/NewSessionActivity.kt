@@ -47,7 +47,7 @@ class NewSessionActivity : BaseActivity() {
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                         if (it.resultCode == RESULT_OK) when (sessionType) {
                             Session.Type.FIXED -> goToFollowingTab()
-                            Session.Type.MOBILE -> goToActiveTab()
+                            Session.Type.MOBILE -> goToMobileActiveTab()
                         }
                     }
 
@@ -71,7 +71,7 @@ class NewSessionActivity : BaseActivity() {
             }
         }
 
-        private fun goToActiveTab() {
+        private fun goToMobileActiveTab() {
             val action = MobileNavigationDirections.actionGlobalDashboard(
                 SessionsTab.MOBILE_ACTIVE.value
             )
