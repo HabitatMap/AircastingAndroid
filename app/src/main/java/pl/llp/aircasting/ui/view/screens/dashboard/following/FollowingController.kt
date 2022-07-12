@@ -15,6 +15,7 @@ import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.adjustMenuVisibility
+import pl.llp.aircasting.util.expandedCards
 
 class FollowingController(
     private val mRootActivity: FragmentActivity?,
@@ -61,6 +62,15 @@ class FollowingController(
     override fun onExploreNewSessionsClicked() {
         val intent = Intent(mContext, SearchFixedSessionsActivity::class.java)
         mContext?.startActivity(intent)
+    }
+
+    override fun onExpandSessionCard(session: Session) {
+        super.onExpandSessionCard(session)
+        expandedCards()?.add(session.uuid)
+    }
+
+    override fun onCollapseSessionCard(session: Session) {
+        expandedCards()?.remove(session.uuid)
     }
 
     override fun onEditSessionClicked(session: Session) {
