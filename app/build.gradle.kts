@@ -36,8 +36,6 @@ android {
 
     buildTypes {
         getByName("debug") {
-            isMinifyEnabled = true
-            isShrinkResources = true
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
