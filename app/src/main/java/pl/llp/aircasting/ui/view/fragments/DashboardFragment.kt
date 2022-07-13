@@ -85,14 +85,11 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     }
 
     private fun handleBackButtonPress() {
-        requireActivity().let {
-            it.onBackPressedDispatcher
-                .addCallback(viewLifecycleOwner) {
-                    if (isEnabled && mTabPosition == 0) {
-                        isEnabled = false
-                        showBatteryOptimizationDialogIfNeeded()
-                    }
-                }
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner) {
+            if (isEnabled && mTabPosition == 0) {
+                isEnabled = false
+                showBatteryOptimizationDialogIfNeeded()
+            }
         }
     }
 
