@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
         //New map renderer
         MapsInitializer.initialize(applicationContext, Renderer.LATEST, this)
-        Places.initialize(applicationContext, getMetaData(this, "PLACES_API_KEY"))
+        Places.initialize(applicationContext, applicationContext.getMetaData("PLACES_API_KEY"))
 
         view = MainViewMvcImpl(layoutInflater, null, this)
         controller =
