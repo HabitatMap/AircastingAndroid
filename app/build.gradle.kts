@@ -1,11 +1,9 @@
-import java.io.FileInputStream
-import java.util.*
-
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("androidx.navigation.safeargs")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
@@ -24,16 +22,6 @@ android {
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
         resourceConfigurations.addAll(arrayOf("en", "fr", "sp"))
 
-        val secureProps = Properties().apply {
-            val file = file("../secure.properties")
-            if (file.exists()) load(FileInputStream(File(rootProject.rootDir, "secure.properties")))
-        }
-        resValue("string", "maps_api_key", secureProps.getProperty("MAPS_API_KEY") ?: "")
-        buildConfigField(
-            "String",
-            "PLACES_API_KEY",
-            secureProps.getProperty("PLACES_API_KEY") ?: "\"\""
-        )
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
@@ -51,7 +39,8 @@ android {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             manifestPlaceholders["crashlyticsCollectionEnabled"] = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

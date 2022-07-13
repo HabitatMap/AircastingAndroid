@@ -4,6 +4,7 @@ object Versions {
     const val navigation = "2.4.2"
     const val googleServices = "4.3.10"
     const val crashlytics = "2.9.0"
+    const val secretPlugin = "2.0.1"
 
     //libs
     const val coroutines = "1.6.1"

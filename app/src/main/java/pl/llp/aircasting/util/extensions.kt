@@ -182,11 +182,8 @@ fun GoogleMap.drawMarkerOnMap(
     )
 }
 
-fun initializePlacesApi(appContext: Context) {
-    if (!Places.isInitialized()) Places.initialize(
-        appContext,
-        BuildConfig.PLACES_API_KEY
-    )
+fun initializePlacesApi(mContext: Context) {
+    if (!Places.isInitialized()) Places.initialize(mContext, BuildConfig.PLACES_API_KEY)
 }
 
 fun View.setMargins(
