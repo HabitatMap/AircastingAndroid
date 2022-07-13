@@ -88,12 +88,10 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
         requireActivity().let {
             it.onBackPressedDispatcher
                 .addCallback(viewLifecycleOwner) {
-
                     if (isEnabled && mTabPosition == 0) {
                         isEnabled = false
                         showBatteryOptimizationDialogIfNeeded()
-                    } else it.onBackPressed()
-
+                    }
                 }
         }
     }
