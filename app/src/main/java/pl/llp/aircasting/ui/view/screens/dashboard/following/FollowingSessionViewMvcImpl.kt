@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
@@ -36,7 +37,7 @@ open class FollowingSessionViewMvcImpl(
     }
 
     override fun showExpandedMeasurementsTableValues() = true
-      
+
     override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
         mUnfollowButton.visible()
         mFollowButton.gone()
@@ -50,13 +51,20 @@ open class FollowingSessionViewMvcImpl(
         val session = mSessionPresenter?.session
         val hasMeasurements = session?.hasMeasurements()
 
-        if (hasMeasurements == true) {
+        // show MeasurementTable when there are measurements and the noMeasurementView is visible
+        if (session == null || hasMeasurements == true) {
             hideNoMeasurementsInfo()
             mMeasurementsTableContainer.bindSession(
                 mSessionPresenter,
                 this::onMeasurementStreamChanged
             )
-        } else showNoMeasurementsInfo()
+        }
+    }
+    // TODO: We'll need to check to see what's happenning with the previously followed sessions which are being bound to the newest one here
+    // It may be also related to the RecyclerView adapter card!
+
+    private fun isNoMeasurementViewVisible(): Boolean {
+        return noMeasurementsIcon?.isVisible == true && noMeasurementsLabels?.isVisible == true
     }
 
     override fun bindCollapsedMeasurementsDescription() {
@@ -71,12 +79,14 @@ open class FollowingSessionViewMvcImpl(
 
     private fun hideNoMeasurementsInfo() {
         mMeasurementsDescription?.visible()
+
         noMeasurementsIcon?.gone()
         noMeasurementsLabels?.gone()
     }
 
     private fun showNoMeasurementsInfo() {
         mMeasurementsDescription?.gone()
+
         noMeasurementsIcon?.visible()
         noMeasurementsLabels?.visible()
     }
