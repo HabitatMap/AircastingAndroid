@@ -8,14 +8,14 @@ import androidx.core.view.forEach
 import androidx.core.view.get
 import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.setAppearance
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
+import pl.llp.aircasting.util.MeasurementColor
+import pl.llp.aircasting.util.TemperatureConverter
+import pl.llp.aircasting.util.setAppearance
 
 abstract class MeasurementsTableContainer {
     private val mContext: Context
@@ -101,7 +101,7 @@ abstract class MeasurementsTableContainer {
             stretchTableLayout()
         }
 
-        if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE) {
+        if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE || session?.hasMeasurements() == false) {
             mMeasurementsTable?.visibility = View.GONE
         } else {
             mMeasurementsTable?.visibility = View.VISIBLE
