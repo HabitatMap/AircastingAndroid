@@ -87,6 +87,11 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         LocationHelper.stop()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        controller?.goToFollowingTab()
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>, grantResults: IntArray
