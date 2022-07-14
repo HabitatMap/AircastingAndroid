@@ -88,6 +88,13 @@ class MainController(
         sync(apiService)
     }
 
+    fun goToFollowingTab() {
+        val action =
+            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
+        Navigation.findNavController(rootActivity, R.id.nav_host_fragment)
+            .navigate(action)
+    }
+
     private fun sync(apiService: ApiService) {
         val mMobileSessionsSyncService =
             SessionsSyncService.get(apiService, mErrorHandler, mSettings)
