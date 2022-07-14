@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -30,8 +31,16 @@ class SearchFixedSessionsActivity : AppCompatActivity() {
         fun start(rootActivity: FragmentActivity?) {
             rootActivity ?: return
 
+            removePopBackStack(rootActivity)
             val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
             rootActivity.startActivity(intent)
+        }
+
+        private fun removePopBackStack(rootActivity: FragmentActivity) {
+            rootActivity.supportFragmentManager.popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
         }
     }
 
