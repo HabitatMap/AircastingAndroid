@@ -178,9 +178,9 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     private fun bindSessionDetails() {
         val session = mSessionPresenter?.session
-
+        session ?: return
         mDateTextView.text = DurationStringHelper().durationString(
-            session?.startTime!!,
+            session.startTime,
             session.endTime
         )
         mNameTextView.text = session.name
@@ -225,13 +225,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected open fun expandSessionCard() {
         setExpandCollapseButton()
         mExpandedSessionView.visible()
-        if (showExpandedMeasurementsTableValues()) {
-            mMeasurementsTableContainer.makeSelectable()
-        }
+        if (showExpandedMeasurementsTableValues()) mMeasurementsTableContainer.makeSelectable()
 
-        if (showChart()) {
-            mChartView?.visibility = View.VISIBLE
-        }
+        if (showChart()) mChartView?.visible()
+
         bindExpandedMeasurementsDescription()
 
         adjustSessionCardPadding()
