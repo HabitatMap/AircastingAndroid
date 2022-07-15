@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Aircasting.Cards"
-    android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/keyline_4"
-    android:layout_marginEnd="@dimen/keyline_4"
-    android:layout_marginTop="@dimen/keyline_2">
+    android:layout_marginTop="@dimen/keyline_2"
+    android:layout_marginEnd="@dimen/keyline_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/session_card_layout"
@@ -116,8 +116,9 @@
         <TableLayout
             android:id="@+id/measurements_table"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/keyline_2"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/session_measurements_description">
 
             <TableRow android:id="@+id/measurement_headers" />
