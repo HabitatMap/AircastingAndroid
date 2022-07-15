@@ -5,7 +5,7 @@
         app:key="myAcc"
         app:summary="Habitat Map"
         app:allowDividerBelow="false"
-        app:icon="@drawable/baseline_account_circle_grey_500_36dp"
+        app:icon="@drawable/baseline_account_circle_grey_600_24dp"
         app:title="@string/settings_my_account" />
 
     <PreferenceCategory android:title="General">
@@ -31,13 +31,13 @@
             app:allowDividerAbove="true"
             app:allowDividerBelow="true"
             app:key="use_celsius"
-            app:title="@string/use_celsius_scale" />
+            app:title="use_celsius_scale" />
 
         <SwitchPreference
             app:allowDividerAbove="true"
             app:allowDividerBelow="true"
             app:key="satellite_switch"
-            app:title="@string/satellite_map_settings" />
+            app:title="satellite_map_settings" />
 
         <PreferenceCategory android:title="Extra">
 
