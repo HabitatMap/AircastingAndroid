@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel" />
@@ -118,8 +119,8 @@
                     android:id="@+id/chart_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/measurements_table">
 
@@ -206,7 +207,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
-                    android:layout_marginBottom="@dimen/keyline_2"
                     android:backgroundTint="@color/aircasting_white"
                     android:text="@string/unfollow_session"
                     android:textColor="@color/aircasting_blue_400"
