@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.common.BaseActivity
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
+import pl.llp.aircasting.util.goToFollowingTab
+import pl.llp.aircasting.util.goToMobileActiveTab
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.setupAppBar
@@ -46,8 +46,8 @@ class NewSessionActivity : BaseActivity() {
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                         if (it.resultCode == RESULT_OK) when (sessionType) {
-                            Session.Type.FIXED -> goToFollowingTab()
-                            Session.Type.MOBILE -> goToMobileActiveTab()
+                            Session.Type.FIXED -> goToFollowingTab(rootActivity)
+                            Session.Type.MOBILE -> goToMobileActiveTab(rootActivity)
                         }
                     }
 
@@ -71,18 +71,12 @@ class NewSessionActivity : BaseActivity() {
             }
         }
 
-        private fun goToMobileActiveTab() {
-            val action = MobileNavigationDirections.actionGlobalDashboard(
-                SessionsTab.MOBILE_ACTIVE.value
-            )
-            navHostFragment.navController.navigate(action)
+        private fun goToMobileActiveTab(rootActivity: FragmentActivity?) {
+            rootActivity?.goToMobileActiveTab()
         }
 
-        private fun goToFollowingTab() {
-            val action = MobileNavigationDirections.actionGlobalDashboard(
-                SessionsTab.FOLLOWING.value
-            )
-            navHostFragment.navController.navigate(action)
+        private fun goToFollowingTab(rootActivity: FragmentActivity?) {
+           rootActivity?.goToFollowingTab()
         }
     }
 
