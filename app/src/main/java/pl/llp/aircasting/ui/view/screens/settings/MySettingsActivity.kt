@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.fragments.MySettingsFragment
 import pl.llp.aircasting.util.adjustMenuVisibility
 
 class MySettingsActivity : AppCompatActivity() {

@@ -3,15 +3,14 @@ package pl.llp.aircasting.ui.view.screens.settings
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.microphone_settings_dialog.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseDialog
-import kotlinx.android.synthetic.main.microphone_settings_dialog.view.*
 
 class MicrophoneSettingsDialog(
-    mFragmentManager : FragmentManager,
+    mFragmentManager: FragmentManager,
     private val calibration: Int,
-    private val listener: SettingsViewMvc.MicrophoneSettingsDialogListener
-    ) : BaseDialog(mFragmentManager) {
+) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
@@ -30,9 +29,9 @@ class MicrophoneSettingsDialog(
         return mView
     }
 
-    private fun microphoneSettingsConfirmed(){
+    private fun microphoneSettingsConfirmed() {
         val calibration = mView.mic_setting_input.text.toString().trim().toInt()
-        listener.confirmMicrophoneSettingsClicked(calibration)
+        //listener.confirmMicrophoneSettingsClicked(calibration)
         dismiss()
     }
 }

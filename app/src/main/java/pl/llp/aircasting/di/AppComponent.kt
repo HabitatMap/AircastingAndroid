@@ -18,7 +18,6 @@ import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
-import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.util.helpers.sensor.AirBeamClearCardService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
@@ -69,7 +68,6 @@ interface AppComponent {
     fun inject(fragment: ReorderingDashboardFragment)
 
     fun inject(fragment: SettingsFragment)
-    fun inject(activity: MyAccountActivity)
     fun inject(activity: ClearSDCardActivity)
     fun inject(fragment: ClearingSDCardFragment)
     fun inject(fragment: SDCardClearedFragment)

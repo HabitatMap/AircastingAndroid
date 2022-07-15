@@ -4,15 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseDialog
-import kotlinx.android.synthetic.main.backend_settings_dialog.view.*
 
 class BackendSettingsDialog(
     mFragmentManager : FragmentManager,
     private val mUrl: String?,
     private val mPort: String?,
-    private val listener: SettingsViewMvc.BackendSettingsDialogListener,
     private val mContext: Context?
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
@@ -41,7 +40,7 @@ class BackendSettingsDialog(
         if (!urlValue.startsWith("http://") && !urlValue.startsWith("https://"))
             showError()
         else if (mUrl != urlValue)
-            BackendSettingsConfirmationDialog(requireFragmentManager(), listener, urlValue, portValue).show()
+           // BackendSettingsConfirmationDialog(requireFragmentManager(), listener, urlValue, portValue).show()
         else
             dismiss()
 

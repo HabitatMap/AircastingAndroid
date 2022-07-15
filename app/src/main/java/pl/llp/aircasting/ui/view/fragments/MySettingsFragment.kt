@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.settings
+package pl.llp.aircasting.ui.view.fragments
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
