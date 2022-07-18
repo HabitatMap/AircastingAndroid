@@ -51,7 +51,6 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
-
     private var mMapButton: Button
     private var mGraphButton: Button
     private var mLoader: ImageView?
@@ -163,11 +162,19 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun bindLoader(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.loading) showLoader() else hideLoader()
+        if (sessionPresenter.loading) {
+            showLoader()
+        } else {
+            hideLoader()
+        }
     }
 
     protected open fun bindExpanded(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.expanded) expandSessionCard() else collapseSessionCard()
+        if (sessionPresenter.expanded) {
+            expandSessionCard()
+        } else {
+            collapseSessionCard()
+        }
     }
 
     private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
@@ -226,7 +233,9 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected open fun expandSessionCard() {
         setExpandCollapseButton()
         mExpandedSessionView.visible()
-        if (showExpandedMeasurementsTableValues()) mMeasurementsTableContainer.makeSelectable()
+        if (showExpandedMeasurementsTableValues()) {
+            mMeasurementsTableContainer.makeSelectable()
+        }
 
         if (showChart()) mChartView?.visible()
 
