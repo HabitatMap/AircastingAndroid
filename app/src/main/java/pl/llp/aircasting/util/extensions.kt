@@ -58,6 +58,14 @@ fun styleGoogleMap(map: GoogleMap, context: Context) {
     )
 }
 
+fun styleDarkGoogleMap(map: GoogleMap, context: Context) {
+    map.setMapStyle(
+        MapStyleOptions.loadRawResourceStyle(
+            context, R.raw.map_dark_style
+        )
+    )
+}
+
 fun labelFormat(value: Float?): String {
     return "%d".format(value?.toInt())
 }
@@ -239,14 +247,17 @@ fun GoogleMap.setMapTypeToSatellite() {
     this.mapType = GoogleMap.MAP_TYPE_HYBRID
 }
 
-fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
+fun GoogleMap.setMapTypeToNormalWithStyle(mSettings: Settings, mContext: Context) {
     this.mapType = GoogleMap.MAP_TYPE_NORMAL
-    styleGoogleMap(this, mContext)
+    if (mSettings.isThemeChangeEnabled()) styleDarkGoogleMap(this, mContext) else styleGoogleMap(
+        this,
+        mContext
+    )
 }
 
 fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
     if (mSettings.isUsingSatelliteView()) this.setMapTypeToSatellite()
-    else this.setMapTypeToNormalWithStyle(mContext)
+    else this.setMapTypeToNormalWithStyle(mSettings, mContext)
 }
 
 fun ImageView.animatable(): Animatable {
