@@ -32,22 +32,22 @@ class SessionPresenter() {
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
-        if (session.tab == SessionsTab.FOLLOWING || session.tab == SessionsTab.MOBILE_ACTIVE || session.isExternal) {
-            this.chartData = ChartData(session)
-        }
-        if (session.tab == SessionsTab.MOBILE_ACTIVE || session.tab == SessionsTab.MOBILE_DORMANT) {
-            this.shouldHideMap = session.locationless
-        }
-        if (session.tab == SessionsTab.FIXED || session.tab == SessionsTab.FOLLOWING) {
-            this.shouldHideMap = session.indoor
-        }
 
-        if (session.tab == SessionsTab.MOBILE_ACTIVE) {
-            this.loading = true
+        when {
+            session.tab == SessionsTab.FOLLOWING -> {
+                this.chartData = ChartData(session)
+                this.shouldHideMap = session.indoor
+            }
+            session.tab == SessionsTab.FIXED -> this.shouldHideMap = session.indoor
+            session.tab == SessionsTab.MOBILE_ACTIVE -> {
+                this.chartData = ChartData(session)
+                this.shouldHideMap = session.locationless
+                this.loading = true
+            }
+            session.tab == SessionsTab.MOBILE_DORMANT -> this.shouldHideMap = session.locationless
+            session.isExternal -> this.chartData = ChartData(session)
         }
-
     }
-    // TODO: Needs to be revised and rewritten with "when" later.
 
     constructor(sessionUUID: String, initialSensorName: String?) : this() {
         this.sessionUUID = sessionUUID
@@ -57,7 +57,7 @@ class SessionPresenter() {
     fun selectedSensorThreshold(): SensorThreshold? {
         selectedStream ?: return null
 
-        return sensorThresholds[selectedStream!!.sensorName]
+        return sensorThresholds[selectedStream?.sensorName]
     }
 
     fun sensorThresholdFor(stream: MeasurementStream?): SensorThreshold? {
