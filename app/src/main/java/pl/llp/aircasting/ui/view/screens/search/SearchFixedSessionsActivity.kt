@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.Status
@@ -19,12 +18,13 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
+import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.gone
 import pl.llp.aircasting.util.initializePlacesApi
 import pl.llp.aircasting.util.setStyle
 import pl.llp.aircasting.util.visible
 
-class SearchFixedSessionsActivity : AppCompatActivity() {
+class SearchFixedSessionsActivity : BaseActivity() {
 
     companion object {
         fun start(rootActivity: FragmentActivity?) {
