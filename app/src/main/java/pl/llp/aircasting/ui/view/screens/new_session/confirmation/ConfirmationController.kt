@@ -3,12 +3,12 @@ package pl.llp.aircasting.ui.view.screens.new_session.confirmation
 import android.content.Context
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.util.events.LocationChanged
-import pl.llp.aircasting.util.KeyboardHelper
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.safeRegister
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseController
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.events.LocationChanged
+import pl.llp.aircasting.util.hideKeyboard
+import pl.llp.aircasting.util.safeRegister
 
 class ConfirmationController(
     viewMvc: ConfirmationViewMvcImpl?,
@@ -27,7 +27,7 @@ class ConfirmationController(
     }
 
     fun onStart(context: Context?) {
-        KeyboardHelper.hideKeyboard(context)
+        context?.hideKeyboard()
     }
 
     override fun onDestroy() {
