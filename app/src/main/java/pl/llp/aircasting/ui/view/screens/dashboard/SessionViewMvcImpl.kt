@@ -51,6 +51,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     protected var mFollowButton: Button
     protected var mUnfollowButton: Button
+
     private var mMapButton: Button
     private var mGraphButton: Button
     private var mLoader: ImageView?
@@ -233,10 +234,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected open fun expandSessionCard() {
         setExpandCollapseButton()
         mExpandedSessionView.visible()
+
         if (showExpandedMeasurementsTableValues()) {
             mMeasurementsTableContainer.makeSelectable(mSessionPresenter)
         }
-
         if (showChart()) mChartView?.visible()
 
         bindExpandedMeasurementsDescription()
