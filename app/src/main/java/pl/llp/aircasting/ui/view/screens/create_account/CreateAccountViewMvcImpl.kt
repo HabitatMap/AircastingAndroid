@@ -8,39 +8,38 @@ import android.widget.CheckBox
 import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.util.KeyboardHelper.Companion.hideKeyboard
+import pl.llp.aircasting.util.Settings
 import java.util.*
 
-class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.Listener>, CreateAccountViewMvc {
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        settings: Settings,
-        fromOnboarding: Boolean?): super() {
+class CreateAccountViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    settings: Settings,
+    fromOnboarding: Boolean?
+) : BaseObservableViewMvc<CreateAccountViewMvc.Listener>(), CreateAccountViewMvc {
+    init {
         this.rootView = inflater.inflate(R.layout.activity_create_account, parent, false)
-
         val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
         createAccountButton?.setOnClickListener {
             onCreateAccountClicked()
         }
-
         val loginButton = rootView?.findViewById<Button>(R.id.sign_in_button)
         loginButton?.setOnClickListener {
             onLoginClicked()
         }
-
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
         if (fromOnboarding == true) {
             progressBarFrame?.visibility = View.VISIBLE
         } else {
             progressBarFrame?.visibility = View.GONE
         }
-
     }
 
     private fun onCreateAccountClicked() {
+        hideKeyboard(rootView?.context)
         val profile_name = getEditTextValue(R.id.profile_name_input)
         val password = getEditTextValue(R.id.password_input)
         val email = getEditTextValue(R.id.email_input)
@@ -66,14 +65,15 @@ class CreateAccountViewMvcImpl : BaseObservableViewMvc<CreateAccountViewMvc.List
     private fun showError(inputLayoutName: String, errorRespose: CreateAccountErrorResponse) {
         val inputId = rootView?.resources?.getIdentifier(inputLayoutName, "id", context.packageName)
         inputId.let {
-            val inputLayout: TextInputLayout = findViewById<TextInputLayout>(it!!)
-            val errors: List<String>? = errorRespose.javaClass.getMethod("get"+ inputLayoutName.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            }).invoke(errorRespose) as? List<String>
+            val inputLayout: TextInputLayout = findViewById(it!!)
+            val errors: List<String>? =
+                errorRespose.javaClass.getMethod("get" + inputLayoutName.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.getDefault()
+                    ) else it.toString()
+                }).invoke(errorRespose) as? List<String>
 
-            if(errors != null && !errors.isEmpty()) {
+            if (errors != null && !errors.isEmpty()) {
                 inputLayout.error = errors.joinToString(separator = ". ")
             } else {
                 inputLayout.error = null
