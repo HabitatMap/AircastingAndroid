@@ -8,8 +8,8 @@ import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithLastMeasurementsDBObject
 import pl.llp.aircasting.data.local.entity.StreamWithMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.util.addHours
-import pl.llp.aircasting.util.calendar
+import pl.llp.aircasting.util.extensions.addHours
+import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*

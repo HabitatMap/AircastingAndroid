@@ -25,10 +25,10 @@ import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
-import pl.llp.aircasting.util.goToDormantTab
+import pl.llp.aircasting.util.extensions.goToDormantTab
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,

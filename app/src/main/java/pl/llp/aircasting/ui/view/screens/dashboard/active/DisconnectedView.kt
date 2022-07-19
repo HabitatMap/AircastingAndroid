@@ -10,10 +10,10 @@ import kotlinx.android.synthetic.main.disconnected_view.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import pl.llp.aircasting.util.gone
-import pl.llp.aircasting.util.startAnimation
-import pl.llp.aircasting.util.stopAnimation
-import pl.llp.aircasting.util.visible
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
+import pl.llp.aircasting.util.extensions.visible
 
 class DisconnectedView(
     context: Context,

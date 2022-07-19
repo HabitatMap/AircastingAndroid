@@ -10,7 +10,7 @@ import pl.llp.aircasting.util.exceptions.AudioReaderError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*
 

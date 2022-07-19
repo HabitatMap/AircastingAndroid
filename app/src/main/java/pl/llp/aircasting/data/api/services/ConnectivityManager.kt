@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.isConnected
+import pl.llp.aircasting.util.extensions.isConnected
 
 class ConnectivityManager(apiService: ApiService, context: Context, settings: Settings) :
     BroadcastReceiver() {

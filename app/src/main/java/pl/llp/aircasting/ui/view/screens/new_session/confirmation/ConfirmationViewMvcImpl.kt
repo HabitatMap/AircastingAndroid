@@ -21,7 +21,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.BitmapHelper
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.setMapType
+import pl.llp.aircasting.util.extensions.setMapType
 
 
 abstract class ConfirmationViewMvcImpl(

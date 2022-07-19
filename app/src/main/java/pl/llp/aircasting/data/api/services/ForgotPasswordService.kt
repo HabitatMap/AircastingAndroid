@@ -8,7 +8,7 @@ import pl.llp.aircasting.data.api.params.ForgotPasswordParams
 import pl.llp.aircasting.data.api.response.ForgotPasswordResponse
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.showToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

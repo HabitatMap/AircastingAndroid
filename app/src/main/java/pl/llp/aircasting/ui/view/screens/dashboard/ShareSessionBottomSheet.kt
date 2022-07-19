@@ -16,9 +16,9 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.util.isValidEmail
-import pl.llp.aircasting.util.setAppearance
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.isValidEmail
+import pl.llp.aircasting.util.extensions.setAppearance
+import pl.llp.aircasting.util.extensions.showToast
 
 class ShareSessionBottomSheet(
     private val mListener: Listener,

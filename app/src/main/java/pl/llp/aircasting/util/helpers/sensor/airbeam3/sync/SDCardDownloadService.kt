@@ -7,7 +7,7 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import java.io.FileWriter
 
 class SDCardDownloadService(mContext: Context) {
