@@ -9,8 +9,7 @@ import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.hideKeyboard
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.showToast
 
 class CreateAccountController(
     private val mContextActivity: AppCompatActivity,

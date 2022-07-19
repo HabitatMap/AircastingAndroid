@@ -19,10 +19,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
-import pl.llp.aircasting.util.gone
-import pl.llp.aircasting.util.initializePlacesApi
-import pl.llp.aircasting.util.setStyle
-import pl.llp.aircasting.util.visible
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.initializePlacesApi
+import pl.llp.aircasting.util.extensions.setStyle
+import pl.llp.aircasting.util.extensions.visible
 
 class SearchFixedSessionsActivity : BaseActivity() {
 

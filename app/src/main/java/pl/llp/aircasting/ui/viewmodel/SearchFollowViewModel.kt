@@ -12,8 +12,8 @@ import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.addHours
-import pl.llp.aircasting.util.calendar
+import pl.llp.aircasting.util.extensions.addHours
+import pl.llp.aircasting.util.extensions.calendar
 import java.util.*
 import javax.inject.Inject
 

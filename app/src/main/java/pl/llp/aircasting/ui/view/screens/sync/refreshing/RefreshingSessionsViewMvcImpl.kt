@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
-import pl.llp.aircasting.util.startAnimation
+import pl.llp.aircasting.util.extensions.startAnimation
 
 class RefreshingSessionsViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc(),
     RefreshingSessionsViewMvc {

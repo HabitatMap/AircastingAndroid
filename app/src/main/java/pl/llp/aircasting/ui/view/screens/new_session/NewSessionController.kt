@@ -32,6 +32,10 @@ import pl.llp.aircasting.util.events.SendSessionAuth
 import pl.llp.aircasting.util.events.StartRecordingEvent
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.areLocationServicesOn
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp

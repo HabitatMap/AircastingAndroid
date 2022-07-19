@@ -20,6 +20,9 @@ import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.util.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.goToDormantTab
+import pl.llp.aircasting.util.extensions.goToFollowingTab
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
 
 class MainController(

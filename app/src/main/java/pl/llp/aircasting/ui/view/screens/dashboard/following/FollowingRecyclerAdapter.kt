@@ -8,7 +8,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
-import pl.llp.aircasting.util.expandedCards
+import pl.llp.aircasting.util.extensions.expandedCards
 
 open class FollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,

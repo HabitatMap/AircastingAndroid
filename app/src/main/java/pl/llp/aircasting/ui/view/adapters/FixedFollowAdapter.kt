@@ -9,7 +9,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity
-import pl.llp.aircasting.util.disableForASecond
+import pl.llp.aircasting.util.extensions.disableForASecond
 
 class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegionResponse) -> Unit) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {

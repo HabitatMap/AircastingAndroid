@@ -10,8 +10,8 @@ import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.hideKeyboard
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.hideKeyboard
+import pl.llp.aircasting.util.extensions.showToast
 
 class LoginController(
     private val mContextActivity: AppCompatActivity,

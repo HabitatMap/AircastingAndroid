@@ -14,8 +14,8 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.adjustMenuVisibility
-import pl.llp.aircasting.util.expandedCards
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.expandedCards
 
 class FollowingController(
     private val mRootActivity: FragmentActivity?,
