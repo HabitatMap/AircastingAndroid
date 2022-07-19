@@ -5,20 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.FragmentActivity
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseFragment
-import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardController
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.adjustMenuVisibility
-import pl.llp.aircasting.util.isIgnoringBatteryOptimizations
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
+import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
 class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
@@ -94,16 +88,6 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     }
 
     private fun showBatteryOptimizationDialogIfNeeded() {
-        if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(requireContext())) showBatteryOptimizationHelperDialog(
-            requireActivity()
-        )
-    }
-
-    private fun showBatteryOptimizationHelperDialog(fragmentActivity: FragmentActivity) {
-        BatteryAlertDialog(
-            fragmentActivity.supportFragmentManager,
-            fragmentActivity.getString(R.string.running_background),
-            fragmentActivity.getString(R.string.battery_desc)
-        ).show()
+        if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(requireContext())) requireActivity().showBatteryOptimizationHelperDialog()
     }
 }
