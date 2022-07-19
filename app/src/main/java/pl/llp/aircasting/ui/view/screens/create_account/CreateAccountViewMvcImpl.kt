@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.create_account
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,8 @@ import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
-import pl.llp.aircasting.util.KeyboardHelper.Companion.hideKeyboard
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.hideKeyboard
 import java.util.*
 
 class CreateAccountViewMvcImpl(
@@ -22,13 +23,15 @@ class CreateAccountViewMvcImpl(
 ) : BaseObservableViewMvc<CreateAccountViewMvc.Listener>(), CreateAccountViewMvc {
     init {
         this.rootView = inflater.inflate(R.layout.activity_create_account, parent, false)
+        val context = rootView?.context
+
         val createAccountButton = rootView?.findViewById<Button>(R.id.create_account_button)
         createAccountButton?.setOnClickListener {
-            onCreateAccountClicked()
+            onCreateAccountClicked(context, it)
         }
         val loginButton = rootView?.findViewById<Button>(R.id.sign_in_button)
         loginButton?.setOnClickListener {
-            onLoginClicked()
+            onLoginClicked(context, it)
         }
         val progressBarFrame = rootView?.findViewById<FrameLayout>(R.id.progress_bar_frame)
         if (fromOnboarding == true) {
@@ -38,8 +41,8 @@ class CreateAccountViewMvcImpl(
         }
     }
 
-    private fun onCreateAccountClicked() {
-        hideKeyboard(rootView?.context)
+    private fun onCreateAccountClicked(context: Context?, view: View) {
+        context?.hideKeyboard(view)
         val profile_name = getEditTextValue(R.id.profile_name_input)
         val password = getEditTextValue(R.id.password_input)
         val email = getEditTextValue(R.id.email_input)
@@ -50,7 +53,8 @@ class CreateAccountViewMvcImpl(
         }
     }
 
-    private fun onLoginClicked() {
+    private fun onLoginClicked(context: Context?, it: View) {
+        context?.hideKeyboard(it)
         for (listener in listeners) {
             listener.onLoginClicked()
         }
