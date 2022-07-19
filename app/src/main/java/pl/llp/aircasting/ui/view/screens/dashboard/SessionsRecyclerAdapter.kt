@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
@@ -120,19 +120,21 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     protected fun reloadSessionFromDB(session: Session): Session {
-        var reloadedSession: Session? = null
-
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                val dbSessionWithMeasurements =
-                    mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-                dbSessionWithMeasurements?.let {
-                    reloadedSession = Session(dbSessionWithMeasurements)
-                }
-            }
-            query.await()
-        }
+        val reloadedSession: Session? = reloadFromDB(session)
 
         return reloadedSession ?: session
+    }
+
+    private fun reloadFromDB(
+        session: Session,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
+    ): Session? = runBlocking {
+        withContext(dispatcher) {
+            val dbSessionWithMeasurements =
+                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            return@withContext dbSessionWithMeasurements?.let {
+                Session(dbSessionWithMeasurements)
+            }
+        }
     }
 }
