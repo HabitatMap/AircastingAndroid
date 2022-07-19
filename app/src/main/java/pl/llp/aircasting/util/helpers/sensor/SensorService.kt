@@ -15,7 +15,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToO
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 

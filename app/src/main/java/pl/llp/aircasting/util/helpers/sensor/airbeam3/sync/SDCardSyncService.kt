@@ -13,7 +13,7 @@ import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.*
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(

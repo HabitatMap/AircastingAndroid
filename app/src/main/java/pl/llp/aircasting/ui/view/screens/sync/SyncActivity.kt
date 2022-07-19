@@ -12,7 +12,7 @@ import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.setupAppBar
+import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class SyncActivity : BaseActivity() {

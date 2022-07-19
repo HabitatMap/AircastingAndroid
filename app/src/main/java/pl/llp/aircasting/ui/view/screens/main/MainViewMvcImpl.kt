@@ -24,6 +24,7 @@ import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.extensions.*
 
 class MainViewMvcImpl(
     inflater: LayoutInflater,

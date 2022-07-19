@@ -12,11 +12,11 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.common.BaseActivity
-import pl.llp.aircasting.util.goToFollowingTab
-import pl.llp.aircasting.util.goToMobileActiveTab
+import pl.llp.aircasting.util.extensions.goToFollowingTab
+import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.setupAppBar
+import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class NewSessionActivity : BaseActivity() {

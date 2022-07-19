@@ -14,6 +14,9 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
 import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.setAppearance
+import pl.llp.aircasting.util.extensions.visible
 
 abstract class MeasurementsTableContainer {
     private val mContext: Context

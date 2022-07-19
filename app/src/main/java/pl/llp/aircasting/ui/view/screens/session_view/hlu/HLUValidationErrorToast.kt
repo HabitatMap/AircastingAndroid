@@ -2,7 +2,7 @@ package pl.llp.aircasting.ui.view.screens.session_view.hlu
 
 import android.content.Context
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.showToast
 
 class HLUValidationErrorToast {
     companion object {

@@ -24,7 +24,7 @@ import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.areLocationServicesOn
+import pl.llp.aircasting.util.extensions.areLocationServicesOn
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
@@ -34,7 +34,7 @@ import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncController(

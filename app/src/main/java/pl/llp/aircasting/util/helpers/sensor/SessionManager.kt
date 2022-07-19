@@ -21,8 +21,8 @@ import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
-import pl.llp.aircasting.util.safeRegister
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.showToast
 
 class SessionManager(
     private val mContext: Context,

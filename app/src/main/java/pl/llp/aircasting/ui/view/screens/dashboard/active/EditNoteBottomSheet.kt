@@ -10,9 +10,9 @@ import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.util.showToast
-import pl.llp.aircasting.util.startAnimation
-import pl.llp.aircasting.util.stopAnimation
+import pl.llp.aircasting.util.extensions.showToast
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
 
 class EditNoteBottomSheet(
     private val mListener: Listener,

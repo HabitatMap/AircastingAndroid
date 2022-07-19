@@ -20,14 +20,14 @@ import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.areLocationServicesOn
+import pl.llp.aircasting.util.extensions.areLocationServicesOn
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.AirBeamClearCardService
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 
 class ClearSDCardController(
     private val mContextActivity: AppCompatActivity,

@@ -26,7 +26,7 @@ import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.events.UpdateSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.showToast
 
 
 abstract class SessionsController(

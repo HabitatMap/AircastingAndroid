@@ -11,9 +11,9 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.util.showToast
-import pl.llp.aircasting.util.startAnimation
-import pl.llp.aircasting.util.stopAnimation
+import pl.llp.aircasting.util.extensions.showToast
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
 
 class EditSessionBottomSheet(
     private val mListener: Listener,

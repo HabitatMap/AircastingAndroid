@@ -24,8 +24,8 @@ import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import pl.llp.aircasting.util.DurationStringHelper
-import pl.llp.aircasting.util.startAnimation
-import pl.llp.aircasting.util.stopAnimation
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
 
 abstract class SessionDetailsViewMvcImpl(
     inflater: LayoutInflater,

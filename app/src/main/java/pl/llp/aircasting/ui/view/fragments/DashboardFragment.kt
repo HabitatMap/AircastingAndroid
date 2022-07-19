@@ -13,6 +13,9 @@ import pl.llp.aircasting.ui.view.screens.dashboard.DashboardController
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
 import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.isIgnoringBatteryOptimizations
+import pl.llp.aircasting.util.extensions.showBatteryOptimizationHelperDialog
 import javax.inject.Inject
 
 class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {

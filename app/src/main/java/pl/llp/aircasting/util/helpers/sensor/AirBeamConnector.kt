@@ -2,7 +2,7 @@ package pl.llp.aircasting.util.helpers.sensor
 
 import android.bluetooth.BluetoothAdapter
 import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus

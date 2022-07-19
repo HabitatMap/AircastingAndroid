@@ -23,6 +23,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.extensions.setMapType
 import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) :

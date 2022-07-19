@@ -12,7 +12,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.hideKeyboard
+import pl.llp.aircasting.util.extensions.hideKeyboard
 import java.util.*
 
 class CreateAccountViewMvcImpl(

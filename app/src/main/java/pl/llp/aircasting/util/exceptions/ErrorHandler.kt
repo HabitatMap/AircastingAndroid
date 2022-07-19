@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
-import pl.llp.aircasting.util.showToast
+import pl.llp.aircasting.util.extensions.showToast
 
 class ErrorHandler(private val mContext: Context) : Handler(Looper.getMainLooper()) {
     private val TAG = "ErrorHandler"
