@@ -28,7 +28,7 @@ class SettingsViewMvcImpl(
             onMicrophoneSettingsClicked()
         }
         val themeChangeBtn = rootView?.theme_change
-        themeChangeBtn?.isChecked = mSettings.isThemeChangeEnabled()
+        themeChangeBtn?.isChecked = mSettings.isDarkThemeEnabled()
         themeChangeBtn?.setOnCheckedChangeListener { _, _ ->
             onToggleThemeChangeEnabled()
         }

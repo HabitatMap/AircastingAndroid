@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
 import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 import pl.llp.aircasting.di.AppComponent
 import pl.llp.aircasting.di.DaggerAppComponent
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.util.Settings
 
 class AircastingApplication : Application() {
@@ -44,7 +44,7 @@ class AircastingApplication : Application() {
     }
 
     private fun setCorrectAppTheme() {
-        if (mSettings.isThemeChangeEnabled()) AppCompatDelegate.setDefaultNightMode(
+        if (mSettings.isDarkThemeEnabled()) AppCompatDelegate.setDefaultNightMode(
             AppCompatDelegate.MODE_NIGHT_YES
         ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }

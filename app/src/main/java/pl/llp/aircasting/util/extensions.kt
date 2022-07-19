@@ -237,7 +237,7 @@ fun GoogleMap.setMapTypeToSatellite() {
 
 fun GoogleMap.setMapTypeToNormalWithStyle(mSettings: Settings, mContext: Context) {
     this.mapType = GoogleMap.MAP_TYPE_NORMAL
-    if (mSettings.isThemeChangeEnabled()) styleDarkGoogleMap(this, mContext) else styleGoogleMap(
+    if (mSettings.isDarkThemeEnabled()) styleDarkGoogleMap(this, mContext) else styleGoogleMap(
         this,
         mContext
     )
