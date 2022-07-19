@@ -133,7 +133,7 @@ abstract class SessionsController(
             val dbSessionWithMeasurements =
                 mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSessionWithMeasurements?.let {
-                val reloadedSession = Session(dbSessionWithMeasurements)
+                val reloadedSession = Session(it)
 
                 DatabaseProvider.backToUIThread(scope) {
                     mViewMvc?.reloadSession(reloadedSession)

@@ -67,26 +67,26 @@ abstract class MeasurementsTableContainer {
 
     abstract fun shouldShowSelectedMeasurement(stream: MeasurementStream): Boolean
 
-    fun makeSelectable(displayValues: Boolean = true) {
+    fun makeSelectable(sessionPresenter: SessionPresenter? = mSessionPresenter, displayValues: Boolean = true) {
         mSelectable = true
         mDisplayValues = displayValues
         if (displayValues) mMeasurementValues = mRootView?.measurement_values
 
-        refresh()
+        refresh(sessionPresenter)
     }
 
-    fun makeCollapsed(displayValues: Boolean = true) {
+    fun makeCollapsed(sessionPresenter: SessionPresenter?, displayValues: Boolean = true) {
         resetMeasurementsView()
         mSelectable = true
         mCollapsed = true
 
         mDisplayValues = displayValues
         if (!displayValues && mCollapsed) mMeasurementValues = null
-        refresh()
+        refresh(sessionPresenter)
     }
 
-    fun refresh() {
-        bindSession(mSessionPresenter, mOnMeasurementStreamChanged)
+    fun refresh(sessionPresenter: SessionPresenter?) {
+        bindSession(sessionPresenter, mOnMeasurementStreamChanged)
     }
 
     fun bindSession(

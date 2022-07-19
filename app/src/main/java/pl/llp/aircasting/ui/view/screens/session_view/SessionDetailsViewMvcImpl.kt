@@ -167,7 +167,7 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     protected open fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
-        mMeasurementsTableContainer.refresh()
+        mMeasurementsTableContainer.refresh(mSessionPresenter)
         mStatisticsContainer?.refresh(mSessionPresenter)
 
         mListener?.onSensorThresholdChanged(sensorThreshold)
