@@ -7,7 +7,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LocationChanged
-import pl.llp.aircasting.util.extensions.hideKeyboard
 import pl.llp.aircasting.util.extensions.safeRegister
 
 class ConfirmationController(
@@ -27,7 +26,7 @@ class ConfirmationController(
     }
 
     fun onStart(context: Context?) {
-        context?.hideKeyboard()
+        //context?.hideKeyboard()
     }
 
     override fun onDestroy() {
