@@ -18,7 +18,7 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.safeRegister
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

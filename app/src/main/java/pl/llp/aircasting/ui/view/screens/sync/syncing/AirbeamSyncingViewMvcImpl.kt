@@ -10,7 +10,7 @@ import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
-import pl.llp.aircasting.util.startAnimation
+import pl.llp.aircasting.util.extensions.startAnimation
 
 class AirbeamSyncingViewMvcImpl(
     inflater: LayoutInflater,

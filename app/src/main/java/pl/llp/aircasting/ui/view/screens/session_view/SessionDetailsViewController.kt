@@ -19,8 +19,8 @@ import pl.llp.aircasting.util.events.NoteDeletedEvent
 import pl.llp.aircasting.util.events.NoteEditedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.adjustMenuVisibility
-import pl.llp.aircasting.util.safeRegister
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.data.model.observers.FixedSessionObserver
 import pl.llp.aircasting.data.model.observers.MobileSessionObserver

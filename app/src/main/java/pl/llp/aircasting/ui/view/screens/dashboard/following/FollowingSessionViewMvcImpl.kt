@@ -11,8 +11,8 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
-import pl.llp.aircasting.util.gone
-import pl.llp.aircasting.util.visible
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.visible
 
 open class FollowingSessionViewMvcImpl(
     inflater: LayoutInflater,

@@ -12,7 +12,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
-import pl.llp.aircasting.util.setupAppBar
+import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class GraphActivity: BaseActivity() {

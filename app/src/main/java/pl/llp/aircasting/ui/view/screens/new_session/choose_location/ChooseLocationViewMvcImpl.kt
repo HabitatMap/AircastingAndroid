@@ -19,7 +19,7 @@ import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ChooseAirBeamLocationSelectingPlaceError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.setMapType
+import pl.llp.aircasting.util.extensions.setMapType
 
 class ChooseLocationViewMvcImpl(
     inflater: LayoutInflater,

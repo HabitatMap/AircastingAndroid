@@ -38,6 +38,7 @@ import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.extensions.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,

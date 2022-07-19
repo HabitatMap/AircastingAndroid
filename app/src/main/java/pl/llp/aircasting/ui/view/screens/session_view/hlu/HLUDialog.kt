@@ -8,7 +8,7 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.labelFormat
+import pl.llp.aircasting.util.extensions.labelFormat
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.common.BaseDialog

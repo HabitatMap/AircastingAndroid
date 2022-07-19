@@ -25,6 +25,7 @@ import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_containe
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.extensions.*
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()

@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.setupAppBar
+import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import javax.inject.Inject
 

@@ -15,7 +15,7 @@ import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
-import pl.llp.aircasting.util.setupAppBar
+import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class MapActivity: BaseActivity() {
