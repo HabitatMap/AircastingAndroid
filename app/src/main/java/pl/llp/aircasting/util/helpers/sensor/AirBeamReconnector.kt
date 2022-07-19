@@ -2,19 +2,14 @@ package pl.llp.aircasting.util.helpers.sensor
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.isIgnoringBatteryOptimizations
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.util.safeRegister
-import pl.llp.aircasting.util.showToast
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
@@ -102,21 +97,12 @@ class AirBeamReconnector(
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
         try {
-            if (isSDKGreaterOrEqualToM()) {
-                if (!isIgnoringBatteryOptimizations(mContext)) {
-                    val name = mContext.getString(R.string.app_name)
-                    mContext.showToast(
-                        "Battery optimization -> All apps -> $name -> Don't optimize",
-                        Toast.LENGTH_LONG
-                    )
-                }
-            } else AirBeamReconnectSessionService.startService(
+            AirBeamReconnectSessionService.startService(
                 mContext,
                 deviceId,
                 deviceItem,
                 mSession?.uuid
             )
-
         } catch (e: Exception) {
             Log.d("TAG", e.message.toString())
         }
