@@ -20,7 +20,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
 import pl.llp.aircasting.util.*
-import pl.llp.aircasting.util.extensions.*
 
 
 abstract class SessionViewMvcImpl<ListenerType>(
