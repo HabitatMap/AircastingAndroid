@@ -8,14 +8,14 @@ import androidx.core.view.forEach
 import androidx.core.view.get
 import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.setAppearance
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
+import pl.llp.aircasting.util.MeasurementColor
+import pl.llp.aircasting.util.TemperatureConverter
+import pl.llp.aircasting.util.setAppearance
 
 abstract class MeasurementsTableContainer {
     private val mContext: Context
@@ -64,26 +64,26 @@ abstract class MeasurementsTableContainer {
 
     abstract fun shouldShowSelectedMeasurement(stream: MeasurementStream): Boolean
 
-    fun makeSelectable(displayValues: Boolean = true) {
+    fun makeSelectable(sessionPresenter: SessionPresenter? = mSessionPresenter, displayValues: Boolean = true) {
         mSelectable = true
         mDisplayValues = displayValues
         if (displayValues) mMeasurementValues = mRootView?.measurement_values
 
-        refresh()
+        refresh(sessionPresenter)
     }
 
-    fun makeCollapsed(displayValues: Boolean = true) {
+    fun makeCollapsed(sessionPresenter: SessionPresenter? = mSessionPresenter, displayValues: Boolean = true) {
         resetMeasurementsView()
         mSelectable = true
         mCollapsed = true
 
         mDisplayValues = displayValues
         if (!displayValues && mCollapsed) mMeasurementValues = null
-        refresh()
+        refresh(sessionPresenter)
     }
 
-    fun refresh() {
-        bindSession(mSessionPresenter, mOnMeasurementStreamChanged)
+    fun refresh(sessionPresenter: SessionPresenter?) {
+        bindSession(sessionPresenter, mOnMeasurementStreamChanged)
     }
 
     fun bindSession(

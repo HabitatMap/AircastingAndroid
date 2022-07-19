@@ -38,8 +38,8 @@ class DisconnectedView {
         mReconnectingLoader = rootView?.reconnecting_loader
     }
 
-    fun show(sessionPresenter: SessionPresenter) {
-        val session = sessionPresenter.session
+    fun show(sessionPresenter: SessionPresenter?) {
+        val session = sessionPresenter?.session
         session ?: return
 
         if (session.isAirBeam3()) {

@@ -49,9 +49,9 @@ class MobileActiveSessionViewMvcImpl(
         return ActiveSessionActionsBottomSheet(this, sessionPresenter, mSupportFragmentManager)
     }
 
-    override fun bindExpanded(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.isDisconnected()) {
-            mDisconnectedView.show(sessionPresenter)
+    override fun bindExpanded() {
+        if (mSessionPresenter?.isDisconnected() == true) {
+            mDisconnectedView.show(mSessionPresenter)
 
             mActionsButton.visibility = View.GONE
             mCollapseSessionButton.visibility = View.GONE
@@ -66,7 +66,7 @@ class MobileActiveSessionViewMvcImpl(
             setExpandCollapseButton()
             mSessionCardLayout.background = null
 
-            super.bindExpanded(sessionPresenter)
+            super.bindExpanded()
         }
     }
 

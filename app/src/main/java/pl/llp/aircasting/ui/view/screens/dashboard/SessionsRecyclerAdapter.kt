@@ -80,7 +80,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = true
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun hideLoaderFor(deviceId: String) {
@@ -88,44 +88,43 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.session?.deviceId == deviceId }
         sessionPresenter?.loading = false
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(sessionPresenter?.session?.uuid))
     }
 
     fun hideLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = false
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun showReconnectingLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.reconnecting = true
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun hideReconnectingLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
 
         sessionPresenter?.reconnecting = false
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun reloadSession(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.session = session
-
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     protected fun reloadSessionFromDB(session: Session): Session {
-        val reloadedSession: Session? = reloadFromDB(session)
+        val reloadedSession: Session? = getFromDB(session)
 
         return reloadedSession ?: session
     }
 
-    private fun reloadFromDB(
+    private fun getFromDB(
         session: Session,
         dispatcher: CoroutineDispatcher = Dispatchers.IO
     ): Session? = runBlocking {
