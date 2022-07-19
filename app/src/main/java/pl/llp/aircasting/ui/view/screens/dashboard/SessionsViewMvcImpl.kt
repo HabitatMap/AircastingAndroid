@@ -39,6 +39,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         mOnExploreBtn = findViewById(onExploreNewSessionsButtonID())
         mDidYouKnowBox = findViewById(R.id.did_you_know_box)
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
+        mRecyclerSessions?.itemAnimator = null
 
         mRecordSessionButton?.setOnClickListener { onRecordNewSessionClicked() }
         mOnExploreBtn?.setOnClickListener { onExploreNewSessionsClicked() }

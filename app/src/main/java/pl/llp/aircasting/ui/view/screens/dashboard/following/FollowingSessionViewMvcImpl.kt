@@ -37,7 +37,7 @@ open class FollowingSessionViewMvcImpl(
 
     override fun showExpandedMeasurementsTableValues() = true
 
-    override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
+    override fun bindFollowButtons() {
         mUnfollowButton.visible()
         mFollowButton.gone()
     }
