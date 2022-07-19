@@ -133,15 +133,15 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         // TODO: check what is going on with binding measurements table because it is bind 6 times every second
-        bindLoader(sessionPresenter)
         bindSelectedStream(sessionPresenter)
-        bindExpanded(sessionPresenter)
+        bindLoader()
+        bindExpanded()
         bindSessionDetails()
-        bindMeasurementsDescription(sessionPresenter)
+        bindMeasurementsDescription()
         bindMeasurementsTable()
         bindChartData()
-        bindFollowButtons(sessionPresenter)
-        bindMapButton(sessionPresenter)
+        bindFollowButtons()
+        bindMapButton()
         bindMeasurementsSelectable(
             mMeasurementsTableContainer,
             onExpandSessionCardClickedCallback,
@@ -154,19 +154,27 @@ abstract class SessionViewMvcImpl<ListenerType>(
         onExpandSessionCardClickedCallback: (() -> Unit?)?,
         expandCardCallback: (() -> Unit?)?
     ) {
-        mMeasurementsTableContainer.makeSelectable(showMeasurementsTableValues())
+        mMeasurementsTableContainer.makeSelectable(mSessionPresenter, showMeasurementsTableValues())
         mMeasurementsTableContainer.bindExpandCardCallbacks(
             expandCardCallback,
             onExpandSessionCardClickedCallback
         )
     }
 
-    private fun bindLoader(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.loading) showLoader() else hideLoader()
+    private fun bindLoader() {
+        if (mSessionPresenter?.loading == true) {
+            showLoader()
+        } else {
+            hideLoader()
+        }
     }
 
-    protected open fun bindExpanded(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.expanded) expandSessionCard() else collapseSessionCard()
+    protected open fun bindExpanded() {
+        if (mSessionPresenter?.expanded == true) {
+            expandSessionCard()
+        } else {
+            collapseSessionCard()
+        }
     }
 
     private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
@@ -187,14 +195,14 @@ abstract class SessionViewMvcImpl<ListenerType>(
         mInfoTextView.text = session.infoString()
     }
 
-    private fun bindMeasurementsDescription(sessionPresenter: SessionPresenter) {
-        val sessionStatus = sessionPresenter.session?.status
+    private fun bindMeasurementsDescription() {
+        val sessionStatus = mSessionPresenter?.session?.status
         val sessionIsDisconnected = Session.Status.DISCONNECTED
-        val isFixedSession = sessionPresenter.isFixed()
+        val isFixedSession = mSessionPresenter?.isFixed()
 
         when {
-            sessionStatus == sessionIsDisconnected && !isFixedSession -> mMeasurementsDescription?.gone()
-            sessionPresenter.expanded -> bindExpandedMeasurementsDescription()
+            sessionStatus == sessionIsDisconnected && isFixedSession != true -> mMeasurementsDescription?.gone()
+            mSessionPresenter?.expanded == true -> bindExpandedMeasurementsDescription()
             else -> bindCollapsedMeasurementsDescription()
         }
     }
@@ -209,13 +217,13 @@ abstract class SessionViewMvcImpl<ListenerType>(
         mChart.bindChart(mSessionPresenter)
     }
 
-    protected open fun bindFollowButtons(sessionPresenter: SessionPresenter) {
+    protected open fun bindFollowButtons() {
         mFollowButton.gone()
         mUnfollowButton.gone()
     }
 
-    protected open fun bindMapButton(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.shouldHideMap) {
+    protected open fun bindMapButton() {
+        if (mSessionPresenter?.shouldHideMap == true) {
             mMapButton.gone()
         } else {
             mMapButton.visible()
@@ -225,7 +233,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected open fun expandSessionCard() {
         setExpandCollapseButton()
         mExpandedSessionView.visible()
-        if (showExpandedMeasurementsTableValues()) mMeasurementsTableContainer.makeSelectable()
+        if (showExpandedMeasurementsTableValues()) mMeasurementsTableContainer.makeSelectable(mSessionPresenter)
 
         if (showChart()) mChartView?.visible()
 
@@ -244,7 +252,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         mExpandedSessionView.gone()
 
         bindCollapsedMeasurementsDescription()
-        mMeasurementsTableContainer.makeCollapsed(showMeasurementsTableValues())
+        mMeasurementsTableContainer.makeCollapsed(mSessionPresenter, showMeasurementsTableValues())
 
         adjustSessionCardPadding()
     }
@@ -287,7 +295,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     private fun onFollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
             session.follow()
-            bindFollowButtons(mSessionPresenter!!)
+            bindFollowButtons()
 
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onFollowButtonClicked(session)
@@ -298,7 +306,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     private fun onUnfollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
             session.unfollow()
-            bindFollowButtons(mSessionPresenter!!)
+            bindFollowButtons()
 
             for (listener in listeners) {
                 (listener as? SessionCardListener)?.onUnfollowButtonClicked(session)
