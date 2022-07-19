@@ -11,7 +11,7 @@ class CalibrationHelper(private val mSettings: Settings) {
         return calibrate(value, calibration)
     }
 
-    fun calibrate(value: Double, calibration: Int): Double {
+    private fun calibrate(value: Double, calibration: Int): Double {
         val low = -(calibration - OFFSET_POINT)
 
         return if (low == 0.0) 0.0 else project(value, low, 0.0, OFFSET_POINT, calibration.toDouble())
