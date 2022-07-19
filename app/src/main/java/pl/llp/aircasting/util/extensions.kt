@@ -26,6 +26,7 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
@@ -35,6 +36,7 @@ import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import java.util.*
 
 fun EventBus.safeRegister(subscriber: Any) {
@@ -101,6 +103,14 @@ fun isIgnoringBatteryOptimizations(context: Context): Boolean {
         return pwrm.isIgnoringBatteryOptimizations(name)
     }
     return true
+}
+
+fun FragmentActivity.showBatteryOptimizationHelperDialog() {
+    BatteryAlertDialog(
+        supportFragmentManager,
+        getString(R.string.running_background),
+        getString(R.string.battery_desc)
+    ).show()
 }
 
 fun View.visible() {
