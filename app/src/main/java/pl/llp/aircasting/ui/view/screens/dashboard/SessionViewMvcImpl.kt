@@ -19,7 +19,8 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.DurationStringHelper
+import pl.llp.aircasting.util.TouchDelegateComposite
 import pl.llp.aircasting.util.extensions.*
 
 
@@ -134,7 +135,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         // TODO: check what is going on with binding measurements table because it is bind 6 times every second
-        bindSelectedStream(sessionPresenter)
+        mSessionPresenter = sessionPresenter
+        bindSelectedStream()
         bindLoader()
         bindExpanded()
         bindSessionDetails()
@@ -143,19 +145,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
         bindChartData()
         bindFollowButtons()
         bindMapButton()
-        bindMeasurementsSelectable(
-            mMeasurementsTableContainer,
-            onExpandSessionCardClickedCallback,
-            expandCardCallback
-        )
+        bindCallbacks()
     }
 
-    protected open fun bindMeasurementsSelectable(
-        mMeasurementsTableContainer: MeasurementsTableContainer,
-        onExpandSessionCardClickedCallback: (() -> Unit?)?,
-        expandCardCallback: (() -> Unit?)?
-    ) {
-        mMeasurementsTableContainer.makeSelectable(mSessionPresenter, showMeasurementsTableValues())
+    protected open fun bindCallbacks() {
         mMeasurementsTableContainer.bindExpandCardCallbacks(
             expandCardCallback,
             onExpandSessionCardClickedCallback
@@ -178,9 +171,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
         }
     }
 
-    private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
-        mSessionPresenter = sessionPresenter
-        if (mSessionPresenter != null && sessionPresenter.selectedStream == null) {
+    private fun bindSelectedStream() {
+        if (mSessionPresenter != null && mSessionPresenter?.selectedStream == null) {
             mSessionPresenter?.setDefaultStream()
         }
     }
