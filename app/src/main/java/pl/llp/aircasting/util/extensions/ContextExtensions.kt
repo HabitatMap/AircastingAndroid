@@ -1,49 +1,32 @@
-package pl.llp.aircasting.util
+package pl.llp.aircasting.util.extensions
 
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.Animatable
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.PowerManager
-import android.text.TextUtils
-import android.util.Patterns
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
-import androidx.core.view.marginLeft
-import androidx.core.view.marginRight
-import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.prominent_app_bar.*
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
-import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
-import java.util.*
-
-fun EventBus.safeRegister(subscriber: Any) {
-    if (!EventBus.getDefault().isRegistered(subscriber)) {
-        EventBus.getDefault().register(subscriber)
-    }
-}
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
+import pl.llp.aircasting.util.isSDKLessThanM
 
 fun Context.areLocationServicesOn(): Boolean {
     val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
@@ -66,23 +49,11 @@ fun styleDarkGoogleMap(map: GoogleMap, context: Context) {
     )
 }
 
-fun labelFormat(value: Float?): String {
-    return "%d".format(value?.toInt())
-}
-
 fun TextView.setAppearance(context: Context, res: Int) {
     if (isSDKLessThanM()) {
         setTextAppearance(context, res)
     } else {
         setTextAppearance(res)
-    }
-}
-
-fun setupAppBar(activity: BaseActivity, toolbar: Toolbar) {
-    activity.setSupportActionBar(toolbar)
-    adjustMenuVisibility(activity)
-    toolbar.setNavigationOnClickListener {
-        activity.onBackPressed()
     }
 }
 
@@ -100,10 +71,6 @@ fun adjustMenuVisibility(
     }
 }
 
-fun isValidEmail(target: String): Boolean {
-    return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches())
-}
-
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     val pwrm = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
     val name = context.applicationContext.packageName
@@ -119,18 +86,6 @@ fun FragmentActivity.showBatteryOptimizationHelperDialog() {
         getString(R.string.running_background),
         getString(R.string.battery_desc)
     ).show()
-}
-
-fun View.visible() {
-    visibility = View.VISIBLE
-}
-
-fun View.inVisible() {
-    visibility = View.INVISIBLE
-}
-
-fun View.gone() {
-    visibility = View.GONE
 }
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
@@ -206,47 +161,6 @@ fun initializePlacesApi(mContext: Context) {
     if (!Places.isInitialized()) Places.initialize(mContext, BuildConfig.PLACES_API_KEY)
 }
 
-fun View.setMargins(
-    left: Int = this.marginLeft,
-    top: Int = this.marginTop,
-    right: Int = this.marginRight,
-    bottom: Int = this.marginBottom,
-) {
-    layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
-        setMargins(left, top, right, bottom)
-    }
-}
-
-fun EditText.setStyle(mHint: String, mHintColor: Int) {
-    this.apply {
-        hint = mHint
-        textSize = 15.0f
-        setHintTextColor(ContextCompat.getColor(this.context, mHintColor))
-    }
-}
-
-fun View.disableForASecond() {
-    this.isEnabled = false
-
-    postDelayed({
-        this.isEnabled = true
-    }, 1000)
-}
-
-fun Calendar.addHours(time: Date, hours: Int): Date {
-    this.time = time
-    add(Calendar.HOUR_OF_DAY, hours)
-    return this.time
-}
-
-fun calendar(): Calendar = Calendar.getInstance()
-
-fun expandedCards(): ExpandedCardsRepository? = ExpandedCardsRepository.getInstance()
-
-fun GoogleMap.setMapTypeToSatellite() {
-    this.mapType = GoogleMap.MAP_TYPE_HYBRID
-}
-
 fun GoogleMap.setMapTypeToNormalWithStyle(mSettings: Settings, mContext: Context) {
     this.mapType = GoogleMap.MAP_TYPE_NORMAL
     if (mSettings.isDarkThemeEnabled()) styleDarkGoogleMap(this, mContext) else styleGoogleMap(
@@ -260,26 +174,8 @@ fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
     else this.setMapTypeToNormalWithStyle(mSettings, mContext)
 }
 
-fun ImageView.animatable(): Animatable {
-    return drawable as Animatable
-}
-
-fun ImageView.startAnimation() {
-    this.visible()
-    animatable().start()
-}
-
-fun ImageView.stopAnimation() {
-    this.gone()
-    animatable().stop()
-}
-
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
-}
-
-fun Activity.hideKeyboard() {
-    hideKeyboard(currentFocus ?: View(this))
 }
 
 fun Context.hideKeyboard(view: View) {
