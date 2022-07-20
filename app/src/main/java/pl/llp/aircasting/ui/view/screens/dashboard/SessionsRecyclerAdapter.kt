@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
@@ -80,7 +80,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = true
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun hideLoaderFor(deviceId: String) {
@@ -88,51 +88,52 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             mSessionPresenters.values.find { sessionPresenter -> sessionPresenter.session?.deviceId == deviceId }
         sessionPresenter?.loading = false
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(sessionPresenter?.session?.uuid))
     }
 
     fun hideLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.loading = false
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun showReconnectingLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.reconnecting = true
 
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun hideReconnectingLoaderFor(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
 
         sessionPresenter?.reconnecting = false
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     fun reloadSession(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.session = session
-
-        notifyDataSetChanged()
+        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     protected fun reloadSessionFromDB(session: Session): Session {
-        var reloadedSession: Session? = null
-
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                val dbSessionWithMeasurements =
-                    mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-                dbSessionWithMeasurements?.let {
-                    reloadedSession = Session(dbSessionWithMeasurements)
-                }
-            }
-            query.await()
-        }
+        val reloadedSession: Session? = getFromDB(session)
 
         return reloadedSession ?: session
+    }
+
+    private fun getFromDB(
+        session: Session,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
+    ): Session? = runBlocking {
+        withContext(dispatcher) {
+            val dbSessionWithMeasurements =
+                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+            return@withContext dbSessionWithMeasurements?.let {
+                Session(dbSessionWithMeasurements)
+            }
+        }
     }
 }

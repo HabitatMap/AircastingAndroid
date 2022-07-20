@@ -82,6 +82,7 @@ dependencies {
     kapt(AppDependencies.kaptLibraries)
     kaptAndroidTest(AppDependencies.kaptAndroidTestLibraries)
     androidTestImplementation(AppDependencies.androidTestImplementation)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
     // Tests
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
