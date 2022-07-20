@@ -135,7 +135,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
         // TODO: check what is going on with binding measurements table because it is bind 6 times every second
-        bindSelectedStream(sessionPresenter)
+        mSessionPresenter = sessionPresenter
+        bindSelectedStream()
         bindLoader()
         bindExpanded()
         bindSessionDetails()
@@ -170,9 +171,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
         }
     }
 
-    private fun bindSelectedStream(sessionPresenter: SessionPresenter) {
-        mSessionPresenter = sessionPresenter
-        if (mSessionPresenter != null && sessionPresenter.selectedStream == null) {
+    private fun bindSelectedStream() {
+        if (mSessionPresenter != null && mSessionPresenter?.selectedStream == null) {
             mSessionPresenter?.setDefaultStream()
         }
     }
