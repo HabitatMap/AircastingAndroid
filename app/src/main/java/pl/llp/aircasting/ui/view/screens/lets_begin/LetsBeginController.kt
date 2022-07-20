@@ -11,16 +11,18 @@ import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
 
 class LetsBeginController(
     private var mRootActivity: FragmentActivity?,
-    private var viewMvc: LetsBeginViewMvcImpl?,
+    viewMvc: LetsBeginViewMvcImpl?,
     private var mContext: Context?,
     private val mErrorHandler: ErrorHandler
 ): BaseController<LetsBeginViewMvcImpl>(viewMvc), LetsBeginViewMvc.Listener {
 
     fun onCreate() {
+        mRootActivity?.let { adjustMenuVisibility(it, false) }
         mViewMvc?.registerListener(this)
     }
 
