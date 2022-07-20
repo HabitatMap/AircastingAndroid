@@ -27,6 +27,7 @@ class ConfirmationController(
 
     fun onStart(context: Context?) {
         //context?.hideKeyboard()
+        // test for rebasing
     }
 
     override fun onDestroy() {
