@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -24,6 +25,8 @@ import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
@@ -33,6 +36,7 @@ import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import java.util.*
 
 fun EventBus.safeRegister(subscriber: Any) {
@@ -50,6 +54,14 @@ fun styleGoogleMap(map: GoogleMap, context: Context) {
     map.setMapStyle(
         MapStyleOptions.loadRawResourceStyle(
             context, R.raw.map_style
+        )
+    )
+}
+
+fun styleDarkGoogleMap(map: GoogleMap, context: Context) {
+    map.setMapStyle(
+        MapStyleOptions.loadRawResourceStyle(
+            context, R.raw.map_dark_style
         )
     )
 }
@@ -99,6 +111,14 @@ fun isIgnoringBatteryOptimizations(context: Context): Boolean {
         return pwrm.isIgnoringBatteryOptimizations(name)
     }
     return true
+}
+
+fun FragmentActivity.showBatteryOptimizationHelperDialog() {
+    BatteryAlertDialog(
+        supportFragmentManager,
+        getString(R.string.running_background),
+        getString(R.string.battery_desc)
+    ).show()
 }
 
 fun View.visible() {
@@ -227,14 +247,17 @@ fun GoogleMap.setMapTypeToSatellite() {
     this.mapType = GoogleMap.MAP_TYPE_HYBRID
 }
 
-fun GoogleMap.setMapTypeToNormalWithStyle(mContext: Context) {
+fun GoogleMap.setMapTypeToNormalWithStyle(mSettings: Settings, mContext: Context) {
     this.mapType = GoogleMap.MAP_TYPE_NORMAL
-    styleGoogleMap(this, mContext)
+    if (mSettings.isDarkThemeEnabled()) styleDarkGoogleMap(this, mContext) else styleGoogleMap(
+        this,
+        mContext
+    )
 }
 
 fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {
     if (mSettings.isUsingSatelliteView()) this.setMapTypeToSatellite()
-    else this.setMapTypeToNormalWithStyle(mContext)
+    else this.setMapTypeToNormalWithStyle(mSettings, mContext)
 }
 
 fun ImageView.animatable(): Animatable {
@@ -249,4 +272,17 @@ fun ImageView.startAnimation() {
 fun ImageView.stopAnimation() {
     this.gone()
     animatable().stop()
+}
+
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(currentFocus ?: View(this))
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

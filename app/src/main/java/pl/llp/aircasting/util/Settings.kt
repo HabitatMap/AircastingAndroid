@@ -68,7 +68,7 @@ open class Settings(private val mApplication: Application) {
         return getBooleanFromSettings(USE_24_HOUR_FORMAT_KEY, DEFAULT_USE_24_HOUR_FORMAT)
     }
 
-    fun isThemeChangeEnabled(): Boolean {
+    fun isDarkThemeEnabled(): Boolean {
         return getBooleanFromSettings(THEME_SET_TO_DARK_KEY, DEFAULT_THEME_VALUE)
     }
 
@@ -149,7 +149,7 @@ open class Settings(private val mApplication: Application) {
     }
 
     fun toggleThemeChangeEnabled() {
-        val enabled = !isThemeChangeEnabled()
+        val enabled = !isDarkThemeEnabled()
         saveToSettings(THEME_SET_TO_DARK_KEY, enabled)
     }
 

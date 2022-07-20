@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
@@ -35,12 +34,13 @@ import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.ActivitySearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
+import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.*
 import javax.inject.Inject
 
-class SearchFixedResultActivity : AppCompatActivity(), OnMapReadyCallback,
+class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     @Inject

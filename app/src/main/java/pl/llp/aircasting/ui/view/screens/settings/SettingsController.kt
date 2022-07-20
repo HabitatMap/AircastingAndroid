@@ -46,7 +46,7 @@ class SettingsController(
 
     override fun onToggleThemeChange() {
         mSettings.toggleThemeChangeEnabled()
-        if (mSettings.isThemeChangeEnabled()) AppCompatDelegate.setDefaultNightMode(
+        if (mSettings.isDarkThemeEnabled()) AppCompatDelegate.setDefaultNightMode(
             AppCompatDelegate.MODE_NIGHT_YES
         ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 

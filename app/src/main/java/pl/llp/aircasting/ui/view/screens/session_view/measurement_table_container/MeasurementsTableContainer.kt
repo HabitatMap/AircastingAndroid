@@ -13,9 +13,7 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.setAppearance
+import pl.llp.aircasting.util.*
 
 abstract class MeasurementsTableContainer {
     private val mContext: Context
@@ -102,9 +100,9 @@ abstract class MeasurementsTableContainer {
         }
 
         if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE) {
-            mMeasurementsTable?.visibility = View.GONE
+            mMeasurementsTable?.gone()
         } else {
-            mMeasurementsTable?.visibility = View.VISIBLE
+            mMeasurementsTable?.visible()
         }
     }
 

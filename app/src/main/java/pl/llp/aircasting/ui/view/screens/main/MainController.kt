@@ -4,29 +4,23 @@ import android.content.IntentFilter
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.Navigation
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.MobileNavigationDirections
-import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
-import pl.llp.aircasting.util.ResultCodes
-import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.*
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.util.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
-import pl.llp.aircasting.util.safeRegister
 
 class MainController(
     private val rootActivity: AppCompatActivity,
@@ -89,10 +83,7 @@ class MainController(
     }
 
     fun goToFollowingTab() {
-        val action =
-            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-        Navigation.findNavController(rootActivity, R.id.nav_host_fragment)
-            .navigate(action)
+        rootActivity.goToFollowingTab()
     }
 
     private fun sync(apiService: ApiService) {
@@ -106,10 +97,7 @@ class MainController(
     }
 
     private fun goToDormantTab() {
-        val action =
-            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_DORMANT.value)
-        Navigation.findNavController(rootActivity, R.id.nav_host_fragment)
-            .navigate(action)
+        rootActivity.goToDormantTab()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

@@ -10,6 +10,7 @@ import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.hideKeyboard
 import pl.llp.aircasting.util.showToast
 
 class LoginController(
@@ -34,6 +35,7 @@ class LoginController(
     }
 
     override fun onLoginClicked(profile_name: String, password: String) {
+        mContextActivity.hideKeyboard()
         val successCallback = {
             MainActivity.start(mContextActivity)
         }

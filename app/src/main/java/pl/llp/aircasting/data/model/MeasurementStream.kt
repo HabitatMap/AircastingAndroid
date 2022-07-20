@@ -217,7 +217,7 @@ open class MeasurementStream(
     }
 
     fun getLast24HoursOfMeasurements(): List<Measurement> {
-        val end = measurements.last().time
+        val end = measurements.lastOrNull()?.time ?: Date()
         val start = calendar().addHours(end, -24)
         val range = start..end
 
