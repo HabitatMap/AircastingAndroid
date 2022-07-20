@@ -115,7 +115,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     fun reloadSession(session: Session) {
         val sessionPresenter = mSessionPresenters[session.uuid]
         sessionPresenter?.session = session
-        notifyItemChanged(mSessionUUIDS.indexOf(session.uuid))
     }
 
     protected fun reloadSessionFromDB(session: Session): Session {

@@ -3,12 +3,12 @@ package pl.llp.aircasting.data.model.observers
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.CoroutineScope
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
-import kotlinx.coroutines.CoroutineScope
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 abstract class SessionsObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
