@@ -123,15 +123,8 @@ class MainViewMvcImpl(
                         }
                     }
                 }
-                R.id.navigation_lets_begin -> {
-                    adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_lets_begin)
-                }
-                R.id.navigation_settings -> {
-                    adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_settings)
-                }
-
+                R.id.navigation_lets_begin -> mNavController?.navigate(R.id.navigation_lets_begin)
+                R.id.navigation_settings -> mNavController?.navigate(R.id.navigation_settings)
             }
             true
         }
