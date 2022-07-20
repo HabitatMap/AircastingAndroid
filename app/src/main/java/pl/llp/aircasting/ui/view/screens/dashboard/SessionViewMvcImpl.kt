@@ -144,19 +144,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
         bindChartData()
         bindFollowButtons()
         bindMapButton()
-        bindMeasurementsSelectable(
-            mMeasurementsTableContainer,
-            onExpandSessionCardClickedCallback,
-            expandCardCallback
-        )
+        bindCallbacks()
     }
 
-    protected open fun bindMeasurementsSelectable(
-        mMeasurementsTableContainer: MeasurementsTableContainer,
-        onExpandSessionCardClickedCallback: (() -> Unit?)?,
-        expandCardCallback: (() -> Unit?)?
-    ) {
-        mMeasurementsTableContainer.makeSelectable(mSessionPresenter, showMeasurementsTableValues())
+    protected open fun bindCallbacks() {
         mMeasurementsTableContainer.bindExpandCardCallbacks(
             expandCardCallback,
             onExpandSessionCardClickedCallback
@@ -235,7 +226,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected open fun expandSessionCard() {
         setExpandCollapseButton()
         mExpandedSessionView.visible()
-        if (showExpandedMeasurementsTableValues()) mMeasurementsTableContainer.makeSelectable(mSessionPresenter)
+        mMeasurementsTableContainer.makeSelectable(showExpandedMeasurementsTableValues())
 
         if (showChart()) mChartView?.visible()
 
