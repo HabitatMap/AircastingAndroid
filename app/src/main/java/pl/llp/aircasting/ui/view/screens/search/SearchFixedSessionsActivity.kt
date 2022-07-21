@@ -19,6 +19,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.initializePlacesApi
 import pl.llp.aircasting.util.extensions.setStyle
@@ -39,6 +40,7 @@ class SearchFixedSessionsActivity : BaseActivity() {
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
     private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM
+    private val mSettings: Settings by lazy { Settings(this.application) }
 
     private lateinit var address: String
     private lateinit var mLat: String
@@ -136,8 +138,15 @@ class SearchFixedSessionsActivity : BaseActivity() {
                 mLat = place.latLng?.latitude.toString()
                 mLng = place.latLng?.longitude.toString()
 
-                etPlace?.setStyle(address, R.color.black_color)
+                setTextColor()
                 binding.btnContinue.visible()
+            }
+
+            private fun setTextColor() {
+                if (mSettings.isDarkThemeEnabled()) etPlace?.setStyle(
+                    address,
+                    R.color.aircasting_white
+                ) else etPlace?.setStyle(address, R.color.black_color)
             }
 
             override fun onError(status: Status) {
