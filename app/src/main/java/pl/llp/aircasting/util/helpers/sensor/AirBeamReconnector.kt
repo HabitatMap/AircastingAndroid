@@ -12,6 +12,7 @@ import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.schedule
 import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
@@ -25,9 +26,9 @@ class AirBeamReconnector(
         fun finallyCallback(session: Session)
     }
 
-    private var mSession: Session? = null
-    private var mErrorCallback: (() -> Unit)? = null
-    private var mFinallyCallback: (() -> Unit)? = null
+    private lateinit var mSession: Session
+    private lateinit var mErrorCallback: (() -> Unit)
+    private lateinit var mFinallyCallback: (() -> Unit)
     private var mListener: Listener? = null
 
     private var mStandaloneMode = AtomicBoolean(false)
@@ -57,16 +58,7 @@ class AirBeamReconnector(
     ) {
         EventBus.getDefault().safeRegister(this)
 
-        if (mReconnectionTriesNumber != null) {
-            mReconnectionTriesNumber?.let { tries ->
-                if (tries > RECONNECTION_TRIES_MAX) {
-                    return
-                }
-            }
-        } else {
-            // disconnecting first to make sure the connector thread is stopped correctly etc
-            sendDisconnectedEvent(session)
-        }
+        if (mReconnectionTriesNumber == null) sendDisconnectedEvent(session)
 
         mSession = session
         mErrorCallback = errorCallback
@@ -76,8 +68,10 @@ class AirBeamReconnector(
             reconnect(session.deviceId, deviceItem)
         } else {
             mAirBeamDiscoveryService.find(
-                deviceSelector = { deviceItem -> deviceItem.id == session.deviceId },
-                onDiscoverySuccessful = { deviceItem -> reconnect(deviceItem.id, deviceItem) },
+                deviceSelector = { mDeviceItem -> mDeviceItem.id == session.deviceId },
+                onDiscoverySuccessful = { mDeviceItem ->
+                    startReconnectServiceWhenDeviceIsReady(session.deviceId, mDeviceItem)
+                },
                 onDiscoveryFailed = { onDiscoveryFailed() }
             )
         }
@@ -95,16 +89,24 @@ class AirBeamReconnector(
             { mListener?.finallyCallback(session) })
     }
 
-    private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
+    private fun reconnect(deviceId: String?, deviceItem: DeviceItem) {
         try {
             AirBeamReconnectSessionService.startService(
                 mContext,
                 deviceId,
                 deviceItem,
-                mSession?.uuid
+                mSession.uuid
             )
         } catch (e: Exception) {
-            Log.d("TAG", e.message.toString())
+            Log.d("start Service error: ", e.message.toString())
+        }
+    }
+
+    private fun startReconnectServiceWhenDeviceIsReady(deviceId: String?, deviceItem: DeviceItem) {
+        // sometimes AirBeam 2 takes 28 seconds to be ready and sometimes less(16s),
+        // so we'll wait for 28 seconds for the device to be fully ready
+        Timer().schedule(28000) {
+            reconnect(deviceId, deviceItem)
         }
     }
 
@@ -112,11 +114,11 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-            if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
-                reconnect(mSession!!, null, mErrorCallback!!, mFinallyCallback!!)
-            }
+
+            reconnect(mSession, null, mErrorCallback, mFinallyCallback)
+
         } else {
-            mFinallyCallback?.invoke()
+            mFinallyCallback.invoke()
         }
     }
 
@@ -142,7 +144,7 @@ class AirBeamReconnector(
 
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
-        mFinallyCallback?.invoke()
+        mFinallyCallback.invoke()
         unregisterFromEventBus()
     }
 
@@ -175,7 +177,7 @@ class AirBeamReconnector(
     }
 
     private fun finalizeReconnectionWithError() {
-        mErrorCallback?.invoke()
+        mErrorCallback.invoke()
         finalizeReconnection()
     }
 
