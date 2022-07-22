@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
@@ -50,24 +51,69 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             }
     }
 
-    fun bindSessions(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>) {
-        mSessionUUIDS = sessions.map { session -> session.uuid }.toMutableList()
-        removeObsoleteSessions()
-        sessions.forEach { session ->
-            if (mSessionPresenters.containsKey(session.uuid)) {
-                val sessionPresenter = mSessionPresenters[session.uuid]
-                sessionPresenter!!.session = prepareSession(session, sessionPresenter.expanded)
-                // TODO: Take conditions that ask about refreshing here
-                sessionPresenter.chartData?.refresh(session)
-            } else {
-                val sessionPresenter = initSessionPresenter(session, sensorThresholds)
-                mSessionPresenters[session.uuid] = sessionPresenter
+    fun bindSessions(
+        modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
+        sensorThresholds: HashMap<String, SensorThreshold>
+    ) {
+        delete(modifiedSessions[SessionsObserver.ModificationType.DELETED])
+        update(modifiedSessions[SessionsObserver.ModificationType.UPDATED])
+        insert(modifiedSessions[SessionsObserver.ModificationType.INSERTED], sensorThresholds)
+    }
+
+    private fun delete(sessions: List<Session>?) {
+        sessions?.forEach { session ->
+            val position = mSessionUUIDS.indexOf(session.uuid)
+            if (found(position)) {
+                mSessionUUIDS.removeAt(position)
+                mSessionPresenters.remove(session.uuid)
+                notifyItemRemoved(position)
             }
         }
-
-        // TODO: Notify range changed
-        notifyDataSetChanged()
     }
+
+    private fun update(sessions: List<Session>?) {
+        sessions?.forEach { session ->
+            val position = mSessionUUIDS.indexOf(session.uuid)
+            if (found(position)) {
+                replaceSession(position, session)
+                val success = replacePresenter(session)
+                if (success) notifyItemChanged(position)
+            }
+        }
+    }
+
+    private fun insert(
+        sessions: List<Session>?,
+        sensorThresholds: HashMap<String, SensorThreshold>
+    ) {
+        sessions?.forEach { session ->
+            val position = mSessionUUIDS.indexOf(session.uuid)
+            if (!found(position)) {
+                mSessionUUIDS.add(session.uuid)
+
+                val sessionPresenter = initSessionPresenter(session, sensorThresholds)
+                mSessionPresenters[session.uuid] = sessionPresenter
+
+                notifyItemInserted(mSessionUUIDS.lastIndex)
+            }
+        }
+    }
+
+    private fun replacePresenter(session: Session): Boolean {
+        val sessionPresenter = mSessionPresenters[session.uuid]
+        if (sessionPresenter != null) {
+            sessionPresenter.session = prepareSession(session, sessionPresenter.expanded)
+            sessionPresenter.chartData?.refresh(session)
+            return true
+        }
+        return false
+    }
+
+    private fun replaceSession(position: Int, session: Session) {
+        mSessionUUIDS[position] = session.uuid
+    }
+
+    private fun found(position: Int) = position != -1
 
     protected open fun initSessionPresenter(
         session: Session,
