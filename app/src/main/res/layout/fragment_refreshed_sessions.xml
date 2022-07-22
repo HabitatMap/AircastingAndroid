@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.02"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
 
     <ImageView
         android:id="@+id/connected_image"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:src="@drawable/airbeam"
-        android:contentDescription="@string/airbeam_connected_image_desc"
         android:layout_marginTop="@dimen/keyline_10"
-        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
+        android:contentDescription="@string/airbeam_connected_image_desc"
+        android:src="@drawable/airbeam"
         app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
 
     <ImageView
         android:id="@+id/icon"
@@ -36,35 +34,35 @@
         app:layout_constraintEnd_toEndOf="@+id/connected_image" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guidelineMiddle"
-        app:layout_constraintGuide_percent="0.5"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/refreshed_sessions_header"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
-        android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineMiddle"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineMiddle" />
 
     <TextView
         android:id="@+id/refreshed_sessions_description"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
-        android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginEnd="@dimen/keyline_8"
-        app:layout_constraintTop_toBottomOf="@id/refreshed_sessions_header"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/refreshed_sessions_header" />
 
     <Button
         android:id="@+id/primary_button"
@@ -73,31 +71,31 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:text="@string/sd_card_cleared_continue_button"
-        app:layout_constraintTop_toBottomOf="@id/refreshed_sessions_description"
+        app:layout_constraintBottom_toTopOf="@id/cancel_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/cancel_button"/>
+        app:layout_constraintTop_toBottomOf="@id/refreshed_sessions_description" />
 
     <Button
         android:id="@+id/cancel_button"
         style="@style/Widget.Aircasting.TextButton"
-        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
-        android:fontFamily="@font/muli_bold"
-        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:fontFamily="@font/muli_bold"
         android:text="@string/cancel"
-        app:layout_constraintTop_toBottomOf="@id/primary_button"
+        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"/>
+        app:layout_constraintTop_toBottomOf="@id/primary_button" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.98"/>
+        app:layout_constraintGuide_percent="0.98" />
 </androidx.constraintlayout.widget.ConstraintLayout>
