@@ -226,10 +226,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected open fun expandSessionCard() {
         setExpandCollapseButton()
         mExpandedSessionView.visible()
+        mMeasurementsTableContainer.makeSelectable(showExpandedMeasurementsTableValues())
 
-        if (showExpandedMeasurementsTableValues()) {
-            mMeasurementsTableContainer.makeSelectable(mSessionPresenter)
-        }
         if (showChart()) mChartView?.visible()
 
         bindExpandedMeasurementsDescription()

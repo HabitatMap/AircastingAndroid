@@ -8,8 +8,6 @@ import androidx.core.view.forEach
 import androidx.core.view.get
 import kotlinx.android.synthetic.main.session_card.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
