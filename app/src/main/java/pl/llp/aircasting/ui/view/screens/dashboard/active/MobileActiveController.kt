@@ -26,9 +26,9 @@ import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.goToDormantTab
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
-import pl.llp.aircasting.util.extensions.safeRegister
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
@@ -39,12 +39,21 @@ class MobileActiveController(
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector,
     private val mContext: Context
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
+) : SessionsController(
+    mRootActivity,
+    mViewMvc,
+    mSessionsViewModel,
+    mSettings,
+    mApiServiceFactory,
+    mRootActivity!!.supportFragmentManager,
+    mContext
+),
     SessionsViewMvc.Listener,
     AddNoteBottomSheet.Listener,
     AirBeamReconnector.Listener {
 
-    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver =
+        ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onCreate() {
         super.onCreate()
@@ -109,14 +118,19 @@ class MobileActiveController(
 
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc?.showReconnectingLoaderFor(session)
-        airBeamReconnector.reconnect(session,
+
+        airBeamReconnector.reconnect(
+            session,
             deviceItem = null,
             errorCallback = { errorCallback() },
-            finallyCallback = { finallyCallback(session) }
-        )
+            finallyCallback = { finallyCallback(session) })
     }
 
-    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
+    override fun onEditDataPressed(
+        session: Session,
+        name: String,
+        tags: ArrayList<String>
+    ) { // Edit session bottom sheet handling
         // do nothing
     }
 
@@ -138,7 +152,7 @@ class MobileActiveController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
         val deviceId = event.deviceId ?: return
-        
+
         mViewMvc?.hideLoaderFor(deviceId)
     }
 

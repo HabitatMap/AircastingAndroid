@@ -43,12 +43,12 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
         val unit = parts[Fields.MEASUREMENT_UNIT.ordinal]
         val symbol = parts[Fields.MEASUREMENT_SYMBOL.ordinal]
 
-        var veryLow: Int?
-        var low: Int?
-        var mid: Int?
-        var high: Int?
-        var veryHigh: Int?
-        var measuredValue: Double?
+        val veryLow: Int?
+        val low: Int?
+        val mid: Int?
+        val high: Int?
+        val veryHigh: Int?
+        val measuredValue: Double?
         try {
             veryLow = Integer.parseInt(parts[Fields.THRESHOLD_VERY_LOW.ordinal])
             low = Integer.parseInt(parts[Fields.THRESHOLD_LOW.ordinal])

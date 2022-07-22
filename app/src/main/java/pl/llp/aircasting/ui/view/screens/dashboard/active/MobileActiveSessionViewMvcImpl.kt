@@ -87,9 +87,9 @@ class MobileActiveSessionViewMvcImpl(
     }
 
     override fun onSessionReconnectClicked(session: Session) {
-        val session = mSessionPresenter?.session ?: return
+        val mSession = mSessionPresenter?.session ?: return
         for (listener in listeners) {
-            listener.onSessionReconnectClicked(session)
+            listener.onSessionReconnectClicked(mSession)
         }
     }
 

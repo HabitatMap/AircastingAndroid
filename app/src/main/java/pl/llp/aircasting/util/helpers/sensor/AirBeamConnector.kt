@@ -1,13 +1,13 @@
 package pl.llp.aircasting.util.helpers.sensor
 
 import android.bluetooth.BluetoothAdapter
-import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
@@ -33,7 +33,11 @@ abstract class AirBeamConnector {
     protected abstract fun start(deviceItem: DeviceItem)
     protected abstract fun stop()
     protected abstract fun sendAuth(sessionUUID: String)
-    protected abstract fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
+    protected abstract fun configureSession(
+        session: Session,
+        wifiSSID: String?,
+        wifiPassword: String?
+    )
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mDeviceItem = deviceItem
@@ -92,13 +96,14 @@ abstract class AirBeamConnector {
 
     fun onConnectionFailed(deviceItem: DeviceItem) {
         mTimerTask?.cancel()
-        if (connectionTimedOut.get() == false) {
+        if (!connectionTimedOut.get()) {
             mListener?.onConnectionFailed(deviceItem)
         }
     }
 
     fun onDisconnected(device: DeviceItem, postDisconnectedEvent: Boolean = true) {
-        if (postDisconnectedEvent) EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
+        if (postDisconnectedEvent) EventBus.getDefault()
+            .post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
         mListener?.onDisconnect(device.id)
     }
 
@@ -131,11 +136,11 @@ abstract class AirBeamConnector {
         }
     }
 
-    protected fun registerToEventBus() {
+    private fun registerToEventBus() {
         EventBus.getDefault().safeRegister(this)
     }
 
-    protected fun unregisterFromEventBus() {
+    private fun unregisterFromEventBus() {
         EventBus.getDefault().unregister(this)
     }
 }

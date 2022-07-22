@@ -16,8 +16,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import javax.inject.Inject
 
-
-abstract class AirBeamService: SensorService(),
+abstract class AirBeamService : SensorService(),
     AirBeamConnector.Listener {
 
     protected var mAirBeamConnector: AirBeamConnector? = null
@@ -31,7 +30,7 @@ abstract class AirBeamService: SensorService(),
     @Inject
     lateinit var airbeamReconnector: AirBeamReconnector
 
-    protected val mSessionRepository = SessionsRepository()
+    private val mSessionRepository = SessionsRepository()
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
