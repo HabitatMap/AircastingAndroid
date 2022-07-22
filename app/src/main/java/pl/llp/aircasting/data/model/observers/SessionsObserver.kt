@@ -62,6 +62,43 @@ abstract class SessionsObserver<Type>(
         updateSessionsCache(sessions)
     }
 
+    private fun searchForModifiedSessions(sessions: List<Session>): Map<ModificationType, List<Session>> {
+        val modified = HashMap<ModificationType, List<Session>>()
+        modified[ModificationType.DELETED] = deleted(sessions)
+        modified[ModificationType.INSERTED] = inserted(sessions)
+        modified[ModificationType.UPDATED] = updated(sessions)
+        return modified
+    }
+
+    private fun deleted(sessions: List<Session>): List<Session> {
+        val deleted = mutableListOf<Session>()
+        mSessions.values.forEach { old ->
+            val notPresent = !sessions.contains(old)
+            if (notPresent) deleted.add(old)
+        }
+        return deleted
+    }
+
+    private fun inserted(sessions: List<Session>): List<Session> {
+        val inserted = mutableListOf<Session>()
+        sessions.forEach { new ->
+            val old = mSessions[new.uuid]
+            if (old == null) inserted.add(new)
+        }
+        return inserted
+    }
+
+    private fun updated(sessions: List<Session>): List<Session> {
+        val updated = mutableListOf<Session>()
+        sessions.forEach { new ->
+            val old = mSessions[new.uuid]
+            if (old != null && new.hasChangedFrom(old)) {
+                updated.add(new)
+            }
+        }
+        return updated
+    }
+
     private fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {
         val streams = sessions.flatMap { it.streams }.distinctBy { it.sensorName }
         return mSessionsViewModel.findOrCreateSensorThresholds(streams)
