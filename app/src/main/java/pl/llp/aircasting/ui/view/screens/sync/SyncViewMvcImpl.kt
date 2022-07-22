@@ -5,11 +5,8 @@ import android.view.ViewGroup
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 
-class SyncViewMvcImpl : BaseViewMvc, SyncViewMvc {
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): super() {
+class SyncViewMvcImpl(inflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc(), SyncViewMvc {
+    init {
         this.rootView = inflater.inflate(R.layout.activity_sync, parent, false)
     }
 }

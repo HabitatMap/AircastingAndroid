@@ -25,7 +25,8 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsViewMvc
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.ResultCodes
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
@@ -43,6 +44,8 @@ import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -385,6 +388,4 @@ class NewSessionController(
             }
         }
     }
-
-
 }
