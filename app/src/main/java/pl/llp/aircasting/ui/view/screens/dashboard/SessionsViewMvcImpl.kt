@@ -15,6 +15,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
@@ -89,12 +90,11 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     override fun showSessionsView(
-        sessions: List<Session>,
+        modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
         sensorThresholds: HashMap<String, SensorThreshold>
     ) {
         if (recyclerViewCanBeUpdated()) {
-            // TODO: Provide only the session whose data has been changed
-            mAdapter.bindSessions(sessions, sensorThresholds)
+            mAdapter.bindSessions(modifiedSessions, sensorThresholds)
             mEmptyView?.visibility = View.INVISIBLE
             mDidYouKnowBox?.visibility = View.INVISIBLE
             mRecyclerSessions?.visibility = View.VISIBLE

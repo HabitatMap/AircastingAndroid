@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
 
@@ -26,7 +27,10 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onCollapseSessionCard(session: Session) { /* Do nothing */ }
     }
 
-    fun showSessionsView(sessions: List<Session>, sensorThresholds: HashMap<String, SensorThreshold>)
+    fun showSessionsView(
+        modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
+        sensorThresholds: HashMap<String, SensorThreshold>
+    )
     fun showEmptyView()
     fun showLoaderFor(session: Session)
     fun hideLoaderFor(session: Session)

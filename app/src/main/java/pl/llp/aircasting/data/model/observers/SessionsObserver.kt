@@ -15,8 +15,15 @@ abstract class SessionsObserver<Type>(
     private val mSessionsViewModel: SessionsViewModel,
     private val mViewMvc: SessionsViewMvc?
 ) {
+    enum class ModificationType {
+        DELETED,
+        UPDATED,
+        INSERTED
+    }
+
     private var mSessions = hashMapOf<String, Session>()
     private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
+    private var modifiedSessions = HashMap<ModificationType, List<Session>>()
 
     private var mSessionsLiveData: LiveData<List<Type>>? = null
 
@@ -26,7 +33,6 @@ abstract class SessionsObserver<Type>(
             val sensorThresholds = getSensorThresholds(sessions)
             if (anySensorThresholdChanged(sensorThresholds)) updateSensorThresholds(sensorThresholds)
             if (anySessionChanged(sessions)) {
-                // TODO: Provide only the session whose data has been changed
                 onSessionsChanged(coroutineScope, sessions)
             }
             hideLoader(coroutineScope)
@@ -47,7 +53,8 @@ abstract class SessionsObserver<Type>(
 
     private fun onSessionsChanged(coroutineScope: CoroutineScope, sessions: List<Session>) {
         if (sessions.isNotEmpty()) {
-            showSessionsView(coroutineScope, sessions)
+            val modifiedSessions = searchForModifiedSessions(sessions)
+            showSessionsView(coroutineScope, modifiedSessions)
         } else {
             showEmptyView(coroutineScope)
         }
@@ -66,9 +73,12 @@ abstract class SessionsObserver<Type>(
         }
     }
 
-    private fun showSessionsView(coroutineScope: CoroutineScope, sessions: List<Session>) {
+    private fun showSessionsView(
+        coroutineScope: CoroutineScope,
+        modifiedSessions: Map<ModificationType, List<Session>>
+    ) {
         DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc?.showSessionsView(sessions, mSensorThresholds)
+            mViewMvc?.showSessionsView(modifiedSessions, mSensorThresholds)
         }
     }
 
