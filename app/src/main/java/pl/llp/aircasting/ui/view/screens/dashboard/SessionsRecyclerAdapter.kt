@@ -65,6 +65,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             }
         }
 
+        // TODO: Notify range changed
         notifyDataSetChanged()
     }
 

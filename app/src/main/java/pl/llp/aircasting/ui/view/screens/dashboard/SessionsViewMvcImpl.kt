@@ -93,7 +93,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         sensorThresholds: HashMap<String, SensorThreshold>
     ) {
         if (recyclerViewCanBeUpdated()) {
-            // TODO: Here we rebind all sessions while we could only rebind data from specific session which data has been changed
+            // TODO: Provide only the session whose data has been changed
             mAdapter.bindSessions(sessions, sensorThresholds)
             mEmptyView?.visibility = View.INVISIBLE
             mDidYouKnowBox?.visibility = View.INVISIBLE
