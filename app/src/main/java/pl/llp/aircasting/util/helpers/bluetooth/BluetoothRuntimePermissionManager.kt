@@ -18,7 +18,8 @@ import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    private val appContext: Context
+    private val appContext: Context,
+    private val mPermissionsManager: PermissionsManager = PermissionsManager()
 ) : BluetoothManager {
     @Inject
     lateinit var permissionsManager: PermissionsManager
@@ -82,6 +83,7 @@ open class BluetoothRuntimePermissionManager(
     }
 
     private fun askForBluetoothConnectPermissionIfNotGranted(activity: Activity?) {
+
         when {
             activity?.let {
                 ContextCompat.checkSelfPermission(
