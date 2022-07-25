@@ -14,12 +14,15 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    private val appContext: Context,
-    private val mPermissionsManager: PermissionsManager = PermissionsManager()
+    private val appContext: Context
 ) : BluetoothManager {
+    @Inject
+    lateinit var permissionsManager: PermissionsManager
+
     private val adapter: BluetoothAdapter? =
         (appContext.getSystemService(
             Context.BLUETOOTH_SERVICE
@@ -65,7 +68,7 @@ open class BluetoothRuntimePermissionManager(
     }
 
     override fun requestBluetoothEnable(activity: Activity?) {
-        needNewBluetoothPermissions(activity)
+        askForBluetoothConnectPermissionIfNotGranted(activity)
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
         if (activity?.let {
@@ -78,7 +81,7 @@ open class BluetoothRuntimePermissionManager(
         }
     }
 
-    private fun needNewBluetoothPermissions(activity: Activity?) {
+    private fun askForBluetoothConnectPermissionIfNotGranted(activity: Activity?) {
         when {
             activity?.let {
                 ContextCompat.checkSelfPermission(
@@ -86,7 +89,7 @@ open class BluetoothRuntimePermissionManager(
                     Manifest.permission.BLUETOOTH_CONNECT
                 )
             } != PackageManager.PERMISSION_GRANTED -> {
-                activity?.let { mPermissionsManager.requestBluetoothPermissions(it) }
+                activity?.let { permissionsManager.requestBluetoothPermissions(it) }
             }
         }
     }
