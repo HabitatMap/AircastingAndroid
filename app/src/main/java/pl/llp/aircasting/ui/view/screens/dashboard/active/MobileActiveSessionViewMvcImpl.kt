@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
@@ -11,6 +10,8 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.visible
 
 class MobileActiveSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -53,16 +54,16 @@ class MobileActiveSessionViewMvcImpl(
         if (sessionPresenter.isDisconnected()) {
             mDisconnectedView.show(sessionPresenter)
 
-            mActionsButton.visibility = View.GONE
-            mCollapseSessionButton.visibility = View.GONE
-            mExpandSessionButton.visibility = View.GONE
+            mActionsButton.gone()
+            mCollapseSessionButton.gone()
+            mExpandSessionButton.gone()
             mSessionCardLayout.background =
                 context.let { AppCompatResources.getDrawable(it, R.drawable.top_border) }
-            mExpandedSessionView.visibility = View.GONE
+            mExpandedSessionView.gone()
         } else {
             mDisconnectedView.hide()
 
-            mActionsButton.visibility = View.VISIBLE
+            mActionsButton.visible()
             setExpandCollapseButton()
             mSessionCardLayout.background = null
 
