@@ -522,4 +522,5 @@
     <string name="use_celsius_scale">Use Celsius scale</string>
     <string name="from">from</string>
     <string name="to">to</string>
+    <string name="reconnecting">Reconnecting…</string>
 </resources>

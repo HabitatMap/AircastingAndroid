@@ -406,5 +406,6 @@
     <string name="use_celsius_scale">Usa la escala Celsius</string>
     <string name="from">de</string>
     <string name="to">a</string>
+    <string name="reconnecting">reconectando...</string>
 
 </resources>
