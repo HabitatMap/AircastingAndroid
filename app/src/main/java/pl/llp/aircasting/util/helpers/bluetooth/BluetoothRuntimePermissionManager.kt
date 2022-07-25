@@ -13,10 +13,12 @@ import androidx.core.content.ContextCompat
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    private val appContext: Context
+    private val appContext: Context,
+    private val mPermissionsManager: PermissionsManager = PermissionsManager()
 ) : BluetoothManager {
     private val adapter: BluetoothAdapter? =
         (appContext.getSystemService(
@@ -54,30 +56,38 @@ open class BluetoothRuntimePermissionManager(
     }
 
     override fun cancelDiscovery() {
-        if (
-            ContextCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 appContext,
                 Manifest.permission.BLUETOOTH_SCAN
-            )
-            == PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
         )
             adapter?.cancelDiscovery()
     }
 
     override fun requestBluetoothEnable(activity: Activity?) {
+        needNewBluetoothPermissions(activity)
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
         if (activity?.let {
-                ActivityCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                )
-            } == PackageManager.PERMISSION_GRANTED
-        ) {
+                ActivityCompat.checkSelfPermission(it, Manifest.permission.BLUETOOTH_CONNECT)
+            } == PackageManager.PERMISSION_GRANTED) {
             activity.startActivityForResult(
                 intent,
                 ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE
             )
+        }
+    }
+
+    private fun needNewBluetoothPermissions(activity: Activity?) {
+        when {
+            activity?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                )
+            } != PackageManager.PERMISSION_GRANTED -> {
+                activity?.let { mPermissionsManager.requestBluetoothPermissions(it) }
+            }
         }
     }
 }
