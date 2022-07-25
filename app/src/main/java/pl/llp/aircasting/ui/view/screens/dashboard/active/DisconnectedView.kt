@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.disconnected_view.view.*
 import pl.llp.aircasting.R
@@ -64,18 +65,35 @@ class DisconnectedView(
         mHeader?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_header)
         mDescription?.text =
             mContext.getString(R.string.disconnected_view_bluetooth_device_description)
-        mPrimaryButton?.text =
-            mContext.getString(R.string.disconnected_view_bluetooth_device_reconnect_button)
         mSecondaryButton?.text =
             mContext.getString(R.string.disconnected_view_bluetooth_device_finish_button)
 
-        mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(session) }
+        mPrimaryButton?.setOnClickListener {
+            mListener.onSessionReconnectClicked(session)
+            toggleReconnectButton()
+        }
         mSecondaryButton?.setOnClickListener {
             FinishSessionConfirmationDialog(
                 mSupportFragmentManager,
                 mListener,
                 session
             ).show()
+        }
+    }
+
+    private fun toggleReconnectButton() {
+        mPrimaryButton?.apply {
+            text = mContext.getString(R.string.reconnecting)
+            isEnabled = false
+            setBackgroundColor(ContextCompat.getColor(mContext, R.color.aircasting_grey_300))
+        }
+    }
+
+    private fun toggleReconnectButtonToDefault() {
+        mPrimaryButton?.apply {
+            text = mContext.getString(R.string.disconnected_view_bluetooth_device_reconnect_button)
+            isEnabled = true
+            setBackgroundColor(ContextCompat.getColor(mContext, R.color.aircasting_blue_400))
         }
     }
 
@@ -103,10 +121,12 @@ class DisconnectedView(
     }
 
     private fun showReconnectingLoader() {
+        toggleReconnectButton()
         mReconnectingLoader?.startAnimation()
     }
 
     private fun hideReconnectingLoader() {
+        toggleReconnectButtonToDefault()
         mReconnectingLoader?.stopAnimation()
     }
 }
