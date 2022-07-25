@@ -58,7 +58,16 @@ class AirBeamReconnector(
     ) {
         EventBus.getDefault().safeRegister(this)
 
-        if (mReconnectionTriesNumber == null) sendDisconnectedEvent(session)
+        if (mReconnectionTriesNumber != null) {
+            mReconnectionTriesNumber?.let { tries ->
+                if (tries > RECONNECTION_TRIES_MAX) {
+                    return
+                }
+            }
+        } else {
+            // disconnecting first to make sure the connector thread is stopped correctly etc
+            sendDisconnectedEvent(session)
+        }
 
         mSession = session
         mErrorCallback = errorCallback
@@ -104,7 +113,7 @@ class AirBeamReconnector(
 
     private fun startReconnectServiceWhenDeviceIsReady(deviceId: String?, deviceItem: DeviceItem) {
         // sometimes AirBeam 2 takes 28 seconds to be ready and sometimes less(16s),
-        // so we'll wait for 28 seconds for the device to be fully ready
+        // so we'll wait for (at least) 16 seconds for the device to be fully ready
         Timer().schedule(28000) {
             reconnect(deviceId, deviceItem)
         }
@@ -117,9 +126,7 @@ class AirBeamReconnector(
 
             reconnect(mSession, null, mErrorCallback, mFinallyCallback)
 
-        } else {
-            mFinallyCallback.invoke()
-        }
+        } else mFinallyCallback.invoke()
     }
 
     private fun sendDisconnectedEvent(session: Session) {
@@ -188,7 +195,7 @@ class AirBeamReconnector(
 
     private fun finalizeReconnection() {
         mAirBeamDiscoveryService.reset()
-        mFinallyCallback?.invoke()
+        mFinallyCallback.invoke()
         unregisterFromEventBus()
     }
 
