@@ -157,7 +157,6 @@ class SyncController(
     }
 
     override fun onTurnOnBluetoothContinueClicked() {
-        needNewBluetoothPermissions()
         requestBluetoothEnable()
     }
 
