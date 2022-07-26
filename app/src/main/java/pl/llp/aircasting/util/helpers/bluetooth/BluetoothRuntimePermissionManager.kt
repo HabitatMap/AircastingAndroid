@@ -14,14 +14,12 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.S)
 open class BluetoothRuntimePermissionManager(
-    private val appContext: Context
+    private val appContext: Context,
+    private val permissionsManager: PermissionsManager
 ) : BluetoothManager {
-    @Inject
-    lateinit var permissionsManager: PermissionsManager
 
     private val adapter: BluetoothAdapter? =
         (appContext.getSystemService(
