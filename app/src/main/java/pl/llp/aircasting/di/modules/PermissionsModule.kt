@@ -20,7 +20,7 @@ open class PermissionsModule {
     @Singleton
     open fun providesBluetoothManager(application: AircastingApplication): BluetoothManager {
         return if (isSDKGreaterOrEqualToS())
-            BluetoothRuntimePermissionManager(application.applicationContext, PermissionsManager())
+            BluetoothRuntimePermissionManager(application.applicationContext, providesPermissionsManager())
         else
             BluetoothManagerDefault()
     }
