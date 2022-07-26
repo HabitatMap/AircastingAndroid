@@ -7,29 +7,29 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.data.model.*
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.util.events.NewMeasurementEvent
-import pl.llp.aircasting.util.events.NoteDeletedEvent
-import pl.llp.aircasting.util.events.NoteEditedEvent
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.extensions.adjustMenuVisibility
-import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.data.model.observers.FixedSessionObserver
 import pl.llp.aircasting.data.model.observers.MobileSessionObserver
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUValidationErrorToast
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.events.NewMeasurementEvent
+import pl.llp.aircasting.util.events.NoteDeletedEvent
+import pl.llp.aircasting.util.events.NoteEditedEvent
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class SessionDetailsViewController(
@@ -59,12 +59,12 @@ abstract class SessionDetailsViewController(
             this::onSessionChanged
         )
     }
-    protected var editNoteDialog: EditNoteBottomSheet? = null
+    private var editNoteDialog: EditNoteBottomSheet? = null
 
     protected val mErrorHandler = ErrorHandler(rootActivity)
     private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
-    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
-    protected val mSessionRepository = SessionsRepository()
+    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    private val mSessionRepository = SessionsRepository()
     private val mMeasurementsRepository = MeasurementsRepository()
     private var mShouldRefreshStatistics = AtomicBoolean(false)
 
@@ -138,7 +138,7 @@ abstract class SessionDetailsViewController(
         }
     }
 
-    fun startEditNoteDialog(session: Session?, noteNumber: Int) {
+    private fun startEditNoteDialog(session: Session?, noteNumber: Int) {
         editNoteDialog = EditNoteBottomSheet(this, session, noteNumber)
         editNoteDialog?.show(fragmentManager)
     }

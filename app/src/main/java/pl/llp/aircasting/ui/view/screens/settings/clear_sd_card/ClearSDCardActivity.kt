@@ -8,13 +8,16 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.util.extensions.setupAppBar
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import javax.inject.Inject
 
 class ClearSDCardActivity : BaseActivity() {
     private var controller: ClearSDCardController? = null
 
     @Inject
-    lateinit var permissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager

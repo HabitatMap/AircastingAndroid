@@ -118,27 +118,13 @@ class MainViewMvcImpl(
                             mSessionRepository.mobileActiveSessionExists()
 
                         DatabaseProvider.backToUIThread(scope) {
-                            if (isMobileActiveSessionExists) {
-                                val action =
-                                    MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_ACTIVE.value)
-                                mNavController?.navigate(action)
-                            } else {
-                                val action =
-                                    MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-                                mNavController?.navigate(action)
-                            }
+                            if (isMobileActiveSessionExists) rootActivity.goToMobileActiveTab()
+                            else rootActivity.goToFollowingTab()
                         }
                     }
                 }
-                R.id.navigation_lets_begin -> {
-                    adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_lets_begin)
-                }
-                R.id.navigation_settings -> {
-                    adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_settings)
-                }
-
+                R.id.navigation_lets_begin -> mNavController?.navigate(R.id.navigation_lets_begin)
+                R.id.navigation_settings -> mNavController?.navigate(R.id.navigation_settings)
             }
             true
         }

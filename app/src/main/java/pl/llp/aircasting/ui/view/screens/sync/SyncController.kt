@@ -31,22 +31,25 @@ import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
+import pl.llp.aircasting.util.extensions.areLocationServicesOn
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
 import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncController(
-    private val mContextActivity: AppCompatActivity,
+    private val mRootActivity: AppCompatActivity,
     mViewMvc: SyncViewMvc,
-    private val mPermissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager,
+    private val mPermissionsManager: PermissionsManager,
     private val mBluetoothManager: BluetoothManager,
     private val mFragmentManager: FragmentManager,
     mApiServiceFactory: ApiServiceFactory,
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings
-):  RefreshedSessionsViewMvc.Listener,
+) : RefreshedSessionsViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -56,9 +59,11 @@ class SyncController(
     AirbeamSyncingViewMvc.Listener,
     ErrorViewMvc.Listener {
 
-    private val mApiService =  mApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mSessionsSyncService = SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    private val mWizardNavigator = SyncWizardNavigator(mContextActivity, mSettings, mViewMvc, mFragmentManager)
+    private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mSessionsSyncService =
+        SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
+    private val mWizardNavigator =
+        SyncWizardNavigator(mRootActivity, mSettings, mViewMvc, mFragmentManager)
     private var mSessionsSyncStarted = AtomicBoolean(false)
 
     fun onCreate() {
@@ -66,7 +71,7 @@ class SyncController(
 
         setupProgressBarMax()
 
-        if (mPermissionsManager.locationPermissionsGranted(mContextActivity)) {
+        if (mPermissionsManager.locationPermissionsGranted(mRootActivity)) {
             goToRefreshingSessions()
         } else {
             showLocationPermissionPopUp()
@@ -77,19 +82,23 @@ class SyncController(
         pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp(
             mFragmentManager,
             mPermissionsManager,
-            mContextActivity
+            mRootActivity
         ).show()
     }
 
     private fun setupProgressBarMax() {
-        mWizardNavigator.setupProgressBarMax(!mContextActivity.areLocationServicesOn(), mSettings.areMapsDisabled(), !mBluetoothManager.isBluetoothEnabled())
+        mWizardNavigator.setupProgressBarMax(
+            !mRootActivity.areLocationServicesOn(),
+            mSettings.areMapsDisabled(),
+            !mBluetoothManager.isBluetoothEnabled()
+        )
     }
 
     fun onStop() {
         EventBus.getDefault().unregister(this)
     }
 
-    fun goToRefreshingSessions() {
+    private fun goToRefreshingSessions() {
         mWizardNavigator.goToRefreshingSessions()
         refreshSessionList()
     }
@@ -123,11 +132,11 @@ class SyncController(
     }
 
     override fun refreshedSessionsCancelClicked() {
-        mContextActivity.finish()
+        mRootActivity.finish()
     }
 
     private fun checkLocationServicesSettings() {
-        if (mContextActivity.areLocationServicesOn()) {
+        if (mRootActivity.areLocationServicesOn()) {
             if (mBluetoothManager.isBluetoothEnabled()) {
                 mWizardNavigator.goToRestartAirBeam(this)
             } else {
@@ -143,7 +152,7 @@ class SyncController(
     }
 
     override fun onTurnOnLocationServicesOkClicked() {
-        LocationHelper.checkLocationServicesSettings(mContextActivity)
+        LocationHelper.checkLocationServicesSettings(mRootActivity)
     }
 
     override fun onTurnOnBluetoothContinueClicked() {
@@ -151,7 +160,7 @@ class SyncController(
     }
 
     private fun requestBluetoothEnable() {
-        mBluetoothManager.requestBluetoothEnable(mContextActivity)
+        mBluetoothManager.requestBluetoothEnable(mRootActivity)
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
@@ -169,18 +178,22 @@ class SyncController(
     }
 
     override fun onErrorViewOkClicked() {
-        mContextActivity.finish()
+        mRootActivity.finish()
     }
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         onBackPressed()
-        val dialog = AircastingAlertDialog(mFragmentManager, mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header), mContextActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description))
+        val dialog = AircastingAlertDialog(
+            mFragmentManager,
+            mRootActivity.resources.getString(R.string.bluetooth_failed_connection_alert_header),
+            mRootActivity.resources.getString(R.string.bluetooth_failed_connection_alert_description)
+        )
         dialog.show()
     }
 
     private fun syncAirbeam(deviceItem: DeviceItem) {
-        AirBeamSyncService.startService(mContextActivity, deviceItem)
+        AirBeamSyncService.startService(mRootActivity, deviceItem)
         mWizardNavigator.goToAirbeamSyncing(this)
     }
 
@@ -188,19 +201,19 @@ class SyncController(
         if (mSettings.areMapsDisabled()) {
             mWizardNavigator.goToTurnOffLocationServices(this)
         } else {
-            mContextActivity.finish()
+            mRootActivity.finish()
         }
     }
 
     override fun onTurnOffLocationServicesOkClicked(session: Session?) {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        ContextCompat.startActivity(mContextActivity, intent, null)
+        ContextCompat.startActivity(mRootActivity, intent, null)
 
-        mContextActivity.finish()
+        mRootActivity.finish()
     }
 
     override fun onSkipClicked(session: Session?) {
-        mContextActivity.finish()
+        mRootActivity.finish()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

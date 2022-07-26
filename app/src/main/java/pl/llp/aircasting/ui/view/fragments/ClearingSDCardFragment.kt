@@ -13,7 +13,8 @@ import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.clearing_sd_card
 
 class ClearingSDCardFragment(
     private val mFragmentManager: FragmentManager
-): BaseFragment<ClearingSDCardViewMvcImpl, ClearingSDCardController>(), BaseWizardNavigator.BackPressedListener {
+) : BaseFragment<ClearingSDCardViewMvcImpl, ClearingSDCardController>(),
+    BaseWizardNavigator.BackPressedListener {
 
     override fun onCreateView(
         inflater: LayoutInflater,
