@@ -1,9 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.sync
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -38,7 +36,6 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncController(
@@ -170,19 +167,6 @@ class SyncController(
 
     override fun onConnectClicked(deviceItem: DeviceItem) {
         syncAirbeam(deviceItem)
-    }
-
-    private fun needNewBluetoothPermissions() {
-        if (isSDKGreaterOrEqualToS()) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    mRootActivity,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED -> {
-                    mPermissionsManager.requestBluetoothPermissions(mRootActivity)
-                }
-            }
-        }
     }
 
     @Subscribe

@@ -1,13 +1,10 @@
 package pl.llp.aircasting.ui.view.screens.new_session
 
-import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.*
@@ -45,7 +42,6 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -199,7 +195,6 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothContinueClicked() {
-        needNewBluetoothPermissions()
         requestBluetoothEnable()
     }
 
@@ -374,18 +369,5 @@ class NewSessionController(
         if (isSDKGreaterOrEqualToQ()) permissionsManager.requestBackgroundLocationPermissions(
             mContextActivity
         ) else goToFirstStep()
-    }
-
-    private fun needNewBluetoothPermissions() {
-        if (isSDKGreaterOrEqualToS()) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    mContextActivity,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED -> {
-                    permissionsManager.requestBluetoothPermissions(mContextActivity)
-                }
-            }
-        }
     }
 }
