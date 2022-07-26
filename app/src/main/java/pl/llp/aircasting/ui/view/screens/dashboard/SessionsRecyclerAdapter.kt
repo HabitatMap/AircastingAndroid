@@ -178,7 +178,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             val dbSessionWithMeasurements =
                 mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             return@withContext dbSessionWithMeasurements?.let {
-                Session(dbSessionWithMeasurements)
+                Session(it)
             }
         }
     }

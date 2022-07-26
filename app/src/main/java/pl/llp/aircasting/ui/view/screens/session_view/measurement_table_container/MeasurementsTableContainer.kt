@@ -72,7 +72,7 @@ abstract class MeasurementsTableContainer {
         if (displayValues) mMeasurementValues = mRootView?.measurement_values
     }
 
-    fun makeCollapsed(sessionPresenter: SessionPresenter? = mSessionPresenter, displayValues: Boolean = true) {
+    fun makeCollapsed(sessionPresenter: SessionPresenter?, displayValues: Boolean = true) {
         resetMeasurementsView()
         mSelectable = true
         mCollapsed = true
