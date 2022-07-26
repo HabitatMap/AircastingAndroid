@@ -33,19 +33,18 @@ class SessionPresenter() {
         this.loading = loading
         this.sensorThresholds = sensorThresholds
 
-        when {
-            session.tab == SessionsTab.FOLLOWING -> {
+        when (session.tab) {
+            SessionsTab.FOLLOWING -> {
                 this.chartData = ChartData(session)
                 this.shouldHideMap = session.indoor
             }
-            session.tab == SessionsTab.FIXED -> this.shouldHideMap = session.indoor
-            session.tab == SessionsTab.MOBILE_ACTIVE -> {
+            SessionsTab.FIXED -> this.shouldHideMap = session.indoor
+            SessionsTab.MOBILE_ACTIVE -> {
                 this.chartData = ChartData(session)
                 this.shouldHideMap = session.locationless
                 this.loading = true
             }
-            session.tab == SessionsTab.MOBILE_DORMANT -> this.shouldHideMap = session.locationless
-            session.isExternal -> this.chartData = ChartData(session)
+            SessionsTab.MOBILE_DORMANT -> this.shouldHideMap = session.locationless
         }
     }
 

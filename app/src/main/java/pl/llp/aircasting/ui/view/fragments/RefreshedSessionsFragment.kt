@@ -11,7 +11,9 @@ import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsControl
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvcImpl
 
-class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager): BaseFragment<RefreshedSessionsViewMvcImpl, RefreshedSessionsController>(), BaseWizardNavigator.BackPressedListener {
+class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager) :
+    BaseFragment<RefreshedSessionsViewMvcImpl, RefreshedSessionsController>(),
+    BaseWizardNavigator.BackPressedListener {
     lateinit var listener: RefreshedSessionsViewMvc.Listener
 
     var success: Boolean = true

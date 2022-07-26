@@ -1,13 +1,10 @@
 package pl.llp.aircasting.ui.view.screens.new_session
 
-import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.*
@@ -25,7 +22,8 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsViewMvc
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.ResultCodes
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
@@ -43,6 +41,7 @@ import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 
 class NewSessionController(
     private val mContextActivity: AppCompatActivity,
@@ -196,7 +195,6 @@ class NewSessionController(
     }
 
     override fun onTurnOnBluetoothContinueClicked() {
-        needNewBluetoothPermissions()
         requestBluetoothEnable()
     }
 
@@ -372,19 +370,4 @@ class NewSessionController(
             mContextActivity
         ) else goToFirstStep()
     }
-
-    private fun needNewBluetoothPermissions() {
-        if (isSDKGreaterOrEqualToS()) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    mContextActivity,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED -> {
-                    permissionsManager.requestBluetoothPermissions(mContextActivity)
-                }
-            }
-        }
-    }
-
-
 }

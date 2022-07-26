@@ -37,7 +37,9 @@ import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.Resource
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.Status
 import pl.llp.aircasting.util.extensions.*
 import javax.inject.Inject
 
@@ -126,7 +128,7 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            etPlace?.setStyle(address, R.color.black_color)
+            setSearchTextColor(etPlace)
 
             initialisePlacesClient()
 
@@ -148,7 +150,7 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                etPlace?.setStyle(address, R.color.black_color)
+                setSearchTextColor(etPlace)
                 if (lat != null && lng != null) {
                     moveMapToSelectedLocationAndRefresh(lat, lng)
                 }
@@ -158,6 +160,13 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
                 Log.d("onError", status.statusMessage.toString())
             }
         })
+    }
+
+    private fun setSearchTextColor(etPlace: EditText?) {
+        if (mSettings.isDarkThemeEnabled()) etPlace?.setStyle(
+            address,
+            R.color.aircasting_white
+        ) else etPlace?.setStyle(address, R.color.black_color)
     }
 
     private fun goToDashboard() {

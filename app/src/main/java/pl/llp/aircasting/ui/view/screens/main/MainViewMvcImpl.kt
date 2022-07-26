@@ -23,7 +23,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.*
 
 class MainViewMvcImpl(
@@ -118,27 +118,13 @@ class MainViewMvcImpl(
                             mSessionRepository.mobileActiveSessionExists()
 
                         DatabaseProvider.backToUIThread(scope) {
-                            if (isMobileActiveSessionExists) {
-                                val action =
-                                    MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_ACTIVE.value)
-                                mNavController?.navigate(action)
-                            } else {
-                                val action =
-                                    MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-                                mNavController?.navigate(action)
-                            }
+                            if (isMobileActiveSessionExists) rootActivity.goToMobileActiveTab()
+                            else rootActivity.goToFollowingTab()
                         }
                     }
                 }
-                R.id.navigation_lets_begin -> {
-                    adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_lets_begin)
-                }
-                R.id.navigation_settings -> {
-                    adjustMenuVisibility(rootActivity, false)
-                    mNavController?.navigate(R.id.navigation_settings)
-                }
-
+                R.id.navigation_lets_begin -> mNavController?.navigate(R.id.navigation_lets_begin)
+                R.id.navigation_settings -> mNavController?.navigate(R.id.navigation_settings)
             }
             true
         }

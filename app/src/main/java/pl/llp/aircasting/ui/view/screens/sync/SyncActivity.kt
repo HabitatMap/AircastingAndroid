@@ -10,9 +10,9 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class SyncActivity : BaseActivity() {
@@ -34,21 +34,16 @@ class SyncActivity : BaseActivity() {
         private var launcher: ActivityResultLauncher<Intent>? = null
 
         fun register(rootActivity: FragmentActivity?, onFinish: (() -> Unit)? = null) {
-            rootActivity?.let {
-                launcher =
-                    it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                        if (onFinish != null) {
-                            onFinish.invoke()
-                        }
-                    }
-            }
+            launcher =
+                rootActivity?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    onFinish?.invoke()
+                }
         }
 
         fun start(rootActivity: FragmentActivity?) {
             rootActivity ?: return
 
             val intent = Intent(rootActivity, SyncActivity::class.java)
-
             launcher?.launch(intent)
         }
     }
