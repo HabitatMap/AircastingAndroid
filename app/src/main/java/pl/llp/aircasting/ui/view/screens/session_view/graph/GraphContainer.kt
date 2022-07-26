@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.session_view.graph
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -262,39 +263,44 @@ class GraphContainer(
             // To handle clicking on note somehow, we have to check if user clicked on entry that has attached note icon OR if any graph entry 'close' to entry clicked by user got such icon
             // If yes, we want to launch "noteMarkerClicked" method
             override fun onValueSelected(entry: Entry?, h: Highlight?) {
-                var noteNumber = -1
-                val tempRanges = mutableListOf<ClosedRange<Long>>()
-                for (range in mNoteValueRanges) {
-                    if (entry?.x?.toLong()?.let { range.contains(it) } == true) {
-                        tempRanges.add(range)
+                try {
+                    var noteNumber = -1
+                    val tempRanges = mutableListOf<ClosedRange<Long>>()
+                    for (range in mNoteValueRanges) {
+                        if (entry?.x?.toLong()?.let { range.contains(it) } == true) {
+                            tempRanges.add(range)
+                        }
                     }
-                }
-                when (tempRanges.size) {
-                    0 -> {
-                        return
-                    }
-                    1 -> {
-                        noteNumber =
-                            mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
-                    }
-                    else -> {
-                        // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
-                        var tempDistance = Long.MAX_VALUE
-                        for (range in tempRanges) {
-                            val rangeDistance = kotlin.math.abs(
-                                entry?.x?.toLong()
-                                    ?.minus(range.start + ((range.endInclusive - range.start) / 2))
-                                    ?: Long.MAX_VALUE
-                            )
-                            if (rangeDistance < tempDistance) {
-                                tempDistance = rangeDistance
-                                noteNumber =
-                                    mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                    when (tempRanges.size) {
+                        0 -> {
+                            return
+                        }
+                        1 -> {
+                            noteNumber =
+                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number
+                                    ?: 0
+                        }
+                        else -> {
+                            // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
+                            var tempDistance = Long.MAX_VALUE
+                            for (range in tempRanges) {
+                                val rangeDistance = kotlin.math.abs(
+                                    entry?.x?.toLong()
+                                        ?.minus(range.start + ((range.endInclusive - range.start) / 2))
+                                        ?: Long.MAX_VALUE
+                                )
+                                if (rangeDistance < tempDistance) {
+                                    tempDistance = rangeDistance
+                                    noteNumber =
+                                        mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                                }
                             }
                         }
                     }
+                    mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
+                } catch (e: Exception) {
+                    Log.e("TAG", "Error while handling note marker click", e)
                 }
-                mListener?.noteMarkerClicked(mSessionPresenter?.session, noteNumber)
             }
 
             override fun onNothingSelected() {
