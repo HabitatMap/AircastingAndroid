@@ -276,7 +276,7 @@ open class Session(
                 if (isFixed()) SessionsTab.FIXED else {
                     when (status) {
                         Status.FINISHED -> SessionsTab.MOBILE_DORMANT
-                        Status.RECORDING -> SessionsTab.MOBILE_ACTIVE
+                        Status.RECORDING, Status.DISCONNECTED -> SessionsTab.MOBILE_ACTIVE
                         else -> SessionsTab.MOBILE_DORMANT
                     }
                 }
