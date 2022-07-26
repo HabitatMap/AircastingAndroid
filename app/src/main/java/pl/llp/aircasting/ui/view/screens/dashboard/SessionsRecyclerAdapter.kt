@@ -76,6 +76,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             val position = mSessionUUIDS.indexOf(session.uuid)
             if (found(position)) {
                 replaceSession(position, session)
+
                 val success = replacePresenter(session)
                 if (success) notifyItemChanged(position)
             }
