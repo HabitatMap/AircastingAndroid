@@ -44,7 +44,8 @@ import pl.llp.aircasting.util.extensions.*
 import javax.inject.Inject
 
 class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener,
+    GoogleMap.OnCameraIdleListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -357,6 +358,7 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
 
         mMap.setOnMarkerClickListener(this)
         mMap.setOnCameraMoveStartedListener(this)
+        mMap.setOnCameraIdleListener(this)
     }
 
     private fun setTextStyleBasedOnSatelliteSettings() {
@@ -382,6 +384,16 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
 
     override fun onCameraMoveStarted(p0: Int) {
         binding.btnRedo.visible()
+    }
+
+    override fun onCameraIdle() {
+        val currentLat = mMap.cameraPosition.target.latitude
+        val currentLng = mMap.cameraPosition.target.longitude
+
+        val currentLocation = LatLng(currentLat, currentLng)
+
+        val zoomLevel = mMap.cameraPosition.zoom
+        if (zoomLevel < 6f) mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 6f))
     }
 
     override fun onSupportNavigateUp(): Boolean {
