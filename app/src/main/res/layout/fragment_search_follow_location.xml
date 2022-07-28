@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            style="@style/TextAppearance.Aircasting.Headline2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:text="@string/title_search_fixed_sessions"
+            app:layout_constraintEnd_toEndOf="@+id/layoutContainer"
+            app:layout_constraintStart_toStartOf="@+id/layoutContainer"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layoutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginTop="@dimen/keyline_5"
+            android:layout_marginEnd="@dimen/keyline_7"
+            android:background="@drawable/search_input_field_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle">
+
+            <fragment
+                android:id="@+id/place_autocomplete_fragment"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/search_parameter_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/search_session_parameters_header"
+            android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+            app:layout_constraintEnd_toEndOf="@+id/layoutContainer"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/layoutContainer"
+            app:layout_constraintTop_toBottomOf="@+id/layoutContainer" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupFirstLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginTop="@dimen/keyline_5"
+            android:layout_marginEnd="@dimen/keyline_7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_parameter_header"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/particulate_matter_chip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/particulate_matter"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ozone_chip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ozone"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/txtTitleSensor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginTop="@dimen/keyline_5"
+            android:text="@string/which_sensor_are_you_interested_in"
+            android:textAppearance="@style/TextAppearance.Aircasting.Body1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroupFirstLevel" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupSecondLevelOne"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginTop="@dimen/keyline_5"
+            android:layout_marginEnd="@dimen/keyline_7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitleSensor"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/airbeam_chip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/airbeam"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/openAQFirstChip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/openaq"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/purple_air_chip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/purpleair"
+                app:layout_constraintEnd_toStartOf="@id/ozone_chip" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupSecondLevelTwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginTop="@dimen/keyline_5"
+            android:layout_marginEnd="@dimen/keyline_7"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitleSensor"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/openAQSecondChip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/openaq"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_7"
+            android:layout_marginEnd="@dimen/keyline_7"
+            android:layout_marginBottom="@dimen/keyline_5"
+            android:text="@string/continue_button_onboarding"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
