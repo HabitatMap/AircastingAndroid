@@ -344,6 +344,8 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        mMap.setMinZoomPreference(6f)
+
         mMap.setMapType(mSettings, this)
         setTextStyleBasedOnSatelliteSettings()
 
@@ -381,9 +383,6 @@ class SearchFixedResultActivity : BaseActivity(), OnMapReadyCallback,
     }
 
     override fun onCameraMoveStarted(p0: Int) {
-        val zoomLevel = mMap.cameraPosition.zoom
-        if (zoomLevel >= 6f) mMap.setMinZoomPreference(6f)
-
         binding.btnRedo.visible()
     }
 
