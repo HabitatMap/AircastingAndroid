@@ -22,7 +22,7 @@ import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
-import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.*
 
@@ -85,7 +85,7 @@ class MainViewMvcImpl(
     }
 
     private fun onSearchIconClicked() {
-        val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
+        val intent = Intent(rootActivity, SearchFixedSessionActivity::class.java)
         rootActivity.startActivity(intent)
     }
 

@@ -7,7 +7,7 @@ import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
-import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -65,6 +65,6 @@ class LetsBeginController(
     }
 
     override fun onFollowSessionSelected() {
-        SearchFixedSessionsActivity.start(mRootActivity)
+        SearchFixedSessionActivity.start(mRootActivity)
     }
 }

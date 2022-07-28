@@ -8,10 +8,13 @@ import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
-import pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity
+import pl.llp.aircasting.ui.view.fragments.SearchFollowResultFragment
 import pl.llp.aircasting.util.extensions.disableForASecond
 
-class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegionResponse) -> Unit) :
+class FixedFollowAdapter constructor(
+    private val onItemClicked: (SessionInRegionResponse) -> Unit,
+    private val mFragment: SearchFollowResultFragment
+) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
     private val sessions: ArrayList<SessionInRegionResponse> = ArrayList()
     private var selectedSession: SessionInRegionResponse? = null
@@ -100,6 +103,6 @@ class FixedFollowAdapter constructor(private val onItemClicked: (SessionInRegion
     private fun scrollToSelectedItemAndHighlightItsMarker(position: Int, sessionUUID: String) {
         scrollToSelectedCard(position)
 
-        (cardView.context as SearchFixedResultActivity).highlightTheSelectedDot(sessionUUID)
+        mFragment.highlightTheSelectedDot(sessionUUID)
     }
 }
