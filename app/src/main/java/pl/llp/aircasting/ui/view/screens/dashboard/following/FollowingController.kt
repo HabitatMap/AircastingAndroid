@@ -11,7 +11,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
-import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
@@ -60,7 +60,7 @@ class FollowingController(
     }
 
     override fun onExploreNewSessionsClicked() {
-        val intent = Intent(mContext, SearchFixedSessionsActivity::class.java)
+        val intent = Intent(mContext, SearchFixedSessionActivity::class.java)
         mContext?.startActivity(intent)
     }
 
