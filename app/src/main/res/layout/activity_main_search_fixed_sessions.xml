@@ -12,8 +12,11 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/appBarSearch"
-            layout="@layout/app_bar" />
+            android:id="@+id/include"
+            layout="@layout/app_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/frameLayout"
@@ -21,7 +24,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appBarSearch"
+            app:layout_constraintTop_toBottomOf="@id/include"
             tools:showIn="@layout/fragment_search_follow_location" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
