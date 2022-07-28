@@ -23,7 +23,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
@@ -89,13 +88,10 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
 
         getIntentsFromThePreviousActivity()
 
-        binding.include.finishView.visible()
-
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
-        binding.include.finishView.setOnClickListener { goToDashboard() }
 
         setupRecyclerView()
         setupSearchLayout()
@@ -168,12 +164,6 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
             address,
             R.color.aircasting_white
         ) else etPlace?.setStyle(address, R.color.black_color)
-    }
-
-    private fun goToDashboard() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
     }
 
     private fun setupRecyclerView() {
