@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
 import org.hamcrest.CoreMatchers.*
@@ -68,6 +69,12 @@ class FixedSessionTest {
             = ActivityTestRule(MainActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
+
+    @get:Rule
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        android.Manifest.permission.BLUETOOTH_SCAN,
+        android.Manifest.permission.BLUETOOTH_CONNECT
+    )
 
     private fun setupDagger() {
         val permissionsModule =
