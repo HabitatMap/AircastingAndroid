@@ -290,7 +290,7 @@ class GraphContainer(
                                 )
                                 if (rangeDistance < tempDistance) {
                                     tempDistance = rangeDistance
-                                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: 0
+                                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
                                 }
                             }
                         }
