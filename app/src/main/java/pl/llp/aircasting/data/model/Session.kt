@@ -381,8 +381,8 @@ open class Session(
         return packageNames.distinct().joinToString(", ")
     }
 
-    private fun measurementsCount(): Int {
-        return streams.sumOf { stream -> stream.measurements.size }
+    fun measurementsCount(): Int {
+        return streams.map { stream -> stream.measurements.size }.sum()
     }
 
     fun sharableLocation(): Location? {
@@ -395,5 +395,20 @@ open class Session(
 
     fun lastMeasurement(): Measurement? {
         return streams.first().lastMeasurement()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Session
+
+        if (uuid != other.uuid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return uuid.hashCode()
     }
 }

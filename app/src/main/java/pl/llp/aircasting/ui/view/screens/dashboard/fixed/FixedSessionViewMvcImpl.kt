@@ -23,9 +23,9 @@ class FixedSessionViewMvcImpl(
         return false
     }
 
-    override fun bindExpanded(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.isExternal()) mActionsButton.visibility = View.GONE
-        super.bindExpanded(sessionPresenter)
+    override fun bindExpanded() {
+        if (mSessionPresenter?.isExternal() == true) mActionsButton.visibility = View.GONE
+        super.bindExpanded()
     }
 
     override fun showExpandedMeasurementsTableValues() = true
@@ -45,8 +45,8 @@ class FixedSessionViewMvcImpl(
 
     override fun showChart() = false
 
-    override fun bindFollowButtons(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.session?.followed == true) {
+    override fun bindFollowButtons() {
+        if (mSessionPresenter?.session?.followed == true) {
             mFollowButton.visibility = View.GONE
             mUnfollowButton.visibility = View.VISIBLE
         } else {

@@ -13,7 +13,8 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.MeasurementColor
+import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.setAppearance
 import pl.llp.aircasting.util.extensions.visible
@@ -69,22 +70,20 @@ abstract class MeasurementsTableContainer {
         mSelectable = true
         mDisplayValues = displayValues
         if (displayValues) mMeasurementValues = mRootView?.measurement_values
-
-        refresh()
     }
 
-    fun makeCollapsed(displayValues: Boolean = true) {
+    fun makeCollapsed(sessionPresenter: SessionPresenter?, displayValues: Boolean = true) {
         resetMeasurementsView()
         mSelectable = true
         mCollapsed = true
 
         mDisplayValues = displayValues
         if (!displayValues && mCollapsed) mMeasurementValues = null
-        refresh()
+        refresh(sessionPresenter)
     }
 
-    fun refresh() {
-        bindSession(mSessionPresenter, mOnMeasurementStreamChanged)
+    fun refresh(sessionPresenter: SessionPresenter?) {
+        bindSession(sessionPresenter, mOnMeasurementStreamChanged)
     }
 
     fun bindSession(
