@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
@@ -34,6 +36,7 @@ import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.FragmentSearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedBottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.Resource
@@ -86,13 +89,27 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
 
         getIntentsFromThePreviousFragment()
 
+        binding.include.finishView.visible()
+
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
 
+        binding.include.topAppBar.setNavigationOnClickListener {
+            goToPreviousFragment()
+        }
+
         setupRecyclerView()
         setupSearchLayout()
+        binding.include.finishView.setOnClickListener { goToDashboard() }
+    }
+
+    private fun goToPreviousFragment() {
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.frameLayout, SearchFollowLocationFragment(), "searchLocation")
+            ?.disallowAddToBackStack()
+            ?.commit()
     }
 
     private fun setupMapView() {
@@ -115,13 +132,11 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
 
     private fun setupSearchLayout() {
         val autocompleteFragment =
-            childFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
-
-        autocompleteFragment?.apply {
+            childFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
+        autocompleteFragment.apply {
             val etPlace =
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
-            requireActivity().findViewById<ImageButton>(R.id.places_autocomplete_search_button)
-                ?.gone()
+            view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
             setSearchTextColor(etPlace)
 
@@ -164,8 +179,14 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
         ) else etPlace?.setStyle(address, R.color.black_color)
     }
 
+    private fun goToDashboard() {
+        val intent = Intent(activity, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+    }
+
     private fun setupRecyclerView() {
-        adapter = FixedFollowAdapter(this::showBottomSheetDialog, this)
+        adapter = FixedFollowAdapter(this::showBottomSheetDialog)
         binding.recyclerFixedFollow.adapter = adapter
     }
 
@@ -178,7 +199,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
                 SUCCESS -> updateUI(it)
                 ERROR -> {
                     stopLoader()
-                    requireActivity().showToast(it.message.toString())
+                    activity?.showToast(it.message.toString())
                 }
                 LOADING -> showLoader()
             }
