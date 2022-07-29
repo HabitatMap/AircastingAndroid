@@ -10,28 +10,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <include
+            android:id="@+id/appBarSearch"
+            layout="@layout/app_bar" />
+
         <TextView
-            android:id="@+id/txtTitle"
             style="@style/TextAppearance.Aircasting.Headline2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_6"
             android:text="@string/title_search_fixed_sessions"
+            app:layout_constraintBottom_toTopOf="@+id/guidelineTop"
             app:layout_constraintEnd_toEndOf="@+id/layoutContainer"
             app:layout_constraintStart_toStartOf="@+id/layoutContainer"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/appBarSearch" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="154dp" />
 
         <LinearLayout
             android:id="@+id/layoutContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_7"
-            android:layout_marginTop="@dimen/keyline_5"
             android:layout_marginEnd="@dimen/keyline_7"
             android:background="@drawable/search_input_field_background"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle">
+            app:layout_constraintTop_toTopOf="@+id/guidelineTop">
 
             <fragment
                 android:id="@+id/place_autocomplete_fragment"
@@ -172,7 +182,6 @@
             android:layout_marginEnd="@dimen/keyline_7"
             android:layout_marginBottom="@dimen/keyline_5"
             android:text="@string/continue_button_onboarding"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
