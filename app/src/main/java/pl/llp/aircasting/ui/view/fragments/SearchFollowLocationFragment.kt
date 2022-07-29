@@ -15,6 +15,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.chip.ChipGroup
+import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.FragmentSearchFollowLocationBinding
@@ -70,7 +71,9 @@ class SearchFollowLocationFragment : Fragment() {
                     chipGroup
                 )
             }
-
+            binding.appBarSearch.topAppBar.setNavigationOnClickListener {
+                requireActivity().onBackPressed()
+            }
             btnContinue.setOnClickListener { goToSearchResult() }
         }
     }
@@ -117,7 +120,7 @@ class SearchFollowLocationFragment : Fragment() {
         autocompleteFragment?.apply {
             val editTextInput =
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
-            requireActivity().findViewById<ImageButton>(R.id.places_autocomplete_search_button)
+            view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)
                 ?.gone()
 
             editTextInput?.setStyle(
