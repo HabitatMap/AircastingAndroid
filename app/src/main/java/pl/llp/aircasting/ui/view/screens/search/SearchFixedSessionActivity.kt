@@ -45,7 +45,6 @@ class SearchFixedSessionActivity : BaseActivity() {
             .appComponent.inject(this)
         searchFollowViewModel =
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
-
     }
 
     private fun showSearchFragment(savedInstanceState: Bundle?) {
