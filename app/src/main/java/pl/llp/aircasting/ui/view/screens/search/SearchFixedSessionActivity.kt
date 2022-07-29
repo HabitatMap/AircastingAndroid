@@ -4,13 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.app_bar.view.*
+import androidx.lifecycle.ViewModelProvider
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.ActivityMainSearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.SearchFollowLocationFragment
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
-import pl.llp.aircasting.util.extensions.visible
+import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
+import javax.inject.Inject
 
 class SearchFixedSessionActivity : BaseActivity() {
 
@@ -23,19 +24,28 @@ class SearchFixedSessionActivity : BaseActivity() {
         }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var searchFollowViewModel: SearchFollowViewModel
+
     lateinit var binding: ActivityMainSearchFixedSessionsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_search_fixed_sessions)
 
-        setupUI()
+        setupFactory()
         showSearchFragment(savedInstanceState)
     }
 
-    private fun setupUI() {
-        binding.include.visible()
-        binding.include.finishView.setOnClickListener { goToDashboard() }
+    private fun setupFactory() {
+        (application as AircastingApplication)
+            .appComponent.inject(this)
+        searchFollowViewModel =
+            ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
+
     }
 
     private fun showSearchFragment(savedInstanceState: Bundle?) {
@@ -44,11 +54,5 @@ class SearchFixedSessionActivity : BaseActivity() {
                 .replace(R.id.frameLayout, SearchFollowLocationFragment())
                 .commit()
         }
-    }
-
-    private fun goToDashboard() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
     }
 }
