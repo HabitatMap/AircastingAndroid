@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +10,8 @@ import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,14 +34,12 @@ import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.databinding.FragmentSearchFollowResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedBottomSheet
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.Status.*
 import pl.llp.aircasting.util.extensions.*
-import javax.inject.Inject
 
 class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -48,11 +47,10 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
     private var _binding: FragmentSearchFollowResultBinding? = null
     private val binding get() = _binding!!
 
-    @Inject
-    lateinit var searchFollowViewModel: SearchFollowViewModel
+    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>()
+
     private lateinit var adapter: FixedFollowAdapter
 
-    private lateinit var autocompleteFragment: AutocompleteSupportFragment
     private lateinit var mMap: GoogleMap
     private var placesClient: PlacesClient? = null
     private val bottomSheetDialog: SearchFixedBottomSheet by lazy { SearchFixedBottomSheet() }
@@ -72,7 +70,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSearchFollowResultBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -86,7 +84,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
     private fun setupUI() {
         setupMapView()
 
-        getIntentsFromThePreviousActivity()
+        getIntentsFromThePreviousFragment()
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
@@ -103,23 +101,23 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
         mapFragment?.getMapAsync(this)
     }
 
-    private fun getIntentsFromThePreviousActivity() {
-        requireActivity().intent.apply {
-            address = getStringExtra("address").toString()
+    private fun getIntentsFromThePreviousFragment() {
+        this.arguments?.let {
+            address = it.getString("address").toString()
 
-            mLat = getStringExtra("lat").toString()
-            mLng = getStringExtra("lng").toString()
+            mLat = it.getString("lat").toString()
+            mLng = it.getString("lng").toString()
 
-            txtParameter = getStringExtra("txtParameter")
-            txtSensor = getStringExtra("txtSensor")
+            txtParameter = it.getString("txtParameter")
+            txtSensor = it.getString("txtSensor")
         }
     }
 
     private fun setupSearchLayout() {
-        autocompleteFragment =
-            childFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
+        val autocompleteFragment =
+            childFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment?
 
-        autocompleteFragment.apply {
+        autocompleteFragment?.apply {
             val etPlace =
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             requireActivity().findViewById<ImageButton>(R.id.places_autocomplete_search_button)
@@ -153,7 +151,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
                 }
             }
 
-            override fun onError(status: com.google.android.gms.common.api.Status) {
+            override fun onError(status: Status) {
                 Log.d("onError", status.statusMessage.toString())
             }
         })
@@ -167,7 +165,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
     }
 
     private fun setupRecyclerView() {
-        adapter = FixedFollowAdapter(this::showBottomSheetDialog)
+        adapter = FixedFollowAdapter(this::showBottomSheetDialog, this)
         binding.recyclerFixedFollow.adapter = adapter
     }
 
