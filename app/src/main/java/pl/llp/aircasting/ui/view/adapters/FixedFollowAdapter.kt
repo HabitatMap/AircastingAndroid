@@ -8,7 +8,7 @@ import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
-import pl.llp.aircasting.ui.view.fragments.SearchFollowResultFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.util.extensions.disableForASecond
 
 class FixedFollowAdapter constructor(
@@ -18,7 +18,7 @@ class FixedFollowAdapter constructor(
     private val sessions: ArrayList<SessionInRegionResponse> = ArrayList()
     private var selectedSession: SessionInRegionResponse? = null
     private lateinit var cardView: MaterialCardView
-    private var mFragment: SearchFollowResultFragment = SearchFollowResultFragment()
+    private var mFragment: MapResultFragment = MapResultFragment()
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,

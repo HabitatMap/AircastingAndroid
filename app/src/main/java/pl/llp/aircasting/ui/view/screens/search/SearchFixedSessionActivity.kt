@@ -9,7 +9,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.ActivityMainSearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
-import pl.llp.aircasting.ui.view.fragments.SearchFollowLocationFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import javax.inject.Inject
 
@@ -45,13 +45,12 @@ class SearchFixedSessionActivity : BaseActivity() {
             .appComponent.inject(this)
         searchFollowViewModel =
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
-
     }
 
     private fun showSearchFragment(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, SearchFollowLocationFragment())
+                .replace(R.id.frameLayout, SearchLocationFragment())
                 .commit()
         }
     }

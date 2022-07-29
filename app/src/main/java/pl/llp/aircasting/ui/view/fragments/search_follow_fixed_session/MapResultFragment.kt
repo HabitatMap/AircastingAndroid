@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.fragments
+package pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session
 
 import android.content.Intent
 import android.os.Bundle
@@ -44,7 +44,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.Status.*
 import pl.llp.aircasting.util.extensions.*
 
-class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
+class MapResultFragment : Fragment(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private var _binding: FragmentSearchFollowResultBinding? = null
@@ -87,7 +87,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
     private fun setupUI() {
         setupMapView()
 
-        getIntentsFromThePreviousFragment()
+        getArgumentsFromLocationFragment()
 
         binding.include.finishView.visible()
 
@@ -107,7 +107,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
 
     private fun goToPreviousFragment() {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.frameLayout, SearchFollowLocationFragment(), "searchLocation")
+            ?.replace(R.id.frameLayout, SearchLocationFragment(), "searchLocation")
             ?.disallowAddToBackStack()
             ?.commit()
     }
@@ -118,7 +118,7 @@ class SearchFollowResultFragment : Fragment(), OnMapReadyCallback,
         mapFragment?.getMapAsync(this)
     }
 
-    private fun getIntentsFromThePreviousFragment() {
+    private fun getArgumentsFromLocationFragment() {
         this.arguments?.let {
             address = it.getString("address").toString()
 
