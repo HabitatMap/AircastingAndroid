@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.fragments
+package pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session
 
 import android.os.Bundle
 import android.util.Log
@@ -25,7 +25,7 @@ import pl.llp.aircasting.util.extensions.initializePlacesApi
 import pl.llp.aircasting.util.extensions.setStyle
 import pl.llp.aircasting.util.extensions.visible
 
-class SearchFollowLocationFragment : Fragment() {
+class SearchLocationFragment : Fragment() {
 
     private var _binding: FragmentSearchFollowLocationBinding? = null
     private val binding get() = _binding!!
@@ -164,7 +164,7 @@ class SearchFollowLocationFragment : Fragment() {
     }
 
     private fun goToSearchResult() {
-        val searchResultFragment = SearchFollowResultFragment()
+        val searchResultFragment = MapResultFragment()
         val args = Bundle()
 
         args.putString("address", address)
