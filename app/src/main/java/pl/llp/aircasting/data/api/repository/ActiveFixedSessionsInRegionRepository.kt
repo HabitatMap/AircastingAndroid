@@ -9,6 +9,8 @@ import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
+import pl.llp.aircasting.util.CalendarUtils.Companion.getEndOfTodayMillis
+import pl.llp.aircasting.util.CalendarUtils.Companion.getStartOfTodayMillisFromYearAgo
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
 import javax.inject.Inject
@@ -22,8 +24,8 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
             square: GeoSquare,
             sensorInfo: SensorInformation
         ): String {
-            return "{\"time_from\":\"${getStartOfDayEpoch()}\"," +
-                    "\"time_to\":\"${getEndOfDayEpoch()}\"," +
+            return "{\"time_from\":\"${getStartOfTodayMillisFromYearAgo()}\"," +
+                    "\"time_to\":\"${getEndOfTodayMillis()}\"," +
                     "\"tags\":\"\"," +
                     "\"usernames\":\"\"," +
                     "\"west\":${square.west}," +
@@ -33,18 +35,6 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
                     "\"sensor_name\":\"${sensorInfo.getSensorName()}\"," +
                     "\"unit_symbol\":\"${sensorInfo.getUnitSymbol()}\"," +
                     "\"measurement_type\":\"${sensorInfo.getMeasurementType()}\"}"
-        }
-
-        private fun getStartOfDayEpoch(): Long {
-            val secondsInDay = (60 * 60 * 24).toLong()
-            val currentSecond = System.currentTimeMillis() / 1000
-            return currentSecond - currentSecond % secondsInDay
-        }
-
-        private fun getEndOfDayEpoch(): Long {
-            val startOfTheDayEpoch = getStartOfDayEpoch()
-            val secondInDay = (60 * 60 * 24).toLong()
-            return startOfTheDayEpoch + secondInDay - 1
         }
     }
 
