@@ -1,0 +1,16 @@
+package pl.llp.aircasting.helpers
+
+import android.view.View
+import android.widget.TextView
+import androidx.test.espresso.matcher.BoundedMatcher
+import org.hamcrest.Description
+
+class HintContainsStringMatcher(private val string: String) :
+    BoundedMatcher<View, TextView>(TextView::class.java) {
+    override fun describeTo(description: Description?) {
+        description?.appendText("Checking the matcher on received view: with hint=$string")
+    }
+
+    override fun matchesSafely(item: TextView?) =
+        item?.hint?.contains(string, true) ?: false
+}
