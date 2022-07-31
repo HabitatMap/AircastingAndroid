@@ -30,7 +30,19 @@ object Versions {
     const val gson = "2.8.9"
     const val openCv = "4.6"
 
+    // Tests
     const val espresso = "3.4.0"
+    const val mockito = "4.6.0"
+    const val junit = "4.13.2"
+    const val kotlinJunit = "1.6.20"
+    const val mockitoKotlin = "4.0.0"
+    const val robolectric = "4.8.1"
+    const val testCoreKtx = "1.4.0"
+    const val testExtJunit = "1.1.3"
+    const val espressoContrib = "3.4.0"
+    const val awaitility = "4.2.0"
+    const val fragmentTesting = "1.5.1"
+    const val leakCanary = "2.9.1"
 
     const val playServicesLocation = "19.0.1"
     const val playServicesMaps = "18.0.2"
