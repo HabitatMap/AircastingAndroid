@@ -27,7 +27,6 @@ class SearchFixedSessionActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
     lateinit var searchFollowViewModel: SearchFollowViewModel
 
     lateinit var binding: ActivityMainSearchFixedSessionsBinding
