@@ -1,6 +1,7 @@
 package pl.llp.aircasting
 
 import android.content.Intent
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
@@ -11,21 +12,27 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.chip.Chip
 import okhttp3.mockwebserver.MockWebServer
+import org.hamcrest.Matchers.anyOf
+import org.hamcrest.Matchers.isA
+import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.util.StringConstants.airbeam
+import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
+import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
+import pl.llp.aircasting.data.api.util.StringConstants.openAQ
+import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.helpers.clickOnFirstItem
-import pl.llp.aircasting.helpers.getMockWebServerFrom
-import pl.llp.aircasting.helpers.hintContainsString
-import pl.llp.aircasting.helpers.waitAndRetry
+import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
@@ -129,6 +136,90 @@ class SearchFollowTest {
         searchFieldHasHint(newYork)
 
         searchScenario.close()
+    }
+
+    @Test
+    fun whenTappingContinue_goesToMapScreen_withCorrectInputParameters() {
+        activityScenario = ActivityScenario.launch(startIntent)
+        onView(withId(R.id.search_follow_icon))
+            .perform(click())
+
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, airbeam)
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, openAQ)
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, purpleAir)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, openAQ)
+
+        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, airbeam)
+        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, openAQ)
+        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, purpleAir)
+        searchAndValidateDisplayedParameters(losAngeles, measurementTypeOzone, openAQ)
+
+        activityScenario.close()
+    }
+
+    private fun searchAndValidateDisplayedParameters(
+        place: String,
+        parameter: String,
+        sensor: String
+    ) {
+        searchForPlace(place)
+        selectSensor(parameter, sensor)
+
+        goToMapScreen()
+
+        searchFieldHasHint(place)
+        displayedMeasurementTypeMatches(parameter)
+        displayedSensorNameMatches(sensor)
+
+        goBack()
+    }
+
+    private fun displayedSensorNameMatches(sensor: String) {
+        onView(withId(R.id.txtUsing))
+            .check(matches(textContainsString(sensor)))
+    }
+
+    private fun goToMapScreen() {
+        onView(withId(R.id.btnContinue)).perform(click())
+    }
+
+    private fun displayedMeasurementTypeMatches(type: String) {
+        onView(withId(R.id.txtShowing))
+            .check(matches(textContainsString(type)))
+    }
+
+
+    private fun selectSensor(parameter: String, sensor: String) {
+        onView(
+            allOf(
+                isA(Chip::class.java),
+                withParent(withId(R.id.chipGroupFirstLevel)),
+                textContainsString(parameter)
+            )
+        )
+            .perform(click())
+
+        onView(
+            allOf(
+                isA(Chip::class.java),
+                anyOf(
+                    withParent(withId(R.id.chipGroupSecondLevelOne)),
+                    withParent(withId(R.id.chipGroupSecondLevelTwo))
+                ),
+                textContainsString(sensor),
+                isDisplayed()
+            )
+        )
+            .perform(click())
+    }
+
+    private fun goBack() {
+        onView(
+            allOf(
+                isA(AppCompatImageButton::class.java),
+                withParent(withId(R.id.topAppBar))
+            )
+        ).perform(click())
     }
 
     private fun searchForPlace(place: String) {
