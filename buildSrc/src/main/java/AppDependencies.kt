@@ -12,6 +12,10 @@ object AppDependencies {
     private const val fragmentKTX = "androidx.fragment:fragment-ktx:${Versions.androidX}"
     private const val activityKTX = "androidx.activity:activity-ktx:${Versions.activityKtx}"
     private const val coreKTX = "androidx.core:core-ktx:${Versions.coreKtx}"
+    private const val testCoreKTX = "androidx.test:core-ktx:${Versions.testCoreKtx}"
+    private const val testExtJunitKTX = "androidx.test.ext:junit-ktx:${Versions.testExtJunit}"
+    private const val testExtJunit = "androidx.test.ext:junit:${Versions.testExtJunit}"
+    private const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
     private const val navigationFragmentKTX =
         "androidx.navigation:navigation-fragment-ktx:${Versions.fragmentKtx}"
     private const val navigationUiKTX =
@@ -44,9 +48,23 @@ object AppDependencies {
     private const val daggerAndroidSupport = "com.google.dagger:dagger-android-support:${Versions.dagger}"
     private const val daggerAndroidProcessor = "com.google.dagger:dagger-android-processor:${Versions.dagger}"
 
+    private const val junit = "junit:junit:${Versions.junit}"
+    private const val kotlinJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.kotlinJunit}"
     /* Espresso */
     private const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
     private const val espressoIntents = "androidx.test.espresso:espresso-intents:${Versions.espresso}"
+    private const val espressoIdlingResource = "androidx.test.espresso:espresso-idling-resource:${Versions.espresso}"
+    private const val espressoContrib = "androidx.test.espresso:espresso-contrib:${Versions.espressoContrib}"
+    private const val awaitility = "org.awaitility:awaitility:${Versions.awaitility}"
+
+    /* Mockito */
+    private const val mockitoCore = "org.mockito:mockito-core:${Versions.mockito}"
+    private const val mockitoAndroid = "org.mockito:mockito-android:${Versions.mockito}"
+    private const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}"
+
+    /* Debug only */
+    private const val leakCanary = "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
+    private const val fragmentTesting = "androidx.fragment:fragment-testing:${Versions.fragmentTesting}"
 
     /* Networking */
     private const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
@@ -103,6 +121,8 @@ object AppDependencies {
         add(lifeCycleExtension)
         add(lifeCycleViewModelKTX)
         add(lifeCycleLiveDataKTX)
+        add(espressoContrib)
+        add(espressoIdlingResource)
         add(constraintLayout)
         add(swipRefreshLayout)
         add(recycleView)
@@ -146,10 +166,28 @@ object AppDependencies {
         add(daggerAndroidProcessor)
     }
     val androidTestImplementation = arrayListOf<String>().apply {
+        add(mockitoCore)
+        add(mockitoAndroid)
+        add(mockitoKotlin)
         add(roomDBCompiler)
         add(roomDBTest)
         add(espressoCore)
         add(espressoIntents)
+        add(testCoreKTX)
+        add(testExtJunitKTX)
+        add(testExtJunit)
+        add(awaitility)
+    }
+
+    val testImplementation = arrayListOf<String>().apply {
+        add(junit)
+        add(kotlinJunit)
+        add(robolectric)
+    }
+
+    val debugImplementation = arrayListOf<String>().apply {
+        add(leakCanary)
+        add(fragmentTesting)
     }
 }
 
@@ -174,6 +212,18 @@ fun DependencyHandler.kaptAndroidTest(list: List<String>) {
 fun DependencyHandler.androidTestImplementation(list: List<String>) {
     list.forEach { dependency ->
         add("androidTestImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.testImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("testImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.debugImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("debugImplementation", dependency)
     }
 }
 

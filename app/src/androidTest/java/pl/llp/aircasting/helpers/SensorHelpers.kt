@@ -1,9 +1,9 @@
 package pl.llp.aircasting.helpers
 
-import com.nhaarman.mockito_kotlin.whenever
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 
 class FakeDeviceItem {
     companion object {
