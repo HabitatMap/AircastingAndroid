@@ -7,10 +7,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Populate secure.properties
+          name: Populate local.properties
           command: |
-            echo "MAPS_API_KEY=\"$MAPS_API_KEY\"" > ~/project/secure.properties
-            echo "PLACES_API_KEY=\"$PLACES_API_KEY\"" >> ~/project/secure.properties
+            echo "MAPS_API_KEY=\"$MAPS_API_KEY\"" > ~/project/local.properties
+            echo "PLACES_API_KEY=\"$PLACES_API_KEY\"" >> ~/project/local.properties
       - run:
           name: Store google-services.json
           command: echo $GCLOUD_SERVICES_JSON > ${HOME}/project/app/google-services.json
