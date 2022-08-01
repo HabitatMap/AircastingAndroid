@@ -9,9 +9,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import androidx.test.rule.GrantPermissionRule
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
 import okhttp3.mockwebserver.MockResponse
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -20,6 +17,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.di.TestApiModule
@@ -56,12 +55,6 @@ class MobileSessionTest {
             = ActivityTestRule(MainActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-
-    @get:Rule
-    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-        android.Manifest.permission.BLUETOOTH_SCAN,
-        android.Manifest.permission.BLUETOOTH_CONNECT
-    )
 
     private fun setupDagger() {
         val permissionsModule =
