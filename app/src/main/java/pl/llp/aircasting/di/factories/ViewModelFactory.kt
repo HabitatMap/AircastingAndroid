@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.viewmodel
+package pl.llp.aircasting.di.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
