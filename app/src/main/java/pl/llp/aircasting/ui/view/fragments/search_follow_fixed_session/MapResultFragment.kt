@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -43,14 +44,17 @@ import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.Status.*
 import pl.llp.aircasting.util.extensions.*
+import javax.inject.Inject
 
-class MapResultFragment : Fragment(), OnMapReadyCallback,
+class MapResultFragment @Inject constructor(
+    factory: ViewModelProvider.Factory
+) : Fragment(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private var _binding: FragmentSearchFollowResultBinding? = null
     private val binding get() = _binding!!
 
-    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>()
+    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>(factoryProducer = { factory })
 
     private lateinit var adapter: FixedFollowAdapter
 
