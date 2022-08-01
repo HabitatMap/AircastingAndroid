@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -16,6 +18,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.view.*
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.FragmentSearchFollowLocationBinding
@@ -24,6 +27,7 @@ import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.initializePlacesApi
 import pl.llp.aircasting.util.extensions.setStyle
 import pl.llp.aircasting.util.extensions.visible
+import javax.inject.Inject
 
 class SearchLocationFragment : Fragment() {
 
@@ -33,7 +37,12 @@ class SearchLocationFragment : Fragment() {
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
     private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM
-    private val mSettings: Settings by lazy { Settings(requireActivity().application) }
+
+    @Inject
+    lateinit var mSettings: Settings
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var address: String
     private lateinit var mLat: String
@@ -43,6 +52,9 @@ class SearchLocationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
+        activity?.supportFragmentManager?.fragmentFactory = fragmentFactory
         _binding = FragmentSearchFollowLocationBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -114,8 +126,9 @@ class SearchLocationFragment : Fragment() {
     private fun setupAutoComplete() {
         initialisePlacesClient()
 
-        val autocompleteFragment = childFragmentManager.findFragmentById(R.id.place_autocomplete_fragment)
-                as AutocompleteSupportFragment?
+        val autocompleteFragment =
+            childFragmentManager.findFragmentById(R.id.place_autocomplete_fragment)
+                    as AutocompleteSupportFragment?
 
         autocompleteFragment?.apply {
             val editTextInput =
@@ -164,18 +177,16 @@ class SearchLocationFragment : Fragment() {
     }
 
     private fun goToSearchResult() {
-        val searchResultFragment = MapResultFragment()
-        val args = Bundle()
-
-        args.putString("address", address)
-        args.putString("txtParameter", txtSelectedParameter)
-        args.putString("txtSensor", txtSelectedSensor)
-        args.putString("lat", mLat)
-        args.putString("lng", mLng)
-        searchResultFragment.arguments = args
+        val args = bundleOf(
+            "address" to address,
+            "txtParameter" to txtSelectedParameter,
+            "txtSensor" to txtSelectedSensor,
+            "lat" to mLat,
+            "lng" to mLng
+        )
 
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.frameLayout, searchResultFragment, "searchResult")
+            ?.replace(R.id.frameLayout, MapResultFragment::class.java, args)
             ?.commit()
     }
 }
