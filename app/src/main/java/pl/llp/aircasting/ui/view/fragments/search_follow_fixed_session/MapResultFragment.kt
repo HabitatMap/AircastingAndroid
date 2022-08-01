@@ -186,7 +186,7 @@ class MapResultFragment : Fragment(), OnMapReadyCallback,
     }
 
     private fun setupRecyclerView() {
-        adapter = FixedFollowAdapter(this::showBottomSheetDialog)
+        adapter = FixedFollowAdapter(this::showBottomSheetDialog, this)
         binding.recyclerFixedFollow.adapter = adapter
     }
 
