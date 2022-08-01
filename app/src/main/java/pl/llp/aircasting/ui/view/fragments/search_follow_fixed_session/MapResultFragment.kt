@@ -96,9 +96,7 @@ class MapResultFragment : Fragment(), OnMapReadyCallback,
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
 
-        binding.include.topAppBar.setNavigationOnClickListener {
-            goToPreviousFragment()
-        }
+        binding.include.topAppBar.setNavigationOnClickListener { goToPreviousFragment() }
 
         setupRecyclerView()
         setupSearchLayout()
