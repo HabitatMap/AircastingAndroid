@@ -7,7 +7,7 @@ import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.ui.viewmodel.ViewModelFactory
+import pl.llp.aircasting.di.factories.ViewModelFactory
 import kotlin.reflect.KClass
 
 @Module
