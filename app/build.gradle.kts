@@ -61,6 +61,10 @@ android {
         getByName("androidTest").assets.srcDirs(files("$projectDir/schemas"))
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     kotlinOptions.jvmTarget = "1.8"
     lint.abortOnError = false
     buildFeatures.dataBinding = true
