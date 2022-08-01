@@ -12,13 +12,13 @@ import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResult
 import pl.llp.aircasting.util.extensions.disableForASecond
 
 class FixedFollowAdapter constructor(
-    private val onItemClicked: (SessionInRegionResponse) -> Unit
+    private val onItemClicked: (SessionInRegionResponse) -> Unit,
+    private var mFragment: MapResultFragment
 ) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
     private val sessions: ArrayList<SessionInRegionResponse> = ArrayList()
     private var selectedSession: SessionInRegionResponse? = null
     private lateinit var cardView: MaterialCardView
-    private var mFragment: MapResultFragment = MapResultFragment()
 
     inner class DataViewHolder(
         private val binding: ItemSesssionsListFixedFollowBinding,
