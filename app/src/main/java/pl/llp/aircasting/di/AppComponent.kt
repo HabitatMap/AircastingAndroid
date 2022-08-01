@@ -5,6 +5,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.di.modules.*
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.*
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
@@ -36,7 +37,8 @@ import javax.inject.Singleton
         SensorsModule::class,
         NewSessionWizardModule::class,
         ViewModelModule::class,
-        DispatcherModule::class
+        DispatcherModule::class,
+        FragmentModule::class
     ]
 )
 interface AppComponent {
@@ -70,6 +72,7 @@ interface AppComponent {
     fun inject(activity: ClearSDCardActivity)
     fun inject(fragment: ClearingSDCardFragment)
     fun inject(fragment: SDCardClearedFragment)
+    fun inject(fragment: SearchLocationFragment)
 
     fun inject(activity: MicrophoneService)
     fun inject(activity: AirBeamRecordSessionService)
