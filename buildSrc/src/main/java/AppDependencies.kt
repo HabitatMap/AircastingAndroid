@@ -48,24 +48,6 @@ object AppDependencies {
     private const val daggerAndroidSupport = "com.google.dagger:dagger-android-support:${Versions.dagger}"
     private const val daggerAndroidProcessor = "com.google.dagger:dagger-android-processor:${Versions.dagger}"
 
-    private const val junit = "junit:junit:${Versions.junit}"
-    private const val kotlinJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.kotlinJunit}"
-    /* Espresso */
-    private const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
-    private const val espressoIntents = "androidx.test.espresso:espresso-intents:${Versions.espresso}"
-    private const val espressoIdlingResource = "androidx.test.espresso:espresso-idling-resource:${Versions.espresso}"
-    private const val espressoContrib = "androidx.test.espresso:espresso-contrib:${Versions.espressoContrib}"
-    private const val awaitility = "org.awaitility:awaitility:${Versions.awaitility}"
-
-    /* Mockito */
-    private const val mockitoCore = "org.mockito:mockito-core:${Versions.mockito}"
-    private const val mockitoAndroid = "org.mockito:mockito-android:${Versions.mockito}"
-    private const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}"
-
-    /* Debug only */
-    private const val leakCanary = "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
-    private const val fragmentTesting = "androidx.fragment:fragment-testing:${Versions.fragmentTesting}"
-
     /* Networking */
     private const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     private const val retrofitMock = "com.squareup.retrofit2:retrofit-mock:${Versions.retrofit}"
@@ -105,6 +87,33 @@ object AppDependencies {
     private const val androidBle = "no.nordicsemi.android:ble:${Versions.androidBle}"
     private const val mpAndroidChart =
         "com.github.PhilJay:MPAndroidChart:${Versions.mpAndroidChart}"
+
+    /**
+     * Tests
+     */
+    private const val junit = "junit:junit:${Versions.junit}"
+    private const val kotlinJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.kotlinJunit}"
+
+    /* Espresso */
+    private const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
+    private const val espressoIntents =
+        "androidx.test.espresso:espresso-intents:${Versions.espresso}"
+    private const val espressoIdlingResource =
+        "androidx.test.espresso:espresso-idling-resource:${Versions.espresso}"
+    private const val espressoContrib =
+        "androidx.test.espresso:espresso-contrib:${Versions.espressoContrib}"
+    private const val awaitility = "org.awaitility:awaitility:${Versions.awaitility}"
+
+    /* Mockito */
+    private const val mockitoCore = "org.mockito:mockito-core:${Versions.mockito}"
+    private const val mockitoAndroid = "org.mockito:mockito-android:${Versions.mockito}"
+    private const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}"
+
+    /* Debug only */
+    private const val leakCanary =
+        "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
+    private const val fragmentTesting =
+        "androidx.fragment:fragment-testing:${Versions.fragmentTesting}"
 
     val appLibraries = arrayListOf<String>().apply {
         add(kotlinStdLib)
@@ -178,13 +187,11 @@ object AppDependencies {
         add(testExtJunit)
         add(awaitility)
     }
-
     val testImplementation = arrayListOf<String>().apply {
         add(junit)
         add(kotlinJunit)
         add(robolectric)
     }
-
     val debugImplementation = arrayListOf<String>().apply {
         add(leakCanary)
         add(fragmentTesting)
