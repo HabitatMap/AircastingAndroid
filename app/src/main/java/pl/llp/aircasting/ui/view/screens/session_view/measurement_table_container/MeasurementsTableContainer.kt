@@ -94,14 +94,13 @@ abstract class MeasurementsTableContainer {
         mOnMeasurementStreamChanged = onMeasurementStreamChanged
         mDisplayAvarages = mSessionPresenter?.isMobileDormant() ?: false
 
-        val session = mSessionPresenter?.session
-        if (session != null && session.activeStreams.isNotEmpty()) {
-            resetMeasurementsView()
-            bindMeasurements()
-            stretchTableLayout()
-        }
+        resetMeasurementsView()
+        bindMeasurements()
+        stretchTableLayout()
 
-        if (session?.status == Session.Status.DISCONNECTED && session.type == Session.Type.MOBILE) {
+        if (mSessionPresenter?.session?.status == Session.Status.DISCONNECTED &&
+            mSessionPresenter?.session?.type == Session.Type.MOBILE
+        ) {
             mMeasurementsTable?.gone()
         } else {
             mMeasurementsTable?.visible()
