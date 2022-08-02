@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
@@ -90,6 +91,8 @@ class MapResultFragment @Inject constructor(
 
     private fun setupUI() {
         setupMapView()
+
+        handleBackButtonPress()
 
         getArgumentsFromLocationFragment()
 
@@ -403,5 +406,14 @@ class MapResultFragment @Inject constructor(
 
     override fun onCameraMoveStarted(p0: Int) {
         binding.btnRedo.visible()
+    }
+
+    private fun handleBackButtonPress() {
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner) {
+            if (isEnabled) {
+                isEnabled = false
+                goToPreviousFragment()
+            }
+        }
     }
 }
