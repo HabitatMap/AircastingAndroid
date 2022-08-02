@@ -190,7 +190,7 @@ class MapResultFragment @Inject constructor(
     }
 
     private fun setupRecyclerView() {
-        adapter = FixedFollowAdapter(this::showBottomSheetDialog, this)
+        adapter = FixedFollowAdapter(this::onSessionCardClick)
         binding.recyclerFixedFollow.adapter = adapter
     }
 
@@ -274,16 +274,17 @@ class MapResultFragment @Inject constructor(
         binding.btnRedo.gone()
     }
 
-    private fun showBottomSheetDialog(session: SessionInRegionResponse) {
-        passLatLng(session)
+    private fun onSessionCardClick(session: SessionInRegionResponse, sessionUUID: String) {
+        setViewModelLatLng(session)
+        highlightTheSelectedDot(sessionUUID)
 
         searchFollowViewModel.selectSession(session)
         bottomSheetDialog.show(requireActivity().supportFragmentManager)
     }
 
-    private fun passLatLng(session: SessionInRegionResponse) {
-        searchFollowViewModel.getLat(session.latitude)
-        searchFollowViewModel.getLng(session.longitude)
+    private fun setViewModelLatLng(session: SessionInRegionResponse) {
+        searchFollowViewModel.setLat(session.latitude)
+        searchFollowViewModel.setLng(session.longitude)
     }
 
     private fun getSensorInfo(): SensorInformation {

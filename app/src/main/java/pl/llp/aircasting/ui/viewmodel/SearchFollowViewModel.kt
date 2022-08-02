@@ -100,11 +100,11 @@ class SearchFollowViewModel @Inject constructor(
         emit(response)
     }
 
-    fun getLat(lat: Double) {
+    fun setLat(lat: Double) {
         mutableLat.value = lat
     }
 
-    fun getLng(lng: Double) {
+    fun setLng(lng: Double) {
         mutableLng.value = lng
     }
 
