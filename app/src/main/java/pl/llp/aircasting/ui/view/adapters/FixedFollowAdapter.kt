@@ -8,12 +8,10 @@ import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.databinding.ItemSesssionsListFixedFollowBinding
-import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.util.extensions.disableForASecond
 
 class FixedFollowAdapter constructor(
-    private val onItemClicked: (SessionInRegionResponse) -> Unit,
-    private var mFragment: MapResultFragment
+    private val onItemClicked: (SessionInRegionResponse, String) -> Unit
 ) :
     RecyclerView.Adapter<FixedFollowAdapter.DataViewHolder>() {
     private val sessions: ArrayList<SessionInRegionResponse> = ArrayList()
@@ -37,7 +35,7 @@ class FixedFollowAdapter constructor(
                     //prevents duplicate fragment transaction for the bottom sheet.
                     disableForASecond()
 
-                    scrollToSelectedItemAndHighlightItsMarker(bindingAdapterPosition, session.uuid)
+                    scrollToSelectedItem(bindingAdapterPosition)
                 }
 
                 setCorrectLayoutForCard(session)
@@ -61,7 +59,7 @@ class FixedFollowAdapter constructor(
             false
         )
         return DataViewHolder(binding) {
-            onItemClicked(sessions[it])
+            onItemClicked(sessions[it], sessions[it].uuid)
         }
     }
 
@@ -100,9 +98,7 @@ class FixedFollowAdapter constructor(
         }
     }
 
-    private fun scrollToSelectedItemAndHighlightItsMarker(position: Int, sessionUUID: String) {
+    private fun scrollToSelectedItem(position: Int) {
         scrollToSelectedCard(position)
-
-        mFragment.highlightTheSelectedDot(sessionUUID)
     }
 }
