@@ -1,9 +1,12 @@
 package pl.llp.aircasting.helpers
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.google.android.material.tabs.TabLayout
@@ -26,3 +29,9 @@ fun selectTabAtPosition(tabIndex: Int): ViewAction {
         }
     }
 }
+
+fun clickOnFirstItem(): ViewAction =
+    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+        0,
+        ViewActions.click()
+    )

@@ -114,12 +114,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity"
-            android:label=""
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="pl.llp.aircasting.ui.view.screens.search.SearchFixedResultActivity"
+            android:name=".ui.view.screens.search.SearchFixedSessionActivity"
             android:label=""
             android:screenOrientation="portrait" />
 

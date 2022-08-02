@@ -3,14 +3,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/android:api-29
+      - image: cimg/android:2022.06
     steps:
       - checkout
       - run:
-          name: Populate secure.properties
+          name: Populate local.properties
           command: |
-            echo "MAPS_API_KEY=\"$MAPS_API_KEY\"" > ~/project/secure.properties
-            echo "PLACES_API_KEY=\"$PLACES_API_KEY\"" >> ~/project/secure.properties
+            echo "MAPS_API_KEY=\"$MAPS_API_KEY\"" > ~/project/local.properties
+            echo "PLACES_API_KEY=\"$PLACES_API_KEY\"" >> ~/project/local.properties
       - run:
           name: Store google-services.json
           command: echo $GCLOUD_SERVICES_JSON > ${HOME}/project/app/google-services.json
@@ -31,9 +31,9 @@ jobs:
           name: Test with Firebase Test Lab
           command: >
             sudo gcloud firebase test android run \
-              --device model=Pixel2,version=28,locale=en,orientation=portrait \
               --device model=hwALE-H,version=21,locale=en,orientation=portrait \
-              --device model=flame,version=29,locale=en,orientation=portrait \
+              --device model=Pixel2,version=28,locale=en,orientation=portrait \
+              --device model=oriole,version=33,locale=en,orientation=portrait \
               --app ~/project/app/build/outputs/apk/debug/app-debug.apk \
               --test ~/project/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
@@ -41,6 +41,7 @@ jobs:
           name: Install gsutil dependency and copy test results data
           command: |
             sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID} | tail -1` ${CIRCLE_ARTIFACTS}/ | true
-
       - store_test_results:
           path: test-results
+    # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
+    resource_class: large

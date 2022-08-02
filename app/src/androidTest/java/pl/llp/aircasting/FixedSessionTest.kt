@@ -8,9 +8,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import androidx.test.rule.GrantPermissionRule
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.whenever
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -18,6 +15,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -62,19 +61,11 @@ class FixedSessionTest {
     @Inject
     lateinit var measurementsRepository: MeasurementsRepository
 
-
-
     @get:Rule
-    val testRule: ActivityTestRule<MainActivity>
-            = ActivityTestRule(MainActivity::class.java, false, false)
+    val testRule: ActivityTestRule<MainActivity> =
+        ActivityTestRule(MainActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-
-    @get:Rule
-    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-        android.Manifest.permission.BLUETOOTH_SCAN,
-        android.Manifest.permission.BLUETOOTH_CONNECT
-    )
 
     private fun setupDagger() {
         val permissionsModule =
@@ -132,7 +123,9 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(
+            click()
+        )
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -179,7 +172,7 @@ class FixedSessionTest {
 
     @Test
     fun testFixedIndoorSessionRecording() {
-        settings.login("X", "EMAIL","TOKEN")
+        settings.login("X", "EMAIL", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -194,7 +187,9 @@ class FixedSessionTest {
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
 
-        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(
+            click()
+        )
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)

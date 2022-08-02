@@ -1,12 +1,13 @@
-package pl.llp.aircasting.ui.view.screens.search
+package pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -14,50 +15,46 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.chip.ChipGroup
-import kotlinx.android.synthetic.main.app_bar.*
+import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
-import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
-import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.databinding.FragmentSearchFollowLocationBinding
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.initializePlacesApi
 import pl.llp.aircasting.util.extensions.setStyle
 import pl.llp.aircasting.util.extensions.visible
 
-class SearchFixedSessionsActivity : BaseActivity() {
+class SearchLocationFragment : Fragment() {
 
-    companion object {
-        fun start(rootActivity: FragmentActivity?) {
-            rootActivity ?: return
+    private var _binding: FragmentSearchFollowLocationBinding? = null
+    private val binding get() = _binding!!
 
-            val intent = Intent(rootActivity, SearchFixedSessionsActivity::class.java)
-            rootActivity.startActivity(intent)
-        }
-    }
-
-    private lateinit var binding: ActivitySearchFixedSessionsBinding
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
     private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM
-    private val mSettings: Settings by lazy { Settings(this.application) }
+    private val mSettings: Settings by lazy { Settings(requireActivity().application) }
 
     private lateinit var address: String
     private lateinit var mLat: String
     private lateinit var mLng: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_search_fixed_sessions)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchFollowLocationBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupUI()
         setupAutoComplete()
     }
 
     private fun setupUI() {
-        setSupportActionBar(topAppBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         binding.apply {
             chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
                 onFirstChipGroupSelected(
@@ -74,7 +71,9 @@ class SearchFixedSessionsActivity : BaseActivity() {
                     chipGroup
                 )
             }
-
+            binding.appBarSearch.topAppBar.setNavigationOnClickListener {
+                requireActivity().onBackPressed()
+            }
             btnContinue.setOnClickListener { goToSearchResult() }
         }
     }
@@ -115,15 +114,19 @@ class SearchFixedSessionsActivity : BaseActivity() {
     private fun setupAutoComplete() {
         initialisePlacesClient()
 
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment?
+        val autocompleteFragment = childFragmentManager.findFragmentById(R.id.place_autocomplete_fragment)
+                as AutocompleteSupportFragment?
 
         autocompleteFragment?.apply {
             val editTextInput =
                 view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
-            findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
+            view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)
+                ?.gone()
 
-            editTextInput?.setStyle(getString(R.string.search_session_query_hint), R.color.aircasting_grey_300)
+            editTextInput?.setStyle(
+                getString(R.string.search_session_query_hint),
+                R.color.aircasting_grey_300
+            )
 
             setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
 
@@ -156,24 +159,23 @@ class SearchFixedSessionsActivity : BaseActivity() {
     }
 
     private fun initialisePlacesClient() {
-        initializePlacesApi(this)
-        placesClient = Places.createClient(this)
+        initializePlacesApi(requireContext())
+        placesClient = Places.createClient(requireContext())
     }
 
     private fun goToSearchResult() {
-        val intent = Intent(this, SearchFixedResultActivity::class.java)
-        intent.putExtra("address", address)
-        intent.putExtra("txtParameter", txtSelectedParameter)
-        intent.putExtra("txtSensor", txtSelectedSensor)
+        val searchResultFragment = MapResultFragment()
+        val args = Bundle()
 
-        intent.putExtra("lat", mLat)
-        intent.putExtra("lng", mLng)
+        args.putString("address", address)
+        args.putString("txtParameter", txtSelectedParameter)
+        args.putString("txtSensor", txtSelectedSensor)
+        args.putString("lat", mLat)
+        args.putString("lng", mLng)
+        searchResultFragment.arguments = args
 
-        startActivity(intent)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.frameLayout, searchResultFragment, "searchResult")
+            ?.commit()
     }
 }

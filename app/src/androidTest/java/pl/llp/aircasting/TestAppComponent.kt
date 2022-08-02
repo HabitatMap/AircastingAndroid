@@ -27,4 +27,5 @@ interface TestAppComponent: AppComponent {
     fun inject(test: FixedSessionTest)
     fun inject(test: MyAccountTest)
     fun inject(test: OnboardingTest)
+    fun inject(test: SearchFollowTest)
 }

@@ -13,7 +13,7 @@ import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
-import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionsActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 
@@ -56,7 +56,7 @@ class FixedController(
     }
 
     override fun onExploreNewSessionsClicked() {
-        val intent = Intent(mContext, SearchFixedSessionsActivity::class.java)
+        val intent = Intent(mContext, SearchFixedSessionActivity::class.java)
         mContext?.startActivity(intent)
     }
 

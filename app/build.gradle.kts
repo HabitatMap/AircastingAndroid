@@ -61,6 +61,10 @@ android {
         getByName("androidTest").assets.srcDirs(files("$projectDir/schemas"))
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     kotlinOptions.jvmTarget = "1.8"
     lint.abortOnError = false
     buildFeatures.dataBinding = true
@@ -81,22 +85,8 @@ dependencies {
     kapt(AppDependencies.kaptLibraries)
     kaptAndroidTest(AppDependencies.kaptAndroidTestLibraries)
     androidTestImplementation(AppDependencies.androidTestImplementation)
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
-    // Tests
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(AppDependencies.testImplementation)
+    debugImplementation(AppDependencies.debugImplementation)
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.6.20")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
-    testImplementation("org.robolectric:robolectric:4.8.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
-    implementation("androidx.test.espresso:espresso-idling-resource:3.4.0")
-
-    // for mocking in tests
-    androidTestImplementation("org.mockito:mockito-core:4.6.0")
-    androidTestImplementation("org.mockito:mockito-android:4.6.0")
-    androidTestImplementation("com.nhaarman:mockito-kotlin:1.6.0")
-    testImplementation("org.mockito:mockito-core:4.6.0")
 }
 

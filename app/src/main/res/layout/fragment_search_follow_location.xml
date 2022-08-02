@@ -182,7 +182,7 @@
             android:layout_marginEnd="@dimen/keyline_7"
             android:layout_marginBottom="@dimen/keyline_5"
             android:text="@string/continue_button_onboarding"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
