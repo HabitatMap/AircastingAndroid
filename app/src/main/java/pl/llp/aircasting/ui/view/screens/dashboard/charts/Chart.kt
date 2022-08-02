@@ -31,16 +31,12 @@ class Chart(
     private var mSessionPresenter: SessionPresenter? = null
 
     fun bindChart(sessionPresenter: SessionPresenter?) {
-        val session = sessionPresenter?.session
         mSessionPresenter = sessionPresenter
 
-        setEntries(sessionPresenter)
-
-        if (session != null && session.streams.isNotEmpty()) {
-            resetChart()
-            mDataSet = prepareDataSet()
-            drawChart()
-        }
+        setEntries()
+        resetChart()
+        prepareDataSet()
+        drawChart()
         setTimesAndUnit()
     }
 
@@ -49,8 +45,8 @@ class Chart(
         mLineChart?.clear()
     }
 
-    private fun setEntries(sessionPresenter: SessionPresenter?) {
-        mEntries = sessionPresenter?.chartData?.getEntries(sessionPresenter.selectedStream)
+    private fun setEntries() {
+        mEntries = mSessionPresenter?.chartData?.getEntries(mSessionPresenter?.selectedStream)
             ?: listOf()
     }
 
@@ -60,8 +56,11 @@ class Chart(
         mLineChart?.invalidate()
     }
 
-    private fun prepareDataSet(): LineDataSet {
-        if (mEntries.isEmpty()) return LineDataSet(listOf(), "")
+    private fun prepareDataSet() {
+        if (mEntries.isEmpty()) {
+            mDataSet = LineDataSet(listOf(), "")
+            return
+        }
 
         val dataSet: LineDataSet =
             if (mSessionPresenter?.selectedStream?.isMeasurementTypeTemperature() == true
@@ -89,7 +88,7 @@ class Chart(
         dataSet.valueTextSize = 12f
         dataSet.valueTextColor = ContextCompat.getColor(mContext, R.color.aircasting_grey_700)
 
-        return dataSet
+        mDataSet = dataSet
     }
 
     private fun circleColors(): List<Int> {
