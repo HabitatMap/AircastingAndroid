@@ -9,8 +9,8 @@ import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
-import pl.llp.aircasting.util.CalendarUtils.Companion.getEndOfTodayMillis
-import pl.llp.aircasting.util.CalendarUtils.Companion.getStartOfTodayMillisFromYearAgo
+import pl.llp.aircasting.util.CalendarUtils.Companion.getEndOfTodaySeconds
+import pl.llp.aircasting.util.CalendarUtils.Companion.getStartOfTodaySecondsFromYearAgo
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
 import javax.inject.Inject
@@ -24,8 +24,8 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
             square: GeoSquare,
             sensorInfo: SensorInformation
         ): String {
-            return "{\"time_from\":\"${getStartOfTodayMillisFromYearAgo()}\"," +
-                    "\"time_to\":\"${getEndOfTodayMillis()}\"," +
+            return "{\"time_from\":\"${getStartOfTodaySecondsFromYearAgo()}\"," +
+                    "\"time_to\":\"${getEndOfTodaySeconds()}\"," +
                     "\"tags\":\"\"," +
                     "\"usernames\":\"\"," +
                     "\"west\":${square.west}," +
