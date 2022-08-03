@@ -2,6 +2,8 @@ package pl.llp.aircasting
 
 import android.content.Intent
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
@@ -63,6 +65,8 @@ class SearchFollowTest {
     lateinit var apiServiceFactory: ApiServiceFactory
     @Inject
     lateinit var settings: Settings
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
     lateinit var activityScenario: ActivityScenario<MainActivity>
     lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var mapScenario: FragmentScenario<MapResultFragment>
@@ -157,6 +161,13 @@ class SearchFollowTest {
         activityScenario.close()
     }
 
+    @Test
+    fun mapScreen() {
+        launchMapScreen()
+        Thread.sleep(5000)
+        mapScenario.close()
+    }
+
     private fun searchAndValidateDisplayedParameters(
         place: String,
         parameter: String,
@@ -244,5 +255,16 @@ class SearchFollowTest {
 
     private fun launchSearchScreen() {
         searchScenario = launchFragmentInContainer(themeResId = R.style.Theme_Aircasting)
+    }
+
+    private fun launchMapScreen() {
+        val args = bundleOf(
+            "address" to "Surgut",
+            "lat" to "61.264426",
+            "lng" to "73.406232",
+            "txtParameter" to measurementTypePM,
+            "txtSensor" to airbeam
+        )
+        mapScenario = launchFragmentInContainer(args, R.style.Theme_Aircasting, factory = fragmentFactory)
     }
 }
