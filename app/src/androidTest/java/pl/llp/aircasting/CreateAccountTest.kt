@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -30,18 +31,25 @@ import pl.llp.aircasting.util.Settings
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
-
 @RunWith(AndroidJUnit4::class)
 class CreateAccountTest {
     @Inject
     lateinit var settings: Settings
+    lateinit var server: MockWebServer
+
+    @get:Rule
+    val testRule: ActivityTestRule<MainActivity> =
+        ActivityTestRule(MainActivity::class.java, true, false)
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
 
-    @get:Rule
-    val testRule: ActivityTestRule<MainActivity>
-            = ActivityTestRule(MainActivity::class.java, false, false)
+    @Before
+    fun setup() {
+        setupDagger()
+        server = getMockWebServerFrom(apiServiceFactory)
+        server.start()
+    }
 
     private fun setupDagger() {
         val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
@@ -56,21 +64,37 @@ class CreateAccountTest {
         testAppComponent.inject(this)
     }
 
-    @Before
-    fun setup() {
-        setupDagger()
-        getMockWebServerFrom(apiServiceFactory).start()
-    }
-
     @After
     fun cleanup() {
-        getMockWebServerFrom(apiServiceFactory).shutdown()
+        server.shutdown()
     }
 
     @Test
     fun testCreateAccount() {
         settings.onboardingAccepted()
 
+        testRule.launchActivity(null)
+
+        createAccountLogic()
+
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
+        Thread.sleep(500)
+        onView(withId(R.id.email_input)).perform(ViewActions.typeText("maria@example.org"))
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("maria"))
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
+        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
+
+        Thread.sleep(3000)
+
+        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
+        assertEquals(settings.getAuthToken(), "XYZ123FAKETOKEN")
+    }
+
+    private fun createAccountLogic() {
         val createAccountResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(
@@ -94,24 +118,6 @@ class CreateAccountTest {
             ),
             getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
         )
-
-        testRule.launchActivity(null)
-
-        Espresso.closeSoftKeyboard()
-        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
-        Thread.sleep(500)
-        onView(withId(R.id.email_input)).perform(ViewActions.typeText("maria@example.org"))
-        Espresso.closeSoftKeyboard()
-        onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("maria"))
-        Espresso.closeSoftKeyboard()
-        onView(withId(R.id.password_input)).perform(ViewActions.typeText("secret"))
-        Espresso.closeSoftKeyboard()
-        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
-
-        Thread.sleep(2000)
-
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
-        assertEquals(settings.getAuthToken(), "XYZ123FAKETOKEN")
     }
 
     @Test
@@ -123,7 +129,7 @@ class CreateAccountTest {
             .setBody(
                 JsonBody.build(
                     mapOf(
-                        "email" to listOf<String>("can't be blank")
+                        "email" to listOf("can't be blank")
                     )
                 )
             )
