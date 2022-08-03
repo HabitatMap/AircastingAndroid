@@ -17,7 +17,8 @@ import javax.inject.Singleton
         NewSessionWizardModule::class,
         ViewModelModule::class,
         DatabaseModule::class,
-        DispatcherModule::class
+        DispatcherModule::class,
+        FragmentModule::class
     ]
 )
 interface TestAppComponent: AppComponent {
