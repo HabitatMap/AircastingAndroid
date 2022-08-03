@@ -1,6 +1,7 @@
 package pl.llp.aircasting
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentFactory
@@ -35,6 +36,7 @@ import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.helpers.*
+import pl.llp.aircasting.helpers.assertions.RecyclerViewItemCountAssertion
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
@@ -50,6 +52,7 @@ import javax.inject.Inject
 class SearchFollowTest {
     companion object {
         private lateinit var startIntent: Intent
+
         @BeforeClass
         @JvmStatic
         fun setupIntent() {
@@ -67,6 +70,7 @@ class SearchFollowTest {
     lateinit var settings: Settings
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
     lateinit var activityScenario: ActivityScenario<MainActivity>
     lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var mapScenario: FragmentScenario<MapResultFragment>
@@ -162,9 +166,53 @@ class SearchFollowTest {
     }
 
     @Test
-    fun mapScreen() {
-        launchMapScreen()
-        Thread.sleep(5000)
+    fun sessionsFoundNumber_shouldBeEqualToCardsNumber() {
+        val args = bundleOf(
+            "address" to newYork,
+            "lat" to "40.692985",
+            "lng" to "-73.964609",
+            "txtParameter" to measurementTypePM,
+            "txtSensor" to airbeam
+        )
+        launchMapScreen(args)
+
+        var cardsCount = 0
+        awaitForCondition {
+            onView(withId(R.id.recyclerFixedFollow))
+                .check(RecyclerViewItemCountAssertion {
+                    cardsCount = it
+                    it > 0
+                })
+        }
+
+        onView(withId(R.id.txtShowingSessionsNumber))
+            .check(matches(textContainsString("of $cardsCount")))
+
+        mapScenario.close()
+    }
+
+
+    @Test
+    fun whenThereNoSessionsFound_numberShouldBeZero_listShouldBeEmpty() {
+        val args = bundleOf(
+            "address" to "Surgut",
+            "lat" to "61.265459",
+            "lng" to "73.416532",
+            "txtParameter" to measurementTypePM,
+            "txtSensor" to airbeam
+        )
+        launchMapScreen(args)
+        awaitForCondition {
+            onView(withId(R.id.txtShowingSessionsNumber)).check(matches(isDisplayed()))
+        }
+
+        onView(withId(R.id.recyclerFixedFollow))
+            .check(RecyclerViewItemCountAssertion {
+                it == 0
+            })
+        onView(withId(R.id.txtShowingSessionsNumber))
+            .check(matches(textContainsString("of 0")))
+
         mapScenario.close()
     }
 
@@ -257,14 +305,8 @@ class SearchFollowTest {
         searchScenario = launchFragmentInContainer(themeResId = R.style.Theme_Aircasting)
     }
 
-    private fun launchMapScreen() {
-        val args = bundleOf(
-            "address" to "Surgut",
-            "lat" to "61.264426",
-            "lng" to "73.406232",
-            "txtParameter" to measurementTypePM,
-            "txtSensor" to airbeam
-        )
-        mapScenario = launchFragmentInContainer(args, R.style.Theme_Aircasting, factory = fragmentFactory)
+    private fun launchMapScreen(args: Bundle) {
+        mapScenario =
+            launchFragmentInContainer(args, R.style.Theme_Aircasting, factory = fragmentFactory)
     }
 }
