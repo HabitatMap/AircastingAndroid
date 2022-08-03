@@ -9,8 +9,19 @@ jobs:
       - run:
           name: Populate local.properties
           command: |
-            echo "MAPS_API_KEY=\"$MAPS_API_KEY\"" > ~/project/local.properties
-            echo "PLACES_API_KEY=\"$PLACES_API_KEY\"" >> ~/project/local.properties
+            LOCAL_PROPERTIES="${HOME}/project/local.properties"
+            export LOCAL_PROPERTIES
+            echo "Local Properties should exist at $LOCAL_PROPERTIES"
+
+            if [ ! -f "$LOCAL_PROPERTIES" ]; then
+                echo "Local Properties does not exist"
+
+                echo "Creating Local Properties file..."
+                touch $LOCAL_PROPERTIES
+            fi
+            echo "Writing API_KEYs to local.properties..."
+            echo "MAPS_API_KEY=$MAPS_API_KEY" >> $LOCAL_PROPERTIES
+            echo "PLACES_API_KEY=$PLACES_API_KEY" >> $LOCAL_PROPERTIES
       - run:
           name: Store google-services.json
           command: echo $GCLOUD_SERVICES_JSON > ${HOME}/project/app/google-services.json
