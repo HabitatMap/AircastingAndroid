@@ -1,5 +1,5 @@
 object Versions {
-    const val gradle = "7.2.1"
+    const val gradle = "7.2.2"
     const val kotlin = "1.6.21"
     const val navigation = "2.4.2"
     const val googleServices = "4.3.10"
