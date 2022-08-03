@@ -11,5 +11,12 @@ fun textContainsString(string: String): Matcher<in View> = TextContainsStringMat
 
 
 fun waitAndRetry(assertion: ThrowingRunnable) =
-    Awaitility.await().pollDelay(1, TimeUnit.SECONDS).atMost(3, TimeUnit.SECONDS)
+    Awaitility.await().pollDelay(2, TimeUnit.SECONDS).atMost(6, TimeUnit.SECONDS)
+        .untilAsserted(assertion)
+
+fun awaitForCondition(assertion: ThrowingRunnable) =
+    Awaitility.await()
+        .atLeast(2, TimeUnit.SECONDS)
+        .atMost(8, TimeUnit.SECONDS)
+        .with().pollInterval(1, TimeUnit.SECONDS)
         .untilAsserted(assertion)
