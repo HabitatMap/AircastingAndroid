@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -37,7 +38,6 @@ import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
 import javax.inject.Inject
 
-
 @RunWith(AndroidJUnit4::class)
 class FixedSessionTest {
     @Inject
@@ -61,11 +61,13 @@ class FixedSessionTest {
     @Inject
     lateinit var measurementsRepository: MeasurementsRepository
 
+    lateinit var server: MockWebServer
+
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
-        ActivityTestRule(MainActivity::class.java, false, false)
+        ActivityTestRule(MainActivity::class.java, true, false)
 
-    val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
+    val app: AircastingApplication = ApplicationProvider.getApplicationContext()
 
     private fun setupDagger() {
         val permissionsModule =
@@ -86,7 +88,7 @@ class FixedSessionTest {
         testAppComponent.inject(this)
     }
 
-    fun clearDatabase() {
+    private fun clearDatabase() {
         DatabaseProvider.setup(app)
         DatabaseProvider.runQuery { DatabaseProvider.get().clearAllTables() }
     }
@@ -97,24 +99,24 @@ class FixedSessionTest {
 
         setupDagger()
         clearDatabase()
-        getMockWebServerFrom(apiServiceFactory).start()
+        server = getMockWebServerFrom(apiServiceFactory)
+        server.start()
     }
 
     @After
     fun cleanup() {
-        getMockWebServerFrom(apiServiceFactory).shutdown()
+        server.shutdown()
         clearDatabase()
     }
 
     @Test
     fun testFixedOutdoorSessionRecording() {
         settings.login("X", "EMAIL", "TOKEN")
+        testRule.launchActivity(null)
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         stubPairedDevice(bluetoothManager)
-
-        testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
@@ -146,7 +148,9 @@ class FixedSessionTest {
         onView(withId(R.id.continue_button)).perform(scrollTo())
         onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
 
-        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
+        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(
+            click()
+        )
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))
         onView(withId(R.id.ok_button)).perform(click())
 
@@ -166,7 +170,12 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed outdoor session")))
+        onView(
+            allOf(
+                withId(R.id.session_name),
+                isDisplayed()
+            )
+        ).check(matches(withText("Ania's fixed outdoor session")))
         onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
@@ -210,7 +219,9 @@ class FixedSessionTest {
         onView(withId(R.id.continue_button)).perform(scrollTo())
         onView(withId(R.id.networks_list_header)).check(matches(isDisplayed()))
 
-        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(click())
+        onView(withText(containsString(FakeFixedSessionDetailsController.TEST_WIFI_SSID))).perform(
+            click()
+        )
         onView(withId(R.id.wifi_password_input)).perform(replaceText("secret"))
         onView(withId(R.id.ok_button)).perform(click())
 
@@ -224,7 +235,12 @@ class FixedSessionTest {
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
         Thread.sleep(4000)
 
-        onView(allOf(withId(R.id.session_name), isDisplayed())).check(matches(withText("Ania's fixed indoor session")))
+        onView(
+            allOf(
+                withId(R.id.session_name),
+                isDisplayed()
+            )
+        ).check(matches(withText("Ania's fixed indoor session")))
         onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
