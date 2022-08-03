@@ -7,10 +7,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Populate local.properties
+          name: Store API keys
           command: |
-            echo "MAPS_API_KEY=\"$MAPS_API_KEY\"" > ~/project/local.properties
-            echo "PLACES_API_KEY=\"$PLACES_API_KEY\"" >> ~/project/local.properties
+              echo "Print Maps API Key: $MAPS_API_KEY"
+              echo "Print Places API Key: $PLACES_API_KEY"
+
+              echo "MAPS_API_KEY=$MAPS_API_KEY" >> ~/project/local.properties
+              echo "PLACES_API_KEY=$PLACES_API_KEY" >> ~/project/local.properties
+
+              echo "Printing local.properties file..."
+              echo "$(cat ~/project/local.properties)"
       - run:
           name: Store google-services.json
           command: echo $GCLOUD_SERVICES_JSON > ${HOME}/project/app/google-services.json
@@ -32,7 +38,7 @@ jobs:
           command: >
             sudo gcloud firebase test android run \
               --device model=hwALE-H,version=21,locale=en,orientation=portrait \
-              --device model=Pixel2,version=28,locale=en,orientation=portrait \
+              --device model=SC-02K,version=28,locale=en,orientation=portrait \
               --device model=oriole,version=33,locale=en,orientation=portrait \
               --app ~/project/app/build/outputs/apk/debug/app-debug.apk \
               --test ~/project/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
