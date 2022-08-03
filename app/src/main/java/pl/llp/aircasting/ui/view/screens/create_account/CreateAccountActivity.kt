@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.create_account
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.StrictMode
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -13,7 +14,7 @@ import javax.inject.Inject
  * Created by Maria Turnau on 02/09/2020.
  */
 
-class CreateAccountActivity: BaseActivity() {
+class CreateAccountActivity : BaseActivity() {
     private var controller: CreateAccountController? = null
 
     @Inject
@@ -22,7 +23,7 @@ class CreateAccountActivity: BaseActivity() {
     companion object {
         val FROM_ONBOARDING_KEY = "fromOnboarding"
         fun start(contextActivity: AppCompatActivity?, fromOnboarding: Boolean? = false) {
-            contextActivity?.let{
+            contextActivity?.let {
                 val intent = Intent(it, CreateAccountActivity::class.java)
                 intent.putExtra(FROM_ONBOARDING_KEY, fromOnboarding)
                 it.startActivity(intent)
@@ -40,9 +41,15 @@ class CreateAccountActivity: BaseActivity() {
             .appComponent.inject(this)
 
         val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
-        controller = CreateAccountController(this, view, settings, apiServiceFactory, fromOnboarding)
+        controller =
+            CreateAccountController(this, view, settings, apiServiceFactory, fromOnboarding)
 
         setContentView(view.rootView)
+
+        // Temporary fix for tests
+        // TODO: The requests should be done in a separate thread/maybe using MVVM for Login/register later
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
     }
 
     override fun onStart() {
