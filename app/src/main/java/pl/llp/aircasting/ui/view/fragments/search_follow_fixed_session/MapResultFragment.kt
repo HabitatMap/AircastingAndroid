@@ -351,7 +351,7 @@ class MapResultFragment @Inject constructor(
         adapter.scrollToSelectedCard(position)
     }
 
-    fun highlightTheSelectedDot(sessionUUID: String) {
+    private fun highlightTheSelectedDot(sessionUUID: String) {
         for (i in mMarkerArray.indices) {
             val marker = mMarkerArray[i]
 
