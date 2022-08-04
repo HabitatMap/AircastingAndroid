@@ -30,6 +30,7 @@ class SearchFollowViewModel @Inject constructor(
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
     private val mutableLat = MutableLiveData<Double>()
     private val mutableLng = MutableLiveData<Double>()
+    private val mutableAddress = MutableLiveData<String>()
 
     private lateinit var selectedFullSession: Deferred<Session?>
     lateinit var isSelectedSessionFollowed: Deferred<Boolean>
@@ -37,6 +38,7 @@ class SearchFollowViewModel @Inject constructor(
     val selectedSession: LiveData<SessionInRegionResponse> get() = mutableSelectedSession
     val myLat: LiveData<Double> get() = mutableLat
     val myLng: LiveData<Double> get() = mutableLng
+    val mSavedAddress: LiveData<String> get() = mutableAddress
     var isOwnSession: Boolean = false
 
     fun selectSession(session: SessionInRegionResponse) {
@@ -106,6 +108,10 @@ class SearchFollowViewModel @Inject constructor(
 
     fun setLng(lng: Double) {
         mutableLng.value = lng
+    }
+
+    fun saveAddressFromSearchFragment(address: String) {
+        mutableAddress.value = address
     }
 
     fun saveSession() {
