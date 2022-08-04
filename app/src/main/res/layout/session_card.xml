@@ -96,7 +96,7 @@
             app:layout_constraintEnd_toStartOf="@+id/expand_session_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/session_name"
-            tools:text="This is just a description of what to do  here..." />
+            tools:text="This is just a description of what to do here..." />
 
         <include
             android:id="@+id/no_measurements_view"
