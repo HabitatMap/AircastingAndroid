@@ -12,6 +12,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.TemperatureConverter
+import pl.llp.aircasting.util.extensions.inVisible
 
 class Chart(
     context: Context,
@@ -108,9 +109,15 @@ class Chart(
     }
 
     private fun setTimesAndUnit() {
-        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
-        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
-        mChartUnitTextView?.text = chartUnitText()
+        if (mSessionPresenter?.selectedStream == null) {
+            mChartStartTimeTextView?.inVisible()
+            mChartEndTimeTextView?.inVisible()
+            mChartUnitTextView?.inVisible()
+        } else {
+            mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
+            mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
+            mChartUnitTextView?.text = chartUnitText()
+        }
     }
 
     private fun chartUnitText(): String {

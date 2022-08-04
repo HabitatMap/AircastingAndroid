@@ -103,9 +103,7 @@ class MapResultFragment @Inject constructor(
 
         binding.btnRedo.setOnClickListener { resetTheSearch() }
 
-        binding.include.topAppBar.setNavigationOnClickListener {
-            goToPreviousFragment()
-        }
+        binding.include.topAppBar.setNavigationOnClickListener { goToPreviousFragment() }
 
         setupRecyclerView()
         setupSearchLayout()
