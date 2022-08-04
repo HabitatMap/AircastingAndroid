@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -22,6 +23,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.databinding.FragmentSearchFollowLocationBinding
+import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.initializePlacesApi
@@ -33,6 +35,7 @@ class SearchLocationFragment : Fragment() {
 
     private var _binding: FragmentSearchFollowLocationBinding? = null
     private val binding get() = _binding!!
+    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>()
 
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
@@ -44,9 +47,11 @@ class SearchLocationFragment : Fragment() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
+    private lateinit var autocompleteFragment: AutocompleteSupportFragment
     private lateinit var address: String
     private lateinit var mLat: String
     private lateinit var mLng: String
+    private lateinit var editTextInput: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +69,7 @@ class SearchLocationFragment : Fragment() {
 
         setupUI()
         setupAutoComplete()
+        setAddressInSearchIfExist()
     }
 
     private fun setupUI() {
@@ -83,9 +89,8 @@ class SearchLocationFragment : Fragment() {
                     chipGroup
                 )
             }
-            binding.appBarSearch.topAppBar.setNavigationOnClickListener {
-                requireActivity().onBackPressed()
-            }
+
+            binding.appBarSearch.topAppBar.setNavigationOnClickListener { activity?.finish() }
             btnContinue.setOnClickListener { goToSearchResult() }
         }
     }
@@ -126,17 +131,16 @@ class SearchLocationFragment : Fragment() {
     private fun setupAutoComplete() {
         initialisePlacesClient()
 
-        val autocompleteFragment =
+        autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.place_autocomplete_fragment)
-                    as AutocompleteSupportFragment?
+                    as AutocompleteSupportFragment
 
-        autocompleteFragment?.apply {
-            val editTextInput =
-                view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
+        autocompleteFragment.apply {
+            editTextInput = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
             view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)
                 ?.gone()
 
-            editTextInput?.setStyle(
+            editTextInput.setStyle(
                 getString(R.string.search_session_query_hint),
                 R.color.aircasting_grey_300
             )
@@ -154,6 +158,8 @@ class SearchLocationFragment : Fragment() {
                 mLat = place.latLng?.latitude.toString()
                 mLng = place.latLng?.longitude.toString()
 
+                saveInputsToViewModel()
+
                 setTextColor()
                 binding.btnContinue.visible()
             }
@@ -169,6 +175,37 @@ class SearchLocationFragment : Fragment() {
                 Log.d("onError", status.statusMessage.toString())
             }
         })
+    }
+
+    private fun setAddressInSearchIfExist() {
+        searchFollowViewModel.apply {
+            mSavedAddress.observe(viewLifecycleOwner) { mAddress ->
+                if (mAddress != null) {
+
+                    editTextInput.setText(mAddress)
+                    address = mAddress
+                    binding.btnContinue.visible()
+                }
+            }
+            myLat.observe(viewLifecycleOwner) { myLat ->
+                if (myLat != null) {
+                    mLat = myLat.toString()
+                }
+            }
+            myLng.observe(viewLifecycleOwner) { myLng ->
+                if (myLng != null) {
+                    mLng = myLng.toString()
+                }
+            }
+        }
+    }
+
+    private fun saveInputsToViewModel() {
+        searchFollowViewModel.apply {
+            saveAddressFromSearchFragment(address)
+            setLat(mLat.toDouble())
+            setLng(mLng.toDouble())
+        }
     }
 
     private fun initialisePlacesClient() {
