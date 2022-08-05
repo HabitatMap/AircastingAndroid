@@ -112,7 +112,7 @@ class MapResultFragment @Inject constructor(
 
     private fun goToPreviousFragment() {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.frameLayout, SearchLocationFragment(), "searchLocation")
+            ?.replace(R.id.frameLayout, SearchLocationFragment::class.java, null, "searchLocation")
             ?.disallowAddToBackStack()
             ?.commit()
     }

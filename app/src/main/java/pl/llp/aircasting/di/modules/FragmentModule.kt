@@ -6,6 +6,7 @@ import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import kotlin.reflect.KClass
 
 @Module
@@ -14,6 +15,11 @@ abstract class FragmentModule {
     @IntoMap
     @FragmentKey(MapResultFragment::class)
     internal abstract fun bindMapResultFragment(fragment: MapResultFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(SearchLocationFragment::class)
+    internal abstract fun bindSearchLocationFragment(fragment: SearchLocationFragment): Fragment
 }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER)
