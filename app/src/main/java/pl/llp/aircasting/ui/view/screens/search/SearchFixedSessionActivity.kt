@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -27,6 +28,9 @@ class SearchFixedSessionActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
     lateinit var searchFollowViewModel: SearchFollowViewModel
 
     lateinit var binding: ActivityMainSearchFixedSessionsBinding
@@ -44,6 +48,7 @@ class SearchFixedSessionActivity : BaseActivity() {
             .appComponent.inject(this)
         searchFollowViewModel =
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
+        supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
     private fun showSearchFragment(savedInstanceState: Bundle?) {
