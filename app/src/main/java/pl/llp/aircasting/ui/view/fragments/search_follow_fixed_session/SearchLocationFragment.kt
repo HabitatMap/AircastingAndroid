@@ -222,7 +222,7 @@ class SearchLocationFragment @Inject constructor(
         )
 
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.frameLayout, MapResultFragment::class.java, args)
+            ?.replace(R.id.fragmentContainer, MapResultFragment::class.java, args)
             ?.commit()
     }
 }

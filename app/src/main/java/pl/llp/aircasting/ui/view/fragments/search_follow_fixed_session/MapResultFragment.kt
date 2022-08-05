@@ -96,7 +96,7 @@ class MapResultFragment @Inject constructor(
 
         getArgumentsFromLocationFragment()
 
-        binding.include.finishView.visible()
+        binding.include.finishSearchButton.visible()
 
         binding.txtShowing.text = getString(R.string.showing_results_for) + " " + txtParameter
         binding.txtUsing.text = getString(R.string.using_txt) + " " + getSensor()
@@ -107,12 +107,12 @@ class MapResultFragment @Inject constructor(
 
         setupRecyclerView()
         setupSearchLayout()
-        binding.include.finishView.setOnClickListener { goToDashboard() }
+        binding.include.finishSearchButton.setOnClickListener { goToDashboard() }
     }
 
     private fun goToPreviousFragment() {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.frameLayout, SearchLocationFragment::class.java, null, "searchLocation")
+            ?.replace(R.id.fragmentContainer, SearchLocationFragment::class.java, null, "searchLocation")
             ?.disallowAddToBackStack()
             ?.commit()
     }
