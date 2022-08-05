@@ -16,7 +16,8 @@ fun selectTabAtPosition(tabIndex: Int): ViewAction {
     return object : ViewAction {
         override fun getDescription() = "with tab at index $tabIndex"
 
-        override fun getConstraints() = allOf(isDisplayed(), isAssignableFrom(TabLayout::class.java))
+        override fun getConstraints() =
+            allOf(isDisplayed(), isAssignableFrom(TabLayout::class.java))
 
         override fun perform(uiController: UiController, view: View) {
             val tabLayout = view as TabLayout

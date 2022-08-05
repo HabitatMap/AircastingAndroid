@@ -301,8 +301,16 @@ class SearchFollowTest {
             .check(matches(hintContainsString(hint)))
     }
 
+    private fun searchFieldHasText(hint: String) {
+        onView(withId(R.id.places_autocomplete_search_input))
+            .check(matches(textContainsString(hint)))
+    }
+
     private fun launchSearchScreen() {
-        searchScenario = launchFragmentInContainer(themeResId = R.style.Theme_Aircasting)
+        searchScenario = launchFragmentInContainer(
+            themeResId = R.style.Theme_Aircasting,
+            factory = fragmentFactory
+        )
     }
 
     private fun launchMapScreen(args: Bundle) {
