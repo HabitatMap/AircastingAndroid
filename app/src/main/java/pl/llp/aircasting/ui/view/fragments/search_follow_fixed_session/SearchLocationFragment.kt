@@ -9,8 +9,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -47,9 +47,6 @@ class SearchLocationFragment @Inject constructor(
     @Inject
     lateinit var mSettings: Settings
 
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
-
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
     private lateinit var address: String
     private lateinit var mLat: String
@@ -62,7 +59,6 @@ class SearchLocationFragment @Inject constructor(
     ): View {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
-        activity?.supportFragmentManager?.fragmentFactory = fragmentFactory
         _binding = FragmentSearchFollowLocationBinding.inflate(inflater, container, false)
         return binding.root
     }
