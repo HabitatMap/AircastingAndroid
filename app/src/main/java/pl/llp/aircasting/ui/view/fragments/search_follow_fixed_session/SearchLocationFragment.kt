@@ -31,12 +31,15 @@ import pl.llp.aircasting.util.extensions.setStyle
 import pl.llp.aircasting.util.extensions.visible
 import javax.inject.Inject
 
-class SearchLocationFragment : Fragment() {
+class SearchLocationFragment @Inject constructor(
+    factory: ViewModelProvider.Factory
+) : Fragment() {
 
     private var _binding: FragmentSearchFollowLocationBinding? = null
     private val binding get() = _binding!!
-    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>()
-
+    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>(
+        factoryProducer = { factory }
+    )
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
     private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM

@@ -49,7 +49,7 @@ class SearchFixedSessionActivity : BaseActivity() {
     private fun showSearchFragment(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, SearchLocationFragment())
+                .replace(R.id.frameLayout, SearchLocationFragment::class.java, null, "searchLocation")
                 .commit()
         }
     }
