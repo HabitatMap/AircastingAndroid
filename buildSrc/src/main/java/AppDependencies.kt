@@ -9,6 +9,7 @@ object AppDependencies {
 
     /* AndroidX */
     private const val appCompat = "androidx.appcompat:appcompat:${Versions.androidX}"
+    private const val fragment = "androidx.fragment:fragment:${Versions.androidX}"
     private const val fragmentKTX = "androidx.fragment:fragment-ktx:${Versions.androidX}"
     private const val activityKTX = "androidx.activity:activity-ktx:${Versions.activityKtx}"
     private const val coreKTX = "androidx.core:core-ktx:${Versions.coreKtx}"
@@ -117,6 +118,7 @@ object AppDependencies {
 
     val appLibraries = arrayListOf<String>().apply {
         add(kotlinStdLib)
+        add(fragment)
         add(kotlinStdLib)
         add(legacySupport)
         add(coroutinesCore)

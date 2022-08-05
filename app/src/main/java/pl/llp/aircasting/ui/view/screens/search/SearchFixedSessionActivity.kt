@@ -54,7 +54,7 @@ class SearchFixedSessionActivity : BaseActivity() {
     private fun showSearchFragment(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, SearchLocationFragment::class.java, null, "searchLocation")
+                .replace(R.id.fragmentContainer, SearchLocationFragment::class.java, null, "searchLocation")
                 .commit()
         }
     }
