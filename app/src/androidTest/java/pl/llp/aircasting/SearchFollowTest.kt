@@ -261,15 +261,64 @@ class SearchFollowTest {
         mapScenario.close()
     }
 
+    @Test
+    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView() {
+        launchMapScreen(newYorkArgs)
+        waitForSessionData()
+        var cardTitle = ""
+        var cardDate = ""
+        onView(withId(R.id.recyclerFixedFollow))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<FixedFollowAdapter.DataViewHolder>(0,
+                    getSessionTitleAndDateAction { title, date ->
+                        cardTitle = title; cardDate = date
+                    }
+                )
+            )
+            .perform(click())
 
+        onView(withId(R.id.txtTitle))
+            .check(matches(textContainsString(cardTitle)))
+        onView(withId(R.id.txtDate))
+            .check(matches(textContainsString(cardDate)))
+        verifySwitchingChipsWork()
+
+        mapScenario.close()
+    }
+
+    private fun verifySwitchingChipsWork() {
+        onView(withId(R.id.chartChip))
+            .perform(click())
+        onView(withId(R.id.chart_view))
+            .check(matches(isDisplayed()))
+        onView(withId(R.id.mapChip))
+            .perform(click())
+        onView(withId(R.id.chart_view))
+            .check(matches(not(isDisplayed())))
+    }
+
+    private fun getSessionTitleAndDateAction(saveTo: (String, String) -> Unit): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = CoreMatchers.allOf(
+                isDisplayed(),
+                isAssignableFrom(MaterialCardView::class.java)
+            )
+
+            override fun getDescription(): String = "Gets date and title on the card"
+
+            override fun perform(uiController: UiController, view: View) {
+                val title = view.findViewById<TextView>(R.id.textView).text.toString()
+                val date = view.findViewById<TextView>(R.id.textView2).text.toString()
+                saveTo(title, date)
+            }
+        }
+    }
 
     private fun waitForSessionData() {
         awaitForAssertion {
             onView(withId(R.id.txtShowingSessionsNumber)).check(matches(isDisplayed()))
         }
     }
-
-
 
     private fun searchAndValidateDisplayedParameters(
         place: String,
