@@ -2,6 +2,8 @@ package pl.llp.aircasting
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentFactory
@@ -9,16 +11,22 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.Matchers.anyOf
-import org.hamcrest.Matchers.isA
+import org.hamcrest.CoreMatchers
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.*
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
@@ -37,9 +45,11 @@ import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.helpers.assertions.RecyclerViewItemCountAssertion
+import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
+import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
@@ -52,32 +62,51 @@ import javax.inject.Inject
 class SearchFollowTest {
     companion object {
         private lateinit var startIntent: Intent
+        private lateinit var searchIntent: Intent
 
         @BeforeClass
         @JvmStatic
-        fun setupIntent() {
+        fun setupIntents() {
             startIntent =
                 Intent(
                     ApplicationProvider.getApplicationContext<AircastingApplication>(),
                     MainActivity::class.java
+                )
+            searchIntent =
+                Intent(
+                    ApplicationProvider.getApplicationContext<AircastingApplication>(),
+                    SearchFixedSessionActivity::class.java
                 )
         }
     }
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
+
     @Inject
     lateinit var settings: Settings
+
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    lateinit var activityScenario: ActivityScenario<MainActivity>
+    lateinit var mainActivityScenario: ActivityScenario<MainActivity>
     lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
+    lateinit var searchActivityScenario: ActivityScenario<SearchFixedSessionActivity>
     lateinit var mapScenario: FragmentScenario<MapResultFragment>
     lateinit var server: MockWebServer
 
     private val newYork = "New York"
     private val losAngeles = "Los Angeles"
+    private val newYorkArgs: Bundle
+        get() {
+            return bundleOf(
+                "address" to newYork,
+                "lat" to "40.692985",
+                "lng" to "-73.964609",
+                "txtParameter" to measurementTypePM,
+                "txtSensor" to openAQ
+            )
+        }
 
     @Before
     fun setup() {
@@ -109,7 +138,7 @@ class SearchFollowTest {
 
     @Test
     fun whenClickingSearchButton_goesToSearchFixedSessionsScreen() {
-        activityScenario = ActivityScenario.launch(startIntent)
+        mainActivityScenario = ActivityScenario.launch(startIntent)
 
         onView(withId(R.id.search_follow_icon))
             .perform(click())
@@ -119,7 +148,7 @@ class SearchFollowTest {
         onView(withId(R.id.chipGroupFirstLevel))
             .check(matches(isDisplayed()))
 
-        activityScenario.close()
+        mainActivityScenario.close()
     }
 
     @Test
@@ -148,7 +177,7 @@ class SearchFollowTest {
 
     @Test
     fun whenTappingContinue_goesToMapScreen_withCorrectInputParameters() {
-        activityScenario = ActivityScenario.launch(startIntent)
+        mainActivityScenario = ActivityScenario.launch(startIntent)
         onView(withId(R.id.search_follow_icon))
             .perform(click())
 
@@ -162,22 +191,15 @@ class SearchFollowTest {
         searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, purpleAir)
         searchAndValidateDisplayedParameters(losAngeles, measurementTypeOzone, openAQ)
 
-        activityScenario.close()
+        mainActivityScenario.close()
     }
 
     @Test
     fun sessionsFoundNumber_shouldBeEqualToCardsNumber() {
-        val args = bundleOf(
-            "address" to newYork,
-            "lat" to "40.692985",
-            "lng" to "-73.964609",
-            "txtParameter" to measurementTypePM,
-            "txtSensor" to airbeam
-        )
-        launchMapScreen(args)
+        launchMapScreen(newYorkArgs)
 
         var cardsCount = 0
-        awaitForCondition {
+        awaitForAssertion {
             onView(withId(R.id.recyclerFixedFollow))
                 .check(RecyclerViewItemCountAssertion {
                     cardsCount = it
@@ -202,9 +224,7 @@ class SearchFollowTest {
             "txtSensor" to airbeam
         )
         launchMapScreen(args)
-        awaitForCondition {
-            onView(withId(R.id.txtShowingSessionsNumber)).check(matches(isDisplayed()))
-        }
+        waitForSessionData()
 
         onView(withId(R.id.recyclerFixedFollow))
             .check(RecyclerViewItemCountAssertion {
@@ -215,6 +235,41 @@ class SearchFollowTest {
 
         mapScenario.close()
     }
+
+    @Test
+    fun whenGoingBackFromMapScreen_searchScreenRetainsAddress() {
+        searchActivityScenario = ActivityScenario.launch(searchIntent)
+        searchForPlace(newYork)
+        selectSensor(measurementTypePM, airbeam)
+        goToMapScreen()
+        Espresso.pressBack()
+
+        searchFieldHasText(newYork)
+
+        searchActivityScenario.close()
+    }
+
+    @Test
+    fun whenPressingFinishButtonOnMapScreen_goesToDashboard() {
+        launchMapScreen(newYorkArgs)
+        onView(withId(R.id.finishSearchButton))
+            .perform(click())
+
+        onView(withId(R.id.dashboard))
+            .check(matches(isDisplayed()))
+
+        mapScenario.close()
+    }
+
+
+
+    private fun waitForSessionData() {
+        awaitForAssertion {
+            onView(withId(R.id.txtShowingSessionsNumber)).check(matches(isDisplayed()))
+        }
+    }
+
+
 
     private fun searchAndValidateDisplayedParameters(
         place: String,
