@@ -20,7 +20,7 @@ fun waitAndRetry(assertion: ThrowingRunnable) =
 
 fun awaitForAssertion(assertion: ThrowingRunnable) =
     Awaitility.await()
-        .atLeast(2, TimeUnit.SECONDS)
         .atMost(8, TimeUnit.SECONDS)
         .with().pollInterval(1, TimeUnit.SECONDS)
+        .pollDelay(500, TimeUnit.MILLISECONDS)
         .untilAsserted(assertion)

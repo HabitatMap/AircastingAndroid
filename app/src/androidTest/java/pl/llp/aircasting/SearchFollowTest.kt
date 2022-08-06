@@ -262,8 +262,11 @@ class SearchFollowTest {
     }
 
     @Test
-    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView() {
-        launchMapScreen(newYorkArgs)
+    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
+        searchActivityScenario = ActivityScenario.launch(searchIntent)
+        searchForPlace(newYork)
+        selectSensor(measurementTypePM, openAQ)
+        goToMapScreen()
         waitForSessionData()
         var cardTitle = ""
         var cardDate = ""
@@ -277,13 +280,43 @@ class SearchFollowTest {
             )
             .perform(click())
 
+        verifySessionTitleAndDate(cardTitle, cardDate)
+        verifySwitchingChipsWork()
+        verifyFollowingOfExternalSession(cardTitle)
+
+        searchActivityScenario.close()
+    }
+
+    private fun verifyFollowingOfExternalSession(cardTitle: String) {
+        onView(withId(R.id.followBtn))
+            .perform(click())
+        Espresso.pressBack()
+        onView(withId(R.id.finishSearchButton))
+            .perform(click())
+        onView(allOf(withId(R.id.session_name), isDisplayed()))
+            .check(matches(withText(cardTitle)))
+    }
+
+    @Test
+    fun followingYourOwnSession_followButtonIsDisabled() {
+        settings.login(openAQ, "EMAIL", "TOKEN")
+        searchActivityScenario = ActivityScenario.launch(searchIntent)
+        searchForPlace(newYork)
+        selectSensor(measurementTypePM, openAQ)
+        goToMapScreen()
+        waitForSessionData()
+        onView(withId(R.id.recyclerFixedFollow))
+            .perform(clickOnFirstItem())
+
+        onView(withId(R.id.followBtn))
+            .check(matches(not(isEnabled())))
+    }
+
+    private fun verifySessionTitleAndDate(cardTitle: String, cardDate: String) {
         onView(withId(R.id.txtTitle))
             .check(matches(textContainsString(cardTitle)))
         onView(withId(R.id.txtDate))
             .check(matches(textContainsString(cardDate)))
-        verifySwitchingChipsWork()
-
-        mapScenario.close()
     }
 
     private fun verifySwitchingChipsWork() {

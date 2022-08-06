@@ -24,7 +24,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.*
 
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
@@ -265,6 +265,6 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        mapFragment?.let { parentFragmentManager.beginTransaction().remove(it).commit() }
+        mapFragment?.parentFragment?.let { parentFragmentManager.beginTransaction().remove(it).commit() }
     }
 }
