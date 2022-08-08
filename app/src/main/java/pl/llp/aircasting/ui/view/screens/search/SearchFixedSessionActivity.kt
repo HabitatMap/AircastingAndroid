@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.databinding.ActivityMainSearchFixedSessionsBinding
+import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
@@ -33,11 +33,11 @@ class SearchFixedSessionActivity : BaseActivity() {
 
     lateinit var searchFollowViewModel: SearchFollowViewModel
 
-    lateinit var binding: ActivityMainSearchFixedSessionsBinding
+    lateinit var binding: ActivitySearchFixedSessionsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_search_fixed_sessions)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search_fixed_sessions)
 
         setupFactory()
         showSearchFragment(savedInstanceState)
