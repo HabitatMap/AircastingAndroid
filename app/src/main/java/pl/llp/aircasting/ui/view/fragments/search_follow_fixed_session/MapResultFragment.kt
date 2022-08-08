@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -236,6 +237,7 @@ class MapResultFragment @Inject constructor(
         }
     }
 
+    @SuppressLint("StringFormatMatches")
     private fun updateText(count: Int) {
         val txtShowing = binding.txtShowingSessionsNumber
 
@@ -347,7 +349,7 @@ class MapResultFragment @Inject constructor(
         val uuid = marker.snippet.toString()
         val position = adapter.getSessionPositionBasedOnId(uuid)
 
-        binding.recyclerFixedFollow.smoothScrollToPosition(position)
+        binding.recyclerFixedFollow.scrollToPosition(position)
         adapter.scrollToSelectedCard(position)
     }
 
