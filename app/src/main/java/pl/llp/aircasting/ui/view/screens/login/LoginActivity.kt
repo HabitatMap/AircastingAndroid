@@ -58,10 +58,6 @@ class LoginActivity : BaseActivity() {
             LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
 
         setContentView(view.rootView)
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        // Temporary fix for tests
-        // TODO: The requests should be done in a separate thread/maybe using MVVM for Login/register later
     }
 
     override fun onStart() {

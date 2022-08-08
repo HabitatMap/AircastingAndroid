@@ -80,7 +80,7 @@ class MyAccountTest {
     }
 
     @Test
-    fun MyAccountTest() {
+    fun myAccountTest() {
         Intents.init()
         settings.login("michal@lunarlogic.io", "EMAIL", "XYZ123FAKETOKEN")
 

@@ -45,11 +45,6 @@ class CreateAccountActivity : BaseActivity() {
             CreateAccountController(this, view, settings, apiServiceFactory, fromOnboarding)
 
         setContentView(view.rootView)
-
-        // Temporary fix for tests
-        // TODO: The requests should be done in a separate thread/maybe using MVVM for Login/register later
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
     }
 
     override fun onStart() {
