@@ -8,7 +8,7 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
 
-val TAGS_SEPARATOR = " "
+const val TAGS_SEPARATOR = " "
 
 open class Session(
     val uuid: String,
