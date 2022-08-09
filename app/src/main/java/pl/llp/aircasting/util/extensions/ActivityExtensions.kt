@@ -34,4 +34,5 @@ fun setupAppBar(activity: BaseActivity, toolbar: Toolbar) {
     toolbar.setNavigationOnClickListener {
         activity.onBackPressed()
     }
+    //TODO: replace this later
 }
