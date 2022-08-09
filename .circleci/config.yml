@@ -37,7 +37,6 @@ jobs:
           name: Test with Firebase Test Lab
           command: >
             sudo gcloud firebase test android run \
-              --device model=hwALE-H,version=21,locale=en,orientation=portrait \
               --device model=SC-02K,version=28,locale=en,orientation=portrait \
               --device model=oriole,version=33,locale=en,orientation=portrait \
               --app ~/project/app/build/outputs/apk/debug/app-debug.apk \
