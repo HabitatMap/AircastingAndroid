@@ -108,15 +108,9 @@ class Chart(
     }
 
     private fun setTimesAndUnit() {
-        if (mSessionPresenter?.selectedStream == null) {
-            mChartStartTimeTextView?.inVisible()
-            mChartEndTimeTextView?.inVisible()
-            mChartUnitTextView?.inVisible()
-        } else {
-            mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
-            mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
-            mChartUnitTextView?.text = chartUnitText()
-        }
+        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
+        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
+        mChartUnitTextView?.text = chartUnitText()
     }
 
     private fun chartUnitText(): String {
