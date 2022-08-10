@@ -29,6 +29,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.view.*
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
@@ -56,7 +57,9 @@ class MapResultFragment @Inject constructor(
     private var _binding: FragmentSearchFollowResultBinding? = null
     private val binding get() = _binding!!
 
-    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>(factoryProducer = { factory })
+    private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>(
+        factoryProducer = { factory }
+    )
 
     private lateinit var adapter: FixedFollowAdapter
 
@@ -80,6 +83,8 @@ class MapResultFragment @Inject constructor(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
         _binding = FragmentSearchFollowResultBinding.inflate(inflater, container, false)
         return binding.root
     }

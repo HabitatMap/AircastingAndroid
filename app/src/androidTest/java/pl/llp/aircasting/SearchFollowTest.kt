@@ -28,11 +28,9 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
 import org.hamcrest.core.AllOf.allOf
-import org.junit.After
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
@@ -58,6 +56,7 @@ import javax.inject.Inject
 * Otherwise some test may fail
 * */
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
 class SearchFollowTest {
     companion object {
@@ -90,13 +89,13 @@ class SearchFollowTest {
     lateinit var fragmentFactory: FragmentFactory
 
     lateinit var mainActivityScenario: ActivityScenario<MainActivity>
-    lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var searchActivityScenario: ActivityScenario<SearchFixedSessionActivity>
+
+    lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var mapScenario: FragmentScenario<MapResultFragment>
     lateinit var server: MockWebServer
 
     private val newYork = "New York"
-    private val losAngeles = "Los Angeles"
     private val newYorkArgs: Bundle
         get() {
             return bundleOf(
@@ -184,12 +183,8 @@ class SearchFollowTest {
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, airbeam)
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, openAQ)
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, purpleAir)
-        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, openAQ)
 
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, airbeam)
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, openAQ)
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, purpleAir)
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypeOzone, openAQ)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, openAQ)
 
         mainActivityScenario.close()
     }
@@ -212,7 +207,6 @@ class SearchFollowTest {
 
         mapScenario.close()
     }
-
 
     @Test
     fun whenThereNoSessionsFound_numberShouldBeZero_listShouldBeEmpty() {
@@ -262,12 +256,14 @@ class SearchFollowTest {
     }
 
     @Test
-    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
+    fun firstWhenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
+
         searchForPlace(newYork)
         selectSensor(measurementTypePM, openAQ)
         goToMapScreen()
         waitForSessionData()
+
         var cardTitle = ""
         var cardDate = ""
         onView(withId(R.id.recyclerFixedFollow))
@@ -290,26 +286,47 @@ class SearchFollowTest {
     private fun verifyFollowingOfExternalSession(cardTitle: String) {
         onView(withId(R.id.followBtn))
             .perform(click())
+
+        Thread.sleep(500)
+
         Espresso.pressBack()
+
         onView(withId(R.id.finishSearchButton))
             .perform(click())
-        onView(allOf(withId(R.id.session_name), isDisplayed()))
-            .check(matches(withText(cardTitle)))
+
+        waitAndRetry {
+            onView(allOf(withId(R.id.session_name), isDisplayed()))
+                .check(matches(withText(cardTitle)))
+        }
     }
 
     @Test
-    fun followingYourOwnSession_followButtonIsDisabled() {
-        settings.login(openAQ, "EMAIL", "TOKEN")
+    fun secondWhenFollowingYourOwnSession_followButtonIsDisabledn() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
+
         searchForPlace(newYork)
         selectSensor(measurementTypePM, openAQ)
         goToMapScreen()
         waitForSessionData()
+
         onView(withId(R.id.recyclerFixedFollow))
             .perform(clickOnFirstItem())
 
         onView(withId(R.id.followBtn))
-            .check(matches(not(isEnabled())))
+            .check(matches(not(isDisplayed())))
+
+        unFollowFollowedSessionFromTheFollowingTab()
+
+        searchActivityScenario.close()
+    }
+
+    private fun unFollowFollowedSessionFromTheFollowingTab() {
+        goToMainScreen()
+
+        expandCard()
+
+        onView(withId(R.id.unfollow_button))
+            .perform(click())
     }
 
     private fun verifySessionTitleAndDate(cardTitle: String, cardDate: String) {
@@ -379,11 +396,15 @@ class SearchFollowTest {
         onView(withId(R.id.btnContinue)).perform(click())
     }
 
+    private fun goToMainScreen() {
+        Espresso.pressBack()
+        onView(withId(R.id.finishSearchButton)).perform(click())
+    }
+
     private fun displayedMeasurementTypeMatches(type: String) {
         onView(withId(R.id.txtShowing))
             .check(matches(textContainsString(type)))
     }
-
 
     private fun selectSensor(parameter: String, sensor: String) {
         onView(
@@ -424,13 +445,15 @@ class SearchFollowTest {
 
         onView(withId(R.id.places_autocomplete_search_bar))
             .perform(typeText(place))
+
+        Thread.sleep(3500)
+        // We have to wait for the list to be shown and to be retrieved from the server, otherwise tests will fail!
+
         onView(withId(R.id.places_autocomplete_search_bar))
             .check(matches(withText(place)))
 
-        waitAndRetry {
-            onView(withId(R.id.places_autocomplete_list))
-                .perform(clickOnFirstItem())
-        }
+        onView(withId(R.id.places_autocomplete_list))
+            .perform(clickOnFirstItem())
     }
 
     private fun searchFieldHasHint(hint: String) {
