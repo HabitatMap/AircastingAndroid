@@ -191,7 +191,7 @@ class MapResultFragment @Inject constructor(
     }
 
     private fun goToDashboard() {
-        val intent = Intent(activity, MainActivity::class.java)
+        val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
