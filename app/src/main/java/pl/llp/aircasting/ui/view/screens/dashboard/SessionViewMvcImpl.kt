@@ -137,6 +137,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
         // TODO: check what is going on with binding measurements table because it is bind 6 times every second
         mSessionPresenter = sessionPresenter
         bindSelectedStream()
+
         bindLoader()
         bindExpanded()
         bindSessionDetails()
