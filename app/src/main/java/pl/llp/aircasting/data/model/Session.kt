@@ -381,8 +381,12 @@ open class Session(
         return packageNames.distinct().joinToString(", ")
     }
 
-    private fun measurementsCount(): Int {
+     private fun measurementsCount(): Int {
         return streams.sumOf { stream -> stream.measurements.size }
+    }
+
+     fun mStreamsCount(): Int {
+        return streams.size
     }
 
     fun sharableLocation(): Location? {
