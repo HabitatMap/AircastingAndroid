@@ -134,19 +134,15 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     override fun bindSession(sessionPresenter: SessionPresenter) {
-        // TODO: check what is going on with binding measurements table because it is bind 6 times every second
         mSessionPresenter = sessionPresenter
 
+        bindSelectedStream()
         bindLoader()
         bindExpanded()
         bindSessionDetails()
         bindMeasurementsDescription()
         bindMeasurementsTable()
         bindChartData()
-
-        bindSelectedStream()
-        // we need to set the default stream right after getting/checking all 5 streams.
-
         bindFollowButtons()
         bindMapButton()
         bindCallbacks()
@@ -176,12 +172,9 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun bindSelectedStream() {
-        val session = mSessionPresenter?.session
-
-        if (session?.hasMeasurements() == true && session.mStreamsCount() > 5) {
+        if (mSessionPresenter?.selectedStream == null && mSessionPresenter?.allStreamsHaveLoaded() == true) {
             mSessionPresenter?.setDefaultStream()
         }
-
     }
 
     private fun bindSessionDetails() {

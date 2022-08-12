@@ -385,10 +385,6 @@ open class Session(
         return streams.sumOf { stream -> stream.measurements.size }
     }
 
-     fun mStreamsCount(): Int {
-        return streams.size
-    }
-
     fun sharableLocation(): Location? {
         return if (locationless) {
             Location.FAKE_LOCATION
