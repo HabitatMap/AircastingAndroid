@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.*
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.repository.ThresholdsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -11,7 +12,8 @@ import pl.llp.aircasting.data.model.Session
 
 class SessionsViewModel : ViewModel() {
     private val mDatabase = DatabaseProvider.get()
-    private val thresholdsRepository: ThresholdsRepository = ThresholdsRepository()
+    private val thresholdsRepository = ThresholdsRepository()
+    private val sessionsRepository = SessionsRepository()
 
     fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
@@ -71,10 +73,10 @@ class SessionsViewModel : ViewModel() {
     }
 
     fun updateFollowedAt(session: Session) {
-        mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
+        sessionsRepository.updateFollowedAt(session)
     }
 
     fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
-        mDatabase.sessions().updateOrder(sessionUUID, followingSessionsNumber)
+        sessionsRepository.updateOrder(sessionUUID, followingSessionsNumber)
     }
 }
