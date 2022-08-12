@@ -127,7 +127,7 @@ abstract class MeasurementsTableContainer {
         val session = mSessionPresenter?.session
         session?.streamsSortedByDetailedType()?.forEach { stream ->
             if (stream.isMeasurementTypeTemperature())
-                TemperatureConverter.setAppropriateDetailedType(stream)
+                TemperatureConverter.setAppropriateDetailedTypeAndUnitSymbol(stream)
 
             bindStream(stream)
             bindMeasurement(stream)
