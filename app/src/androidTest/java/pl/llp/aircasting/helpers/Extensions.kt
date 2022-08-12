@@ -1,6 +1,9 @@
 package pl.llp.aircasting.helpers
 
 import android.view.View
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import org.awaitility.Awaitility
 import org.awaitility.core.ThrowingRunnable
 import org.hamcrest.Matcher
@@ -13,6 +16,15 @@ fun hintContainsString(string: String): Matcher<in View> = HintContainsStringMat
 fun textContainsString(string: String): Matcher<in View> = TextContainsStringMatcher(string)
 fun textIsNumerical(): Matcher<in View> = TextIsNumerical()
 
+fun waitFor(delay: Long): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isRoot()
+        override fun getDescription(): String = "wait for $delay milliseconds"
+        override fun perform(uiController: UiController, v: View?) {
+            uiController.loopMainThreadForAtLeast(delay)
+        }
+    }
+}
 
 fun waitAndRetry(assertion: ThrowingRunnable) =
     Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS).atMost(6, TimeUnit.SECONDS)
