@@ -49,7 +49,7 @@ class StatisticsContainer(rootView: View?, context: Context) {
         val stream = sessionPresenter?.selectedStream
 
         if (stream?.isMeasurementTypeTemperature() == true) {
-            TemperatureConverter.setAppropriateDetailedType(stream)
+            TemperatureConverter.setAppropriateDetailedTypeAndUnitSymbol(stream)
         }
 
         mSensorThreshold = sessionPresenter?.selectedSensorThreshold()

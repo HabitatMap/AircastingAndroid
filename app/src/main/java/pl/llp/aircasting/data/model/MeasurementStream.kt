@@ -20,7 +20,7 @@ open class MeasurementStream(
     val measurementType: String,
     val measurementShortType: String,
     val unitName: String,
-    val unitSymbol: String,
+    var unitSymbol: String,
     var thresholdVeryLow: Int,
     var thresholdLow: Int,
     var thresholdMedium: Int,

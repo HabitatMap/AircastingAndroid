@@ -16,8 +16,11 @@ class TemperatureConverter private constructor(settings: Settings) {
             return singleton
         }
 
-        fun setAppropriateDetailedType(stream: MeasurementStream) {
-            if (isCelsiusToggleEnabled()) stream.detailedType = "C"
+        fun setAppropriateDetailedTypeAndUnitSymbol(stream: MeasurementStream) {
+            if (isCelsiusToggleEnabled()) {
+                stream.detailedType = "C"
+                stream.unitSymbol = "C"
+            }
         }
 
         fun isCelsiusToggleEnabled(): Boolean {
