@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util
 
+import pl.llp.aircasting.data.api.util.StringConstants.C
 import pl.llp.aircasting.data.model.MeasurementStream
 
 class TemperatureConverter private constructor(settings: Settings) {
@@ -18,8 +19,8 @@ class TemperatureConverter private constructor(settings: Settings) {
 
         fun setAppropriateDetailedTypeAndUnitSymbol(stream: MeasurementStream) {
             if (isCelsiusToggleEnabled()) {
-                stream.detailedType = "C"
-                stream.unitSymbol = "C"
+                stream.detailedType = C
+                stream.unitSymbol = C
             }
         }
 

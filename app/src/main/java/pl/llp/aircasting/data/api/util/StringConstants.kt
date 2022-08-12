@@ -27,6 +27,7 @@ object StringConstants {
     const val purpleAir = "PurpleAir"
     const val openAQ = "OpenAQ"
 
+    const val C = "C"
     const val F = "F"
     const val PM = "PM"
     const val PM1 = "PM1"
