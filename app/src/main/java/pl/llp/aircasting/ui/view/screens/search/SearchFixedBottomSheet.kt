@@ -263,9 +263,10 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        mapFragment ?: return
         mapFragment?.parentFragment?.let { supportMapFragment ->
-            requireActivity().supportFragmentManager.beginTransaction().remove(supportMapFragment).commit()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .remove(supportMapFragment)
+                .commit()
         }
     }
 }
