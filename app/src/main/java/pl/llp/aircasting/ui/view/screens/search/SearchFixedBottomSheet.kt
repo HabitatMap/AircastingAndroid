@@ -12,7 +12,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -95,8 +94,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun setupUnfollowButton() {
         binding?.unfollowBtn?.setOnClickListener {
-            val selectedSession = searchFollowViewModel.selectedSession.value
-            if (selectedSession != null) onUnfollowClicked(selectedSession)
+            onUnfollowClicked()
 
             it.context.showToast(getString(R.string.session_unfollowed))
             toggleFollowButton()
@@ -235,11 +233,11 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun onFollowClicked() {
-        searchFollowViewModel.saveSession()
+        searchFollowViewModel.follow()
     }
 
-    private fun onUnfollowClicked(session: SessionInRegionResponse) {
-        searchFollowViewModel.deleteSession(session)
+    private fun onUnfollowClicked() {
+        searchFollowViewModel.unfollow()
     }
 
     private fun showLoader() {

@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.di.modules.IoDispatcher
+import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.addHours
@@ -25,6 +26,7 @@ class SearchFollowViewModel @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val thresholdsRepository: ThresholdsRepository,
     private val mSettings: Settings,
+    private val sessionFollower: SessionFollower,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val mutableSelectedSession = MutableLiveData<SessionInRegionResponse>()
@@ -87,8 +89,10 @@ class SearchFollowViewModel @Inject constructor(
     private fun getStreamsWithMeasurementsFromResponse(response: SessionWithStreamsAndMeasurementsResponse?) =
         response?.sensors?.map { stream ->
             val twentyFourHoursBackFromLastMeasurementTime = lastMeasurementTimeMinus24Hours(stream)
-            val twentyFourHoursMeasurements = stream.measurements?.filter { it.time >= twentyFourHoursBackFromLastMeasurementTime }
-            val measurements = twentyFourHoursMeasurements?.map { measurement -> Measurement(measurement) }
+            val twentyFourHoursMeasurements =
+                stream.measurements?.filter { it.time >= twentyFourHoursBackFromLastMeasurementTime }
+            val measurements =
+                twentyFourHoursMeasurements?.map { measurement -> Measurement(measurement) }
             MeasurementStream(stream, measurements)
         }
 
@@ -114,7 +118,7 @@ class SearchFollowViewModel @Inject constructor(
         mutableAddress.value = address
     }
 
-    fun saveSession() {
+    fun follow() {
         viewModelScope.launch(ioDispatcher) {
             val session = selectedFullSession.await()
             if (session != null) {
@@ -128,9 +132,9 @@ class SearchFollowViewModel @Inject constructor(
                     sessionId,
                     session.streams
                 )
+                sessionFollower.follow(session)
             }
         }
-        mSettings.increaseFollowedSessionsNumber()
     }
 
     private fun setSessionThresholdsAccordingToUserSettings(
@@ -192,13 +196,6 @@ class SearchFollowViewModel @Inject constructor(
         activeSessionMeasurementsRepository.insertAll(streamId, sessionId, stream.measurements)
     }
 
-    fun deleteSession(session: SessionInRegionResponse) {
-        viewModelScope.launch(ioDispatcher) {
-            sessionsRepository.delete(session.uuid)
-        }
-        mSettings.decreaseFollowedSessionsNumber()
-    }
-
     fun getSessionsInRegion(square: GeoSquare, sensorInfo: SensorInformation) =
         liveData(ioDispatcher) {
             emit(Resource.loading(null))
@@ -206,4 +203,13 @@ class SearchFollowViewModel @Inject constructor(
             val mSessions = activeFixedRepo.getSessionsFromRegion(square, sensorInfo)
             emit(mSessions)
         }
+
+    fun unfollow() {
+        viewModelScope.launch {
+            val session = selectedFullSession.await()
+            if (session != null) {
+                sessionFollower.unfollow(session)
+            }
+        }
+    }
 }
