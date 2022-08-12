@@ -13,6 +13,7 @@ import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsReposito
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
@@ -49,6 +50,7 @@ abstract class SessionsController(
     protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     protected val mSessionRepository = SessionsRepository()
     protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
+    private val sessionFollower = SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository)
 
     protected var editDialog: EditSessionBottomSheet? = null
     protected var shareDialog: ShareSessionBottomSheet? = null
@@ -91,33 +93,11 @@ abstract class SessionsController(
     }
 
     override fun onFollowButtonClicked(session: Session) {
-        updateFollowedAt(session)
-
-        addFollowedSessionMeasurementsToActiveTable(session)
-        mSettings.increaseFollowedSessionsNumber()
+        sessionFollower.follow(session)
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
-        if (session.isExternal) delete(session)
-        else {
-            updateFollowedAt(session)
-
-            clearUnfollowedSessionMeasurementsFromActiveTable(session)
-            mSettings.decreaseFollowedSessionsNumber()
-        }
-    }
-
-    private fun delete(session: Session) {
-        DatabaseProvider.runQuery {
-           mSessionRepository.delete(session.uuid)
-        }
-    }
-
-    private fun updateFollowedAt(session: Session) {
-        DatabaseProvider.runQuery {
-            mSessionsViewModel.updateFollowedAt(session)
-            mSessionsViewModel.updateOrder(session.uuid, mSettings.getFollowedSessionsNumber())
-        }
+        sessionFollower.unfollow(session)
     }
 
     override fun onMapButtonClicked(session: Session, sensorName: String?) {
@@ -304,25 +284,4 @@ abstract class SessionsController(
         val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
         context?.startActivity(chooser)
     }
-
-    private fun addFollowedSessionMeasurementsToActiveTable(session: Session) {
-        DatabaseProvider.runQuery {
-            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-            sessionId?.let {
-                mActiveSessionsRepository.loadMeasurementsForStreams(
-                    it,
-                    session.streams,
-                    ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
-                )
-            }
-        }
-    }
-
-    private fun clearUnfollowedSessionMeasurementsFromActiveTable(session: Session) {
-        DatabaseProvider.runQuery {
-            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-            mActiveSessionsRepository.deleteBySessionId(sessionId)
-        }
-    }
-
 }
