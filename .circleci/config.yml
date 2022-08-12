@@ -3,15 +3,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/android:2022.06
+      - image: cimg/android:2022.08
     steps:
       - checkout
       - run:
           name: Store API keys
           command: |
-            echo "Print Maps API Key: $MAPS_API_KEY"
-            echo "Print Places API Key: $PLACES_API_KEY"
-
             echo "MAPS_API_KEY=$MAPS_API_KEY" > ~/project/local.properties
             echo "PLACES_API_KEY=$PLACES_API_KEY" >> ~/project/local.properties
 
@@ -48,5 +45,4 @@ jobs:
             sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID} | tail -1` ${CIRCLE_ARTIFACTS}/ | true
       - store_test_results:
           path: test-results
-    # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
     resource_class: large
