@@ -12,7 +12,6 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.extensions.inVisible
 
 class Chart(
     context: Context,
@@ -114,7 +113,7 @@ class Chart(
     }
 
     private fun chartUnitText(): String {
-        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.detailedType}"
+        return "${mContext.getString(chartUnitLabelId())} - ${mSessionPresenter?.selectedStream?.unitSymbol}"
     }
 
     private fun chartUnitLabelId(): Int {
