@@ -94,6 +94,10 @@ class SessionPresenter() {
         return session?.isAirBeam3() == true
     }
 
+    fun allStreamsHaveLoaded(): Boolean {
+        return session?.streams?.size == 5
+    }
+
     fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {
         val hash = hashMapOf<String, SensorThreshold>()
         sensorThresholds.forEach {
