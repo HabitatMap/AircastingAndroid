@@ -28,11 +28,9 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
 import org.hamcrest.core.AllOf.allOf
-import org.junit.After
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
@@ -90,13 +88,13 @@ class SearchFollowTest {
     lateinit var fragmentFactory: FragmentFactory
 
     lateinit var mainActivityScenario: ActivityScenario<MainActivity>
-    lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var searchActivityScenario: ActivityScenario<SearchFixedSessionActivity>
+
+    lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var mapScenario: FragmentScenario<MapResultFragment>
     lateinit var server: MockWebServer
 
     private val newYork = "New York"
-    private val losAngeles = "Los Angeles"
     private val newYorkArgs: Bundle
         get() {
             return bundleOf(
@@ -186,11 +184,6 @@ class SearchFollowTest {
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, purpleAir)
         searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, openAQ)
 
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, airbeam)
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, openAQ)
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypePM, purpleAir)
-        searchAndValidateDisplayedParameters(losAngeles, measurementTypeOzone, openAQ)
-
         mainActivityScenario.close()
     }
 
@@ -262,12 +255,14 @@ class SearchFollowTest {
     }
 
     @Test
-    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
+    fun firstWhenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
+
         searchForPlace(newYork)
         selectSensor(measurementTypePM, openAQ)
         goToMapScreen()
         waitForSessionData()
+
         var cardTitle = ""
         var cardDate = ""
         onView(withId(R.id.recyclerFixedFollow))
@@ -287,29 +282,56 @@ class SearchFollowTest {
         searchActivityScenario.close()
     }
 
+    @Test
+    fun secondGoToFollowingTab_andUnfollow_the_followed_Session() {
+        mainActivityScenario = ActivityScenario.launch(startIntent)
+
+        unFollowFollowedSessionFromTheFollowingTab()
+
+        mainActivityScenario.close()
+    }
+
     private fun verifyFollowingOfExternalSession(cardTitle: String) {
         onView(withId(R.id.followBtn))
             .perform(click())
+
+        onView(isRoot()).perform(waitFor(500))
+
         Espresso.pressBack()
+
         onView(withId(R.id.finishSearchButton))
             .perform(click())
-        onView(allOf(withId(R.id.session_name), isDisplayed()))
-            .check(matches(withText(cardTitle)))
+
+        waitAndRetry {
+            onView(allOf(withId(R.id.session_name), isDisplayed()))
+                .check(matches(withText(cardTitle)))
+        }
     }
 
     @Test
     fun followingYourOwnSession_followButtonIsDisabled() {
         settings.login(openAQ, "EMAIL", "TOKEN")
         searchActivityScenario = ActivityScenario.launch(searchIntent)
+
         searchForPlace(newYork)
         selectSensor(measurementTypePM, openAQ)
         goToMapScreen()
         waitForSessionData()
+
         onView(withId(R.id.recyclerFixedFollow))
             .perform(clickOnFirstItem())
 
         onView(withId(R.id.followBtn))
             .check(matches(not(isEnabled())))
+
+        searchActivityScenario.close()
+    }
+
+    private fun unFollowFollowedSessionFromTheFollowingTab() {
+        expandCard()
+
+        onView(withId(R.id.unfollow_button))
+            .perform(click())
     }
 
     private fun verifySessionTitleAndDate(cardTitle: String, cardDate: String) {
@@ -379,11 +401,16 @@ class SearchFollowTest {
         onView(withId(R.id.btnContinue)).perform(click())
     }
 
+    private fun goToMainScreen() {
+        mainActivityScenario = ActivityScenario.launch(startIntent)
+        Espresso.pressBack()
+        onView(withId(R.id.finishSearchButton)).perform(click())
+    }
+
     private fun displayedMeasurementTypeMatches(type: String) {
         onView(withId(R.id.txtShowing))
             .check(matches(textContainsString(type)))
     }
-
 
     private fun selectSensor(parameter: String, sensor: String) {
         onView(
@@ -424,6 +451,9 @@ class SearchFollowTest {
 
         onView(withId(R.id.places_autocomplete_search_bar))
             .perform(typeText(place))
+
+        onView(isRoot()).perform(waitFor(3500))
+
         onView(withId(R.id.places_autocomplete_search_bar))
             .check(matches(withText(place)))
 
