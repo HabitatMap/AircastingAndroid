@@ -28,7 +28,7 @@ class SessionPresenter() {
         loading: Boolean = false
     ) : this() {
         this.session = session
-        this.selectedStream = selectedStream ?: defaultPm2point5Stream(session)
+        this.selectedStream = selectedStream ?: defaultStream(session)
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
@@ -65,7 +65,7 @@ class SessionPresenter() {
     }
 
     fun setDefaultStream() {
-        selectedStream = defaultPm2point5Stream(session)
+        selectedStream = defaultStream(session)
     }
 
     fun isFixed(): Boolean {
@@ -104,9 +104,13 @@ class SessionPresenter() {
     }
 
     companion object {
-        fun defaultPm2point5Stream(session: Session?): MeasurementStream? {
+        fun defaultStream(session: Session?): MeasurementStream? {
             val sortedByDetailedType = session?.streamsSortedByDetailedType()
-            return sortedByDetailedType?.find { it.detailedType == SensorName.PM2_5.detailedType }
+            val pm2point5 =
+                sortedByDetailedType?.find { it.detailedType == SensorName.PM2_5.detailedType }
+            val firstStream = sortedByDetailedType?.firstOrNull()
+
+            return pm2point5 ?: firstStream
         }
     }
 }
