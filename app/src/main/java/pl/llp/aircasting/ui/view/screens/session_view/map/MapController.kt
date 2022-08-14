@@ -21,7 +21,7 @@ import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
 
-class MapController(
+open class MapController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc?,
