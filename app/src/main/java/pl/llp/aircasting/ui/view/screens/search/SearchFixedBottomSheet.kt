@@ -29,12 +29,12 @@ import pl.llp.aircasting.util.extensions.*
 class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private val searchFollowViewModel: SearchFollowViewModel by activityViewModels()
     private var binding: SearchFollowBottomSheetBinding? = null
-    private var mapFragment: SupportMapFragment? = null
     private val options = MarkerOptions()
 
     private lateinit var txtLat: String
     private lateinit var txtLng: String
     private lateinit var mMap: GoogleMap
+    private lateinit var mapFragment: SupportMapFragment
     private val mSettings: Settings by lazy { Settings(requireActivity().application) }
 
     private lateinit var mChart: Chart
@@ -70,8 +70,8 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun setupMapFragment() {
         mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+            requireActivity().supportFragmentManager.findFragmentById(R.id.mapViewBottomSheet) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun setupChart() {
@@ -158,12 +158,12 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun toggleChart() {
-        mapFragment?.view?.inVisible()
+        mapFragment.view?.inVisible()
         binding?.chartContainer?.visible()
     }
 
     private fun toggleMap() {
-        mapFragment?.view?.visible()
+        mapFragment.view?.visible()
         binding?.chartContainer?.inVisible()
     }
 
@@ -263,10 +263,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        mapFragment?.parentFragment?.let { supportMapFragment ->
-            requireActivity().supportFragmentManager.beginTransaction()
-                .remove(supportMapFragment)
-                .commit()
-        }
+        requireActivity().supportFragmentManager.beginTransaction().remove(mapFragment)
+            .commitAllowingStateLoss()
     }
 }
