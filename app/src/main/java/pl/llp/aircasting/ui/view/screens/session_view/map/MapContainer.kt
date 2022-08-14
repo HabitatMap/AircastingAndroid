@@ -256,8 +256,8 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
 
-        boundingBox?.let { CameraUpdateFactory.newLatLngBounds(it, padding) }
-            ?.let { mMap?.animateCamera(it) }
+        boundingBox?: return
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
     }
 
     private fun animateCameraToFixedSession() {

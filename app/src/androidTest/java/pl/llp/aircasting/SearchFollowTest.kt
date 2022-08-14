@@ -255,7 +255,7 @@ class SearchFollowTest {
     }
 
     @Test
-    fun firstWhenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
+    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
@@ -283,10 +283,13 @@ class SearchFollowTest {
     }
 
     @Test
-    fun secondGoToFollowingTab_andUnfollow_the_followed_Session() {
+    fun goToFollowingTab_andUnfollow_the_followed_Session() {
         mainActivityScenario = ActivityScenario.launch(startIntent)
 
-        unFollowFollowedSessionFromTheFollowingTab()
+        expandCard()
+
+        onView(withId(R.id.unfollow_button))
+            .perform(click())
 
         mainActivityScenario.close()
     }
@@ -325,13 +328,6 @@ class SearchFollowTest {
             .check(matches(not(isEnabled())))
 
         searchActivityScenario.close()
-    }
-
-    private fun unFollowFollowedSessionFromTheFollowingTab() {
-        expandCard()
-
-        onView(withId(R.id.unfollow_button))
-            .perform(click())
     }
 
     private fun verifySessionTitleAndDate(cardTitle: String, cardDate: String) {
@@ -399,12 +395,6 @@ class SearchFollowTest {
 
     private fun goToMapScreen() {
         onView(withId(R.id.btnContinue)).perform(click())
-    }
-
-    private fun goToMainScreen() {
-        mainActivityScenario = ActivityScenario.launch(startIntent)
-        Espresso.pressBack()
-        onView(withId(R.id.finishSearchButton)).perform(click())
     }
 
     private fun displayedMeasurementTypeMatches(type: String) {

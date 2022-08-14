@@ -57,9 +57,9 @@ class MapActivity: BaseActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?
-        val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
-        val sessionTab: Int = intent.extras?.getInt(SESSION_TAB_KEY) as Int
+        val sensorName = intent.getStringExtra(SENSOR_NAME_KEY)
+        val sessionUUID: String = intent.getStringExtra(SESSION_UUID_KEY) as String
+        val sessionTab: Int = intent.getIntExtra(SESSION_TAB_KEY, 0)
 
         view = MapViewMvcImplFactory.get(
             layoutInflater,
