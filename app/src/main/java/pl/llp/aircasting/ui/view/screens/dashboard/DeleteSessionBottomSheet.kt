@@ -105,7 +105,7 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         val radioButtonPaddingTopBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val drawable = context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_background_selector) }
+        val drawable = context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_selector) }
 
         layoutParams.leftMargin = 10
         layoutParams.bottomMargin = 10
