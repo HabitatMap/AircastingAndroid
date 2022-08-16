@@ -7,11 +7,11 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.hlu_dialog.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.TemperatureConverter
-import pl.llp.aircasting.util.extensions.labelFormat
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.common.BaseDialog
+import pl.llp.aircasting.util.TemperatureConverter
+import pl.llp.aircasting.util.extensions.labelFormat
 
 class HLUDialog(
     private var mSensorThreshold: SensorThreshold?,
@@ -43,11 +43,11 @@ class HLUDialog(
 
     private fun setupView() {
         mView.apply {
-            setThresholdText(hlu_dialog_min, mMeasurementStream?.thresholdVeryLow)
-            setThresholdText(hlu_dialog_low, mMeasurementStream?.thresholdLow)
-            setThresholdText(hlu_dialog_medium, mMeasurementStream?.thresholdMedium)
-            setThresholdText(hlu_dialog_high, mMeasurementStream?.thresholdHigh)
-            setThresholdText(hlu_dialog_max, mMeasurementStream?.thresholdVeryHigh)
+            setThresholdText(hlu_dialog_min, mSensorThreshold?.thresholdVeryLow)
+            setThresholdText(hlu_dialog_low, mSensorThreshold?.thresholdLow)
+            setThresholdText(hlu_dialog_medium, mSensorThreshold?.thresholdMedium)
+            setThresholdText(hlu_dialog_high, mSensorThreshold?.thresholdHigh)
+            setThresholdText(hlu_dialog_max, mSensorThreshold?.thresholdVeryHigh)
         }
     }
 
