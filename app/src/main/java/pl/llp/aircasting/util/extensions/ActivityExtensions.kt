@@ -2,8 +2,12 @@ package pl.llp.aircasting.util.extensions
 
 import android.app.Activity
 import android.view.View
+import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.Navigation
+import com.google.android.material.appbar.MaterialToolbar
+import kotlinx.android.synthetic.main.prominent_app_bar.*
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseActivity
@@ -28,11 +32,26 @@ fun Activity.goToDormantTab() {
     Navigation.findNavController(this, R.id.nav_host_fragment).navigate(action)
 }
 
-fun setupAppBar(activity: BaseActivity, toolbar: Toolbar) {
-    activity.setSupportActionBar(toolbar)
-    adjustMenuVisibility(activity)
-    toolbar.setNavigationOnClickListener {
-        activity.onBackPressed()
+fun Activity.adjustMenuVisibility(
+    isFollowingTab: Boolean = false,
+    followingSessionsNumber: Int = 0
+) {
+    val visibility =
+        if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.GONE
+    topAppBar?.apply {
+        findViewById<ImageView>(R.id.reorderButton)?.visibility = visibility
+        findViewById<ImageView>(R.id.search_follow_icon)?.visibility =
+            if (isFollowingTab) View.VISIBLE else View.INVISIBLE
     }
-    //TODO: replace this later
+}
+
+fun setupAppBar(activity: BaseActivity, toolbar: MaterialToolbar?) {
+    activity.apply {
+        setSupportActionBar(toolbar)
+        adjustMenuVisibility()
+
+        toolbar?.setNavigationOnClickListener {
+            onBackPressed()
+        }
+    }
 }

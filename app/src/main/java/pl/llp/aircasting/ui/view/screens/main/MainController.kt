@@ -6,11 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
@@ -29,7 +33,6 @@ class MainController(
     private val rootActivity: AppCompatActivity,
     private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
-    private val mFragmentManager: FragmentManager,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
     private var mSessionManager: SessionManager? = null
@@ -54,6 +57,7 @@ class MainController(
 
     fun onResume() {
         EventBus.getDefault().safeRegister(this)
+        mViewMvc.navigateToAppropriateTab()
     }
 
     fun onDestroy() {
@@ -83,10 +87,6 @@ class MainController(
         registerConnectivityManager()
 
         sync(apiService)
-    }
-
-    fun goToFollowingTab() {
-        rootActivity.goToFollowingTab()
     }
 
     private fun sync(apiService: ApiService) {

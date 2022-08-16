@@ -41,7 +41,7 @@ class FollowingController(
 
     override fun onResume() {
         super.onResume()
-        mRootActivity?.let { adjustMenuVisibility(it, true, mSettings.getFollowedSessionsNumber()) }
+        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsNumber())
     }
 
     override fun registerSessionsObserver() {

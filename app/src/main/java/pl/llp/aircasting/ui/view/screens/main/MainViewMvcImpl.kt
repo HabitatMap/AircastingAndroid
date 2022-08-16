@@ -35,14 +35,14 @@ class MainViewMvcImpl(
     private val mSessionRepository = SessionsRepository()
     private var mSettings: Settings? = null
 
-    private var topAppBar: MaterialToolbar? = null
-    private var mNavController: NavController? = null
-    private var mReorderLayout: ConstraintLayout? = null
-    private var mFinishReorderLayout: ConstraintLayout? = null
+    private lateinit var topAppBar: MaterialToolbar
+    private lateinit var mNavController: NavController
+    private lateinit var mReorderLayout: ConstraintLayout
+    private lateinit var mFinishReorderLayout: ConstraintLayout
 
-    private var mReorderSessionsButton: ImageView? = null
-    private var mFinishedReorderingSessionsButton: Button? = null
-    private var mSearchIcon: ImageView? = null
+    private lateinit var mReorderSessionsButton: ImageView
+    private lateinit var mFinishedReorderingSessionsButton: Button
+    private lateinit var mSearchIcon: ImageView
 
     init {
         this.rootView = inflater.inflate(R.layout.activity_main, parent, false)
@@ -68,20 +68,26 @@ class MainViewMvcImpl(
     }
 
     fun appBarSetup() {
-        rootActivity.setSupportActionBar(topAppBar)
-        topAppBar?.setNavigationOnClickListener {
-            rootActivity.onBackPressed()
-        }
+        setupTopAppBar()
 
-        mReorderSessionsButton?.setOnClickListener { onReorderSessionsClicked() }
-        mFinishedReorderingSessionsButton?.setOnClickListener { showFinishedReorderingSessionsButtonClicked() }
-        mSearchIcon?.setOnClickListener { onSearchIconClicked() }
+        mReorderSessionsButton.setOnClickListener { onReorderSessionsClicked() }
+        mFinishedReorderingSessionsButton.setOnClickListener { showFinishedReorderingSessionsButtonClicked() }
+        mSearchIcon.setOnClickListener { onSearchIconClicked() }
+    }
+
+    private fun setupTopAppBar() {
+        topAppBar.let {
+            rootActivity.setSupportActionBar(it)
+            it.setNavigationOnClickListener {
+                rootActivity.onBackPressed()
+            }
+        }
     }
 
     private fun onReorderSessionsClicked() {
-        mNavController?.navigate(R.id.navigation_reordering_dashboard)
-        mReorderLayout?.gone()
-        mFinishReorderLayout?.visible()
+        mNavController.navigate(R.id.navigation_reordering_dashboard)
+        mReorderLayout.gone()
+        mFinishReorderLayout.visible()
     }
 
     private fun onSearchIconClicked() {
@@ -91,10 +97,10 @@ class MainViewMvcImpl(
 
     private fun showFinishedReorderingSessionsButtonClicked() {
         val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-        mNavController?.navigate(action)
+        mNavController.navigate(action)
 
-        mFinishReorderLayout?.gone()
-        mReorderLayout?.visible()
+        mFinishReorderLayout.gone()
+        mReorderLayout.visible()
     }
 
     fun setupBottomNavigationBar(navController: NavController) {
@@ -112,21 +118,25 @@ class MainViewMvcImpl(
             when (item.itemId) {
                 R.id.navigation_dashboard -> {
                     mSettings?.getFollowedSessionsNumber()
-                        ?.let { adjustMenuVisibility(rootActivity, true, it) }
-                    DatabaseProvider.runQuery { scope ->
-                        val isMobileActiveSessionExists =
-                            mSessionRepository.mobileActiveSessionExists()
+                        ?.let { rootActivity.adjustMenuVisibility(true, it) }
 
-                        DatabaseProvider.backToUIThread(scope) {
-                            if (isMobileActiveSessionExists) rootActivity.goToMobileActiveTab()
-                            else rootActivity.goToFollowingTab()
-                        }
-                    }
+                    navigateToAppropriateTab()
                 }
-                R.id.navigation_lets_begin -> mNavController?.navigate(R.id.navigation_lets_begin)
-                R.id.navigation_settings -> mNavController?.navigate(R.id.navigation_settings)
+                R.id.navigation_lets_begin -> mNavController.navigate(R.id.navigation_lets_begin)
+                R.id.navigation_settings -> mNavController.navigate(R.id.navigation_settings)
             }
             true
+        }
+    }
+
+    override fun navigateToAppropriateTab() {
+        DatabaseProvider.runQuery { scope ->
+            val isMobileActiveSessionExists = mSessionRepository.mobileActiveSessionExists()
+
+            DatabaseProvider.backToUIThread(scope) {
+                if (isMobileActiveSessionExists) rootActivity.goToMobileActiveTab()
+                else rootActivity.goToFollowingTab()
+            }
         }
     }
 

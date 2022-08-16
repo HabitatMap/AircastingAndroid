@@ -18,6 +18,8 @@ import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.exceptions.AircastingUncaughtExceptionHandler
+import pl.llp.aircasting.util.extensions.goToFollowingTab
+import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
@@ -60,24 +62,31 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
         view = MainViewMvcImpl(layoutInflater, null, this)
         controller =
-            MainController(this, view!!, settings, supportFragmentManager, apiServiceFactory)
+            MainController(this, view!!, settings, apiServiceFactory)
 
         controller?.onCreate()
-
         setContentView(view?.rootView)
-        view?.appBarSetup()
 
+        view?.apply {
+            appBarSetup()
+            setupNavController()
+            setupBottomNavigationBar(mNavController)
+            navigateToAppropriateTab()
+        }
+    }
+
+    private fun setupNavController() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         mNavController = navHostFragment.navController
 
         view?.setupNavController(mNavController)
-        view?.setupBottomNavigationBar(mNavController)
     }
 
     override fun onResume() {
         super.onResume()
         controller?.onResume()
+        view?.navigateToAppropriateTab()
     }
 
     override fun onDestroy() {
@@ -89,7 +98,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        controller?.goToFollowingTab()
+        goToFollowingTab()
     }
 
     override fun onRequestPermissionsResult(

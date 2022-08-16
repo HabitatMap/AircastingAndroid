@@ -90,7 +90,7 @@ class NewSessionController(
 
     fun onResume() {
         if (settings.isKeepScreenOnEnabled()) mContextActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        adjustMenuVisibility(mContextActivity, false)
+        mContextActivity.adjustMenuVisibility(false)
     }
 
     fun onStop() {
