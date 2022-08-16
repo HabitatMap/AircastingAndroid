@@ -57,20 +57,6 @@ fun TextView.setAppearance(context: Context, res: Int) {
     }
 }
 
-fun adjustMenuVisibility(
-    activity: Activity,
-    isFollowingTab: Boolean = false,
-    followingSessionsNumber: Int = 0
-) {
-    val visibility =
-        if (isFollowingTab && followingSessionsNumber >= 2) View.VISIBLE else View.GONE
-    activity.topAppBar?.apply {
-        findViewById<ImageView>(R.id.reorderButton)?.visibility = visibility
-        findViewById<ImageView>(R.id.search_follow_icon)?.visibility =
-            if (isFollowingTab) View.VISIBLE else View.INVISIBLE
-    }
-}
-
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     val pwrm = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
     val name = context.applicationContext.packageName

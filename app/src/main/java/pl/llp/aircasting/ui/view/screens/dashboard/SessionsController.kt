@@ -43,18 +43,18 @@ abstract class SessionsController(
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
-    protected val mMobileSessionsSyncService =
+    private val mMobileSessionsSyncService =
         SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
-    protected val mDownloadMeasurementsService =
+    private val mDownloadMeasurementsService =
         DownloadMeasurementsService(mApiService, mErrorHandler)
-    protected val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
-    protected val mSessionRepository = SessionsRepository()
-    protected val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
+    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
+    private val mSessionRepository = SessionsRepository()
+    private val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
     private val sessionFollower = SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository)
 
-    protected var editDialog: EditSessionBottomSheet? = null
-    protected var shareDialog: ShareSessionBottomSheet? = null
-    protected var deleteSessionDialog: DeleteSessionBottomSheet? = null
+    private var editDialog: EditSessionBottomSheet? = null
+    private var shareDialog: ShareSessionBottomSheet? = null
+    private var deleteSessionDialog: DeleteSessionBottomSheet? = null
 
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()

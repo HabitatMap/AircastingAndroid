@@ -22,7 +22,7 @@ class LetsBeginController(
 ): BaseController<LetsBeginViewMvcImpl>(viewMvc), LetsBeginViewMvc.Listener {
 
     fun onCreate() {
-        mRootActivity?.let { adjustMenuVisibility(it, false) }
+        mRootActivity?.adjustMenuVisibility(false)
         mViewMvc?.registerListener(this)
     }
 

@@ -8,15 +8,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.extensions.goToFollowingTab
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
+import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class NewSessionActivity : BaseActivity() {
@@ -34,20 +33,17 @@ class NewSessionActivity : BaseActivity() {
 
     companion object {
         const val SESSION_TYPE_KEY = "sessionType"
-        private lateinit var navHostFragment: NavHostFragment
-        private var fixedLauncher: ActivityResultLauncher<Intent>? = null
-        private var mobileLauncher: ActivityResultLauncher<Intent>? = null
+        private lateinit var fixedLauncher: ActivityResultLauncher<Intent>
+        private lateinit var mobileLauncher: ActivityResultLauncher<Intent>
 
         fun register(rootActivity: FragmentActivity?, sessionType: Session.Type) {
-            rootActivity?.let {
-                navHostFragment =
-                    it.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
+            rootActivity?.let {
                 val launcher =
                     it.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                         if (it.resultCode == RESULT_OK) when (sessionType) {
-                            Session.Type.FIXED -> goToFollowingTab(rootActivity)
-                            Session.Type.MOBILE -> goToMobileActiveTab(rootActivity)
+                            Session.Type.FIXED -> rootActivity.goToFollowingTab()
+                            Session.Type.MOBILE -> rootActivity.goToMobileActiveTab()
                         }
                     }
 
@@ -64,19 +60,10 @@ class NewSessionActivity : BaseActivity() {
                 intent.putExtra(SESSION_TYPE_KEY, sessionType)
 
                 when (sessionType) {
-                    Session.Type.FIXED -> fixedLauncher?.launch(intent)
-                    Session.Type.MOBILE -> mobileLauncher?.launch(intent)
+                    Session.Type.FIXED -> fixedLauncher.launch(intent)
+                    Session.Type.MOBILE -> mobileLauncher.launch(intent)
                 }
-
             }
-        }
-
-        private fun goToMobileActiveTab(rootActivity: FragmentActivity?) {
-            rootActivity?.goToMobileActiveTab()
-        }
-
-        private fun goToFollowingTab(rootActivity: FragmentActivity?) {
-           rootActivity?.goToFollowingTab()
         }
     }
 

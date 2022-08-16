@@ -77,7 +77,7 @@ abstract class SessionDetailsViewController(
 
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
-        adjustMenuVisibility(rootActivity, false)
+        rootActivity.adjustMenuVisibility(false)
         if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
