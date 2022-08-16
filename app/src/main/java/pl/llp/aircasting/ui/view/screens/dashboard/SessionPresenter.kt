@@ -95,7 +95,10 @@ class SessionPresenter() {
     }
 
     fun allStreamsHaveLoaded(): Boolean {
-        return session?.streams?.size == 5
+        if (session?.isAirBeam() == true && session?.isExternal == false)
+            return session?.streams?.size == 5
+
+        return true
     }
 
     fun setSensorThresholds(sensorThresholds: List<SensorThreshold>) {
