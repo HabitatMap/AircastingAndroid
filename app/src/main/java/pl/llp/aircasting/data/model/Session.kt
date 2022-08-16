@@ -336,6 +336,12 @@ open class Session(
         return deviceType == DeviceItem.Type.AIRBEAM3
     }
 
+    fun isAirBeam(): Boolean {
+        return deviceType == DeviceItem.Type.AIRBEAM3
+                || deviceType == DeviceItem.Type.AIRBEAM2
+                || deviceType == DeviceItem.Type.AIRBEAM1
+    }
+
     fun isRecording(): Boolean {
         return status == Status.RECORDING
     }
@@ -381,7 +387,7 @@ open class Session(
         return packageNames.distinct().joinToString(", ")
     }
 
-     private fun measurementsCount(): Int {
+    private fun measurementsCount(): Int {
         return streams.sumOf { stream -> stream.measurements.size }
     }
 
