@@ -134,8 +134,8 @@ class SessionManager(
             updateMobileSessions()
             settings.setAppNotRestarted()
         }
-        fixedSessionDownloadMeasurementsService.start()
         periodicallySyncSessionsService.start()
+        fixedSessionDownloadMeasurementsService.start()
     }
 
     fun onStop() {
