@@ -29,11 +29,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
@@ -65,7 +60,12 @@ android {
         animationsDisabled = true
     }
 
-    kotlinOptions.jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions.jvmTarget = "11"
     lint.abortOnError = false
     buildFeatures.dataBinding = true
 }
