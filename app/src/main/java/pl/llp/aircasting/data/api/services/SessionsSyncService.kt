@@ -89,7 +89,7 @@ class SessionsSyncService private constructor(
         onStartCallback?.invoke()
 
         DatabaseProvider.runQuery {
-            val sessions = sessionRepository.finishedSessions()
+            val sessions = sessionRepository.allSessionsExceptRecording()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
 
