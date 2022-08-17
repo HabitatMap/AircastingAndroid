@@ -129,7 +129,7 @@ class SessionsRepository {
             .disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }
 
-    fun finishedSessions(): List<Session> {
+    fun allSessionsExceptRecording(): List<Session> {
         return mDatabase.sessions().byStatus(Session.Status.FINISHED)
             .map { dbObject -> Session(dbObject) }
     }
