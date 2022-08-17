@@ -12,7 +12,6 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
     interface Listener : FinishSessionListener {
         fun onRecordNewSessionClicked()
         fun onExploreNewSessionsClicked()
-        fun onSwipeToRefreshTriggered()
         fun onDisconnectSessionClicked(session: Session)
         fun addNoteClicked(session: Session)
         fun onReconnectSessionClicked(session: Session)
@@ -38,6 +37,4 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
     fun reloadSession(session: Session)
     fun showReconnectingLoaderFor(session: Session)
     fun hideReconnectingLoaderFor(session: Session)
-    fun showLoader()
-    fun hideLoader()
 }
