@@ -134,10 +134,20 @@ class MainViewMvcImpl(
             val isMobileActiveSessionExists = mSessionRepository.mobileActiveSessionExists()
 
             DatabaseProvider.backToUIThread(scope) {
-                if (isMobileActiveSessionExists) rootActivity.goToMobileActiveTab()
-                else rootActivity.goToFollowingTab()
+                if (isMobileActiveSessionExists) goToMobileActiveTab()
+                else goToFollowingTab()
             }
         }
+    }
+
+    private fun goToMobileActiveTab() {
+        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_ACTIVE.value)
+        mNavController.navigate(action)
+    }
+
+    private fun goToFollowingTab() {
+        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
+        mNavController.navigate(action)
     }
 
     override fun showLoader() {
