@@ -154,7 +154,6 @@ class MainViewMvcImpl(
         loader?.startAnimation()
     }
 
-    // TODO: The recyclerView needs to be improved later.
     override fun hideLoader() {
         Handler(Looper.getMainLooper()).postDelayed({
             loader?.stopAnimation()

@@ -136,7 +136,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     override fun showLoader() {
-        mSwipeRefreshLayout?.isRefreshing = true
+        //mSwipeRefreshLayout?.isRefreshing = true
     }
 
     override fun hideLoader() {
