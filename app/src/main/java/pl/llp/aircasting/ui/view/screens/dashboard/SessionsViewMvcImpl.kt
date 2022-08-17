@@ -9,7 +9,6 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -30,7 +29,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     protected var mRecyclerSessions: RecyclerView? = null
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
-    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var mDidYouKnowBox: MaterialCardView? = null
 
     init {
@@ -57,7 +55,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
             val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
             itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
         }
-        setupSwipeToRefreshLayout()
     }
 
     abstract fun layoutId(): Int
@@ -80,12 +77,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     private fun onExploreNewSessionsClicked() {
         for (listener in listeners) {
             listener.onExploreNewSessionsClicked()
-        }
-    }
-
-    private fun onSwipeToRefreshTriggered() {
-        for (listener in listeners) {
-            listener.onSwipeToRefreshTriggered()
         }
     }
 
@@ -135,26 +126,8 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         mAdapter.reloadSession(session)
     }
 
-    override fun showLoader() {
-        //mSwipeRefreshLayout?.isRefreshing = true
-    }
-
-    override fun hideLoader() {
-        mSwipeRefreshLayout?.isRefreshing = false
-    }
-
     private fun recyclerViewCanBeUpdated(): Boolean {
         return mRecyclerSessions?.isComputingLayout == false && mRecyclerSessions?.scrollState == RecyclerView.SCROLL_STATE_IDLE
-    }
-
-    private fun setupSwipeToRefreshLayout() {
-        mSwipeRefreshLayout = rootView?.findViewById(R.id.refresh_sessions)
-        mSwipeRefreshLayout?.let { layout ->
-            layout.setColorSchemeResources(R.color.aircasting_blue_400)
-            layout.setOnRefreshListener {
-                onSwipeToRefreshTriggered()
-            }
-        }
     }
 
     fun onExpandSessionCard(session: Session) {

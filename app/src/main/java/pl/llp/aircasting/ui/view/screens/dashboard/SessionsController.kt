@@ -43,8 +43,6 @@ abstract class SessionsController(
     protected val mErrorHandler = ErrorHandler(mRootActivity!!)
     private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
 
-    private val mMobileSessionsSyncService =
-        SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
     private val mDownloadMeasurementsService =
         DownloadMeasurementsService(mApiService, mErrorHandler)
     private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
@@ -59,12 +57,9 @@ abstract class SessionsController(
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
 
-    open fun onCreate() {
-        mViewMvc?.showLoader()
-    }
+    open fun onCreate() { /* Do nothing */ }
 
     open fun onResume() {
-        mViewMvc?.showLoader()
         registerSessionsObserver()
         mViewMvc?.registerListener(this)
     }
@@ -83,13 +78,6 @@ abstract class SessionsController(
 
     protected fun startNewSession(sessionType: Session.Type) {
         NewSessionActivity.start(mRootActivity, sessionType)
-    }
-
-    override fun onSwipeToRefreshTriggered() {
-        mMobileSessionsSyncService.sync(
-            onStartCallback = { mViewMvc?.showLoader() },
-            finallyCallback = { mViewMvc?.hideLoader() }
-        )
     }
 
     override fun onFollowButtonClicked(session: Session) {

@@ -103,12 +103,6 @@ abstract class SessionsObserver<Type>(
         return mSessionsViewModel.findOrCreateSensorThresholds(streams)
     }
 
-    private fun hideLoader(coroutineScope: CoroutineScope) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
-            mViewMvc?.hideLoader()
-        }
-    }
-
     private fun showSessionsView(
         coroutineScope: CoroutineScope,
         modifiedSessions: Map<ModificationType, List<Session>>
