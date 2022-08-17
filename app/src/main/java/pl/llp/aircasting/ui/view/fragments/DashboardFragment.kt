@@ -8,20 +8,30 @@ import androidx.activity.addCallback
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardController
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
 import pl.llp.aircasting.util.extensions.isIgnoringBatteryOptimizations
 import pl.llp.aircasting.util.extensions.showBatteryOptimizationHelperDialog
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 import javax.inject.Inject
 
 class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController>() {
 
     @Inject
     lateinit var settings: Settings
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
+
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
 
     private var mTabPosition: Int = 0
 
@@ -40,7 +50,12 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
                 it, DashboardPagerAdapter.TABS_COUNT
             )
         }
-        controller = DashboardController(view)
+        val sessionsSyncService = SessionsSyncService.get(
+            apiServiceFactory.get(settings.getAuthToken()!!),
+            errorHandler,
+            settings
+        )
+        controller = DashboardController(view, sessionsSyncService)
         val tabId = arguments?.get("tabId") as Int?
         controller?.onCreate(tabId)
 
