@@ -35,7 +35,6 @@ abstract class SessionsObserver<Type>(
             if (anySessionChanged(sessions)) {
                 onSessionsChanged(coroutineScope, sessions)
             }
-            hideLoader(coroutineScope)
         }
     }
 
