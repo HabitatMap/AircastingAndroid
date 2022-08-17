@@ -77,7 +77,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
     }
 
-    private fun onExploreNewSessionsClicked(){
+    private fun onExploreNewSessionsClicked() {
         for (listener in listeners) {
             listener.onExploreNewSessionsClicked()
         }
