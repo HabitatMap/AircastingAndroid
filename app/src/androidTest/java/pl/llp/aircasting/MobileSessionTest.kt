@@ -97,6 +97,7 @@ class MobileSessionTest {
         settings.login("X", "EMAIL", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         stubPairedDevice(bluetoothManager)
 

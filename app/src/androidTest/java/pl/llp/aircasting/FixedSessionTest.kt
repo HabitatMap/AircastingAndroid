@@ -115,6 +115,7 @@ class FixedSessionTest {
         testRule.launchActivity(null)
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         stubPairedDevice(bluetoothManager)
 
@@ -184,6 +185,7 @@ class FixedSessionTest {
         settings.login("X", "EMAIL", "TOKEN")
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
+        whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
         stubPairedDevice(bluetoothManager)
 
