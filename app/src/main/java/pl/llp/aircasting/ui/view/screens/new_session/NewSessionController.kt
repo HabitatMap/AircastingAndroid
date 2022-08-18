@@ -247,7 +247,11 @@ class NewSessionController(
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
-        wizardNavigator.goToSelectDevice(bluetoothManager, this)
+        if (permissionsManager.bluetoothPermissionsGranted(mContextActivity))
+            wizardNavigator.goToSelectDevice(
+                bluetoothManager,
+                this
+            ) else permissionsManager.requestBluetoothPermissions(mContextActivity)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
