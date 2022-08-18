@@ -71,7 +71,6 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
             appBarSetup()
             setupNavController()
             setupBottomNavigationBar(mNavController)
-            navigateToAppropriateTab()
         }
     }
 
@@ -86,7 +85,6 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     override fun onResume() {
         super.onResume()
         controller?.onResume()
-        view?.navigateToAppropriateTab()
     }
 
     override fun onDestroy() {
