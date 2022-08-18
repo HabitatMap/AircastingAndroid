@@ -25,6 +25,7 @@ import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
+import pl.llp.aircasting.util.extensions.expandedCards
 import pl.llp.aircasting.util.extensions.goToDormantTab
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
@@ -90,7 +91,12 @@ class MobileActiveController(
     }
 
     override fun onExpandSessionCard(session: Session) {
-        // do nothing
+        super.onExpandSessionCard(session)
+        expandedCards()?.add(session.uuid)
+    }
+
+    override fun onCollapseSessionCard(session: Session) {
+        expandedCards()?.remove(session.uuid)
     }
 
     override fun onDisconnectSessionClicked(session: Session) {
