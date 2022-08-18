@@ -129,19 +129,19 @@ class MainViewMvcImpl(
         }
     }
 
-    override fun navigateToAppropriateTab() {
+    private fun navigateToAppropriateTab() {
         DatabaseProvider.runQuery { scope ->
             val isMobileActiveSessionExists = mSessionRepository.mobileActiveSessionExists()
 
             DatabaseProvider.backToUIThread(scope) {
-                if (isMobileActiveSessionExists) goToMobileActiveTab()
-                else goToFollowingTab()
+                if (isMobileActiveSessionExists) goToMobileActiveTab() else goToFollowingTab()
             }
         }
     }
 
     private fun goToMobileActiveTab() {
-        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_ACTIVE.value)
+        val action =
+            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_ACTIVE.value)
         mNavController.navigate(action)
     }
 

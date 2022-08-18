@@ -57,7 +57,6 @@ class MainController(
 
     fun onResume() {
         EventBus.getDefault().safeRegister(this)
-        mViewMvc.navigateToAppropriateTab()
     }
 
     fun onDestroy() {
