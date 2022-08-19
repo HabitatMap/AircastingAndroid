@@ -6,17 +6,24 @@ import pl.llp.aircasting.ui.view.common.BaseController
 class DashboardController(
     private val viewMvc: DashboardViewMvcImpl?,
     private val sessionsSyncService: SessionsSyncService
-) : BaseController<DashboardViewMvcImpl>(viewMvc), DashboardViewMvc.Listener {
+) : BaseController<DashboardViewMvcImpl>(viewMvc), DashboardViewMvc.Listener,
+    SessionsSyncService.Listener {
 
     fun onCreate(tabId: Int?) {
         viewMvc?.goToTab(tabId ?: SessionsTab.FOLLOWING.value)
         viewMvc?.registerListener(this)
+        sessionsSyncService.registerListener(this)
+        onRefreshTriggered()
     }
 
-    override fun onSwipeToRefreshTriggered() {
+    override fun onRefreshTriggered() {
         sessionsSyncService.sync(
             { mViewMvc?.showLoader() },
             { mViewMvc?.hideLoader() }
         )
+    }
+
+    override fun onSyncFinished() {
+        mViewMvc?.hideLoader()
     }
 }

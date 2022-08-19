@@ -6,7 +6,7 @@ interface DashboardViewMvc : ViewMvc {
     fun goToTab(tabId: Int)
 
     interface Listener {
-        fun onSwipeToRefreshTriggered()
+        fun onRefreshTriggered()
     }
     fun showLoader()
     fun hideLoader()
