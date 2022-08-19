@@ -81,12 +81,12 @@ class SessionsSyncService private constructor(
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
+        onStartCallback?.invoke()
         if (syncStarted.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
             return
         }
 
         syncStarted.set(true)
-        onStartCallback?.invoke()
 
         DatabaseProvider.runQuery {
             val sessions = sessionRepository.allSessionsExceptRecording()
