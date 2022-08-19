@@ -1,8 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.main
 
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -10,12 +8,12 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.view.*
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.DatabaseProvider
@@ -24,7 +22,9 @@ import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.extensions.*
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.visible
 
 class MainViewMvcImpl(
     inflater: LayoutInflater,
@@ -58,14 +58,19 @@ class MainViewMvcImpl(
 
             mFinishedReorderingSessionsButton =
                 findViewById(R.id.finished_reordering_session_button)
+
+            appBarSetup()
+            setupNavController()
+            setupBottomNavigationBar()
         }
     }
 
-    fun setupNavController(navController: NavController) {
-        mNavController = navController
+    private fun setupNavController() {
+        val navHostFragment =
+            rootActivity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        mNavController = navHostFragment.navController
     }
-
-    fun appBarSetup() {
+    private fun appBarSetup() {
         setupTopAppBar()
 
         mReorderSessionsButton.setOnClickListener { onReorderSessionsClicked() }
@@ -101,7 +106,7 @@ class MainViewMvcImpl(
         mReorderLayout.visible()
     }
 
-    fun setupBottomNavigationBar(navController: NavController) {
+    private fun setupBottomNavigationBar() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -110,8 +115,8 @@ class MainViewMvcImpl(
                 R.id.navigation_settings
             )
         )
-        rootActivity.setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        rootActivity.setupActionBarWithNavController(mNavController, appBarConfiguration)
+        navView.setupWithNavController(mNavController)
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_dashboard -> {

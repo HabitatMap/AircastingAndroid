@@ -4,22 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.MapsInitializer.Renderer
 import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.exceptions.AircastingUncaughtExceptionHandler
 import pl.llp.aircasting.util.extensions.goToFollowingTab
-import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
@@ -29,8 +25,6 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
-
-    private lateinit var mNavController: NavController
 
     companion object {
         fun start(context: Context?) {
@@ -66,21 +60,8 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
         controller?.onCreate()
         setContentView(view?.rootView)
-
-        view?.apply {
-            appBarSetup()
-            setupNavController()
-            setupBottomNavigationBar(mNavController)
-        }
     }
 
-    private fun setupNavController() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        mNavController = navHostFragment.navController
-
-        view?.setupNavController(mNavController)
-    }
 
     override fun onResume() {
         super.onResume()
