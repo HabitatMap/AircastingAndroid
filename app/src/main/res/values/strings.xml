@@ -114,6 +114,7 @@
     <string name="turn_on_bluetooth_image_desc">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_header">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_description">Turn on Bluetooth to enable your phone to connect to the AirBeam.</string>
+    <string name="turn_bluetooth_permissions_desc">For users with Android 12+, please make sure to give the right permissions in order to proceed.</string>
     <string name="turn_on_bluetooth_ok_button">Continue</string>
 
     <!-- New session Step 3 -->

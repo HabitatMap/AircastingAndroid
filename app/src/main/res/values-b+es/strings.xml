@@ -406,5 +406,6 @@
     <string name="use_celsius_scale">Usa la escala Celsius</string>
     <string name="from">de</string>
     <string name="to">a</string>
+    <string name="turn_bluetooth_permissions_desc">Para usuarios con Android 12+, asegúrese de otorgar los permisos correctos para continuar.</string>
 
 </resources>

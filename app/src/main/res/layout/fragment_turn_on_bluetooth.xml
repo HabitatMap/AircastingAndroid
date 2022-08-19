@@ -52,9 +52,22 @@
         android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginEnd="@dimen/keyline_8"
         android:text="@string/turn_on_bluetooth_description"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/turn_on_bluetooth_header" />
+
+    <TextView
+        android:id="@+id/turn_bluetooth_permissions_desc"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_3"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/turn_bluetooth_permissions_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/turn_bluetooth_description" />
 
     <Button
         android:id="@+id/turn_on_bluetooth_ok_button"
@@ -62,11 +75,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_1"
         android:text="@string/turn_on_bluetooth_ok_button"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/turn_bluetooth_description" />
+        app:layout_constraintTop_toBottomOf="@id/turn_bluetooth_permissions_desc" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
@@ -74,4 +88,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.98" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
