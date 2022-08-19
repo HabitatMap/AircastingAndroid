@@ -28,6 +28,9 @@ class SessionsSyncService private constructor(
     private val errorHandler: ErrorHandler,
     private val settings: Settings
 ) {
+    interface Listener {
+        fun onSyncFinished()
+    }
 
     private val uploadService: MobileSessionUploadService =
         MobileSessionUploadService(apiService, errorHandler)
@@ -44,6 +47,7 @@ class SessionsSyncService private constructor(
     private var syncInBackground = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
+    private val listeners: MutableSet<Listener> = mutableSetOf()
 
     companion object {
         private var mSingleton: SessionsSyncService? = null
@@ -65,6 +69,9 @@ class SessionsSyncService private constructor(
             mSingleton = null
         }
     }
+
+    fun registerListener(listener: Listener) = listeners.add(listener)
+    fun unregisterListener(listener: Listener) = listeners.remove(listener)
 
     fun destroy() {
         mCall?.cancel()
@@ -116,7 +123,10 @@ class SessionsSyncService private constructor(
                     } else handleSyncError(shouldDisplayErrors, call)
 
                     syncStarted.set(false)
+
                     finallyCallback?.invoke()
+
+                    for (listener in listeners) listener.onSyncFinished()
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {

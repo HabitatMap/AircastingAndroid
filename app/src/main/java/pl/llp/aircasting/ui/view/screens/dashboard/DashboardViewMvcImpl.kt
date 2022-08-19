@@ -66,7 +66,7 @@ class DashboardViewMvcImpl(
 
     private fun onSwipeToRefreshTriggered() {
         for (listener in listeners) {
-            listener.onSwipeToRefreshTriggered()
+            listener.onRefreshTriggered()
         }
     }
 }
