@@ -140,15 +140,14 @@ class NewSessionController(
     override fun onBluetoothDeviceSelected() {
         try {
             wizardNavigator.progressBarCounter.increaseMaxProgress(4) // 4 additional steps in flow
-            if (bluetoothManager.isBluetoothEnabled()) {
+            if (bluetoothManager.isBluetoothEnabled() &&
+                permissionsManager.bluetoothPermissionsGranted(mContextActivity)
+            ) {
                 wizardNavigator.goToTurnOnAirBeam(sessionType, this)
-                return
-            }
+            } else wizardNavigator.goToTurnOnBluetooth(this)
         } catch (exception: BluetoothNotSupportedException) {
             errorHandler.showError(exception.messageToDisplay)
         }
-
-        wizardNavigator.goToTurnOnBluetooth(this)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -216,7 +215,6 @@ class NewSessionController(
                 goToFirstStep()
             }
 
-
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO ->
                 if (permissionsManager.permissionsGranted(grantResults)) startMicrophoneSession() else errorHandler.showError(
                     R.string.errors_audio_required
@@ -226,32 +224,30 @@ class NewSessionController(
                 if (permissionsManager.permissionsGranted(grantResults)) requestBluetoothEnable() else errorHandler.showError(
                     R.string.bluetooth_error_permissions
                 )
-            else -> {}
+            else -> errorHandler.showError(R.string.unknown_error)
         }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int) {
         when (requestCode) {
-            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> if (resultCode == RESULT_OK) startNewSessionWizard()
-            else errorHandler.showError(
-                R.string.errors_location_services_required
-            )
-
-            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> if (resultCode == RESULT_OK) wizardNavigator.goToTurnOnAirBeam(
-                sessionType,
-                this
-            ) else errorHandler.showError(R.string.errors_bluetooth_required)
-
-            else -> {}
+            ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> onLocationEnableCheck(resultCode)
+            ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> onBluetoothEnableCheck(resultCode)
+            else -> errorHandler.showError(R.string.unknown_error)
         }
     }
 
+    private fun onLocationEnableCheck(resultCode: Int) {
+        if (resultCode == RESULT_OK) startNewSessionWizard()
+        else errorHandler.showError(R.string.errors_location_services_required)
+    }
+
+    private fun onBluetoothEnableCheck(resultCode: Int) {
+        if (resultCode == RESULT_OK) wizardNavigator.goToSelectDevice(bluetoothManager, this)
+        else errorHandler.showError(R.string.errors_bluetooth_required)
+    }
+
     override fun onTurnOnAirBeamReadyClicked() {
-        if (permissionsManager.bluetoothPermissionsGranted(mContextActivity))
-            wizardNavigator.goToSelectDevice(
-                bluetoothManager,
-                this
-            ) else permissionsManager.requestBluetoothPermissions(mContextActivity)
+        wizardNavigator.goToSelectDevice(bluetoothManager, this)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
