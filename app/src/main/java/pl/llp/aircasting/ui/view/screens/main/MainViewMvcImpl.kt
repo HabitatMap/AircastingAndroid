@@ -30,8 +30,7 @@ class MainViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     private val rootActivity: AppCompatActivity
-) : BaseViewMvc(), MainViewMvc {
-    private val loader: ImageView?
+) : BaseViewMvc() {
     private val mSessionRepository = SessionsRepository()
     private var mSettings: Settings? = null
 
@@ -46,7 +45,6 @@ class MainViewMvcImpl(
 
     init {
         this.rootView = inflater.inflate(R.layout.activity_main, parent, false)
-        this.loader = rootView?.loader
         mSettings = Settings(rootActivity.application)
 
         rootView?.apply {
@@ -148,15 +146,5 @@ class MainViewMvcImpl(
     private fun goToFollowingTab() {
         val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
         mNavController.navigate(action)
-    }
-
-    override fun showLoader() {
-        loader?.startAnimation()
-    }
-
-    override fun hideLoader() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            loader?.stopAnimation()
-        }, 10000)
     }
 }
