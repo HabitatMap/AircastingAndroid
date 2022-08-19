@@ -205,12 +205,13 @@ class NewSessionController(
                     R.string.errors_location_services_required
                 )
 
-            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION ->
-                if (permissionsManager.permissionsGranted(grantResults)) {
-                    goToFirstStep()
-                } else errorHandler.showError(
-                    R.string.errors_location_background_services_required
-                )
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION -> {
+                if (!permissionsManager.permissionsGranted(grantResults)) errorHandler.showError(
+                        R.string.errors_location_background_services_required
+                    )
+                goToFirstStep()
+            }
+
 
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_AUDIO ->
                 if (permissionsManager.permissionsGranted(grantResults)) startMicrophoneSession() else errorHandler.showError(
