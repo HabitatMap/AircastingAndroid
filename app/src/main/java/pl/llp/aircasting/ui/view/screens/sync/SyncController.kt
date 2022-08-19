@@ -103,7 +103,7 @@ class SyncController(
 
     private fun refreshSessionList() {
         mSessionsSyncStarted.set(true)
-        mSessionsSyncService.sync(shouldDisplayErrors = false)
+        mSessionsSyncService.sync(false)
     }
 
     @Subscribe

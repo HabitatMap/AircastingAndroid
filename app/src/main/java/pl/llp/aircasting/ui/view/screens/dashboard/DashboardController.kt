@@ -13,14 +13,12 @@ class DashboardController(
         viewMvc?.goToTab(tabId ?: SessionsTab.FOLLOWING.value)
         viewMvc?.registerListener(this)
         sessionsSyncService.registerListener(this)
-        onRefreshTriggered()
+        mViewMvc?.showLoader()
+        sessionsSyncService.sync()
     }
 
     override fun onRefreshTriggered() {
-        sessionsSyncService.sync(
-            { mViewMvc?.showLoader() },
-            { mViewMvc?.hideLoader() }
-        )
+        sessionsSyncService.sync()
     }
 
     override fun onSyncFinished() {
