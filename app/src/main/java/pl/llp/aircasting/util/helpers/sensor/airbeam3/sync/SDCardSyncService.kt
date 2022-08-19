@@ -9,8 +9,8 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
-import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncSuccessEvent
+import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
+import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.*
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 import pl.llp.aircasting.util.extensions.safeRegister

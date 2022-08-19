@@ -1,0 +1,5 @@
+package pl.llp.aircasting.util.events
+
+class SessionsSyncErrorEvent
+class SessionsSyncSuccessEvent
+class SessionsSyncFinishedEvent

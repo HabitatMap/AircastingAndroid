@@ -13,8 +13,9 @@ import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncSuccessEvent
+import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
+import pl.llp.aircasting.util.events.SessionsSyncFinishedEvent
+import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
@@ -28,10 +29,6 @@ class SessionsSyncService private constructor(
     private val errorHandler: ErrorHandler,
     private val settings: Settings
 ) {
-    interface Listener {
-        fun onSyncFinished()
-    }
-
     private val uploadService: MobileSessionUploadService =
         MobileSessionUploadService(apiService, errorHandler)
     private val downloadService: SessionDownloadService =
@@ -47,7 +44,6 @@ class SessionsSyncService private constructor(
     private var syncInBackground = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
-    private val listeners: MutableSet<Listener> = mutableSetOf()
 
     companion object {
         private var mSingleton: SessionsSyncService? = null
@@ -69,9 +65,6 @@ class SessionsSyncService private constructor(
             mSingleton = null
         }
     }
-
-    fun registerListener(listener: Listener) = listeners.add(listener)
-    fun unregisterListener(listener: Listener) = listeners.remove(listener)
 
     fun destroy() {
         mCall?.cancel()
@@ -120,12 +113,12 @@ class SessionsSyncService private constructor(
                     } else handleSyncError(shouldDisplayErrors, call)
 
                     syncStarted.set(false)
-                    for (listener in listeners) listener.onSyncFinished()
+                    EventBus.getDefault().post(SessionsSyncFinishedEvent())
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
-                    for (listener in listeners) listener.onSyncFinished()
+                    EventBus.getDefault().post(SessionsSyncFinishedEvent())
                     handleSyncError(shouldDisplayErrors, call, t)
                 }
             })
