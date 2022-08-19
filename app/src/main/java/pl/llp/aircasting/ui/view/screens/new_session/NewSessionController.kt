@@ -201,9 +201,13 @@ class NewSessionController(
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_LOCATION ->
-                if (permissionsManager.permissionsGranted(grantResults)) needAccessBackgroundLocation() else errorHandler.showError(
-                    R.string.errors_location_services_required
-                )
+                if (permissionsManager.permissionsGranted(grantResults)) needAccessBackgroundLocation()
+                else {
+                    mContextActivity.finish()
+                    errorHandler.showError(
+                        R.string.errors_location_services_required
+                    )
+                }
 
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION -> {
                 if (!permissionsManager.permissionsGranted(grantResults)) errorHandler.showError(
