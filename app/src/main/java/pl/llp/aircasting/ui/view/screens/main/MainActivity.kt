@@ -62,7 +62,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
         view = MainViewMvcImpl(layoutInflater, null, this)
         controller =
-            MainController(this, view!!, settings, apiServiceFactory)
+            MainController(this, settings, apiServiceFactory)
 
         controller?.onCreate()
         setContentView(view?.rootView)

@@ -3,35 +3,27 @@ package pl.llp.aircasting.ui.view.screens.main
 import android.content.IntentFilter
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.MobileNavigationDirections
-import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
-import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
-import pl.llp.aircasting.util.*
+import pl.llp.aircasting.util.ResultCodes
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.util.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.goToDormantTab
-import pl.llp.aircasting.util.extensions.goToFollowingTab
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
 
 class MainController(
     private val rootActivity: AppCompatActivity,
-    private val mViewMvc: MainViewMvc,
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
