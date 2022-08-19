@@ -84,18 +84,6 @@ class MainController(
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)
         registerConnectivityManager()
-
-        sync(apiService)
-    }
-
-    private fun sync(apiService: ApiService) {
-        val mMobileSessionsSyncService =
-            SessionsSyncService.get(apiService, mErrorHandler, mSettings)
-
-        mMobileSessionsSyncService.sync(
-            onStartCallback = { mViewMvc.showLoader() },
-            finallyCallback = { mViewMvc.hideLoader() }
-        )
     }
 
     private fun goToDormantTab() {
