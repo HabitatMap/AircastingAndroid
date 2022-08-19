@@ -26,8 +26,8 @@ import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
-import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.sessions_sync.SessionsSyncSuccessEvent
+import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
+import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.extensions.areLocationServicesOn
