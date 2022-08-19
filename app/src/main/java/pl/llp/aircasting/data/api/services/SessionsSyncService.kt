@@ -78,8 +78,6 @@ class SessionsSyncService private constructor(
     }
 
     fun sync(
-        onStartCallback: (() -> Unit)? = null,
-        finallyCallback: (() -> Unit)? = null,
         shouldDisplayErrors: Boolean = true
     ) {
 
@@ -88,7 +86,6 @@ class SessionsSyncService private constructor(
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
-        onStartCallback?.invoke()
         if (syncStarted.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
             return
         }
@@ -123,15 +120,12 @@ class SessionsSyncService private constructor(
                     } else handleSyncError(shouldDisplayErrors, call)
 
                     syncStarted.set(false)
-
-                    finallyCallback?.invoke()
-
                     for (listener in listeners) listener.onSyncFinished()
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
-                    finallyCallback?.invoke()
+                    for (listener in listeners) listener.onSyncFinished()
                     handleSyncError(shouldDisplayErrors, call, t)
                 }
             })
