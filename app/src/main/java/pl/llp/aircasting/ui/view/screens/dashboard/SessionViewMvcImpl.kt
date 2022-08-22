@@ -287,7 +287,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     private fun onFollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
-            session.follow()
+            session.setFollowedAtNow()
             bindFollowButtons()
 
             for (listener in listeners) {
@@ -298,7 +298,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     private fun onUnfollowButtonClicked() {
         mSessionPresenter?.session?.let { session ->
-            session.unfollow()
+            session.resetFollowedAtAndOrder()
             bindFollowButtons()
 
             for (listener in listeners) {

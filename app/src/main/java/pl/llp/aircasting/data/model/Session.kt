@@ -315,12 +315,12 @@ open class Session(
         mStatus = Status.FINISHED
     }
 
-    fun unfollow() {
+    fun resetFollowedAtAndOrder() {
         followedAt = null
         order = null
     }
 
-    fun follow() {
+    fun setFollowedAtNow() {
         followedAt = Date()
     }
 

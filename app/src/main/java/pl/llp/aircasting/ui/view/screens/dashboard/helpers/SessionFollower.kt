@@ -1,6 +1,9 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.helpers
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
@@ -15,6 +18,7 @@ class SessionFollower @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     fun follow(session: Session) {
+        session.setFollowedAtNow()
         updateFollowedAt(session)
 
         addFollowedSessionMeasurementsToActiveTable(session)
@@ -24,6 +28,7 @@ class SessionFollower @Inject constructor(
     fun unfollow(session: Session) {
         if (session.isExternal) delete(session)
         else {
+            session.resetFollowedAtAndOrder()
             updateFollowedAt(session)
             clearUnfollowedSessionMeasurementsFromActiveTable(session)
         }
