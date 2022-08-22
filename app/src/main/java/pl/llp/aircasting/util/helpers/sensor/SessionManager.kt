@@ -17,12 +17,12 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
-import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.extensions.showToast
 
 class SessionManager(
     private val mContext: Context,
@@ -216,7 +216,7 @@ class SessionManager(
         session.startRecording()
 
         if (session.isFixed()) {
-            session.follow()
+            session.setFollowedAtNow()
             settings.increaseFollowedSessionsNumber()
             fixedSessionUploadService.upload(session)
         }

@@ -97,6 +97,7 @@ abstract class SessionsController(
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
+        session.resetFollowedAtAndOrder()
         sessionFollower.unfollow(session)
     }
 
