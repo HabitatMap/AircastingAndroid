@@ -5,8 +5,10 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
+import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
@@ -76,6 +78,15 @@ class MainController(
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)
         registerConnectivityManager()
+
+        sync(apiService)
+    }
+
+    private fun sync(apiService: ApiService) {
+        val syncService =
+            SessionsSyncService.get(apiService, mErrorHandler, mSettings)
+
+        syncService.sync()
     }
 
     private fun goToDormantTab() {

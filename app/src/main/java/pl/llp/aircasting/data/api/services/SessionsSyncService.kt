@@ -14,7 +14,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.SessionsSyncFinishedEvent
+import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -84,6 +84,7 @@ class SessionsSyncService private constructor(
         }
 
         syncStarted.set(true)
+        EventBus.getDefault().postSticky(SessionsSyncEvent())
 
         DatabaseProvider.runQuery {
             val sessions = sessionRepository.allSessionsExceptRecording()
@@ -113,12 +114,12 @@ class SessionsSyncService private constructor(
                     } else handleSyncError(shouldDisplayErrors, call)
 
                     syncStarted.set(false)
-                    EventBus.getDefault().post(SessionsSyncFinishedEvent())
+                    EventBus.getDefault().postSticky(SessionsSyncEvent(false))
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                     syncStarted.set(false)
-                    EventBus.getDefault().post(SessionsSyncFinishedEvent())
+                    EventBus.getDefault().postSticky(SessionsSyncEvent(false))
                     handleSyncError(shouldDisplayErrors, call, t)
                 }
             })
