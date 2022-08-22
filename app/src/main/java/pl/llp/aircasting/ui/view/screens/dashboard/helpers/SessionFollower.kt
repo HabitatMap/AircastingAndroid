@@ -1,9 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.helpers
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
@@ -35,39 +32,37 @@ class SessionFollower @Inject constructor(
         mSettings.decreaseFollowedSessionsNumber()
     }
 
-    private fun updateFollowedAt(session: Session) = runBlocking {
-        launch(ioDispatcher) {
+    private fun updateFollowedAt(session: Session) {
+        CoroutineScope(ioDispatcher).launch {
             mSessionRepository.updateFollowedAt(session)
             mSessionRepository.updateOrder(session.uuid, mSettings.getFollowedSessionsNumber())
         }
     }
 
-    private fun addFollowedSessionMeasurementsToActiveTable(session: Session) =
-        runBlocking {
-            launch(ioDispatcher) {
-                val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-                sessionId?.let {
-                    mActiveSessionsRepository.loadMeasurementsForStreams(
-                        it,
-                        session.streams,
-                        ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
-                    )
-                }
+    private fun addFollowedSessionMeasurementsToActiveTable(session: Session) {
+        CoroutineScope(ioDispatcher).launch {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            sessionId?.let {
+                mActiveSessionsRepository.loadMeasurementsForStreams(
+                    it,
+                    session.streams,
+                    ActiveSessionMeasurementsRepository.MAX_MEASUREMENTS_PER_STREAM_NUMBER
+                )
             }
         }
+    }
 
-    private fun delete(session: Session) = runBlocking {
-        launch(ioDispatcher) {
+    private fun delete(session: Session) {
+        CoroutineScope(ioDispatcher).launch {
             mSessionRepository.delete(session.uuid)
         }
     }
 
-    private fun clearUnfollowedSessionMeasurementsFromActiveTable(session: Session) =
-        runBlocking {
-            launch(ioDispatcher) {
-                val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
-                mActiveSessionsRepository.deleteBySessionId(sessionId)
-            }
+    private fun clearUnfollowedSessionMeasurementsFromActiveTable(session: Session) {
+        CoroutineScope(ioDispatcher).launch {
+            val sessionId = mSessionRepository.getSessionIdByUUID(session.uuid)
+            mActiveSessionsRepository.deleteBySessionId(sessionId)
         }
+    }
 }
 

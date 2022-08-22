@@ -6,9 +6,11 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -21,11 +23,11 @@ import pl.llp.aircasting.util.ItemTouchHelperAdapter
 import pl.llp.aircasting.util.Settings
 import java.util.*
 
-class ReorderingFollowingRecyclerAdapter (
+class ReorderingFollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
     private val mListener: SessionCardListener,
     supportFragmentManager: FragmentManager
-):  FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager),
+) : FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager),
     ItemTouchHelperAdapter {
 
     private val mApplication: AircastingApplication =
@@ -76,7 +78,8 @@ class ReorderingFollowingRecyclerAdapter (
 
     private fun updateSessionsOrder(firstPosition: Int, secondPosition: Int) {
         Collections.swap(mSessionUUIDS, firstPosition, secondPosition)
-        DatabaseProvider.runQuery {
+
+        CoroutineScope(Dispatchers.IO).launch {
             mSessionsViewModel.updateOrder(mSessionUUIDS[secondPosition], secondPosition)
             mSessionsViewModel.updateOrder(mSessionUUIDS[firstPosition], firstPosition)
         }
