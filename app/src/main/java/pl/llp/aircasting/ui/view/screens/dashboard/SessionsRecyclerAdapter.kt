@@ -171,16 +171,11 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         return reloadedSession ?: session
     }
 
-    private fun getFromDB(
-        session: Session,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ): Session? = runBlocking {
-        withContext(dispatcher) {
+    private fun getFromDB(session: Session): Session? = runBlocking {
+        withContext(Dispatchers.IO) {
             val dbSessionWithMeasurements =
                 mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-            return@withContext dbSessionWithMeasurements?.let {
-                Session(it)
-            }
+            return@withContext dbSessionWithMeasurements?.let { Session(it) }
         }
     }
 }

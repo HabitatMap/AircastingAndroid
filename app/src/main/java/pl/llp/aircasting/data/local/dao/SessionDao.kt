@@ -13,25 +13,43 @@ import java.util.*
 @Dao
 interface SessionDao {
     @Query("SELECT * FROM sessions")
-    fun getAll() : List<SessionDBObject>
+    fun getAll(): List<SessionDBObject>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
+    fun loadAllByTypeAndStatusWithMeasurements(
+        type: Session.Type,
+        status: Session.Status
+    ): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
+    fun loadAllByTypeAndStatusWithMeasurements(
+        type: Session.Type,
+        statuses: List<Int>
+    ): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithLastMeasurements(type: Session.Type, statuses: List<Int>): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>>
+    fun loadAllByTypeAndStatusWithLastMeasurements(
+        type: Session.Type,
+        statuses: List<Int>
+    ): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusForComplete(type: Session.Type, statuses: List<Int>): LiveData<List<CompleteSessionDBObject>>
+    fun loadAllByTypeAndStatusForComplete(
+        type: Session.Type,
+        statuses: List<Int>
+    ): LiveData<List<CompleteSessionDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithNotes(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsAndNotesDBObject>>
+    fun loadAllByTypeAndStatusWithNotes(
+        type: Session.Type,
+        status: Session.Status
+    ): LiveData<List<SessionWithStreamsAndNotesDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatus(type: Session.Type, status: Session.Status): LiveData<List<SessionWithStreamsDBObject>>
+    fun loadAllByTypeAndStatus(
+        type: Session.Type,
+        status: Session.Status
+    ): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
@@ -76,19 +94,35 @@ interface SessionDao {
     fun loadSessionByStatusAndType(status: Session.Status, type: Session.Type): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
-    fun loadSessionByDeviceIdStatusAndType(deviceId: String, status: Session.Status, type: Session.Type): SessionDBObject?
+    fun loadSessionByDeviceIdStatusAndType(
+        deviceId: String,
+        status: Session.Status,
+        type: Session.Type
+    ): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND device_type=:deviceType AND deleted=0")
-    fun loadSessionByStatusTypeAndDeviceType(status: Session.Status, type: Session.Type, deviceType: DeviceItem.Type): SessionDBObject?
+    fun loadSessionByStatusTypeAndDeviceType(
+        status: Session.Status,
+        type: Session.Type,
+        deviceType: DeviceItem.Type
+    ): SessionDBObject?
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status, version=:version, url_location=:urlLocation WHERE uuid=:uuid")
-    fun update(uuid: String, name: String, tags: ArrayList<String>, endTime: Date, status: Session.Status, version: Int, urlLocation: String?)
+    fun update(
+        uuid: String,
+        name: String,
+        tags: ArrayList<String>,
+        endTime: Date,
+        status: Session.Status,
+        version: Int,
+        urlLocation: String?
+    )
 
     @Query("UPDATE sessions SET followed_at=:followedAt WHERE uuid=:uuid")
-    fun updateFollowedAt(uuid: String, followedAt: Date?)
+    suspend fun updateFollowedAt(uuid: String, followedAt: Date?)
 
     @Query("UPDATE sessions SET session_order=:sessionOrder WHERE uuid=:uuid")
-    fun updateOrder(uuid: String, sessionOrder: Int)
+    suspend fun updateOrder(uuid: String, sessionOrder: Int)
 
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
     fun updateStatus(uuid: String, status: Session.Status)
@@ -97,13 +131,28 @@ interface SessionDao {
     fun updateUrlLocation(uuid: String, urlLocation: String?)
 
     @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
-    fun disconnectSession(newStatus: Session.Status, deviceId: String, existingStatus: Session.Status)
+    fun disconnectSession(
+        newStatus: Session.Status,
+        deviceId: String,
+        existingStatus: Session.Status
+    )
 
     @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND device_type!=:deviceType AND status=:existingStatus")
-    fun disconnectSessions(newStatus: Session.Status, deviceType: DeviceItem.Type?, type: Session.Type, existingStatus: Session.Status)
+    fun disconnectSessions(
+        newStatus: Session.Status,
+        deviceType: DeviceItem.Type?,
+        type: Session.Type,
+        existingStatus: Session.Status
+    )
 
     @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND device_type=:deviceType AND status=:existingStatus")
-    fun finishSessions(newStatus: Session.Status, endTime: Date, deviceType: DeviceItem.Type?, type: Session.Type, existingStatus: Session.Status)
+    fun finishSessions(
+        newStatus: Session.Status,
+        endTime: Date,
+        deviceType: DeviceItem.Type?,
+        type: Session.Type,
+        existingStatus: Session.Status
+    )
 
     @Query("DELETE FROM sessions")
     fun deleteAll()

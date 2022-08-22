@@ -72,11 +72,11 @@ class SessionsViewModel : ViewModel() {
         thresholdsRepository.updateSensorThreshold(sensorThreshold)
     }
 
-    fun updateFollowedAt(session: Session) {
+    suspend fun updateFollowedAt(session: Session) {
         sessionsRepository.updateFollowedAt(session)
     }
 
-    fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
+    suspend fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
         sessionsRepository.updateOrder(sessionUUID, followingSessionsNumber)
     }
 }

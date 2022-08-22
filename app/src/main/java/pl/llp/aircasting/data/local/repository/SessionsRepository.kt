@@ -182,11 +182,11 @@ class SessionsRepository {
         mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
     }
 
-    fun updateFollowedAt(session: Session) {
+    suspend fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
 
-    fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
+    suspend fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
         mDatabase.sessions().updateOrder(sessionUUID, followingSessionsNumber)
     }
 }
