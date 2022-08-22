@@ -79,6 +79,7 @@ object AppDependencies {
     private const val analyticsKTX = "com.google.firebase:firebase-analytics-ktx"
 
     /* Room DB */
+    private const val roomKTX = "androidx.room:room-ktx:${Versions.roomDB}"
     private const val roomDB = "androidx.room:room-runtime:${Versions.roomDB}"
     private const val roomDBCompiler = "androidx.room:room-compiler:${Versions.roomDB}"
     private const val roomDBTest = "androidx.room:room-testing:${Versions.roomDB}"
@@ -160,6 +161,7 @@ object AppDependencies {
         add(autoAnnotations)
         add(crashlyticsKTX)
         add(analyticsKTX)
+        add(roomKTX)
         add(roomDB)
         add(commonsCodec)
         add(androidBle)
