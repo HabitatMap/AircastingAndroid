@@ -43,24 +43,37 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
+        view = initView(inflater, container)
+        controller = initController()
+
+        val tabId = arguments?.get("tabId") as Int?
+        controller?.onCreate(tabId)
+
+        handleBackButtonPress()
+
+        return view?.rootView
+    }
+
+    private fun initView(inflater: LayoutInflater, container: ViewGroup?): DashboardViewMvcImpl? {
         val pagerAdapter = context?.let { DashboardPagerAdapter(it, childFragmentManager) }
-        view = pagerAdapter?.let {
+        return pagerAdapter?.let {
             DashboardViewMvcImpl(
                 inflater, container, childFragmentManager,
                 it, DashboardPagerAdapter.TABS_COUNT
             )
         }
-        val sessionsSyncService = SessionsSyncService.get(
-            apiServiceFactory.get(settings.getAuthToken()!!),
-            errorHandler,
-            settings
-        )
-        controller = DashboardController(view, sessionsSyncService)
-        val tabId = arguments?.get("tabId") as Int?
-        controller?.onCreate(tabId)
+    }
 
-        handleBackButtonPress()
-        return view?.rootView
+    private fun initController(): DashboardController? {
+        val auth = settings.getAuthToken()
+        return if (auth != null) {
+            val sessionsSyncService = SessionsSyncService.get(
+                apiServiceFactory.get(auth),
+                errorHandler,
+                settings
+            )
+            DashboardController(view, sessionsSyncService)
+        } else null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,6 +119,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     }
 
     private fun showBatteryOptimizationDialogIfNeeded() {
-        if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(requireContext())) requireActivity().showBatteryOptimizationHelperDialog()
+        if (isSDKGreaterOrEqualToM() && !isIgnoringBatteryOptimizations(requireContext()))
+            requireActivity().showBatteryOptimizationHelperDialog()
     }
 }
