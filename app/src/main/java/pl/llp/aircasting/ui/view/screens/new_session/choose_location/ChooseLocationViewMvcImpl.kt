@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.fragment.app.FragmentManager
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.*
@@ -24,9 +25,9 @@ import pl.llp.aircasting.util.extensions.setMapType
 class ChooseLocationViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?,
+    private val supportFragmentManager: FragmentManager?,
     private val session: Session,
-    errorHandler: ErrorHandler
+    private val errorHandler: ErrorHandler
 ) : BaseObservableViewMvc<ChooseLocationViewMvc.Listener>(),
     ChooseLocationViewMvc,
     OnMapReadyCallback {
@@ -55,43 +56,54 @@ class ChooseLocationViewMvcImpl(
         mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
         mDefaultLongitude =
             session.location?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
-        val autocompleteFragment =
-            supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(
-            listOf(
-                Place.Field.ID,
-                Place.Field.NAME,
-                Place.Field.LAT_LNG
-            )
-        )
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                place.latLng?.let {
-                    updateMapCamera(it.latitude, it.longitude)
-                }
-            }
 
-            override fun onError(status: Status) {
-                errorHandler.handle(ChooseAirBeamLocationSelectingPlaceError())
-            }
-        })
-        autocompleteFragment.requireView()
-            .findViewById<View>(R.id.places_autocomplete_clear_button)
-            .setOnClickListener { view ->
-                autocompleteFragment.setText("")
-                view.visibility = View.GONE
-                resetMapToDefaults()
-            }
-        mMapFragment = SupportMapFragment.newInstance(mapOptions())
-        mMapFragment?.let {
-            supportFragmentManager.beginTransaction().replace(R.id.map, it).commit()
-        }
-        mMapFragment?.getMapAsync(this)
-        val continueButton = rootView?.findViewById<Button>(R.id.continue_button)
-        continueButton?.setOnClickListener {
+        setupAutoCompleteFragment()
+
+        setupMapFragment()
+
+        rootView?.findViewById<Button>(R.id.continue_button)?.setOnClickListener {
             onContinueClicked()
         }
+    }
+
+    private fun setupMapFragment() {
+        mMapFragment = SupportMapFragment.newInstance(mapOptions())
+        mMapFragment?.let {
+            supportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()
+        }
+        mMapFragment?.getMapAsync(this)
+    }
+
+    private fun setupAutoCompleteFragment() {
+        (supportFragmentManager?.findFragmentById(R.id.autocomplete_fragment)
+                as AutocompleteSupportFragment)
+            .apply {
+                setPlaceFields(
+                    listOf(
+                        Place.Field.ID,
+                        Place.Field.NAME,
+                        Place.Field.LAT_LNG
+                    )
+                )
+                setOnPlaceSelectedListener(object : PlaceSelectionListener {
+                    override fun onPlaceSelected(place: Place) {
+                        place.latLng?.let {
+                            updateMapCamera(it.latitude, it.longitude)
+                        }
+                    }
+
+                    override fun onError(status: Status) {
+                        errorHandler.handle(ChooseAirBeamLocationSelectingPlaceError())
+                    }
+                })
+                findViewById<View>(R.id.places_autocomplete_clear_button)
+                    .setOnClickListener { view ->
+                        this.setText("")
+                        view.visibility = View.GONE
+                        resetMapToDefaults()
+                    }
+                view?.findViewById(R.id.places_autocomplete_search_input) as EditText
+            }
     }
 
     override fun onDestroy() {
