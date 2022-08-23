@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.events
 
+import org.apache.commons.lang3.time.DateUtils
 import java.util.*
 
 
@@ -17,8 +18,7 @@ class NewMeasurementEvent(
     val thresholdVeryHigh: Int,
     val measuredValue: Double
 ) {
-    val creationTime = Date().time
+    val creationTime = DateUtils.truncate(Date(), Calendar.SECOND).time
 
     val deviceId get(): String? = packageName.split(':').lastOrNull()
-
 }
