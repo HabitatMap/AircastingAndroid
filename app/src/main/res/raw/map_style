@@ -63,7 +63,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "visibility": "simplified"
+        "visibility": "on"
       }
     ]
   },
