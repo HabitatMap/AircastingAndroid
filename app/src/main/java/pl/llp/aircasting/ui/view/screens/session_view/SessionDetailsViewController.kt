@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionDownloadService
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -28,6 +27,8 @@ import pl.llp.aircasting.util.events.NoteDeletedEvent
 import pl.llp.aircasting.util.events.NoteEditedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.backToUIThread
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.concurrent.atomic.AtomicBoolean
@@ -82,7 +83,7 @@ abstract class SessionDetailsViewController(
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
+        backToUIThread(coroutineScope) {
             mViewMvc?.bindSession(mSessionPresenter)
             if (mShouldRefreshStatistics.get()) {
                 mViewMvc?.refreshStatisticsContainer()
@@ -103,7 +104,7 @@ abstract class SessionDetailsViewController(
     }
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             mSessionsViewModel.updateSensorThreshold(sensorThreshold)
         }
     }
@@ -122,7 +123,7 @@ abstract class SessionDetailsViewController(
 
     override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
         val onDownloadSuccess = { session: Session ->
-            DatabaseProvider.runQuery {
+            runOnIOThread {
                 mSessionRepository.update(session)
             }
             editNoteDialog?.reload(session)

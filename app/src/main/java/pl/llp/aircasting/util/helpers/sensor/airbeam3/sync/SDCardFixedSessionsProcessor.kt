@@ -1,10 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import java.io.File
 
 class SDCardFixedSessionsProcessor(
@@ -28,7 +28,7 @@ class SDCardFixedSessionsProcessor(
     }
 
     fun run(deviceId: String) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             mSDCardCSVIterator.run(file).forEach { csvSession ->
                 processSession(deviceId, csvSession)
             }

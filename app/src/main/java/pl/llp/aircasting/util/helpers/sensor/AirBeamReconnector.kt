@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -129,7 +129,7 @@ class AirBeamReconnector(
 
     private fun updateSessionStatus(session: Session?, status: Session.Status) {
         session?.let { session ->
-            DatabaseProvider.runQuery {
+            runOnIOThread {
                 mSessionsRepository.updateSessionStatus(session, status)
             }
         }

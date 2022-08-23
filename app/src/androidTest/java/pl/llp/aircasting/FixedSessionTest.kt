@@ -33,6 +33,7 @@ import pl.llp.aircasting.helpers.stubPairedDevice
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
@@ -90,7 +91,7 @@ class FixedSessionTest {
 
     private fun clearDatabase() {
         DatabaseProvider.setup(app)
-        DatabaseProvider.runQuery { DatabaseProvider.get().clearAllTables() }
+        runOnIOThread { DatabaseProvider.get().clearAllTables() }
     }
 
     @Before
@@ -275,7 +276,7 @@ class FixedSessionTest {
 //        )
 //        val measurements = listOf(Measurement(70.0, Date()))
 //
-//        DatabaseProvider.runQuery {
+//        runOnIOThread {
 //            val sessionId = sessionsRepository.insert(session)
 //            val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
 //            measurementsRepository.insertAll(streamId, sessionId, measurements)

@@ -6,7 +6,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import kotlinx.coroutines.*
 import pl.llp.aircasting.data.local.dao.*
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.local.migrations.*
@@ -77,19 +76,6 @@ class DatabaseProvider {
             }
 
             return mAppDatabase!!
-        }
-
-        @OptIn(DelicateCoroutinesApi::class)
-        fun runQuery(block: (scope: CoroutineScope) -> Unit) {
-            GlobalScope.launch(Dispatchers.IO) {
-                block(this)
-            }
-        }
-
-        fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
-            scope.launch(Dispatchers.Main) {
-                uiBlock()
-            }
         }
     }
 }

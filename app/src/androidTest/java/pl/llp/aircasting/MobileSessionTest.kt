@@ -17,6 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit.rule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
@@ -29,6 +30,7 @@ import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.net.HttpURLConnection
@@ -76,7 +78,7 @@ class MobileSessionTest {
 
     fun clearDatabase() {
         DatabaseProvider.setup(app)
-        DatabaseProvider.runQuery { DatabaseProvider.get().clearAllTables() }
+        runOnIOThread { DatabaseProvider.get().clearAllTables() }
     }
 
     @Before

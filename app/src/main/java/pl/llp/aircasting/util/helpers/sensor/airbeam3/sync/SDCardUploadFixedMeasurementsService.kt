@@ -2,8 +2,8 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.annotation.SuppressLint
 import android.util.Log
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.util.extensions.runOnIOThread
 
 class SDCardUploadFixedMeasurementsService(
     private val mSDCardCSVFileFactory: SDCardCSVFileFactory,
@@ -14,7 +14,7 @@ class SDCardUploadFixedMeasurementsService(
     private val TAG = "SDCardUploadFixedMeasurements"
 
     fun run(deviceId: String, onFinishCallback: () -> Unit) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val file = mSDCardCSVFileFactory.getFixedFile()
 
             mSDCardCSVIterator.run(file).forEach { csvSession ->

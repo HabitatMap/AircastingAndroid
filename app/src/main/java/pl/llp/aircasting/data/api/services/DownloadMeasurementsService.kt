@@ -9,6 +9,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import retrofit2.Call
 
 class DownloadMeasurementsService(
@@ -21,7 +22,7 @@ class DownloadMeasurementsService(
     private val measurementsRepository = MeasurementsRepository()
 
     fun downloadMeasurements(session: Session, finallyCallback: (() -> Unit)? = null) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val dbSession = sessionsRepository.getSessionWithMeasurementsByUUID(session.uuid)
             dbSession?.let {
                 enqueueDownloadingMeasurements(dbSession, session, finallyCallback)

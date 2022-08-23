@@ -16,7 +16,6 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
@@ -122,34 +121,11 @@ class MainViewMvcImpl(
                 R.id.navigation_dashboard -> {
                     mSettings?.getFollowedSessionsNumber()
                         ?.let { rootActivity.adjustMenuVisibility(true, it) }
-
-                    navigateToAppropriateTab()
                 }
                 R.id.navigation_lets_begin -> mNavController.navigate(R.id.navigation_lets_begin)
                 R.id.navigation_settings -> mNavController.navigate(R.id.navigation_settings)
             }
             true
         }
-    }
-
-    private fun navigateToAppropriateTab() {
-        DatabaseProvider.runQuery { scope ->
-            val isMobileActiveSessionExists = mSessionRepository.mobileActiveSessionExists()
-
-            DatabaseProvider.backToUIThread(scope) {
-                if (isMobileActiveSessionExists) goToMobileActiveTab() else goToFollowingTab()
-            }
-        }
-    }
-
-    private fun goToMobileActiveTab() {
-        val action =
-            MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_ACTIVE.value)
-        mNavController.navigate(action)
-    }
-
-    private fun goToFollowingTab() {
-        val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.FOLLOWING.value)
-        mNavController.navigate(action)
     }
 }

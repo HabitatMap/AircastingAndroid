@@ -62,7 +62,6 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         setContentView(view?.rootView)
     }
 
-
     override fun onResume() {
         super.onResume()
         controller?.onResume()

@@ -1,9 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import java.io.File
 
 abstract class SDCardSessionsProcessor(
@@ -17,7 +17,7 @@ abstract class SDCardSessionsProcessor(
     val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
     open fun run(deviceId: String, onFinishCallback: ((MutableList<Long>) -> Unit)? = null) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             mSDCardCSVIterator.run(file).forEach { csvSession ->
                 processSession(deviceId, csvSession)
             }
