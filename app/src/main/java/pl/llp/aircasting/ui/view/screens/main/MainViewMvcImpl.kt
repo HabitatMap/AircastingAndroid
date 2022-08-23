@@ -16,12 +16,12 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.goToFollowingTab
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.visible
 
@@ -30,7 +30,7 @@ class MainViewMvcImpl(
     parent: ViewGroup?,
     private val rootActivity: AppCompatActivity
 ) : BaseViewMvc() {
-    private val mSessionRepository = SessionsRepository()
+
     private var mSettings: Settings? = null
 
     private lateinit var topAppBar: MaterialToolbar
@@ -69,6 +69,7 @@ class MainViewMvcImpl(
             rootActivity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         mNavController = navHostFragment.navController
     }
+
     private fun appBarSetup() {
         setupTopAppBar()
 
@@ -118,14 +119,20 @@ class MainViewMvcImpl(
         navView.setupWithNavController(mNavController)
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_dashboard -> {
-                    mSettings?.getFollowedSessionsNumber()
-                        ?.let { rootActivity.adjustMenuVisibility(true, it) }
-                }
+                R.id.navigation_dashboard -> goToFollowingTab()
                 R.id.navigation_lets_begin -> mNavController.navigate(R.id.navigation_lets_begin)
                 R.id.navigation_settings -> mNavController.navigate(R.id.navigation_settings)
             }
             true
         }
     }
+
+    private fun goToFollowingTab() {
+        val getFollowedSessionNumber = mSettings?.getFollowedSessionsNumber()
+        rootActivity.apply {
+            goToFollowingTab()
+            getFollowedSessionNumber?.let { adjustMenuVisibility(true, it) }
+        }
+    }
+
 }

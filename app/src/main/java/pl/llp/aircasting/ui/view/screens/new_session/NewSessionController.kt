@@ -330,6 +330,8 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
+        settings.increaseActiveMobileSessionsNumber()
+
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
