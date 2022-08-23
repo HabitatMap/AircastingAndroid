@@ -1,10 +1,14 @@
 package pl.llp.aircasting.ui.view.screens.main
 
 import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
@@ -16,11 +20,14 @@ import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.events.AppToForegroundEvent
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.util.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.backToUIThread
 import pl.llp.aircasting.util.extensions.goToDormantTab
+import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
 
@@ -51,6 +58,18 @@ class MainController(
 
     fun onResume() {
         EventBus.getDefault().safeRegister(this)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: AppToForegroundEvent) {
+        Handler(Looper.getMainLooper()).post {
+            navigateToMobileActiveIfSessionAvailable()
+        }
+    }
+
+    private fun navigateToMobileActiveIfSessionAvailable() {
+        val isMobileActiveSessionExists = mSettings.getMobileActiveSessions()
+        if (isMobileActiveSessionExists > 0) goToMobileActiveTab()
     }
 
     fun onDestroy() {
@@ -89,6 +108,10 @@ class MainController(
         syncService.sync()
     }
 
+    private fun goToMobileActiveTab() {
+        rootActivity.goToMobileActiveTab()
+    }
+
     private fun goToDormantTab() {
         rootActivity.goToDormantTab()
     }
@@ -118,4 +141,5 @@ class MainController(
         if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
+
 }

@@ -36,7 +36,7 @@ class MobileActiveController(
     private val mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector,
     private val mContext: Context
@@ -127,6 +127,7 @@ class MobileActiveController(
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
+        mSettings.decreaseActiveMobileSessionsNumber()
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
         goToDormantTab()
