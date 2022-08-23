@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.*
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -27,6 +26,8 @@ import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.events.UpdateSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
+import pl.llp.aircasting.util.extensions.backToUIThread
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.showToast
 
 
@@ -98,13 +99,13 @@ abstract class SessionsController(
     }
 
     private fun reloadSession(session: Session) {
-        DatabaseProvider.runQuery { scope ->
+        runOnIOThread { scope ->
             val dbSessionWithMeasurements =
                 mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSessionWithMeasurements?.let {
                 val reloadedSession = Session(it)
 
-                DatabaseProvider.backToUIThread(scope) {
+                backToUIThread(scope) {
                     mViewMvc?.reloadSession(reloadedSession)
                     mViewMvc?.hideLoaderFor(session)
                 }
@@ -170,7 +171,7 @@ abstract class SessionsController(
             return
         }
         val onDownloadSuccess = { session: Session ->
-            DatabaseProvider.runQuery {
+            runOnIOThread {
                 mSessionRepository.update(session)
             }
             editDialog?.reload(session)
@@ -184,7 +185,7 @@ abstract class SessionsController(
 
     override fun onShareSessionClicked(session: Session) {
         var reloadedSession: Session?
-        DatabaseProvider.runQuery { scope ->
+        runOnIOThread { scope ->
             val dbSession = mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
             dbSession?.let {
                 reloadedSession = Session(dbSession)

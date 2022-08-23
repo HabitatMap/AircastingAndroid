@@ -7,7 +7,6 @@ import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.response.SyncResponse
 import pl.llp.aircasting.data.api.response.UploadSessionResponse
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -19,6 +18,7 @@ import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,7 +86,7 @@ class SessionsSyncService private constructor(
         syncStarted.set(true)
         EventBus.getDefault().postSticky(SessionsSyncEvent())
 
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val sessions = sessionRepository.allSessionsExceptRecording()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
@@ -101,7 +101,7 @@ class SessionsSyncService private constructor(
                     if (response.isSuccessful) {
                         val body = response.body()
                         body?.let {
-                            DatabaseProvider.runQuery {
+                            runOnIOThread {
                                 deleteMarkedForRemoval()
                                 delete(body.deleted)
                                 removeOldMeasurements()
@@ -143,7 +143,7 @@ class SessionsSyncService private constructor(
             val session = sessionRepository.loadSessionForUpload(uuid)
             if (session != null && isUploadable(session)) {
                 val onUploadSuccess = { response: Response<UploadSessionResponse> ->
-                    DatabaseProvider.runQuery {
+                    runOnIOThread {
                         sessionRepository.updateUrlLocation(session, response.body()?.location)
                     }
                     // TODO: handle update notes - adding photoPath
@@ -156,7 +156,7 @@ class SessionsSyncService private constructor(
     private fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
             val onDownloadSuccess = { session: Session ->
-                DatabaseProvider.runQuery {
+                runOnIOThread {
                     if (mCall?.isCanceled != true) {
                         try {
                             val sessionId = sessionRepository.updateOrCreate(session)

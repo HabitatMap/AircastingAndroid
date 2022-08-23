@@ -4,11 +4,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.extensions.backToUIThread
+import pl.llp.aircasting.util.extensions.runOnIOThread
 
 abstract class SessionsObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
@@ -28,7 +29,7 @@ abstract class SessionsObserver<Type>(
     private var mSessionsLiveData: LiveData<List<Type>>? = null
 
     private var mObserver: Observer<List<Type>> = Observer { dbSessions ->
-        DatabaseProvider.runQuery { coroutineScope ->
+        runOnIOThread { coroutineScope ->
             val sessions = dbSessions.map { dbSession -> buildSession(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
             if (anySensorThresholdChanged(sensorThresholds)) updateSensorThresholds(sensorThresholds)
@@ -107,13 +108,13 @@ abstract class SessionsObserver<Type>(
         coroutineScope: CoroutineScope,
         modifiedSessions: Map<ModificationType, List<Session>>
     ) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
+        backToUIThread(coroutineScope) {
             mViewMvc?.showSessionsView(modifiedSessions, mSensorThresholds)
         }
     }
 
     private fun showEmptyView(coroutineScope: CoroutineScope) {
-        DatabaseProvider.backToUIThread(coroutineScope) {
+        backToUIThread(coroutineScope) {
             mViewMvc?.showEmptyView()
         }
     }

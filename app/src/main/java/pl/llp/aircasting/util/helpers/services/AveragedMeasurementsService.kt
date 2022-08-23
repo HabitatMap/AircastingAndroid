@@ -1,12 +1,12 @@
 package pl.llp.aircasting.util.helpers.services
 
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartAveragesCreator
+import pl.llp.aircasting.util.extensions.runOnIOThread
 
 class AveragedMeasurementsService(sessionUUID: String) {
         var averagingService: AveragingService? = null
@@ -16,7 +16,7 @@ class AveragedMeasurementsService(sessionUUID: String) {
         val streamRepository = MeasurementStreamsRepository()
 
     init {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             sessionId = sessionsRepository.getSessionIdByUUID(sessionUUID)
             if (sessionId != null) averagingService = AveragingService.get(sessionId!!)
         }
@@ -25,7 +25,7 @@ class AveragedMeasurementsService(sessionUUID: String) {
         fun getMeasurementsOverSecondThreshold(stream: MeasurementStream): List<Measurement> {
             if (sessionId == null) return emptyList()
             var measurements = listOf<Measurement>()
-            DatabaseProvider.runQuery {
+            runOnIOThread {
                 val streamId = streamRepository.getId(sessionId!!, stream)
 
                 if (streamId != null) {

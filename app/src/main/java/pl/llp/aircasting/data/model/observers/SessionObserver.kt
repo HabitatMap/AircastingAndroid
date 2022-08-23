@@ -3,11 +3,11 @@ package pl.llp.aircasting.data.model.observers
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import kotlinx.coroutines.CoroutineScope
+import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.extensions.runOnIOThread
 
 abstract class SessionObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
@@ -38,7 +38,7 @@ abstract class SessionObserver<Type>(
     private fun onSessionChanged(session: Session) {
         mSessionPresenter.session = session
 
-        DatabaseProvider.runQuery { coroutineScope ->
+        runOnIOThread { coroutineScope ->
             var selectedSensorName = mSessionPresenter.initialSensorName
             if (mSessionPresenter.selectedStream != null) {
                 selectedSensorName = mSessionPresenter.selectedStream!!.sensorName

@@ -8,7 +8,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.*
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -17,6 +16,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.location.LocationHelper
@@ -163,7 +163,7 @@ class SessionManager(
     }
 
     private fun updateMobileSessions() {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             sessionsRespository.disconnectMobileBluetoothSessions()
             sessionsRespository.finishMobileMicSessions()
         }
@@ -189,7 +189,7 @@ class SessionManager(
 
         val deviceId = event.deviceId ?: return
 
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val sessionId = sessionsRespository.getMobileActiveSessionIdByDeviceId(deviceId)
             sessionId?.let {
                 try {
@@ -221,7 +221,7 @@ class SessionManager(
             fixedSessionUploadService.upload(session)
         }
 
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             DBsessionId = sessionsRespository.insert(session)
             if (session.isMobile()) {
                 DBsessionId?.let {
@@ -241,7 +241,7 @@ class SessionManager(
     }
 
     private fun stopRecording(uuid: String) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
             val session = sessionsRespository.loadSessionAndMeasurementsByUUID(uuid)
             session?.let {
@@ -257,7 +257,7 @@ class SessionManager(
     }
 
     private fun startStandaloneMode(uuid: String) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val sessionId = sessionsRespository.getSessionIdByUUID(uuid)
             averagingBackgroundService?.stop()
             averagingPreviousMeasurementsBackgroundService?.stop()
@@ -266,7 +266,7 @@ class SessionManager(
     }
 
     private fun disconnectSession(deviceId: String) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             sessionsRespository.disconnectSession(deviceId)
         }
     }
@@ -276,7 +276,7 @@ class SessionManager(
         session.name = event.name
         session.tags = event.tags
         sessionUpdateService.update(session) {
-            DatabaseProvider.runQuery {
+            runOnIOThread {
                 sessionsRespository.update(session)
             }
         }
@@ -294,7 +294,7 @@ class SessionManager(
     }
 
     private fun deleteSession(sessionUUID: String) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             settings.setDeletingSessionsInProgress(true)
             sessionsRespository.markForRemoval(listOf(sessionUUID))
             settings.setSessionsToRemove(true)
@@ -314,7 +314,7 @@ class SessionManager(
         callback: () -> Unit
     ) {
         mCallback = callback
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val sessionId = sessionsRespository.getSessionIdByUUID(session.uuid)
             measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
             mCallback?.invoke()
@@ -332,14 +332,14 @@ class SessionManager(
     }
 
     private fun deleteMarkedForRemoval() {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             measurementStreamsRepository.deleteMarkedForRemoval()
             sessionsSyncService.sync()
         }
     }
 
     private fun addNote(event: NoteCreatedEvent) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
             sessionId?.let {
                 noteRepository.insert(sessionId, event.note)
@@ -348,7 +348,7 @@ class SessionManager(
     }
 
     private fun editNote(event: NoteEditedEvent) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             event.session?.let {
                 val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {
@@ -360,7 +360,7 @@ class SessionManager(
     }
 
     private fun deleteNote(event: NoteDeletedEvent) {
-        DatabaseProvider.runQuery {
+        runOnIOThread {
             event.session?.let {
                 val sessionId = sessionsRespository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {

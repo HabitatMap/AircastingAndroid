@@ -17,6 +17,7 @@ import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.extensions.safeRegister
 import retrofit2.Call
@@ -50,7 +51,7 @@ class DownloadMeasurementsCallback(
             val body = response.body()
 
             body?.streams?.let { streams ->
-                DatabaseProvider.runQuery {
+                runOnIOThread {
                     val streamResponses = streams.values
                     if (!callCanceled.get()) {
                         try {
