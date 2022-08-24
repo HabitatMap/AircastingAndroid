@@ -40,20 +40,14 @@ class Chart(
         setTimesAndUnit()
     }
 
-    private fun resetChart() {
-        mLineChart?.data?.clearValues()
-        mLineChart?.clear()
-    }
-
     private fun setEntries() {
         mEntries = mSessionPresenter?.chartData?.getEntries(mSessionPresenter?.selectedStream)
             ?: listOf()
     }
 
-    private fun drawChart() {
-        configurator.configure(mLineChart, mDataSet)
-        // Refreshing the chart
-        mLineChart?.invalidate()
+    private fun resetChart() {
+        mLineChart?.data?.clearValues()
+        mLineChart?.clear()
     }
 
     private fun prepareDataSet() {
@@ -91,6 +85,19 @@ class Chart(
         mDataSet = dataSet
     }
 
+    private fun drawChart() {
+        configurator.configure(mLineChart, mDataSet)
+
+        // Refreshing the chart
+        mLineChart?.invalidate()
+    }
+
+    private fun setTimesAndUnit() {
+        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
+        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
+        mChartUnitTextView?.text = chartUnitText()
+    }
+
     private fun circleColors(): List<Int> {
         return mEntries.map { entry ->
             getColor(entry.y)
@@ -104,12 +111,6 @@ class Chart(
             measurementValue,
             mSessionPresenter?.sensorThresholdFor(mSessionPresenter?.selectedStream)
         )
-    }
-
-    private fun setTimesAndUnit() {
-        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
-        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
-        mChartUnitTextView?.text = chartUnitText()
     }
 
     private fun chartUnitText(): String {
