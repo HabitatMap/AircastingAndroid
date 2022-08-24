@@ -47,6 +47,7 @@
 
     <dimen name="card_corner_radius">0dp</dimen>
 
+    <dimen name="card_view_corner">35dp</dimen>
     <dimen name="map_height">300dp</dimen>
     <dimen name="hlu_slider_thumb_radius">10dp</dimen>
 
