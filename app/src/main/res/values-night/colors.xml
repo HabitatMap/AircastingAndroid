@@ -22,6 +22,8 @@
     <color name="aircasting_grey_700">#737578</color>
     <color name="aircasting_black_overlay">#40000000</color>
 
+    <color name="light_blue_lets_start_background">#40475D</color>
+
     <color name="session_color_indicator_low">#96D788</color>
     <color name="session_color_indicator_low_shadow">#3096D788</color>
     <color name="session_color_indicator_medium">#FDD760</color>
