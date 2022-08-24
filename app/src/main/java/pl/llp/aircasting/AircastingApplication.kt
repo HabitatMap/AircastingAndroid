@@ -12,6 +12,7 @@ import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.Settings.Companion.PREFERENCES_NAME
 
 class AircastingApplication : Application() {
     lateinit var appComponent: AppComponent
@@ -25,7 +26,7 @@ class AircastingApplication : Application() {
 
         DatabaseProvider.setup(applicationContext)
 
-        mSettings = Settings(this)
+        mSettings = Settings(getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE))
         ExpandedCardsRepository.setup(mSettings)
         setCorrectAppTheme()
 

@@ -5,49 +5,51 @@ import android.content.SharedPreferences
 import com.jakewharton.processphoenix.ProcessPhoenix
 import pl.llp.aircasting.data.local.LogoutService
 
-open class Settings(private val mApplication: Application) {
-    private val PRIVATE_MODE = 0
-    private val PREFERENCES_NAME = "preferences"
-    private val PROFILE_NAME_KEY = "profile_name"
-    private val EMAIL_KEY = "email"
-    private val AUTH_TOKEN_KEY = "auth_token"
-    private val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
-    private val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
-    private val CROWD_MAP_ENABLED_KEY = "crowd_map"
-    private val CALIBRATION_KEY = "calibration"
-    private val MAPS_DISABLED_KEY = "maps_disabled"
-    private val BACKEND_URL_KEY = "backend_url"
-    private val BACKEND_PORT_KEY = "backend_port"
-    private val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
-    private val APP_RESTARTED = "app_restarted"
-    private val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
-    private val MOBILE_ACTIVE_NUMBERS_KEY = "mobile_active_sessions"
-    private val THEME_SET_TO_DARK_KEY = "theme_dark"
-    private val KEEP_SCREEN_ON_KEY = "keep_screen_on"
-    private val USE_SATELLITE_VIEW = "use_satellite_view"
+open class Settings(private val sharedPreferences: SharedPreferences) {
+    companion object {
+        const val PREFERENCES_NAME = "preferences"
+        private const val PROFILE_NAME_KEY = "profile_name"
+        private const val EMAIL_KEY = "email"
+        private const val AUTH_TOKEN_KEY = "auth_token"
+        private const val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
+        private const val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
+        private const val CROWD_MAP_ENABLED_KEY = "crowd_map"
+        private const val CALIBRATION_KEY = "calibration"
+        private const val MAPS_DISABLED_KEY = "maps_disabled"
+        private const val BACKEND_URL_KEY = "backend_url"
+        private const val BACKEND_PORT_KEY = "backend_port"
+        private const val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
+        private const val APP_RESTARTED = "app_restarted"
 
-    private val DELETE_SESSION_IN_PROGERSS_KEY = "delete_session_in_progress"
-    private val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
-    private val EXPANDED_SESSION_CARDS = "expanded_session_cards"
+        private const val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
+        private const val MOBILE_ACTIVE_NUMBERS_KEY = "mobile_active_sessions"
+        private const val DEFAULT_MOBILE_ACTIVE_SESSIONS = 0
+        private const val THEME_SET_TO_DARK_KEY = "theme_dark"
+        private const val KEEP_SCREEN_ON_KEY = "keep_screen_on"
+        private const val USE_SATELLITE_VIEW = "use_satellite_view"
 
-    private val DEFAULT_DELETE_SESSION_IN_PROGRESS = false
-    private val DEFAULT_SESSIONS_TO_REMOVE = false
-    private val DEFAULT_CALIBRATION_VALUE = 100
-    private val DEFAULT_USE_24_HOUR_FORMAT = true
-    private val DEFAULT_USE_CELSIUS_SCALE = false
-    private val DEFAULT_CROWD_MAP_ENABLED = true
-    private val DEFAULT_MAPS_DISABLED = false
+        private const val DELETE_SESSION_IN_PROGRESS_KEY = "delete_session_in_progress"
+        private const val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
+        private const val EXPANDED_SESSION_CARDS = "expanded_session_cards"
+
+        private const val DEFAULT_DELETE_SESSION_IN_PROGRESS = false
+        private const val DEFAULT_SESSIONS_TO_REMOVE = false
+        private const val DEFAULT_CALIBRATION_VALUE = 100
+        private const val DEFAULT_USE_24_HOUR_FORMAT = true
+        private const val DEFAULT_USE_CELSIUS_SCALE = false
+        private const val DEFAULT_CROWD_MAP_ENABLED = true
+        private const val DEFAULT_MAPS_DISABLED = false
+
+        private const val DEFAULT_BACKEND_PORT = "80"
+
+        private const val DEFAULT_APP_RESTARTED = false
+        private const val DEFAULT_THEME_VALUE = false
+        private const val DEFAULT_KEEP_SCREEN_ON = false
+        private const val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
+        private const val DEFAULT_ONBOARDING_DISPLAYED = false
+    }
+
     protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
-    private val DEFAULT_BACKEND_PORT = "80"
-    protected open val DEFAULT_ONBOARDING_DISPLAYED = false
-    private val DEFAULT_APP_RESTARTED = false
-    private val DEFAULT_THEME_VALUE = false
-    private val DEFAULT_KEEP_SCREEN_ON = false
-    private val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
-    private val DEFAULT_MOBILE_ACTIVE_SESSIONS = 0
-
-    private val sharedPreferences: SharedPreferences =
-        mApplication.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
 
     fun getAuthToken(): String? {
         return getStringFromSettings(AUTH_TOKEN_KEY)
@@ -103,7 +105,7 @@ open class Settings(private val mApplication: Application) {
 
     fun getIsDeleteSessionInProgress(): Boolean {
         return getBooleanFromSettings(
-            DELETE_SESSION_IN_PROGERSS_KEY,
+            DELETE_SESSION_IN_PROGRESS_KEY,
             DEFAULT_DELETE_SESSION_IN_PROGRESS
         )
     }
@@ -199,7 +201,7 @@ open class Settings(private val mApplication: Application) {
     }
 
     fun setDeletingSessionsInProgress(deleteInProgress: Boolean) {
-        saveToSettings(DELETE_SESSION_IN_PROGERSS_KEY, deleteInProgress)
+        saveToSettings(DELETE_SESSION_IN_PROGRESS_KEY, deleteInProgress)
     }
 
     fun login(profileName: String, email: String, authToken: String) {
