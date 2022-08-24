@@ -3,16 +3,15 @@ package pl.llp.aircasting.ui.view.screens.settings.my_account
 import android.content.Context
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
-import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 
 
 class MyAccountController(
     private val mContext: Context,
     mViewMvc: MyAccountViewMvcImpl,
-    private val mSettings: Settings
+    private val mSettings: Settings,
+    private val logoutService: LogoutService
 ) : BaseController<MyAccountViewMvcImpl>(mViewMvc), MyAccountViewMvc.Listener {
-    private val logoutService = LogoutService(mSettings)
 
     fun onStart() {
         mViewMvc?.registerListener(this)

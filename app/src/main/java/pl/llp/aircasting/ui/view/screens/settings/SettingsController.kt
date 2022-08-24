@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
@@ -21,7 +22,8 @@ class SettingsController(
     private val mContext: Context?,
     var viewMvc: SettingsViewMvcImpl?,
     private val mSettings: Settings,
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager,
+    private val logoutService: LogoutService
 ) : SettingsViewMvc.Listener,
     SettingsViewMvc.BackendSettingsDialogListener,
     SettingsViewMvc.MicrophoneSettingsDialogListener,
@@ -92,7 +94,7 @@ class SettingsController(
     }
 
     override fun confirmClicked(urlValue: String, portValue: String) {
-        mSettings.backendSettingsChanged(urlValue, portValue)
+        mSettings.saveUrlAndPort(urlValue, portValue, logoutService)
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {

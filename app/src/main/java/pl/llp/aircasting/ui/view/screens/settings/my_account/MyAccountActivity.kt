@@ -4,12 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.app_bar.*
-import pl.llp.aircasting.util.extensions.setupAppBar
+import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.util.extensions.setupAppBar
+import javax.inject.Inject
 
 class MyAccountActivity : BaseActivity() {
 
     private var controller: MyAccountController? = null
+
+    @Inject
+    lateinit var logoutService: LogoutService
 
     companion object {
         fun start(context: Context?) {
@@ -23,8 +29,11 @@ class MyAccountActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        (application as AircastingApplication)
+            .appComponent.inject(this)
+
         val view = MyAccountViewMvcImpl(this, layoutInflater, null)
-        controller = MyAccountController(this, view, settings)
+        controller = MyAccountController(this, view, settings, logoutService)
 
         setContentView(view.rootView)
         setupAppBar(this, topAppBar)
