@@ -10,5 +10,5 @@ import javax.inject.Singleton
 open class SettingsModule {
     @Provides
     @Singleton
-    open fun providesSettings(application: AircastingApplication): Settings = application.mSettings
+    open fun providesSettings(application: AircastingApplication): Settings = application.settings
 }

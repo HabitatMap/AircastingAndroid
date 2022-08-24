@@ -3,11 +3,12 @@ package pl.llp.aircasting.ui.view.screens.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.StrictMode
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import javax.inject.Inject
 
@@ -16,6 +17,10 @@ class LoginActivity : BaseActivity() {
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
+    @Nullable
+    lateinit var sessionsSyncService: SessionsSyncService
 
     companion object {
         const val FROM_ONBOARDING_KEY = "fromOnboarding"

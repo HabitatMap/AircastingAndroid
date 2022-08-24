@@ -20,7 +20,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
-import pl.llp.aircasting.util.Settings
 import java.util.*
 
 class ReorderingFollowingRecyclerAdapter(
@@ -32,7 +31,7 @@ class ReorderingFollowingRecyclerAdapter(
 
     private val mApplication: AircastingApplication =
         mInflater.context.applicationContext as AircastingApplication
-    private val mSettings = Settings(mApplication)
+    private val mSettings = mApplication.settings
     private val mSessionRepository = SessionsRepository()
     private val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
 
