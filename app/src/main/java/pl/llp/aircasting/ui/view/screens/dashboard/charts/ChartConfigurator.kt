@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import pl.llp.aircasting.R
@@ -19,6 +21,7 @@ open class ChartConfigurator(private val mContext: Context) {
         // Drawing grid even on an empty chart
         rightYAxis?.axisMinimum = 0f
         rightYAxis?.axisMaximum = 100f
+        rightYAxis?.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
 
         //Removing bottom "border" and Y values
         val leftYAxis = chart?.axisLeft
@@ -26,7 +29,7 @@ open class ChartConfigurator(private val mContext: Context) {
         leftYAxis?.setDrawAxisLine(false)
         leftYAxis?.setDrawLabels(false)
 
-        // No labels on X Axis and no
+        // No labels on X Axis and no labels
         val xAxis = chart?.xAxis
         xAxis?.setDrawLabels(false)
         xAxis?.setDrawAxisLine(false)

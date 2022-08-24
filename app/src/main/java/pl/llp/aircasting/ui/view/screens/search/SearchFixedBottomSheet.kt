@@ -78,15 +78,15 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
 
     private fun setupChart() {
         mChart = Chart(
-            requireActivity(),
+            requireContext(),
             binding?.root,
-            BottomSheetChartConfigurator(requireActivity())
+            BottomSheetChartConfigurator(requireContext())
         )
     }
 
     private fun setupMeasurementTableLayout() {
         mMeasurementsTableContainer = SessionDetailsMeasurementsTableContainer(
-            requireActivity(),
+            requireContext(),
             this.layoutInflater,
             binding?.root,
             selectable = true,
