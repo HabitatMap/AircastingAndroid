@@ -3,6 +3,7 @@ package pl.llp.aircasting.data.api.services
 import android.database.sqlite.SQLiteConstraintException
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.response.SyncResponse
@@ -13,12 +14,14 @@ import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
+import pl.llp.aircasting.util.extensions.safeRegister
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -64,6 +67,15 @@ class SessionsSyncService private constructor(
             mSingleton?.destroy()
             mSingleton = null
         }
+    }
+
+    init {
+        EventBus.getDefault().safeRegister(this)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: LogoutEvent) {
+        sync()
     }
 
     fun destroy() {
