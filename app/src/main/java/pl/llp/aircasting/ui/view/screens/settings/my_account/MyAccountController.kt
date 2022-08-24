@@ -23,8 +23,6 @@ class MyAccountController(
     }
 
     override fun onSignOutClicked() {
-        logoutService.perform {
-            LoginActivity.startAfterSignOut(mContext)
-        }
+        logoutService.logout()
     }
 }
