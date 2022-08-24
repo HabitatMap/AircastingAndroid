@@ -2,8 +2,6 @@ package pl.llp.aircasting.util
 
 import android.app.Application
 import android.content.SharedPreferences
-import com.jakewharton.processphoenix.ProcessPhoenix
-import pl.llp.aircasting.data.local.LogoutService
 
 open class Settings(private val sharedPreferences: SharedPreferences) {
     companion object {
@@ -177,13 +175,9 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(CALIBRATION_KEY, calibration)
     }
 
-    fun saveUrlAndPort(url: String, port: String, logoutService: LogoutService) {
+    fun saveUrlAndPort(url: String, port: String) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
-
-        logoutService.logout {
-            ProcessPhoenix.triggerRebirth(mApplication)
-        }
     }
 
     fun setAppRestarted() {

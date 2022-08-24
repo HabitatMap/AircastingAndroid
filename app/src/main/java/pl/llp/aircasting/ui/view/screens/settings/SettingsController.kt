@@ -94,7 +94,8 @@ class SettingsController(
     }
 
     override fun confirmClicked(urlValue: String, portValue: String) {
-        mSettings.saveUrlAndPort(urlValue, portValue, logoutService)
+        mSettings.saveUrlAndPort(urlValue, portValue)
+        logoutService.logout()
     }
 
     override fun confirmMicrophoneSettingsClicked(calibration: Int) {
