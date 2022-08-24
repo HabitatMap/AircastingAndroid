@@ -21,6 +21,7 @@
     <color name="session_color_indicator_medium">#FDD760</color>
     <color name="session_color_indicator_high">#F9A342</color>
     <color name="session_color_indicator_very_high">#E65F5E</color>
+    <color name="light_blue_lets_start_background">#DFEFFF</color>
 
     <color name="mtrl_textinput_default_box_stroke_color">@color/aircasting_grey_100</color>
 
