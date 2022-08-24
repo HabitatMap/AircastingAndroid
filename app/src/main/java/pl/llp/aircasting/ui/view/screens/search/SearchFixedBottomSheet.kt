@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -35,8 +36,9 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     private lateinit var txtLng: String
     private lateinit var mMap: GoogleMap
     private lateinit var mapFragment: SupportMapFragment
-    private val mSettings: Settings by lazy { Settings(requireActivity().application) }
-
+    private val mSettings: Settings by lazy {
+        (requireActivity().application as AircastingApplication).settings
+    }
     private lateinit var mChart: Chart
     private lateinit var mSessionPresenter: SessionPresenter
     private var mMeasurementsTableContainer: MeasurementsTableContainer? = null

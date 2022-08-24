@@ -50,7 +50,8 @@ import pl.llp.aircasting.util.extensions.*
 import javax.inject.Inject
 
 class MapResultFragment @Inject constructor(
-    factory: ViewModelProvider.Factory
+    factory: ViewModelProvider.Factory,
+    private val mSettings: Settings
 ) : Fragment(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
@@ -74,8 +75,6 @@ class MapResultFragment @Inject constructor(
     private val options = MarkerOptions()
     private var txtParameter: String? = null
     private var txtSensor: String? = null
-
-    private val mSettings: Settings by lazy { Settings(requireActivity().application) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

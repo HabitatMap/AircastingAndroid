@@ -7,6 +7,7 @@ import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import javax.annotation.Nullable
 import javax.inject.Singleton
 
 open class WebServerFactory
@@ -37,6 +38,7 @@ open class ApiModule {
         return UploadFixedMeasurementsService(apiService, errorHandler)
     }
 
+    @Nullable
     @Provides
     fun providesSessionsSyncService(
         apiServiceFactory: ApiServiceFactory,

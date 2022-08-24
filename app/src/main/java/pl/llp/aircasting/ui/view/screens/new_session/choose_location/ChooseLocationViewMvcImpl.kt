@@ -50,7 +50,7 @@ class ChooseLocationViewMvcImpl(
         this.rootView = inflater.inflate(R.layout.fragment_choose_location, parent, false)
         mApplication = context.applicationContext as AircastingApplication
 
-        mSettings = Settings(mApplication)
+        mSettings = mApplication.settings
         mContext = context
 
         mDefaultLatitude = session.location?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude

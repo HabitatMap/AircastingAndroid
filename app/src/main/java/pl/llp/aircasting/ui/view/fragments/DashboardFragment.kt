@@ -5,17 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.annotation.Nullable
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardController
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
 import pl.llp.aircasting.util.extensions.isIgnoringBatteryOptimizations
 import pl.llp.aircasting.util.extensions.showBatteryOptimizationHelperDialog
@@ -28,10 +27,8 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     lateinit var settings: Settings
 
     @Inject
-    lateinit var errorHandler: ErrorHandler
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
+    @Nullable
+    lateinit var sessionsSyncService: SessionsSyncService
 
     private var mTabPosition: Int = 0
 
@@ -44,7 +41,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
             .appComponent.inject(this)
 
         view = initView(inflater, container)
-        controller = initController()
+        controller = DashboardController(view, sessionsSyncService)
 
         val tabId = arguments?.get("tabId") as Int?
         controller?.onCreate(tabId)
@@ -62,18 +59,6 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
                 it, DashboardPagerAdapter.TABS_COUNT
             )
         }
-    }
-
-    private fun initController(): DashboardController? {
-        val auth = settings.getAuthToken()
-        return if (auth != null) {
-            val sessionsSyncService = SessionsSyncService.get(
-                apiServiceFactory.get(auth),
-                errorHandler,
-                settings
-            )
-            DashboardController(view, sessionsSyncService)
-        } else null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
