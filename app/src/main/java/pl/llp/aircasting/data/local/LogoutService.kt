@@ -15,7 +15,7 @@ class LogoutService @Inject constructor(
     private val mSettings: Settings,
     private val appContext: Context
 ) {
-    fun logout(callback: ((Unit) -> Unit)? = null) {
+    fun logout() {
         EventBus.getDefault().safeRegister(this)
         // to make sure downloading sessions stopped before we start deleting them
         EventBus.getDefault().post(LogoutEvent())
