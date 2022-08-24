@@ -18,6 +18,7 @@ class AircastingApplication : Application() {
     lateinit var permissionsModule: PermissionsModule
     lateinit var databaseModule: DatabaseModule
     lateinit var mSettings: Settings
+    val settings get() = mSettings
 
     override fun onCreate() {
         super.onCreate()

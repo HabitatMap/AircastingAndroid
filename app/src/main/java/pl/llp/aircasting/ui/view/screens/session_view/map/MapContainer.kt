@@ -66,7 +66,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         mMapFragment = SupportMapFragment.newInstance(mapOptions())
 
         mApplication = context.applicationContext as AircastingApplication
-        mSettings = Settings(mApplication)
+        mSettings = mApplication.settings
 
         mMapFragment?.let {
             mSupportFragmentManager?.beginTransaction()?.replace(R.id.map, it)?.commit()

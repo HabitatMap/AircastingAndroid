@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.MobileNavigationDirections
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
@@ -44,7 +45,7 @@ class MainViewMvcImpl(
 
     init {
         this.rootView = inflater.inflate(R.layout.activity_main, parent, false)
-        mSettings = Settings(rootActivity.application)
+        mSettings = (rootActivity.application as AircastingApplication).settings
 
         rootView?.apply {
             topAppBar = findViewById(R.id.topAppBar)

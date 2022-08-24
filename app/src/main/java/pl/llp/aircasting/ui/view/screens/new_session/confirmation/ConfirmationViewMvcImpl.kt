@@ -49,7 +49,7 @@ abstract class ConfirmationViewMvcImpl(
 
         mApplication = context.applicationContext as AircastingApplication
 
-        mSettings = Settings(mApplication)
+        mSettings = mApplication.settings
         mContext = context
 
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
