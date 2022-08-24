@@ -169,13 +169,11 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(CALIBRATION_KEY, calibration)
     }
 
-    fun backendSettingsChanged(url: String, port: String) {
-        val logoutService = LogoutService(this)
-
+    fun saveUrlAndPort(url: String, port: String, logoutService: LogoutService) {
         saveToSettings(BACKEND_URL_KEY, url)
         saveToSettings(BACKEND_PORT_KEY, port)
 
-        logoutService.perform {
+        logoutService.logout {
             ProcessPhoenix.triggerRebirth(mApplication)
         }
     }
