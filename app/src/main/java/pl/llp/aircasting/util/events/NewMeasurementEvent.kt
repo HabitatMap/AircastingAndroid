@@ -3,7 +3,6 @@ package pl.llp.aircasting.util.events
 import org.apache.commons.lang3.time.DateUtils
 import java.util.*
 
-
 class NewMeasurementEvent(
     val packageName: String,
     val sensorName: String,
