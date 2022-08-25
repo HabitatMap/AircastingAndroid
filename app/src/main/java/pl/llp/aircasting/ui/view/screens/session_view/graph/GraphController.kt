@@ -16,7 +16,6 @@ import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
-
 class GraphController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
@@ -70,6 +69,4 @@ class GraphController(
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
     }
-
-    override fun okButtonClickedFromDialog() { /*do nothing*/ }
 }

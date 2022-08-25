@@ -2,13 +2,13 @@ package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.content.Context
 import android.widget.EditText
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import java.util.*
 
 class AddNoteBottomSheet(
@@ -19,7 +19,6 @@ class AddNoteBottomSheet(
 ) : BottomSheet() {
     interface Listener {
         fun addNotePressed(session: Session, note: Note)
-        fun okButtonClickedFromDialog()
     }
 
     private var noteInput: EditText? = null
@@ -35,13 +34,9 @@ class AddNoteBottomSheet(
             addNote(mSession)
             dismiss()
         }
+        contentView?.add_picture_button?.setOnClickListener { addPictureButton() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
         contentView?.close_button?.setOnClickListener { dismiss() }
-        contentView?.add_picture_button?.setOnClickListener { showDialogForCameraPermission() }
-    }
-
-    private fun showDialogForCameraPermission() {
-        mListener.okButtonClickedFromDialog()
     }
 
     private fun addNote(mSession: Session) {
@@ -72,5 +67,9 @@ class AddNoteBottomSheet(
             )
 
         mListener.addNotePressed(mSession, note)
+    }
+
+    private fun addPictureButton() {
+        CameraPermissionHelperDialog(childFragmentManager).show()
     }
 }
