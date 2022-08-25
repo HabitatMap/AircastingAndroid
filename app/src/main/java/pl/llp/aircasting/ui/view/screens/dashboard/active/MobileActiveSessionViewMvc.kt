@@ -14,5 +14,6 @@ interface MobileActiveSessionViewMvc:
     interface Listener: SessionCardListener, DisconnectedViewListener {
         fun onSessionDisconnectClicked(session: Session)
         fun addNoteClicked(session: Session)
+        fun okButtonClickedFromDialog()
     }
 }

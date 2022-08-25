@@ -6,7 +6,6 @@ import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
 
-
 interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
 
     interface Listener : FinishSessionListener {
@@ -14,6 +13,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onExploreNewSessionsClicked()
         fun onDisconnectSessionClicked(session: Session)
         fun addNoteClicked(session: Session)
+        fun okButtonClickedFromDialog()
         fun onReconnectSessionClicked(session: Session)
         fun onEditSessionClicked(session: Session)
         fun onShareSessionClicked(session: Session)
@@ -23,13 +23,15 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onMapButtonClicked(session: Session, sensorName: String?)
         fun onGraphButtonClicked(session: Session, sensorName: String?)
         fun onExpandSessionCard(session: Session)
-        fun onCollapseSessionCard(session: Session) { /* Do nothing */ }
+        fun onCollapseSessionCard(session: Session) { /* Do nothing */
+        }
     }
 
     fun showSessionsView(
         modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
         sensorThresholds: Map<String, SensorThreshold>
     )
+
     fun showEmptyView()
     fun showLoaderFor(session: Session)
     fun hideLoaderFor(session: Session)
