@@ -406,5 +406,6 @@
     <string name="use_celsius_scale">Usa la escala Celsius</string>
     <string name="from">de</string>
     <string name="to">a</string>
+    <string name="login_out_background">Actualmente cerrando sesión en segundo plano. Puedes llenar credenciales</string>
 
 </resources>

@@ -13,6 +13,7 @@
     <string name="create_account_text_button">Create an account</string>
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="forgot_password">Forgot password</string>
+    <string name="login_out_background">Currently logging out in the background. You can fill out credentials</string>
 
     <!-- Create account -->
     <string name="create_account_header">Create account</string>

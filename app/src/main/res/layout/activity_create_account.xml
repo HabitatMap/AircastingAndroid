@@ -186,9 +186,8 @@
             android:id="@+id/login_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/keyline_8"
-            android:paddingTop="@dimen/keyline_6"
-            android:paddingBottom="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_6"
             android:text="@string/login_prompt"
             android:textAppearance="?attr/textAppearanceHeadline4"
             android:textSize="@dimen/text_size_s"
@@ -200,15 +199,30 @@
             style="@style/Widget.Aircasting.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_6"
             android:minWidth="0dp"
-            android:paddingTop="@dimen/keyline_6"
-            android:paddingBottom="@dimen/keyline_6"
             android:text="@string/login_text_button"
             android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
-            app:layout_constraintBottom_toBottomOf="@id/login_prompt"
-            app:layout_constraintStart_toEndOf="@id/login_prompt"
-            app:layout_constraintTop_toBottomOf="@id/create_account_button"
+            app:layout_constraintBottom_toBottomOf="@+id/login_prompt"
+            app:layout_constraintStart_toEndOf="@+id/login_prompt"
+            app:layout_constraintTop_toTopOf="@+id/login_prompt"
             app:rippleColor="@null" />
+
+        <include
+            layout="@layout/logging_out_in_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_8"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
+            app:layout_constraintVertical_bias="1.0"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

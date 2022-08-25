@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/logout_events_in_progress"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="@string/login_out_background"
+    android:textAppearance="?attr/textAppearanceHeadline4"
+    android:textSize="@dimen/text_size_s"
+    app:drawableLeftCompat="@drawable/ic_loader"
+    app:drawableTint="?attr/colorPrimary"
+    android:drawablePadding="@dimen/keyline_1"/>
