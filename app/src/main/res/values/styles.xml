@@ -311,7 +311,7 @@
     <!-- Buttons -->
 
     <style name="Widget.Aircasting.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:backgroundTint">@color/button_background_tint</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:minHeight">@dimen/button_min_height</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
