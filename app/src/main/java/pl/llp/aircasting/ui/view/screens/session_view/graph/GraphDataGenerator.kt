@@ -17,9 +17,9 @@ class GraphDataGenerator(
     private var cumulativeValue = 0.0
     private var cumulativeTime: Long = 0
     private var count = 0
-    private var startTime = Date()
     private var hasNote = false
     private var averagingGeneratorFrequency = 0
+    private lateinit var startTime: Date
 
     private val DEFAULT_LIMIT = 1000
 
@@ -100,10 +100,6 @@ class GraphDataGenerator(
         return Result(entries, midnightPoints, noteRanges)
     }
 
-    fun dateFromFloat(float: Float): Date {
-        return Date(float.toLong() + startTime.time)
-    }
-
     private fun getAverageDate(): Date {
         return Date(cumulativeTime / count)
     }
@@ -120,13 +116,6 @@ class GraphDataGenerator(
         } else {
             Entry(time, value)
         }
-    }
-
-    private fun convertDateToFloat(date: Date): Float {
-        // we need to subtract startTime because
-        // otherwise we lose precision while converting Long to Float
-        // and Float is needed for the MPAndroidChart library
-        return (date.time - startTime.time).toFloat()
     }
 
     private fun add(measurement: Measurement, notes: List<Note>?) {
@@ -158,6 +147,24 @@ class GraphDataGenerator(
                 }
             }
         }
+    }
+
+    private fun getStartTime(): Long {
+        val startTime = Date()
+        return startTime.time
+    }
+
+    fun dateFromFloat(mFloatDate: Float): Date {
+        return Date(mFloatDate.toLong() + getStartTime())
+    }
+
+    /**
+     * We need to subtract startTime because
+     * otherwise we lose precision while converting Long to Float
+     * and Float is needed for the MPAndroidChart library
+     **/
+    private fun convertDateToFloat(date: Date): Float {
+        return (date.time - getStartTime()).toFloat()
     }
 
     private fun reset() {
