@@ -107,7 +107,6 @@ class SessionManager(
     fun onMessageEvent(event: LogoutEvent) {
         fixedSessionDownloadMeasurementsService.stop()
         periodicallySyncSessionsService.stop()
-        SessionsSyncService.destroy()
     }
 
     @Subscribe
