@@ -404,5 +404,6 @@
     <string name="use_celsius_scale">Utiliser l\'échelle Celsius</string>
     <string name="from">de</string>
     <string name="to">à</string>
+    <string name="login_out_background">Déconnexion en cours en arrière-plan. Vous pouvez remplir les informations d\'identification</string>
 
 </resources>
