@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LogoutEvent
@@ -39,6 +40,7 @@ class LogoutService @Inject constructor(
             EventBus.getDefault().unregister(this)
             mSettings.logout()
             clearDatabase()
+            SessionsSyncService.destroy()
             EventBus.getDefault().postSticky(LogoutEvent(false))
         }
     }
