@@ -13,7 +13,6 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
         fun onExploreNewSessionsClicked()
         fun onDisconnectSessionClicked(session: Session)
         fun addNoteClicked(session: Session)
-        fun okButtonClickedFromDialog()
         fun onReconnectSessionClicked(session: Session)
         fun onEditSessionClicked(session: Session)
         fun onShareSessionClicked(session: Session)
