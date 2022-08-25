@@ -18,7 +18,8 @@ class LogoutService @Inject constructor(
     fun logout() {
         EventBus.getDefault().safeRegister(this)
         // to make sure downloading sessions stopped before we start deleting them
-        EventBus.getDefault().post(LogoutEvent())
+        LoginActivity.startAfterSignOut(appContext)
+        EventBus.getDefault().postSticky(LogoutEvent())
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -36,9 +37,9 @@ class LogoutService @Inject constructor(
     fun onMessageEvent(sync: SessionsSyncEvent) {
         if (!sync.inProgress) {
             EventBus.getDefault().unregister(this)
-            LoginActivity.startAfterSignOut(appContext)
             mSettings.logout()
             clearDatabase()
+            EventBus.getDefault().postSticky(LogoutEvent(false))
         }
     }
 }
