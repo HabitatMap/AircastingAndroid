@@ -11,5 +11,6 @@ class ResultCodes {
         const val AUDIO_READER_ERROR = 6
         const val AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 7
         const val AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH = 8
+        const val AIRCASTING_PERMISSION_REQUEST_CAMERA = 9
     }
 }

@@ -1,6 +1,8 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -30,6 +32,9 @@ import pl.llp.aircasting.util.extensions.goToDormantTab
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.showToast
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import java.util.jar.Manifest
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
@@ -39,6 +44,7 @@ class MobileActiveController(
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector,
+    private val permissionsManager: PermissionsManager,
     private val mContext: Context
 ) : SessionsController(
     mRootActivity,
@@ -120,6 +126,22 @@ class MobileActiveController(
 
     override fun addNoteClicked(session: Session) {
         AddNoteBottomSheet(this, session, mContext, mErrorHandler).show(fragmentManager)
+    }
+
+    override fun okButtonClickedFromDialog() {
+       checkIfCameraPermissionGranted()
+    }
+
+    private fun checkIfCameraPermissionGranted() {
+        if (permissionsManager.cameraPermissionGranted(mContext)) takePictureUsingCamera() else showCameraHelperDialog()
+    }
+
+    private fun showCameraHelperDialog() {
+        CameraPermissionHelperDialog(this.fragmentManager, this)
+    }
+
+    private fun takePictureUsingCamera() {
+        TODO("Not yet implemented")
     }
 
     override fun onReconnectSessionClicked(session: Session) {

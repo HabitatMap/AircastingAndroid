@@ -33,6 +33,8 @@ open class PermissionsManager {
             )
         }
 
+    private val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
+
     fun permissionsGranted(grantResults: IntArray): Boolean {
         return (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
     }
@@ -51,6 +53,10 @@ open class PermissionsManager {
 
     open fun bluetoothPermissionsGranted(context: Context): Boolean {
         return permissionsGranted(BLUETOOTH_PERMISSIONS, context)
+    }
+
+    open fun cameraPermissionGranted(context: Context): Boolean {
+        return permissionsGranted(CAMERA_PERMISSION, context)
     }
 
     open fun requestLocationPermissions(activity: Activity) {
@@ -82,6 +88,14 @@ open class PermissionsManager {
             activity,
             BLUETOOTH_PERMISSIONS,
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BLUETOOTH
+        )
+    }
+
+    fun requestCameraPermission(activity: Activity){
+        ActivityCompat.requestPermissions(
+            activity,
+            CAMERA_PERMISSION,
+            ResultCodes.AIRCASTING_PERMISSION_REQUEST_CAMERA
         )
     }
 
