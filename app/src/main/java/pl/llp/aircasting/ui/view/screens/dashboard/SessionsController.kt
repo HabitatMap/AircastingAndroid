@@ -30,7 +30,6 @@ import pl.llp.aircasting.util.extensions.backToUIThread
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.showToast
 
-
 abstract class SessionsController(
     private var mRootActivity: FragmentActivity?,
     private var mViewMvc: SessionsViewMvc?,
@@ -49,7 +48,8 @@ abstract class SessionsController(
     private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
     private val mSessionRepository = SessionsRepository()
     private val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
-    private val sessionFollower = SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository)
+    private val sessionFollower =
+        SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository)
 
     private var editDialog: EditSessionBottomSheet? = null
     private var shareDialog: ShareSessionBottomSheet? = null
@@ -58,7 +58,8 @@ abstract class SessionsController(
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
 
-    open fun onCreate() { /* Do nothing */ }
+    open fun onCreate() { /* Do nothing */
+    }
 
     open fun onResume() {
         registerSessionsObserver()
@@ -115,6 +116,7 @@ abstract class SessionsController(
 
     override fun onDisconnectSessionClicked(session: Session) {}
     override fun addNoteClicked(session: Session) {}
+    override fun okButtonClickedFromDialog() {}
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {

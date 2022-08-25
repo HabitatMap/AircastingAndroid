@@ -42,6 +42,12 @@ class MobileActiveViewMvcImpl(
         }
     }
 
+    override fun okButtonClickedFromDialog() {
+        for (listener in listeners) {
+            listener.okButtonClickedFromDialog()
+        }
+    }
+
     override fun onSessionReconnectClicked(session: Session) {
         for (listener in listeners) {
             session.deviceId?.let { deviceId ->
