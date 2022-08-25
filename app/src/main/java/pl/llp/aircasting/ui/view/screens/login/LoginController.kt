@@ -1,8 +1,11 @@
 package pl.llp.aircasting.ui.view.screens.login
 
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ForgotPasswordService
@@ -11,6 +14,7 @@ import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.hideKeyboard
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 
 class LoginController(
@@ -20,7 +24,8 @@ class LoginController(
     mApiServiceFactory: ApiServiceFactory,
     private val fragmentManager: FragmentManager
 ) : LoginViewMvc.Listener,
-    LoginViewMvc.ForgotPasswordDialogListener {
+    LoginViewMvc.ForgotPasswordDialogListener,
+    LogOutInBackgroundInfoDisplayer {
     private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
     private val mForgotPasswordService =
@@ -28,10 +33,12 @@ class LoginController(
 
     fun onStart() {
         mViewMvc.registerListener(this)
+        EventBus.getDefault().safeRegister(this)
     }
 
     fun onStop() {
         mViewMvc.unregisterListener(this)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onLoginClicked(profile_name: String, password: String) {
@@ -62,4 +69,9 @@ class LoginController(
     override fun confirmClicked(emailValue: String) {
         mForgotPasswordService.resetPassword(emailValue)
     }
+
+    override val infoView: TextView?
+        get() = mViewMvc.rootView?.findViewById(R.id.logout_events_in_progress)
+    override val button: Button?
+        get() = mViewMvc.rootView?.findViewById(R.id.login_button)
 }
