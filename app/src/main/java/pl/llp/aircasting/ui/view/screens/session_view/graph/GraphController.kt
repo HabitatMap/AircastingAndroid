@@ -27,7 +27,16 @@ class GraphController(
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
+) : SessionDetailsViewController(
+    rootActivity,
+    mSessionsViewModel,
+    mViewMvc,
+    sessionUUID,
+    sensorName,
+    fragmentManager,
+    mSettings,
+    mApiServiceFactory
+),
     SessionDetailsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
     override fun locateRequested() {}
@@ -61,4 +70,6 @@ class GraphController(
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
     }
+
+    override fun okButtonClickedFromDialog() { /*do nothing*/ }
 }

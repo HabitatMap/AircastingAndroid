@@ -19,6 +19,7 @@ class AddNoteBottomSheet(
 ) : BottomSheet() {
     interface Listener {
         fun addNotePressed(session: Session, note: Note)
+        fun okButtonClickedFromDialog()
     }
 
     private var noteInput: EditText? = null
@@ -30,22 +31,17 @@ class AddNoteBottomSheet(
     override fun setup() {
         noteInput = contentView?.note_input
 
-        // button listeners
-        val addNoteButton = contentView?.add_note_button
-        addNoteButton?.setOnClickListener {
+        contentView?.add_note_button?.setOnClickListener {
             addNote(mSession)
             dismiss()
         }
+        contentView?.cancel_button?.setOnClickListener { dismiss() }
+        contentView?.close_button?.setOnClickListener { dismiss() }
+        contentView?.add_picture_button?.setOnClickListener { showDialogForCameraPermission() }
+    }
 
-        val cancelButton = contentView?.cancel_button
-        cancelButton?.setOnClickListener {
-            dismiss()
-        }
-
-        val closeButton = contentView?.close_button
-        closeButton?.setOnClickListener {
-            dismiss()
-        }
+    private fun showDialogForCameraPermission() {
+        mListener.okButtonClickedFromDialog()
     }
 
     private fun addNote(mSession: Session) {
@@ -57,11 +53,23 @@ class AddNoteBottomSheet(
 
         val noteText = noteInput?.text.toString().trim()
         val date = Date()
-        var note: Note
-        if (mSession.notes.isNullOrEmpty())
-            note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, 0) // todo: add "photoPath" later on
+        val note: Note
+        if (mSession.notes.isEmpty())
+            note = Note(
+                date,
+                noteText,
+                lastMeasurement.latitude,
+                lastMeasurement.longitude,
+                0
+            ) // todo: add "photoPath" later on
         else
-            note = Note(date, noteText, lastMeasurement.latitude, lastMeasurement.longitude, mSession.notes.last().number + 1)
+            note = Note(
+                date,
+                noteText,
+                lastMeasurement.latitude,
+                lastMeasurement.longitude,
+                mSession.notes.last().number + 1
+            )
 
         mListener.addNotePressed(mSession, note)
     }

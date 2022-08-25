@@ -12,6 +12,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.active.MobileActiveController
 import pl.llp.aircasting.ui.view.screens.dashboard.active.MobileActiveViewMvcImpl
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
@@ -26,6 +27,9 @@ class MobileActiveFragment : Fragment() {
 
     @Inject
     lateinit var airbeamReconnector: AirBeamReconnector
+
+    @Inject
+    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
@@ -53,6 +57,7 @@ class MobileActiveFragment : Fragment() {
             settings,
             apiServiceFactory,
             airbeamReconnector,
+            permissionsManager,
             requireContext()
         )
 
