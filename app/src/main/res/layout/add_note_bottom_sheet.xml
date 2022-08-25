@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -10,12 +10,12 @@
         android:background="@drawable/dialog_background">
 
         <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Aircasting.BottomSheetCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Aircasting.BottomSheetCard"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -26,129 +26,128 @@
                     android:id="@+id/edit_loader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_loader"
                     android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginBottom="@dimen/keyline_8"
+                    android:src="@drawable/ic_loader"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/title"
                     app:tint="@color/aircasting_blue_400" />
 
                 <ImageView
                     android:id="@+id/close_button"
-                    android:src="@drawable/ic_x"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_x"
                     app:layout_constraintBottom_toTopOf="@+id/title"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/title"
                     style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-                    android:textSize="@dimen/text_size_xl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_a_note"
-                    android:textColor="@color/aircasting_dark_blue"
-                    app:lineHeight="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    android:text="@string/add_a_note"
+                    android:textColor="@color/aircasting_dark_blue"
+                    android:textSize="@dimen/text_size_xl"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    app:lineHeight="@dimen/keyline_6" />
 
                 <TextView
                     android:id="@+id/description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_4"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:text="@string/your_note_will_be_timestamped_and_displayed_on_the_aircasting_map"
                     android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-                    android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@id/title"
                     app:layout_constraintBottom_toTopOf="@id/add_picture_button"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/title" />
 
-                <!-- Below button should be displayed after adding the functionality-->
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_picture_button"
+                    style="@style/Widget.App.ButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/tap_to_add_picture"
-                    android:textColor="@color/aircasting_grey_700"
                     android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"
-                    android:backgroundTint="@color/aircasting_grey_50"
-                    android:visibility="gone"
-                    app:icon="@drawable/ic_add_picture"
                     android:layout_marginTop="@dimen/keyline_6"
-                    android:layout_marginBottom="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@id/description"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:layout_marginBottom="@dimen/keyline_2"
+                    android:stateListAnimator="@null"
+                    android:text="@string/tap_to_add_picture"
+                    app:icon="@drawable/ic_add_picture"
+                    app:iconTint="@color/aircasting_grey_300"
                     app:layout_constraintBottom_toTopOf="@id/note_input_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/description" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/note_input_layout"
                     style="@style/Widget.Aircasting.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/add_note_button"
-                    app:layout_constraintTop_toBottomOf="@id/add_picture_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     app:errorEnabled="true"
                     app:hintEnabled="false"
-                    android:layout_marginTop="@dimen/keyline_6"
-                    android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6">
+                    app:layout_constraintBottom_toTopOf="@+id/add_note_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_picture_button">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_input"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:hint="@string/note"
+                        android:backgroundTint="@color/aircasting_grey_100"
                         android:gravity="start"
-                        android:textColorHint="@color/aircasting_grey_700"
+                        android:hint="@string/note"
                         android:inputType="text"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                         android:textColor="@color/aircasting_grey_700"
-                        android:backgroundTint="@color/aircasting_grey_100"/>
+                        android:textColorHint="@color/aircasting_grey_700" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/add_note_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_note"
-                    app:layout_constraintTop_toBottomOf="@id/note_input_layout"
-                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"/>
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:text="@string/add_note"
+                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/note_input_layout" />
 
                 <Button
                     android:id="@+id/cancel_button"
                     style="@style/Widget.Aircasting.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/cancel"
-                    app:layout_constraintTop_toBottomOf="@id/add_note_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:fontFamily="@font/moderat_trial_bold"
+                    android:text="@string/cancel"
+                    android:textColor="@color/aircasting_blue_400"
                     android:textSize="@dimen/button_text_size"
-                    android:textColor="@color/aircasting_blue_400"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_note_button" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
