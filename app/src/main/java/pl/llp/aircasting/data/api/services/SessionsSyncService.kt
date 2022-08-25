@@ -8,7 +8,6 @@ import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.response.SyncResponse
 import pl.llp.aircasting.data.api.response.UploadSessionResponse
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -76,7 +75,8 @@ class SessionsSyncService private constructor(
 
     @Subscribe
     fun onMessageEvent(logout: LogoutEvent) {
-        if (logout.inProgress) sync()
+        if (logout.inProgress)
+            sync()
     }
 
     fun destroy() {
@@ -122,12 +122,13 @@ class SessionsSyncService private constructor(
                                 upload(body.upload)
                                 download(body.download)
                                 EventBus.getDefault().post(SessionsSyncSuccessEvent())
+                                syncStarted.set(false)
+                                EventBus.getDefault().postSticky(SessionsSyncEvent(false))
                             }
                         }
                     } else handleSyncError(shouldDisplayErrors, call)
 
-                    syncStarted.set(false)
-                    EventBus.getDefault().postSticky(SessionsSyncEvent(false))
+
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
@@ -205,7 +206,8 @@ class SessionsSyncService private constructor(
     ) {
         if (!call.isCanceled && !syncInBackground.get()) {
             EventBus.getDefault().post(SessionsSyncErrorEvent())
-
+            syncStarted.set(false)
+            EventBus.getDefault().postSticky(SessionsSyncEvent(false))
             if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
                 SyncError(t)
             )
