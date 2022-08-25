@@ -1,14 +1,19 @@
 package pl.llp.aircasting.ui.view.screens.create_account
 
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.ui.view.screens.login.LogOutInBackgroundInfoDisplayer
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 
 class CreateAccountController(
@@ -17,17 +22,19 @@ class CreateAccountController(
     private val mSettings: Settings,
     private val mApiServiceFactory: ApiServiceFactory,
     private val fromOnboarding: Boolean?
-) : CreateAccountViewMvc.Listener {
+) : CreateAccountViewMvc.Listener, LogOutInBackgroundInfoDisplayer {
     private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mCreateAccountService =
         CreateAccountService(mSettings, mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)
+        EventBus.getDefault().safeRegister(this)
     }
 
     fun onStop() {
         mViewMvc.unregisterListener(this)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onCreateAccountClicked(
@@ -57,4 +64,9 @@ class CreateAccountController(
     override fun onLoginClicked() {
         LoginActivity.start(mContextActivity, true, fromOnboarding)
     }
+
+    override val infoView: TextView?
+        get() = mViewMvc.rootView?.findViewById(R.id.logout_events_in_progress)
+    override val button: Button?
+        get() = mViewMvc.rootView?.findViewById(R.id.create_account_button)
 }

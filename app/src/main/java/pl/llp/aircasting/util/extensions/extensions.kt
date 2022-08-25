@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util.extensions
 
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
@@ -87,24 +88,27 @@ fun GoogleMap.setMapTypeToSatellite() {
     this.mapType = GoogleMap.MAP_TYPE_HYBRID
 }
 
-fun ImageView.animatable(): Animatable {
-    return drawable as Animatable
-}
-
 fun ImageView.startAnimation() {
     this.visible()
-    animatable().start()
+    drawable.startAnimation()
 }
 
 fun ImageView.stopAnimation() {
     this.gone()
-    animatable().stop()
+    drawable.stopAnimation()
 }
 
+fun Drawable.startAnimation() {
+    (this as Animatable).start()
+}
 fun runOnIOThread(block: (scope: CoroutineScope) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
         block(this)
     }
+}
+
+fun Drawable.stopAnimation() {
+    (this as Animatable).stop()
 }
 
 fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
