@@ -31,7 +31,7 @@
         app:lineHeight="@dimen/keyline_6" />
 
     <Button
-        android:id="@+id/ok_button"
+        android:id="@+id/ok_permission_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"

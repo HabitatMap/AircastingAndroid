@@ -3,17 +3,16 @@ package pl.llp.aircasting.ui.view.screens.settings
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.dialog_backend_settings_confirmation.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseDialog
-import kotlinx.android.synthetic.main.dialog_backend_settings_confirmation.view.*
 
 class BackendSettingsConfirmationDialog(
     mFragmentManager: FragmentManager,
     private val listener: SettingsViewMvc.BackendSettingsDialogListener,
     private val mUrl: String?,
     private val mPort: String?
-    )
-    : BaseDialog(mFragmentManager) {
+) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
