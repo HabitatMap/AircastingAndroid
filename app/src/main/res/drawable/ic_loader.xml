@@ -5,9 +5,11 @@
         android:name="settings_icon"
         android:width="24dp"
         android:height="24dp"
-        android:viewportHeight="24"
-        android:viewportWidth="24">
+        android:viewportHeight="18.4"
+        android:viewportWidth="18.4">
       <group
+          android:translateX="-0.8"
+          android:translateY="-0.8"
           android:name="animate_vector"
           android:pivotX="10"
           android:pivotY="10"
