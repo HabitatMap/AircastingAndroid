@@ -75,8 +75,8 @@ class SessionsSyncService private constructor(
     }
 
     @Subscribe
-    fun onMessageEvent(event: LogoutEvent) {
-        sync()
+    fun onMessageEvent(logout: LogoutEvent) {
+        if (logout.inProgress) sync()
     }
 
     fun destroy() {
