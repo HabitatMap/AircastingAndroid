@@ -32,21 +32,9 @@ class SessionsSyncService private constructor(
     private val errorHandler: ErrorHandler,
     private val settings: Settings
 ) {
-    private val uploadService: MobileSessionUploadService =
-        MobileSessionUploadService(apiService, errorHandler)
-    private val downloadService: SessionDownloadService =
-        SessionDownloadService(apiService, errorHandler)
-    private val removeOldMeasurementsService: RemoveOldMeasurementsService =
-        RemoveOldMeasurementsService()
-
-    private val sessionRepository = SessionsRepository()
-    private val measurementStreamsRepository = MeasurementStreamsRepository()
-    private val noteRepository = NoteRepository()
-    private val gson = Gson()
-    private val syncStarted = AtomicBoolean(false)
-    private var syncInBackground = AtomicBoolean(false)
-    private var triedToSyncBackground = AtomicBoolean(false)
-    private var mCall: Call<SyncResponse>? = null
+    init {
+        EventBus.getDefault().safeRegister(this)
+    }
 
     companion object {
         private var mSingleton: SessionsSyncService? = null
@@ -69,9 +57,21 @@ class SessionsSyncService private constructor(
         }
     }
 
-    init {
-        EventBus.getDefault().safeRegister(this)
-    }
+    private val uploadService: MobileSessionUploadService =
+        MobileSessionUploadService(apiService, errorHandler)
+    private val downloadService: SessionDownloadService =
+        SessionDownloadService(apiService, errorHandler)
+    private val removeOldMeasurementsService: RemoveOldMeasurementsService =
+        RemoveOldMeasurementsService()
+
+    private val sessionRepository = SessionsRepository()
+    private val measurementStreamsRepository = MeasurementStreamsRepository()
+    private val noteRepository = NoteRepository()
+    private val gson = Gson()
+    private val syncStarted = AtomicBoolean(false)
+    private var syncInBackground = AtomicBoolean(false)
+    private var triedToSyncBackground = AtomicBoolean(false)
+    private var mCall: Call<SyncResponse>? = null
 
     @Subscribe
     fun onMessageEvent(logout: LogoutEvent) {
@@ -110,7 +110,6 @@ class SessionsSyncService private constructor(
                     call: Call<SyncResponse>,
                     response: Response<SyncResponse>
                 ) {
-
                     if (response.isSuccessful) {
                         val body = response.body()
                         body?.let {
@@ -121,19 +120,16 @@ class SessionsSyncService private constructor(
 
                                 upload(body.upload)
                                 download(body.download)
+
                                 EventBus.getDefault().post(SessionsSyncSuccessEvent())
-                                syncStarted.set(false)
-                                EventBus.getDefault().postSticky(SessionsSyncEvent(false))
+                                setSyncStateToFinished()
                             }
                         }
                     } else handleSyncError(shouldDisplayErrors, call)
-
-
                 }
 
                 override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
-                    syncStarted.set(false)
-                    EventBus.getDefault().postSticky(SessionsSyncEvent(false))
+                    setSyncStateToFinished()
                     handleSyncError(shouldDisplayErrors, call, t)
                 }
             })
@@ -206,13 +202,17 @@ class SessionsSyncService private constructor(
     ) {
         if (!call.isCanceled && !syncInBackground.get()) {
             EventBus.getDefault().post(SessionsSyncErrorEvent())
-            syncStarted.set(false)
-            EventBus.getDefault().postSticky(SessionsSyncEvent(false))
+            setSyncStateToFinished()
             if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
                 SyncError(t)
             )
         }
 
+    }
+
+    private fun setSyncStateToFinished() {
+        syncStarted.set(false)
+        EventBus.getDefault().postSticky(SessionsSyncEvent(false))
     }
 
     fun resume() {

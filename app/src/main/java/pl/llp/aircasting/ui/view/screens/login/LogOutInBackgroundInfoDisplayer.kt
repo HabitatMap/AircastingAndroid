@@ -1,5 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.login
 
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.TextView
 import org.greenrobot.eventbus.Subscribe
@@ -29,7 +31,7 @@ interface LogOutInBackgroundInfoDisplayer {
     }
 
     @Subscribe(sticky = true)
-    fun onMessageEvent(logout: LogoutEvent) {
+    fun onMessageEvent(logout: LogoutEvent) = Handler(Looper.getMainLooper()).post {
         if (logout.inProgress)
             onLogOutInProgress()
         else
