@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -53,7 +52,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     fun bindSessions(
         modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     ) {
         delete(modifiedSessions[SessionsObserver.ModificationType.DELETED])
         update(modifiedSessions[SessionsObserver.ModificationType.UPDATED])
@@ -85,7 +84,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private fun insert(
         sessions: List<Session>?,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     ) {
         sessions?.forEach { session ->
             val position = mSessionUUIDS.indexOf(session.uuid)
@@ -118,7 +117,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     protected open fun initSessionPresenter(
         session: Session,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     ) = SessionPresenter(
         session,
         sensorThresholds

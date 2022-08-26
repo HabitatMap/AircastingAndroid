@@ -28,7 +28,7 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
 
     fun showSessionsView(
         modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     )
     fun showEmptyView()
     fun showLoaderFor(session: Session)

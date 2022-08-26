@@ -71,7 +71,7 @@ class ReorderingFollowingRecyclerAdapter(
 
     override fun initSessionPresenter(
         session: Session,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     ): SessionPresenter {
         return SessionPresenter(session, sensorThresholds, expanded = false)
     }

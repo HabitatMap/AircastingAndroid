@@ -10,7 +10,7 @@ import java.util.*
 class SessionPresenter() {
     var session: Session? = null
     var selectedStream: MeasurementStream? = null
-    var sensorThresholds: HashMap<String, SensorThreshold> = hashMapOf()
+    var sensorThresholds: Map<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
     var loading: Boolean = false
     var reconnecting: Boolean = false
@@ -22,7 +22,7 @@ class SessionPresenter() {
 
     constructor(
         session: Session,
-        sensorThresholds: HashMap<String, SensorThreshold>,
+        sensorThresholds: Map<String, SensorThreshold>,
         selectedStream: MeasurementStream? = null,
         expanded: Boolean = false,
         loading: Boolean = false
