@@ -10,6 +10,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.backToUIThread
 import pl.llp.aircasting.util.extensions.runOnIOThread
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class SessionsObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
@@ -22,9 +23,9 @@ abstract class SessionsObserver<Type>(
         INSERTED
     }
 
-    private var mSessions = hashMapOf<String, Session>()
-    private var mSensorThresholds = hashMapOf<String, SensorThreshold>()
-    private var modifiedSessions = HashMap<ModificationType, List<Session>>()
+    private var mSessions = ConcurrentHashMap<String, Session>()
+    private var mSensorThresholds = ConcurrentHashMap<String, SensorThreshold>()
+    private var modifiedSessions = ConcurrentHashMap<ModificationType, List<Session>>()
 
     private var mSessionsLiveData: LiveData<List<Type>>? = null
 
@@ -63,7 +64,7 @@ abstract class SessionsObserver<Type>(
     }
 
     private fun searchForModifiedSessions(sessions: List<Session>): Map<ModificationType, List<Session>> {
-        val modified = HashMap<ModificationType, List<Session>>()
+        val modified = ConcurrentHashMap<ModificationType, List<Session>>()
         modified[ModificationType.DELETED] = deleted(sessions)
         modified[ModificationType.INSERTED] = inserted(sessions)
         modified[ModificationType.UPDATED] = updated(sessions)
