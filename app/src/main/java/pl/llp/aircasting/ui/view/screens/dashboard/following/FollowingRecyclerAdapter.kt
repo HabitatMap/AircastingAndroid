@@ -29,7 +29,7 @@ open class FollowingRecyclerAdapter(
 
     override fun initSessionPresenter(
         session: Session,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     ): SessionPresenter {
         val expandedState = expandedCards()?.contains(session.uuid) ?: false
         return SessionPresenter(session, sensorThresholds, expanded = expandedState)

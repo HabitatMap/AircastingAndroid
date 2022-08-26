@@ -82,7 +82,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
 
     override fun showSessionsView(
         modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
-        sensorThresholds: HashMap<String, SensorThreshold>
+        sensorThresholds: Map<String, SensorThreshold>
     ) {
         if (recyclerViewCanBeUpdated()) {
             mAdapter.bindSessions(modifiedSessions, sensorThresholds)
