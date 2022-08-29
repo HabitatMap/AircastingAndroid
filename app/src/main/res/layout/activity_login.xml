@@ -180,6 +180,7 @@
             app:rippleColor="@null" />
 
         <include
+            android:id="@+id/logout_events_in_progress"
             layout="@layout/logging_out_in_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,7 +1,7 @@
 package pl.llp.aircasting.ui.view.screens.create_account
 
+import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.greenrobot.eventbus.EventBus
@@ -65,7 +65,7 @@ class CreateAccountController(
         LoginActivity.start(mContextActivity, true, fromOnboarding)
     }
 
-    override val infoView: TextView?
+    override val infoView: View?
         get() = mViewMvc.rootView?.findViewById(R.id.logout_events_in_progress)
     override val button: Button?
         get() = mViewMvc.rootView?.findViewById(R.id.create_account_button)

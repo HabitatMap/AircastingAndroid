@@ -1,6 +1,5 @@
 package pl.llp.aircasting.util
 
-import android.app.Application
 import android.content.SharedPreferences
 
 open class Settings(private val sharedPreferences: SharedPreferences) {

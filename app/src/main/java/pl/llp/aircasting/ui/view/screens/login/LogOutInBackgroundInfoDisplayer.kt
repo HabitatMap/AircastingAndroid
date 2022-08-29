@@ -2,9 +2,11 @@ package pl.llp.aircasting.ui.view.screens.login
 
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ImageView
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.R
 import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.extensions.inVisible
 import pl.llp.aircasting.util.extensions.startAnimation
@@ -12,12 +14,12 @@ import pl.llp.aircasting.util.extensions.stopAnimation
 import pl.llp.aircasting.util.extensions.visible
 
 interface LogOutInBackgroundInfoDisplayer {
-    val infoView: TextView?
+    val infoView: View?
     val button: Button?
     fun onLogOutInProgress() {
         infoView?.apply {
             visible()
-            compoundDrawables[0]?.startAnimation()
+            findViewById<ImageView>(R.id.loader).startAnimation()
         }
         button?.isEnabled = false
     }
@@ -25,7 +27,7 @@ interface LogOutInBackgroundInfoDisplayer {
     fun onLogOutFinished() {
         infoView?.apply {
             inVisible()
-            compoundDrawables[0]?.stopAnimation()
+            findViewById<ImageView>(R.id.loader).stopAnimation()
         }
         button?.isEnabled = true
     }
