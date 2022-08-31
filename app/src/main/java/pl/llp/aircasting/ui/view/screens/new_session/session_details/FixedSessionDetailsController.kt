@@ -63,6 +63,10 @@ class FixedSessionDetailsController(
         mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
     }
 
+    override fun onStop() {
+        mWeDoNotLeakPasswordsBottomSheet?.dismissAllowingStateLoss()
+    }
+
     override fun onResume() {
         mWeDoNotLeakPasswordsBottomSheet?.dismiss()
     }
