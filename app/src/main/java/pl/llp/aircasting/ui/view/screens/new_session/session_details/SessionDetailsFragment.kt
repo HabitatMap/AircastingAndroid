@@ -48,6 +48,7 @@ class SessionDetailsFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        controller?.onStop()
         listener.let { controller?.unregisterListener(it) }
     }
 
