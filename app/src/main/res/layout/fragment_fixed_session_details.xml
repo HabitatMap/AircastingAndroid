@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -167,63 +166,33 @@
                 android:text="@string/fixed_session_details_cellular" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <LinearLayout
-            android:id="@+id/networks_wrapper"
+        <TextView
+            android:id="@+id/networks_list_header"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginTop="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
+            android:text="@string/fixed_session_details_networks_list_header"
+            android:textSize="@dimen/text_size_xs"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/refresh_network_list_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/streaming_method_toggle">
+            app:layout_constraintTop_toBottomOf="@+id/streaming_method_toggle" />
 
-            <TextView
-                android:id="@+id/networks_list_header"
-                style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="center|left"
-                android:text="@string/fixed_session_details_networks_list_header"
-                android:textSize="@dimen/text_size_xs"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@+id/password_leak_button"
-
-                tools:visibility="visible" />
-
-            <Button
-                android:id="@+id/password_leak_button"
-                style="@style/Widget.Aircasting.TextButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/keyline_1"
-                android:text="@string/leak_password_button"
-                android:textAlignment="textEnd"
-                android:textSize="@dimen/text_size_xxs"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/networks_list_header"
-                app:layout_constraintEnd_toStartOf="@+id/refresh_network_list_button"
-                app:layout_constraintTop_toTopOf="@+id/networks_list_header"
-                tools:visibility="visible" />
-
-            <Button
-                android:id="@+id/refresh_network_list_button"
-                style="@style/Widget.Aircasting.TextButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/fixed_session_details_refresh_networks_list_button"
-                android:textAlignment="textEnd"
-                android:textSize="@dimen/text_size_xxs"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/password_leak_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/password_leak_button"
-                tools:visibility="visible" />
-        </LinearLayout>
-
+        <Button
+            android:id="@+id/refresh_network_list_button"
+            style="@style/Widget.Aircasting.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:text="@string/fixed_session_details_refresh_networks_list_button"
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/text_size_xxs"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/networks_list"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/networks_list_loader"
@@ -234,9 +203,8 @@
             android:src="@drawable/ic_loader"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/continue_button"
-            app:layout_constraintTop_toBottomOf="@+id/networks_wrapper"
-            app:tint="@color/aircasting_blue_400"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/networks_list_header"
+            app:tint="@color/aircasting_blue_400" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/networks_list"
@@ -250,8 +218,7 @@
             android:scrollbars="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/continue_button"
-            app:layout_constraintTop_toBottomOf="@+id/networks_wrapper"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/networks_list_header" />
 
         <Button
             android:id="@+id/continue_button"

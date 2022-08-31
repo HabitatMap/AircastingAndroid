@@ -14,7 +14,6 @@ import pl.llp.aircasting.ui.view.screens.new_session.NewSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.TurnOnWifiDialog
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 
-
 class FixedSessionDetailsController(
     private val mContextActivity: FragmentActivity?,
     private val mViewMvc: FixedSessionDetailsViewMvc?,
@@ -22,7 +21,6 @@ class FixedSessionDetailsController(
 ) : SessionDetailsController(mContextActivity, mViewMvc),
     FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener,
     FixedSessionDetailsViewMvc.OnRefreshNetworksListener,
-    FixedSessionDetailsViewMvc.OnLeakPasswordButtonClickedListener,
     FixedSessionDetailsViewMvc.OnNetworkDialogStateChangedListener,
     NewSessionViewMvc.TurnOnWifiDialogListener {
 
@@ -57,7 +55,6 @@ class FixedSessionDetailsController(
 
         mViewMvc?.registerOnStreamingMethodChangedListener(this)
         mViewMvc?.registerOnRefreshNetworksListener(this)
-        mViewMvc?.registerOnLeakPasswordButtonClickedListener(this)
         mViewMvc?.registerOnNetworkDialogStateChangedListener(this)
 
         scanForNetworks()
@@ -69,7 +66,6 @@ class FixedSessionDetailsController(
                 mWeDoNotLeakPasswordsBottomSheet ?: WeDoNotLeakPasswordsBottomSheet()
 
             mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
-            mViewMvc?.showPasswordLeakButton()
         }
     }
 
@@ -122,10 +118,6 @@ class FixedSessionDetailsController(
             mWifiManager?.isWifiEnabled = true
             scanForNetworks()
         }
-    }
-
-    override fun onLeakPasswordButtonClicked() {
-        mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
     }
 
     override fun onDialogIsAboutToBeShown() {

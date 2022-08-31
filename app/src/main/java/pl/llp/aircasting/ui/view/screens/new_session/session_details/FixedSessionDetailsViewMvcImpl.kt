@@ -22,7 +22,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.extensions.visible
 
 
 class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>,
@@ -36,14 +35,12 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var streamingMethodChangedListener: FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener? = null
     private var networksHeaderView: TextView? = null
     private var refreshNetworksListButton: Button? = null
-    private var passwordLeakButton: Button? = null
     private var networkListLoaded = false
     private var networkListLoader: ImageView? = null
     private var networksRecyclerView: RecyclerView? = null
     private val networksRecyclerViewAdapter: GroupAdapter<GroupieViewHolder>
     private var networksRefreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener? = null
     private var networkDialogStateChangedListener: FixedSessionDetailsViewMvc.OnNetworkDialogStateChangedListener? = null
-    private var leakPasswordButtonClickedListener: FixedSessionDetailsViewMvc.OnLeakPasswordButtonClickedListener? = null
     private var selectedNetworkItem: RecyclerViewNetworkItem? = null
     private var selectedNetworkPassword: String? = null
     private var sessionNameInputLayout: TextInputLayout? = null
@@ -70,10 +67,6 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         refreshNetworksListButton = rootView?.findViewById(R.id.refresh_network_list_button)
         refreshNetworksListButton?.setOnClickListener {
             onRefreshNetworksListClicked()
-        }
-        passwordLeakButton = rootView?.findViewById(R.id.password_leak_button)
-        passwordLeakButton?.setOnClickListener {
-            onLeakButtonClicked()
         }
         networkListLoader = rootView?.findViewById(R.id.networks_list_loader)
         networksRecyclerView = rootView?.findViewById(R.id.networks_list)
@@ -106,14 +99,6 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         continueButton?.setOnClickListener {
             onSessionDetailsContinueClicked()
         }
-    }
-
-    private fun onLeakButtonClicked() {
-        leakPasswordButtonClickedListener?.onLeakPasswordButtonClicked()
-    }
-
-    override fun showPasswordLeakButton() {
-        passwordLeakButton?.visible()
     }
 
     private fun showNetworksList() {
@@ -194,10 +179,6 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
     override fun registerOnRefreshNetworksListener(listener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener) {
         networksRefreshListener = listener
-    }
-
-    override fun registerOnLeakPasswordButtonClickedListener(listener: FixedSessionDetailsViewMvc.OnLeakPasswordButtonClickedListener) {
-        leakPasswordButtonClickedListener = listener
     }
 
     override fun registerOnNetworkDialogStateChangedListener(listener: FixedSessionDetailsViewMvc.OnNetworkDialogStateChangedListener) {

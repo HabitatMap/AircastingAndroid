@@ -178,7 +178,6 @@
     <string name="fixed_session_details_networks_list_header">Available 2.4 GHz networks:</string>
     <string name="fixed_session_details_refresh_networks_list_button"><u>Refresh</u></string>
     <string name="fixed_session_details_wifi_password_dialog_header">Provide password for \"%1$s\" network</string>
-    <string name="leak_password_button"><u>Leak?</u></string>
     <string name="we_do_not_leak_passwords_header">Password leak</string>
     <string name="we_do_not_leak_passwords">In case you were prompted with Google alert of a leaked password - this means that the combination of name and password that is used to protect your WiFi network was found in the Google database of leaked credentials and is considered weak. AirCasting does not leak your passwords</string>
     <string name="session_details_network_password_hint">Password</string>

@@ -407,6 +407,5 @@
     <string name="login_out_background">Déconnexion en cours en arrière-plan. Vous pouvez remplir les informations d\'identification</string>
     <string name="we_do_not_leak_passwords_header">Fuite de mot de passe</string>
     <string name="we_do_not_leak_passwords">Si vous avez reçu une alerte Google concernant une fuite de mot de passe, cela signifie que la combinaison de nom et de mot de passe utilisée pour protéger votre réseau WiFi a été trouvée dans la base de données Google des informations d\'identification divulguées et est considérée comme faible. AirCasting ne divulgue pas vos mots de passe</string>
-    <string name="leak_password_button"><u>Fuite ?</u></string>
 
 </resources>
