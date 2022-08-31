@@ -6,6 +6,9 @@ import pl.llp.aircasting.data.model.Session
 interface FixedSessionDetailsViewMvc: SessionDetailsViewMvc {
     fun registerOnStreamingMethodChangedListener(listener: OnStreamingMethodChangedListener)
     fun registerOnRefreshNetworksListener(listener: OnRefreshNetworksListener)
+    fun registerOnLeakPasswordButtonClickedListener(listener: OnLeakPasswordButtonClickedListener)
+    fun showPasswordLeakButton()
+
     fun bindNetworks(networks: List<Network>)
 
     interface OnStreamingMethodChangedListener {
@@ -14,6 +17,10 @@ interface FixedSessionDetailsViewMvc: SessionDetailsViewMvc {
 
     interface OnRefreshNetworksListener {
         fun onRefreshClicked()
+    }
+
+    interface OnLeakPasswordButtonClickedListener {
+        fun onLeakPasswordButtonClicked()
     }
 
     interface OnPasswordProvidedListener {
