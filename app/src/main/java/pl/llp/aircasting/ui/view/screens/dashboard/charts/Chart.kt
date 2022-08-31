@@ -10,8 +10,10 @@ import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.TemperatureConverter
+import java.util.*
 
 class Chart(
     context: Context,
@@ -93,8 +95,15 @@ class Chart(
     }
 
     private fun setTimesAndUnit() {
+        val session = mSessionPresenter?.session
+        session ?: return
+
+        val mEndTime = session.endTime?.let {
+            DateConverter.get()?.toTimeStringForDisplay(it, TimeZone.getDefault())
+        }
+
         mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
-        mChartEndTimeTextView?.text = mSessionPresenter?.chartData?.entriesEndTime
+        mChartEndTimeTextView?.text = mEndTime
         mChartUnitTextView?.text = chartUnitText()
     }
 
