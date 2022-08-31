@@ -16,6 +16,8 @@ open class SessionDetailsController(
     }
 
     open fun onCreate() {}
+    open fun onPause() {}
+    open fun onResume() {}
 
     fun onDestroy() {
         mViewMvc = null
