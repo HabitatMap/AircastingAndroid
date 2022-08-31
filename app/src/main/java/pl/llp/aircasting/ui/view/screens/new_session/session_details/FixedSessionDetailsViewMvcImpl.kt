@@ -26,7 +26,8 @@ import pl.llp.aircasting.util.extensions.visible
 
 
 class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMvc.Listener>,
-    FixedSessionDetailsViewMvc, FixedSessionDetailsViewMvc.OnPasswordProvidedListener {
+    FixedSessionDetailsViewMvc, FixedSessionDetailsViewMvc.OnPasswordProvidedListener,
+    NetworkPasswordDialog.OnDismissListener {
     private val fragmentManager: FragmentManager
     private var sessionUUID: String
     private var deviceItem: DeviceItem
@@ -41,6 +42,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var networksRecyclerView: RecyclerView? = null
     private val networksRecyclerViewAdapter: GroupAdapter<GroupieViewHolder>
     private var networksRefreshListener: FixedSessionDetailsViewMvc.OnRefreshNetworksListener? = null
+    private var networkDialogStateChangedListener: FixedSessionDetailsViewMvc.OnNetworkDialogStateChangedListener? = null
     private var leakPasswordButtonClickedListener: FixedSessionDetailsViewMvc.OnLeakPasswordButtonClickedListener? = null
     private var selectedNetworkItem: RecyclerViewNetworkItem? = null
     private var selectedNetworkPassword: String? = null
@@ -198,6 +200,10 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         leakPasswordButtonClickedListener = listener
     }
 
+    override fun registerOnNetworkDialogStateChangedListener(listener: FixedSessionDetailsViewMvc.OnNetworkDialogStateChangedListener) {
+        networkDialogStateChangedListener = listener
+    }
+
     override fun bindNetworks(networks: List<Network>) {
         val networkItems = networks.map { RecyclerViewNetworkItem(it) }
         networksRecyclerViewAdapter.clear()
@@ -217,7 +223,9 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
         networksRecyclerViewAdapter.notifyDataSetChanged()
 
-        NetworkPasswordDialog(networkItem.network.name, fragmentManager, this).show()
+        networkDialogStateChangedListener?.onDialogIsAboutToBeShown()
+        NetworkPasswordDialog(networkItem.network.name, fragmentManager, this, this).show()
+
     }
 
     private fun onSessionDetailsContinueClicked() {
@@ -282,5 +290,9 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
     override fun onNetworkPasswordProvided(password: String) {
         selectedNetworkPassword = password
+    }
+
+    override fun onDismiss() {
+        networkDialogStateChangedListener?.onDialogIsAboutToBeClosed()
     }
 }

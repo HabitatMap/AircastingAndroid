@@ -10,8 +10,12 @@ import pl.llp.aircasting.ui.view.common.BaseDialog
 class NetworkPasswordDialog(
     private val wifiSSID: String,
     private val mFragmentManager: FragmentManager,
-    private val listener: FixedSessionDetailsViewMvc.OnPasswordProvidedListener
+    private val listener: FixedSessionDetailsViewMvc.OnPasswordProvidedListener,
+    private val onDismissListener: OnDismissListener
 ) : BaseDialog(mFragmentManager) {
+    interface OnDismissListener {
+        fun onDismiss()
+    }
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
@@ -28,7 +32,7 @@ class NetworkPasswordDialog(
         }
 
         mView.cancel_button.setOnClickListener {
-            dismiss()
+            close()
         }
 
         return mView
@@ -38,6 +42,11 @@ class NetworkPasswordDialog(
         val password = mView.wifi_password_input.text.toString().trim()
         listener.onNetworkPasswordProvided(password)
 
+        close()
+    }
+
+    private fun close() {
         dismiss()
+        onDismissListener.onDismiss()
     }
 }
