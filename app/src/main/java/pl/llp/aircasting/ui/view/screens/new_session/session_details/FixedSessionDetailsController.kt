@@ -9,26 +9,28 @@ import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.TurnOnWifiDialog
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 
 
 class FixedSessionDetailsController(
     private val mContextActivity: FragmentActivity?,
     private val mViewMvc: FixedSessionDetailsViewMvc?,
     private val mFragmentManager: FragmentManager
-): SessionDetailsController(mContextActivity, mViewMvc),
+) : SessionDetailsController(mContextActivity, mViewMvc),
     FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener,
     FixedSessionDetailsViewMvc.OnRefreshNetworksListener,
     FixedSessionDetailsViewMvc.OnLeakPasswordButtonClickedListener,
+    FixedSessionDetailsViewMvc.OnNetworkDialogStateChangedListener,
     NewSessionViewMvc.TurnOnWifiDialogListener {
 
     private var mWifiManager: WifiManager? = null
     private var mWeDoNotLeakPasswordsBottomSheet: WeDoNotLeakPasswordsBottomSheet? = null
+    private var needToShowInfoBottomSheet = true
 
-    inner class WifiReceiver: BroadcastReceiver() {
+    inner class WifiReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent?.action)) {
                 val wifiList = mWifiManager?.scanResults
@@ -50,11 +52,13 @@ class FixedSessionDetailsController(
     override fun onCreate() {
         super.onCreate()
 
-        mWifiManager = mContextActivity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+        mWifiManager =
+            mContextActivity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
 
         mViewMvc?.registerOnStreamingMethodChangedListener(this)
         mViewMvc?.registerOnRefreshNetworksListener(this)
         mViewMvc?.registerOnLeakPasswordButtonClickedListener(this)
+        mViewMvc?.registerOnNetworkDialogStateChangedListener(this)
 
         scanForNetworks()
     }
@@ -71,6 +75,7 @@ class FixedSessionDetailsController(
 
     override fun onResume() {
         mWeDoNotLeakPasswordsBottomSheet?.dismiss()
+        needToShowInfoBottomSheet = true
     }
 
     override fun onStreamingMethodChanged(streamingMethod: Session.StreamingMethod) {
@@ -101,9 +106,10 @@ class FixedSessionDetailsController(
     }
 
     override fun turnOnWifiClicked() {
-        val startForResult = mContextActivity?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            scanForNetworks()
-        }
+        val startForResult =
+            mContextActivity?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                scanForNetworks()
+            }
 
         if (isSDKGreaterOrEqualToQ()) {
             val intent = Intent(Settings.Panel.ACTION_WIFI)
@@ -116,5 +122,13 @@ class FixedSessionDetailsController(
 
     override fun onLeakPasswordButtonClicked() {
         mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
+    }
+
+    override fun onDialogIsAboutToBeShown() {
+         needToShowInfoBottomSheet = false
+    }
+
+    override fun onDialogIsAboutToBeClosed() {
+        needToShowInfoBottomSheet = true
     }
 }

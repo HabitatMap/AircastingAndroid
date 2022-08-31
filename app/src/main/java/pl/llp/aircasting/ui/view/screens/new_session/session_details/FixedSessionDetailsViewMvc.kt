@@ -7,6 +7,7 @@ interface FixedSessionDetailsViewMvc: SessionDetailsViewMvc {
     fun registerOnStreamingMethodChangedListener(listener: OnStreamingMethodChangedListener)
     fun registerOnRefreshNetworksListener(listener: OnRefreshNetworksListener)
     fun registerOnLeakPasswordButtonClickedListener(listener: OnLeakPasswordButtonClickedListener)
+    fun registerOnNetworkDialogStateChangedListener(listener: OnNetworkDialogStateChangedListener)
     fun showPasswordLeakButton()
 
     fun bindNetworks(networks: List<Network>)
@@ -25,5 +26,10 @@ interface FixedSessionDetailsViewMvc: SessionDetailsViewMvc {
 
     interface OnPasswordProvidedListener {
         fun onNetworkPasswordProvided(password: String)
+    }
+
+    interface OnNetworkDialogStateChangedListener {
+        fun onDialogIsAboutToBeShown()
+        fun onDialogIsAboutToBeClosed()
     }
 }
