@@ -22,8 +22,8 @@ class FixedSessionDetailsController(
 ): SessionDetailsController(mContextActivity, mViewMvc),
     FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener,
     FixedSessionDetailsViewMvc.OnRefreshNetworksListener,
-    NewSessionViewMvc.TurnOnWifiDialogListener
-{
+    FixedSessionDetailsViewMvc.OnLeakPasswordButtonClickedListener,
+    NewSessionViewMvc.TurnOnWifiDialogListener {
 
     private var mWifiManager: WifiManager? = null
     private var mWeDoNotLeakPasswordsBottomSheet: WeDoNotLeakPasswordsBottomSheet? = null
@@ -54,6 +54,7 @@ class FixedSessionDetailsController(
 
         mViewMvc?.registerOnStreamingMethodChangedListener(this)
         mViewMvc?.registerOnRefreshNetworksListener(this)
+        mViewMvc?.registerOnLeakPasswordButtonClickedListener(this)
 
         scanForNetworks()
     }
@@ -61,6 +62,7 @@ class FixedSessionDetailsController(
     override fun onPause() {
         mWeDoNotLeakPasswordsBottomSheet = mWeDoNotLeakPasswordsBottomSheet ?: WeDoNotLeakPasswordsBottomSheet()
         mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
+        mViewMvc?.showPasswordLeakButton()
     }
 
     override fun onStop() {
@@ -110,5 +112,9 @@ class FixedSessionDetailsController(
             mWifiManager?.isWifiEnabled = true
             scanForNetworks()
         }
+    }
+
+    override fun onLeakPasswordButtonClicked() {
+        mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
     }
 }
