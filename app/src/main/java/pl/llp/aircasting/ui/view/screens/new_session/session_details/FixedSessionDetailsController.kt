@@ -64,9 +64,13 @@ class FixedSessionDetailsController(
     }
 
     override fun onPause() {
-        mWeDoNotLeakPasswordsBottomSheet = mWeDoNotLeakPasswordsBottomSheet ?: WeDoNotLeakPasswordsBottomSheet()
-        mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
-        mViewMvc?.showPasswordLeakButton()
+        if (needToShowInfoBottomSheet) {
+            mWeDoNotLeakPasswordsBottomSheet =
+                mWeDoNotLeakPasswordsBottomSheet ?: WeDoNotLeakPasswordsBottomSheet()
+
+            mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
+            mViewMvc?.showPasswordLeakButton()
+        }
     }
 
     override fun onStop() {
