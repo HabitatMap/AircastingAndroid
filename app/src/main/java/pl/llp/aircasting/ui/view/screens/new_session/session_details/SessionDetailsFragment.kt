@@ -41,9 +41,19 @@ class SessionDetailsFragment : Fragment() {
         listener.let { controller?.registerListener(it) }
     }
 
+    override fun onPause() {
+        super.onPause()
+        controller?.onPause()
+    }
+
     override fun onStop() {
         super.onStop()
         listener.let { controller?.unregisterListener(it) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        controller?.onResume()
     }
 
     override fun onDestroy() {

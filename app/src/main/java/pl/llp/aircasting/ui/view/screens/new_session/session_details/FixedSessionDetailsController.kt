@@ -26,6 +26,7 @@ class FixedSessionDetailsController(
 {
 
     private var mWifiManager: WifiManager? = null
+    private var mWeDoNotLeakPasswordsBottomSheet: WeDoNotLeakPasswordsBottomSheet? = null
 
     inner class WifiReceiver: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -57,6 +58,14 @@ class FixedSessionDetailsController(
         scanForNetworks()
     }
 
+    override fun onPause() {
+        mWeDoNotLeakPasswordsBottomSheet = mWeDoNotLeakPasswordsBottomSheet ?: WeDoNotLeakPasswordsBottomSheet()
+        mWeDoNotLeakPasswordsBottomSheet?.show(mFragmentManager)
+    }
+
+    override fun onResume() {
+        mWeDoNotLeakPasswordsBottomSheet?.dismiss()
+    }
 
     override fun onStreamingMethodChanged(streamingMethod: Session.StreamingMethod) {
         if (streamingMethod != Session.StreamingMethod.WIFI) return
