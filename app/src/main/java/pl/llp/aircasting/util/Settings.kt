@@ -210,11 +210,11 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     }
 
     fun increaseActiveMobileSessionsNumber() {
-        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, getFollowedSessionsNumber() + 1)
+        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, getMobileActiveSessions() + 1)
     }
 
     fun decreaseActiveMobileSessionsNumber() {
-        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, getFollowedSessionsNumber() - 1)
+        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, getMobileActiveSessions() - 1)
     }
 
     fun saveExpandedSessionsUUIDs(uuids: Set<String>) {

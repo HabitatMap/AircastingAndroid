@@ -38,6 +38,8 @@ class SyncActivity : BaseActivity() {
                 rootActivity?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     onFinish?.invoke()
                 }
+            // TODO: we should be using "Inline functions" for this onFinish() invoke as it is good for the performance!
+            // More info: https://stackoverflow.com/questions/44471284/when-to-use-an-inline-function-in-kotlin
         }
 
         fun start(rootActivity: FragmentActivity?) {
