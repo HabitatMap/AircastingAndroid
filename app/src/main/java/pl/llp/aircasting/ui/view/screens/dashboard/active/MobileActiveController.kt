@@ -40,12 +40,21 @@ class MobileActiveController(
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector,
     private val mContext: Context
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, mRootActivity!!.supportFragmentManager, mContext),
+) : SessionsController(
+    mRootActivity,
+    mViewMvc,
+    mSessionsViewModel,
+    mSettings,
+    mApiServiceFactory,
+    mRootActivity!!.supportFragmentManager,
+    mContext
+),
     SessionsViewMvc.Listener,
     AddNoteBottomSheet.Listener,
     AirBeamReconnector.Listener {
 
-    private var mSessionsObserver = ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver =
+        ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun onCreate() {
         super.onCreate()
@@ -122,18 +131,25 @@ class MobileActiveController(
         )
     }
 
-    override fun onEditDataPressed(session: Session, name: String, tags: ArrayList<String>) { // Edit session bottom sheet handling
+    override fun onEditDataPressed(
+        session: Session,
+        name: String,
+        tags: ArrayList<String>
+    ) { // Edit session bottom sheet handling
         // do nothing
     }
 
     override fun onFinishSessionConfirmed(session: Session) {
-        mSettings.decreaseActiveMobileSessionsNumber()
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
-        goToDormantTab()
+
+        mSettings.decreaseActiveMobileSessionsNumber()
+        val getActiveMobileSessions = mSettings.getMobileActiveSessions()
+        if (getActiveMobileSessions == 1) goToDormantTab()
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
+        mSettings.decreaseActiveMobileSessionsNumber()
         SyncActivity.start(mRootActivity)
     }
 
@@ -145,7 +161,7 @@ class MobileActiveController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
         val deviceId = event.deviceId ?: return
-        
+
         mViewMvc?.hideLoaderFor(deviceId)
     }
 
