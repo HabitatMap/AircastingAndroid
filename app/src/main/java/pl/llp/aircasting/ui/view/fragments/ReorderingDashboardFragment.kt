@@ -20,6 +20,7 @@ class ReorderingDashboardFragment :
 
         val pagerAdapter = ReorderingDashboardPagerAdapter(childFragmentManager)
         view = DashboardViewMvcImpl(
+            requireActivity(),
             inflater, container, childFragmentManager,
             pagerAdapter, ReorderingDashboardPagerAdapter.TABS_COUNT
         )

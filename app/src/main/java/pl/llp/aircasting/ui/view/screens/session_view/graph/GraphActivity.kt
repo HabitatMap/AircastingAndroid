@@ -11,11 +11,11 @@ import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.extensions.setupAppBar
+import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
-class GraphActivity: BaseActivity() {
+class GraphActivity : BaseActivity() {
     private var controller: GraphController? = null
     private var view: SessionDetailsViewMvc? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
@@ -31,8 +31,13 @@ class GraphActivity: BaseActivity() {
         val SENSOR_NAME_KEY = "SENSOR_NAME"
         val SESSION_TAB_KEY = "SESSION_TAB"
 
-        fun start(context: Context?, sensorName: String?, sessionUUID: String, sessionTab: SessionsTab) {
-            context?.let{
+        fun start(
+            context: Context?,
+            sensorName: String?,
+            sessionUUID: String,
+            sessionTab: SessionsTab
+        ) {
+            context?.let {
                 val intent = Intent(it, GraphActivity::class.java)
                 intent.putExtra(SESSION_UUID_KEY, sessionUUID)
                 intent.putExtra(SENSOR_NAME_KEY, sensorName)
@@ -58,7 +63,17 @@ class GraphActivity: BaseActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = GraphController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory, airbeamReconnector)
+        controller = GraphController(
+            this,
+            sessionsViewModel,
+            view,
+            sessionUUID,
+            sensorName,
+            supportFragmentManager,
+            settings,
+            apiServiceFactory,
+            airbeamReconnector
+        )
 
         controller?.onCreate()
 

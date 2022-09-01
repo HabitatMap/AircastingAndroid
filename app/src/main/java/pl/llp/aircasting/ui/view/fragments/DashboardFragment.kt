@@ -55,6 +55,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
         val pagerAdapter = context?.let { DashboardPagerAdapter(it, childFragmentManager) }
         return pagerAdapter?.let {
             DashboardViewMvcImpl(
+                requireActivity(),
                 inflater, container, childFragmentManager,
                 it, DashboardPagerAdapter.TABS_COUNT
             )
