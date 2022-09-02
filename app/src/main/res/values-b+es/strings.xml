@@ -407,7 +407,5 @@
     <string name="from">de</string>
     <string name="to">a</string>
     <string name="login_out_background">Actualmente cerrando sesión en segundo plano. Puedes llenar credenciales</string>
-    <string name="we_do_not_leak_passwords">En caso de que se le solicite una alerta de Google de una contraseña filtrada, esto significa que la combinación de nombre y contraseña que se utiliza para proteger su red WiFi se encontró en la base de datos de credenciales filtradas de Google y se considera débil. AirCasting no filtra tus contraseñas</string>
-    <string name="we_do_not_leak_passwords_header">Fuga de contraseña</string>
 
 </resources>

@@ -1,81 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/dialog_background">
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bottomsheet_card"
-        style="@style/Widget.Aircasting.BottomSheetCard"
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/dialog_background">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/bottomsheet_card"
+            style="@style/Widget.Aircasting.BottomSheetCard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/keyline_8">
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
 
-            <ImageView
-                android:id="@+id/close_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/keyline_4"
-                android:paddingBottom="@dimen/keyline_4"
-                android:src="@drawable/ic_x"
-                app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_your_privacy_header"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/aircasting_blue_400" />
-
-            <TextView
-                android:id="@+id/learn_more_onboarding_your_privacy_header"
-                style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/keyline_6"
-                android:layout_marginTop="@dimen/keyline_4"
-                android:layout_marginEnd="@dimen/keyline_6"
-                android:layout_marginBottom="@dimen/keyline_6"
-                android:text="@string/onboarding_bottomsheet_page4_header"
-                android:textAppearance="@style/TextAppearance.Aircasting.Headline2"
-                android:textColor="@color/aircasting_blue_400"
-                android:textSize="@dimen/text_size_xl"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/close_button"
-                app:lineHeight="@dimen/line_height_xxl" />
-
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scroll_view"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/keyline_6"
-                android:layout_marginEnd="@dimen/keyline_6"
-                android:fadeScrollbars="false"
-                android:fillViewport="true"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/learn_more_onboarding_your_privacy_header">
+                android:layout_height="match_parent"
+                android:padding="@dimen/keyline_8">
+
+                <ImageView
+                    android:id="@+id/close_button"
+                    android:src="@drawable/ic_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/keyline_4"
+                    android:paddingBottom="@dimen/keyline_4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/learn_more_onboarding_your_privacy_header"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:tint="@color/aircasting_blue_400" />
+
+                <TextView
+                    android:id="@+id/learn_more_onboarding_your_privacy_header"
+                    style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/onboarding_bottomsheet_page4_header"
+                    android:textAppearance="@style/TextAppearance.Aircasting.Headline2"
+                    android:textColor="@color/aircasting_blue_400"
+                    android:textSize="@dimen/text_size_xl"
+                    app:lineHeight="@dimen/line_height_xxl"
+                    android:layout_marginTop="@dimen/keyline_4"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:layout_marginBottom="@dimen/keyline_6"
+                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/scroll_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:fillViewport="true"
+                    android:scrollbars="vertical"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:scrollbarStyle="insideInset"
+                    android:fadeScrollbars="false"
+                    app:layout_constraintTop_toBottomOf="@+id/learn_more_onboarding_your_privacy_header"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
                     android:id="@+id/learn_more_onboarding_your_privacy_description"
-                    style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/keyline_6"
-                    android:textSize="@dimen/text_size_m" />
+                    style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
+                    android:textSize="@dimen/text_size_m"
+                    android:layout_marginTop="@dimen/keyline_6" />
 
-            </androidx.core.widget.NestedScrollView>
+                </androidx.core.widget.NestedScrollView>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
