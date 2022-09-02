@@ -20,7 +20,6 @@ import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
-
 open class MapController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
@@ -28,10 +27,19 @@ open class MapController(
     sessionUUID: String,
     sensorName: String?,
     fragmentManager: FragmentManager,
-    mSettings: Settings,
+    val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector
-): SessionDetailsViewController(rootActivity, mSessionsViewModel, mViewMvc, sessionUUID, sensorName, fragmentManager, mSettings, mApiServiceFactory),
+) : SessionDetailsViewController(
+    rootActivity,
+    mSessionsViewModel,
+    mViewMvc,
+    sessionUUID,
+    sensorName,
+    fragmentManager,
+    mSettings,
+    mApiServiceFactory
+),
     SessionDetailsViewMvc.Listener,
     AddNoteBottomSheet.Listener {
     private var mLocateRequested = false
@@ -79,6 +87,8 @@ open class MapController(
     override fun onFinishSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
+
+        mSettings.decreaseActiveMobileSessionsNumber()
         rootActivity.finish()
     }
 
@@ -94,7 +104,10 @@ open class MapController(
         mViewMvc?.addNote(note)
     }
 
-    override fun deleteNotePressed(note: Note?, session: Session?) { // Delete session on EditNoteBottomSheet pressed
+    override fun deleteNotePressed(
+        note: Note?,
+        session: Session?
+    ) { // Delete session on EditNoteBottomSheet pressed
         super.deleteNotePressed(note, session)
         if (note != null) {
             mViewMvc?.deleteNote(note)
