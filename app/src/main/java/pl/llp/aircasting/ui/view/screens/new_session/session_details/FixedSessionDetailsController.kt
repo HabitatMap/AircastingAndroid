@@ -75,6 +75,7 @@ class FixedSessionDetailsController(
 
     override fun onResume() {
         mWeDoNotLeakPasswordsBottomSheet?.dismiss()
+        needToShowInfoBottomSheet = true
     }
 
     override fun onStreamingMethodChanged(streamingMethod: Session.StreamingMethod) {
