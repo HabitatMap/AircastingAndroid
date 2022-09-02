@@ -8,10 +8,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseDialog
-import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 
 open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
@@ -42,7 +42,7 @@ open class FinishSessionConfirmationDialog(
         return SpannableStringBuilder()
             .append(getString(R.string.dialog_finish_recording_header_part1))
             .append(" ")
-            .color(blueColor(), { bold { append(mSession.name) } })
+            .color(blueColor()) { bold { append(mSession.name) } }
             .append(getString(R.string.dialog_finish_recording_header_part3))
     }
 
@@ -50,7 +50,7 @@ open class FinishSessionConfirmationDialog(
         return SpannableStringBuilder()
             .append(getString(R.string.dialog_finish_recording_text_part1))
             .append(" ")
-            .color(blueColor(), { bold { append(getString(R.string.dialog_finish_recording_text_part2)) } })
+            .color(blueColor()) { bold { append(getString(R.string.dialog_finish_recording_text_part2)) } }
             .append(" ")
             .append(getString(R.string.dialog_finish_recording_text_part3))
     }
@@ -65,7 +65,7 @@ open class FinishSessionConfirmationDialog(
     }
 
     protected fun blueColor(): Int {
-        return context?.let{
+        return context?.let {
             ResourcesCompat.getColor(it.resources, R.color.aircasting_blue_400, null)
         } ?: Color.GRAY
     }

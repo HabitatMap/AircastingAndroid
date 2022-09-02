@@ -27,7 +27,7 @@ open class MapController(
     sessionUUID: String,
     sensorName: String?,
     fragmentManager: FragmentManager,
-    val mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     private val airBeamReconnector: AirBeamReconnector
 ) : SessionDetailsViewController(
