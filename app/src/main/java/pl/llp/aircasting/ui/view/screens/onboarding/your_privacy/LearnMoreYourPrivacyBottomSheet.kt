@@ -8,11 +8,11 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
-import kotlinx.android.synthetic.main.learn_more_onboarding_your_privacy.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import kotlinx.android.synthetic.main.learn_more_onboarding_your_privacy.view.*
 
-open class LearnMoreYourPrivacyBottomSheet: BottomSheet() {
+class LearnMoreYourPrivacyBottomSheet: BottomSheet() {
     override fun layoutId(): Int {
         return R.layout.learn_more_onboarding_your_privacy
     }
@@ -32,7 +32,7 @@ open class LearnMoreYourPrivacyBottomSheet: BottomSheet() {
         return bottomSheet
     }
 
-    protected open fun buildDescription(): SpannableStringBuilder {
+    private fun buildDescription(): SpannableStringBuilder {
         return SpannableStringBuilder()
             .append(getString(R.string.onboarding_bottomsheet_page4_paragraph_header))
             .append("\n")

@@ -13,7 +13,7 @@ import pl.llp.aircasting.R
 
 abstract class BottomSheet : BottomSheetDialogFragment() {
     private val TAG = "BottomSheet"
-    protected open val EXPANDED_PERCENT = 0.9
+    private val EXPANDED_PERCENT = 0.9
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
     protected var contentView: View? = null
 
