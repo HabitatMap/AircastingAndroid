@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -66,11 +68,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_4"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:text="@string/your_note_will_be_timestamped_and_displayed_on_the_aircasting_map"
                     android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-                    app:layout_constraintBottom_toTopOf="@id/add_picture_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/title" />
@@ -88,7 +89,6 @@
                     android:text="@string/tap_to_add_picture"
                     app:icon="@drawable/ic_add_picture"
                     app:iconTint="@color/aircasting_grey_300"
-                    app:layout_constraintBottom_toTopOf="@id/note_input_layout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/description" />
@@ -99,11 +99,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_2"
                     android:layout_marginEnd="@dimen/keyline_6"
                     app:errorEnabled="true"
                     app:hintEnabled="false"
-                    app:layout_constraintBottom_toTopOf="@+id/add_note_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/add_picture_button">
@@ -111,15 +110,30 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_input"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="wrap_content"
                         android:backgroundTint="@color/aircasting_grey_100"
                         android:gravity="start"
+                        android:inputType="textMultiLine"
+                        android:lines="4"
                         android:hint="@string/note"
-                        android:inputType="text"
+                        android:maxLines="4"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                         android:textColor="@color/aircasting_grey_700"
                         android:textColorHint="@color/aircasting_grey_700" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/captured_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/keyline_2"
+                    android:maxHeight="100dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/note_input_layout"
+                    tools:src="@drawable/airbeam_in_hand"
+                    tools:visibility="visible" />
 
                 <Button
                     android:id="@+id/add_note_button"
@@ -128,10 +142,10 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:text="@string/add_note"
-                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                    android:layout_marginTop="@dimen/keyline_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/note_input_layout" />
+                    app:layout_constraintTop_toBottomOf="@id/captured_image" />
 
                 <Button
                     android:id="@+id/cancel_button"
