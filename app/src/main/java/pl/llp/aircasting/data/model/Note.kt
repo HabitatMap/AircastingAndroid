@@ -8,8 +8,8 @@ class Note(
     var text: String,
     val latitude: Double?,
     val longitude: Double?,
-    val number: Int
-    //,todo: val photoPath: String
+    val number: Int,
+    val photoPath: String?
 ) {
 
     constructor(noteDBObject: NoteDBObject) : this(
@@ -17,7 +17,8 @@ class Note(
         noteDBObject.text,
         noteDBObject.latitude,
         noteDBObject.longitude,
-        noteDBObject.number
+        noteDBObject.number,
+        noteDBObject.photoPath
     )
 }
 

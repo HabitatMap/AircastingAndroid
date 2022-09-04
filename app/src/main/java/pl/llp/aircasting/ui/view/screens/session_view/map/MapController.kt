@@ -9,6 +9,7 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.active.CameraPermissionHelperDialog
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
@@ -18,6 +19,7 @@ import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
 open class MapController(
@@ -26,17 +28,18 @@ open class MapController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    fragmentManager: FragmentManager,
+    val mFragmentManager: FragmentManager,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector
+    private val airBeamReconnector: AirBeamReconnector,
+    private val permissionsManager: PermissionsManager
 ) : SessionDetailsViewController(
     rootActivity,
     mSessionsViewModel,
     mViewMvc,
     sessionUUID,
     sensorName,
-    fragmentManager,
+    mFragmentManager,
     mSettings,
     mApiServiceFactory
 ),
@@ -104,6 +107,14 @@ open class MapController(
         mViewMvc?.addNote(note)
     }
 
+    override fun showCameraHelperDialog() {
+        CameraPermissionHelperDialog(mFragmentManager) { requestCameraPermission() }.show()
+    }
+
+    private fun requestCameraPermission() {
+        permissionsManager.requestCameraPermission(rootActivity)
+    }
+
     override fun deleteNotePressed(
         note: Note?,
         session: Session?
@@ -113,5 +124,4 @@ open class MapController(
             mViewMvc?.deleteNote(note)
         }
     }
-
 }
