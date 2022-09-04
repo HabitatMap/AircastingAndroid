@@ -90,6 +90,9 @@ object AppDependencies {
     private const val mpAndroidChart =
         "com.github.PhilJay:MPAndroidChart:${Versions.mpAndroidChart}"
 
+    /* Camera */
+    private const val cameraImagePicker = "com.github.dhaval2404:imagepicker:${Versions.cameraImagePicker}"
+
     /**
      * Tests
      */
@@ -166,6 +169,7 @@ object AppDependencies {
         add(commonsCodec)
         add(androidBle)
         add(mpAndroidChart)
+        add(cameraImagePicker)
     }
     val kaptLibraries = arrayListOf<String>().apply {
         add(daggerCompiler)
