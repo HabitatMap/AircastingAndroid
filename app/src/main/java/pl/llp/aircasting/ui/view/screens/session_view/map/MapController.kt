@@ -108,11 +108,11 @@ open class MapController(
     }
 
     override fun showCameraHelperDialog() {
-        CameraPermissionHelperDialog(mFragmentManager) { requestCameraPermission() }.show()
-    }
-
-    private fun requestCameraPermission() {
-        permissionsManager.requestCameraPermission(rootActivity)
+        CameraPermissionHelperDialog(mFragmentManager) {
+            permissionsManager.requestCameraPermission(
+                rootActivity
+            )
+        }.show()
     }
 
     override fun deleteNotePressed(

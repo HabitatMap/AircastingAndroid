@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.model
 
+import android.net.Uri
 import pl.llp.aircasting.data.local.entity.NoteDBObject
 import java.util.*
 
@@ -9,7 +10,7 @@ class Note(
     val latitude: Double?,
     val longitude: Double?,
     val number: Int,
-    val photoPath: String?
+        val photoPath: Uri?
 ) {
 
     constructor(noteDBObject: NoteDBObject) : this(

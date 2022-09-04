@@ -25,4 +25,8 @@ class NoteRepository {
     fun deleteAllSessionsForSessionWithId(sessionId: Long) {
         mDatabase.notes().deleteAllNotesForSessionWithId(sessionId)
     }
+
+    fun getNotesForSessionWithId(sessionId: Long): List<NoteDBObject?> {
+        return mDatabase.notes().loadNotesBySessionId(sessionId)
+    }
 }
