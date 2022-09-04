@@ -22,11 +22,7 @@ class SessionsRepository {
             Session.Status.RECORDING, Session.Type.MOBILE
         )
 
-        if (sessionDBObject != null) {
-            return sessionDBObject.id
-        } else {
-            return null
-        }
+        return sessionDBObject?.id
     }
 
     fun getSessionByUUID(uuid: String): SessionDBObject? {
@@ -48,22 +44,15 @@ class SessionsRepository {
     fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
         val sessionDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
 
-        if (sessionDBObject != null) {
-            return Session(sessionDBObject)
-        } else {
-            return null
-        }
+        sessionDBObject ?: return null
+        return Session(sessionDBObject)
     }
 
     fun loadSessionForUpload(uuid: String): Session? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
 
-        return if (sessionForUploadDBObject != null) {
-            Session(sessionForUploadDBObject)
-        } else {
-            null
-        }
-
+        sessionForUploadDBObject ?: return null
+        return Session(sessionForUploadDBObject)
     }
 
     fun update(session: Session) {

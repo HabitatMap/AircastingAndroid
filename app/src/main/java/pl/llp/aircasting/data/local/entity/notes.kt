@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.local.entity
 
+import android.net.Uri
 import androidx.room.*
 import pl.llp.aircasting.data.model.Note
 import java.util.*
@@ -25,7 +26,7 @@ data class NoteDBObject(
     @ColumnInfo(name = "latitude") val latitude: Double?,
     @ColumnInfo(name = "longitude") val longitude: Double?,
     @ColumnInfo(name = "number") val number: Int,
-    @ColumnInfo(name = "photo_path") val photoPath: String?
+    @ColumnInfo(name = "photo_path") val photoPath: Uri?
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0

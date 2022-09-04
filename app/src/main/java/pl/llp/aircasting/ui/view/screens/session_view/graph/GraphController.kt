@@ -75,7 +75,9 @@ open class GraphController(
 
     override fun showCameraHelperDialog() {
         CameraPermissionHelperDialog(fragmentManager) {
-            permissionsManager.requestCameraPermission(rootActivity)
+            permissionsManager.requestCameraPermission(
+                rootActivity
+            )
         }.show()
     }
 }

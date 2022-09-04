@@ -45,7 +45,7 @@ class AddNoteBottomSheet(
         contentView?.add_note_button?.setOnClickListener {
             addNote(mSession)
         }
-        contentView?.add_picture_button?.setOnClickListener { addPictureButton() }
+        contentView?.add_picture_button?.setOnClickListener { checkIfCameraPermissionGranted() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
@@ -81,15 +81,6 @@ class AddNoteBottomSheet(
         }
     }
 
-    /**
-     * This is customizable - currently we have crop option + camera only.
-     * We are also able to add the gallery option to this library.
-     * More info: https://github.com/Dhaval2404/ImagePicker#customization
-     **/
-    private fun addPictureButton() {
-        checkIfCameraPermissionGranted()
-    }
-
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val resultCode = result.resultCode
@@ -120,6 +111,11 @@ class AddNoteBottomSheet(
         if (mPermissionsManager.cameraPermissionGranted(mContext)) takePictureUsingCamera() else showCameraHelperDialog()
     }
 
+    /**
+     * This is customizable - currently we have crop option + camera only.
+     * We are also able to add the gallery option to this library.
+     * More info: https://github.com/Dhaval2404/ImagePicker#customization
+     **/
     private fun takePictureUsingCamera() {
         ImagePicker.with(this)
             .crop()
