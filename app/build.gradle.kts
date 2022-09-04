@@ -87,6 +87,6 @@ dependencies {
     androidTestImplementation(AppDependencies.androidTestImplementation)
     testImplementation(AppDependencies.testImplementation)
     debugImplementation(AppDependencies.debugImplementation)
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.0")
 }
 
