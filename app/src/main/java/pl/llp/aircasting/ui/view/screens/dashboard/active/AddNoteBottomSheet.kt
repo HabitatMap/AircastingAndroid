@@ -16,20 +16,23 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.util.extensions.visible
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
 
 class AddNoteBottomSheet(
     private val mListener: Listener,
     private var mSession: Session,
     private val mContext: Context?,
-    private val mErrorHandler: ErrorHandler
+    private val mErrorHandler: ErrorHandler,
+    private val mPermissionsManager: PermissionsManager = PermissionsManager()
 ) : BottomSheet() {
     interface Listener {
         fun addNotePressed(session: Session, note: Note)
+        fun showCameraHelperDialog()
     }
 
     private var noteInput: EditText? = null
-    private lateinit var mPhotoPath: Uri
+    private var mPhotoPath: Uri? = null
 
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
@@ -64,7 +67,8 @@ class AddNoteBottomSheet(
                 lastMeasurement.latitude,
                 lastMeasurement.longitude,
                 0,
-                mPhotoPath.toString())
+                mPhotoPath.toString()
+            )
         else
             note = Note(
                 date,
@@ -85,10 +89,7 @@ class AddNoteBottomSheet(
      * More info: https://github.com/Dhaval2404/ImagePicker#customization
      **/
     private fun addPictureButton() {
-        ImagePicker.with(this)
-            .crop()
-            .cameraOnly()
-            .createIntent { intent -> startForProfileImageResult.launch(intent) }
+        checkIfCameraPermissionGranted()
     }
 
     private val startForProfileImageResult =
@@ -113,7 +114,23 @@ class AddNoteBottomSheet(
                     ImagePicker.getError(data),
                     Toast.LENGTH_SHORT
                 ).show()
-                else -> {}
             }
         }
+
+    private fun checkIfCameraPermissionGranted() {
+        mContext ?: return
+        if (mPermissionsManager.cameraPermissionGranted(mContext)) takePictureUsingCamera() else showCameraHelperDialog()
+    }
+
+    private fun showCameraHelperDialog() {
+        dismiss()
+        mListener.showCameraHelperDialog()
+    }
+
+    private fun takePictureUsingCamera() {
+        ImagePicker.with(this)
+            .crop()
+            .cameraOnly()
+            .createIntent { intent -> startForProfileImageResult.launch(intent) }
+    }
 }
