@@ -128,22 +128,6 @@ class MobileActiveController(
         AddNoteBottomSheet(this, session, mContext, mErrorHandler).show(fragmentManager)
     }
 
-    override fun okButtonClickedFromDialog() {
-       checkIfCameraPermissionGranted()
-    }
-
-    private fun checkIfCameraPermissionGranted() {
-        if (permissionsManager.cameraPermissionGranted(mContext)) takePictureUsingCamera() else showCameraHelperDialog()
-    }
-
-    private fun showCameraHelperDialog() {
-        CameraPermissionHelperDialog(this.fragmentManager, this)
-    }
-
-    private fun takePictureUsingCamera() {
-        TODO("Not yet implemented")
-    }
-
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc?.showReconnectingLoaderFor(session)
         airBeamReconnector.reconnect(session,
@@ -179,6 +163,8 @@ class MobileActiveController(
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
     }
+
+    override fun showCameraHelperDialog() {}
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
