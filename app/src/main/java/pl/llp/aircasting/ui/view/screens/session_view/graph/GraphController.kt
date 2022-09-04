@@ -7,6 +7,7 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.active.CameraPermissionHelperDialog
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
@@ -14,9 +15,10 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
-class GraphController(
+open class GraphController(
     rootActivity: AppCompatActivity,
     mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc?,
@@ -25,7 +27,8 @@ class GraphController(
     fragmentManager: FragmentManager,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector
+    private val airBeamReconnector: AirBeamReconnector,
+    private val permissionsManager: PermissionsManager
 ) : SessionDetailsViewController(
     rootActivity,
     mSessionsViewModel,
@@ -68,5 +71,11 @@ class GraphController(
     override fun addNotePressed(session: Session, note: Note) {
         val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
+    }
+
+    override fun showCameraHelperDialog() {
+        CameraPermissionHelperDialog(fragmentManager) {
+            permissionsManager.requestCameraPermission(rootActivity)
+        }.show()
     }
 }

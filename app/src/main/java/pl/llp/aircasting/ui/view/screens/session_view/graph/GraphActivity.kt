@@ -12,6 +12,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.setupAppBar
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
@@ -22,6 +23,9 @@ class GraphActivity : BaseActivity() {
 
     @Inject
     lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
+    lateinit var permissionsManager: PermissionsManager
 
     @Inject
     lateinit var airbeamReconnector: AirBeamReconnector
@@ -72,7 +76,8 @@ class GraphActivity : BaseActivity() {
             supportFragmentManager,
             settings,
             apiServiceFactory,
-            airbeamReconnector
+            airbeamReconnector,
+            permissionsManager
         )
 
         controller?.onCreate()

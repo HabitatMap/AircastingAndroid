@@ -30,6 +30,8 @@ object Versions {
     const val gson = "2.8.9"
     const val openCv = "4.6"
 
+    const val cameraImagePicker = "2.1"
+
     // Tests
     const val espresso = "3.5.0-alpha07"
     const val mockito = "4.6.0"
