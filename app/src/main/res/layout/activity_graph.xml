@@ -12,52 +12,58 @@
         android:elevation="110dp"
         android:src="@drawable/ic_loader"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/aircasting_blue_400" />
 
-    <include android:id="@+id/app_bar_layout"
+    <include
+        android:id="@+id/app_bar_layout"
         layout="@layout/prominent_app_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/session_actions_button"
         style="@style/Widget.AppCompat.ActionButton"
-        android:clickable="true"
-        android:focusable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_more_horizontal"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/session_details"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/session_details"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_more_horizontal"
         app:tint="@color/aircasting_grey_700" />
 
-    <include    android:id="@+id/session_details"
+    <include
+        android:id="@+id/session_details"
         layout="@layout/session_details" />
 
-    <include  android:id="@+id/measurements_view"
+    <include
+        android:id="@+id/measurements_view"
         layout="@layout/measurements_table" />
 
-    <include android:id="@+id/statistics_view"
+    <include
+        android:id="@+id/statistics_view"
         layout="@layout/session_details_statistics_view" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStatistics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guidelineStatistics"
-        app:layout_constraintGuide_percent="0.7"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
 
     <include layout="@layout/graph" />
 
-    <include android:id="@+id/hlu" layout="@layout/hlu_slider"
+    <include
+        android:id="@+id/hlu"
+        layout="@layout/hlu_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/to_label"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/to_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
