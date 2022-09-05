@@ -18,10 +18,7 @@ import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.AppToForegroundEvent
-import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
-import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
-import pl.llp.aircasting.util.events.LocationPermissionsResultEvent
+import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.goToDormantTab
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
@@ -38,9 +35,11 @@ class MainController(
     private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
+        val logout = EventBus.getDefault().getStickyEvent(LogoutEvent::class.java)
+
         if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {
             showOnboardingScreen()
-        } else if (mSettings.getAuthToken() == null) {
+        } else if (mSettings.getAuthToken() == null || logout?.inProgress == true) {
             showLoginScreen()
         } else {
             setupDashboard()
