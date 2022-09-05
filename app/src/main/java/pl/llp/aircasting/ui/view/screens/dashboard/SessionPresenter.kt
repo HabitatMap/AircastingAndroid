@@ -43,6 +43,7 @@ class SessionPresenter() {
                 this.chartData = ChartData(session)
                 this.shouldHideMap = session.locationless
                 this.loading = true
+                this.expanded = true
             }
             SessionsTab.MOBILE_DORMANT -> this.shouldHideMap = session.locationless
         }
