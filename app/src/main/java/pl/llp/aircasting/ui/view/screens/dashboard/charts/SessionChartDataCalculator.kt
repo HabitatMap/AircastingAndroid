@@ -9,8 +9,8 @@ import pl.llp.aircasting.util.helpers.services.AveragedMeasurementsService
 import java.util.*
 
 open class SessionChartDataCalculator(private var mSession: Session) {
-    var mStartTimeToDisplay: String = ""
-    var mEndTimeToDisplay: String = ""
+    var mStartTimeToDisplay: String? = null
+    var mEndTimeToDisplay: String? = null
     lateinit var mEntriesPerStream: HashMap<String, List<Entry>>
 
     private var mMaxEntriesCount: Int = 0

@@ -5,8 +5,8 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 
 class ChartData(private var mSession: Session) {
-    var entriesStartTime: String = ""
-    var entriesEndTime: String = ""
+    var entriesStartTime: String? = null
+    var entriesEndTime: String? = null
 
     private val chartDataProvider: SessionChartDataCalculator =
         if (mSession.isExternal)
