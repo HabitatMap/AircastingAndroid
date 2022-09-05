@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
 import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.visible
 
 class GraphViewMobileActiveMvcImpl(
     inflater: LayoutInflater,
@@ -22,7 +23,7 @@ class GraphViewMobileActiveMvcImpl(
 
     init {
         mSessionActionsButton = rootView?.session_actions_button
-        mSessionActionsButton?.gone()
+        mSessionActionsButton?.visible()
         mSessionActionsButton?.setOnClickListener {
             showBottomSheet(supportFragmentManager)
         }
