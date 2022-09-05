@@ -50,7 +50,6 @@ class MobileActiveSessionViewMvcImpl(
     }
 
     override fun bindExpanded() {
-        mSessionPresenter?.expanded = true
         if (mSessionPresenter?.isDisconnected() == true) {
             mDisconnectedView.show(mSessionPresenter)
 
