@@ -98,13 +98,16 @@ class Chart(
         val session = mSessionPresenter?.session
         session ?: return
 
-        val mEndTime = session.endTime?.let {
-            DateConverter.get()?.toTimeStringForDisplay(it, TimeZone.getDefault())
-        }
+        DateConverter.get()?.apply {
+            val mStartTime = toTimeStringForDisplay(session.startTime, TimeZone.getDefault())
+            val mEndTime = toTimeStringForDisplay(session.endTime ?: Date(), TimeZone.getDefault())
 
-        mChartStartTimeTextView?.text = mSessionPresenter?.chartData?.entriesStartTime
-        mChartEndTimeTextView?.text = mEndTime
-        mChartUnitTextView?.text = chartUnitText()
+            val entriesStartTime = mSessionPresenter?.chartData?.entriesStartTime
+
+            mChartStartTimeTextView?.text = entriesStartTime ?: mStartTime
+            mChartEndTimeTextView?.text = mEndTime
+            mChartUnitTextView?.text = chartUnitText()
+        }
     }
 
     private fun circleColors(): List<Int> {
