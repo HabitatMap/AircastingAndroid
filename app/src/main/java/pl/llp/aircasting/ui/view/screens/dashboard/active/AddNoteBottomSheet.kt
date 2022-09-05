@@ -122,15 +122,15 @@ class AddNoteBottomSheet(
         if (mPermissionsManager.cameraPermissionGranted(mContext)) takePictureUsingCamera() else showCameraHelperDialog()
     }
 
-    private fun showCameraHelperDialog() {
-        dismiss()
-        mListener.showCameraHelperDialog()
-    }
-
     private fun takePictureUsingCamera() {
         ImagePicker.with(this)
             .crop()
             .cameraOnly()
             .createIntent { intent -> startForProfileImageResult.launch(intent) }
+    }
+
+    private fun showCameraHelperDialog() {
+        dismiss()
+        mListener.showCameraHelperDialog()
     }
 }

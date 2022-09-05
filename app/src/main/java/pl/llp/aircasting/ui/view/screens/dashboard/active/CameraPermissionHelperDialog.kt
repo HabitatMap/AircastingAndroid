@@ -9,11 +9,8 @@ import pl.llp.aircasting.ui.view.common.BaseDialog
 
 class CameraPermissionHelperDialog(
     mFragmentManager: FragmentManager,
-    private val mListener: CameraListener
+    private val okButtonCallback: () -> (Unit)
 ) : BaseDialog(mFragmentManager) {
-    interface CameraListener {
-        fun onCameraPermissionHelperDialogOkClick()
-    }
 
     private lateinit var mView: View
 
@@ -27,7 +24,7 @@ class CameraPermissionHelperDialog(
     }
 
     private fun okButtonClicked() {
-        mListener.onCameraPermissionHelperDialogOkClick()
+        okButtonCallback()
         dismiss()
     }
 }
