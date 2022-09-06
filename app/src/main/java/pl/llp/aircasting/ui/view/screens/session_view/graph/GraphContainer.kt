@@ -14,9 +14,11 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.jobs.MoveViewJob
+import com.github.mikephil.charting.jobs.ZoomJob
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.utils.ObjectPool
 import kotlinx.android.synthetic.main.graph.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
@@ -57,7 +59,6 @@ class GraphContainer(
     private var mGraphDataGenerator: GraphDataGenerator
 
     private val mDefaultZoomSpan: Int? = defaultZoomSpan
-    private var shouldZoomToDefault = true
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit = onTimeSpanChanged
     private var mGetMeasurementsSample: () -> List<Measurement> = getMeasurementsSample
     private var mMeasurementsSample: List<Measurement> = listOf()
@@ -98,11 +99,18 @@ class GraphContainer(
     }
 
     fun destroy() {
-        mContext = null
-        // A "hacky" way to fix a memory leak in MPAndroidChart lib
-        // https://github.com/PhilJay/MPAndroidChart/issues/2238
-        // it's possible they'll fix it in the future so we must review it
-        MoveViewJob.getInstance(null, 0f, 0f, null, null)
+        // Fix https://github.com/PhilJay/MPAndroidChart/issues/2238
+        val moveViewJobPoll = MoveViewJob::class.java.getDeclaredField("pool")
+        moveViewJobPoll.isAccessible = true
+        moveViewJobPoll.set(null, ObjectPool.create(2, MoveViewJob(null, 0f, 0f, null, null)))
+
+        // the same issue with ZoomJob
+        val zoomViewJobPoll = ZoomJob::class.java.getDeclaredField("pool")
+        zoomViewJobPoll.isAccessible = true
+        zoomViewJobPoll.set(
+            null,
+            ObjectPool.create(2, ZoomJob(null, 0f, 0f, 0f, 0f, null, null, null))
+        )
         mGraph = null
     }
 
@@ -140,7 +148,6 @@ class GraphContainer(
     }
 
     private fun zoom(entries: List<Entry>) {
-        if (!shouldZoomToDefault) return
         mGraph ?: return
 
         val first = entries.firstOrNull() ?: return
@@ -158,8 +165,6 @@ class GraphContainer(
         val from = max(last.x - zoomSpan, first.x)
         val to = last.x
         drawLabels(from, to)
-
-        shouldZoomToDefault = false
     }
 
     private fun buildLineData(entries: List<Entry>): LineData {
@@ -238,7 +243,6 @@ class GraphContainer(
     private fun setupGraph() {
         mGraph ?: return
 
-        mGraph?.setPinchZoom(true)
         mGraph?.isScaleYEnabled = false
         mGraph?.description = null
         mGraph?.legend?.isEnabled = false
