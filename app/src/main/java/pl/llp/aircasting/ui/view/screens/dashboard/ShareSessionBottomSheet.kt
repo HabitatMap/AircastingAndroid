@@ -2,23 +2,23 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.util.extensions.isValidEmail
-import pl.llp.aircasting.util.extensions.setAppearance
-import pl.llp.aircasting.util.extensions.showToast
+import pl.llp.aircasting.util.events.SessionsSyncEvent
+import pl.llp.aircasting.util.extensions.*
 
 class ShareSessionBottomSheet(
     private val mListener: Listener,
@@ -39,6 +39,8 @@ class ShareSessionBottomSheet(
     var emailInputLayout: TextInputLayout? = null
     private var emailInput: EditText? = null
     private var radioGroup: RadioGroup? = null
+    private var shareFileButton: Button? = null
+    private var loader: ImageView? = null
     lateinit var chosenSensor: String
 
     override fun layoutId(): Int {
@@ -46,6 +48,8 @@ class ShareSessionBottomSheet(
     }
 
     override fun setup() {
+        EventBus.getDefault().safeRegister(this)
+
         expandBottomSheet()
 
         emailInputLayout = contentView?.email_text_input_layout
@@ -56,10 +60,12 @@ class ShareSessionBottomSheet(
         val emailCsvTextView = contentView?.email_csv_text_view
         val shareLinkButton = contentView?.share_link_button
 
-        val shareFileButton = contentView?.share_file_button
+        shareFileButton = contentView?.share_file_button
         shareFileButton?.setOnClickListener {
             shareFilePressed()
         }
+
+        loader = contentView?.loader
 
         val cancelButton = contentView?.cancel_button
         cancelButton?.setOnClickListener {
@@ -86,6 +92,25 @@ class ShareSessionBottomSheet(
 
             shareLinkButton?.setOnClickListener {
                 shareLinkPressed()
+            }
+        }
+    }
+
+    @Subscribe(sticky = true)
+    fun onMessageEvent(sync: SessionsSyncEvent) = Handler(Looper.getMainLooper()).post {
+        if (sync.inProgress) {
+            shareFileButton?.isEnabled = false
+            shareFileButton?.text = mContext?.getString(R.string.sync_in_progress)
+            loader?.apply {
+                startAnimation()
+                visible()
+            }
+        } else {
+            shareFileButton?.isEnabled = true
+            shareFileButton?.text = mContext?.getString(R.string.share_file)
+            loader?.apply {
+                stopAnimation()
+                inVisible()
             }
         }
     }
