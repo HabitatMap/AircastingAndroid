@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_graph.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -12,20 +13,25 @@ import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvcImpl
-import kotlinx.android.synthetic.main.activity_graph.view.*
 import java.util.*
 
-
-abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
+abstract class GraphViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager?
+) : SessionDetailsViewMvcImpl(inflater, parent, supportFragmentManager) {
     private var graphContainer: GraphContainer?
     private val mLoader: ImageView?
 
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?
-    ): super(inflater, parent, supportFragmentManager) {
-        graphContainer = GraphContainer(rootView, context, defaultZoomSpan(), this::onTimeSpanChanged, this::measurementsSample, notes())
+    init {
+        graphContainer = GraphContainer(
+            rootView,
+            context,
+            defaultZoomSpan(),
+            this::onTimeSpanChanged,
+            this::measurementsSample,
+            notes()
+        )
         mLoader = rootView?.loader_graph
         showLoader(mLoader)
     }
@@ -33,11 +39,11 @@ abstract class GraphViewMvcImpl: SessionDetailsViewMvcImpl {
     abstract fun defaultZoomSpan(): Int?
 
     open fun measurementsSample(): List<Measurement> {
-        return mSessionPresenter?.selectedStream?.measurements ?: listOf<Measurement>()
+        return mSessionPresenter?.selectedStream?.measurements ?: listOf()
     }
 
     open fun notes(): List<Note> {
-        return mSessionPresenter?.session?.notes ?: listOf<Note>()
+        return mSessionPresenter?.session?.notes ?: listOf()
     }
 
     override fun layoutId(): Int {

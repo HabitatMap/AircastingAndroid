@@ -24,6 +24,7 @@ import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionDetailsMeasurementsTableContainer
 import pl.llp.aircasting.util.DurationStringHelper
+import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
 
@@ -70,14 +71,11 @@ abstract class SessionDetailsViewMvcImpl(
         }
         mMoreButton = this.rootView?.more_button
         mMoreInvisibleButton = this.rootView?.more_invisible_button
-        mMoreButton?.setOnClickListener {
-            onMoreButtonPressed()
-        }
-        mMoreInvisibleButton?.setOnClickListener {
-            onMoreButtonPressed()
-        }
+        mMoreButton?.setOnClickListener { onMoreButtonPressed() }
+        mMoreInvisibleButton?.setOnClickListener { onMoreButtonPressed() }
+
         mHLUSlider = HLUSlider(this.rootView, context, this::onSensorThresholdChanged)
-        mSessionMeasurementsDescription.visibility = View.GONE
+        mSessionMeasurementsDescription.gone()
     }
 
     abstract fun layoutId(): Int
