@@ -57,5 +57,6 @@
 
     <dimen name="connecting_image_margin">6dp</dimen>
     <dimen name="connecting_loader_margin_bottom">1dp</dimen>
+    <dimen name="loader_icon_size">24dp</dimen>
 
 </resources>

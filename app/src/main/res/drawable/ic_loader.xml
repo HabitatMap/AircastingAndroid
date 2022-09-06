@@ -3,8 +3,8 @@
   <aapt:attr name="android:drawable">
     <vector
         android:name="settings_icon"
-        android:width="24dp"
-        android:height="24dp"
+        android:width="@dimen/loader_icon_size"
+        android:height="@dimen/loader_icon_size"
         android:viewportHeight="18.4"
         android:viewportWidth="18.4">
       <group
