@@ -322,6 +322,7 @@
     <string name="or_email_a_csv_file_with_your_session_data">Or email a CSV file with your session data</string>
     <string name="exported_session_service_success">Exported sessions will be emailed within minutes. The email may end up in your spam folder.</string>
     <string name="session_upload_pending">Session upload pending - wait a couple of minutes and try again.</string>
+    <string name="sync_in_progress">Sync in progress…</string>
     <string name="share_session_email_hint">Email</string>
 
     <!-- Microphone settings -->
