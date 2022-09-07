@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
-import java.util.*
 
 fun EventBus.safeRegister(subscriber: Any) {
     if (!EventBus.getDefault().isRegistered(subscriber)) {
@@ -73,14 +72,6 @@ fun View.disableForASecond() {
         this.isEnabled = true
     }, 1000)
 }
-
-fun Calendar.addHours(time: Date, hours: Int): Date {
-    this.time = time
-    add(Calendar.HOUR_OF_DAY, hours)
-    return this.time
-}
-
-fun calendar(): Calendar = Calendar.getInstance()
 
 fun expandedCards(): ExpandedCardsRepository? = ExpandedCardsRepository.getInstance()
 
