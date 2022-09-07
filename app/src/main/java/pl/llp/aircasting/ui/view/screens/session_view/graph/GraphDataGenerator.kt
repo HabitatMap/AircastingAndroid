@@ -58,7 +58,7 @@ class GraphDataGenerator(
         firstMeasurement ?: return Result(entries, midnightPoints, noteRanges)
         startTime = firstMeasurement.time
 
-        var lastDateDayOfMonth = calendar().dayOfMonth(startTime, isSessionExternal)
+        var previousMeasurementDay = calendar().dayOfMonth(startTime, isSessionExternal)
 
         for (measurement in samples) {
             add(measurement, notes)
@@ -75,10 +75,10 @@ class GraphDataGenerator(
 
                 entries.add(buildAverageEntry(date, hasNote))
 
-                val dateOfMonth = calendar().dayOfMonth(date, isSessionExternal)
+                val currentMeasurementDay = calendar().dayOfMonth(date, isSessionExternal)
 
-                if (lastDateDayOfMonth != dateOfMonth) {
-                    lastDateDayOfMonth = dateOfMonth
+                if (dayHasChanged(previousMeasurementDay, currentMeasurementDay)) {
+                    previousMeasurementDay = currentMeasurementDay
 
                     val midnight = calendar().truncateToMidnight(date, isSessionExternal)
                     midnightPoints.add(convertDateToFloat(midnight))
@@ -104,6 +104,11 @@ class GraphDataGenerator(
         }
         return Result(entries, midnightPoints, noteRanges)
     }
+
+    private fun dayHasChanged(
+        lastDateDayOfMonth: Int,
+        dateOfMonth: Int
+    ) = lastDateDayOfMonth != dateOfMonth
 
     fun dateFromFloat(float: Float): Date {
         return Date(float.toLong() + startTime.time)
