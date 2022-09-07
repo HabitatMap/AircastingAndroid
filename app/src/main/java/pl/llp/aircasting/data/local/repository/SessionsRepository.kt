@@ -58,10 +58,10 @@ class SessionsRepository {
     fun loadSessionForUpload(uuid: String): Session? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
 
-        if (sessionForUploadDBObject != null) {
-            return Session(sessionForUploadDBObject)
+        return if (sessionForUploadDBObject != null) {
+            Session(sessionForUploadDBObject)
         } else {
-            return null
+            null
         }
 
     }
