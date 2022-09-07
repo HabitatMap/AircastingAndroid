@@ -527,4 +527,5 @@
     <string name="use_celsius_scale">Use Celsius scale</string>
     <string name="from">from</string>
     <string name="to">to</string>
+    <string name="notes_des_cant_be_empty">Notes description cannot be empty!</string>
 </resources>

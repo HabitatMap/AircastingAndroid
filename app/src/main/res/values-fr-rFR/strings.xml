@@ -405,6 +405,10 @@
     <string name="from">de</string>
     <string name="to">à</string>
     <string name="login_out_background">Déconnexion en cours en arrière-plan. Vous pouvez remplir les informations d\'identification</string>
+    <string name="notes_des_cant_be_empty">La description des notes ne peut pas être vide!</string>
+    <string name="dialog_header_txt">\"Aircasting\" souhaite accéder à la caméra</string>
+    <string name="dialog_helper_des">Cela vous permettra de joindre des photos à vos notes de session mobile.</string>
+    <string name="dont_allow_dialog_txt">Ne pas autoriser</string>
     <string name="sync_in_progress">Synchronisation en cours…</string>
 
 
