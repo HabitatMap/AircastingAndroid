@@ -27,7 +27,7 @@ class GraphDataGenerator(
 
     class Result(
         val entries: List<Entry>,
-        val midnightPoints: List<Float>,
+        val midnightPoint: Float,
         val noteRanges: MutableList<ClosedRange<Long>>
     )
 
@@ -44,7 +44,7 @@ class GraphDataGenerator(
         reset()
 
         val entries = LinkedList<Entry>()
-        val midnightPoints = LinkedList<Float>()
+        var midnightPoint = 0f
         val noteRanges = mutableListOf<ClosedRange<Long>>()
         averagingGeneratorFrequency = averagingFrequency
         // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
@@ -55,10 +55,10 @@ class GraphDataGenerator(
         var fill = 0.0
 
         val firstMeasurement = samples.firstOrNull()
-        firstMeasurement ?: return Result(entries, midnightPoints, noteRanges)
+        firstMeasurement ?: return Result(entries, midnightPoint, noteRanges)
         startTime = firstMeasurement.time
 
-        var previousMeasurementDay = calendar().dayOfMonth(startTime, isSessionExternal)
+        val firstMeasurementDay = calendar().dayOfMonth(startTime, isSessionExternal)
 
         for (measurement in samples) {
             add(measurement, notes)
@@ -76,12 +76,9 @@ class GraphDataGenerator(
                 entries.add(buildAverageEntry(date, hasNote))
 
                 val currentMeasurementDay = calendar().dayOfMonth(date, isSessionExternal)
-
-                if (dayHasChanged(previousMeasurementDay, currentMeasurementDay)) {
-                    previousMeasurementDay = currentMeasurementDay
-
+                if (dayHasChanged(firstMeasurementDay, currentMeasurementDay)) {
                     val midnight = calendar().truncateToMidnight(date, isSessionExternal)
-                    midnightPoints.add(convertDateToFloat(midnight))
+                    midnightPoint = convertDateToFloat(midnight)
                 }
 
                 reset()
@@ -102,7 +99,7 @@ class GraphDataGenerator(
                 noteRanges.add((entry.x.toLong() - range.toLong())..(entry.x.toLong() + range.toLong()))
             }
         }
-        return Result(entries, midnightPoints, noteRanges)
+        return Result(entries, midnightPoint, noteRanges)
     }
 
     private fun dayHasChanged(
