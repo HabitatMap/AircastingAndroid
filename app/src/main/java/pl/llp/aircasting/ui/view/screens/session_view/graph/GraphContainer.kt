@@ -113,7 +113,7 @@ class GraphContainer(
 
         zoom(entries)
         drawData(entries)
-        drawMidnightPointLines(result.midnightPoints)
+        drawMidnightPointLines(result.midnightPoint)
         drawThresholds()
 
         mGraph?.invalidate()
@@ -170,13 +170,12 @@ class GraphContainer(
         return LineData(dataSet)
     }
 
-    private fun drawMidnightPointLines(midnightPoints: List<Float>) {
+    private fun drawMidnightPointLines(midnightPoint: Float) {
         val axis = mGraph?.xAxis
         axis?.removeAllLimitLines()
-        midnightPoints.forEach { midnightPoint ->
-            val line = midnightPointLine(midnightPoint)
-            axis?.addLimitLine(line)
-        }
+
+        val line = midnightPointLine(midnightPoint)
+        axis?.addLimitLine(line)
         axis?.setDrawLimitLinesBehindData(true)
     }
 
@@ -276,7 +275,8 @@ class GraphContainer(
                         }
                         1 -> {
                             noteNumber =
-                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
+                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number
+                                    ?: 0
                         }
                         else -> {
                             // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
@@ -289,7 +289,8 @@ class GraphContainer(
                                 )
                                 if (rangeDistance < tempDistance) {
                                     tempDistance = rangeDistance
-                                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                                    noteNumber =
+                                        mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
                                 }
                             }
                         }
