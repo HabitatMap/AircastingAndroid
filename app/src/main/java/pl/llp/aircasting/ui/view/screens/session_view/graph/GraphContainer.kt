@@ -371,6 +371,7 @@ class GraphContainer(
 
     private fun updateVisibleTimeSpan() {
         mGraph?.let { graph ->
+            // sets to almost epoch???
             val from = graph.lowestVisibleX
             val to = graph.highestVisibleX
             val timeSpan =
