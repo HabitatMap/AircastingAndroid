@@ -18,6 +18,10 @@ import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.graph.view.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.Note
@@ -26,8 +30,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
 import pl.llp.aircasting.util.MeasurementColor
-import pl.llp.aircasting.util.extensions.backToUIThread
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.isSDKLessThanN
 import java.util.*
@@ -275,8 +277,7 @@ class GraphContainer(
                         }
                         1 -> {
                             noteNumber =
-                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number
-                                    ?: 0
+                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
                         }
                         else -> {
                             // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
@@ -289,8 +290,7 @@ class GraphContainer(
                                 )
                                 if (rangeDistance < tempDistance) {
                                     tempDistance = rangeDistance
-                                    noteNumber =
-                                        mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
                                 }
                             }
                         }
@@ -346,15 +346,16 @@ class GraphContainer(
         updateVisibleTimeSpan()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun updateLabelsBasedOnVisibleTimeSpan() {
         mGraph ?: return
 
-        runOnIOThread {
+        GlobalScope.launch(Dispatchers.IO) {
             // we need to wait a bit for drag to finish when there is fling gesture
             // onChartFling does not work properly
             Thread.sleep(500)
 
-            backToUIThread(it) {
+            launch(Dispatchers.Main) {
                 mGraph?.let { graph ->
                     val from = graph.lowestVisibleX
                     val to = graph.highestVisibleX
