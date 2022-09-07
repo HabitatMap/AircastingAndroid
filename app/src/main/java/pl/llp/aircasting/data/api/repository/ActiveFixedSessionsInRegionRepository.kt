@@ -9,10 +9,11 @@ import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
-import pl.llp.aircasting.util.CalendarUtils.Companion.getEndOfTodaySeconds
-import pl.llp.aircasting.util.CalendarUtils.Companion.getStartOfTodaySecondsFromYearAgo
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
+import pl.llp.aircasting.util.extensions.calendar
+import pl.llp.aircasting.util.extensions.getEndOfTodaySeconds
+import pl.llp.aircasting.util.extensions.getStartOfTodaySecondsFromYearAgo
 import javax.inject.Inject
 
 class ActiveFixedSessionsInRegionRepository @Inject constructor(
@@ -24,8 +25,8 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
             square: GeoSquare,
             sensorInfo: SensorInformation
         ): String {
-            return "{\"time_from\":\"${getStartOfTodaySecondsFromYearAgo()}\"," +
-                    "\"time_to\":\"${getEndOfTodaySeconds()}\"," +
+            return "{\"time_from\":\"${calendar().getStartOfTodaySecondsFromYearAgo()}\"," +
+                    "\"time_to\":\"${calendar().getEndOfTodaySeconds()}\"," +
                     "\"tags\":\"\"," +
                     "\"usernames\":\"\"," +
                     "\"west\":${square.west}," +
