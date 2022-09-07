@@ -407,6 +407,10 @@
     <string name="from">de</string>
     <string name="to">a</string>
     <string name="login_out_background">Actualmente cerrando sesión en segundo plano. Puedes llenar credenciales</string>
-    <string name="sync_in_progress">Sincronización en progreso…</string>
+    <string name="notes_des_cant_be_empty">¡La descripción de las notas no puede estar vacía!</string>
+    <string name="dialog_header_txt">\"Aircasting\" desea acceder a la cámara</string>
+    <string name="dialog_helper_des">Esto le permitirá adjuntar fotos a sus notas de sesión móviles.</string>
+    <string name="dont_allow_dialog_txt">no permitir</string>
+    <string name="sync_in_progress">Sincronización en curso…</string>
 
 </resources>
