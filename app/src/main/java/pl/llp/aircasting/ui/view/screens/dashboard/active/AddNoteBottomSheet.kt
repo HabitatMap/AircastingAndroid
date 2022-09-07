@@ -33,6 +33,7 @@ class AddNoteBottomSheet(
 
     private var noteInput: EditText? = null
     private var mPhotoPath: Uri? = null
+    private val mDate: Date = Date()
 
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
@@ -43,7 +44,6 @@ class AddNoteBottomSheet(
 
         contentView?.add_note_button?.setOnClickListener {
             addNote(mSession)
-            dismiss()
         }
         contentView?.add_picture_button?.setOnClickListener { addPictureButton() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
@@ -58,29 +58,27 @@ class AddNoteBottomSheet(
         }
 
         val noteText = noteInput?.text.toString().trim()
-        val date = Date()
-        val note: Note
-        if (mSession.notes.isEmpty())
+        val note: Note?
+
+        if (noteText.isNotEmpty()) {
             note = Note(
-                date,
-                noteText,
-                lastMeasurement.latitude,
-                lastMeasurement.longitude,
-                0,
-                mPhotoPath.toString()
-            )
-        else
-            note = Note(
-                date,
+                mDate,
                 noteText,
                 lastMeasurement.latitude,
                 lastMeasurement.longitude,
                 mSession.notes.last().number + 1,
-                null
+                mPhotoPath.toString()
             )
-        // TODO: More validation needed
+            mListener.addNotePressed(mSession, note)
+            dismiss()
+        } else showEmptyError()
+    }
 
-        mListener.addNotePressed(mSession, note)
+    private fun showEmptyError() {
+        contentView?.note_input_layout?.apply {
+            isErrorEnabled = true
+            error = mContext?.getString(R.string.notes_des_cant_be_empty)
+        }
     }
 
     /**
@@ -130,7 +128,6 @@ class AddNoteBottomSheet(
     }
 
     private fun showCameraHelperDialog() {
-        dismiss()
         mListener.showCameraHelperDialog()
     }
 }
