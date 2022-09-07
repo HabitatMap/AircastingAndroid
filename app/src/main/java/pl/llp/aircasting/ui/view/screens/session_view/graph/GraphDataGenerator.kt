@@ -7,7 +7,8 @@ import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.util.CalendarUtils
+import pl.llp.aircasting.util.extensions.calendar
+import pl.llp.aircasting.util.extensions.dayOfMonth
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.util.*
 
@@ -36,7 +37,8 @@ class GraphDataGenerator(
         notes: List<Note>?,
         limit: Int = DEFAULT_LIMIT,
         visibleMeasurementsSize: Int = samples.size,
-        averagingFrequency: Int = 1
+        averagingFrequency: Int = 1,
+        isSessionExternal: Boolean
     ): Result {
         reset()
 
@@ -55,7 +57,7 @@ class GraphDataGenerator(
         firstMeasurement ?: return Result(entries, midnightPoints, noteRanges)
         startTime = firstMeasurement.time
 
-        var lastDateDayOfMonth = CalendarUtils.dayOfMonth(startTime)
+        var lastDateDayOfMonth = calendar().dayOfMonth(startTime, isSessionExternal)
 
         for (measurement in samples) {
             add(measurement, notes)
@@ -72,7 +74,7 @@ class GraphDataGenerator(
 
                 entries.add(buildAverageEntry(date, hasNote))
 
-                val dateOfMonth = CalendarUtils.dayOfMonth(date)
+                val dateOfMonth = calendar().dayOfMonth(date, isSessionExternal)
 
                 if (lastDateDayOfMonth != dateOfMonth) {
                     lastDateDayOfMonth = dateOfMonth

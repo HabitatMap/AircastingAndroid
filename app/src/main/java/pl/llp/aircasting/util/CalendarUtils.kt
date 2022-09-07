@@ -5,11 +5,12 @@ import java.util.*
 
 class CalendarUtils {
     companion object {
-        private val mCalendar = calendar()
-
-        fun dayOfMonth(date: Date): Int {
-            mCalendar.time = date
-            return mCalendar[Calendar.DAY_OF_MONTH]
+        fun dayOfMonth(date: Date, isExternalSession: Boolean = false): Int {
+            val calendar = calendar()
+            calendar.time = date
+            if (isExternalSession)
+                calendar.timeZone = TimeZone.getTimeZone("UTC")
+            return calendar[Calendar.DAY_OF_MONTH]
         }
 
         /**
