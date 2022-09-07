@@ -9,6 +9,7 @@ import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.dayOfMonth
+import pl.llp.aircasting.util.extensions.truncateToMidnight
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.util.*
 
@@ -78,7 +79,9 @@ class GraphDataGenerator(
 
                 if (lastDateDayOfMonth != dateOfMonth) {
                     lastDateDayOfMonth = dateOfMonth
-                    midnightPoints.add(convertDateToFloat(date))
+
+                    val midnight = calendar().truncateToMidnight(date, isSessionExternal)
+                    midnightPoints.add(convertDateToFloat(midnight))
                 }
 
                 reset()

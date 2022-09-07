@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.extensions
 
+import org.apache.commons.lang3.time.DateUtils
 import java.util.*
 import java.util.Calendar.*
 
@@ -16,6 +17,13 @@ fun Calendar.dayOfMonth(date: Date, isExternalSession: Boolean): Int {
     if (isExternalSession)
         timeZone = TimeZone.getTimeZone("UTC")
     return this[DAY_OF_MONTH]
+}
+fun Calendar.truncateToMidnight(date: Date, isExternalSession: Boolean): Date {
+    time = date
+    if (isExternalSession)
+        timeZone = TimeZone.getTimeZone("UTC")
+
+    return DateUtils.truncate(this, DAY_OF_MONTH).time
 }
 /**
  * This extension function is used to set left time boundary for searching of sessions on Google Map in S&F feature.
