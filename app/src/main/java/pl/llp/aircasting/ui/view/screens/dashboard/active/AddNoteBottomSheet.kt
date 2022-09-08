@@ -45,7 +45,7 @@ class AddNoteBottomSheet(
         contentView?.add_note_button?.setOnClickListener {
             addNote(mSession)
         }
-        contentView?.add_picture_button?.setOnClickListener { checkIfCameraPermissionGranted() }
+        contentView?.add_picture_button?.setOnClickListener { checkIfPermissionsGranted() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
@@ -61,16 +61,32 @@ class AddNoteBottomSheet(
         val note: Note?
 
         if (noteText.isNotEmpty()) {
-            note = Note(
-                mDate,
-                noteText,
-                lastMeasurement.latitude,
-                lastMeasurement.longitude,
-                mSession.notes.last().number + 1,
-                mPhotoPath.toString()
-            )
-            mListener.addNotePressed(mSession, note)
-            dismiss()
+
+            val mSessionNotes = mSession.notes
+
+            if (mSessionNotes.isNotEmpty()) {
+                note = Note(
+                    mDate,
+                    noteText,
+                    lastMeasurement.latitude,
+                    lastMeasurement.longitude,
+                    mSessionNotes.last().number + 1,
+                    mPhotoPath
+                )
+                mListener.addNotePressed(mSession, note)
+                dismiss()
+            } else {
+                note = Note(
+                    mDate,
+                    noteText,
+                    lastMeasurement.latitude,
+                    lastMeasurement.longitude,
+                    0,
+                    mPhotoPath
+                )
+                mListener.addNotePressed(mSession, note)
+                dismiss()
+            }
         } else showEmptyError()
     }
 
@@ -106,9 +122,11 @@ class AddNoteBottomSheet(
             }
         }
 
-    private fun checkIfCameraPermissionGranted() {
+    private fun checkIfPermissionsGranted() {
         mContext ?: return
-        if (mPermissionsManager.cameraPermissionGranted(mContext)) takePictureUsingCamera() else showCameraHelperDialog()
+
+        if (mPermissionsManager.cameraPermissionGranted(mContext)
+        ) takePictureUsingCamera() else showCameraHelperDialog()
     }
 
     /**
@@ -118,6 +136,7 @@ class AddNoteBottomSheet(
      **/
     private fun takePictureUsingCamera() {
         ImagePicker.with(this)
+            .maxResultSize(620, 620)
             .crop()
             .cameraOnly()
             .createIntent { intent -> startForProfileImageResult.launch(intent) }
