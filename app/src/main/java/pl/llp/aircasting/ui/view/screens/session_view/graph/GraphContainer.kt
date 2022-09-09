@@ -87,7 +87,10 @@ class GraphContainer(
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
         mNotes = mSessionPresenter?.session?.notes
-        if (mGraph?.isFullyZoomedOut == true) mVisibleEntriesNumber = mMeasurementsSample.size
+        if (mGraph?.isFullyZoomedOut == true) {
+            mVisibleEntriesNumber = mMeasurementsSample.size
+            shouldZoomToDefault = true
+        }
 
         drawSession()
         if (mMeasurementsSample.isNotEmpty()) showGraph()
@@ -111,7 +114,7 @@ class GraphContainer(
         val entries = result.entries
         mNoteValueRanges = result.noteRanges
 
-        zoom(entries)
+        zoomToDefaultAndUpdateLabels(entries)
         drawData(entries)
         drawMidnightPointLines(result.midnightPoint)
         drawThresholds()
@@ -140,7 +143,7 @@ class GraphContainer(
         mGraph?.data = combinedData
     }
 
-    private fun zoom(entries: List<Entry>) {
+    private fun zoomToDefaultAndUpdateLabels(entries: List<Entry>) {
         if (!shouldZoomToDefault) return
         mGraph ?: return
 
