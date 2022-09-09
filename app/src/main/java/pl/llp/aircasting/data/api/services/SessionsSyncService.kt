@@ -20,6 +20,7 @@ import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
+import pl.llp.aircasting.util.extensions.encodeToBase64
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import retrofit2.Call
@@ -150,17 +151,36 @@ class SessionsSyncService private constructor(
 
     private fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val session = sessionRepository.loadSessionForUpload(uuid)
-            if (session != null && isUploadable(session)) {
-                val onUploadSuccess = { response: Response<UploadSessionResponse> ->
-                    runOnIOThread {
-                        sessionRepository.updateUrlLocation(session, response.body()?.location)
-                    }
-                    // TODO: handle update notes - adding photoPath
-                }
-                uploadService.upload(session, onUploadSuccess)
+
+            runOnIOThread {
+                val session = sessionRepository.loadSessionForUpload(uuid)
+                val encodedPhotos = getPhotosFromSessionNotes(uuid)
+
+                if (session != null && isUploadable(session)) uploadServiceAndSuccessCallback(session, encodedPhotos)
             }
         }
+    }
+
+    private fun getPhotosFromSessionNotes(uuid: String): List<String?> {
+        val sessionID = sessionRepository.getSessionIdByUUID(uuid)
+        val mNotes = noteRepository.getNotesForSessionWithId(sessionID!!)
+
+        val mEncodedPath = mNotes
+            .filterNotNull()
+            .map { note ->
+            encodeToBase64(note.photoPath)
+        }
+        return mEncodedPath
+    }
+
+    private fun uploadServiceAndSuccessCallback(session: Session, encodedPhotos: List<String?>) {
+        val onUploadSuccess = { response: Response<UploadSessionResponse> ->
+            runOnIOThread {
+                sessionRepository.updateUrlLocation(session, response.body()?.location)
+            }
+        }
+
+        uploadService.upload(session, encodedPhotos, onUploadSuccess)
     }
 
     private fun download(uuids: List<String>) {
