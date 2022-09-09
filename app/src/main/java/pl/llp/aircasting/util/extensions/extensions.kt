@@ -2,7 +2,10 @@ package pl.llp.aircasting.util.extensions
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.text.TextUtils
+import android.util.Base64.DEFAULT
+import android.util.Base64.encodeToString
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
+import java.io.FileInputStream
 
 fun EventBus.safeRegister(subscriber: Any) {
     if (!EventBus.getDefault().isRegistered(subscriber)) {
@@ -105,5 +109,16 @@ fun Drawable.stopAnimation() {
 fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
     scope.launch(Dispatchers.Main) {
         uiBlock()
+    }
+}
+
+fun encodeToBase64(filepath: Uri?): String? {
+    return try {
+        val inputStream = FileInputStream(filepath?.path)
+        val bytes = ByteArray(inputStream.available())
+        inputStream.read(bytes)
+        encodeToString(bytes, DEFAULT)
+    } catch (e: Exception) {
+        null
     }
 }

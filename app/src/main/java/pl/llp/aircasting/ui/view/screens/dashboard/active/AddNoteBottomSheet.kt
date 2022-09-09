@@ -45,7 +45,7 @@ class AddNoteBottomSheet(
         contentView?.add_note_button?.setOnClickListener {
             addNote(mSession)
         }
-        contentView?.add_picture_button?.setOnClickListener { checkIfPermissionsGranted() }
+        contentView?.add_picture_button?.setOnClickListener { checkIfCameraPermissionGranted() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
@@ -122,7 +122,7 @@ class AddNoteBottomSheet(
             }
         }
 
-    private fun checkIfPermissionsGranted() {
+    private fun checkIfCameraPermissionGranted() {
         mContext ?: return
 
         if (mPermissionsManager.cameraPermissionGranted(mContext)
