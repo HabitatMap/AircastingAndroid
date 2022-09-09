@@ -6,9 +6,6 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -20,7 +17,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
-import java.util.*
 
 class ReorderingFollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
@@ -56,16 +52,7 @@ class ReorderingFollowingRecyclerAdapter(
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                updateSessionsOrder(i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                updateSessionsOrder(i, i - 1)
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition)
+        updateSessionsOrder(fromPosition, toPosition)
     }
 
     override fun initSessionPresenter(
@@ -76,32 +63,51 @@ class ReorderingFollowingRecyclerAdapter(
     }
 
     private fun updateSessionsOrder(firstPosition: Int, secondPosition: Int) {
-        Collections.swap(mSessionUUIDS, firstPosition, secondPosition)
+        val firstPresenter = mSessionPresenters[firstPosition]
+        val secondPresenter = mSessionPresenters[secondPosition]
 
-        CoroutineScope(Dispatchers.IO).launch {
-            mSessionsViewModel.updateOrder(mSessionUUIDS[secondPosition], secondPosition)
-            mSessionsViewModel.updateOrder(mSessionUUIDS[firstPosition], firstPosition)
+        swapPresentersInAdapterDataset(
+            firstPresenter,
+            firstPosition,
+            secondPresenter,
+            secondPosition
+        )
+
+        updateSessionsOrderInDatabase(firstPresenter, secondPresenter)
+    }
+
+    private fun swapPresentersInAdapterDataset(
+        firstPresenter: SessionPresenter,
+        firstPosition: Int,
+        secondPresenter: SessionPresenter,
+        secondPosition: Int
+    ) {
+        firstPresenter.session?.order = secondPosition
+        secondPresenter.session?.order = firstPosition
+        mSessionPresenters.recalculatePositionOfItemAt(firstPosition)
+        mSessionPresenters.recalculatePositionOfItemAt(secondPosition)
+    }
+
+    private fun updateSessionsOrderInDatabase(
+        firstPresenter: SessionPresenter,
+        secondPresenter: SessionPresenter
+    ) {
+        firstPresenter.session?.uuid?.let {
+            mSessionsViewModel.updateOrder(
+                it,
+                firstPresenter.session?.order ?: 0
+            )
+        }
+        secondPresenter.session?.uuid?.let {
+            mSessionsViewModel.updateOrder(
+                it,
+                secondPresenter.session?.order ?: 0
+            )
         }
     }
 
     override fun onItemDismiss(position: Int) {
-        mSessionUUIDS.removeAt(position)
-
-        removeObsoleteSessions()
-        notifyItemRemoved(position)
+        mSessionPresenters[position].session?.let { mSessionFollower.unfollow(it) }
+        mSessionPresenters.removeItemAt(position)
     }
-
-    override fun removeObsoleteSessions() {
-        mSessionPresenters.keys
-            .filter { uuid -> !mSessionUUIDS.contains(uuid) }
-            .forEach { uuid ->
-                val sessionPresenter = mSessionPresenters[uuid]
-                val session = sessionPresenter?.session
-
-                session?.let { mSession -> mSessionFollower.unfollow(mSession) }
-
-                mSessionPresenters.remove(uuid)
-            }
-    }
-
 }
