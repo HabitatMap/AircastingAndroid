@@ -30,12 +30,12 @@ class FollowingSessionReorderingTouchHelperCallback(itemTouchHelperAdapter: Item
         recyclerView: RecyclerView, viewHolder: ViewHolder,
         target: ViewHolder
     ): Boolean {
-        mAdapter?.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
+        mAdapter?.onItemMove(viewHolder.absoluteAdapterPosition, target.absoluteAdapterPosition)
         return true
     }
 
     override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
-        mAdapter?.onItemDismiss(viewHolder.adapterPosition)
+        mAdapter?.onItemDismiss(viewHolder.absoluteAdapterPosition)
     }
 
     init {
