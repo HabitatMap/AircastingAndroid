@@ -54,6 +54,11 @@ class SessionPresenter() {
         this.initialSensorName = initialSensorName
     }
 
+    constructor(session: Session) : this() {
+        this.session = session
+        this.sessionUUID = session.uuid
+    }
+
     fun selectedSensorThreshold(): SensorThreshold? {
         selectedStream ?: return null
 
