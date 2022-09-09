@@ -2,6 +2,10 @@ package pl.llp.aircasting.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -72,11 +76,19 @@ class SessionsViewModel : ViewModel() {
         thresholdsRepository.updateSensorThreshold(sensorThreshold)
     }
 
-    suspend fun updateFollowedAt(session: Session) {
+    fun updateFollowedAt(
+        session: Session,
+        ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    ) = viewModelScope.launch(ioDispatcher) {
         sessionsRepository.updateFollowedAt(session)
     }
 
-    suspend fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
+
+    fun updateOrder(
+        sessionUUID: String,
+        followingSessionsNumber: Int,
+        ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    ) = viewModelScope.launch(ioDispatcher) {
         sessionsRepository.updateOrder(sessionUUID, followingSessionsNumber)
     }
 }
