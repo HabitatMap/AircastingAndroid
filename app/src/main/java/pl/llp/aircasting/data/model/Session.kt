@@ -50,6 +50,7 @@ open class Session(
         sessionDBObject.contribute,
         sessionDBObject.locationless,
         sessionDBObject.is_indoor,
+        order = sessionDBObject.session_order,
         isExternal = sessionDBObject.isExternal == true
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {

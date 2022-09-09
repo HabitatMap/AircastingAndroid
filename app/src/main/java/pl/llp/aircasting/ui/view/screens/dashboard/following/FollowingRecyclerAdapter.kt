@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard.following
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.SortedList
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
@@ -15,6 +16,10 @@ open class FollowingRecyclerAdapter(
     private val mListener: SessionCardListener,
     supportFragmentManager: FragmentManager
 ) : SessionsRecyclerAdapter<SessionCardListener>(mInflater, supportFragmentManager) {
+    private val followingModificationCallback: ModificationCallback =
+        FollowingModificationCallback()
+    override val mSessionPresenters: SortedList<SessionPresenter> =
+        SortedList(SessionPresenter::class.java, followingModificationCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc =
@@ -39,4 +44,12 @@ open class FollowingRecyclerAdapter(
         return reloadSessionFromDB(session)
     }
 
+    inner class FollowingModificationCallback : ModificationCallback() {
+        override fun compare(o1: SessionPresenter?, o2: SessionPresenter?): Int {
+            return o2?.session?.order?.let {
+                o1?.session?.order?.compareTo(it)
+            }
+                ?: 0
+        }
+    }
 }
