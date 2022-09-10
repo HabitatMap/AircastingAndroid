@@ -179,9 +179,7 @@ object AppDependencies {
         add(daggerAndroidProcessor)
     }
     val androidTestImplementation = arrayListOf<String>().apply {
-        add(mockitoCore)
         add(mockitoAndroid)
-        add(mockitoKotlin)
         add(roomDBCompiler)
         add(roomDBTest)
         add(espressoCore)
@@ -192,7 +190,9 @@ object AppDependencies {
         add(awaitility)
     }
     val testImplementation = arrayListOf<String>().apply {
+        add(mockitoCore)
         add(junit)
+        add(mockitoKotlin)
         add(kotlinJunit)
         add(robolectric)
     }
@@ -237,6 +237,3 @@ fun DependencyHandler.debugImplementation(list: List<String>) {
         add("debugImplementation", dependency)
     }
 }
-
-
-
