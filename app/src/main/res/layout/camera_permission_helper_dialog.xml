@@ -48,7 +48,7 @@
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginBottom="@dimen/keyline_6"
         android:fontFamily="@font/moderat_trial_bold"
-        android:text="@string/dont_allow_dialog_txt"
+        android:text="@string/dont_allow_dialog"
         android:textSize="@dimen/button_text_size" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

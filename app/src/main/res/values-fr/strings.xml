@@ -368,7 +368,7 @@
     <string name="add_a_note">Ajouter une note</string>
     <string name="note">Noter</string>
     <string name="tap_to_add_picture">Appuyez pour ajouter une image</string>
-    <string name="your_note_will_be_timestamped_and_displayed_on_the_aircasting_map">Votre note sera horodatée et affichée sur la carte AirCasting</string>
+    <string name="note_bottom_sheet_description">Votre note sera horodatée et affichée sur la carte AirCasting</string>
     <string name="errors_location_background_services_required">Sans l\'utilisation de l\'autorisation de localisation en arrière-plan, l\'application peut ne pas fonctionner correctement sur les nouveaux appareils Android.</string>
     <string name="bluetooth_error_permissions">Sans les autorisations Bluetooth, vous ne pourrez pas voir les appareils disponibles</string>
     <string name="use_dark_theme">Utiliser le thème sombre</string>
@@ -405,10 +405,10 @@
     <string name="from">de</string>
     <string name="to">à</string>
     <string name="login_out_background">Déconnexion en cours en arrière-plan. Vous pouvez remplir les informations d\'identification</string>
-    <string name="notes_des_cant_be_empty">La description des notes ne peut pas être vide!</string>
+    <string name="notes_description_empty_error">La description des notes ne peut pas être vide!</string>
     <string name="dialog_header_txt">\"Aircasting\" souhaite accéder à la caméra</string>
     <string name="dialog_helper_des">Cela vous permettra de joindre des photos à vos notes de session mobile.</string>
-    <string name="dont_allow_dialog_txt">Ne pas autoriser</string>
+    <string name="dont_allow_dialog">Ne pas autoriser</string>
     <string name="sync_in_progress">Synchronisation en cours…</string>
 
 </resources>

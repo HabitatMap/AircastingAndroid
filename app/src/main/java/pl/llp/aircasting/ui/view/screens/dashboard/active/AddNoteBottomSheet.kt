@@ -93,7 +93,7 @@ class AddNoteBottomSheet(
     private fun showEmptyError() {
         contentView?.note_input_layout?.apply {
             isErrorEnabled = true
-            error = mContext?.getString(R.string.notes_des_cant_be_empty)
+            error = mContext?.getString(R.string.notes_description_empty_error)
         }
     }
 
