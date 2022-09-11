@@ -70,7 +70,7 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_2"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    android:text="@string/your_note_will_be_timestamped_and_displayed_on_the_aircasting_map"
+                    android:text="@string/notes_description_empty_error"
                     android:textAppearance="@style/TextAppearance.Aircasting.Body1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
