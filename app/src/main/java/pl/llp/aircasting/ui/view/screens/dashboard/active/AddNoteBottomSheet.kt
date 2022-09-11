@@ -137,6 +137,7 @@ class AddNoteBottomSheet(
     private fun takePictureUsingCamera() {
         ImagePicker.with(this)
             .maxResultSize(620, 620)
+            .compress(500)
             .crop()
             .cameraOnly()
             .createIntent { intent -> startForProfileImageResult.launch(intent) }
