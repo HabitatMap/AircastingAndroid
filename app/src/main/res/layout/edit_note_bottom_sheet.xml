@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -10,9 +13,9 @@
         android:background="@drawable/dialog_background">
 
         <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Aircasting.BottomSheetCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Aircasting.BottomSheetCard"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" >
@@ -26,9 +29,9 @@
                     android:id="@+id/edit_note_loader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_loader"
                     android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginBottom="@dimen/keyline_8"
+                    android:src="@drawable/ic_loader"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/title"
                     app:tint="@color/aircasting_blue_400" />
@@ -37,140 +40,152 @@
                     android:id="@+id/edit_loader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_loader"
                     android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginBottom="@dimen/keyline_8"
+                    android:src="@drawable/ic_loader"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/title"
                     app:tint="@color/aircasting_blue_400" />
 
                 <ImageView
                     android:id="@+id/close_button"
-                    android:src="@drawable/ic_x"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_x"
                     app:layout_constraintBottom_toTopOf="@+id/title"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/title"
                     style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
-                    android:textSize="@dimen/text_size_xl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Edit this note"
-                    android:textColor="@color/aircasting_dark_blue"
-                    app:lineHeight="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_8"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:layout_marginBottom="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    android:text="Edit this note"
+                    android:textColor="@color/aircasting_dark_blue"
+                    android:textSize="@dimen/text_size_xl"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/close_button"
+                    app:lineHeight="@dimen/keyline_6" />
 
                 <TextView
                     android:id="@+id/description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_2"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:text="You can edit your note here"
                     android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-                    android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_6"
-                    app:layout_constraintTop_toBottomOf="@id/title"
-                    app:layout_constraintBottom_toTopOf="@id/note_description"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/title" />
 
                 <TextView
                     android:id="@+id/note_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:text="The note was created on: "
                     android:textAppearance="@style/TextAppearance.Aircasting.Body1"
-                    android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"
-                    android:layout_marginTop="@dimen/keyline_6"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/description"
                     app:layout_constraintBottom_toTopOf="@id/note_input_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/description" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/note_input_layout"
                     style="@style/Widget.Aircasting.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/note_description"
-                    app:layout_constraintTop_toBottomOf="@id/description"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     app:errorEnabled="true"
                     app:hintEnabled="false"
-                    android:layout_marginTop="@dimen/keyline_6"
-                    android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/description">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_input"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:hint="Note"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/aircasting_grey_100"
                         android:gravity="start"
-                        android:textColorHint="@color/aircasting_grey_700"
-                        android:inputType="text"
+                        android:hint="Note"
+                        android:inputType="text|textMultiLine"
+                        android:lines="4"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                         android:textColor="@color/aircasting_grey_700"
-                        android:backgroundTint="@color/aircasting_grey_100"/>
+                        android:textColorHint="@color/aircasting_grey_700" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/note_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="@dimen/keyline_2"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/note_input_layout"
+                    tools:src="@drawable/airbeam_in_hand"
+                    tools:visibility="visible" />
 
                 <Button
                     android:id="@+id/save_changes_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Save changes"
-                    app:layout_constraintTop_toBottomOf="@id/note_input_layout"
-                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"/>
+                    android:layout_marginTop="@dimen/keyline_4"
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:text="Save changes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/note_image" />
 
                 <Button
                     android:id="@+id/delete_note_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Delete note"
-                    app:layout_constraintTop_toBottomOf="@id/save_changes_button"
-                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="@dimen/keyline_6"
-                    android:layout_marginEnd="@dimen/keyline_6"/>
+                    android:layout_marginEnd="@dimen/keyline_6"
+                    android:text="Delete note"
+                    app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/save_changes_button" />
 
                 <Button
                     android:id="@+id/cancel_button"
                     style="@style/Widget.Aircasting.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/cancel"
-                    app:layout_constraintTop_toBottomOf="@id/delete_note_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:fontFamily="@font/moderat_trial_bold"
+                    android:text="@string/cancel"
+                    android:textColor="@color/aircasting_blue_400"
                     android:textSize="@dimen/button_text_size"
-                    android:textColor="@color/aircasting_blue_400"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/delete_note_button" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
