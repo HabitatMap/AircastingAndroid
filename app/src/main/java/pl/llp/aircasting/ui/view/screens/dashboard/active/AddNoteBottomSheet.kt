@@ -42,10 +42,9 @@ class AddNoteBottomSheet(
     override fun setup() {
         noteInput = contentView?.note_input
 
-        contentView?.add_note_button?.setOnClickListener {
-            addNote(mSession)
-        }
-        contentView?.add_picture_button?.setOnClickListener { checkIfCameraPermissionGranted() }
+        checkIfCameraPermissionGranted()
+        contentView?.add_note_button?.setOnClickListener { addNote(mSession) }
+        contentView?.add_picture_button?.setOnClickListener { takePictureUsingCamera() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
@@ -61,9 +60,7 @@ class AddNoteBottomSheet(
         val note: Note?
 
         if (noteText.isNotEmpty()) {
-
             val mSessionNotes = mSession.notes
-
             if (mSessionNotes.isNotEmpty()) {
                 note = Note(
                     mDate,
@@ -125,8 +122,7 @@ class AddNoteBottomSheet(
     private fun checkIfCameraPermissionGranted() {
         mContext ?: return
 
-        if (mPermissionsManager.cameraPermissionGranted(mContext)
-        ) takePictureUsingCamera() else showCameraHelperDialog()
+        if (!mPermissionsManager.cameraPermissionGranted(mContext)) showCameraHelperDialog()
     }
 
     /**
