@@ -38,9 +38,8 @@ class StubData {
         }
 
         fun getJson(path: String): String {
-            val uri = this.javaClass.classLoader.getResource(path)
-            val file = File(uri.path)
-            return String(file.readBytes())
+            val uri = ClassLoader.getSystemResource(path)
+            return File(uri.path).readText()
         }
     }
 }

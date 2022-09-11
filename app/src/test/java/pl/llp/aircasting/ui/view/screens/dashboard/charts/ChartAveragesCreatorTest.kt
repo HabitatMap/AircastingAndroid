@@ -6,6 +6,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.anyOrNull
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.utilities.StubData
@@ -39,7 +40,7 @@ class ChartAveragesCreatorTest : TestCase() {
         Mockito.doReturn(measurements).`when`(stream).getLastMeasurements()
 
         // when
-        val entries = creator.getFixedEntries(stream)
+        val entries = creator.getFixedEntries(stream, anyOrNull())
 
         // then
         assertEquals(entriesCorrectSize, entries.size)

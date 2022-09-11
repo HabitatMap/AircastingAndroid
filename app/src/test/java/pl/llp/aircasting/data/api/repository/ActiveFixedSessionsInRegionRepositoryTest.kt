@@ -217,7 +217,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
         // then
-        verify(mockApiService).getStreamOfGivenSession(anyOrNull(), anyOrNull())
+        verify(mockApiService).getStreamOfGivenSession(anyOrNull(), anyOrNull(), 1)
     }
 
     @Test
@@ -260,7 +260,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
             // then
-            verify(mockApiService).getStreamOfGivenSession(eq(expectedId), eq(expectedSensorName))
+            verify(mockApiService).getStreamOfGivenSession(eq(expectedId), eq(expectedSensorName), 1)
         }
 
     @Test
@@ -281,7 +281,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(123L, "Ozone")
 
             // then
-            verify(mockApiService).getStreamOfGivenSession(eq(expectedId), eq(expectedSensorName))
+            verify(mockApiService).getStreamOfGivenSession(eq(expectedId), eq(expectedSensorName), 1)
         }
 
     // Integration with ResponseHandler
@@ -379,7 +379,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
                 onBlocking {
                     getStreamOfGivenSession(
                         anyOrNull(), anyOrNull()
-                    )
+                    , anyOrNull())
                 } doReturn res
             }
         }
