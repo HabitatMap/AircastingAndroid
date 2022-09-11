@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.api.repository
 
-import com.google.gson.Gson
 import com.google.gson.JsonParser
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -14,7 +13,12 @@ import pl.llp.aircasting.data.model.GeoSquare
 import pl.llp.aircasting.util.Resource
 import pl.llp.aircasting.util.ResponseHandler
 import pl.llp.aircasting.util.Status
+import pl.llp.aircasting.util.extensions.calendar
+import pl.llp.aircasting.util.extensions.getEndOfTodayEpoch
+import pl.llp.aircasting.util.extensions.getStartOfTodayEpochFromYearAgo
 import pl.llp.aircasting.utilities.StubData
+import pl.llp.aircasting.utilities.TestHelper.Companion.mockGetSessionsInRegionResponseWithJson
+import pl.llp.aircasting.utilities.TestHelper.Companion.mockGetStreamOfGivenSessionResponseWithJson
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -24,6 +28,11 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     private val sessionsInRegionResponse = StubData.getJson("SessionsCracow.json")
     private val streamOfGivenSessionResponse = StubData.getJson("StreamSensorNameHabitatMap.json")
 
+    /**
+     * The implementation in the repository will be changed in the future.
+     * I will not change anything here.
+     * But as a TODO; this should be changed right after the combination in the repository.
+     **/
     @Test
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
@@ -65,8 +74,8 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     @Test
     fun constructAndGetJsonWith_shouldContainTimeParametersAs_currentStartAndEndTimeOfTheDay() {
         // given
-        val currentDayTimeFrom = getStartOfDayEpoch()
-        val currentDayTimeTo = getEndOfDayEpoch()
+        val currentDayTimeFrom = calendar().getStartOfTodayEpochFromYearAgo()
+        val currentDayTimeTo = calendar().getEndOfTodayEpoch()
 
         val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
             testSquare,
@@ -276,12 +285,17 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             val repository = ActiveFixedSessionsInRegionRepository(mockApiService, mockHandler)
             val expectedId = 123L
             val expectedSensorName = "Ozone"
+            val expectedMeasurementLimit = 1
 
             // when
             repository.getStreamOfGivenSession(123L, "Ozone")
 
             // then
-            verify(mockApiService).getStreamOfGivenSession(eq(expectedId), eq(expectedSensorName), 1)
+            verify(mockApiService).getStreamOfGivenSession(
+                eq(expectedId),
+                eq(expectedSensorName),
+                eq(expectedMeasurementLimit)
+            )
         }
 
     // Integration with ResponseHandler
@@ -383,24 +397,4 @@ class ActiveFixedSessionsInRegionRepositoryTest {
                 } doReturn res
             }
         }
-
-    private fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsRes {
-        return Gson().fromJson(json, SessionsInRegionsRes::class.java)
-    }
-
-    private fun mockGetStreamOfGivenSessionResponseWithJson(json: String): StreamOfGivenSessionResponse {
-        return Gson().fromJson(json, StreamOfGivenSessionResponse::class.java)
-    }
-
-    private fun getStartOfDayEpoch(): Long {
-        val secondsInDay = (60 * 60 * 24).toLong()
-        val currentSecond = System.currentTimeMillis() / 1000
-        return currentSecond - currentSecond % secondsInDay
-    }
-
-    private fun getEndOfDayEpoch(): Long {
-        val startOfTheDayEpoch = getStartOfDayEpoch()
-        val secondInDay = (60 * 60 * 24).toLong()
-        return startOfTheDayEpoch + secondInDay - 1
-    }
 }
