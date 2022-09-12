@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.api.services
 
 import android.database.sqlite.SQLiteConstraintException
+import androidx.core.net.toUri
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -170,7 +171,7 @@ class SessionsSyncService private constructor(
         val encodedPhotos = mNotes
             .filterNotNull()
             .map { note ->
-                encodeToBase64(note.photoPath)
+                encodeToBase64(note.photo_location?.toUri())
             }
         return encodedPhotos
     }
@@ -198,11 +199,16 @@ class SessionsSyncService private constructor(
                                     session.streams
                                 )
                             }
-                            for (note in session.notes) {
+
+                            session.notes.forEach { note ->
                                 sessionId?.let { sessionId ->
-                                    noteRepository.insert(sessionId, note)
+                                    noteRepository.insert(
+                                        sessionId,
+                                        note
+                                    )
                                 }
                             }
+
                         } catch (e: SQLiteConstraintException) {
                             errorHandler.handle(DBInsertException(e))
                         }

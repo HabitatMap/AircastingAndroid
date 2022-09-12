@@ -30,7 +30,7 @@ class DownloadMeasurementsService(
         }
     }
 
-    fun enqueueDownloadingMeasurements(
+    private fun enqueueDownloadingMeasurements(
         dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
         session: Session,
         finallyCallback: (() -> Unit)? = null
@@ -49,7 +49,7 @@ class DownloadMeasurementsService(
         }
     }
 
-    fun enqueueDownloadingMeasurementsForMobile(
+    private fun enqueueDownloadingMeasurementsForMobile(
         dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
         session: Session,
         finallyCallback: (() -> Unit)? = null
@@ -83,7 +83,7 @@ class DownloadMeasurementsService(
         return Session(dbSessionWithMeasurements).hasMeasurements()
     }
 
-    fun enqueueDownloadingMeasurementsForFixed(
+    private fun enqueueDownloadingMeasurementsForFixed(
         dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
         session: Session,
         finallyCallback: (() -> Unit)? = null

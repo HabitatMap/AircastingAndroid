@@ -8,9 +8,7 @@ class NoteRepository {
     private val mDatabase = DatabaseProvider.get()
 
     fun insert(sessionId: Long, note: Note) {
-        val noteDBObject =
-            NoteDBObject(sessionId, note)
-
+        val noteDBObject = NoteDBObject(sessionId, note)
         mDatabase.notes().insert(noteDBObject)
     }
 

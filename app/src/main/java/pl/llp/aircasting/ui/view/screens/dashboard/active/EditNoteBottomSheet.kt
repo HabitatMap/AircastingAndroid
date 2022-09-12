@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ConnectivityManager
@@ -34,8 +35,9 @@ class EditNoteBottomSheet(
         mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
 
-        val mPhoto = mSession?.notes?.find { note -> note.number == noteNumber }?.photoPath
-        mNoteImage?.setImageURI(mPhoto)
+        val mPhoto = mSession?.notes?.find { note -> note.number == noteNumber }?.photo_location
+        mNoteImage?.setImageURI(mPhoto?.toUri())
+        // Load from Db
 
         mLoader = contentView?.edit_note_loader
 
