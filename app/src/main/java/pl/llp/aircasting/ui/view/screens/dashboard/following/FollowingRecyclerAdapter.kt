@@ -40,16 +40,10 @@ open class FollowingRecyclerAdapter(
         return SessionPresenter(session, sensorThresholds, expanded = expandedState)
     }
 
-    override fun prepareSession(session: Session, expanded: Boolean): Session {
-        return reloadSessionFromDB(session)
-    }
+    override fun prepareSession(session: Session, expanded: Boolean) = reloadSessionFromDB(session)
 
     inner class FollowingModificationCallback : ModificationCallback() {
-        override fun compare(o1: SessionPresenter?, o2: SessionPresenter?): Int {
-            return o2?.session?.order?.let {
-                o1?.session?.order?.compareTo(it)
-            }
-                ?: 0
-        }
+        override fun compare(first: SessionPresenter?, second: SessionPresenter?) =
+            first?.session?.order?.compareTo(second?.session?.order ?: 0) ?: 0
     }
 }

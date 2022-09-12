@@ -84,6 +84,7 @@ class ReorderingFollowingRecyclerAdapter(
     ) {
         firstPresenter.session?.order = secondPosition
         secondPresenter.session?.order = firstPosition
+
         mSessionPresenters.recalculatePositionOfItemAt(firstPosition)
         mSessionPresenters.recalculatePositionOfItemAt(secondPosition)
     }
@@ -92,22 +93,21 @@ class ReorderingFollowingRecyclerAdapter(
         firstPresenter: SessionPresenter,
         secondPresenter: SessionPresenter
     ) {
-        firstPresenter.session?.uuid?.let {
-            mSessionsViewModel.updateOrder(
-                it,
-                firstPresenter.session?.order ?: 0
-            )
-        }
-        secondPresenter.session?.uuid?.let {
-            mSessionsViewModel.updateOrder(
-                it,
-                secondPresenter.session?.order ?: 0
-            )
-        }
+        val firstPresenterUUID = firstPresenter.session?.uuid.toString()
+        val secondPresenterUUID = secondPresenter.session?.uuid.toString()
+
+        mSessionsViewModel.updateOrder(
+            firstPresenterUUID, firstPresenter.session?.order ?: 0
+        )
+        mSessionsViewModel.updateOrder(
+            secondPresenterUUID, secondPresenter.session?.order ?: 0
+        )
     }
 
     override fun onItemDismiss(position: Int) {
-        mSessionPresenters[position].session?.let { mSessionFollower.unfollow(it) }
         mSessionPresenters.removeItemAt(position)
+
+        val session = mSessionPresenters[position].session ?: return
+        mSessionFollower.unfollow(session)
     }
 }
