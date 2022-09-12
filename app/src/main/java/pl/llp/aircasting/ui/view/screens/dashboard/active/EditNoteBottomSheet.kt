@@ -15,6 +15,7 @@ import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
+import pl.llp.aircasting.util.extensions.visible
 
 class EditNoteBottomSheet(
     private val mListener: Listener,
@@ -29,10 +30,12 @@ class EditNoteBottomSheet(
     private var mNote: Note? = null
     private var noteInput: EditText? = null
     private var mLoader: ImageView? = null
-    private val mNoteImage: ImageView? = null
+    private var mNoteImage: ImageView? = null
 
     override fun setup() {
         noteInput = contentView?.note_input
+        mNoteImage = contentView?.note_image
+
         mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
 
@@ -40,6 +43,8 @@ class EditNoteBottomSheet(
             mSession?.notes?.find { note -> note.number == noteNumber }?.photo_location?.toUri()
 
         mNoteImage?.let {
+            it.visible()
+
             Glide.with(this)
                 .load(mPhoto)
                 .into(it)
