@@ -10,7 +10,7 @@ class Note(
     val latitude: Double?,
     val longitude: Double?,
     val number: Int,
-        val photoPath: Uri?
+    val photoPath: Uri?
 ) {
 
     constructor(noteDBObject: NoteDBObject) : this(
