@@ -78,7 +78,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_picture_button"
-                    style="@style/Widget.App.ButtonStyle"
+                    style="@style/Widget.Aircasting.NoteBottomSheetButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_6"
@@ -113,9 +113,9 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/aircasting_grey_100"
                         android:gravity="start"
+                        android:hint="@string/note"
                         android:inputType="textMultiLine"
                         android:lines="4"
-                        android:hint="@string/note"
                         android:maxLines="4"
                         android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
                         android:textColor="@color/aircasting_grey_700"
@@ -140,9 +140,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginTop="@dimen/keyline_4"
                     android:layout_marginEnd="@dimen/keyline_6"
                     android:text="@string/add_note"
-                    android:layout_marginTop="@dimen/keyline_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/captured_image" />

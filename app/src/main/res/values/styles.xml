@@ -473,7 +473,7 @@
         <item name="android:paddingBottom">@dimen/keyline_4</item>
     </style>
 
-    <style name="Widget.App.ButtonStyle" parent="Widget.MaterialComponents.Button">
+    <style name="Widget.Aircasting.NoteBottomSheetButton" parent="Widget.MaterialComponents.Button">
         <item name="materialThemeOverlay">@style/GreenButtonThemeOverlay</item>
         <item name="android:padding">20dp</item>
         <item name="android:textColor">@color/aircasting_grey_300</item>

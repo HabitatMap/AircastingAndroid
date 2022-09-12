@@ -51,8 +51,7 @@ class SessionsRepository {
     fun loadSessionForUpload(uuid: String): Session? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
 
-        sessionForUploadDBObject ?: return null
-        return Session(sessionForUploadDBObject)
+        return sessionForUploadDBObject?.let { Session(it) }
     }
 
     fun update(session: Session) {
