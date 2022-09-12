@@ -5,13 +5,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.extensions.runOnIOThread
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
@@ -39,9 +37,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
     }
 
-    override fun getItemCount(): Int {
-        return mSessionPresenters.size()
-    }
+    override fun getItemCount() = mSessionPresenters.size()
 
     fun bindSessions(
         modifiedSessions: Map<SessionsObserver.ModificationType, List<Session>>,
@@ -59,8 +55,8 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     private fun update(sessions: List<Session>?) {
-        sessions?.forEach {
-            update(it)
+        sessions?.forEach { session ->
+            update(session)
         }
     }
 
@@ -71,6 +67,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
                 val presenter = mSessionPresenters[position]
                 presenter.session = prepareSession(it, mSessionPresenters[position].expanded)
                 presenter.chartData?.refresh(it)
+
                 mSessionPresenters.updateItemAt(position, presenter)
             }
         }
@@ -106,26 +103,11 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
     }
 
-    fun hideLoaderFor(deviceId: String) {
-        val position = indexOfPresenter(deviceId)
-        if (found(position)) {
-            mSessionPresenters[position]?.loading = false
-            notifyItemChanged(position)
-        }
-    }
-
-    private fun indexOfPresenter(deviceId: String): Int {
-        for (i in 0..mSessionPresenters.size()) {
-            if (mSessionPresenters[i].session?.deviceId == deviceId)
-                return i
-        }
-        return -1
-    }
-
     fun hideLoaderFor(session: Session) {
         val position = mSessionPresenters.indexOf(SessionPresenter(session))
         if (found(position)) {
             mSessionPresenters[position]?.loading = false
+
             notifyItemChanged(position)
         }
     }
@@ -150,6 +132,23 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
     }
 
+    fun hideLoaderFor(deviceId: String) {
+        val position = indexOfPresenter(deviceId)
+        if (found(position)) {
+            mSessionPresenters[position]?.loading = false
+
+            notifyItemChanged(position)
+        }
+    }
+
+    private fun indexOfPresenter(deviceId: String): Int {
+        for (i in 0..mSessionPresenters.size()) {
+            if (mSessionPresenters[i].session?.deviceId == deviceId)
+                return i
+        }
+        return -1
+    }
+
     fun reloadSession(session: Session) {
         update(session)
     }
@@ -160,18 +159,20 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         return reloadedSession ?: session
     }
 
-    private fun getFromDB(session: Session): Session? = runBlocking {
-        withContext(Dispatchers.IO) {
+    private fun getFromDB(session: Session): Session? {
+        var reloadedSession: Session? = null
+        runOnIOThread {
             val dbSessionWithMeasurements =
                 mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-            return@withContext dbSessionWithMeasurements?.let { Session(it) }
+            reloadedSession = dbSessionWithMeasurements?.let { Session(it) }
         }
+        return reloadedSession
     }
 
+
     open inner class ModificationCallback : SortedList.Callback<SessionPresenter>() {
-        override fun compare(o1: SessionPresenter?, o2: SessionPresenter?): Int {
-            return o2?.session?.startTime?.compareTo(o1?.session?.startTime) ?: 0
-        }
+        override fun compare(first: SessionPresenter?, second: SessionPresenter?) =
+            second?.session?.startTime?.compareTo(first?.session?.startTime) ?: 0
 
         override fun onInserted(position: Int, count: Int) {
             notifyItemInserted(position)
@@ -189,15 +190,11 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             notifyItemChanged(position)
         }
 
-        override fun areContentsTheSame(
-            oldItem: SessionPresenter?,
-            newItem: SessionPresenter?
-        ): Boolean {
-            return newItem?.session?.hasChangedFrom(oldItem?.session) == false
-        }
+        override fun areContentsTheSame(old: SessionPresenter?, new: SessionPresenter?) =
+            new?.session?.hasChangedFrom(old?.session) == false
 
-        override fun areItemsTheSame(item1: SessionPresenter?, item2: SessionPresenter?): Boolean {
-            return item1?.session?.uuid == item2?.session?.uuid
-        }
+
+        override fun areItemsTheSame(old: SessionPresenter?, new: SessionPresenter?) =
+            old?.session?.uuid == new?.session?.uuid
     }
 }
