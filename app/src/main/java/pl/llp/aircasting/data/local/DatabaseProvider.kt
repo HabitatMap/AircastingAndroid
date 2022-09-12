@@ -26,8 +26,7 @@ import pl.llp.aircasting.util.converters.*
     TagsConverter::class,
     SessionStatusConverter::class,
     SessionTypeConverter::class,
-    DeviceTypeConverter::class,
-    UriConverter::class
+    DeviceTypeConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessions(): SessionDao
