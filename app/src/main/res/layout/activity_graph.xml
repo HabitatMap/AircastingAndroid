@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/session_details"
         app:layout_constraintTop_toTopOf="parent"

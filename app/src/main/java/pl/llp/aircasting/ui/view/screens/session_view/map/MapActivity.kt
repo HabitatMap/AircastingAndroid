@@ -18,7 +18,7 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
-class MapActivity: BaseActivity() {
+class MapActivity : BaseActivity() {
     private var controller: MapController? = null
     private val sessionsViewModel by viewModels<SessionsViewModel>()
     private val errorHandler = ErrorHandler(this)
@@ -41,7 +41,7 @@ class MapActivity: BaseActivity() {
             sessionUUID: String,
             sessionTab: SessionsTab
         ) {
-            context?.let{
+            context?.let {
                 val intent = Intent(it, MapActivity::class.java)
                 intent.putExtra(SENSOR_NAME_KEY, sensorName)
                 intent.putExtra(SESSION_UUID_KEY, sessionUUID)
@@ -67,7 +67,17 @@ class MapActivity: BaseActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = MapController(this, sessionsViewModel, view, sessionUUID, sensorName, supportFragmentManager, settings, apiServiceFactory, airbeamReconnector)
+        controller = MapController(
+            this,
+            sessionsViewModel,
+            view,
+            sessionUUID,
+            sensorName,
+            supportFragmentManager,
+            settings,
+            apiServiceFactory,
+            airbeamReconnector
+        )
 
         controller?.onCreate()
 
