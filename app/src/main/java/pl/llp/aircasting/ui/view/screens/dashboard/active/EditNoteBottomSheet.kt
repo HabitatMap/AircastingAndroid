@@ -27,11 +27,16 @@ class EditNoteBottomSheet(
     private var mNote: Note? = null
     private var noteInput: EditText? = null
     private var mLoader: ImageView? = null
+    private val mNoteImage: ImageView? = null
 
     override fun setup() {
         noteInput = contentView?.note_input
         mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
+
+        val mPhoto = mSession?.notes?.find { note -> note.number == noteNumber }?.photoPath
+        mNoteImage?.setImageURI(mPhoto)
+
         mLoader = contentView?.edit_note_loader
 
         val saveChangesButton = contentView?.save_changes_button
@@ -47,14 +52,10 @@ class EditNoteBottomSheet(
         }
 
         val cancelButton = contentView?.cancel_button
-        cancelButton?.setOnClickListener {
-            dismiss()
-        }
+        cancelButton?.setOnClickListener { dismiss() }
 
         val closeButton = contentView?.close_button
-        closeButton?.setOnClickListener {
-            dismiss()
-        }
+        closeButton?.setOnClickListener { dismiss() }
 
         showLoader()
     }
