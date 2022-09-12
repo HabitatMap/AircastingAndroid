@@ -17,8 +17,8 @@ import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.getEndOfTodayEpoch
 import pl.llp.aircasting.util.extensions.getStartOfTodayEpochFromYearAgo
 import pl.llp.aircasting.utilities.StubData
-import pl.llp.aircasting.utilities.TestHelper.Companion.mockGetSessionsInRegionResponseWithJson
-import pl.llp.aircasting.utilities.TestHelper.Companion.mockGetStreamOfGivenSessionResponseWithJson
+import pl.llp.aircasting.utilities.StubData.Companion.mockGetSessionsInRegionResponseWithJson
+import pl.llp.aircasting.utilities.StubData.Companion.mockGetStreamOfGivenSessionResponseWithJson
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -269,7 +269,11 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
             // then
-            verify(mockApiService).getStreamOfGivenSession(eq(expectedId), eq(expectedSensorName), 1)
+            verify(mockApiService).getStreamOfGivenSession(
+                eq(expectedId),
+                eq(expectedSensorName),
+                1
+            )
         }
 
     @Test
@@ -392,8 +396,8 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             return@runBlocking mock<ApiService> {
                 onBlocking {
                     getStreamOfGivenSession(
-                        anyOrNull(), anyOrNull()
-                    , anyOrNull())
+                        anyOrNull(), anyOrNull(), anyOrNull()
+                    )
                 } doReturn res
             }
         }
