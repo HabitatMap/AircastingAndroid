@@ -84,7 +84,9 @@ open class MapController(
     }
 
     override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler).show(fragmentManager)
+        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler, permissionsManager).show(
+            fragmentManager
+        )
     }
 
     override fun onFinishSessionConfirmed(session: Session) {

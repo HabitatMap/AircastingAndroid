@@ -24,7 +24,7 @@ class AddNoteBottomSheet(
     private var mSession: Session,
     private val mContext: Context?,
     private val mErrorHandler: ErrorHandler,
-    private val mPermissionsManager: PermissionsManager = PermissionsManager()
+    private val mPermissionsManager: PermissionsManager
 ) : BottomSheet() {
     interface Listener {
         fun addNotePressed(session: Session, note: Note)
