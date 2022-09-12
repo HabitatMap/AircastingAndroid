@@ -1,7 +1,10 @@
 package pl.llp.aircasting.utilities
 
+import com.google.gson.Gson
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
+import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
 import pl.llp.aircasting.data.model.Measurement
 import java.io.File
 import java.io.FileReader
@@ -40,6 +43,14 @@ class StubData {
         fun getJson(path: String): String {
             val uri = ClassLoader.getSystemResource(path)
             return File(uri.path).readText()
+        }
+
+        fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsRes {
+            return Gson().fromJson(json, SessionsInRegionsRes::class.java)
+        }
+
+        fun mockGetStreamOfGivenSessionResponseWithJson(json: String): StreamOfGivenSessionResponse {
+            return Gson().fromJson(json, StreamOfGivenSessionResponse::class.java)
         }
     }
 }
