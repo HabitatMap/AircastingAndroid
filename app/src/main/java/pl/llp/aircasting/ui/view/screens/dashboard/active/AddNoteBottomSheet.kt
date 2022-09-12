@@ -32,8 +32,33 @@ class AddNoteBottomSheet(
     }
 
     private var noteInput: EditText? = null
-    private var mPhotoPath: Uri? = null
+    private var mPhotoPath: String? = null
     private val mDate: Date = Date()
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val fileUri = data?.data
+                    fileUri ?: return@registerForActivityResult
+
+                    contentView?.captured_image?.apply {
+                        setImageURI(fileUri)
+                        mPhotoPath = fileUri.toString()
+                        visible()
+                    }
+
+                }
+                ImagePicker.RESULT_ERROR -> Toast.makeText(
+                    mContext,
+                    ImagePicker.getError(data),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
@@ -59,65 +84,31 @@ class AddNoteBottomSheet(
         val noteText = noteInput?.text.toString().trim()
         val note: Note?
 
-        if (noteText.isNotEmpty()) {
-            val mSessionNotes = mSession.notes
-            if (mSessionNotes.isNotEmpty()) {
-                note = Note(
-                    mDate,
-                    noteText,
-                    lastMeasurement.latitude,
-                    lastMeasurement.longitude,
-                    mSessionNotes.last().number + 1,
-                    mPhotoPath
-                )
-                mListener.addNotePressed(mSession, note)
-                dismiss()
-            } else {
-                note = Note(
-                    mDate,
-                    noteText,
-                    lastMeasurement.latitude,
-                    lastMeasurement.longitude,
-                    0,
-                    mPhotoPath
-                )
-                mListener.addNotePressed(mSession, note)
-                dismiss()
-            }
-        } else showEmptyError()
-    }
-
-    private fun showEmptyError() {
-        contentView?.note_input_layout?.apply {
-            isErrorEnabled = true
-            error = mContext?.getString(R.string.notes_description_empty_error)
+        val mSessionNotes = mSession.notes
+        if (mSessionNotes.isNotEmpty()) {
+            note = Note(
+                mDate,
+                noteText,
+                lastMeasurement.latitude,
+                lastMeasurement.longitude,
+                mSessionNotes.last().number + 1,
+                mPhotoPath
+            )
+            mListener.addNotePressed(mSession, note)
+            dismiss()
+        } else {
+            note = Note(
+                mDate,
+                noteText,
+                lastMeasurement.latitude,
+                lastMeasurement.longitude,
+                0,
+                mPhotoPath
+            )
+            mListener.addNotePressed(mSession, note)
+            dismiss()
         }
     }
-
-    private val startForProfileImageResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            val resultCode = result.resultCode
-            val data = result.data
-
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    val fileUri = data?.data
-                    fileUri ?: return@registerForActivityResult
-
-                    contentView?.captured_image?.apply {
-                        setImageURI(fileUri)
-                        mPhotoPath = fileUri
-                        visible()
-                    }
-
-                }
-                ImagePicker.RESULT_ERROR -> Toast.makeText(
-                    mContext,
-                    ImagePicker.getError(data),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
 
     private fun checkIfCameraPermissionGranted() {
         mContext ?: return

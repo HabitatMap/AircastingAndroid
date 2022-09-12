@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.model
 
-import android.net.Uri
 import pl.llp.aircasting.data.local.entity.NoteDBObject
 import java.util.*
 
