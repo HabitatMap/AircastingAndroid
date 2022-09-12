@@ -61,6 +61,10 @@ object AppDependencies {
 
     private const val openCV = "com.opencsv:opencsv:${Versions.openCv}"
 
+    /* Glide */
+    private const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
+    private const val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
+
     /* Google Play */
     private const val playServicesLocation =
         "com.google.android.gms:play-services-location:${Versions.playServicesLocation}"
@@ -157,6 +161,7 @@ object AppDependencies {
         add(okHttp3MockWebServerTest)
         add(gson)
         add(openCV)
+        add(glide)
         add(playServicesLocation)
         add(playServicesMaps)
         add(mapsPlaces)
@@ -174,6 +179,7 @@ object AppDependencies {
     val kaptLibraries = arrayListOf<String>().apply {
         add(daggerCompiler)
         add(roomDBCompiler)
+        add(glideCompiler)
         add(daggerAndroidProcessor)
     }
     val kaptAndroidTestLibraries = arrayListOf<String>().apply {
