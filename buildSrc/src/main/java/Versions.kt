@@ -29,6 +29,7 @@ object Versions {
     const val okhttp3 = "4.9.3"
     const val gson = "2.8.9"
     const val openCv = "4.6"
+    const val glide = "4.13.0"
 
     const val cameraImagePicker = "2.1"
 

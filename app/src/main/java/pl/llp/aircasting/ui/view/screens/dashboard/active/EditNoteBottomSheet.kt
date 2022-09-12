@@ -5,6 +5,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.net.toUri
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ConnectivityManager
@@ -35,9 +36,14 @@ class EditNoteBottomSheet(
         mNote = mSession?.notes?.find { note -> note.number == noteNumber }
         noteInput?.setText(mNote?.text)
 
-        val mPhoto = mSession?.notes?.find { note -> note.number == noteNumber }?.photo_location
-        mNoteImage?.setImageURI(mPhoto?.toUri())
-        // Load from Db
+        val mPhoto =
+            mSession?.notes?.find { note -> note.number == noteNumber }?.photo_location?.toUri()
+
+        mNoteImage?.let {
+            Glide.with(this)
+                .load(mPhoto)
+                .into(it)
+        }
 
         mLoader = contentView?.edit_note_loader
 
