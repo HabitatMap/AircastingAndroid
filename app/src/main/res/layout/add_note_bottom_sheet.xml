@@ -101,7 +101,6 @@
                     android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_2"
                     android:layout_marginEnd="@dimen/keyline_6"
-                    app:errorEnabled="true"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
