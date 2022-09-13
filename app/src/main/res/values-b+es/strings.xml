@@ -415,7 +415,7 @@
     <string name="edit_note_title">Editar esta nota</string>
     <string name="edit_note_description">Puedes editar tu nota aquí</string>
     <string name="edit_note_des_hide">La nota fue creada el:</string>
-    <string name="edit_note_save_chages_btn">Guardar cambios</string>
+    <string name="edit_note_save_changes_btn">Guardar cambios</string>
     <string name="edit_note_delete_btn">Borrar nota</string>
 
 </resources>
