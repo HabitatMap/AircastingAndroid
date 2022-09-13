@@ -186,7 +186,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
             streams?.map { stream ->
                 mSensorThresholds[stream.sensorName] = getSensorThresholds(stream)
 
-                bindSessionPresenter(session, mSensorThresholds, stream)
+                bindSessionPresenter(session, mSensorThresholds)
                 bindSelectedStream()
                 bindChartData()
                 bindSession()
@@ -195,15 +195,14 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun bindSelectedStream() {
-        mSessionPresenter.setStream()
+        mSessionPresenter.updateSelectedStream()
     }
 
     private fun bindSessionPresenter(
         session: Session,
-        mSensorThresholds: HashMap<String, SensorThreshold>,
-        stream: MeasurementStream
+        mSensorThresholds: HashMap<String, SensorThreshold>
     ) {
-        mSessionPresenter = SessionPresenter(session, mSensorThresholds, stream)
+        mSessionPresenter = SessionPresenter(session, mSensorThresholds)
     }
 
     private fun bindChartData() {

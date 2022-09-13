@@ -173,7 +173,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     private fun bindSelectedStream() {
         if (mSessionPresenter?.allStreamsHaveLoaded() == true) {
-            mSessionPresenter?.setStream()
+            mSessionPresenter?.updateSelectedStream()
         }
     }
 
