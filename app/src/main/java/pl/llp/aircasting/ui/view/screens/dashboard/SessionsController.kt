@@ -9,6 +9,10 @@ import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
@@ -18,7 +22,14 @@ import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.ShareHelper
+import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
+import pl.llp.aircasting.util.extensions.backToUIThread
+import pl.llp.aircasting.util.extensions.runOnIOThread
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.showToast
 
 abstract class SessionsController(
     private var mRootActivity: FragmentActivity?,
@@ -50,11 +61,13 @@ abstract class SessionsController(
 
     open fun onResume() {
         registerSessionsObserver()
+        EventBus.getDefault().safeRegister(this)
         mViewMvc?.registerListener(this)
     }
 
     open fun onPause() {
         unregisterSessionsObserver()
+        EventBus.getDefault().unregister(this)
         mViewMvc?.unregisterListener(this)
     }
 
@@ -62,6 +75,13 @@ abstract class SessionsController(
         unregisterSessionsObserver()
         mViewMvc = null
         context = null
+    }
+
+    @Subscribe(sticky = true)
+    fun onMessageEvent(detailsView: StreamSelectedEvent) {
+        val session = detailsView.session ?: return
+
+        mViewMvc?.reloadSession(session)
     }
 
     protected fun startNewSession(sessionType: Session.Type) {
