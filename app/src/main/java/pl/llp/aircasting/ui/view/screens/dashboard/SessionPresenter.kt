@@ -15,7 +15,7 @@ import java.util.*
 
 class SessionPresenter() {
     var session: Session? = null
-    private var mSelectedStream: MeasurementStream? = defaultStream(session)
+    private var mSelectedStream: MeasurementStream? = selectStream(session)
     val selectedStream get() = mSelectedStream
     var sensorThresholds: Map<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
@@ -29,12 +29,10 @@ class SessionPresenter() {
     constructor(
         session: Session,
         sensorThresholds: Map<String, SensorThreshold>,
-        selectedStream: MeasurementStream? = null,
         expanded: Boolean = false,
         loading: Boolean = false
     ) : this() {
         this.session = session
-        this.mSelectedStream = defaultStream(session)
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
@@ -81,8 +79,8 @@ class SessionPresenter() {
         return sensorThresholds[stream.sensorName]
     }
 
-    fun setStream() {
-        mSelectedStream = defaultStream(session)
+    fun updateSelectedStream() {
+        mSelectedStream = selectStream(session)
     }
 
     fun isFixed(): Boolean {
@@ -153,7 +151,7 @@ class SessionPresenter() {
     }
 
     companion object {
-        private fun defaultStream(session: Session?): MeasurementStream? {
+        private fun selectStream(session: Session?): MeasurementStream? {
             val sortedByDetailedType = session?.streamsSortedByDetailedType()
             val savedStreamDetailedType = SelectedStreams.get(session?.uuid)
 
