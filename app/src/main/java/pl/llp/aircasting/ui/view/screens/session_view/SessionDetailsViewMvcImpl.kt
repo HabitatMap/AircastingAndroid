@@ -185,7 +185,7 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     protected open fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        mSessionPresenter?.selectedStream = measurementStream
+        mSessionPresenter?.select(measurementStream)
         mStatisticsContainer?.refresh(mSessionPresenter)
         bindSession(mSessionPresenter)
     }

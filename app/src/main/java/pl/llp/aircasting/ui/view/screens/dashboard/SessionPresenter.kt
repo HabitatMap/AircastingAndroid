@@ -10,11 +10,13 @@ import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.fixed.Unmodifiabl
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.MobileActiveSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.dormant.MobileDormantSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartData
+import pl.llp.aircasting.util.SelectedStreams
 import java.util.*
 
 class SessionPresenter() {
     var session: Session? = null
-    var selectedStream: MeasurementStream? = null
+    private var mSelectedStream: MeasurementStream? = defaultStream(session)
+    val selectedStream get() = mSelectedStream
     var sensorThresholds: Map<String, SensorThreshold> = hashMapOf()
     var expanded: Boolean = false
     var loading: Boolean = false
@@ -32,7 +34,7 @@ class SessionPresenter() {
         loading: Boolean = false
     ) : this() {
         this.session = session
-        this.selectedStream = selectedStream ?: defaultStream(session)
+        this.mSelectedStream = defaultStream(session)
         this.expanded = expanded
         this.loading = loading
         this.sensorThresholds = sensorThresholds
@@ -63,6 +65,11 @@ class SessionPresenter() {
         this.sessionUUID = session.uuid
     }
 
+    fun select(stream: MeasurementStream?) {
+        mSelectedStream = stream
+        SelectedStreams.save(this)
+    }
+
     fun selectedSensorThreshold(): SensorThreshold? {
         selectedStream ?: return null
 
@@ -74,8 +81,8 @@ class SessionPresenter() {
         return sensorThresholds[stream.sensorName]
     }
 
-    fun setDefaultStream() {
-        selectedStream = defaultStream(session)
+    fun setStream() {
+        mSelectedStream = defaultStream(session)
     }
 
     fun isFixed(): Boolean {
@@ -146,13 +153,17 @@ class SessionPresenter() {
     }
 
     companion object {
-        fun defaultStream(session: Session?): MeasurementStream? {
+        private fun defaultStream(session: Session?): MeasurementStream? {
             val sortedByDetailedType = session?.streamsSortedByDetailedType()
+            val savedStreamDetailedType = SelectedStreams.get(session?.uuid)
+
+            val savedStream =
+                sortedByDetailedType?.find { it.detailedType == savedStreamDetailedType }
             val pm2point5 =
                 sortedByDetailedType?.find { it.detailedType == SensorName.PM2_5.detailedType }
             val firstStream = sortedByDetailedType?.firstOrNull()
 
-            return pm2point5 ?: firstStream
+            return savedStream ?: pm2point5 ?: firstStream
         }
     }
 }
