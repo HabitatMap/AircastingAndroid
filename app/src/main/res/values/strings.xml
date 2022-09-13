@@ -513,7 +513,7 @@
     <string name="edit_note_title">Edit this note</string>
     <string name="edit_note_description">You can edit your note here</string>
     <string name="edit_note_des_hide">The note was created on: </string>
-    <string name="edit_note_save_chages_btn">Save changes</string>
+    <string name="edit_note_save_changes_btn">Save changes</string>
     <string name="edit_note_delete_btn">Delete note</string>
 
     <!-- Search and Follow -->
