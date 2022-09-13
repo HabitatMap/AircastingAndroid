@@ -21,6 +21,8 @@
     <dimen name="button_text_size">13sp</dimen>
     <dimen name="header_1_vertical_margin">@dimen/keyline_6</dimen>
 
+    <dimen name="height_150_size">150dp</dimen>
+
     <dimen name="line_height_xxl">36dp</dimen>
     <dimen name="line_height_xl">28dp</dimen>
     <dimen name="line_height_l">20dp</dimen>
