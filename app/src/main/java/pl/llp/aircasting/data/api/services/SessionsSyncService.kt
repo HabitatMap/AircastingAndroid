@@ -157,22 +157,22 @@ class SessionsSyncService private constructor(
                 val session = sessionRepository.loadSessionForUpload(uuid)
                 val encodedPhotos = getPhotosFromSessionNotes(uuid)
 
-                if (session != null && isUploadable(session)) {
+                session ?: return@runOnIOThread
+
+                if (isUploadable(session) && encodedPhotos != null) {
                     uploadServiceAndSuccessCallback(session, encodedPhotos)
                 }
             }
         }
     }
 
-    private fun getPhotosFromSessionNotes(uuid: String): List<String?> {
+    private fun getPhotosFromSessionNotes(uuid: String): List<String?>? {
         val sessionID = sessionRepository.getSessionIdByUUID(uuid)
-        val mNotes = noteRepository.getNotesForSessionWithId(sessionID!!)
+        val mNotes = sessionID?.let { noteRepository.getNotesForSessionWithId(it) }
 
-        val encodedPhotos = mNotes
-            .filterNotNull()
-            .map { note ->
-                encodeToBase64(note.photo_location?.toUri())
-            }
+        val encodedPhotos = mNotes?.filterNotNull()?.map { note ->
+            encodeToBase64(note.photo_location?.toUri())
+        }
         return encodedPhotos
     }
 
