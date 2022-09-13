@@ -84,27 +84,38 @@ class AddNoteBottomSheet(
         val note: Note?
 
         val mSessionNotes = mSession.notes
-        note = if (mSessionNotes.isEmpty())
-            Note(
-                mDate,
-                noteText,
-                lastMeasurement.latitude,
-                lastMeasurement.longitude,
-                0,
-                mPhotoPath
-            )
-        else
-            Note(
-                mDate,
-                noteText,
-                lastMeasurement.latitude,
-                lastMeasurement.longitude,
-                mSession.notes.last().number + 1,
-                mPhotoPath
-            )
+        if (noteText.isNotEmpty()) {
+            if (mSessionNotes.isNotEmpty()) {
+                note = Note(
+                    mDate,
+                    noteText,
+                    lastMeasurement.latitude,
+                    lastMeasurement.longitude,
+                    mSessionNotes.last().number + 1,
+                    mPhotoPath
+                )
+                mListener.addNotePressed(mSession, note)
+                dismiss()
+            } else {
+                note = Note(
+                    mDate,
+                    noteText,
+                    lastMeasurement.latitude,
+                    lastMeasurement.longitude,
+                    0,
+                    mPhotoPath
+                )
+                mListener.addNotePressed(mSession, note)
+                dismiss()
+            }
+        } else showEmptyError()
+    }
 
-        mListener.addNotePressed(mSession, note)
-        dismiss()
+    private fun showEmptyError() {
+        contentView?.note_input_layout?.apply {
+            isErrorEnabled = true
+            error = mContext?.getString(R.string.notes_description_empty_error)
+        }
     }
 
     private fun checkIfCameraPermissionGranted() {
