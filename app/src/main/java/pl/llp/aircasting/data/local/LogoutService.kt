@@ -1,7 +1,6 @@
 package pl.llp.aircasting.data.local
 
 import android.content.Context
-import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -9,6 +8,7 @@ import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.events.SessionsSyncEvent
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import javax.inject.Inject
 
@@ -23,15 +23,10 @@ class LogoutService @Inject constructor(
         EventBus.getDefault().postSticky(LogoutEvent())
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun clearDatabase() {
         Thread.sleep(1000)
-        runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                DatabaseProvider.get().clearAllTables()
-            }
-            query.await()
-        }
+
+        runOnIOThread { DatabaseProvider.get().clearAllTables() }
     }
 
     @Subscribe
