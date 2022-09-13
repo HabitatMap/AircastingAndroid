@@ -96,8 +96,15 @@ fun ImageView.stopAnimation() {
 fun Drawable.startAnimation() {
     (this as Animatable).start()
 }
+
 fun runOnIOThread(block: (scope: CoroutineScope) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
+        block(this)
+    }
+}
+
+fun runOnMainThread(block: (scope: CoroutineScope) -> Unit) {
+    CoroutineScope(Dispatchers.Main).launch {
         block(this)
     }
 }
