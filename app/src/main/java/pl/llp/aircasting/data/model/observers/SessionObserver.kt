@@ -46,7 +46,7 @@ abstract class SessionObserver<Type>(
 
             val measurementStream =
                 session.streams.firstOrNull { it.sensorName == selectedSensorName }
-            mSessionPresenter.selectedStream = measurementStream
+            mSessionPresenter.select(measurementStream)
 
             val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
             mSessionPresenter.setSensorThresholds(sensorThresholds)

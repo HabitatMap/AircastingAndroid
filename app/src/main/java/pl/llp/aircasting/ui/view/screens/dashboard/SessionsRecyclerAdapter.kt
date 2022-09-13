@@ -66,6 +66,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             if (found(position)) {
                 val presenter = mSessionPresenters[position]
                 presenter.session = prepareSession(it, mSessionPresenters[position].expanded)
+                presenter.setStream()
                 presenter.chartData?.refresh(it)
 
                 mSessionPresenters.updateItemAt(position, presenter)

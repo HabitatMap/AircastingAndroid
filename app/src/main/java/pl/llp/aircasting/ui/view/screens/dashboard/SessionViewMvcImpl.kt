@@ -172,8 +172,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun bindSelectedStream() {
-        if (mSessionPresenter?.selectedStream == null && mSessionPresenter?.allStreamsHaveLoaded() == true) {
-            mSessionPresenter?.setDefaultStream()
+        if (mSessionPresenter?.allStreamsHaveLoaded() == true) {
+            mSessionPresenter?.setStream()
         }
     }
 
@@ -281,7 +281,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     protected fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        mSessionPresenter?.selectedStream = measurementStream
+        mSessionPresenter?.select(measurementStream)
+
         bindChartData()
     }
 

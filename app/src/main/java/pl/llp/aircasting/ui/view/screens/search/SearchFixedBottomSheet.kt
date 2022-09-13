@@ -195,7 +195,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun bindSelectedStream() {
-        mSessionPresenter.setDefaultStream()
+        mSessionPresenter.setStream()
     }
 
     private fun bindSessionPresenter(
@@ -230,7 +230,7 @@ class SearchFixedBottomSheet : BottomSheet(), OnMapReadyCallback {
     }
 
     private fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
-        mSessionPresenter.selectedStream = measurementStream
+        mSessionPresenter.select(measurementStream)
         bindChartData()
     }
 
