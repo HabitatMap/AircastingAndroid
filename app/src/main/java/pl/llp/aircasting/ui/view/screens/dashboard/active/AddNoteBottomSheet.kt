@@ -2,7 +2,6 @@ package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.app.Activity
 import android.content.Context
-import android.net.Uri
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -65,9 +64,9 @@ class AddNoteBottomSheet(
     }
 
     override fun setup() {
-        noteInput = contentView?.note_input
-
         checkIfCameraPermissionGranted()
+
+        noteInput = contentView?.note_input
         contentView?.add_note_button?.setOnClickListener { addNote(mSession) }
         contentView?.add_picture_button?.setOnClickListener { takePictureUsingCamera() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
@@ -85,19 +84,8 @@ class AddNoteBottomSheet(
         val note: Note?
 
         val mSessionNotes = mSession.notes
-        if (mSessionNotes.isNotEmpty()) {
-            note = Note(
-                mDate,
-                noteText,
-                lastMeasurement.latitude,
-                lastMeasurement.longitude,
-                mSessionNotes.last().number + 1,
-                mPhotoPath
-            )
-            mListener.addNotePressed(mSession, note)
-            dismiss()
-        } else {
-            note = Note(
+        note = if (mSessionNotes.isEmpty())
+            Note(
                 mDate,
                 noteText,
                 lastMeasurement.latitude,
@@ -105,9 +93,18 @@ class AddNoteBottomSheet(
                 0,
                 mPhotoPath
             )
-            mListener.addNotePressed(mSession, note)
-            dismiss()
-        }
+        else
+            Note(
+                mDate,
+                noteText,
+                lastMeasurement.latitude,
+                lastMeasurement.longitude,
+                mSession.notes.last().number + 1,
+                mPhotoPath
+            )
+
+        mListener.addNotePressed(mSession, note)
+        dismiss()
     }
 
     private fun checkIfCameraPermissionGranted() {
