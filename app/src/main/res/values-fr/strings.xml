@@ -410,5 +410,10 @@
     <string name="dialog_helper_des">Cela vous permettra de joindre des photos à vos notes de session mobile.</string>
     <string name="dont_allow_dialog">Ne pas autoriser</string>
     <string name="sync_in_progress">Synchronisation en cours…</string>
+    <string name="edit_note_title">Modifier cette note</string>
+    <string name="edit_note_description">Vous pouvez modifier votre note ici</string>
+    <string name="edit_note_des_hide">La note a été créée le :</string>
+    <string name="edit_note_save_chages_btn">Sauvegarder les modifications</string>
+    <string name="edit_note_delete_btn">Supprimer la note</string>
 
 </resources>

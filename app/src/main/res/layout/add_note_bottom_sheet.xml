@@ -110,10 +110,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/note_input"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="@dimen/height_150_size"
                         android:backgroundTint="@color/aircasting_grey_100"
                         android:gravity="start"
                         android:hint="@string/note"
+                        android:imeOptions="actionDone"
                         android:inputType="text"
                         android:lines="4"
                         android:maxLines="4"
