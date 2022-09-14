@@ -124,9 +124,12 @@
 
                 <ImageView
                     android:id="@+id/captured_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/note_photo_size"
+                    android:layout_width="match_parent"
+                    android:scaleType="centerCrop"
+                    android:layout_marginStart="@dimen/keyline_6"
                     android:layout_marginTop="@dimen/keyline_2"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:maxHeight="100dp"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"

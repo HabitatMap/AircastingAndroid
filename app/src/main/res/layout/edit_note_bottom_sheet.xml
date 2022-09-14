@@ -133,12 +133,14 @@
 
                 <ImageView
                     android:id="@+id/note_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_height="@dimen/note_photo_size"
+                    android:layout_width="match_parent"
+                    android:scaleType="centerCrop"
                     android:layout_marginTop="@dimen/keyline_2"
+                    android:layout_marginStart="@dimen/keyline_6"
+                    android:layout_marginEnd="@dimen/keyline_6"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/note_input_layout"
                     tools:src="@drawable/airbeam_in_hand"
