@@ -47,7 +47,7 @@ class MainController(
 
         NewSessionActivity.register(rootActivity, Session.Type.FIXED)
         NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
-        SyncActivity.register(rootActivity, onFinish = { goToDormantTab() })
+        SyncActivity.register(rootActivity, onFinish = { rootActivity.goToDormantTab() })
 
         mSessionManager?.onStart()
     }
@@ -57,16 +57,11 @@ class MainController(
     }
 
     @Subscribe
-    fun onMessageEvent(event: AppToForegroundEvent) {
-        Handler(Looper.getMainLooper()).post {
-            navigateToMobileActiveIfSessionAvailable()
-        }
+    fun onMessageEvent(event: AppToForegroundEvent) = Handler(Looper.getMainLooper()).post {
+        if (mSettings.mobileActiveSessionsCount() > 0)
+            rootActivity.goToMobileActiveTab()
     }
 
-    private fun navigateToMobileActiveIfSessionAvailable() {
-        val isMobileActiveSessionExists = mSettings.getMobileActiveSessions()
-        if (isMobileActiveSessionExists > 0) goToMobileActiveTab()
-    }
 
     fun onDestroy() {
         EventBus.getDefault().unregister(this)
@@ -102,14 +97,6 @@ class MainController(
             SessionsSyncService.get(apiService, mErrorHandler, mSettings)
 
         syncService.sync()
-    }
-
-    private fun goToMobileActiveTab() {
-        rootActivity.goToMobileActiveTab()
-    }
-
-    private fun goToDormantTab() {
-        rootActivity.goToDormantTab()
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

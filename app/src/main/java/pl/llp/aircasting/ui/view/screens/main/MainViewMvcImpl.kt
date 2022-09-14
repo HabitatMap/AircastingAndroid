@@ -21,10 +21,7 @@ import pl.llp.aircasting.ui.view.common.BaseViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.extensions.adjustMenuVisibility
-import pl.llp.aircasting.util.extensions.goToFollowingTab
-import pl.llp.aircasting.util.extensions.gone
-import pl.llp.aircasting.util.extensions.visible
+import pl.llp.aircasting.util.extensions.*
 
 class MainViewMvcImpl(
     inflater: LayoutInflater,
@@ -120,7 +117,7 @@ class MainViewMvcImpl(
         navView.setupWithNavController(mNavController)
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_dashboard -> goToFollowingTab()
+                R.id.navigation_dashboard -> navigateToAppropriateTab()
                 R.id.navigation_lets_begin -> mNavController.navigate(R.id.navigation_lets_begin)
                 R.id.navigation_settings -> mNavController.navigate(R.id.navigation_settings)
             }
@@ -128,12 +125,19 @@ class MainViewMvcImpl(
         }
     }
 
-    private fun goToFollowingTab() {
-        val getFollowedSessionNumber = mSettings?.getFollowedSessionsNumber()
+
+
+    private fun navigateToAppropriateTab() {
+        val mobileSessionsCount = (mSettings?.mobileActiveSessionsCount() ?: 0)
+        if (mobileSessionsCount > 0) {
+            rootActivity.goToMobileActiveTab()
+            return
+        }
+
+        val followedSessionsCount = mSettings?.getFollowedSessionsNumber() ?: 0
         rootActivity.apply {
             goToFollowingTab()
-            getFollowedSessionNumber?.let { adjustMenuVisibility(true, it) }
+            adjustMenuVisibility(true, followedSessionsCount)
         }
     }
-
 }
