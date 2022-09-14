@@ -148,8 +148,9 @@ class MobileActiveController(
         EventBus.getDefault().post(event)
 
         mSettings.decreaseActiveMobileSessionsNumber()
-        val getActiveMobileSessions = mSettings.mobileActiveSessionsCount()
-        if (getActiveMobileSessions == 1) goToDormantTab()
+
+        if (mSettings.mobileActiveSessionsCount() == 0)
+            goToDormantTab()
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {

@@ -115,7 +115,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
     }
 
-    fun getFollowedSessionsNumber(): Int {
+    fun getFollowedSessionsCount(): Int {
         return getIntFromSettings(FOLLOWED_SESSIONS_NUMBER_KEY, DEFAULT_FOLLOWED_SESSIONS_NUMBER)
     }
 
@@ -202,11 +202,11 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     }
 
     fun increaseFollowedSessionsNumber() {
-        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() + 1)
+        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsCount() + 1)
     }
 
     fun decreaseFollowedSessionsNumber() {
-        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsNumber() - 1)
+        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, getFollowedSessionsCount() - 1)
     }
 
     fun increaseActiveMobileSessionsNumber() {

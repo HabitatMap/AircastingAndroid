@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
@@ -41,7 +40,7 @@ class FollowingController(
 
     override fun onResume() {
         super.onResume()
-        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsNumber())
+        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsCount())
     }
 
     override fun registerSessionsObserver() {
@@ -66,12 +65,12 @@ class FollowingController(
 
     override fun onFollowButtonClicked(session: Session) {
         super.onFollowButtonClicked(session)
-        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsNumber())
+        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsCount())
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         super.onUnfollowButtonClicked(session)
-        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsNumber())
+        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsCount())
     }
 
     override fun onExpandSessionCard(session: Session) {
