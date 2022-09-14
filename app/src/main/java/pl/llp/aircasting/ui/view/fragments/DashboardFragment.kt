@@ -90,7 +90,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     private fun isAdjustable(position: Int) {
         activity?.let {
             if (position == 0)
-                it.adjustMenuVisibility(true, settings.getFollowedSessionsNumber())
+                it.adjustMenuVisibility(true, settings.getFollowedSessionsCount())
             else it.adjustMenuVisibility(false)
         }
     }

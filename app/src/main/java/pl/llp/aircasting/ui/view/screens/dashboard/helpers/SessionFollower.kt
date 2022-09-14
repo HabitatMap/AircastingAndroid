@@ -35,7 +35,7 @@ class SessionFollower @Inject constructor(
     private fun updateFollowedAt(session: Session) {
         CoroutineScope(ioDispatcher).launch {
             mSessionRepository.updateFollowedAt(session)
-            mSessionRepository.updateOrder(session.uuid, mSettings.getFollowedSessionsNumber())
+            mSessionRepository.updateOrder(session.uuid, mSettings.getFollowedSessionsCount())
         }
     }
 

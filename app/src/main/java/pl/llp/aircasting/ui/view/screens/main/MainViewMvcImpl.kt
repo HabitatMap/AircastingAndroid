@@ -134,7 +134,7 @@ class MainViewMvcImpl(
             return
         }
 
-        val followedSessionsCount = mSettings?.getFollowedSessionsNumber() ?: 0
+        val followedSessionsCount = mSettings?.getFollowedSessionsCount() ?: 0
         rootActivity.apply {
             goToFollowingTab()
             adjustMenuVisibility(true, followedSessionsCount)
