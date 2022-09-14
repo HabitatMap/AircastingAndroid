@@ -119,7 +119,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         return getIntFromSettings(FOLLOWED_SESSIONS_NUMBER_KEY, DEFAULT_FOLLOWED_SESSIONS_NUMBER)
     }
 
-    fun getMobileActiveSessions(): Int {
+    fun mobileActiveSessionsCount(): Int {
         return getIntFromSettings(MOBILE_ACTIVE_NUMBERS_KEY, DEFAULT_MOBILE_ACTIVE_SESSIONS)
     }
 
@@ -210,11 +210,11 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     }
 
     fun increaseActiveMobileSessionsNumber() {
-        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, getMobileActiveSessions() + 1)
+        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, mobileActiveSessionsCount() + 1)
     }
 
     fun decreaseActiveMobileSessionsNumber() {
-        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, getMobileActiveSessions() - 1)
+        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, mobileActiveSessionsCount() - 1)
     }
 
     fun saveExpandedSessionsUUIDs(uuids: Set<String>) {
