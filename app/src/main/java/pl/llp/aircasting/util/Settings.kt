@@ -38,6 +38,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_MAPS_DISABLED = false
 
         private const val DEFAULT_BACKEND_PORT = "80"
+        const val DEFAULT_BACKEND_URL = "http://aircasting.org"
 
         private const val DEFAULT_APP_RESTARTED = false
         private const val DEFAULT_THEME_VALUE = false
@@ -45,8 +46,6 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
         private const val DEFAULT_ONBOARDING_DISPLAYED = false
     }
-
-    protected open val DEFAULT_BACKEND_URL = "http://aircasting.org"
 
     fun getAuthToken(): String? {
         return getStringFromSettings(AUTH_TOKEN_KEY)

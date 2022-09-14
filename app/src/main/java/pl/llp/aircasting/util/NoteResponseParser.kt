@@ -2,6 +2,7 @@ package pl.llp.aircasting.util
 
 import pl.llp.aircasting.data.api.response.NoteResponse
 import pl.llp.aircasting.data.model.Note
+import pl.llp.aircasting.util.Settings.Companion.DEFAULT_BACKEND_URL
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.ParseDateError
 import java.text.ParseException
@@ -15,7 +16,7 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
                 noteResponse.latitude,
                 noteResponse.longitude,
                 noteResponse.number,
-                noteResponse.photoPath
+                DEFAULT_BACKEND_URL + noteResponse.photo
             )
     }
 
