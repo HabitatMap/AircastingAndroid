@@ -7,5 +7,5 @@ class NoteResponse(
     val latitude: Double?,
     val longitude: Double?,
     val number: Int,
-    val photoPath: String?
+    val photo: String?
 )
