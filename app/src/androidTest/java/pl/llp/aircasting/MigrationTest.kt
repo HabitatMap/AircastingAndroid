@@ -17,7 +17,7 @@ class RWQuoteMigrationTest {
     private lateinit var db: SupportSQLiteDatabase
 
     companion object {
-        private const val TEST_DB = "migration-test"
+        private const val TEST_DB = "aircasting"
     }
 
     @get:Rule
@@ -28,9 +28,8 @@ class RWQuoteMigrationTest {
 
     @Test
     @Throws(IOException::class)
-    fun migration30to31() {
-        var db = helper.createDatabase(TEST_DB, 30)
-
-        db = helper.runMigrationsAndValidate(TEST_DB, 31, true, MIGRATION_30_31)
+    fun migration31to32() {
+        db = helper.createDatabase(TEST_DB, 31)
+        db = helper.runMigrationsAndValidate(TEST_DB, 32, true, MIGRATION_30_31)
     }
 }

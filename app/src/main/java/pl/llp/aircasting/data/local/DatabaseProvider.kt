@@ -18,7 +18,7 @@ import pl.llp.aircasting.util.converters.*
         SensorThresholdDBObject::class,
         NoteDBObject::class,
         ActiveSessionMeasurementDBObject::class],
-    version = 31,
+    version = 32,
     exportSchema = true
 )
 @TypeConverters(
@@ -71,6 +71,7 @@ class DatabaseProvider {
                         MIGRATION_27_28,
                         MIGRATION_28_29,
                         MIGRATION_30_31,
+                        MIGRATION_31_32
                     )
                     .build()
             }
