@@ -47,7 +47,7 @@ class AddNoteBottomSheet(
                     fileUri ?: return@registerForActivityResult
 
                     contentView?.captured_image?.apply {
-                         showImageBasedOnURI()
+                        setImageURI(fileUri)
 
                         mPhotoPath = fileUri.toString()
                         visible()
@@ -61,12 +61,6 @@ class AddNoteBottomSheet(
                 ).show()
             }
         }
-
-    private fun ImageView.showImageBasedOnURI() {
-        Glide.with(this.context)
-            .load(mPhotoPath)
-            .into(this)
-    }
 
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
