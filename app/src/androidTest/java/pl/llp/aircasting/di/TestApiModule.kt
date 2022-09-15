@@ -14,7 +14,6 @@ class TestApiModule : ApiModule(){
     override fun providesApiServiceFactory(settings: Settings, webServerFactory: WebServerFactory): ApiServiceFactory {
         val mockWebServer = (webServerFactory as FakeWebServerFactory).getMockWebServer()
         return FakeApiServiceFactory(
-            settings,
             mockWebServer
         )
     }
