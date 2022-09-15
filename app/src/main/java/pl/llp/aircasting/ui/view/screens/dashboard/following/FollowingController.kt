@@ -40,7 +40,7 @@ class FollowingController(
 
     override fun onResume() {
         super.onResume()
-        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsCount())
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
     }
 
     override fun registerSessionsObserver() {
@@ -65,12 +65,12 @@ class FollowingController(
 
     override fun onFollowButtonClicked(session: Session) {
         super.onFollowButtonClicked(session)
-        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsCount())
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
     }
 
     override fun onUnfollowButtonClicked(session: Session) {
         super.onUnfollowButtonClicked(session)
-        mRootActivity?.adjustMenuVisibility(true, mSettings.getFollowedSessionsCount())
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
     }
 
     override fun onExpandSessionCard(session: Session) {
