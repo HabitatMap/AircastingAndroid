@@ -193,6 +193,7 @@ object AppDependencies {
         add(roomDBCompiler)
         add(roomDBTest)
         add(espressoCore)
+        add(mockitoKotlin)
         add(espressoIntents)
         add(testCoreKTX)
         add(testExtJunitKTX)

@@ -6,7 +6,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 val MIGRATION_31_32 = object : Migration(31, 32) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
-            "CREATE TABLE `notes` (`photo_location` TEXT, " + "PRIMARY KEY(`id`))"
+            "ALTER TABLE `notes` ADD `photo_location` TEXT DEFAULT null"
         )
     }
 }

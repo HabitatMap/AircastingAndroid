@@ -8,7 +8,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.local.AppDatabase
-import pl.llp.aircasting.data.local.migrations.MIGRATION_30_31
+import pl.llp.aircasting.data.local.migrations.MIGRATION_31_32
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
@@ -30,6 +30,6 @@ class RWQuoteMigrationTest {
     @Throws(IOException::class)
     fun migration31to32() {
         db = helper.createDatabase(TEST_DB, 31)
-        db = helper.runMigrationsAndValidate(TEST_DB, 32, true, MIGRATION_30_31)
+        db = helper.runMigrationsAndValidate(TEST_DB, 32, true, MIGRATION_31_32)
     }
 }
