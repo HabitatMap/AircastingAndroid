@@ -125,17 +125,16 @@ class MainViewMvcImpl(
         }
     }
 
-
-
     private fun navigateToAppropriateTab() {
-        val mobileSessionsCount = (mSettings?.mobileActiveSessionsCount() ?: 0)
-        if (mobileSessionsCount > 0) {
-            rootActivity.goToMobileActiveTab()
-            return
-        }
+        val mobileSessionsCount = mSettings?.mobileActiveSessionsCount() ?: 0
+        val followedSessionsCount = mSettings?.followedSessionsCount() ?: 0
 
-        val followedSessionsCount = mSettings?.getFollowedSessionsCount() ?: 0
         rootActivity.apply {
+            if (mobileSessionsCount > 0) {
+                goToMobileActiveTab()
+                return
+            }
+
             goToFollowingTab()
             adjustMenuVisibility(true, followedSessionsCount)
         }
