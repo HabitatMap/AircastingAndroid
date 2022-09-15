@@ -7,13 +7,13 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.data.api.util.ApiConstants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-open class ApiServiceFactory @Inject constructor(private val mSettings: Settings) {
+open class ApiServiceFactory @Inject constructor() {
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
@@ -75,16 +75,7 @@ open class ApiServiceFactory @Inject constructor(private val mSettings: Settings
         )
     }
 
-    protected open fun baseUrl(): HttpUrl {
-        val URL_SUFFIX = "/"
-        val baseUrl = mSettings.getBackendUrl() + ":" + mSettings.getBackendPort()
-
-        return if (mSettings.getBackendUrl()?.last().toString() == URL_SUFFIX) {
-            baseUrl.toHttpUrl()
-        } else {
-            (baseUrl + URL_SUFFIX).toHttpUrl()
-        }
-    }
+    protected open fun baseUrl(): HttpUrl = (ApiConstants.baseUrl + "/").toHttpUrl()
 
     private fun encodedCredentials(username: String, password: String): String {
         val credentials = "${username}:${password}"

@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.util
 
 object ApiConstants {
-    const val baseUrl = "http://aircasting.org/"
+    const val baseUrl = "http://aircasting.org"
 
     /* GET Requests */
     const val urlSessionInGivenLocation = "/api/fixed/active/sessions.json"

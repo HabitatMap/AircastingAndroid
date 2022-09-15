@@ -23,7 +23,7 @@ open class ApiModule {
     open fun providesApiServiceFactory(
         settings: Settings,
         webServerFactory: WebServerFactory
-    ): ApiServiceFactory = ApiServiceFactory(settings)
+    ): ApiServiceFactory = ApiServiceFactory()
 
     @Provides
     @Singleton
