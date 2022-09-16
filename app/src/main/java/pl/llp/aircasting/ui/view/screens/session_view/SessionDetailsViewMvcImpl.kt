@@ -173,11 +173,11 @@ abstract class SessionDetailsViewMvcImpl(
         mListener?.onSensorThresholdChanged(sensorThreshold)
     }
 
-    protected open fun onNoteAdded(note: Note) {
+    override fun addNote(note: Note) {
         mSessionPresenter?.session?.notes?.add(note)
     }
 
-    protected open fun onNoteDeleted(note: Note) {
+    override fun deleteNote(note: Note) {
         mSessionPresenter?.session?.notes?.remove(note)
     }
 
