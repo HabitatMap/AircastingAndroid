@@ -178,15 +178,8 @@ class SessionsSyncService private constructor(
 
     private fun uploadServiceAndSuccessCallback(session: Session, encodedPhotos: List<String?>) {
         val onUploadSuccess = { response: Response<UploadSessionResponse> ->
-            val body = response.body()
-
             runOnIOThread {
-                sessionRepository.updateUrlLocation(session, body?.location)
-                sessionRepository.getSessionIdByUUID(session.uuid)?.let {
-                    body?.notes?.forEach { note ->
-                        noteRepository.updateNotePhotoLocation(it, note.photo_location)
-                    }
-                }
+                sessionRepository.updateUrlLocation(session, response.body()?.location)
             }
         }
 
@@ -201,10 +194,18 @@ class SessionsSyncService private constructor(
                         try {
                             val sessionId = sessionRepository.updateOrCreate(session)
                             sessionId?.let {
-                                measurementStreamsRepository.insert(sessionId, session.streams)
+                                measurementStreamsRepository.insert(
+                                    sessionId,
+                                    session.streams
+                                )
+                            }
 
-                                for (note in session.notes) {
-                                    noteRepository.insert(sessionId, note)
+                            session.notes.forEach { note ->
+                                sessionId?.let { sessionId ->
+                                    noteRepository.insert(
+                                        sessionId,
+                                        note
+                                    )
                                 }
                             }
 
