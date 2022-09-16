@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_map.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -13,13 +14,11 @@ import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvcImpl
-import kotlinx.android.synthetic.main.activity_map.view.*
 
 
 abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     private var mMapContainer: MapContainer?
     private val mLoader: ImageView?
-
 
     constructor(
         inflater: LayoutInflater,
@@ -69,12 +68,12 @@ abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
     }
 
     override fun addNote(note: Note) {
-        super.onNoteAdded(note)
+        super.addNote(note)
         mMapContainer?.refresh(mSessionPresenter)
     }
 
     override fun deleteNote(note: Note) {
-        super.onNoteDeleted(note)
+        super.deleteNote(note)
         mMapContainer?.refresh(mSessionPresenter)
     }
 

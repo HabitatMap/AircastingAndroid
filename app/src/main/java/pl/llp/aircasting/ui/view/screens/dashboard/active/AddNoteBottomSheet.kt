@@ -3,11 +3,9 @@ package pl.llp.aircasting.ui.view.screens.dashboard.active
 import android.app.Activity
 import android.content.Context
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
 import pl.llp.aircasting.R
