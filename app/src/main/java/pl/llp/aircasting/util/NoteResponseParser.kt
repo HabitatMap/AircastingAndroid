@@ -16,7 +16,7 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
                 noteResponse.latitude,
                 noteResponse.longitude,
                 noteResponse.number,
-                ApiConstants.baseUrl + noteResponse.photo
+                parsePhotoLocation(noteResponse.photo)
             )
     }
 
@@ -27,5 +27,11 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
             errorHandler.handle(ParseDateError(parseException))
             Date()
         }
+    }
+
+    private fun parsePhotoLocation(photoLocationOnServer: String?): String? {
+        photoLocationOnServer ?: return null
+
+        return ApiConstants.baseUrl + photoLocationOnServer
     }
 }
