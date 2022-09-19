@@ -120,12 +120,14 @@ fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
 }
 
 fun encodeToBase64(filepath: Uri?): String? {
+    filepath ?: return ""
+
     return try {
-        val inputStream = FileInputStream(filepath?.path)
+        val inputStream = FileInputStream(filepath.path)
         val bytes = ByteArray(inputStream.available())
         inputStream.read(bytes)
         encodeToString(bytes, DEFAULT)
     } catch (e: Exception) {
-        null
+        ""
     }
 }
