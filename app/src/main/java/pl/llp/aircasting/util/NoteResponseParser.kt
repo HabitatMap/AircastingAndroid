@@ -1,7 +1,6 @@
 package pl.llp.aircasting.util
 
 import pl.llp.aircasting.data.api.response.NoteResponse
-import pl.llp.aircasting.data.api.util.ApiConstants
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.ParseDateError
@@ -16,7 +15,7 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
                 noteResponse.latitude,
                 noteResponse.longitude,
                 noteResponse.number,
-                parsePhotoLocation(noteResponse.photo)
+                noteResponse.photo_location
             )
     }
 
@@ -29,9 +28,4 @@ class NoteResponseParser(private val errorHandler: ErrorHandler) {
         }
     }
 
-    private fun parsePhotoLocation(photoLocationOnServer: String?): String? {
-        photoLocationOnServer ?: return null
-
-        return ApiConstants.baseUrl + photoLocationOnServer
-    }
 }
