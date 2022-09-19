@@ -1,6 +1,5 @@
 package pl.llp.aircasting.data.local.entity
 
-import android.net.Uri
 import androidx.room.*
 import pl.llp.aircasting.data.model.Note
 import java.util.*

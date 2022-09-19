@@ -171,10 +171,7 @@ class SessionsSyncService private constructor(
         val mNotes = sessionID?.let { noteRepository.getNotesForSessionWithId(it) }
 
         val encodedPhotos = mNotes?.filterNotNull()?.map { note ->
-            if (note.photo_location == null)
-                null
-            else
-                encodeToBase64(note.photo_location.toUri())
+            encodeToBase64(note.photo_location?.toUri())
         }
         return encodedPhotos
     }
