@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
-class DashboardViewMvcImpl(
+open class DashboardViewMvcImpl(
     private val mRootActivity: FragmentActivity,
     inflater: LayoutInflater,
     parent: ViewGroup?,
@@ -21,7 +21,7 @@ class DashboardViewMvcImpl(
 ) : DashboardViewMvc, BaseObservableViewMvc<DashboardViewMvc.Listener>() {
     private val mPager: ViewPager?
     private var tabs: TabLayout? = null
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+    protected var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
     init {
         this.rootView = inflater.inflate(R.layout.fragment_dashboard, parent, false)
@@ -32,6 +32,9 @@ class DashboardViewMvcImpl(
         mPager.offscreenPageLimit = tabsCount
         fragmentManager?.let { mPager.adapter = adapter }
         setTabsMargins()
+    }
+
+    fun setup() {
         setupSwipeToRefreshLayout()
     }
 
@@ -57,7 +60,7 @@ class DashboardViewMvcImpl(
         firstTab.requestLayout()
     }
 
-    private fun setupSwipeToRefreshLayout() {
+    protected open fun setupSwipeToRefreshLayout() {
         mSwipeRefreshLayout?.let { layout ->
             layout.setColorSchemeResources(R.color.aircasting_blue_400)
             layout.setOnRefreshListener {

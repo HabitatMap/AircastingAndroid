@@ -3,17 +3,17 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.ui.view.common.BaseController
+import pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard.BaseDashboardController
 import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 
 class DashboardController(
     private val viewMvc: DashboardViewMvcImpl?,
     private val sessionsSyncService: SessionsSyncService
-) : BaseController<DashboardViewMvcImpl>(viewMvc), DashboardViewMvc.Listener {
+) : BaseDashboardController(viewMvc), DashboardViewMvc.Listener {
 
-    fun onCreate(tabId: Int?) {
-        viewMvc?.goToTab(tabId ?: SessionsTab.FOLLOWING.value)
+    override fun onCreate(tabId: Int?) {
+        super.onCreate(tabId)
         viewMvc?.registerListener(this)
         EventBus.getDefault().safeRegister(this)
     }
