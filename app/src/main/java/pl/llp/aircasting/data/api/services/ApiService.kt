@@ -19,12 +19,13 @@ import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateUserSettings
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadFixedMeasurements
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
 
     @GET(ApiConstants.urlDownloadSession)
-    fun downloadSession(@Query("uuid") uuid: String): Call<SessionResponse>
+    suspend fun downloadSession(@Query("uuid") uuid: String): SessionResponse
 
     @GET(ApiConstants.urlDownloadSession)
     fun downloadSessionWithMeasurements(
@@ -74,7 +75,7 @@ interface ApiService {
     fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
 
     @POST(urlCreateAccount)
-    fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
+    suspend fun createAccount(@Body body: CreateAccountBody): Response<UserResponse>
 
     @POST(urlUpdateSession)
     fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>

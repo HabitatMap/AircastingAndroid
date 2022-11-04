@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.session_view
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -122,20 +123,17 @@ abstract class SessionDetailsViewController(
     }
 
     override fun noteMarkerClicked(session: Session?, noteNumber: Int) {
-        val onDownloadSuccess = { session: Session ->
-            runOnIOThread {
-                mSessionRepository.update(session)
-            }
-            editNoteDialog?.reload(session)
-        }
-
-        val finallyCallback = {
-            editNoteDialog?.hideLoader()
-        }
-
         startEditNoteDialog(session, noteNumber)
+
         session?.let {
-            mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+            rootActivity.lifecycleScope.launch {
+                mDownloadService.download(session.uuid)
+                    .onSuccess {
+                        withContext(Dispatchers.IO) { mSessionRepository.update(session) }
+                        editNoteDialog?.reload(session)
+                    }
+                editNoteDialog?.hideLoader()
+            }
         }
     }
 

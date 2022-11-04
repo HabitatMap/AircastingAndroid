@@ -3,6 +3,8 @@ package pl.llp.aircasting.data.api.services
 import android.database.sqlite.SQLiteConstraintException
 import androidx.core.net.toUri
 import com.google.gson.Gson
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
@@ -21,6 +23,7 @@ import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
+import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
@@ -188,34 +191,45 @@ class SessionsSyncService private constructor(
 
     private fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val onDownloadSuccess = { session: Session ->
+            val onDownloadSuccess = { session: Session? ->
                 runOnIOThread {
                     if (mCall?.isCanceled != true) {
                         try {
-                            val sessionId = sessionRepository.updateOrCreate(session)
-                            sessionId?.let {
-                                measurementStreamsRepository.insert(
-                                    sessionId,
-                                    session.streams
-                                )
-                            }
-
-                            session.notes.forEach { note ->
-                                sessionId?.let { sessionId ->
-                                    noteRepository.insert(
+                            session?.let {
+                                val sessionId = sessionRepository.updateOrCreate(session)
+                                sessionId?.let {
+                                    measurementStreamsRepository.insert(
                                         sessionId,
-                                        note
+                                        session.streams
                                     )
                                 }
-                            }
 
+                                session.notes.forEach { note ->
+                                    sessionId?.let { sessionId ->
+                                        noteRepository.insert(
+                                            sessionId,
+                                            note
+                                        )
+                                    }
+                                }
+                            }
                         } catch (e: SQLiteConstraintException) {
                             errorHandler.handle(DBInsertException(e))
                         }
                     }
                 }
             }
-            if (mCall?.isCanceled != true) downloadService.download(uuid, onDownloadSuccess)
+            if (mCall?.isCanceled != true) {
+                MainScope().launch {
+                    downloadService.download(uuid)
+                        .onFailure {
+                            errorHandler.handle(
+                                UnexpectedAPIError(it)
+                            )
+                        }
+                        .onSuccess(onDownloadSuccess)
+                }
+            }
         }
     }
 

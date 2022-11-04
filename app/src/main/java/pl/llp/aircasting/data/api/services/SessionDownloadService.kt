@@ -1,53 +1,28 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
-import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.util.NoteResponseParser
+import pl.llp.aircasting.data.api.params.SessionParams
+import pl.llp.aircasting.data.api.response.SessionResponse
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
-import pl.llp.aircasting.data.api.params.SessionParams
-import pl.llp.aircasting.data.api.response.SessionResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import pl.llp.aircasting.util.DateConverter
+import pl.llp.aircasting.util.NoteResponseParser
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 
 class SessionDownloadService(
     private val apiService: ApiService,
     private val errorHandler: ErrorHandler
 ) {
-
     private val noteResponseParser = NoteResponseParser(errorHandler)
 
-    fun download(
+    suspend fun download(
         uuid: String,
-        successCallback: (Session) -> Unit?,
-        finallyCallback: (() -> Unit?)? = null
-    ) {
-        val call = apiService.downloadSession(uuid)
-        call.enqueue(object : Callback<SessionResponse> {
-            override fun onResponse(
-                call: Call<SessionResponse>,
-                response: Response<SessionResponse>
-            ) {
-                if (response.isSuccessful) response.body()?.let {
-                    val session = sessionFromResponse(it)
-                    session?.let { successCallback(session) }
-                } else errorHandler.handle(UnexpectedAPIError())
+    ): Result<Session> = runCatching { sessionFromResponse(apiService.downloadSession(uuid)) }
 
-                finallyCallback?.invoke()
-            }
-
-            override fun onFailure(call: Call<SessionResponse>, t: Throwable) {
-                errorHandler.handle(UnexpectedAPIError(t))
-                finallyCallback?.invoke()
-            }
-        })
-    }
-
-    fun sessionFromResponse(sessionResponse: SessionResponse): Session? {
-        val startTime = DateConverter.fromString(sessionResponse.start_time) ?: return null
+    private fun sessionFromResponse(sessionResponse: SessionResponse): Session {
+        val startTime =
+            DateConverter.fromString(sessionResponse.start_time) ?: throw UnexpectedAPIError()
 
         val streams = sessionResponse.streams.values.map { stream ->
             MeasurementStream(stream)
