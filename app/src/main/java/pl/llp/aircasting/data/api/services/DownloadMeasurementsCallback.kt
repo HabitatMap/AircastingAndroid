@@ -5,7 +5,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
@@ -18,8 +17,8 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.runOnIOThread
-import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.services.AveragingService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,20 +62,19 @@ class DownloadMeasurementsCallback(
                             errorHandler.handle(DBInsertException(e))
                         }
                     }
-
-                    finallyCallback?.invoke()
                 }
             }
         } else {
             errorHandler.handleAndDisplay(DownloadMeasurementsError())
-            finallyCallback?.invoke()
         }
+        finallyCallback?.invoke()
     }
 
     override fun onFailure(
         call: Call<SessionWithMeasurementsResponse>,
         t: Throwable
     ) {
+        // fails after a long time
         errorHandler.handleAndDisplay(DownloadMeasurementsError(t))
         finallyCallback?.invoke()
     }

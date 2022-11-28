@@ -27,7 +27,9 @@ fun waitFor(delay: Long): ViewAction {
 }
 
 fun waitAndRetry(assertion: ThrowingRunnable) =
-    Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS).atMost(6, TimeUnit.SECONDS)
+    Awaitility.await()
+        .pollDelay(500, TimeUnit.MILLISECONDS)
+        .atMost(6, TimeUnit.SECONDS)
         .untilAsserted(assertion)
 
 fun awaitForAssertion(assertion: ThrowingRunnable) =

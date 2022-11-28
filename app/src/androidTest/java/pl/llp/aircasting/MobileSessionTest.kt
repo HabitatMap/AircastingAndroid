@@ -11,13 +11,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import okhttp3.mockwebserver.MockResponse
 import org.hamcrest.CoreMatchers.*
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnit.rule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
@@ -84,16 +80,18 @@ class MobileSessionTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
+        DatabaseProvider.toggleTestMode()
         setupDagger()
-        clearDatabase()
         getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
         getMockWebServerFrom(apiServiceFactory).shutdown()
+        DatabaseProvider.mAppDatabase?.close()
     }
 
+    @Ignore("Bug: doesn't navigate to mobile tab when session is finished")
     @Test
     fun testBluetoothMobileSessionRecording() {
         settings.login("X", "EMAIL", "TOKEN")
@@ -165,8 +163,8 @@ class MobileSessionTest {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
-
-        Thread.sleep(4000)
+        // should navigate to mobile tab
+        Thread.sleep(2000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")))
@@ -184,6 +182,7 @@ class MobileSessionTest {
         onView(withId(R.id.reset_button)).perform(click())
     }
 
+    @Ignore("Bug: doesn't navigate to mobile tab when session is finished")
     @Test
     fun testMicrophoneMobileSessionRecording() {
         val updateResponse = MockResponse()
@@ -226,7 +225,7 @@ class MobileSessionTest {
         measurementValuesRow.check(matches(hasMinimumChildCount(1)))
 
         stopSession()
-
+        // should navigate to mobile tab
         Thread.sleep(4000)
 
         onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))

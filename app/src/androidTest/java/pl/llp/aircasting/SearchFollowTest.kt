@@ -37,6 +37,7 @@ import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
 import pl.llp.aircasting.data.api.util.StringConstants.openAQ
 import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
+import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
@@ -108,6 +109,7 @@ class SearchFollowTest {
 
     @Before
     fun setup() {
+        DatabaseProvider.toggleTestMode()
         setupDagger()
 
         server = getMockWebServerFrom(apiServiceFactory)
@@ -131,6 +133,7 @@ class SearchFollowTest {
 
     @After
     fun cleanup() {
+        DatabaseProvider.mAppDatabase?.close()
         server.shutdown()
     }
 
@@ -255,7 +258,7 @@ class SearchFollowTest {
     }
 
     @Test
-    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed() {
+    fun whenChoosingCard_bottomSheetHasSameDateAndTitleAsCard_chipsSwitchGraphView_externalSessionIsFollowed_Unfollowed() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
@@ -280,18 +283,6 @@ class SearchFollowTest {
         verifyFollowingOfExternalSession(cardTitle)
 
         searchActivityScenario.close()
-    }
-
-    @Test
-    fun goToFollowingTab_andUnfollow_the_followed_Session() {
-        mainActivityScenario = ActivityScenario.launch(startIntent)
-
-        expandCard()
-
-        onView(withId(R.id.unfollow_button))
-            .perform(click())
-
-        mainActivityScenario.close()
     }
 
     private fun verifyFollowingOfExternalSession(cardTitle: String) {

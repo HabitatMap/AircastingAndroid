@@ -14,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
+import okhttp3.mockwebserver.MockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +27,8 @@ import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
+import pl.llp.aircasting.helpers.MockWebServerDispatcher
+import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
 import pl.llp.aircasting.helpers.getMockWebServerFrom
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
@@ -69,13 +72,14 @@ class MyAccountTest {
     @Before
     fun setup() {
         setupDagger()
-        setupDatabase()
+        DatabaseProvider.toggleTestMode()
         getMockWebServerFrom(apiServiceFactory).start()
     }
 
     @After
     fun cleanup() {
         testRule.finishActivity()
+        DatabaseProvider.mAppDatabase?.close()
         getMockWebServerFrom(apiServiceFactory).shutdown()
     }
 
@@ -92,8 +96,18 @@ class MyAccountTest {
         //  performing click on button:
         onView(withId(R.id.sign_out_button)).perform(click())
 
-        Thread.sleep(2000)
+        val syncResponseMock = MockResponse()
+            .setResponseCode(200)
+        MockWebServerDispatcher.set(
+            mapOf(
+                "/api/realtime/sync_measurements.json" to syncResponseMock
+            ),
+            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+        )
 
+        Thread.sleep(5000)
+
+        // TODO: Make assertion wait for full logout process with sync
         assertEquals(null, settings.getAuthToken())
         assertEquals(null, settings.getEmail())
 

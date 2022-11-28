@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -15,7 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
@@ -23,21 +23,23 @@ import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.model.MeasurementStream
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.di.mocks.FakeFixedSessionDetailsController
 import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.helpers.FakeDeviceItem
-import pl.llp.aircasting.helpers.getMockWebServerFrom
-import pl.llp.aircasting.helpers.selectTabAtPosition
-import pl.llp.aircasting.helpers.stubPairedDevice
+import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @RunWith(AndroidJUnit4::class)
 class FixedSessionTest {
@@ -89,17 +91,11 @@ class FixedSessionTest {
         testAppComponent.inject(this)
     }
 
-    private fun clearDatabase() {
-        DatabaseProvider.setup(app)
-        runOnIOThread { DatabaseProvider.get().clearAllTables() }
-    }
-
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
-
+        DatabaseProvider.toggleTestMode()
         setupDagger()
-        clearDatabase()
+
         server = getMockWebServerFrom(apiServiceFactory)
         server.start()
     }
@@ -107,7 +103,7 @@ class FixedSessionTest {
     @After
     fun cleanup() {
         server.shutdown()
-        clearDatabase()
+        DatabaseProvider.mAppDatabase?.close()
     }
 
     @Test
@@ -247,53 +243,86 @@ class FixedSessionTest {
         onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
-//    @Test
-//    fun testFollowAndUnfollow() {
-//        settings.login("X", "EMAIL", "TOKEN")
-//
-//        val session = Session(
-//            Session.generateUUID(),
-//            "device_id",
-//            DeviceItem.Type.AIRBEAM2,
-//            Session.Type.FIXED,
-//            "New session to follow",
-//            ArrayList<String>(),
-//            Session.Status.FINISHED
-//        )
-//        val stream = MeasurementStream(
-//            "AirBeam2:0018961070D6",
-//            "AirBeam2-F",
-//            "Temperature",
-//            "F",
-//            "degrees Fahrenheit",
-//            "F",
-//            15,
-//            45,
-//            75,
-//            100,
-//            135,
-//            false
-//        )
-//        val measurements = listOf(Measurement(70.0, Date()))
-//
-//        runOnIOThread {
-//            val sessionId = sessionsRepository.insert(session)
-//            val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
-//            measurementsRepository.insertAll(streamId, sessionId, measurements)
-//        }
-//
-//        testRule.launchActivity(null)
-//        onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
-//
-//        expandCard()
-//        onView(withId(R.id.follow_button)).perform(click())
-//        Thread.sleep(3000)
-//
-//        expandCard()
-//        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-//        Thread.sleep(1000)
+    @Test
+    fun testFollow() {
+        settings.login("X", "EMAIL", "TOKEN")
+
+        val syncResponseMock = MockResponse()
+            .setResponseCode(200)
+        MockWebServerDispatcher.set(
+            mapOf(
+                "/api/realtime/sync_measurements.json" to syncResponseMock
+            ),
+            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+        )
+
+        val session = Session(
+            Session.generateUUID(),
+            "device_id",
+            DeviceItem.Type.AIRBEAM2,
+            Session.Type.FIXED,
+            "New session to follow",
+            ArrayList<String>(),
+            Session.Status.FINISHED
+        )
+        val measurementValue = 70.0
+        val stream = MeasurementStream(
+            "AirBeam2:0018961070D6",
+            "AirBeam2-F",
+            "Temperature",
+            "F",
+            "degrees Fahrenheit",
+            "F",
+            15,
+            45,
+            75,
+            100,
+            135,
+            false
+        )
+        val measurements = listOf(Measurement(measurementValue, Date()))
+
+        testRule.launchActivity(null)
+
+        runOnIOThread {
+            val sessionId = sessionsRepository.insert(session)
+            val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
+            measurementsRepository.insertAll(streamId, sessionId, measurements)
+        }
+
+        onView(withId(R.id.tabs))
+            .perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
+
+        expandCard()
+
+        checkValueIsCorrect(measurementValue)
+        onView(withId(R.id.follow_button)).perform(click())
+        // TODO: Fix bug with displaying 0 value
+        checkValueIsCorrect(measurementValue)
+//        onView(withId(R.id.tabs))
+//            .perform(selectTabAtPosition(DashboardPagerAdapter.FOLLOWING_TAB_INDEX))
+
+//        onView(
+//            allOf(
+//                withEffectiveVisibility(Visibility.VISIBLE),
+//                withId(R.id.expand_session_button)
+//            )
+//        ).perform(click())
 //        onView(withId(R.id.unfollow_button)).perform(click())
-//        Thread.sleep(2000)
-//        onView(withText("New session to follow")).check(matches(isDisplayed()))
-//    }
+//
+//        onView(
+//            allOf(
+//                withText("New session to follow"),
+//                withEffectiveVisibility(Visibility.VISIBLE)
+//            )
+//        )
+//            .check(matches(isDisplayed()))
+    }
+
+    private fun checkValueIsCorrect(measurementValue: Double) {
+        waitAndRetry {
+            onView(withId(R.id.measurement_value))
+                .check(matches(withText(measurementValue.roundToInt().toString())))
+        }
+    }
 }
