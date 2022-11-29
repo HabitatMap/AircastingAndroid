@@ -82,6 +82,30 @@ class Measurement(
         return getLevel(value, sensorThreshold)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Measurement
+
+        if (value != other.value) return false
+        if (time != other.time) return false
+        if (latitude != other.latitude) return false
+        if (longitude != other.longitude) return false
+        if (averagingFrequency != other.averagingFrequency) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = value.hashCode()
+        result = 31 * result + time.hashCode()
+        result = 31 * result + (latitude?.hashCode() ?: 0)
+        result = 31 * result + (longitude?.hashCode() ?: 0)
+        result = 31 * result + averagingFrequency
+        return result
+    }
+
     companion object {
         fun getLevel(value: Double, sensorThreshold: SensorThreshold): Level {
             if (value < sensorThreshold.thresholdVeryLow) return Level.EXTREMELY_LOW
