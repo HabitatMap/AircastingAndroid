@@ -29,11 +29,11 @@ class FixedSessionsObserverTest {
             on { streams } doReturn listOf(streamWithMeasurementsDBObject)
         }
 
-        val expected = listOf(Measurement(measurementDBObject))
+        val expectedMeasurements = listOf(Measurement(measurementDBObject))
 
         val session = fixedSessionsObserver.buildSession(sessionWithMeasurementsDBObject)
-        val result = session.streams.first().measurements
+        val resultMeasurements = session.streams.first().measurements
 
-        assertEquals(expected, result)
+        assertEquals(expectedMeasurements, resultMeasurements)
     }
 }

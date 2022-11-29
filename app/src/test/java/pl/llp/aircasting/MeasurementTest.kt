@@ -1,19 +1,14 @@
 package pl.llp.aircasting
 
 import junit.framework.TestCase
+import org.junit.Test
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.SensorThreshold
-import org.junit.Test
 import java.util.*
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class MeasurementTest : TestCase() {
     @Test
-    fun getLevelTest() {
+    fun testGetLevel() {
         val sensorThreshold = SensorThreshold(
             "PM2.5",
             1,

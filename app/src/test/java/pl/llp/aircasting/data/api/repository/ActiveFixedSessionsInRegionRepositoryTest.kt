@@ -2,6 +2,7 @@ package pl.llp.aircasting.data.api.repository
 
 import com.google.gson.JsonParser
 import kotlinx.coroutines.runBlocking
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.*
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
@@ -28,11 +29,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     private val sessionsInRegionResponse = StubData.getJson("SessionsCracow.json")
     private val streamOfGivenSessionResponse = StubData.getJson("StreamSensorNameHabitatMap.json")
 
-    /**
-     * The implementation in the repository will be changed in the future.
-     * I will not change anything here.
-     * But as a TODO; this should be changed right after the combination in the repository.
-     **/
+    @Ignore("Repository calls getSessionsInRegion 2 times to combine AB3 and AB2 sessions. This will need to be transferred to ViewModel")
     @Test
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
@@ -226,7 +223,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
         // then
-        verify(mockApiService).getStreamOfGivenSession(anyOrNull(), anyOrNull(), 1)
+        verify(mockApiService).getStreamOfGivenSession(anyOrNull(), anyOrNull(), eq(1))
     }
 
     @Test
@@ -272,7 +269,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             verify(mockApiService).getStreamOfGivenSession(
                 eq(expectedId),
                 eq(expectedSensorName),
-                1
+                eq(1)
             )
         }
 
