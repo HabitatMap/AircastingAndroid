@@ -3,13 +3,15 @@ package pl.llp.aircasting.data.model.observers
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.backToUIThread
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class SessionsObserver<Type>(
@@ -30,12 +32,12 @@ abstract class SessionsObserver<Type>(
     private var mSessionsLiveData: LiveData<List<Type>>? = null
 
     private var mObserver: Observer<List<Type>> = Observer { dbSessions ->
-        runOnIOThread { coroutineScope ->
+        mSessionsViewModel.viewModelScope.launch(Dispatchers.Default) {
             val sessions = dbSessions.map { dbSession -> buildSession(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
             if (anySensorThresholdChanged(sensorThresholds)) updateSensorThresholds(sensorThresholds)
             if (anySessionChanged(sessions)) {
-                onSessionsChanged(coroutineScope, sessions)
+                onSessionsChanged(this, sessions)
             }
         }
     }

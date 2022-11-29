@@ -30,7 +30,6 @@ import org.hamcrest.Matchers.*
 import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
-import org.junit.runners.MethodSorters
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
@@ -133,8 +132,8 @@ class SearchFollowTest {
 
     @After
     fun cleanup() {
-        DatabaseProvider.mAppDatabase?.close()
         server.shutdown()
+        DatabaseProvider.mAppDatabase?.close()
     }
 
     @Test

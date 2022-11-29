@@ -60,7 +60,7 @@ class SessionsViewModel : ViewModel() {
         )
     }
 
-    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 
