@@ -2,14 +2,17 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.extensions.runOnIOThread
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
@@ -28,7 +31,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     protected open val mSessionPresenters: SortedList<SessionPresenter> =
         SortedList(SessionPresenter::class.java, modificationCallback)
 
-    abstract fun prepareSession(session: Session, expanded: Boolean): Session
+    abstract suspend fun prepareSession(session: Session, expanded: Boolean): Session
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val sessionPresenter = mSessionPresenters[position]
@@ -65,10 +68,15 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             val position = mSessionPresenters.indexOf(SessionPresenter(it))
             if (found(position)) {
                 val presenter = mSessionPresenters[position]
-                presenter.session = prepareSession(it, mSessionPresenters[position].expanded)
-                presenter.chartData?.refresh(it)
+                mSessionsViewModel.viewModelScope.launch {
+                    withContext(Dispatchers.IO) {
+                        presenter.session =
+                            prepareSession(it, mSessionPresenters[position].expanded)
+                    }
+                    presenter.chartData?.refresh(it)
 
-                mSessionPresenters.updateItemAt(position, presenter)
+                    mSessionPresenters.updateItemAt(position, presenter)
+                }
             }
         }
     }
@@ -153,20 +161,17 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         update(session)
     }
 
-    protected fun reloadSessionFromDB(session: Session): Session {
+    protected suspend fun reloadSessionFromDB(session: Session): Session {
         val reloadedSession: Session? = getFromDB(session)
 
         return reloadedSession ?: session
     }
 
-    private fun getFromDB(session: Session): Session? {
-        var reloadedSession: Session? = null
-        runOnIOThread {
-            val dbSessionWithMeasurements =
-                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-            reloadedSession = dbSessionWithMeasurements?.let { Session(it) }
-        }
-        return reloadedSession
+    private suspend fun getFromDB(session: Session): Session? {
+        val dbSessionWithMeasurements =
+            mSessionsViewModel.reloadSessionWithMeasurementsSuspend(session.uuid)
+
+        return dbSessionWithMeasurements?.let { Session(it) }
     }
 
 

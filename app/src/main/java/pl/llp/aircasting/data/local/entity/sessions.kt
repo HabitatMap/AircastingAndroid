@@ -151,7 +151,7 @@ class SessionWithStreamsAndNotesDBObject {
         entityColumn = "session_id",
         entity = MeasurementStreamDBObject::class
     )
-    lateinit var streams: List<MeasurementStreamDBObject>
+    lateinit var streams: List<StreamWithMeasurementsDBObject>
 
     @Relation(
         parentColumn = "id",

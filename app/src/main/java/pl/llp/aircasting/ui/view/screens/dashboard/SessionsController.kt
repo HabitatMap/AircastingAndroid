@@ -5,6 +5,10 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.*
@@ -171,17 +175,16 @@ abstract class SessionsController(
             }
             return
         }
-        val onDownloadSuccess = { session: Session ->
-            runOnIOThread {
-                mSessionRepository.update(session)
-            }
-            editDialog?.reload(session)
-        }
-        val finallyCallback = {
+        startEditSessionBottomSheet(session)
+        mRootActivity?.lifecycleScope?.launch {
+            mDownloadService.download(session.uuid)
+                .onSuccess {
+                    withContext(Dispatchers.IO) { mSessionRepository.update(session) }
+                    editDialog?.reload(session)
+                }
             editDialog?.hideLoader()
         }
-        startEditSessionBottomSheet(session)
-        mDownloadService.download(session.uuid, onDownloadSuccess, finallyCallback)
+
     }
 
     override fun onShareSessionClicked(session: Session) {

@@ -12,6 +12,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <TextView
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading..."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_sessions"
+        app:layout_constraintStart_toStartOf="@+id/recycler_sessions"
+        app:layout_constraintTop_toTopOf="@+id/recycler_sessions" />
+
     <include
         android:id="@+id/empty_dashboard"
         layout="@layout/empty_dashboard"

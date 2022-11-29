@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -27,6 +28,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     private var mRecordSessionButton: Button? = null
     private var mOnExploreBtn: Button? = null
     protected var mRecyclerSessions: RecyclerView? = null
+    private var mLoading: TextView? = null
     private var mEmptyView: View? = null
     protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mDidYouKnowBox: MaterialCardView? = null
@@ -38,6 +40,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         mOnExploreBtn = findViewById(onExploreNewSessionsButtonID())
         mDidYouKnowBox = findViewById(R.id.did_you_know_box)
         mRecyclerSessions = findViewById(R.id.recycler_sessions)
+        mLoading = findViewById(R.id.loading)
         mRecyclerSessions?.itemAnimator = null
 
         mRecordSessionButton?.setOnClickListener { onRecordNewSessionClicked() }
@@ -89,12 +92,15 @@ abstract class SessionsViewMvcImpl<ListenerType>(
             mEmptyView?.visibility = View.INVISIBLE
             mDidYouKnowBox?.visibility = View.INVISIBLE
             mRecyclerSessions?.visibility = View.VISIBLE
+            // hide loader
+            mLoading?.visibility = View.INVISIBLE
         }
     }
 
     override fun showEmptyView() {
         mEmptyView?.visibility = View.VISIBLE
         mRecyclerSessions?.visibility = View.INVISIBLE
+        mLoading?.visibility = View.INVISIBLE
         if (showDidYouKnowBox()) {
             mDidYouKnowBox?.visibility = View.VISIBLE
         } else {

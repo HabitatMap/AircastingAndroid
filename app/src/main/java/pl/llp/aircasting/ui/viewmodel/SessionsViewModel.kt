@@ -27,6 +27,10 @@ class SessionsViewModel : ViewModel() {
         return mDatabase.sessions().reloadSessionAndMeasurementsByUUID(uuid)
     }
 
+    suspend fun reloadSessionWithMeasurementsSuspend(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
+        return mDatabase.sessions().reloadSessionAndMeasurementsByUUIDSuspend(uuid)
+    }
+
     fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
         return mDatabase.sessions().loadFollowingWithMeasurements()
     }
@@ -60,7 +64,7 @@ class SessionsViewModel : ViewModel() {
         )
     }
 
-    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>> {
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
         return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
     }
 

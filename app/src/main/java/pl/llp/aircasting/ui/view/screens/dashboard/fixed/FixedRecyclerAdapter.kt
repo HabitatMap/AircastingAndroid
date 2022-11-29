@@ -24,7 +24,7 @@ class FixedRecyclerAdapter(
         return MyViewHolder(viewMvc)
     }
 
-    override fun prepareSession(session: Session, expanded: Boolean): Session {
+    override suspend fun prepareSession(session: Session, expanded: Boolean): Session {
         if (!expanded) {
             return session
         }

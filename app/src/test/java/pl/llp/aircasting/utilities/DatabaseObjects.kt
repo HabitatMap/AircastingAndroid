@@ -2,6 +2,7 @@ package pl.llp.aircasting.utilities
 
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
+import pl.llp.aircasting.data.local.entity.NoteDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -42,5 +43,14 @@ object DatabaseObjects {
         endTime = null,
         latitude = 1.0,
         longitude = 1.0
+    )
+    val noteDBObject = NoteDBObject(
+        1L,
+        Date(),
+        "TEXT",
+        1.0,
+        1.0,
+        0,
+        "PHOTO_LOCATION"
     )
 }
