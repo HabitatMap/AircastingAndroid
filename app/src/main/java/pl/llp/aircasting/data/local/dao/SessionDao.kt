@@ -125,7 +125,7 @@ interface SessionDao {
     suspend fun updateFollowedAt(uuid: String, followedAt: Date?)
 
     @Query("UPDATE sessions SET session_order=:sessionOrder WHERE uuid=:uuid")
-    suspend fun updateOrder(uuid: String, sessionOrder: Int)
+    suspend fun updateOrder(uuid: String, sessionOrder: Int?)
 
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
     fun updateStatus(uuid: String, status: Session.Status)

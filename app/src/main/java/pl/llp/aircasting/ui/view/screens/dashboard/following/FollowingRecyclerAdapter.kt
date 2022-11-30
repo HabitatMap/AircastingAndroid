@@ -9,17 +9,17 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.expandedCards
 
 open class FollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
     private val mListener: SessionCardListener,
-    supportFragmentManager: FragmentManager
-) : SessionsRecyclerAdapter<SessionCardListener>(mInflater, supportFragmentManager) {
-    private val followingModificationCallback: ModificationCallback =
-        FollowingModificationCallback()
+    supportFragmentManager: FragmentManager,
+    sessionsViewModel: SessionsViewModel = SessionsViewModel()
+) : SessionsRecyclerAdapter<SessionCardListener>(mInflater, supportFragmentManager, sessionsViewModel) {
     override val mSessionPresenters: SortedList<SessionPresenter> =
-        SortedList(SessionPresenter::class.java, followingModificationCallback)
+        SortedList(SessionPresenter::class.java, FollowingModificationCallback())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc =
@@ -44,7 +44,12 @@ open class FollowingRecyclerAdapter(
         reloadSessionFromDB(session)
 
     inner class FollowingModificationCallback : ModificationCallback() {
-        override fun compare(first: SessionPresenter?, second: SessionPresenter?) =
-            first?.session?.order?.compareTo(second?.session?.order ?: 0) ?: 0
+        override fun compare(first: SessionPresenter?, second: SessionPresenter?): Int {
+            val firstFollowedAt = first?.session?.followedAt
+            val secondFollowedAt = second?.session?.followedAt
+            return if (firstFollowedAt != null && secondFollowedAt != null)
+                secondFollowedAt.compareTo(firstFollowedAt)
+            else 0
+        }
     }
 }

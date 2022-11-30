@@ -16,23 +16,25 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
+import pl.llp.aircasting.util.Settings
 
-class ReorderingFollowingRecyclerAdapter(
+open class ReorderingFollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
     private val mListener: SessionCardListener,
-    supportFragmentManager: FragmentManager
-) : FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager),
-    ItemTouchHelperAdapter {
-
+    supportFragmentManager: FragmentManager,
     private val mApplication: AircastingApplication =
-        mInflater.context.applicationContext as AircastingApplication
-    private val mSettings = mApplication.settings
-    private val mSessionRepository = SessionsRepository()
-    private val mActiveSessionsRepository = ActiveSessionMeasurementsRepository()
-
-    private var mSessionFollower =
-        SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository)
+        mInflater.context.applicationContext as AircastingApplication,
+    private val mSettings: Settings = mApplication.settings,
+    private val mSessionRepository: SessionsRepository = SessionsRepository(),
+    private val mActiveSessionsRepository: ActiveSessionMeasurementsRepository =
+        ActiveSessionMeasurementsRepository(),
+    private var mSessionFollower: SessionFollower =
+        SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository),
+    sessionsViewModel: SessionsViewModel = SessionsViewModel()
+) : FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager, sessionsViewModel),
+    ItemTouchHelperAdapter {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -73,7 +75,7 @@ class ReorderingFollowingRecyclerAdapter(
             secondPosition
         )
 
-        updateSessionsOrderInDatabase(firstPresenter, secondPresenter)
+        updateSessionsFollowedAtInDatabase(firstPresenter, secondPresenter)
     }
 
     private fun swapPresentersInAdapterDataset(
@@ -82,32 +84,30 @@ class ReorderingFollowingRecyclerAdapter(
         secondPresenter: SessionPresenter,
         secondPosition: Int
     ) {
-        firstPresenter.session?.order = secondPosition
-        secondPresenter.session?.order = firstPosition
+        val firstFollowedAt = firstPresenter.session?.followedAt
+        firstPresenter.session?.followedAt = secondPresenter.session?.followedAt
+        secondPresenter.session?.followedAt = firstFollowedAt
 
         mSessionPresenters.recalculatePositionOfItemAt(firstPosition)
         mSessionPresenters.recalculatePositionOfItemAt(secondPosition)
     }
 
-    private fun updateSessionsOrderInDatabase(
+    private fun updateSessionsFollowedAtInDatabase(
         firstPresenter: SessionPresenter,
         secondPresenter: SessionPresenter
     ) {
-        val firstPresenterUUID = firstPresenter.session?.uuid.toString()
-        val secondPresenterUUID = secondPresenter.session?.uuid.toString()
-
-        mSessionsViewModel.updateOrder(
-            firstPresenterUUID, firstPresenter.session?.order ?: 0
-        )
-        mSessionsViewModel.updateOrder(
-            secondPresenterUUID, secondPresenter.session?.order ?: 0
-        )
+        val firstSession = firstPresenter.session
+        val secondSession = secondPresenter.session
+        if (firstSession != null && secondSession != null) {
+            mSessionsViewModel.updateFollowedAt(firstSession)
+            mSessionsViewModel.updateFollowedAt(secondSession)
+        }
     }
 
     override fun onItemDismiss(position: Int) {
-        mSessionPresenters.removeItemAt(position)
-
         val session = mSessionPresenters[position].session ?: return
         mSessionFollower.unfollow(session)
+
+        mSessionPresenters.removeItemAt(position)
     }
 }

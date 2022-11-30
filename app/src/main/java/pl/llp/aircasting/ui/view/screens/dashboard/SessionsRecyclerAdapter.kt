@@ -16,7 +16,8 @@ import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
     private val mInflater: LayoutInflater,
-    protected val supportFragmentManager: FragmentManager
+    protected val supportFragmentManager: FragmentManager,
+    protected val mSessionsViewModel: SessionsViewModel = SessionsViewModel()
 ) : RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
@@ -24,12 +25,10 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         val view: SessionViewMvc<ListenerType> get() = mViewMvc
     }
 
-    protected val mSessionsViewModel = SessionsViewModel()
     lateinit var mItemTouchHelper: ItemTouchHelper
 
-    private val modificationCallback = ModificationCallback()
     protected open val mSessionPresenters: SortedList<SessionPresenter> =
-        SortedList(SessionPresenter::class.java, modificationCallback)
+        SortedList(SessionPresenter::class.java, ModificationCallback())
 
     abstract suspend fun prepareSession(session: Session, expanded: Boolean): Session
 

@@ -174,7 +174,7 @@ class SessionsRepository {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
 
-    suspend fun updateOrder(sessionUUID: String, followingSessionsNumber: Int) {
-        mDatabase.sessions().updateOrder(sessionUUID, followingSessionsNumber)
+    suspend fun updateOrder(sessionUUID: String, order: Int?) {
+        mDatabase.sessions().updateOrder(sessionUUID, order)
     }
 }

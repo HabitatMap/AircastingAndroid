@@ -90,9 +90,9 @@ class SessionsViewModel : ViewModel() {
 
     fun updateOrder(
         sessionUUID: String,
-        followingSessionsNumber: Int,
+        order: Int,
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO
     ) = viewModelScope.launch(ioDispatcher) {
-        sessionsRepository.updateOrder(sessionUUID, followingSessionsNumber)
+        sessionsRepository.updateOrder(sessionUUID, order)
     }
 }

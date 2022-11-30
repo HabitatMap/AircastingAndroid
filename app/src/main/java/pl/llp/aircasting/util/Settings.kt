@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util
 
 import android.content.SharedPreferences
+import android.util.Log
 import pl.llp.aircasting.data.api.util.ApiConstants
 
 open class Settings(private val sharedPreferences: SharedPreferences) {
@@ -19,9 +20,9 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
         private const val APP_RESTARTED = "app_restarted"
 
-        private const val FOLLOWED_SESSIONS_NUMBER_KEY = "followed_sesions_number"
-        private const val MOBILE_ACTIVE_NUMBERS_KEY = "mobile_active_sessions"
-        private const val DEFAULT_MOBILE_ACTIVE_SESSIONS = 0
+        private const val FOLLOWED_SESSIONS_COUNT_KEY = "followed_sesions_number"
+        private const val MOBILE_ACTIVE_SESSIONS_COUNT_KEY = "mobile_active_sessions"
+        private const val DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT = 0
         private const val THEME_SET_TO_DARK_KEY = "theme_dark"
         private const val KEEP_SCREEN_ON_KEY = "keep_screen_on"
         private const val USE_SATELLITE_VIEW = "use_satellite_view"
@@ -43,7 +44,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_APP_RESTARTED = false
         private const val DEFAULT_THEME_VALUE = false
         private const val DEFAULT_KEEP_SCREEN_ON = false
-        private const val DEFAULT_FOLLOWED_SESSIONS_NUMBER = 0
+        private const val DEFAULT_FOLLOWED_SESSIONS_COUNT = 0
         private const val DEFAULT_ONBOARDING_DISPLAYED = false
     }
 
@@ -117,11 +118,35 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     }
 
     fun followedSessionsCount(): Int {
-        return getIntFromSettings(FOLLOWED_SESSIONS_NUMBER_KEY, DEFAULT_FOLLOWED_SESSIONS_NUMBER)
+        val followedSessionsCount = getIntFromSettings(FOLLOWED_SESSIONS_COUNT_KEY, DEFAULT_FOLLOWED_SESSIONS_COUNT)
+        Log.v("FollowedSessionsCount", "Current count: $followedSessionsCount")
+        return followedSessionsCount
+    }
+
+    fun increaseFollowedSessionsCount() {
+        val followedSessionsCount = followedSessionsCount()
+        saveToSettings(FOLLOWED_SESSIONS_COUNT_KEY, followedSessionsCount + 1)
+        Log.v("FollowedSessionsCount", "Increased to: ${followedSessionsCount + 1}")
+    }
+
+    fun decreaseFollowedSessionsCount() {
+        val followedSessionsCount = followedSessionsCount()
+        if (followedSessionsCount > 0) {
+            saveToSettings(FOLLOWED_SESSIONS_COUNT_KEY, followedSessionsCount - 1)
+            Log.v("FollowedSessionsCount", "Decreased to: ${followedSessionsCount - 1}")
+        }
     }
 
     fun mobileActiveSessionsCount(): Int {
-        return getIntFromSettings(MOBILE_ACTIVE_NUMBERS_KEY, DEFAULT_MOBILE_ACTIVE_SESSIONS)
+        return getIntFromSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT)
+    }
+
+    fun increaseActiveMobileSessionsCount() {
+        saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount() + 1)
+    }
+
+    fun decreaseActiveMobileSessionsCount() {
+        saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount() - 1)
     }
 
     fun isUsingSatelliteView(): Boolean {
@@ -202,21 +227,6 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(AUTH_TOKEN_KEY, authToken)
     }
 
-    fun increaseFollowedSessionsCount() {
-        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, followedSessionsCount() + 1)
-    }
-
-    fun decreaseFollowedSessionsCount() {
-        saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, followedSessionsCount() - 1)
-    }
-
-    fun increaseActiveMobileSessionsCount() {
-        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, mobileActiveSessionsCount() + 1)
-    }
-
-    fun decreaseActiveMobileSessionsCount() {
-        saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, mobileActiveSessionsCount() - 1)
-    }
 
     fun saveExpandedSessionsUUIDs(uuids: Set<String>) {
         saveToSettings(EXPANDED_SESSION_CARDS, uuids)

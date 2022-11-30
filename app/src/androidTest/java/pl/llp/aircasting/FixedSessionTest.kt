@@ -66,6 +66,23 @@ class FixedSessionTest {
 
     lateinit var server: MockWebServer
 
+    private val measurementValue = 70.0
+    private val stream = MeasurementStream(
+        "AirBeam2:0018961070D6",
+        "AirBeam2-F",
+        "Temperature",
+        "F",
+        "degrees Fahrenheit",
+        "F",
+        15,
+        45,
+        75,
+        100,
+        135,
+        false
+    )
+    private val measurements = listOf(Measurement(measurementValue, Date()))
+
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
         ActivityTestRule(MainActivity::class.java, true, false)
@@ -98,6 +115,15 @@ class FixedSessionTest {
 
         server = getMockWebServerFrom(apiServiceFactory)
         server.start()
+        settings.login("X", "EMAIL", "TOKEN")
+        val syncResponseMock = MockResponse()
+            .setResponseCode(200)
+        MockWebServerDispatcher.set(
+            mapOf(
+                "/api/realtime/sync_measurements.json" to syncResponseMock
+            ),
+            server
+        )
     }
 
     @After
@@ -108,7 +134,6 @@ class FixedSessionTest {
 
     @Test
     fun testFixedOutdoorSessionRecording() {
-        settings.login("X", "EMAIL", "TOKEN")
         testRule.launchActivity(null)
 
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
@@ -179,8 +204,6 @@ class FixedSessionTest {
 
     @Test
     fun testFixedIndoorSessionRecording() {
-        settings.login("X", "EMAIL", "TOKEN")
-
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
@@ -245,17 +268,6 @@ class FixedSessionTest {
 
     @Test
     fun testFollow() {
-        settings.login("X", "EMAIL", "TOKEN")
-
-        val syncResponseMock = MockResponse()
-            .setResponseCode(200)
-        MockWebServerDispatcher.set(
-            mapOf(
-                "/api/realtime/sync_measurements.json" to syncResponseMock
-            ),
-            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
-        )
-
         val session = Session(
             Session.generateUUID(),
             "device_id",
@@ -265,22 +277,6 @@ class FixedSessionTest {
             ArrayList<String>(),
             Session.Status.FINISHED
         )
-        val measurementValue = 70.0
-        val stream = MeasurementStream(
-            "AirBeam2:0018961070D6",
-            "AirBeam2-F",
-            "Temperature",
-            "F",
-            "degrees Fahrenheit",
-            "F",
-            15,
-            45,
-            75,
-            100,
-            135,
-            false
-        )
-        val measurements = listOf(Measurement(measurementValue, Date()))
 
         testRule.launchActivity(null)
 
@@ -295,10 +291,9 @@ class FixedSessionTest {
 
         expandCard()
 
-        checkValueIsCorrect(measurementValue)
+        checkMeasurementTableValueIsCorrect(measurementValue)
         onView(withId(R.id.follow_button)).perform(click())
-        // TODO: Fix bug with displaying 0 value
-        checkValueIsCorrect(measurementValue)
+        checkMeasurementTableValueIsCorrect(measurementValue)
 //        onView(withId(R.id.tabs))
 //            .perform(selectTabAtPosition(DashboardPagerAdapter.FOLLOWING_TAB_INDEX))
 
@@ -319,7 +314,7 @@ class FixedSessionTest {
 //            .check(matches(isDisplayed()))
     }
 
-    private fun checkValueIsCorrect(measurementValue: Double) {
+    private fun checkMeasurementTableValueIsCorrect(measurementValue: Double) {
         waitAndRetry {
             onView(withId(R.id.measurement_value))
                 .check(matches(withText(measurementValue.roundToInt().toString())))
