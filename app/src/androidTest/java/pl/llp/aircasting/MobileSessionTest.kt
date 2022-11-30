@@ -91,7 +91,6 @@ class MobileSessionTest {
         DatabaseProvider.mAppDatabase?.close()
     }
 
-    @Ignore("Bug: doesn't navigate to mobile tab when session is finished")
     @Test
     fun testBluetoothMobileSessionRecording() {
         settings.login("X", "EMAIL", "TOKEN")
@@ -182,7 +181,6 @@ class MobileSessionTest {
         onView(withId(R.id.reset_button)).perform(click())
     }
 
-    @Ignore("Bug: doesn't navigate to mobile tab when session is finished")
     @Test
     fun testMicrophoneMobileSessionRecording() {
         val updateResponse = MockResponse()

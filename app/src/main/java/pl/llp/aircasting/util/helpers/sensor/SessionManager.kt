@@ -216,7 +216,7 @@ class SessionManager(
 
         if (session.isFixed()) {
             session.setFollowedAtNow()
-            settings.increaseFollowedSessionsNumber()
+            settings.increaseFollowedSessionsCount()
             fixedSessionUploadService.upload(session)
         }
 

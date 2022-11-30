@@ -147,14 +147,14 @@ class MobileActiveController(
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
 
-        mSettings.decreaseActiveMobileSessionsNumber()
+        mSettings.decreaseActiveMobileSessionsCount()
 
-        if (mSettings.mobileActiveSessionsCount() == 0)
+        if (mSettings.mobileActiveSessionsCount() < 1)
             goToDormantTab()
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        mSettings.decreaseActiveMobileSessionsNumber()
+        mSettings.decreaseActiveMobileSessionsCount()
         SyncActivity.start(mRootActivity)
     }
 

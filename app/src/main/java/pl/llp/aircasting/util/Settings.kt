@@ -202,19 +202,19 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(AUTH_TOKEN_KEY, authToken)
     }
 
-    fun increaseFollowedSessionsNumber() {
+    fun increaseFollowedSessionsCount() {
         saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, followedSessionsCount() + 1)
     }
 
-    fun decreaseFollowedSessionsNumber() {
+    fun decreaseFollowedSessionsCount() {
         saveToSettings(FOLLOWED_SESSIONS_NUMBER_KEY, followedSessionsCount() - 1)
     }
 
-    fun increaseActiveMobileSessionsNumber() {
+    fun increaseActiveMobileSessionsCount() {
         saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, mobileActiveSessionsCount() + 1)
     }
 
-    fun decreaseActiveMobileSessionsNumber() {
+    fun decreaseActiveMobileSessionsCount() {
         saveToSettings(MOBILE_ACTIVE_NUMBERS_KEY, mobileActiveSessionsCount() - 1)
     }
 

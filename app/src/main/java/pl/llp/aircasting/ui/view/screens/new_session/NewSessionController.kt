@@ -51,7 +51,9 @@ class NewSessionController(
     private val bluetoothManager: BluetoothManager,
     private val sessionBuilder: SessionBuilder,
     private val settings: Settings,
-    private val sessionType: Session.Type
+    private val sessionType: Session.Type,
+    private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -152,9 +154,9 @@ class NewSessionController(
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onMicrophoneDeviceSelected() {
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(mainDispatcher) {
             var existing = false
-            val query = GlobalScope.async(Dispatchers.IO) {
+            val query = GlobalScope.async(ioDispatcher) {
                 existing = sessionsRepository.isMicrophoneSessionAlreadyRecording()
             }
             query.await()
@@ -252,9 +254,9 @@ class NewSessionController(
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(mainDispatcher) {
             var existing = false
-            val query = GlobalScope.async(Dispatchers.IO) {
+            val query = GlobalScope.async(ioDispatcher) {
                 existing =
                     sessionsRepository.mobileSessionAlreadyExistsForDeviceId(
                         selectedDeviceItem.id
@@ -330,7 +332,8 @@ class NewSessionController(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        settings.increaseActiveMobileSessionsNumber()
+        if (session.type == Session.Type.MOBILE)
+            settings.increaseActiveMobileSessionsCount()
 
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)

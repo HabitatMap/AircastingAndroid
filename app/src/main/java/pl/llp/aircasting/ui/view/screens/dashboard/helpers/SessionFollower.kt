@@ -19,7 +19,7 @@ class SessionFollower @Inject constructor(
         updateFollowedAt(session)
 
         addFollowedSessionMeasurementsToActiveTable(session)
-        mSettings.increaseFollowedSessionsNumber()
+        mSettings.increaseFollowedSessionsCount()
     }
 
     fun unfollow(session: Session) {
@@ -29,7 +29,7 @@ class SessionFollower @Inject constructor(
             updateFollowedAt(session)
             clearUnfollowedSessionMeasurementsFromActiveTable(session)
         }
-        mSettings.decreaseFollowedSessionsNumber()
+        mSettings.decreaseFollowedSessionsCount()
     }
 
     private fun updateFollowedAt(session: Session) {
